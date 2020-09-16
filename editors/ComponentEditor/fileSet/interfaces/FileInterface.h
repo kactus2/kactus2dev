@@ -142,21 +142,38 @@ public:
         final;
 
     /*!
-     *  Add a new field.
+     *  Get the expressions in the selected files.
      *
-     *      @param [in] row             Row of the new field.
-     *      @param [in] newFieldName    Name of the new field.
+     *      @param [in] fileNames   Names of the selected files.
+     *
+     *      @return The expressions of the selected files.
+     */
+    std::vector<std::string> getExpressionsInSelectedFiles(std::vector<std::string> fileNames) const;
+
+    /*!
+     *  Add a new file.
+     *
+     *      @param [in] row             Row of the new file.
+     *      @param [in] newFileName     Name of the new file.
      */
     void addFile(int const& row, std::string const& newFileName = std::string(""));
 
     /*!
-     *  Remove the selected field.
+     *  Remove the selected file.
      *
-     *      @param [in] FieldName   Name of the selected field.
+     *      @param [in] fileName    Name of the selected file.
      *
      *      @return True, if successful, false otherwise.
      */
     bool removeFile(std::string const& fileName);
+
+    /*!
+     *  Swap the positions of the selected files.
+     *
+     *      @param [in] firstIndex      Index of the first file.
+     *      @param [in] secondIndex     Index of the second file.
+     */
+    void swapFiles(int const& firstIndex, int const& secondIndex);
 
     /*!
      *  Get the logical name of a file.
@@ -259,6 +276,16 @@ public:
      *      @param [in] fileName    Name of the selected file.
      */
     void clearFileTypes(std::string const& fileName);
+
+    /*!
+     *  Set file types for the selected file.
+     *
+     *      @param [in] fileName        Name of the selected file.
+     *      @param [in] newFileTypes    The new file types.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setFileTypes(std::string const& fileName, std::vector<std::string> const newFileTypes);
 
     /*!
      *  Add the selected file type to the selected file.

@@ -72,6 +72,16 @@ public:
 	 */
 	virtual void refresh();
 
+public slots:
+
+    /*!
+     *  Handle the name change of the containing file.
+     *
+     *      @param [in] oldName     Old name of the file.
+     *      @param [in] newName     The new name of the file.
+     */
+    void fileRenamed(std::string const& oldName, std::string const& newName);
+
 signals:
 
     //! Emitted when the file should be opened in default editor.

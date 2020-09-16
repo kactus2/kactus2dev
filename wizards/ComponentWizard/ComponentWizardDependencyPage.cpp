@@ -14,6 +14,7 @@
 #include "ComponentWizardPages.h"
 
 #include <editors/ComponentEditor/fileSet/filesetsdelegate.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -24,16 +25,20 @@
 // Function: ComponentWizardDependencyPage::ComponentWizardDependencyPage()
 //-----------------------------------------------------------------------------
 ComponentWizardDependencyPage::ComponentWizardDependencyPage(QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder, QString const& componentPath,
-        QWidget* parent):
+    QSharedPointer<ParameterFinder> parameterFinder, QString const& componentPath,
+    FileSetInterface* fileSetInterface, QWidget* parent):
 QWizardPage(parent),
 component_(component),
 splitter_(Qt::Vertical, this),
 view_(&splitter_),
-model_(component_, parameterFinder, this),
+model_(fileSetInterface, parameterFinder, this),
 proxy_(this),
-editor_(component_, componentPath, &splitter_)
+editor_(component_, componentPath, &splitter_),
+fileSetInterface_(fileSetInterface),
+availableFileSets_(component->getFileSets())
 {
+    fileSetInterface_->setFileSets(availableFileSets_);
+
     setTitle(tr("File Sets & Dependency Analysis"));
     setSubTitle(tr("Add files to the component by specifying the source directories, check "
         "file dependencies and create file sets."));
@@ -121,6 +126,8 @@ void ComponentWizardDependencyPage::initializePage()
 {
     // Clear file sets.
     component_->getFileSets()->clear();
+
+    fileSetInterface_->setFileSets(availableFileSets_);
 
     model_.refresh();
 

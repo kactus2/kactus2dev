@@ -14,6 +14,8 @@
 
 #include <library/LibraryInterface.h>
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
@@ -24,14 +26,19 @@
 //-----------------------------------------------------------------------------
 // Function: fileseditor::FilesEditor()
 //-----------------------------------------------------------------------------
-FilesEditor::FilesEditor( QSharedPointer<Component> component, QSharedPointer<FileSet> fileSet,
-                          LibraryInterface* handler, QWidget *parent, const QString& title):
+FilesEditor::FilesEditor(QSharedPointer<QList<QSharedPointer<File>>> availableFiles, FileInterface* fileInterface,
+    QSharedPointer<Component> component, LibraryInterface* handler,
+    QWidget *parent, const QString& title):
 QGroupBox(title, parent),
 handler_(handler),
 component_(component),
 view_(handler, component, this),
-model_(handler, component, fileSet, this)
+model_(handler, component, fileInterface, this),
+fileInterface_(fileInterface),
+availableFiles_(availableFiles)
 {
+    fileInterface_->setFiles(availableFiles_);
+
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
@@ -65,6 +72,9 @@ model_(handler, component, fileSet, this)
 	connect(&model_, SIGNAL(fileAdded(int)), this, SIGNAL(fileAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(fileRemoved(int)), this, SIGNAL(fileRemoved(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(fileMoved(int, int)), this, SIGNAL(fileMoved(int, int)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(fileRenamed(std::string const&, std::string const&)),
+        this, SIGNAL(fileRenamed(std::string const&, std::string const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -80,6 +90,8 @@ FilesEditor::~FilesEditor()
 //-----------------------------------------------------------------------------
 void FilesEditor::refresh()
 {
+    fileInterface_->setFiles(availableFiles_);
+
 	view_.update();
 }
 

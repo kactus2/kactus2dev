@@ -209,3 +209,11 @@ void FileBuildCommand::setupLayout()
 
     setContentsMargins(0, 0, 0, 0);
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileBuildCommand::fileRenamed()
+//-----------------------------------------------------------------------------
+void FileBuildCommand::fileRenamed(std::string const& newName)
+{
+    fileName_ = newName;
+}

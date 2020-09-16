@@ -4906,6 +4906,12 @@
     <ClCompile Include="GeneratedFiles\moc_SingleAddressBlockEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileSetInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7509,6 +7515,12 @@
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
     </ClInclude>
   </ItemGroup>

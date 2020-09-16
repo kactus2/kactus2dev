@@ -20,6 +20,7 @@ class Component;
 class ComponentInstantiation;
 class ExpressionParser;
 class InstantiationsValidator;
+class FileBuilderInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for one component instantiation in the component editor's navigation tree.
@@ -40,6 +41,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The used expression parser.
+     *      @param [in] fileBuilderInterface    Interface for accessing file builders.
 	 *      @param [in] parent                  The parent item.
 	 */
 	SingleComponentInstantiationItem(ComponentEditorTreeModel* model,
@@ -51,6 +53,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        FileBuilderInterface* fileBuilderInterface,
         ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -94,6 +97,9 @@ private:
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Interface for accessing file builders.
+    FileBuilderInterface* fileBuilderInterface_;
 };
 
 #endif // SINGLECOMPONENTINSTANTIATIONITEM_H

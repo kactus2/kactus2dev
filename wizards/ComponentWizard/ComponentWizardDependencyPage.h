@@ -22,6 +22,7 @@
 #include <QSplitter>
 
 class ParameterFinder;
+class FileSetInterface;
 
 //-----------------------------------------------------------------------------
 //! Files page for the component wizard.
@@ -36,10 +37,13 @@ public:
      *      @param [in] component           The component.
      *      @param [in] parameterFinder     Finder used to identify parameters.
      *      @param [in] componentPath       Path to the component.
+     *      @param [in] fileSetInterface    Interface for accessing file sets.
      *      @param [in] parent              The parent wizard.
      */
     ComponentWizardDependencyPage(QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder, QString const& componentPath, 
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QString const& componentPath,
+        FileSetInterface* fileSetInterface,
         QWidget* parent);
 
     /*!
@@ -88,6 +92,12 @@ private:
 
     //! The source directories editor.
     FileDependencyEditor editor_;
+
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
+
+    //! List of editable file sets.
+    QSharedPointer<QList<QSharedPointer<FileSet> > > availableFileSets_;
 };
 
 #endif // COMPONENTWIZARDDEPENDENCYPAGE_H

@@ -65,6 +65,13 @@ public:
 	 */
 	void refresh();
 
+    /*!
+     *  Handle the name change of the containing file.
+     *
+     *      @param [in] newName     The new name of the file.
+     */
+    void fileRenamed(std::string const& newName);
+
 signals:
 
 	/*!

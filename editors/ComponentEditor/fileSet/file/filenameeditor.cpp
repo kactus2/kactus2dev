@@ -68,3 +68,11 @@ void FileNameEditor::onDescriptionChanged()
     fileInterface_->setDescription(fileName_, descriptionEditor_.toPlainText().toStdString());
     emit contentChanged();
 }
+
+//-----------------------------------------------------------------------------
+// Function: filenameeditor::fileRenamed()
+//-----------------------------------------------------------------------------
+void FileNameEditor::fileRenamed(std::string const& newName)
+{
+    fileName_ = newName;
+}

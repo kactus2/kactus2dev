@@ -442,6 +442,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
+    ./editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h \
+    ./editors/ComponentEditor/fileSet/interfaces/FileInterface.h \
+    ./editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
@@ -856,8 +859,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/fileSet/interfaces/FileInterface.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1143,6 +1145,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
+    ./editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.cpp \
+    ./editors/ComponentEditor/fileSet/interfaces/FileInterface.cpp \
+    ./editors/ComponentEditor/fileSet/interfaces/FileSetInterface.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
@@ -1602,6 +1607,5 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/fileSet/interfaces/FileInterface.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
 RESOURCES += kactus.qrc

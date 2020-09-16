@@ -32,6 +32,7 @@ class ComponentInstantiation;
 class ExpressionFormatter;
 class ParameterFinder;
 class ExpressionParser;
+class FileBuilderInterface;
 
 //-----------------------------------------------------------------------------
 //! Contains the GUI items to edit the general settings of non-hierarchical view.
@@ -51,13 +52,17 @@ public:
      *      @param [in] parameterFinder         Finder used to identify parameters.
      *      @param [in] expressionParser        Parser used to calculate expressions.
      *      @param [in] expressionFormatter     Formatter for view parameter expressions.
+     *      @param [in] fileBuilderInterface    Interface for accessing file builders.
 	 *      @param [in] parent                  The owner of this widget.
 	 */
 	ComponentInstantiationEditor(QSharedPointer<Component> component,
         LibraryInterface* library,
         QSharedPointer<ComponentInstantiation> componentInstantiation,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent);
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        FileBuilderInterface* fileBuilderInterface,
+        QWidget *parent);
 	
 	//! The destructor.
 	virtual ~ComponentInstantiationEditor();

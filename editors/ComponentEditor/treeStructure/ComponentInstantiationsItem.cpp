@@ -27,18 +27,16 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
 //-----------------------------------------------------------------------------
-ComponentInstantiationsItem::ComponentInstantiationsItem(ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component, 
-    QSharedPointer<InstantiationsValidator> validator,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+ComponentInstantiationsItem::ComponentInstantiationsItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, FileBuilderInterface* fileBuilderInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 validator_(validator),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+fileBuilderInterface_(fileBuilderInterface)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -145,7 +143,7 @@ QSharedPointer<SingleComponentInstantiationItem> ComponentInstantiationsItem::cr
 
     QSharedPointer<SingleComponentInstantiationItem> componentInstantiationItem(
         new SingleComponentInstantiationItem(model_, libHandler_, component_, instantiation, cimpValidator,
-            cimpCounter, cimpFinder, cimpFormatter, cimpParser, this));
+            cimpCounter, cimpFinder, cimpFormatter, cimpParser, fileBuilderInterface_, this));
 
     return componentInstantiationItem;
 }

@@ -21,6 +21,7 @@ class Component;
 class ExpressionParser;
 class ViewValidator;
 class InstantiationsValidator;
+class FileBuilderInterface;
 
 //-----------------------------------------------------------------------------
 //! The Instantiations-item in the component editor's navigation tree.
@@ -92,6 +93,15 @@ private:
 	InstantiationsItem(const InstantiationsItem& other);
 	InstantiationsItem& operator=(const InstantiationsItem& other);
 
+    /*!
+     *  Construct interfaces for instantiations.
+     */
+    void constructInterfaces();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
 
@@ -106,6 +116,9 @@ private:
 
     //! Child item for design instantiations.
     QSharedPointer<ComponentEditorItem> designInstantiationsItem_;
+
+    //! Interface for accessing file builders.
+    FileBuilderInterface* fileBuilderInterface_;
 };
 
 #endif // INSTANTIATIONSITEM_H

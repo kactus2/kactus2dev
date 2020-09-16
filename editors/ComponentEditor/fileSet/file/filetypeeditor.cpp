@@ -88,3 +88,11 @@ void FileTypeEditor::initialize( const QStringList& items /*= QStringList()*/ )
 
 	restore();
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileTypeEditor::fileRenamed()
+//-----------------------------------------------------------------------------
+void FileTypeEditor::fileRenamed(std::string const& newName)
+{
+    fileName_ = newName;
+}

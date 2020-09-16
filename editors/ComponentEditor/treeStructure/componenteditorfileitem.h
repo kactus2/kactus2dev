@@ -107,6 +107,16 @@ public:
      */
     virtual QList<QAction*> actions() const;
 
+signals:
+
+    /*!
+     *  Handle the name change of a file.
+     *
+     *      @param [in] oldName     Old name of the selected file.
+     *      @param [in] newName     The new name for the selected file.
+     */
+    void fileRenamed(std::string const& oldName, std::string const& newName);
+
 public slots:
 	
 	//! Called to open the item in a default editor.

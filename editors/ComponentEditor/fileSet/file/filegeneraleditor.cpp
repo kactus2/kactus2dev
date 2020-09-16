@@ -109,3 +109,11 @@ void FileGeneralEditor::onExternalDecChanged()
     fileInterface_->setExternalDeclarations(fileName_, externalDec_.isChecked());
     emit contentChanged();
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileGeneralEditor::fileRenamed()
+//-----------------------------------------------------------------------------
+void FileGeneralEditor::fileRenamed(std::string const& newName)
+{
+    fileName_ = newName;
+}

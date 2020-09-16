@@ -154,9 +154,9 @@ bool FileInterface::setDescription(std::string const& itemName, std::string cons
 //-----------------------------------------------------------------------------
 bool FileInterface::validateItems() const
 {
-    for (auto field : *files_)
+    for (auto file : *files_)
     {
-        if (!validator_->validate(field))
+        if (!validator_->validate(file))
         {
             return false;
         }
@@ -196,6 +196,25 @@ int FileInterface::getAllReferencesToIdInItem(const std::string& fileName, std::
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileInterface::getExpressionsInSelectedFiles()
+//-----------------------------------------------------------------------------
+std::vector<std::string> FileInterface::getExpressionsInSelectedFiles(std::vector<std::string> fileNames) const
+{
+    std::vector<std::string> expressionList;
+
+    for (auto name : fileNames)
+    {
+        QSharedPointer<BuildCommand> currentBuild = getBuildCommand(name);
+        if (currentBuild)
+        {
+            expressionList.push_back(currentBuild->getReplaceDefaultFlags().toStdString());
+        }
+    }
+
+    return expressionList;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileInterface::addFile()
 //-----------------------------------------------------------------------------
 void FileInterface::addFile(int const& row, std::string const& newFileName)
@@ -203,6 +222,9 @@ void FileInterface::addFile(int const& row, std::string const& newFileName)
     QString fileName = getUniqueName(newFileName, FILE_TYPE);
 
     QSharedPointer<File> newFile(new File());
+
+    QSettings settings;
+    newFile->setFileTypes(settings);
     newFile->setName(fileName);
 
     files_->insert(row, newFile);
@@ -220,6 +242,14 @@ bool FileInterface::removeFile(std::string const& fileName)
     }
 
     return files_->removeOne(removedFile);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileInterface::swapFiles()
+//-----------------------------------------------------------------------------
+void FileInterface::swapFiles(int const& firstIndex, int const& secondIndex)
+{
+    files_->swap(firstIndex, secondIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -396,6 +426,23 @@ void FileInterface::clearFileTypes(std::string const& fileName)
     {
         editedFile->clearFileTypes();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileInterface::setFileTypes()
+//-----------------------------------------------------------------------------
+bool FileInterface::setFileTypes(std::string const& fileName, std::vector<std::string> const newFileTypes)
+{
+    QSharedPointer<File> editedFile = getFile(fileName);
+    if (!editedFile)
+    {
+        return false;
+    }
+
+    clearFileTypes(fileName);
+    addMultipleFileTypes(fileName, newFileTypes);
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

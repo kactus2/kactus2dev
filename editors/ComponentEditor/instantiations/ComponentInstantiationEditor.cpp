@@ -28,7 +28,8 @@
 ComponentInstantiationEditor::ComponentInstantiationEditor(QSharedPointer<Component> component,
     LibraryInterface* library, QSharedPointer<ComponentInstantiation> componentInstantiation,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+    QSharedPointer<ExpressionFormatter> expressionFormatter, FileBuilderInterface* fileBuilderInterface,
+    QWidget *parent):
 ParameterItemEditor(component, library, parent),
 component_(component),
 componentInstantiation_(componentInstantiation),
@@ -41,8 +42,8 @@ modulelNameEditor_(this),
 architectureEditor_(this),
 configurationEditor_(this),
 fileSetRefs_(component, tr("File set references"), this),
-fileBuilders_(componentInstantiation->getDefaultFileBuilders(), parameterFinder, expressionParser,
-              expressionFormatter, this),
+fileBuilders_(fileBuilderInterface, parameterFinder, expressionParser,
+              expressionFormatter, componentInstantiation->getDefaultFileBuilders(), this),
 moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
     expressionFormatter, this),
 parameters_(componentInstantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this)

@@ -237,3 +237,19 @@ void FileEditor::setupLayout()
 
     scrollArea->setWidget(topWidget);
 }
+
+//-----------------------------------------------------------------------------
+// Function: fileeditor::fileRenamed()
+//-----------------------------------------------------------------------------
+void FileEditor::fileRenamed(std::string const& oldName, std::string const& newName)
+{
+    if (oldName == fileName_)
+    {
+        fileName_ = newName;
+
+        nameEditor_.fileRenamed(newName);
+        fileTypeEditor_.fileRenamed(newName);
+        generalEditor_.fileRenamed(newName);
+        buildCommand_.fileRenamed(newName);
+    }
+}

@@ -16,6 +16,8 @@
 
 #include <editors/ComponentEditor/fileSet/filesetseditor.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -37,7 +39,7 @@ fileSets_(component->getFileSets()),
 expressionParser_(expressionParser),
 fileValidator_(new FileValidator(expressionParser_)),
 fileSetValidator_(new FileSetValidator(fileValidator_, expressionParser_)),
-fileInterface_(0)
+fileSetInterface_(0)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -49,7 +51,7 @@ fileInterface_(0)
     {
         QSharedPointer<ComponentEditorFileSetItem> fileSetItem(new ComponentEditorFileSetItem(
             fileSet, model, libHandler, component, referenceCounter, parameterFinder, expressionParser_,
-            expressionFormatter, fileSetValidator_, fileValidator_, fileInterface_, this));
+            expressionFormatter, fileSetValidator_, fileValidator_, fileSetInterface_, this));
 
         connect(fileSetItem.data(), SIGNAL(childRemoved(int)),
                 this, SIGNAL(refreshDependencyModel()), Qt::UniqueConnection);
@@ -91,8 +93,8 @@ ItemEditor* ComponentEditorFileSetsItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new FileSetsEditor(component_, libHandler_, parameterFinder_);
-		editor_->setProtection(locked_);
+        editor_ = new FileSetsEditor(component_, libHandler_, parameterFinder_, fileSetInterface_);
+        editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(fileAdded(File*)), this, SLOT(onFileAdded(File*)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(dependenciesChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -123,7 +125,7 @@ void ComponentEditorFileSetsItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorFileSetItem> fileSetItem(new ComponentEditorFileSetItem(
         fileSets_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
-        expressionParser_, expressionFormatter_, fileSetValidator_, fileValidator_, fileInterface_, this));
+        expressionParser_, expressionFormatter_, fileSetValidator_, fileValidator_, fileSetInterface_, this));
 
     connect(fileSetItem.data(), SIGNAL(childRemoved(int)),
         this, SIGNAL(refreshDependencyModel()), Qt::UniqueConnection);
@@ -171,5 +173,9 @@ bool ComponentEditorFileSetsItem::isParentFileSet(File* file, const FileSet* fil
 //-----------------------------------------------------------------------------
 void ComponentEditorFileSetsItem::constructFileSetInterface()
 {
-    fileInterface_ = new FileInterface(fileValidator_, expressionParser_, expressionFormatter_);
+    FileInterface* fileInterface = new FileInterface(fileValidator_, expressionParser_, expressionFormatter_);
+    FileBuilderInterface* fileBuilderInterface = new FileBuilderInterface(expressionParser_, expressionFormatter_);
+
+    fileSetInterface_ = new FileSetInterface(
+        fileSetValidator_, expressionParser_, expressionFormatter_, fileInterface, fileBuilderInterface);
 }

@@ -27,7 +27,7 @@ class ReferenceCounter;
 class ExpressionParser;
 class ParameterFinder;
 class ExpressionFormatter;
-class FileInterface;
+class FileSetInterface;
 
 //-----------------------------------------------------------------------------
 //! The file sets-item in the component editor navigation tree.
@@ -143,8 +143,8 @@ private:
     //! Validator for file set items.
     QSharedPointer<FileSetValidator> fileSetValidator_;
 
-    //! Interface for accessing files.
-    FileInterface* fileInterface_;
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
 };
 
 #endif // COMPONENTEDITORFILESETSITEM_H

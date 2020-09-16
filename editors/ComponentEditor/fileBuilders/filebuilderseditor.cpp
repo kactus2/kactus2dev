@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
 
 #include <IPXACTmodels/common/FileBuilder.h>
 
@@ -23,16 +24,21 @@
 //-----------------------------------------------------------------------------
 // Function: FileBuildersEditor::FileBuildersEditor()
 //-----------------------------------------------------------------------------
-FileBuildersEditor::FileBuildersEditor(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
-                                       QSharedPointer<ParameterFinder> parameterFinder,
-                                       QSharedPointer<ExpressionParser> expressionParser,
-                                       QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent):
+FileBuildersEditor::FileBuildersEditor(FileBuilderInterface* fileBuilderInterface,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<QList<QSharedPointer<FileBuilder>>> availableFileBuilders, QWidget* parent):
 QGroupBox(tr("Default file build commands"), parent),
 view_(this), 
 model_(0),
-proxy_(this)
+proxy_(this),
+availableFileBuilders_(availableFileBuilders),
+fileBuilderInterface_(fileBuilderInterface)
 {
-    model_ = new FileBuildersModel(fileBuilders, parameterFinder, expressionFormatter, expressionParser, this);
+    fileBuilderInterface_->setFileBuilders(availableFileBuilders_);
+
+    model_ =
+        new FileBuildersModel(fileBuilderInterface, parameterFinder, expressionFormatter, expressionParser, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -102,5 +108,7 @@ bool FileBuildersEditor::isValid() const
 //-----------------------------------------------------------------------------
 void FileBuildersEditor::refresh()
 {
+    fileBuilderInterface_->setFileBuilders(availableFileBuilders_);
+
 	view_.update();
 }

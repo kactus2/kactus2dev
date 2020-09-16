@@ -19,16 +19,17 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
 //-----------------------------------------------------------------------------
-SingleComponentInstantiationItem::SingleComponentInstantiationItem(ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler, QSharedPointer<Component> component, 
+SingleComponentInstantiationItem::SingleComponentInstantiationItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ComponentInstantiation> instantiation, QSharedPointer<InstantiationsValidator> validator,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    ComponentEditorItem* parent):
+    FileBuilderInterface* fileBuilderInterface, ComponentEditorItem* parent):
 ParameterizableItem(model, libHandler, component, parent),
 instantiation_(instantiation),
 validator_(validator),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+fileBuilderInterface_(fileBuilderInterface)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -78,7 +79,7 @@ ItemEditor* SingleComponentInstantiationItem::editor()
 	if (!editor_)
     {
  		editor_ = new ComponentInstantiationEditor(component_, libHandler_, instantiation_, parameterFinder_,
-            expressionParser_, expressionFormatter_, 0);
+            expressionParser_, expressionFormatter_, fileBuilderInterface_, 0);
  		editor_->setProtection(locked_);
  
  		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

@@ -20,6 +20,7 @@ class LibraryInterface;
 class File;
 class FileSet;
 class Component;
+class FileInterface;
 
 //-----------------------------------------------------------------------------
 //! The model that contains the files to edit in files summary editor.
@@ -33,17 +34,21 @@ public:
 
 	/*! The constructor.
 	 * 
-	 *      @param [in] handler     The instance that manages the library.
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] fileSet     The file set being edited.
-	 *      @param [in] parent      The owner of this model.
+	 *      @param [in] handler         The instance that manages the library.
+	 *      @param [in] component       The component being edited.
+     *      @param [in] fileInterface   Interface for accessing files.
+	 *      @param [in] parent          The owner of this model.
 	 *
 	 */
-	FilesModel(LibraryInterface* handler, QSharedPointer<Component> component, QSharedPointer<FileSet> fileSet,
+    FilesModel(LibraryInterface* handler,
+        QSharedPointer<Component> component,
+        FileInterface* fileInterface,
         QObject* parent);
-	
-	//! The destructor.
-	~FilesModel();
+
+	/*!
+     *  The destructor.
+     */
+	~FilesModel() = default;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -178,6 +183,14 @@ signals:
 	//! Emitted when a file is moved from one position to another.
 	void fileMoved(int source, int target);
 
+    /*!
+     *  Informs of a file name change.
+     *
+     *      @param [in] oldName     Old name of the file.
+     *      @param [in] newName     New name of the file.
+     */
+    void fileRenamed(std::string const& oldName, std::string const& newName);
+
 private:
 	//! No copying
 	FilesModel(const FilesModel& other);
@@ -186,20 +199,33 @@ private:
     /*!
      *  Check if the file path exists for the given file.
      *
-     *      @param [in] file    The selected file.
+     *      @param [in] fileName    Name of the selected file.
      *
      *      @return True, if the file path is found, otherwise false.
      */
-    bool filePathExists(QSharedPointer<File> file) const;
+    bool filePathExists(std::string const& fileName) const;
 
     /*!
      *  Checks if the file path is a valid URI.
      *
-     *      @param [in] file   The selected file.
+     *      @param [in] fileName    Name of the selected file.
      *
      *      @return True, if the URI is valid, otherwise false.
      */
-    bool isValidURI(QSharedPointer<File> file) const;
+    bool isValidURI(std::string const& fileName) const;
+
+    /*!
+     *  Get the file types of the selected file as a combined string.
+     *
+     *      @param [in] fileName    Name of the selected file.
+     *
+     *      @return File types of the selected file as a combined string.
+     */
+    QString getFileTypesString(std::string const& fileName) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! The instance that manages the library.
 	LibraryInterface* handler_;
@@ -207,11 +233,8 @@ private:
 	//! The component being edited.
 	QSharedPointer<Component> component_;
 
-	//! The file set that contains the files.
-	QSharedPointer<FileSet> fileSet_;
-
-	//! Contains the files to display.
-    QSharedPointer<QList<QSharedPointer<File> > > files_;
+    //! Interface for accessing files.
+    FileInterface* fileInterface_;
 };
 
 #endif // FILESMODEL_H

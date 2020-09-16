@@ -113,6 +113,9 @@ ItemEditor* ComponentEditorFileItem::editor()
         connect(editor_, SIGNAL(runFile()), this, SLOT(run()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(openContainingFolder()), this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
 
+        connect(this, SIGNAL(fileRenamed(std::string const&, std::string const&)),
+            editor_, SLOT(fileRenamed(std::string const&, std::string const&)), Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
 	}
 	return editor_;
