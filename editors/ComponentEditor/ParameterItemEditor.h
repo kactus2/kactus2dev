@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/itemeditor.h>
 
 class Parameter;
-class ParametersInterface;
+class AbstractParameterInterface;
 
 //-----------------------------------------------------------------------------
 //! ItemEditor for component items containing parameters, containing signals for reference trees.
@@ -62,7 +62,7 @@ signals:
      *      @param [in] parameterInterface  Interface for accessing parameters.
      */
     void recalculateReferencesToParameters(QVector<QString> const& parameterList,
-        QSharedPointer<ParametersInterface> parameterInterface);
+        AbstractParameterInterface* parameterInterface);
 
 private:
 

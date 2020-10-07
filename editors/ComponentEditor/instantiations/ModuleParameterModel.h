@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -35,13 +36,14 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] parameterInterface  Interface for accessing parameters.
-     *      @param [in] expressionParser    Expression parser for configurable elements.
-     *      @param [in] parameterFinder     The parameter finder.
-	 *      @param [in] parent              The owner of this model.
+     *      @param [in] moduleParameterInterface    Interface for accessing module parameters.
+     *      @param [in] expressionParser            Expression parser for configurable elements.
+     *      @param [in] parameterFinder             The parameter finder.
+	 *      @param [in] parent                      The owner of this model.
      */
-    ModuleParameterModel(QSharedPointer<ParametersInterface> parameterInterface,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+    ModuleParameterModel(ModuleParameterInterface* moduleParameterInterface,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
         QObject *parent);
 
 	/*!

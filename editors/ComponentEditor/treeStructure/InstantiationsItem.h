@@ -17,11 +17,10 @@
 #include <QSharedPointer>
 
 class Component;
-
 class ExpressionParser;
 class ViewValidator;
 class InstantiationsValidator;
-class FileBuilderInterface;
+class ComponentInstantiationInterface;
 
 //-----------------------------------------------------------------------------
 //! The Instantiations-item in the component editor's navigation tree.
@@ -117,8 +116,8 @@ private:
     //! Child item for design instantiations.
     QSharedPointer<ComponentEditorItem> designInstantiationsItem_;
 
-    //! Interface for accessing file builders.
-    FileBuilderInterface* fileBuilderInterface_;
+    //! Interface for accessing component instantiations.
+    ComponentInstantiationInterface* componentInstantiationInterface_;
 };
 
 #endif // INSTANTIATIONSITEM_H

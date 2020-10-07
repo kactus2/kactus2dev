@@ -40,7 +40,8 @@
 //-----------------------------------------------------------------------------
 ViewEditor::ViewEditor(QSharedPointer<Component> component, QSharedPointer<View> view,
     LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+    QSharedPointer<ExpressionFormatter> expressionFormatter, ModuleParameterInterface* parameterInterface,
+    QWidget *parent) :
 ItemEditor(component, libHandler, parent),
 view_(view),
 nameEditor_(new NameGroupEditor(view, this, tr("View name and description"))),
@@ -52,9 +53,9 @@ componentInstantiationDisplay_(new ComponentInstantiationDisplayer(this)),
 hierarchyGroup_(new QGroupBox(tr("Design and configuration"), this)),
 designConfigurationDisplay_(new VLNVDisplayer(this, VLNV())),
 designDisplay_(new VLNVDisplayer(this, VLNV())),
-moduleParameterEditor_(new ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > >(
-    new QList<QSharedPointer<ModuleParameter> >()), component->getChoices(), parameterFinder, expressionFormatter,
-    this))
+moduleParameterEditor_(
+    new ModuleParameterEditor(QSharedPointer<ComponentInstantiation>(new ComponentInstantiation()),
+        component->getChoices(), parameterFinder, expressionFormatter, parameterInterface, this))
 {
     moduleParameterEditor_->disableEditing();
 
@@ -149,7 +150,7 @@ void ViewEditor::onComponentInstanceChanged(QString const& instanceName)
 
     if (instantiation)
     {
-        moduleParameterEditor_->setModuleParameters(instantiation->getModuleParameters());
+        moduleParameterEditor_->setModuleParameters(instantiation);
     }
     moduleParameterEditor_->setVisible(instantiation);
 

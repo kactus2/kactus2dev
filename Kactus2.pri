@@ -859,7 +859,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h \
+    ./editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h \
+    ./editors/ComponentEditor/parameters/AbstractParameterInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1607,5 +1610,8 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
-    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp
+    ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.cpp \
+    ./editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.cpp \
+    ./editors/ComponentEditor/parameters/AbstractParameterInterface.cpp
 RESOURCES += kactus.qrc

@@ -53,9 +53,9 @@ libHandler_(libHandler)
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     connect(&parameters_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         this,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 
     connect(&modeStack_, SIGNAL(increaseReferences(QString)),

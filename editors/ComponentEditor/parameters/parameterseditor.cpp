@@ -35,7 +35,7 @@
 ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterValidator> validator, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ParametersInterface> parameterInterface, QWidget *parent):
+    ParametersInterface* parameterInterface, QWidget *parent):
 ParameterItemEditor(component, handler, parent),
 view_(new ParametersView(this)),
 model_(0),
@@ -122,9 +122,9 @@ parameterInterface_(parameterInterface)
     connect(view_, SIGNAL(recalculateReferenceToIndexes(QModelIndexList)),
         model_, SLOT(onGetParametersMachingIndexes(QModelIndexList)), Qt::UniqueConnection);
     connect(model_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         this,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 
     parameterInterface_->setParameters(component->getParameters());

@@ -20,6 +20,8 @@ class Component;
 class Choice;
 class ExpressionParser;
 class ParameterValidator;
+class ParametersInterface;
+
 //-----------------------------------------------------------------------------
 //! The parameters-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -41,10 +43,14 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] parent                  The parent item.
 	 */
-	ComponentEditorParametersItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-        QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent);
+	ComponentEditorParametersItem(ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> refCounter,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~ComponentEditorParametersItem() = default;
@@ -97,7 +103,7 @@ private:
     QSharedPointer<ParameterValidator> validator_;
 
     //! Interface for parameters.
-    QSharedPointer<ParametersInterface> parameterInterface_;
+    ParametersInterface* parameterInterface_;
 };
 
 #endif // COMPONENTEDITORPARAMETERITEM_H

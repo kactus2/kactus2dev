@@ -21,7 +21,7 @@ using namespace std;
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()
 //-----------------------------------------------------------------------------
-ParametersModel::ParametersModel(QSharedPointer<ParametersInterface> parameterInterface,
+ParametersModel::ParametersModel(ParametersInterface* parameterInterface,
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QObject *parent) :
 AbstractParameterModel(parameterInterface, expressionParser, parameterFinder, parent)
@@ -64,12 +64,16 @@ void ParametersModel::onAddItem(QModelIndex const& index)
         row = index.row();
     }
 
-    beginInsertRows(QModelIndex(), row, row);
-    getInterface()->addParameter(row);
-    endInsertRows();
+    ParametersInterface* parameterInterface = dynamic_cast<ParametersInterface*>(getInterface());
+    if (parameterInterface)
+    {
+        beginInsertRows(QModelIndex(), row, row);
+        parameterInterface->addParameter(row);
+        endInsertRows();
 
-    // tell also parent widget that contents have been changed
-    emit contentChanged();
+        // tell also parent widget that contents have been changed
+        emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -85,15 +89,19 @@ void ParametersModel::onRemoveItem(QModelIndex const& index )
 
     if (canRemoveRow(index.row()))
     {
-        string parameterName = getInterface()->getIndexedItemName(index.row());
+        ParametersInterface* parameterInterface = dynamic_cast<ParametersInterface*>(getInterface());
+        if (parameterInterface)
+        {
+            string parameterName = getInterface()->getIndexedItemName(index.row());
 
-    	// remove the specified item
-	    beginRemoveRows(QModelIndex(), index.row(), index.row());
-        getInterface()->removeParameter(parameterName);
-	    endRemoveRows();
+            // remove the specified item
+            beginRemoveRows(QModelIndex(), index.row(), index.row());
+            parameterInterface->removeParameter(parameterName);
+            endRemoveRows();
 
-    	// tell also parent widget that contents have been changed
-	    emit contentChanged();
+            // tell also parent widget that contents have been changed
+            emit contentChanged();
+        }
     }
 }
 

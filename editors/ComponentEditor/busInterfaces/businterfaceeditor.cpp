@@ -73,9 +73,9 @@ portmapsEditor_(libHandler, component, busif, expressionParser, expressionFormat
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     connect(&generalEditor_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         this,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 
 	connect(&tabs_, SIGNAL(currentChanged(int)), this, SLOT(onTabChange(int)), Qt::UniqueConnection);

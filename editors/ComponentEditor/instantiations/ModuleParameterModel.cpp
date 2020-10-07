@@ -24,10 +24,10 @@
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterModel::ModuleParameterModel()
 //-----------------------------------------------------------------------------
-ModuleParameterModel::ModuleParameterModel(QSharedPointer<ParametersInterface> parameterInterface,
+ModuleParameterModel::ModuleParameterModel(ModuleParameterInterface* moduleParameterInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
     QObject *parent):
-AbstractParameterModel(parameterInterface, expressionParser, parameterFinder, parent),
+AbstractParameterModel(moduleParameterInterface, expressionParser, parameterFinder, parent),
 editingDisabled_(false)
 {
 
@@ -59,15 +59,20 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
 
     std::string parameterName = getInterface()->getIndexedItemName(index.row());
 
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
     {
-        if (index.column() == ModuleParameterColumns::DATA_TYPE)
+        ModuleParameterInterface* moduleInterface = dynamic_cast<ModuleParameterInterface*>(getInterface());
+
+        if (moduleInterface)
         {
-            return QString::fromStdString(getInterface()->getDataType(parameterName));
-        }
-        else if (index.column() ==  ModuleParameterColumns::USAGE_TYPE)
-        {
-            return QString::fromStdString(getInterface()->getUsageType(parameterName));
+            if (index.column() == ModuleParameterColumns::DATA_TYPE)
+            {
+                return QString::fromStdString(moduleInterface->getDataType(parameterName));
+            }
+            else if (index.column() == ModuleParameterColumns::USAGE_TYPE)
+            {
+                return QString::fromStdString(moduleInterface->getUsageType(parameterName));
+            }
         }
     }
 
@@ -123,27 +128,30 @@ bool ModuleParameterModel::setData(QModelIndex const& index, QVariant const& val
         if (index.column() == ModuleParameterColumns::DATA_TYPE ||
             index.column() == ModuleParameterColumns::USAGE_TYPE)
         {
-            if (index.column() == ModuleParameterColumns::DATA_TYPE)
-            {
-                getInterface()->setDataType(parameterName, value.toString().toStdString());
-            }
-            else if (index.column() == ModuleParameterColumns::USAGE_TYPE)
-            {
-                getInterface()->setUsageType(parameterName, value.toString().toStdString());
-            }
+            ModuleParameterInterface* moduleInterface = dynamic_cast<ModuleParameterInterface*>(getInterface());
 
-            emit dataChanged(index, index);
-            return true;
+            if (moduleInterface)
+            {
+                if (index.column() == ModuleParameterColumns::DATA_TYPE)
+                {
+                    moduleInterface->setDataType(parameterName, value.toString().toStdString());
+                }
+                else if (index.column() == ModuleParameterColumns::USAGE_TYPE)
+                {
+                    moduleInterface->setUsageType(parameterName, value.toString().toStdString());
+                }
+
+                emit dataChanged(index, index);
+                return true;
+            }
         }
         else
         {
             return AbstractParameterModel::setData(index, value, role);
         }
 	}
-	else
-    {
-		return false;
-	}
+    
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -182,9 +190,13 @@ void ModuleParameterModel::onAddItem(QModelIndex const& index)
         row = index.row();
     }
 
-    beginInsertRows(QModelIndex(), row, row);
-    getInterface()->addModuleParameter(row);
-    endInsertRows();
+    ModuleParameterInterface* moduleInterface = dynamic_cast<ModuleParameterInterface*>(getInterface());
+    if (moduleInterface)
+    {
+        beginInsertRows(QModelIndex(), row, row);
+        moduleInterface->addModuleParameter(row);
+        endInsertRows();
+    }
 
     // tell also parent widget that contents have been changed
     emit contentChanged();
@@ -205,15 +217,19 @@ void ModuleParameterModel::onRemoveItem(QModelIndex const& index)
 
     if (canRemoveRow(indexRow))
     {
-        std::string parameterName = getInterface()->getIndexedItemName(indexRow);
+        ModuleParameterInterface* moduleInterface = dynamic_cast<ModuleParameterInterface*>(getInterface());
+        if (moduleInterface)
+        {
+            std::string parameterName = getInterface()->getIndexedItemName(indexRow);
 
-        // remove the specified item
-        beginRemoveRows(QModelIndex(), indexRow, indexRow);
-        getInterface()->removeModuleParameter(parameterName);
-        endRemoveRows();
-        
-        // tell also parent widget that contents have been changed
-        emit contentChanged();
+            // remove the specified item
+            beginRemoveRows(QModelIndex(), indexRow, indexRow);
+            moduleInterface->removeModuleParameter(parameterName);
+            endRemoveRows();
+
+            // tell also parent widget that contents have been changed
+            emit contentChanged();
+        }
     }
 }
 

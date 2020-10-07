@@ -34,7 +34,7 @@
 #include <IPXACTmodels/Component/RemapPort.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
 
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceCounter::ComponentParameterReferenceCounter()
@@ -59,7 +59,7 @@ void ComponentParameterReferenceCounter::setComponent(QSharedPointer<Component> 
 // Function: ComponentParameterReferenceCounter::recalculateReferencesToParameters()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceCounter::recalculateReferencesToParameters(QVector<QString> const& parameterList,
-    QSharedPointer<ParametersInterface> parameterInterface)
+    AbstractParameterInterface* parameterInterface)
 {
     for (auto parameterName : parameterList)
     {

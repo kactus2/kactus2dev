@@ -21,7 +21,7 @@ class Parameter;
 class ComponentInstance;
 class AdHocConnection;
 class PartSelect;
-class ParametersInterface;
+class AbstractParameterInterface;
 
 //-----------------------------------------------------------------------------
 //! Calculates the amount of references made to design parameters.
@@ -112,7 +112,7 @@ public slots:
      *      @param [in] parameterInterface  Interface for accessing parameters.
      */
     virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
-        QSharedPointer<ParametersInterface> parameterInterface);
+        AbstractParameterInterface* parameterInterface);
 
 private:
 

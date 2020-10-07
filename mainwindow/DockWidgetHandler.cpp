@@ -282,9 +282,9 @@ void DockWidgetHandler::setupDesignParametersEditor()
         Qt::UniqueConnection);
 
     connect(designParametersEditor_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         designParameterReferenceCounter_.data(),
-        SLOT(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SLOT(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 }
 

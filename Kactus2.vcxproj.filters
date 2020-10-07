@@ -977,6 +977,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\fileSet\interfaces">
       <UniqueIdentifier>{c0a4d8c3-229e-4ecd-bdad-1c3db702cc61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\instantiations\interfaces">
+      <UniqueIdentifier>{505ceca5-f699-4f57-9d99-7609492084cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\instantiations\interfaces">
+      <UniqueIdentifier>{9b21de33-ece2-40c5-bc88-0047b8a1439e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4912,6 +4918,15 @@
     <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\interfaces\ComponentInstantiationInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\interfaces\ModuleParameterInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\AbstractParameterInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7522,6 +7537,15 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\interfaces\ComponentInstantiationInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\interfaces\ModuleParameterInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\parameters\AbstractParameterInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

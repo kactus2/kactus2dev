@@ -30,12 +30,13 @@ ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view, Comp
     LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ViewValidator> viewValidator,
-    ComponentEditorItem* parent):
+    ModuleParameterInterface* moduleParameterInterface, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 view_(view),
 editAction_(new QAction(tr("Edit"), this)),
 expressionParser_(expressionParser),
-viewValidator_(viewValidator)
+viewValidator_(viewValidator),
+moduleParameterInterface_(moduleParameterInterface)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -70,7 +71,8 @@ ItemEditor* ComponentEditorViewItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new ViewEditor(component_, view_, libHandler_, parameterFinder_, expressionFormatter_);
+        editor_ = new ViewEditor(
+            component_, view_, libHandler_, parameterFinder_, expressionFormatter_, moduleParameterInterface_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));

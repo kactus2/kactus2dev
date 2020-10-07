@@ -91,9 +91,9 @@ parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), com
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     connect(parametersEditor_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         this,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 }
 

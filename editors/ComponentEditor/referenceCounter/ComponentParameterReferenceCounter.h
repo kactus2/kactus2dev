@@ -41,7 +41,7 @@ class RegisterBase;
 class BusInterface;
 class RemapState;
 class RemapPort;
-class ParametersInterface;
+class AbstractParameterInterface;
 class IndirectInterface;
 
 //-----------------------------------------------------------------------------
@@ -573,7 +573,7 @@ public slots:
      *      @param [in] parameterInterface  Interface for accessing parameters.
      */
     virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
-        QSharedPointer<ParametersInterface> parameterInterface) override final;
+        AbstractParameterInterface* parameterInterface) override final;
 
 private:
 

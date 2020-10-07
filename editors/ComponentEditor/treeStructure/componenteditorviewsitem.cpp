@@ -13,10 +13,16 @@
 #include "componenteditorviewitem.h"
 #include <editors/ComponentEditor/views/viewseditor.h>
 
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
-
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
+
+#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
+
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorviewsitem::ComponentEditorViewsItem()
@@ -24,14 +30,17 @@
 ComponentEditorViewsItem::ComponentEditorViewsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent) :
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 views_(component->getViews()),
 expressionParser_(expressionParser),
-viewValidator_(new ViewValidator(expressionParser, component->getModel()))
+viewValidator_(new ViewValidator(expressionParser, component->getModel())),
+moduleParameterInterface_(0)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
+
+    createInterfaces();
 
 	setObjectName(tr("ComponentEditorViewsItem"));
 
@@ -39,9 +48,9 @@ viewValidator_(new ViewValidator(expressionParser, component->getModel()))
 
 	foreach (QSharedPointer<View> view, *views_)
     {
-		QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem
-            (view, model, libHandler, component, parameterFinder_, expressionFormatter_, expressionParser,
-            viewValidator_, this));
+		QSharedPointer<ComponentEditorViewItem> viewItem(new ComponentEditorViewItem(view, model, libHandler,
+            component, parameterFinder_, expressionFormatter_, expressionParser, viewValidator_,
+            moduleParameterInterface_, this));
 
         viewItem->setReferenceCounter(referenceCounter);
 		childItems_.append(viewItem);
@@ -99,9 +108,35 @@ void ComponentEditorViewsItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorViewItem> viewItem(
         new ComponentEditorViewItem(views_->at(index), model_, libHandler_, component_, parameterFinder_,
-            expressionFormatter_, expressionParser_, viewValidator_, this));
+            expressionFormatter_, expressionParser_, viewValidator_, moduleParameterInterface_, this));
 	viewItem->setLocked(locked_);
 
     viewItem->setReferenceCounter(referenceCounter_);
 	childItems_.insert(index, viewItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorviewsitem::createInterfaces()
+//-----------------------------------------------------------------------------
+void ComponentEditorViewsItem::createInterfaces()
+{
+    QSharedPointer<ParameterValidator> validator(
+        new ParameterValidator(expressionParser_, component_->getChoices()));
+
+    QSharedPointer<ComponentInstantiationParameterFinder> instantiationParameterFinder(
+        new ComponentInstantiationParameterFinder(QSharedPointer<ComponentInstantiation>()));
+
+    QSharedPointer<MultipleParameterFinder> combinedInstantiationFinder =
+        QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
+    combinedInstantiationFinder->addFinder(parameterFinder_);
+    combinedInstantiationFinder->addFinder(instantiationParameterFinder);
+
+    QSharedPointer<IPXactSystemVerilogParser> instantiationParser(
+        new IPXactSystemVerilogParser(combinedInstantiationFinder));
+
+    QSharedPointer<ExpressionFormatter> instantiationFormatter(
+        new ExpressionFormatter(combinedInstantiationFinder));
+
+    moduleParameterInterface_ = new ModuleParameterInterface(
+        validator, instantiationParser, instantiationFormatter, instantiationParameterFinder);
 }

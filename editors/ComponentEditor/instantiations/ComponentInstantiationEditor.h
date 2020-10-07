@@ -33,6 +33,7 @@ class ExpressionFormatter;
 class ParameterFinder;
 class ExpressionParser;
 class FileBuilderInterface;
+class ComponentInstantiationInterface;
 
 //-----------------------------------------------------------------------------
 //! Contains the GUI items to edit the general settings of non-hierarchical view.
@@ -52,7 +53,7 @@ public:
      *      @param [in] parameterFinder         Finder used to identify parameters.
      *      @param [in] expressionParser        Parser used to calculate expressions.
      *      @param [in] expressionFormatter     Formatter for view parameter expressions.
-     *      @param [in] fileBuilderInterface    Interface for accessing file builders.
+     *      @param [in] instantiationInterface  Interface for accessing component instantiations.
 	 *      @param [in] parent                  The owner of this widget.
 	 */
 	ComponentInstantiationEditor(QSharedPointer<Component> component,
@@ -61,52 +62,67 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        FileBuilderInterface* fileBuilderInterface,
+        ComponentInstantiationInterface* instantiationInterface,
         QWidget *parent);
 	
-	//! The destructor.
-	virtual ~ComponentInstantiationEditor();
+	/*!
+     *  The destructor.
+     */
+	virtual ~ComponentInstantiationEditor() = default;
 
-	//! Restore the settings from the model to this editor.
+	/*!
+     *  Restore the settings from the model to this editor.
+     */
 	void refresh();
-
-    //! Gets the component instance being edited.
-    QSharedPointer<ComponentInstantiation> getComponentInstance() const;
 
 protected:
 
-	//! Handler for widget's show event
+	/*!
+     *  Handler for widget's show event
+     */
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! Handler for changes in language setting.
+	/*!
+     *  Handler for changes in language setting.
+     */
 	void onLanguageChange();
 
-    //! Handler for changes in library setting.
+    /*!
+     *  Handler for changes in library setting.
+     */
     void onLibraryChange();
 
-    //! Handler for changes in package setting.
+    /*!
+     *  Handler for changes in package setting.
+     */
     void onPackageChange();
 
-	//! Handler for changes in model name.
+	/*!
+     *  Handler for changes in model name.
+     */
 	void onModelNameChange();
 
-    //! Handler for changes in package setting.
+    /*!
+     *  Handler for changes in package setting.
+     */
     void onArchitectureChange();
 
-    //! Handler for changes in package setting.
+    /*!
+     *  Handler for changes in package setting.
+     */
     void onConfigurationChange();
 
-	//! Handler for changes in file set references.
+	/*!
+     *  Handler for changes in file set references.
+     */
 	void onFileSetRefChange();
 
 private:
 	
-	//! No copying.
+	//! No copying.	No assignment. No regret.
 	ComponentInstantiationEditor(const ComponentInstantiationEditor& other);
-
-	//! No assignment.
 	ComponentInstantiationEditor& operator=(const ComponentInstantiationEditor& other);
 
     //! Sets the widget layout.
@@ -118,9 +134,6 @@ private:
 
 	//! Pointer to the component being edited.
 	QSharedPointer<Component> component_;
-
-    //! Pointer to the edited component instantiation.
-    QSharedPointer<ComponentInstantiation> componentInstantiation_;
 
     //! Editor for component instantiation name group.
     NameGroupEditor nameGroupEditor_;
@@ -157,6 +170,12 @@ private:
 
     //! Contains the parameters editor.
     ParameterGroupBox parameters_;
+
+    //! Interface for accessing component instantiations.
+    QSharedPointer<ComponentInstantiationInterface> instantiationInterface_;
+
+    //! List of available component instantiations.
+    QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > availableInstantiations_;
 };
 
 #endif // FLATVIEWGENERALTAB_H

@@ -14,7 +14,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Design/Design.h>
 
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignParameterReferenceCounter::DesignParameterReferenceCounter()
@@ -38,7 +38,7 @@ void DesignParameterReferenceCounter::setDesign(QSharedPointer<Design> newDesign
 // Function: DesignParameterReferenceCounter::recalculateReferencesToParameters()
 //-----------------------------------------------------------------------------
 void DesignParameterReferenceCounter::recalculateReferencesToParameters(QVector<QString> const& parameterList,
-    QSharedPointer<ParametersInterface> parameterInterface)
+    AbstractParameterInterface* parameterInterface)
 {
     for (auto parameterName : parameterList)
     {

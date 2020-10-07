@@ -15,8 +15,14 @@
 #include "DesignInstantiationsItem.h"
 #include "DesignConfigurationInstantiationsItem.h"
 
-#include <editors/ComponentEditor/instantiations/InstantiationsEditor.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <editors/ComponentEditor/instantiations/InstantiationsEditor.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -40,20 +46,20 @@ designConfigurationInstantiationsItem_(
         parameterFinder, expressionFormatter, expressionParser, this)),
 designInstantiationsItem_(new DesignInstantiationsItem(model, libHandler, component, validator_, parameterFinder,
     referenceCounter, this)),
-fileBuilderInterface_()
+componentInstantiationInterface_()
 {
-    constructInterfaces();
-
-    componentInstantiationsItem_ = QSharedPointer<ComponentInstantiationsItem>(new ComponentInstantiationsItem(
-        model, libHandler, component, validator_, referenceCounter, parameterFinder, expressionFormatter,
-        expressionParser, fileBuilderInterface_, this));
-
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
     setObjectName(tr("InstantiationsItem"));
 
     setReferenceCounter(referenceCounter);
+
+    constructInterfaces();
+
+    componentInstantiationsItem_ = QSharedPointer<ComponentInstantiationsItem>(new ComponentInstantiationsItem(
+        model, libHandler, component, validator_, referenceCounter, parameterFinder, expressionFormatter,
+        expressionParser, componentInstantiationInterface_, this));
 
     connect(componentInstantiationsItem_.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
@@ -148,5 +154,31 @@ void InstantiationsItem::createChild(int)
 //-----------------------------------------------------------------------------
 void InstantiationsItem::constructInterfaces()
 {
-    fileBuilderInterface_ = new FileBuilderInterface(expressionParser_, expressionFormatter_);
+    QSharedPointer<ComponentInstantiationParameterFinder> instantiationParameterFinder(
+        new ComponentInstantiationParameterFinder(QSharedPointer<ComponentInstantiation>()));
+
+    QSharedPointer<MultipleParameterFinder> cimpFinder =
+        QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
+    cimpFinder->addFinder(parameterFinder_);
+    cimpFinder->addFinder(instantiationParameterFinder);
+
+    QSharedPointer<IPXactSystemVerilogParser> cimpParser =
+        QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
+
+    QSharedPointer<ParameterValidator> validator(
+        new ParameterValidator(cimpParser, component_->getChoices()));
+
+    QSharedPointer<ExpressionFormatter> moduleFormatter(new ExpressionFormatter(cimpFinder));
+
+    ParametersInterface* parameterInterface =
+        new ParametersInterface(validator, cimpParser, moduleFormatter);
+
+
+    ModuleParameterInterface* moduleParameterInterface =
+        new ModuleParameterInterface(validator, cimpParser, moduleFormatter, instantiationParameterFinder);
+
+    FileBuilderInterface* fileBuilderInterface = new FileBuilderInterface(cimpParser, moduleFormatter);
+
+    componentInstantiationInterface_ = new ComponentInstantiationInterface(validator_, cimpParser,
+        moduleFormatter, parameterInterface, moduleParameterInterface, fileBuilderInterface);
 }

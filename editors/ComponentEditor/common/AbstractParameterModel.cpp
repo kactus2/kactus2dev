@@ -11,7 +11,7 @@
 
 #include "AbstractParameterModel.h"
 
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
 
 #include <common/KactusColors.h>
 
@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::AbstractParameterModel()
 //-----------------------------------------------------------------------------
-AbstractParameterModel::AbstractParameterModel(QSharedPointer<ParametersInterface> parameterInterface,
+AbstractParameterModel::AbstractParameterModel(AbstractParameterInterface* parameterInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
@@ -690,7 +690,7 @@ void AbstractParameterModel::onGetParametersMachingIndexes(QModelIndexList index
 //-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::getInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ParametersInterface> AbstractParameterModel::getInterface() const
+AbstractParameterInterface* AbstractParameterModel::getInterface() const
 {
     return parameterInterface_;
 }
