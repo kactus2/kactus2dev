@@ -231,6 +231,45 @@ int ComponentInstantiationInterface::getAllReferencesToIdInItem(
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstantiationInterface::getExpressionsInSelectedItems()
+//-----------------------------------------------------------------------------
+std::vector<std::string> ComponentInstantiationInterface::getExpressionsInSelectedItems(
+    std::vector<std::string> instantiationNames) const
+{
+    std::vector<std::string> expressionList;
+
+    for (auto name : instantiationNames)
+    {
+        QSharedPointer<ComponentInstantiation> selectedItem = getComponentInstantiation(name);
+        if (selectedItem)
+        {
+            parameterInterface_->setParameters(selectedItem->getParameters());
+            for (auto expression :
+                parameterInterface_->getExpressionsInSelectedItems(parameterInterface_->getItemNames()))
+            {
+                expressionList.push_back(expression);
+            }
+
+            moduleParameterInterface_->setModuleParameters(selectedItem);
+            for (auto expression : moduleParameterInterface_->getExpressionsInSelectedItems(
+                moduleParameterInterface_->getItemNames()))
+            {
+                expressionList.push_back(expression);
+            }
+
+            fileBuilderInterface_->setFileBuilders(selectedItem->getDefaultFileBuilders());
+            for (auto expression :
+                fileBuilderInterface_->getExpressionsInSelectedFileBuilders(fileBuilderInterface_->getItemNames()))
+            {
+                expressionList.push_back(expression);
+            }
+        }
+    }
+
+    return expressionList;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstantiationInterface::validateItems()
 //-----------------------------------------------------------------------------
 bool ComponentInstantiationInterface::validateItems() const
@@ -277,11 +316,14 @@ QSharedPointer<ComponentInstantiation> ComponentInstantiationInterface::getCompo
 void ComponentInstantiationInterface::addComponentInstantiation(int const& row,
     std::string const& newInstantiationName)
 {
+    QSharedPointer<ComponentInstantiation> newInstantiation(new ComponentInstantiation());
+    newInstantiation->setName(getUniqueName(newInstantiationName, COMPONENT_INSTANTIATION_TYPE));
 
+    instantiations_->insert(row, newInstantiation);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::removeBlock()
+// Function: ComponentInstantiationInterface::removeComponentInstantiation()
 //-----------------------------------------------------------------------------
 bool ComponentInstantiationInterface::removeComponentInstantiation(std::string const& instantiationName)
 {

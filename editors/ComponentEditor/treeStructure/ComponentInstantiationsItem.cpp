@@ -88,7 +88,8 @@ ItemEditor* ComponentInstantiationsItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new ComponentInstantiationsEditor(component_, libHandler_, parameterFinder_, validator_, 0);
+        editor_ = new ComponentInstantiationsEditor(
+            component_, libHandler_, parameterFinder_, instantiationInterface_, 0);
         editor_->setProtection(locked_);
 
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

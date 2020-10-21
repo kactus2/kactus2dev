@@ -151,6 +151,15 @@ public:
         final;
 
     /*!
+     *  Get the expressions in the selected component instantiations.
+     *
+     *      @param [in] instantiationNames  Names of the selected component instantiations.
+     *
+     *      @return Expressions in the selected component instantiations.
+     */
+    std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> instantiationNames) const;
+
+    /*!
      *  Validates the contained items.
      *
      *      @return True, if all the ports are valid, false otherwise.

@@ -172,7 +172,7 @@ private:
     ParameterGroupBox parameters_;
 
     //! Interface for accessing component instantiations.
-    QSharedPointer<ComponentInstantiationInterface> instantiationInterface_;
+    ComponentInstantiationInterface* instantiationInterface_;
 
     //! List of available component instantiations.
     QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > availableInstantiations_;

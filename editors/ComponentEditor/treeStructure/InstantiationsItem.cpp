@@ -115,8 +115,9 @@ ItemEditor* InstantiationsItem::editor()
 {
 	if (!editor_)
     {
- 		editor_ = new InstantiationsEditor(component_, parameterFinder_, libHandler_, validator_);
- 		editor_->setProtection(locked_);
+        editor_ = new InstantiationsEditor(
+            component_, parameterFinder_, libHandler_, validator_, componentInstantiationInterface_);
+        editor_->setProtection(locked_);
  
  		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
   		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));

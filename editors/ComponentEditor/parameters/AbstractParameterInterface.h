@@ -90,6 +90,15 @@ public:
     virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const override final;
     
     /*!
+     *  Get the expressions in the selected parameters.
+     *
+     *      @param [in] parameterNames  Names of the selected parameters.
+     *
+     *      @return Expressions in the selected parameters.
+     */
+    std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> parameterNames) const;
+
+    /*!
      *  Validates the contained items.
      *
      *      @return True, if all the items are valid, false otherwise.

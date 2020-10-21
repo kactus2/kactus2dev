@@ -751,6 +751,30 @@ int AbstractParameterInterface::getAllReferencesToIdInItem(const std::string& it
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractParameterInterface::getExpressionsInSelectedItems()
+//-----------------------------------------------------------------------------
+std::vector<std::string> AbstractParameterInterface::getExpressionsInSelectedItems(
+    std::vector<std::string> parameterNames) const
+{
+    std::vector<std::string> expressions;
+
+    for (auto name : parameterNames)
+    {
+        QSharedPointer<Parameter> parameter = getParameter(name);
+        if (parameter)
+        {
+            expressions.push_back(parameter->getValue().toStdString());
+            expressions.push_back(parameter->getVectorLeft().toStdString());
+            expressions.push_back(parameter->getVectorRight().toStdString());
+            expressions.push_back(parameter->getAttribute("kactus2:arrayLeft").toStdString());
+            expressions.push_back(parameter->getAttribute("kactus2:arrayRight").toStdString());
+        }
+    }
+
+    return expressions;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractParameterInterface::validateItems()
 //-----------------------------------------------------------------------------
 bool AbstractParameterInterface::validateItems() const

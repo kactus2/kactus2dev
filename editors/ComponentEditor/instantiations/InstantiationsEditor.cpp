@@ -26,10 +26,11 @@
 //-----------------------------------------------------------------------------
 InstantiationsEditor::InstantiationsEditor(QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
-    QSharedPointer<InstantiationsValidator> validator, QWidget* parent /* = 0 */):
+    QSharedPointer<InstantiationsValidator> validator,
+    ComponentInstantiationInterface* componentInstantiationInterface, QWidget* parent):
 ItemEditor(component, handler, parent),
-componentInstantiationsEditor_(new ComponentInstantiationsEditor(component, handler, parameterFinder, validator,
-                                                                 this)),
+componentInstantiationsEditor_(new ComponentInstantiationsEditor(
+    component, handler, parameterFinder, componentInstantiationInterface, this)),
 designConfigurationInstantiationsEditor_(new DesignConfigurationInstantiationsEditor(component, handler, validator,
                                                                                      this)),
 designInstantiationsEditor_(new DesignInstantiationsEditor(component, handler, validator, this))
