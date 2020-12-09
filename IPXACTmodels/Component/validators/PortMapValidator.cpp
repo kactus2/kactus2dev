@@ -65,7 +65,7 @@ void PortMapValidator::busInterfaceChanged(QSharedPointer<ConfigurableVLNVRefere
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::busInterfaceChanged()
 //-----------------------------------------------------------------------------
-void PortMapValidator::abstractionDefinitionChanged(QSharedPointer<AbstractionDefinition> newDefinition,
+void PortMapValidator::abstractionDefinitionChanged(QSharedPointer<AbstractionDefinition const> newDefinition,
     General::InterfaceMode newInterfaceMode)
 {
     if (newDefinition)

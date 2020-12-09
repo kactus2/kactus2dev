@@ -20,14 +20,18 @@
 #include "BusInterfaceWizardPortMapPage.h"
 #include "BusInterfaceWizardConclusionPage.h"
 
+#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/ports/PortsInterface.h>
 
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
@@ -61,6 +65,16 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<BusInterfaceValidator> busValidator =
         createBusInterfaceValidator(component, expressionParser, parameterValidator, handler);
 
+    QSharedPointer<PortValidator> portValidator(new PortValidator(expressionParser, component->getViews()));
+    QSharedPointer<PortMapValidator> portMapValidator =
+        busValidator->getAbstractionValidator()->getPortMapValidator();
+
+    PortsInterface* portInterface(new PortsInterface(portValidator, expressionParser, expressionFormatter));
+    portInterface->setPorts(component);
+
+    PortMapInterface* portMapInterface(
+        new PortMapInterface(portMapValidator, expressionParser, expressionFormatter, portInterface));
+
     BusInterfaceWizardGeneralOptionsPage* optionsPage =
         new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, !absDefVLNV.isValid(), parameterFinder,
         expressionFormatter, expressionParser, busValidator, this);
@@ -75,7 +89,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(component, busIf, handler, portNames, 
         this, absDefVLNV, expressionParser, namingPolicy));
     setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
-        expressionParser, expressionFormatter, parameterFinder, busValidator, this));
+        expressionParser, parameterFinder, busValidator, portMapInterface, this));
     setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 

@@ -983,6 +983,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\instantiations\interfaces">
       <UniqueIdentifier>{9b21de33-ece2-40c5-bc88-0047b8a1439e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
+      <UniqueIdentifier>{4f909392-1e57-460d-bccf-f6eaddebbdad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
+      <UniqueIdentifier>{ece98f23-9e39-43e0-8624-f2c64622e284}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4927,6 +4933,9 @@
     <ClCompile Include="editors\ComponentEditor\parameters\AbstractParameterInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\interfaces\PortMapInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7546,6 +7555,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\AbstractParameterInterface.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\interfaces\PortMapInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

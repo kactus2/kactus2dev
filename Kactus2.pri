@@ -299,6 +299,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
     ./editors/ComponentEditor/ports/PortsView.h \
+    ./editors/ComponentEditor/parameters/AbstractParameterInterface.h \
     ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./editors/ComponentEditor/parameters/parametersmodel.h \
@@ -564,6 +565,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.h \
+    ./editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h \
+    ./editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfaceColumns.h \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesEditor.h \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesModel.h \
@@ -860,9 +863,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h \
-    ./editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h \
-    ./editors/ComponentEditor/parameters/AbstractParameterInterface.h
+    ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1152,6 +1153,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/interfaces/FileInterface.cpp \
     ./editors/ComponentEditor/fileSet/interfaces/FileSetInterface.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
+    ./editors/ComponentEditor/parameters/AbstractParameterInterface.cpp \
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
@@ -1389,6 +1391,8 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.cpp \
+    ./editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.cpp \
+    ./editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
@@ -1611,7 +1615,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.cpp \
-    ./editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.cpp \
-    ./editors/ComponentEditor/parameters/AbstractParameterInterface.cpp
+    ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.cpp
 RESOURCES += kactus.qrc

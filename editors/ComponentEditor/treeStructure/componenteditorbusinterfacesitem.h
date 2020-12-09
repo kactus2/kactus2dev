@@ -17,6 +17,7 @@
 class BusInterface;
 class BusInterfaceValidator;
 class ExpressionParser;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The Bus interfaces-item in the component editor's navigation tree.
@@ -102,6 +103,11 @@ private:
      */
     void createBusInterfaceValidator();
 
+    /*!
+     *  Create the interface for port maps.
+     */
+    void createPortMapInterface();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -117,6 +123,9 @@ private:
 
     //! Validator for bus interfaces.
     QSharedPointer<BusInterfaceValidator> validator_;
+
+    //! Interface for accessing port maps.
+    PortMapInterface* portMapInterface_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACESITEM_H

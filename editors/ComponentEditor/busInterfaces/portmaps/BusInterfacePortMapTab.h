@@ -41,6 +41,7 @@ class PortMapTreeDelegate;
 class PortMapValidator;
 class PortMapAutoConnector;
 class AbstractionType;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! Tab for editing and viewing bus interface port maps.
@@ -58,16 +59,18 @@ public:
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] busif               The bus interface being edited.
      *      @param [in] expressionParser    The used expression parser.
-     *      @param [in] formatter           The used expression formatter.
      *      @param [in] finder              The used parameter finder.
-     *      @param [in] portMapValidator    Validator used for port maps.
+     *      @param [in] portMapInterface    Interface for accessing port maps.
 	 *      @param [in] parent              The owner of the editor.
 	 */
-	BusInterfacePortMapTab(LibraryInterface* libHandler, QSharedPointer<Component> component, 
-        QSharedPointer<BusInterface> busif,	QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder,
-        QSharedPointer<PortMapValidator> portMapValidator, QWidget* parent);
-	
+    BusInterfacePortMapTab(LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<BusInterface> busif,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> finder,
+        PortMapInterface* portMapInterface,
+        QWidget* parent);
+
 	/*!
      *  The destructor.
      */
@@ -168,6 +171,11 @@ private:
 	BusInterfacePortMapTab(const BusInterfacePortMapTab& other);
 	BusInterfacePortMapTab& operator=(const BusInterfacePortMapTab& other);
 
+    /*!
+     *  Setup the currently active abstraction type.
+     */
+    void setupAbstraction();
+
 	/*!
      *  Set up the layout of the GUI items
      */
@@ -252,6 +260,9 @@ private:
 
     //! List of the available abstraction types.
     QList<QSharedPointer<AbstractionType> > abstractions_;
+
+    //! Interface for accessing port maps.
+    PortMapInterface* portMapInterface_;
 };
 
 #endif // BUSINTERFACEPORTMAPTAB_H

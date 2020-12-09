@@ -70,7 +70,7 @@ public:
      *      @param [in] newDefinition       The new abstraction definition.
      *      @param [in] newInterfaceMode    The new interface mode.
      */
-    void abstractionDefinitionChanged(QSharedPointer<AbstractionDefinition> newDefinition,
+    void abstractionDefinitionChanged(QSharedPointer<AbstractionDefinition const> newDefinition,
         General::InterfaceMode newInterfaceMode);
 
     /*!

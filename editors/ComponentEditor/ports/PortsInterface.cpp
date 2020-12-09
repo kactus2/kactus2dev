@@ -97,11 +97,14 @@ vector<string> PortsInterface::getItemNames() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> PortsInterface::getPort(string const& portName) const
 {
-    for (auto port : *ports_)
+    if (ports_)
     {
-        if (port->name().toStdString() == portName)
+        for (auto port : *ports_)
         {
-            return port;
+            if (port->name().toStdString() == portName)
+            {
+                return port;
+            }
         }
     }
 
@@ -410,13 +413,27 @@ bool PortsInterface::portIsWire(string const& portName) const
 //-----------------------------------------------------------------------------
 string PortsInterface::getDirection(string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort && portIsWire(portName))
+    QSharedPointer<Port> selectedPort = getPort(portName);
+    if (selectedPort && portIsWire(portName))
     {
-        return DirectionTypes::direction2Str(editedPort->getDirection()).toStdString();
+        return DirectionTypes::direction2Str(selectedPort->getDirection()).toStdString();
     }
 
     return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsInterface::getDirectionType()
+//-----------------------------------------------------------------------------
+DirectionTypes::Direction PortsInterface::getDirectionType(std::string const& portName) const
+{
+    QSharedPointer<Port> selectedPort = getPort(portName);
+    if (selectedPort && portIsWire(portName))
+    {
+        return selectedPort->getDirection();
+    }
+
+    return DirectionTypes::DIRECTION_INVALID;
 }
 
 //-----------------------------------------------------------------------------
@@ -1099,6 +1116,22 @@ bool PortsInterface::removePort(string const& portName)
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortsInterface::portExists()
+//-----------------------------------------------------------------------------
+bool PortsInterface::portExists(std::string const& portName) const
+{
+    for (auto name : getItemNames())
+    {
+        if (name == portName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortsInterface::validateItems()
 //-----------------------------------------------------------------------------
 bool PortsInterface::validateItems() const
@@ -1264,4 +1297,86 @@ bool PortsInterface::portHasValidMinConnections(string const& portName) const
     }
 
     return portValidator_->hasValidTransactionalMinConnections(port->getTransactional());
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsInterface::getPathForIcon()
+//-----------------------------------------------------------------------------
+std::string PortsInterface::getIconPathForPort(std::string const& portName) const
+{
+    std::string path = "";
+    QSharedPointer<Port> selectedPort = getPort(portName);
+    if (!selectedPort)
+    {
+        path = ":icons/common/graphics/cross.png";
+    }
+    else
+    {
+        if (selectedPort->getWire())
+        {
+            DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
+            direction = selectedPort->getDirection();
+            
+            path = getIconPathForDirection(direction);
+        }
+        else if (selectedPort->getTransactional())
+        {
+            QString initiative = selectedPort->getTransactional()->getInitiative();
+            path = getIconPathForInitiative(initiative);
+        }
+    }
+
+    return path;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsInterface::getIconPathForDirection()
+//-----------------------------------------------------------------------------
+std::string PortsInterface::getIconPathForDirection(DirectionTypes::Direction direction) const
+{
+    QString directionPath = QLatin1String(":icons/common/graphics/cross.png");
+    if (direction == DirectionTypes::IN)
+    {
+        directionPath = QLatin1String(":icons/common/graphics/input.png");
+    }
+    else if (direction == DirectionTypes::OUT)
+    {
+        directionPath = QLatin1String(":icons/common/graphics/output.png");
+    }
+    else if (direction == DirectionTypes::INOUT)
+    {
+        directionPath = QLatin1String(":icons/common/graphics/inout.png");
+    }
+    else if (direction == DirectionTypes::DIRECTION_PHANTOM)
+    {
+        directionPath = QLatin1String(":icons/common/graphics/phantom.png");
+    }
+
+    return directionPath.toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsInterface::getIconPathForInitiative()
+//-----------------------------------------------------------------------------
+std::string PortsInterface::getIconPathForInitiative(QString const& initiative) const
+{
+    QString iconPath = QLatin1String(":icons/common/graphics/cross.png");
+    if (initiative.compare(TransactionalTypes::INITIATIVE_PROVIDES, Qt::CaseInsensitive) == 0)
+    {
+        iconPath = QLatin1String(":icons/common/graphics/provides.png");
+    }
+    else if (initiative.compare(TransactionalTypes::INITIATIVE_REQUIRES, Qt::CaseInsensitive) == 0)
+    {
+        iconPath = QLatin1String(":icons/common/graphics/requires.png");
+    }
+    else if (initiative.compare(TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
+    {
+        iconPath = QLatin1String(":icons/common/graphics/requires_provides.png");
+    }
+    else if (initiative.compare(TransactionalTypes::INITIATIVE_PHANTOM, Qt::CaseInsensitive) == 0)
+    {
+        iconPath = QLatin1String(":icons/common/graphics/phantom.png");
+    }
+
+    return iconPath.toStdString();
 }
