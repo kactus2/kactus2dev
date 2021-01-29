@@ -9,6 +9,9 @@
 // Kactus2 main entry point.
 //-----------------------------------------------------------------------------
 
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+
 #include "mainwindow.h"
 
 #include "CommandLineParser.h"
@@ -31,6 +34,12 @@
 #include <QPalette>
 #include <QTimer>
 #include <QObject>
+
+
+#include <iostream>
+
+#include "PythonAPI/CLIConsole.h"
+
 
 //-----------------------------------------------------------------------------
 //! Private utility functions for main.
@@ -104,6 +113,7 @@ namespace
     }
 };
 
+
 //-----------------------------------------------------------------------------
 // Function: main()
 //-----------------------------------------------------------------------------
@@ -166,7 +176,34 @@ int main(int argc, char *argv[])
             library->searchForIPXactFiles();
         }
 
-        PluginUtilityAdapter utility(library.data(), mediator.data(), VersionHelper::createVersionString(), 0);
-        return parser.process(arguments, &utility);
+
+     /*  QScopedPointer<QProcess> process(new QProcess(application.data()));
+        process->setProcessChannelMode(QProcess::ForwardedChannels);
+       // process->setReadChannel(QProcess::StandardOutput);
+        
+
+        QStringList environment = QProcess::systemEnvironment();
+        process->setEnvironment(environment);
+
+        QString path = QApplication::applicationDirPath();
+        process->setWorkingDirectory(path);
+
+        process->start("python -i");
+
+        if (!process->waitForStarted(5000))
+        {        
+            mediator->showError(QStringLiteral("Could not start process."));
+            process->close();
+        }*/
+
+        CLIConsole console(application.data());
+        if (console.initialize(argv[0]) == false)
+        {
+        }
+
+        QObject::connect(&console, SIGNAL(quit()), application.data(), SLOT(quit()));
+     //   QObject::connect(process.data(), SIGNAL(finished(int, QProcess::ExitStatus)), application.data(), SLOT(quit()));
+        
+        return application->exec();
     }   
 }
