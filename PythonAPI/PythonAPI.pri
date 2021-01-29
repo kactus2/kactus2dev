@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../editors/ComponentEditor/common/interfaces/ParameterizableInterface.h \
-    ./PythonAPI.h \
+HEADERS += ./PythonAPI.h \
     ./pythonapi_global.h \
     ./messageMediator/PythonMessageMediator.h \
     ../library/DocumentFileAccess.h \
@@ -30,7 +29,12 @@ HEADERS += ../editors/ComponentEditor/common/interfaces/ParameterizableInterface
     ../editors/ComponentEditor/common/ListParameterFinder.h \
     ../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../editors/ComponentEditor/common/ParameterCache.h \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
     ../common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
     ../common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
     ../common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
@@ -58,14 +62,18 @@ HEADERS += ../editors/ComponentEditor/common/interfaces/ParameterizableInterface
     ../common/widgets/tagEditor/TagCompleterModel.h \
     ../common/validators/LibraryPathValidator/librarypathvalidator.h \
     ../VersionHelper.h \
-    ../editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h \
-    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
-    ../editors/ComponentEditor/parameters/ParametersInterface.h \
-    ../editors/ComponentEditor/ports/PortsInterface.h \
     ../editors/ComponentEditor/common/interfaces/CommonInterface.h \
     ../editors/ComponentEditor/common/interfaces/NameGroupInterface.h \
+    ../editors/ComponentEditor/common/interfaces/ParameterizableInterface.h \
+    ../editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h \
+    ../editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h \
+    ../editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h \
     ../editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h
+    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
+    ../editors/ComponentEditor/parameters/ParametersInterface.h \
+    ../editors/ComponentEditor/ports/interfaces/PortsInterface.h \
+    ../editors/ComponentEditor/parameters/AbstractParameterInterface.h \
+    ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.h
 SOURCES += ./PythonAPI.cpp \
     ./PythonAPI_wrap.cxx \
     ./messageMediator/PythonMessageMediator.cpp \
@@ -88,7 +96,12 @@ SOURCES += ./PythonAPI.cpp \
     ../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../editors/ComponentEditor/common/ParameterCache.cpp \
     ../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.cpp \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.cpp \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.cpp \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
+    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
     ../common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ../common/dialogs/newObjectDialog/newobjectdialog.cpp \
@@ -116,12 +129,15 @@ SOURCES += ./PythonAPI.cpp \
     ../common/widgets/vlnvEditor/vlnveditor.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ../VersionHelper.cpp \
-    ../editors/ComponentEditor/common/interfaces/ParameterizableInterface.cpp \
-    ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
-    ../editors/ComponentEditor/ports/PortsInterface.cpp \
-    ../editors/ComponentEditor/common/interfaces/NameGroupInterface.cpp \
     ../editors/ComponentEditor/common/interfaces/CommonInterface.cpp \
+    ../editors/ComponentEditor/common/interfaces/NameGroupInterface.cpp \
+    ../editors/ComponentEditor/common/interfaces/ParameterizableInterface.cpp \
+    ../editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.cpp \
     ../editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
+    ../editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.cpp \
     ../editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp
+    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
+    ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
+    ../editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
+    ../editors/ComponentEditor/parameters/AbstractParameterInterface.cpp \
+    ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp

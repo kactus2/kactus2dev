@@ -403,7 +403,39 @@ class ParameterizableInterface(object):
 # Register ParameterizableInterface in _pythonAPI:
 _pythonAPI.ParameterizableInterface_swigregister(ParameterizableInterface)
 
-class PortsInterface(ParameterizableInterface, NameGroupInterface):
+class MasterPortInterface(NameGroupInterface):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _pythonAPI.delete_MasterPortInterface
+
+    def addWirePort(self, *args):
+        return _pythonAPI.MasterPortInterface_addWirePort(self, *args)
+
+    def addTransactionalPort(self, *args):
+        return _pythonAPI.MasterPortInterface_addTransactionalPort(self, *args)
+
+    def portIsWire(self, portName):
+        return _pythonAPI.MasterPortInterface_portIsWire(self, portName)
+
+    def portIsTransactional(self, portName):
+        return _pythonAPI.MasterPortInterface_portIsTransactional(self, portName)
+
+    def getIconPathForMissingPort(self):
+        return _pythonAPI.MasterPortInterface_getIconPathForMissingPort(self)
+
+    def getIconPathForDirection(self, direction):
+        return _pythonAPI.MasterPortInterface_getIconPathForDirection(self, direction)
+
+    def getIconPathForInitiative(self, initiative):
+        return _pythonAPI.MasterPortInterface_getIconPathForInitiative(self, initiative)
+
+# Register MasterPortInterface in _pythonAPI:
+_pythonAPI.MasterPortInterface_swigregister(MasterPortInterface)
+
+class PortsInterface(ParameterizableInterface, MasterPortInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
@@ -437,6 +469,9 @@ class PortsInterface(ParameterizableInterface, NameGroupInterface):
 
     def getAllReferencesToIdInItem(self, itemName, valueID):
         return _pythonAPI.PortsInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+
+    def portExists(self, portName):
+        return _pythonAPI.PortsInterface_portExists(self, portName)
 
     def validateItems(self):
         return _pythonAPI.PortsInterface_validateItems(self)
@@ -488,6 +523,9 @@ class PortsInterface(ParameterizableInterface, NameGroupInterface):
 
     def getDirection(self, portName):
         return _pythonAPI.PortsInterface_getDirection(self, portName)
+
+    def getDirectionType(self, portName):
+        return _pythonAPI.PortsInterface_getDirectionType(self, portName)
 
     def setDirection(self, portName, newDirection):
         return _pythonAPI.PortsInterface_setDirection(self, portName, newDirection)
@@ -642,10 +680,189 @@ class PortsInterface(ParameterizableInterface, NameGroupInterface):
     def portHasValidMinConnections(self, portName):
         return _pythonAPI.PortsInterface_portHasValidMinConnections(self, portName)
 
+    def getIconPathForPort(self, portName):
+        return _pythonAPI.PortsInterface_getIconPathForPort(self, portName)
+
+    def getPort(self, portName):
+        return _pythonAPI.PortsInterface_getPort(self, portName)
+
 # Register PortsInterface in _pythonAPI:
 _pythonAPI.PortsInterface_swigregister(PortsInterface)
 
-class ParametersInterface(ParameterizableInterface, NameGroupInterface):
+class AbstractParameterInterface(ParameterizableInterface, NameGroupInterface):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _pythonAPI.delete_AbstractParameterInterface
+
+    def setChoices(self, newChoices):
+        return _pythonAPI.AbstractParameterInterface_setChoices(self, newChoices)
+
+    def setName(self, currentName, newName):
+        return _pythonAPI.AbstractParameterInterface_setName(self, currentName, newName)
+
+    def getDescription(self, itemName):
+        return _pythonAPI.AbstractParameterInterface_getDescription(self, itemName)
+
+    def setDescription(self, itemName, newDescription):
+        return _pythonAPI.AbstractParameterInterface_setDescription(self, itemName, newDescription)
+
+    def getAllReferencesToIdInItem(self, itemName, valueID):
+        return _pythonAPI.AbstractParameterInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+
+    def getExpressionsInSelectedItems(self, parameterNames):
+        return _pythonAPI.AbstractParameterInterface_getExpressionsInSelectedItems(self, parameterNames)
+
+    def validateItems(self):
+        return _pythonAPI.AbstractParameterInterface_validateItems(self)
+
+    def itemHasValidName(self, itemName):
+        return _pythonAPI.AbstractParameterInterface_itemHasValidName(self, itemName)
+
+    def getDisplayName(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getDisplayName(self, parameterName)
+
+    def setDisplayName(self, parameterName, newDisplayName):
+        return _pythonAPI.AbstractParameterInterface_setDisplayName(self, parameterName, newDisplayName)
+
+    def getType(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getType(self, parameterName)
+
+    def setType(self, parameterName, newType):
+        return _pythonAPI.AbstractParameterInterface_setType(self, parameterName, newType)
+
+    def getBitWidthLeftValue(self, parameterName, baseNumber=0):
+        return _pythonAPI.AbstractParameterInterface_getBitWidthLeftValue(self, parameterName, baseNumber)
+
+    def getBitWidthLeftFormattedExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getBitWidthLeftFormattedExpression(self, parameterName)
+
+    def getBitWidthLeftExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getBitWidthLeftExpression(self, parameterName)
+
+    def setBitWidthLeft(self, parameterName, newBitWidthLeft):
+        return _pythonAPI.AbstractParameterInterface_setBitWidthLeft(self, parameterName, newBitWidthLeft)
+
+    def getBitWidthRightValue(self, parameterName, baseNumber=0):
+        return _pythonAPI.AbstractParameterInterface_getBitWidthRightValue(self, parameterName, baseNumber)
+
+    def getBitWidthRightFormattedExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getBitWidthRightFormattedExpression(self, parameterName)
+
+    def getBitWidthRightExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getBitWidthRightExpression(self, parameterName)
+
+    def setBitWidthRight(self, parameterName, newBitWidthRight):
+        return _pythonAPI.AbstractParameterInterface_setBitWidthRight(self, parameterName, newBitWidthRight)
+
+    def getMinimum(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getMinimum(self, parameterName)
+
+    def setMinimum(self, parameterName, newMinimum):
+        return _pythonAPI.AbstractParameterInterface_setMinimum(self, parameterName, newMinimum)
+
+    def getMaximum(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getMaximum(self, parameterName)
+
+    def setMaximum(self, parameterName, newMaximum):
+        return _pythonAPI.AbstractParameterInterface_setMaximum(self, parameterName, newMaximum)
+
+    def getChoice(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getChoice(self, parameterName)
+
+    def setChoice(self, parameterName, newChoice):
+        return _pythonAPI.AbstractParameterInterface_setChoice(self, parameterName, newChoice)
+
+    def getValue(self, parameterName, baseNumber=0):
+        return _pythonAPI.AbstractParameterInterface_getValue(self, parameterName, baseNumber)
+
+    def getValueFormattedExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getValueFormattedExpression(self, parameterName)
+
+    def getValueExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getValueExpression(self, parameterName)
+
+    def setValue(self, parameterName, newValue):
+        return _pythonAPI.AbstractParameterInterface_setValue(self, parameterName, newValue)
+
+    def getResolve(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getResolve(self, parameterName)
+
+    def setResolve(self, parameterName, newResolve):
+        return _pythonAPI.AbstractParameterInterface_setResolve(self, parameterName, newResolve)
+
+    def getArrayLeftValue(self, parameterName, baseNumber=0):
+        return _pythonAPI.AbstractParameterInterface_getArrayLeftValue(self, parameterName, baseNumber)
+
+    def getArrayLeftFormattedExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getArrayLeftFormattedExpression(self, parameterName)
+
+    def getArrayLeftExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getArrayLeftExpression(self, parameterName)
+
+    def setArrayLeft(self, parameterName, newArrayLeft):
+        return _pythonAPI.AbstractParameterInterface_setArrayLeft(self, parameterName, newArrayLeft)
+
+    def getArrayRightValue(self, parameterName, baseNumber=0):
+        return _pythonAPI.AbstractParameterInterface_getArrayRightValue(self, parameterName, baseNumber)
+
+    def getArrayRightFormattedExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getArrayRightFormattedExpression(self, parameterName)
+
+    def getArrayRightExpression(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getArrayRightExpression(self, parameterName)
+
+    def setArrayRight(self, parameterName, newArrayRight):
+        return _pythonAPI.AbstractParameterInterface_setArrayRight(self, parameterName, newArrayRight)
+
+    def getID(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getID(self, parameterName)
+
+    def setID(self, parameterName, newID):
+        return _pythonAPI.AbstractParameterInterface_setID(self, parameterName, newID)
+
+    def getUsageCount(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_getUsageCount(self, parameterName)
+
+    def setUsageCount(self, parameterName, newUsageCount):
+        return _pythonAPI.AbstractParameterInterface_setUsageCount(self, parameterName, newUsageCount)
+
+    def increaseUsageCount(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_increaseUsageCount(self, parameterName)
+
+    def reduceUsageCount(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_reduceUsageCount(self, parameterName)
+
+    def hasValidType(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_hasValidType(self, parameterName)
+
+    def hasValidBitWidth(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_hasValidBitWidth(self, parameterName)
+
+    def hasValidMinimum(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_hasValidMinimum(self, parameterName)
+
+    def hasValidMaximum(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_hasValidMaximum(self, parameterName)
+
+    def hasValidChoice(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_hasValidChoice(self, parameterName)
+
+    def hasValidValue(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_hasValidValue(self, parameterName)
+
+    def hasValidResolve(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_hasValidResolve(self, parameterName)
+
+    def hasValidArrayValues(self, parameterName):
+        return _pythonAPI.AbstractParameterInterface_hasValidArrayValues(self, parameterName)
+
+# Register AbstractParameterInterface in _pythonAPI:
+_pythonAPI.AbstractParameterInterface_swigregister(AbstractParameterInterface)
+
+class ParametersInterface(AbstractParameterInterface):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
@@ -655,12 +872,6 @@ class ParametersInterface(ParameterizableInterface, NameGroupInterface):
 
     def setParameters(self, newParameters):
         return _pythonAPI.ParametersInterface_setParameters(self, newParameters)
-
-    def setModuleParameters(self, newParameters):
-        return _pythonAPI.ParametersInterface_setModuleParameters(self, newParameters)
-
-    def setChoices(self, newChoices):
-        return _pythonAPI.ParametersInterface_setChoices(self, newChoices)
 
     def getItemIndex(self, itemName):
         return _pythonAPI.ParametersInterface_getItemIndex(self, itemName)
@@ -674,185 +885,11 @@ class ParametersInterface(ParameterizableInterface, NameGroupInterface):
     def getItemNames(self):
         return _pythonAPI.ParametersInterface_getItemNames(self)
 
-    def setName(self, currentName, newName):
-        return _pythonAPI.ParametersInterface_setName(self, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.ParametersInterface_getDescription(self, itemName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.ParametersInterface_setDescription(self, itemName, newDescription)
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.ParametersInterface_getAllReferencesToIdInItem(self, itemName, valueID)
-
-    def validateItems(self):
-        return _pythonAPI.ParametersInterface_validateItems(self)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.ParametersInterface_itemHasValidName(self, itemName)
-
-    def getDisplayName(self, parameterName):
-        return _pythonAPI.ParametersInterface_getDisplayName(self, parameterName)
-
-    def setDisplayName(self, parameterName, newDisplayName):
-        return _pythonAPI.ParametersInterface_setDisplayName(self, parameterName, newDisplayName)
-
-    def getType(self, parameterName):
-        return _pythonAPI.ParametersInterface_getType(self, parameterName)
-
-    def setType(self, parameterName, newType):
-        return _pythonAPI.ParametersInterface_setType(self, parameterName, newType)
-
-    def getBitWidthLeftValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.ParametersInterface_getBitWidthLeftValue(self, parameterName, baseNumber)
-
-    def getBitWidthLeftFormattedExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getBitWidthLeftFormattedExpression(self, parameterName)
-
-    def getBitWidthLeftExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getBitWidthLeftExpression(self, parameterName)
-
-    def setBitWidthLeft(self, parameterName, newBitWidthLeft):
-        return _pythonAPI.ParametersInterface_setBitWidthLeft(self, parameterName, newBitWidthLeft)
-
-    def getBitWidthRightValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.ParametersInterface_getBitWidthRightValue(self, parameterName, baseNumber)
-
-    def getBitWidthRightFormattedExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getBitWidthRightFormattedExpression(self, parameterName)
-
-    def getBitWidthRightExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getBitWidthRightExpression(self, parameterName)
-
-    def setBitWidthRight(self, parameterName, newBitWidthRight):
-        return _pythonAPI.ParametersInterface_setBitWidthRight(self, parameterName, newBitWidthRight)
-
-    def getMinimum(self, parameterName):
-        return _pythonAPI.ParametersInterface_getMinimum(self, parameterName)
-
-    def setMinimum(self, parameterName, newMinimum):
-        return _pythonAPI.ParametersInterface_setMinimum(self, parameterName, newMinimum)
-
-    def getMaximum(self, parameterName):
-        return _pythonAPI.ParametersInterface_getMaximum(self, parameterName)
-
-    def setMaximum(self, parameterName, newMaximum):
-        return _pythonAPI.ParametersInterface_setMaximum(self, parameterName, newMaximum)
-
-    def getChoice(self, parameterName):
-        return _pythonAPI.ParametersInterface_getChoice(self, parameterName)
-
-    def setChoice(self, parameterName, newChoice):
-        return _pythonAPI.ParametersInterface_setChoice(self, parameterName, newChoice)
-
-    def getValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.ParametersInterface_getValue(self, parameterName, baseNumber)
-
-    def getValueFormattedExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getValueFormattedExpression(self, parameterName)
-
-    def getValueExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getValueExpression(self, parameterName)
-
-    def setValue(self, parameterName, newValue):
-        return _pythonAPI.ParametersInterface_setValue(self, parameterName, newValue)
-
-    def getResolve(self, parameterName):
-        return _pythonAPI.ParametersInterface_getResolve(self, parameterName)
-
-    def setResolve(self, parameterName, newResolve):
-        return _pythonAPI.ParametersInterface_setResolve(self, parameterName, newResolve)
-
-    def getArrayLeftValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.ParametersInterface_getArrayLeftValue(self, parameterName, baseNumber)
-
-    def getArrayLeftFormattedExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getArrayLeftFormattedExpression(self, parameterName)
-
-    def getArrayLeftExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getArrayLeftExpression(self, parameterName)
-
-    def setArrayLeft(self, parameterName, newArrayLeft):
-        return _pythonAPI.ParametersInterface_setArrayLeft(self, parameterName, newArrayLeft)
-
-    def getArrayRightValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.ParametersInterface_getArrayRightValue(self, parameterName, baseNumber)
-
-    def getArrayRightFormattedExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getArrayRightFormattedExpression(self, parameterName)
-
-    def getArrayRightExpression(self, parameterName):
-        return _pythonAPI.ParametersInterface_getArrayRightExpression(self, parameterName)
-
-    def setArrayRight(self, parameterName, newArrayRight):
-        return _pythonAPI.ParametersInterface_setArrayRight(self, parameterName, newArrayRight)
-
-    def getID(self, parameterName):
-        return _pythonAPI.ParametersInterface_getID(self, parameterName)
-
-    def setID(self, parameterName, newID):
-        return _pythonAPI.ParametersInterface_setID(self, parameterName, newID)
-
-    def getUsageCount(self, parameterName):
-        return _pythonAPI.ParametersInterface_getUsageCount(self, parameterName)
-
-    def setUsageCount(self, parameterName, newUsageCount):
-        return _pythonAPI.ParametersInterface_setUsageCount(self, parameterName, newUsageCount)
-
-    def getDataType(self, parameterName):
-        return _pythonAPI.ParametersInterface_getDataType(self, parameterName)
-
-    def setDataType(self, parameterName, newDataType):
-        return _pythonAPI.ParametersInterface_setDataType(self, parameterName, newDataType)
-
-    def getUsageType(self, parameterName):
-        return _pythonAPI.ParametersInterface_getUsageType(self, parameterName)
-
-    def setUsageType(self, parameterName, newUsageType):
-        return _pythonAPI.ParametersInterface_setUsageType(self, parameterName, newUsageType)
-
-    def increaseUsageCount(self, parameterName):
-        return _pythonAPI.ParametersInterface_increaseUsageCount(self, parameterName)
-
-    def reduceUsageCount(self, parameterName):
-        return _pythonAPI.ParametersInterface_reduceUsageCount(self, parameterName)
-
     def addParameter(self, *args):
         return _pythonAPI.ParametersInterface_addParameter(self, *args)
 
-    def addModuleParameter(self, *args):
-        return _pythonAPI.ParametersInterface_addModuleParameter(self, *args)
-
     def removeParameter(self, parameterName):
         return _pythonAPI.ParametersInterface_removeParameter(self, parameterName)
-
-    def removeModuleParameter(self, parameterName):
-        return _pythonAPI.ParametersInterface_removeModuleParameter(self, parameterName)
-
-    def hasValidType(self, parameterName):
-        return _pythonAPI.ParametersInterface_hasValidType(self, parameterName)
-
-    def hasValidBitWidth(self, parameterName):
-        return _pythonAPI.ParametersInterface_hasValidBitWidth(self, parameterName)
-
-    def hasValidMinimum(self, parameterName):
-        return _pythonAPI.ParametersInterface_hasValidMinimum(self, parameterName)
-
-    def hasValidMaximum(self, parameterName):
-        return _pythonAPI.ParametersInterface_hasValidMaximum(self, parameterName)
-
-    def hasValidChoice(self, parameterName):
-        return _pythonAPI.ParametersInterface_hasValidChoice(self, parameterName)
-
-    def hasValidValue(self, parameterName):
-        return _pythonAPI.ParametersInterface_hasValidValue(self, parameterName)
-
-    def hasValidResolve(self, parameterName):
-        return _pythonAPI.ParametersInterface_hasValidResolve(self, parameterName)
-
-    def hasValidArrayValues(self, parameterName):
-        return _pythonAPI.ParametersInterface_hasValidArrayValues(self, parameterName)
 
 # Register ParametersInterface in _pythonAPI:
 _pythonAPI.ParametersInterface_swigregister(ParametersInterface)

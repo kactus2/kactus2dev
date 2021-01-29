@@ -2660,56 +2660,59 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_AccessTypes__Access swig_types[0]
-#define SWIGTYPE_p_AddressBlockInterface swig_types[1]
-#define SWIGTYPE_p_CommonInterface swig_types[2]
-#define SWIGTYPE_p_FieldInterface swig_types[3]
-#define SWIGTYPE_p_General__ModifiedWrite swig_types[4]
-#define SWIGTYPE_p_General__ReadAction swig_types[5]
-#define SWIGTYPE_p_General__TestConstraint swig_types[6]
-#define SWIGTYPE_p_General__Usage swig_types[7]
-#define SWIGTYPE_p_MemoryMap swig_types[8]
-#define SWIGTYPE_p_MemoryMapInterface swig_types[9]
-#define SWIGTYPE_p_MemoryRemap swig_types[10]
-#define SWIGTYPE_p_NameGroup swig_types[11]
-#define SWIGTYPE_p_NameGroupInterface swig_types[12]
-#define SWIGTYPE_p_ParameterizableInterface swig_types[13]
-#define SWIGTYPE_p_ParametersInterface swig_types[14]
-#define SWIGTYPE_p_PortsInterface swig_types[15]
-#define SWIGTYPE_p_PythonAPI swig_types[16]
-#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[17]
-#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[18]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[19]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[20]
-#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[21]
-#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[22]
-#define SWIGTYPE_p_QSharedPointerT_MemoryMapValidator_t swig_types[23]
-#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[24]
-#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[25]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[26]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[27]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[28]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t swig_types[29]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[30]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[31]
-#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[32]
-#define SWIGTYPE_p_QString swig_types[33]
-#define SWIGTYPE_p_RegisterInterface swig_types[34]
-#define SWIGTYPE_p_ResetInterface swig_types[35]
-#define SWIGTYPE_p_allocator_type swig_types[36]
-#define SWIGTYPE_p_char swig_types[37]
-#define SWIGTYPE_p_difference_type swig_types[38]
-#define SWIGTYPE_p_p_PyObject swig_types[39]
-#define SWIGTYPE_p_size_type swig_types[40]
-#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[41]
-#define SWIGTYPE_p_std__invalid_argument swig_types[42]
-#define SWIGTYPE_p_std__string swig_types[43]
-#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[44]
-#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[45]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[46]
-#define SWIGTYPE_p_value_type swig_types[47]
-static swig_type_info *swig_types[49];
-static swig_module_info swig_module = {swig_types, 48, 0, 0, 0, 0};
+#define SWIGTYPE_p_AbstractParameterInterface swig_types[0]
+#define SWIGTYPE_p_AccessTypes__Access swig_types[1]
+#define SWIGTYPE_p_AddressBlockInterface swig_types[2]
+#define SWIGTYPE_p_CommonInterface swig_types[3]
+#define SWIGTYPE_p_DirectionTypes__Direction swig_types[4]
+#define SWIGTYPE_p_FieldInterface swig_types[5]
+#define SWIGTYPE_p_General__ModifiedWrite swig_types[6]
+#define SWIGTYPE_p_General__ReadAction swig_types[7]
+#define SWIGTYPE_p_General__TestConstraint swig_types[8]
+#define SWIGTYPE_p_General__Usage swig_types[9]
+#define SWIGTYPE_p_MasterPortInterface swig_types[10]
+#define SWIGTYPE_p_MemoryMap swig_types[11]
+#define SWIGTYPE_p_MemoryMapInterface swig_types[12]
+#define SWIGTYPE_p_MemoryRemap swig_types[13]
+#define SWIGTYPE_p_NameGroup swig_types[14]
+#define SWIGTYPE_p_NameGroupInterface swig_types[15]
+#define SWIGTYPE_p_ParameterizableInterface swig_types[16]
+#define SWIGTYPE_p_ParametersInterface swig_types[17]
+#define SWIGTYPE_p_PortsInterface swig_types[18]
+#define SWIGTYPE_p_PythonAPI swig_types[19]
+#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[20]
+#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[21]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[22]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[23]
+#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[24]
+#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[25]
+#define SWIGTYPE_p_QSharedPointerT_MemoryMapValidator_t swig_types[26]
+#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[27]
+#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[28]
+#define SWIGTYPE_p_QSharedPointerT_Port_t swig_types[29]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[30]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[31]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[32]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[33]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[34]
+#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[35]
+#define SWIGTYPE_p_QString swig_types[36]
+#define SWIGTYPE_p_RegisterInterface swig_types[37]
+#define SWIGTYPE_p_ResetInterface swig_types[38]
+#define SWIGTYPE_p_allocator_type swig_types[39]
+#define SWIGTYPE_p_char swig_types[40]
+#define SWIGTYPE_p_difference_type swig_types[41]
+#define SWIGTYPE_p_p_PyObject swig_types[42]
+#define SWIGTYPE_p_size_type swig_types[43]
+#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[44]
+#define SWIGTYPE_p_std__invalid_argument swig_types[45]
+#define SWIGTYPE_p_std__string swig_types[46]
+#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[47]
+#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[48]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[49]
+#define SWIGTYPE_p_value_type swig_types[50]
+static swig_type_info *swig_types[52];
+static swig_module_info swig_module = {swig_types, 51, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3530,7 +3533,9 @@ SWIGINTERNINLINE PyObject*
 #include "..\editors\ComponentEditor\common\interfaces\CommonInterface.h"
 #include "..\editors\ComponentEditor\common\interfaces\NameGroupInterface.h"
 #include "..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h"
-#include "..\editors\ComponentEditor\ports\PortsInterface.h"
+#include "..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.h"
+#include "..\editors\ComponentEditor\ports\interfaces\PortsInterface.h"
+#include "..\editors\ComponentEditor\parameters\AbstractParameterInterface.h"
 #include "..\editors\ComponentEditor\parameters\ParametersInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h"
@@ -9218,6 +9223,393 @@ SWIGINTERN PyObject *ParameterizableInterface_swigregister(PyObject *SWIGUNUSEDP
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_delete_MasterPortInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MasterPortInterface" "', argument " "1"" of type '" "MasterPortInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_addWirePort__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_addWirePort" "', argument " "1"" of type '" "MasterPortInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MasterPortInterface_addWirePort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MasterPortInterface_addWirePort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->addWirePort((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_addWirePort__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_addWirePort" "', argument " "1"" of type '" "MasterPortInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  (arg1)->addWirePort();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_addWirePort(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MasterPortInterface_addWirePort", 0, 2, argv))) SWIG_fail;
+  --argc;
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MasterPortInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_MasterPortInterface_addWirePort__SWIG_1(self, argc, argv);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MasterPortInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_MasterPortInterface_addWirePort__SWIG_0(self, argc, argv);
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MasterPortInterface_addWirePort'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MasterPortInterface::addWirePort(std::string const &)\n"
+    "    MasterPortInterface::addWirePort()\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_addTransactionalPort__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_addTransactionalPort" "', argument " "1"" of type '" "MasterPortInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MasterPortInterface_addTransactionalPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MasterPortInterface_addTransactionalPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->addTransactionalPort((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_addTransactionalPort__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_addTransactionalPort" "', argument " "1"" of type '" "MasterPortInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  (arg1)->addTransactionalPort();
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_addTransactionalPort(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[3] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "MasterPortInterface_addTransactionalPort", 0, 2, argv))) SWIG_fail;
+  --argc;
+  if (argc == 1) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MasterPortInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      return _wrap_MasterPortInterface_addTransactionalPort__SWIG_1(self, argc, argv);
+    }
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MasterPortInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_MasterPortInterface_addTransactionalPort__SWIG_0(self, argc, argv);
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'MasterPortInterface_addTransactionalPort'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    MasterPortInterface::addTransactionalPort(std::string const &)\n"
+    "    MasterPortInterface::addTransactionalPort()\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_portIsWire(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MasterPortInterface_portIsWire", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_portIsWire" "', argument " "1"" of type '" "MasterPortInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MasterPortInterface_portIsWire" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MasterPortInterface_portIsWire" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((MasterPortInterface const *)arg1)->portIsWire((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_portIsTransactional(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MasterPortInterface_portIsTransactional", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_portIsTransactional" "', argument " "1"" of type '" "MasterPortInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MasterPortInterface_portIsTransactional" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MasterPortInterface_portIsTransactional" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((MasterPortInterface const *)arg1)->portIsTransactional((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_getIconPathForMissingPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::string result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_getIconPathForMissingPort" "', argument " "1"" of type '" "MasterPortInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  result = ((MasterPortInterface const *)arg1)->getIconPathForMissingPort();
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_getIconPathForDirection(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  DirectionTypes::Direction arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MasterPortInterface_getIconPathForDirection", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_getIconPathForDirection" "', argument " "1"" of type '" "MasterPortInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_DirectionTypes__Direction,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MasterPortInterface_getIconPathForDirection" "', argument " "2"" of type '" "DirectionTypes::Direction""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MasterPortInterface_getIconPathForDirection" "', argument " "2"" of type '" "DirectionTypes::Direction""'");
+    } else {
+      DirectionTypes::Direction * temp = reinterpret_cast< DirectionTypes::Direction * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  result = ((MasterPortInterface const *)arg1)->getIconPathForDirection(arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MasterPortInterface_getIconPathForInitiative(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MasterPortInterface *arg1 = (MasterPortInterface *) 0 ;
+  QString *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "MasterPortInterface_getIconPathForInitiative", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MasterPortInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MasterPortInterface_getIconPathForInitiative" "', argument " "1"" of type '" "MasterPortInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< MasterPortInterface * >(argp1);
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MasterPortInterface_getIconPathForInitiative" "', argument " "2"" of type '" "QString const &""'"); 
+  }
+  if (!argp2) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MasterPortInterface_getIconPathForInitiative" "', argument " "2"" of type '" "QString const &""'"); 
+  }
+  arg2 = reinterpret_cast< QString * >(argp2);
+  result = ((MasterPortInterface const *)arg1)->getIconPathForInitiative((QString const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *MasterPortInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_MasterPortInterface, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_new_PortsInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SwigValueWrapper< QSharedPointer< PortValidator > > arg1 ;
@@ -9643,6 +10035,43 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getAllReferencesToIdInItem(PyObject *S
 fail:
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_portExists(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portExists", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portExists" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portExists" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portExists" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((PortsInterface const *)arg1)->portExists((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -10512,6 +10941,43 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getDirection(PyObject *SWIGUNUSEDPARM(
   }
   result = ((PortsInterface const *)arg1)->getDirection((std::string const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getDirectionType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  DirectionTypes::Direction result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getDirectionType", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getDirectionType" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getDirectionType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getDirectionType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getDirectionType((std::string const &)*arg2);
+  resultobj = SWIG_NewPointerObj((new DirectionTypes::Direction(static_cast< const DirectionTypes::Direction& >(result))), SWIGTYPE_p_DirectionTypes__Direction, SWIG_POINTER_OWN |  0 );
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
@@ -13258,6 +13724,80 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_PortsInterface_getIconPathForPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getIconPathForPort", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getIconPathForPort" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getIconPathForPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getIconPathForPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getIconPathForPort((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PortsInterface_getPort(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PortsInterface *arg1 = (PortsInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  SwigValueWrapper< QSharedPointer< Port > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getPort", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getPort" "', argument " "1"" of type '" "PortsInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< PortsInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getPort" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((PortsInterface const *)arg1)->getPort((std::string const &)*arg2);
+  resultobj = SWIG_NewPointerObj((new QSharedPointer< Port >(static_cast< const QSharedPointer< Port >& >(result))), SWIGTYPE_p_QSharedPointerT_Port_t, SWIG_POINTER_OWN |  0 );
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *PortsInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
@@ -13267,6 +13807,2724 @@ SWIGINTERN PyObject *PortsInterface_swigregister(PyObject *SWIGUNUSEDPARM(self),
 
 SWIGINTERN PyObject *PortsInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   return SWIG_Python_InitShadowInstance(args);
+}
+
+SWIGINTERN PyObject *_wrap_delete_AbstractParameterInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_AbstractParameterInterface" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setChoices(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< QList< QSharedPointer< Choice > > > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setChoices", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setChoices" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setChoices" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< Choice > > >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setChoices" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< Choice > > >""'");
+    } else {
+      QSharedPointer< QList< QSharedPointer< Choice > > > * temp = reinterpret_cast< QSharedPointer< QList< QSharedPointer< Choice > > > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setChoices(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setName" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getDescription" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getDescription((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setDescription" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (int)((AbstractParameterInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getExpressionsInSelectedItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getExpressionsInSelectedItems", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getExpressionsInSelectedItems" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "AbstractParameterInterface_getExpressionsInSelectedItems" "', argument " "2"" of type '" "std::vector< std::string,std::allocator< std::string > >""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getExpressionsInSelectedItems(arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  bool result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_validateItems" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  result = (bool)((AbstractParameterInterface const *)arg1)->validateItems();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_itemHasValidName" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getDisplayName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getDisplayName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getDisplayName" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getDisplayName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getDisplayName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getDisplayName((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setDisplayName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setDisplayName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setDisplayName" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setDisplayName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setDisplayName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setDisplayName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setDisplayName" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDisplayName((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getType", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getType" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getType((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setType", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setType" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setType" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setType" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setType((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthLeftValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getBitWidthLeftValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getBitWidthLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getBitWidthLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AbstractParameterInterface_getBitWidthLeftValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AbstractParameterInterface const *)arg1)->getBitWidthLeftValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthLeftValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getBitWidthLeftValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getBitWidthLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getBitWidthLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getBitWidthLeftValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthLeftValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getBitWidthLeftValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AbstractParameterInterface_getBitWidthLeftValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AbstractParameterInterface_getBitWidthLeftValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AbstractParameterInterface_getBitWidthLeftValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AbstractParameterInterface::getBitWidthLeftValue(std::string const &,int const &) const\n"
+    "    AbstractParameterInterface::getBitWidthLeftValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthLeftFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getBitWidthLeftFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getBitWidthLeftFormattedExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getBitWidthLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getBitWidthLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getBitWidthLeftFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthLeftExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getBitWidthLeftExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getBitWidthLeftExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getBitWidthLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getBitWidthLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getBitWidthLeftExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setBitWidthLeft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setBitWidthLeft", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setBitWidthLeft" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setBitWidthLeft" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setBitWidthLeft" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setBitWidthLeft" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setBitWidthLeft" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setBitWidthLeft((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthRightValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getBitWidthRightValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getBitWidthRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getBitWidthRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AbstractParameterInterface_getBitWidthRightValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AbstractParameterInterface const *)arg1)->getBitWidthRightValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthRightValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getBitWidthRightValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getBitWidthRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getBitWidthRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getBitWidthRightValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthRightValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getBitWidthRightValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AbstractParameterInterface_getBitWidthRightValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AbstractParameterInterface_getBitWidthRightValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AbstractParameterInterface_getBitWidthRightValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AbstractParameterInterface::getBitWidthRightValue(std::string const &,int const &) const\n"
+    "    AbstractParameterInterface::getBitWidthRightValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthRightFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getBitWidthRightFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getBitWidthRightFormattedExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getBitWidthRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getBitWidthRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getBitWidthRightFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthRightExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getBitWidthRightExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getBitWidthRightExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getBitWidthRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getBitWidthRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getBitWidthRightExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setBitWidthRight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setBitWidthRight", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setBitWidthRight" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setBitWidthRight" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setBitWidthRight" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setBitWidthRight" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setBitWidthRight" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setBitWidthRight((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getMinimum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getMinimum", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getMinimum" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getMinimum((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setMinimum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setMinimum", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setMinimum" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setMinimum" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setMinimum" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setMinimum((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getMaximum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getMaximum", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getMaximum" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getMaximum((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setMaximum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setMaximum", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setMaximum" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setMaximum" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setMaximum" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setMaximum((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getChoice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getChoice", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getChoice" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getChoice" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getChoice" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getChoice((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setChoice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setChoice", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setChoice" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setChoice" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setChoice" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setChoice" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setChoice" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setChoice((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AbstractParameterInterface_getValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AbstractParameterInterface const *)arg1)->getValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AbstractParameterInterface_getValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AbstractParameterInterface_getValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AbstractParameterInterface_getValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AbstractParameterInterface::getValue(std::string const &,int const &) const\n"
+    "    AbstractParameterInterface::getValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getValueFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getValueFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getValueFormattedExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getValueFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getValueFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getValueFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getValueExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getValueExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getValueExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getValueExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getValueExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getValueExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setValue", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setValue" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setValue" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setValue" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setValue((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getResolve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getResolve", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getResolve" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getResolve" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getResolve" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getResolve((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setResolve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setResolve", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setResolve" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setResolve" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setResolve" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setResolve" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setResolve" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setResolve((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayLeftValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getArrayLeftValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AbstractParameterInterface_getArrayLeftValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AbstractParameterInterface const *)arg1)->getArrayLeftValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayLeftValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getArrayLeftValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getArrayLeftValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayLeftValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getArrayLeftValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AbstractParameterInterface_getArrayLeftValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AbstractParameterInterface_getArrayLeftValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AbstractParameterInterface_getArrayLeftValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AbstractParameterInterface::getArrayLeftValue(std::string const &,int const &) const\n"
+    "    AbstractParameterInterface::getArrayLeftValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayLeftFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getArrayLeftFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getArrayLeftFormattedExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getArrayLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getArrayLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getArrayLeftFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayLeftExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getArrayLeftExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getArrayLeftExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getArrayLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getArrayLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getArrayLeftExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setArrayLeft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setArrayLeft", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setArrayLeft" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setArrayLeft" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setArrayLeft" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setArrayLeft" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setArrayLeft" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setArrayLeft((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayRightValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getArrayRightValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AbstractParameterInterface_getArrayRightValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((AbstractParameterInterface const *)arg1)->getArrayRightValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayRightValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getArrayRightValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getArrayRightValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayRightValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getArrayRightValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_AbstractParameterInterface_getArrayRightValue__SWIG_1(self, argc, argv);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_AbstractParameterInterface_getArrayRightValue__SWIG_0(self, argc, argv);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'AbstractParameterInterface_getArrayRightValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    AbstractParameterInterface::getArrayRightValue(std::string const &,int const &) const\n"
+    "    AbstractParameterInterface::getArrayRightValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayRightFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getArrayRightFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getArrayRightFormattedExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getArrayRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getArrayRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getArrayRightFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayRightExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getArrayRightExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getArrayRightExpression" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getArrayRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getArrayRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getArrayRightExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setArrayRight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setArrayRight", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setArrayRight" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setArrayRight" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setArrayRight" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setArrayRight" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setArrayRight" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setArrayRight((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getID(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getID", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getID" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getID" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getID" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((AbstractParameterInterface const *)arg1)->getID((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setID(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setID", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setID" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setID" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setID" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setID" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setID" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setID((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getUsageCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getUsageCount", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getUsageCount" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (int)((AbstractParameterInterface const *)arg1)->getUsageCount((std::string const &)*arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setUsageCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setUsageCount", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setUsageCount" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "AbstractParameterInterface_setUsageCount" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = (bool)(arg1)->setUsageCount((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_increaseUsageCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_increaseUsageCount", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_increaseUsageCount" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_increaseUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_increaseUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)(arg1)->increaseUsageCount((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_reduceUsageCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_reduceUsageCount", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_reduceUsageCount" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_reduceUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_reduceUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)(arg1)->reduceUsageCount((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_hasValidType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_hasValidType", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_hasValidType" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_hasValidType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_hasValidType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->hasValidType((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_hasValidBitWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_hasValidBitWidth", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_hasValidBitWidth" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_hasValidBitWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_hasValidBitWidth" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->hasValidBitWidth((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_hasValidMinimum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_hasValidMinimum", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_hasValidMinimum" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_hasValidMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_hasValidMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->hasValidMinimum((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_hasValidMaximum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_hasValidMaximum", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_hasValidMaximum" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_hasValidMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_hasValidMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->hasValidMaximum((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_hasValidChoice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_hasValidChoice", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_hasValidChoice" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_hasValidChoice" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_hasValidChoice" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->hasValidChoice((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_hasValidValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_hasValidValue", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_hasValidValue" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_hasValidValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_hasValidValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->hasValidValue((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_hasValidResolve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_hasValidResolve", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_hasValidResolve" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_hasValidResolve" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_hasValidResolve" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->hasValidResolve((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_AbstractParameterInterface_hasValidArrayValues(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_hasValidArrayValues", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_hasValidArrayValues" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_hasValidArrayValues" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_hasValidArrayValues" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((AbstractParameterInterface const *)arg1)->hasValidArrayValues((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *AbstractParameterInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_AbstractParameterInterface, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
 }
 
 SWIGINTERN PyObject *_wrap_new_ParametersInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
@@ -13390,80 +16648,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ParametersInterface_setModuleParameters(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< QList< QSharedPointer< ModuleParameter > > > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setModuleParameters", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setModuleParameters" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setModuleParameters" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< ModuleParameter > > >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setModuleParameters" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< ModuleParameter > > >""'");
-    } else {
-      QSharedPointer< QList< QSharedPointer< ModuleParameter > > > * temp = reinterpret_cast< QSharedPointer< QList< QSharedPointer< ModuleParameter > > > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setModuleParameters(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setChoices(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  SwigValueWrapper< QSharedPointer< QList< QSharedPointer< Choice > > > > arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  void *argp2 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setChoices", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setChoices" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,  0  | 0);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setChoices" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< Choice > > >""'"); 
-    }  
-    if (!argp2) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setChoices" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< Choice > > >""'");
-    } else {
-      QSharedPointer< QList< QSharedPointer< Choice > > > * temp = reinterpret_cast< QSharedPointer< QList< QSharedPointer< Choice > > > * >(argp2);
-      arg2 = *temp;
-      if (SWIG_IsNewObj(res2)) delete temp;
-    }
-  }
-  (arg1)->setChoices(arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_ParametersInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ParametersInterface *arg1 = (ParametersInterface *) 0 ;
@@ -13575,2508 +16759,6 @@ SWIGINTERN PyObject *_wrap_ParametersInterface_getItemNames(PyObject *SWIGUNUSED
   resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setName" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getDescription" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getDescription((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setDescription" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((ParametersInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_validateItems" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  result = (bool)((ParametersInterface const *)arg1)->validateItems();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_itemHasValidName" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getDisplayName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getDisplayName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getDisplayName" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getDisplayName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getDisplayName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getDisplayName((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setDisplayName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setDisplayName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setDisplayName" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setDisplayName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setDisplayName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setDisplayName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setDisplayName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDisplayName((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getType", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getType" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getType((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setType", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setType" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setType" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setType" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setType((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthLeftValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int temp3 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  std::string result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getBitWidthLeftValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getBitWidthLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getBitWidthLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ParametersInterface_getBitWidthLeftValue" "', argument " "3"" of type '" "int""'");
-  } 
-  temp3 = static_cast< int >(val3);
-  arg3 = &temp3;
-  result = ((ParametersInterface const *)arg1)->getBitWidthLeftValue((std::string const &)*arg2,(int const &)*arg3);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthLeftValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  std::string result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getBitWidthLeftValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getBitWidthLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getBitWidthLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getBitWidthLeftValue((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthLeftValue(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "ParametersInterface_getBitWidthLeftValue", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_ParametersInterface_getBitWidthLeftValue__SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_ParametersInterface_getBitWidthLeftValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ParametersInterface_getBitWidthLeftValue'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    ParametersInterface::getBitWidthLeftValue(std::string const &,int const &) const\n"
-    "    ParametersInterface::getBitWidthLeftValue(std::string const &) const\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthLeftFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getBitWidthLeftFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getBitWidthLeftFormattedExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getBitWidthLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getBitWidthLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getBitWidthLeftFormattedExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthLeftExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getBitWidthLeftExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getBitWidthLeftExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getBitWidthLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getBitWidthLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getBitWidthLeftExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setBitWidthLeft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setBitWidthLeft", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setBitWidthLeft" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setBitWidthLeft" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setBitWidthLeft" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setBitWidthLeft" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setBitWidthLeft" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setBitWidthLeft((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthRightValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int temp3 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  std::string result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getBitWidthRightValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getBitWidthRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getBitWidthRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ParametersInterface_getBitWidthRightValue" "', argument " "3"" of type '" "int""'");
-  } 
-  temp3 = static_cast< int >(val3);
-  arg3 = &temp3;
-  result = ((ParametersInterface const *)arg1)->getBitWidthRightValue((std::string const &)*arg2,(int const &)*arg3);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthRightValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  std::string result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getBitWidthRightValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getBitWidthRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getBitWidthRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getBitWidthRightValue((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthRightValue(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "ParametersInterface_getBitWidthRightValue", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_ParametersInterface_getBitWidthRightValue__SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_ParametersInterface_getBitWidthRightValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ParametersInterface_getBitWidthRightValue'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    ParametersInterface::getBitWidthRightValue(std::string const &,int const &) const\n"
-    "    ParametersInterface::getBitWidthRightValue(std::string const &) const\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthRightFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getBitWidthRightFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getBitWidthRightFormattedExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getBitWidthRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getBitWidthRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getBitWidthRightFormattedExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getBitWidthRightExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getBitWidthRightExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getBitWidthRightExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getBitWidthRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getBitWidthRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getBitWidthRightExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setBitWidthRight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setBitWidthRight", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setBitWidthRight" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setBitWidthRight" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setBitWidthRight" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setBitWidthRight" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setBitWidthRight" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setBitWidthRight((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getMinimum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getMinimum", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getMinimum" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getMinimum((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setMinimum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setMinimum", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setMinimum" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setMinimum" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setMinimum" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setMinimum((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getMaximum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getMaximum", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getMaximum" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getMaximum((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setMaximum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setMaximum", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setMaximum" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setMaximum" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setMaximum" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setMaximum((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getChoice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getChoice", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getChoice" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getChoice" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getChoice" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getChoice((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setChoice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setChoice", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setChoice" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setChoice" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setChoice" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setChoice" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setChoice" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setChoice((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int temp3 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  std::string result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ParametersInterface_getValue" "', argument " "3"" of type '" "int""'");
-  } 
-  temp3 = static_cast< int >(val3);
-  arg3 = &temp3;
-  result = ((ParametersInterface const *)arg1)->getValue((std::string const &)*arg2,(int const &)*arg3);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  std::string result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getValue((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getValue(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "ParametersInterface_getValue", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_ParametersInterface_getValue__SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_ParametersInterface_getValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ParametersInterface_getValue'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    ParametersInterface::getValue(std::string const &,int const &) const\n"
-    "    ParametersInterface::getValue(std::string const &) const\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getValueFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getValueFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getValueFormattedExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getValueFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getValueFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getValueFormattedExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getValueExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getValueExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getValueExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getValueExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getValueExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getValueExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setValue", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setValue" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setValue" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setValue" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setValue((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getResolve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getResolve", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getResolve" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getResolve" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getResolve" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getResolve((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setResolve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setResolve", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setResolve" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setResolve" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setResolve" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setResolve" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setResolve" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setResolve((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayLeftValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int temp3 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  std::string result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getArrayLeftValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ParametersInterface_getArrayLeftValue" "', argument " "3"" of type '" "int""'");
-  } 
-  temp3 = static_cast< int >(val3);
-  arg3 = &temp3;
-  result = ((ParametersInterface const *)arg1)->getArrayLeftValue((std::string const &)*arg2,(int const &)*arg3);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayLeftValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  std::string result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getArrayLeftValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getArrayLeftValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getArrayLeftValue((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayLeftValue(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "ParametersInterface_getArrayLeftValue", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_ParametersInterface_getArrayLeftValue__SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_ParametersInterface_getArrayLeftValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ParametersInterface_getArrayLeftValue'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    ParametersInterface::getArrayLeftValue(std::string const &,int const &) const\n"
-    "    ParametersInterface::getArrayLeftValue(std::string const &) const\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayLeftFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getArrayLeftFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getArrayLeftFormattedExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getArrayLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getArrayLeftFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getArrayLeftFormattedExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayLeftExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getArrayLeftExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getArrayLeftExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getArrayLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getArrayLeftExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getArrayLeftExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setArrayLeft(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setArrayLeft", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setArrayLeft" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setArrayLeft" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setArrayLeft" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setArrayLeft" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setArrayLeft" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setArrayLeft((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayRightValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int temp3 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  std::string result;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getArrayRightValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ParametersInterface_getArrayRightValue" "', argument " "3"" of type '" "int""'");
-  } 
-  temp3 = static_cast< int >(val3);
-  arg3 = &temp3;
-  result = ((ParametersInterface const *)arg1)->getArrayRightValue((std::string const &)*arg2,(int const &)*arg3);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayRightValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  std::string result;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getArrayRightValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getArrayRightValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getArrayRightValue((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayRightValue(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "ParametersInterface_getArrayRightValue", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_ParametersInterface_getArrayRightValue__SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_ParametersInterface_getArrayRightValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ParametersInterface_getArrayRightValue'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    ParametersInterface::getArrayRightValue(std::string const &,int const &) const\n"
-    "    ParametersInterface::getArrayRightValue(std::string const &) const\n");
-  return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayRightFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getArrayRightFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getArrayRightFormattedExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getArrayRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getArrayRightFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getArrayRightFormattedExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getArrayRightExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getArrayRightExpression", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getArrayRightExpression" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getArrayRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getArrayRightExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getArrayRightExpression((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setArrayRight(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setArrayRight", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setArrayRight" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setArrayRight" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setArrayRight" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setArrayRight" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setArrayRight" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setArrayRight((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getID(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getID", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getID" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getID" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getID" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getID((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setID(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setID", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setID" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setID" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setID" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setID" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setID" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setID((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getUsageCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getUsageCount", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getUsageCount" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (int)((ParametersInterface const *)arg1)->getUsageCount((std::string const &)*arg2);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setUsageCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  int *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int temp3 ;
-  int val3 ;
-  int ecode3 = 0 ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setUsageCount", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setUsageCount" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ParametersInterface_setUsageCount" "', argument " "3"" of type '" "int""'");
-  } 
-  temp3 = static_cast< int >(val3);
-  arg3 = &temp3;
-  result = (bool)(arg1)->setUsageCount((std::string const &)*arg2,(int const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getDataType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getDataType", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getDataType" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getDataType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getDataType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getDataType((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setDataType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setDataType", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setDataType" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setDataType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setDataType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setDataType" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setDataType" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDataType((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getUsageType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getUsageType", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getUsageType" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getUsageType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getUsageType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ParametersInterface const *)arg1)->getUsageType((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_setUsageType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_setUsageType", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_setUsageType" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_setUsageType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setUsageType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_setUsageType" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_setUsageType" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setUsageType((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_increaseUsageCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_increaseUsageCount", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_increaseUsageCount" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_increaseUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_increaseUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)(arg1)->increaseUsageCount((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_reduceUsageCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_reduceUsageCount", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_reduceUsageCount" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_reduceUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_reduceUsageCount" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)(arg1)->reduceUsageCount((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -16208,133 +16890,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ParametersInterface_addModuleParameter__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  int *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int res3 = SWIG_OLDOBJ ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_addModuleParameter" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ParametersInterface_addModuleParameter" "', argument " "2"" of type '" "int""'");
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ParametersInterface_addModuleParameter" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_addModuleParameter" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  (arg1)->addModuleParameter((int const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_addModuleParameter__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  int *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_addModuleParameter" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ParametersInterface_addModuleParameter" "', argument " "2"" of type '" "int""'");
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  (arg1)->addModuleParameter((int const &)*arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_addModuleParameter(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "ParametersInterface_addModuleParameter", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_ParametersInterface_addModuleParameter__SWIG_1(self, argc, argv);
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_ParametersInterface_addModuleParameter__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ParametersInterface_addModuleParameter'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    ParametersInterface::addModuleParameter(int const &,std::string const &)\n"
-    "    ParametersInterface::addModuleParameter(int const &)\n");
-  return 0;
-}
-
-
 SWIGINTERN PyObject *_wrap_ParametersInterface_removeParameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ParametersInterface *arg1 = (ParametersInterface *) 0 ;
@@ -16363,339 +16918,6 @@ SWIGINTERN PyObject *_wrap_ParametersInterface_removeParameter(PyObject *SWIGUNU
     arg2 = ptr;
   }
   result = (bool)(arg1)->removeParameter((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_removeModuleParameter(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_removeModuleParameter", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_removeModuleParameter" "', argument " "1"" of type '" "ParametersInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_removeModuleParameter" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_removeModuleParameter" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)(arg1)->removeModuleParameter((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_hasValidType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_hasValidType", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_hasValidType" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_hasValidType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_hasValidType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->hasValidType((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_hasValidBitWidth(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_hasValidBitWidth", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_hasValidBitWidth" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_hasValidBitWidth" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_hasValidBitWidth" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->hasValidBitWidth((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_hasValidMinimum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_hasValidMinimum", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_hasValidMinimum" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_hasValidMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_hasValidMinimum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->hasValidMinimum((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_hasValidMaximum(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_hasValidMaximum", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_hasValidMaximum" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_hasValidMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_hasValidMaximum" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->hasValidMaximum((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_hasValidChoice(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_hasValidChoice", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_hasValidChoice" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_hasValidChoice" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_hasValidChoice" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->hasValidChoice((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_hasValidValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_hasValidValue", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_hasValidValue" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_hasValidValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_hasValidValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->hasValidValue((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_hasValidResolve(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_hasValidResolve", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_hasValidResolve" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_hasValidResolve" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_hasValidResolve" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->hasValidResolve((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_hasValidArrayValues(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_hasValidArrayValues", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_hasValidArrayValues" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_hasValidArrayValues" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_hasValidArrayValues" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ParametersInterface const *)arg1)->hasValidArrayValues((std::string const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
@@ -29202,6 +29424,15 @@ static PyMethodDef SwigMethods[] = {
 	 { "delete_ParameterizableInterface", _wrap_delete_ParameterizableInterface, METH_O, NULL},
 	 { "ParameterizableInterface_getAllReferencesToIdInItem", _wrap_ParameterizableInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
 	 { "ParameterizableInterface_swigregister", ParameterizableInterface_swigregister, METH_O, NULL},
+	 { "delete_MasterPortInterface", _wrap_delete_MasterPortInterface, METH_O, NULL},
+	 { "MasterPortInterface_addWirePort", _wrap_MasterPortInterface_addWirePort, METH_VARARGS, NULL},
+	 { "MasterPortInterface_addTransactionalPort", _wrap_MasterPortInterface_addTransactionalPort, METH_VARARGS, NULL},
+	 { "MasterPortInterface_portIsWire", _wrap_MasterPortInterface_portIsWire, METH_VARARGS, NULL},
+	 { "MasterPortInterface_portIsTransactional", _wrap_MasterPortInterface_portIsTransactional, METH_VARARGS, NULL},
+	 { "MasterPortInterface_getIconPathForMissingPort", _wrap_MasterPortInterface_getIconPathForMissingPort, METH_O, NULL},
+	 { "MasterPortInterface_getIconPathForDirection", _wrap_MasterPortInterface_getIconPathForDirection, METH_VARARGS, NULL},
+	 { "MasterPortInterface_getIconPathForInitiative", _wrap_MasterPortInterface_getIconPathForInitiative, METH_VARARGS, NULL},
+	 { "MasterPortInterface_swigregister", MasterPortInterface_swigregister, METH_O, NULL},
 	 { "new_PortsInterface", _wrap_new_PortsInterface, METH_VARARGS, NULL},
 	 { "delete_PortsInterface", _wrap_delete_PortsInterface, METH_O, NULL},
 	 { "PortsInterface_setPorts", _wrap_PortsInterface_setPorts, METH_VARARGS, NULL},
@@ -29213,6 +29444,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "PortsInterface_getDescription", _wrap_PortsInterface_getDescription, METH_VARARGS, NULL},
 	 { "PortsInterface_setDescription", _wrap_PortsInterface_setDescription, METH_VARARGS, NULL},
 	 { "PortsInterface_getAllReferencesToIdInItem", _wrap_PortsInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
+	 { "PortsInterface_portExists", _wrap_PortsInterface_portExists, METH_VARARGS, NULL},
 	 { "PortsInterface_validateItems", _wrap_PortsInterface_validateItems, METH_O, NULL},
 	 { "PortsInterface_itemHasValidName", _wrap_PortsInterface_itemHasValidName, METH_VARARGS, NULL},
 	 { "PortsInterface_getTypeName", _wrap_PortsInterface_getTypeName, METH_VARARGS, NULL},
@@ -29230,6 +29462,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "PortsInterface_isAdHoc", _wrap_PortsInterface_isAdHoc, METH_VARARGS, NULL},
 	 { "PortsInterface_setAdHoc", _wrap_PortsInterface_setAdHoc, METH_VARARGS, NULL},
 	 { "PortsInterface_getDirection", _wrap_PortsInterface_getDirection, METH_VARARGS, NULL},
+	 { "PortsInterface_getDirectionType", _wrap_PortsInterface_getDirectionType, METH_VARARGS, NULL},
 	 { "PortsInterface_setDirection", _wrap_PortsInterface_setDirection, METH_VARARGS, NULL},
 	 { "PortsInterface_getLeftBoundValue", _wrap_PortsInterface_getLeftBoundValue, METH_VARARGS, NULL},
 	 { "PortsInterface_getLeftBoundFormattedExpression", _wrap_PortsInterface_getLeftBoundFormattedExpression, METH_VARARGS, NULL},
@@ -29281,77 +29514,75 @@ static PyMethodDef SwigMethods[] = {
 	 { "PortsInterface_portHasValidProtocol", _wrap_PortsInterface_portHasValidProtocol, METH_VARARGS, NULL},
 	 { "PortsInterface_portHasValidMaxConnections", _wrap_PortsInterface_portHasValidMaxConnections, METH_VARARGS, NULL},
 	 { "PortsInterface_portHasValidMinConnections", _wrap_PortsInterface_portHasValidMinConnections, METH_VARARGS, NULL},
+	 { "PortsInterface_getIconPathForPort", _wrap_PortsInterface_getIconPathForPort, METH_VARARGS, NULL},
+	 { "PortsInterface_getPort", _wrap_PortsInterface_getPort, METH_VARARGS, NULL},
 	 { "PortsInterface_swigregister", PortsInterface_swigregister, METH_O, NULL},
 	 { "PortsInterface_swiginit", PortsInterface_swiginit, METH_VARARGS, NULL},
+	 { "delete_AbstractParameterInterface", _wrap_delete_AbstractParameterInterface, METH_O, NULL},
+	 { "AbstractParameterInterface_setChoices", _wrap_AbstractParameterInterface_setChoices, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setName", _wrap_AbstractParameterInterface_setName, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getDescription", _wrap_AbstractParameterInterface_getDescription, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setDescription", _wrap_AbstractParameterInterface_setDescription, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getAllReferencesToIdInItem", _wrap_AbstractParameterInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getExpressionsInSelectedItems", _wrap_AbstractParameterInterface_getExpressionsInSelectedItems, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_validateItems", _wrap_AbstractParameterInterface_validateItems, METH_O, NULL},
+	 { "AbstractParameterInterface_itemHasValidName", _wrap_AbstractParameterInterface_itemHasValidName, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getDisplayName", _wrap_AbstractParameterInterface_getDisplayName, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setDisplayName", _wrap_AbstractParameterInterface_setDisplayName, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getType", _wrap_AbstractParameterInterface_getType, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setType", _wrap_AbstractParameterInterface_setType, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getBitWidthLeftValue", _wrap_AbstractParameterInterface_getBitWidthLeftValue, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getBitWidthLeftFormattedExpression", _wrap_AbstractParameterInterface_getBitWidthLeftFormattedExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getBitWidthLeftExpression", _wrap_AbstractParameterInterface_getBitWidthLeftExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setBitWidthLeft", _wrap_AbstractParameterInterface_setBitWidthLeft, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getBitWidthRightValue", _wrap_AbstractParameterInterface_getBitWidthRightValue, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getBitWidthRightFormattedExpression", _wrap_AbstractParameterInterface_getBitWidthRightFormattedExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getBitWidthRightExpression", _wrap_AbstractParameterInterface_getBitWidthRightExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setBitWidthRight", _wrap_AbstractParameterInterface_setBitWidthRight, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getMinimum", _wrap_AbstractParameterInterface_getMinimum, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setMinimum", _wrap_AbstractParameterInterface_setMinimum, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getMaximum", _wrap_AbstractParameterInterface_getMaximum, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setMaximum", _wrap_AbstractParameterInterface_setMaximum, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getChoice", _wrap_AbstractParameterInterface_getChoice, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setChoice", _wrap_AbstractParameterInterface_setChoice, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getValue", _wrap_AbstractParameterInterface_getValue, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getValueFormattedExpression", _wrap_AbstractParameterInterface_getValueFormattedExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getValueExpression", _wrap_AbstractParameterInterface_getValueExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setValue", _wrap_AbstractParameterInterface_setValue, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getResolve", _wrap_AbstractParameterInterface_getResolve, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setResolve", _wrap_AbstractParameterInterface_setResolve, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getArrayLeftValue", _wrap_AbstractParameterInterface_getArrayLeftValue, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getArrayLeftFormattedExpression", _wrap_AbstractParameterInterface_getArrayLeftFormattedExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getArrayLeftExpression", _wrap_AbstractParameterInterface_getArrayLeftExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setArrayLeft", _wrap_AbstractParameterInterface_setArrayLeft, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getArrayRightValue", _wrap_AbstractParameterInterface_getArrayRightValue, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getArrayRightFormattedExpression", _wrap_AbstractParameterInterface_getArrayRightFormattedExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getArrayRightExpression", _wrap_AbstractParameterInterface_getArrayRightExpression, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setArrayRight", _wrap_AbstractParameterInterface_setArrayRight, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getID", _wrap_AbstractParameterInterface_getID, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setID", _wrap_AbstractParameterInterface_setID, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_getUsageCount", _wrap_AbstractParameterInterface_getUsageCount, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_setUsageCount", _wrap_AbstractParameterInterface_setUsageCount, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_increaseUsageCount", _wrap_AbstractParameterInterface_increaseUsageCount, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_reduceUsageCount", _wrap_AbstractParameterInterface_reduceUsageCount, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_hasValidType", _wrap_AbstractParameterInterface_hasValidType, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_hasValidBitWidth", _wrap_AbstractParameterInterface_hasValidBitWidth, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_hasValidMinimum", _wrap_AbstractParameterInterface_hasValidMinimum, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_hasValidMaximum", _wrap_AbstractParameterInterface_hasValidMaximum, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_hasValidChoice", _wrap_AbstractParameterInterface_hasValidChoice, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_hasValidValue", _wrap_AbstractParameterInterface_hasValidValue, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_hasValidResolve", _wrap_AbstractParameterInterface_hasValidResolve, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_hasValidArrayValues", _wrap_AbstractParameterInterface_hasValidArrayValues, METH_VARARGS, NULL},
+	 { "AbstractParameterInterface_swigregister", AbstractParameterInterface_swigregister, METH_O, NULL},
 	 { "new_ParametersInterface", _wrap_new_ParametersInterface, METH_VARARGS, NULL},
 	 { "delete_ParametersInterface", _wrap_delete_ParametersInterface, METH_O, NULL},
 	 { "ParametersInterface_setParameters", _wrap_ParametersInterface_setParameters, METH_VARARGS, NULL},
-	 { "ParametersInterface_setModuleParameters", _wrap_ParametersInterface_setModuleParameters, METH_VARARGS, NULL},
-	 { "ParametersInterface_setChoices", _wrap_ParametersInterface_setChoices, METH_VARARGS, NULL},
 	 { "ParametersInterface_getItemIndex", _wrap_ParametersInterface_getItemIndex, METH_VARARGS, NULL},
 	 { "ParametersInterface_getIndexedItemName", _wrap_ParametersInterface_getIndexedItemName, METH_VARARGS, NULL},
 	 { "ParametersInterface_itemCount", _wrap_ParametersInterface_itemCount, METH_O, NULL},
 	 { "ParametersInterface_getItemNames", _wrap_ParametersInterface_getItemNames, METH_O, NULL},
-	 { "ParametersInterface_setName", _wrap_ParametersInterface_setName, METH_VARARGS, NULL},
-	 { "ParametersInterface_getDescription", _wrap_ParametersInterface_getDescription, METH_VARARGS, NULL},
-	 { "ParametersInterface_setDescription", _wrap_ParametersInterface_setDescription, METH_VARARGS, NULL},
-	 { "ParametersInterface_getAllReferencesToIdInItem", _wrap_ParametersInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
-	 { "ParametersInterface_validateItems", _wrap_ParametersInterface_validateItems, METH_O, NULL},
-	 { "ParametersInterface_itemHasValidName", _wrap_ParametersInterface_itemHasValidName, METH_VARARGS, NULL},
-	 { "ParametersInterface_getDisplayName", _wrap_ParametersInterface_getDisplayName, METH_VARARGS, NULL},
-	 { "ParametersInterface_setDisplayName", _wrap_ParametersInterface_setDisplayName, METH_VARARGS, NULL},
-	 { "ParametersInterface_getType", _wrap_ParametersInterface_getType, METH_VARARGS, NULL},
-	 { "ParametersInterface_setType", _wrap_ParametersInterface_setType, METH_VARARGS, NULL},
-	 { "ParametersInterface_getBitWidthLeftValue", _wrap_ParametersInterface_getBitWidthLeftValue, METH_VARARGS, NULL},
-	 { "ParametersInterface_getBitWidthLeftFormattedExpression", _wrap_ParametersInterface_getBitWidthLeftFormattedExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_getBitWidthLeftExpression", _wrap_ParametersInterface_getBitWidthLeftExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_setBitWidthLeft", _wrap_ParametersInterface_setBitWidthLeft, METH_VARARGS, NULL},
-	 { "ParametersInterface_getBitWidthRightValue", _wrap_ParametersInterface_getBitWidthRightValue, METH_VARARGS, NULL},
-	 { "ParametersInterface_getBitWidthRightFormattedExpression", _wrap_ParametersInterface_getBitWidthRightFormattedExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_getBitWidthRightExpression", _wrap_ParametersInterface_getBitWidthRightExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_setBitWidthRight", _wrap_ParametersInterface_setBitWidthRight, METH_VARARGS, NULL},
-	 { "ParametersInterface_getMinimum", _wrap_ParametersInterface_getMinimum, METH_VARARGS, NULL},
-	 { "ParametersInterface_setMinimum", _wrap_ParametersInterface_setMinimum, METH_VARARGS, NULL},
-	 { "ParametersInterface_getMaximum", _wrap_ParametersInterface_getMaximum, METH_VARARGS, NULL},
-	 { "ParametersInterface_setMaximum", _wrap_ParametersInterface_setMaximum, METH_VARARGS, NULL},
-	 { "ParametersInterface_getChoice", _wrap_ParametersInterface_getChoice, METH_VARARGS, NULL},
-	 { "ParametersInterface_setChoice", _wrap_ParametersInterface_setChoice, METH_VARARGS, NULL},
-	 { "ParametersInterface_getValue", _wrap_ParametersInterface_getValue, METH_VARARGS, NULL},
-	 { "ParametersInterface_getValueFormattedExpression", _wrap_ParametersInterface_getValueFormattedExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_getValueExpression", _wrap_ParametersInterface_getValueExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_setValue", _wrap_ParametersInterface_setValue, METH_VARARGS, NULL},
-	 { "ParametersInterface_getResolve", _wrap_ParametersInterface_getResolve, METH_VARARGS, NULL},
-	 { "ParametersInterface_setResolve", _wrap_ParametersInterface_setResolve, METH_VARARGS, NULL},
-	 { "ParametersInterface_getArrayLeftValue", _wrap_ParametersInterface_getArrayLeftValue, METH_VARARGS, NULL},
-	 { "ParametersInterface_getArrayLeftFormattedExpression", _wrap_ParametersInterface_getArrayLeftFormattedExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_getArrayLeftExpression", _wrap_ParametersInterface_getArrayLeftExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_setArrayLeft", _wrap_ParametersInterface_setArrayLeft, METH_VARARGS, NULL},
-	 { "ParametersInterface_getArrayRightValue", _wrap_ParametersInterface_getArrayRightValue, METH_VARARGS, NULL},
-	 { "ParametersInterface_getArrayRightFormattedExpression", _wrap_ParametersInterface_getArrayRightFormattedExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_getArrayRightExpression", _wrap_ParametersInterface_getArrayRightExpression, METH_VARARGS, NULL},
-	 { "ParametersInterface_setArrayRight", _wrap_ParametersInterface_setArrayRight, METH_VARARGS, NULL},
-	 { "ParametersInterface_getID", _wrap_ParametersInterface_getID, METH_VARARGS, NULL},
-	 { "ParametersInterface_setID", _wrap_ParametersInterface_setID, METH_VARARGS, NULL},
-	 { "ParametersInterface_getUsageCount", _wrap_ParametersInterface_getUsageCount, METH_VARARGS, NULL},
-	 { "ParametersInterface_setUsageCount", _wrap_ParametersInterface_setUsageCount, METH_VARARGS, NULL},
-	 { "ParametersInterface_getDataType", _wrap_ParametersInterface_getDataType, METH_VARARGS, NULL},
-	 { "ParametersInterface_setDataType", _wrap_ParametersInterface_setDataType, METH_VARARGS, NULL},
-	 { "ParametersInterface_getUsageType", _wrap_ParametersInterface_getUsageType, METH_VARARGS, NULL},
-	 { "ParametersInterface_setUsageType", _wrap_ParametersInterface_setUsageType, METH_VARARGS, NULL},
-	 { "ParametersInterface_increaseUsageCount", _wrap_ParametersInterface_increaseUsageCount, METH_VARARGS, NULL},
-	 { "ParametersInterface_reduceUsageCount", _wrap_ParametersInterface_reduceUsageCount, METH_VARARGS, NULL},
 	 { "ParametersInterface_addParameter", _wrap_ParametersInterface_addParameter, METH_VARARGS, NULL},
-	 { "ParametersInterface_addModuleParameter", _wrap_ParametersInterface_addModuleParameter, METH_VARARGS, NULL},
 	 { "ParametersInterface_removeParameter", _wrap_ParametersInterface_removeParameter, METH_VARARGS, NULL},
-	 { "ParametersInterface_removeModuleParameter", _wrap_ParametersInterface_removeModuleParameter, METH_VARARGS, NULL},
-	 { "ParametersInterface_hasValidType", _wrap_ParametersInterface_hasValidType, METH_VARARGS, NULL},
-	 { "ParametersInterface_hasValidBitWidth", _wrap_ParametersInterface_hasValidBitWidth, METH_VARARGS, NULL},
-	 { "ParametersInterface_hasValidMinimum", _wrap_ParametersInterface_hasValidMinimum, METH_VARARGS, NULL},
-	 { "ParametersInterface_hasValidMaximum", _wrap_ParametersInterface_hasValidMaximum, METH_VARARGS, NULL},
-	 { "ParametersInterface_hasValidChoice", _wrap_ParametersInterface_hasValidChoice, METH_VARARGS, NULL},
-	 { "ParametersInterface_hasValidValue", _wrap_ParametersInterface_hasValidValue, METH_VARARGS, NULL},
-	 { "ParametersInterface_hasValidResolve", _wrap_ParametersInterface_hasValidResolve, METH_VARARGS, NULL},
-	 { "ParametersInterface_hasValidArrayValues", _wrap_ParametersInterface_hasValidArrayValues, METH_VARARGS, NULL},
 	 { "ParametersInterface_swigregister", ParametersInterface_swigregister, METH_O, NULL},
 	 { "ParametersInterface_swiginit", ParametersInterface_swiginit, METH_VARARGS, NULL},
 	 { "new_MemoryMapInterface", _wrap_new_MemoryMapInterface, METH_VARARGS, NULL},
@@ -29617,11 +29848,17 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 static void *_p_NameGroupInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((CommonInterface *)  ((NameGroupInterface *) x));
 }
+static void *_p_MasterPortInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((CommonInterface *) (NameGroupInterface *) ((MasterPortInterface *) x));
+}
 static void *_p_PortsInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((CommonInterface *) (NameGroupInterface *) ((PortsInterface *) x));
+    return (void *)((CommonInterface *) (NameGroupInterface *)(MasterPortInterface *) ((PortsInterface *) x));
+}
+static void *_p_AbstractParameterInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((CommonInterface *) (NameGroupInterface *) ((AbstractParameterInterface *) x));
 }
 static void *_p_ParametersInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((CommonInterface *) (NameGroupInterface *) ((ParametersInterface *) x));
+    return (void *)((CommonInterface *) (NameGroupInterface *)(AbstractParameterInterface *) ((ParametersInterface *) x));
 }
 static void *_p_MemoryMapInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((CommonInterface *) (NameGroupInterface *) ((MemoryMapInterface *) x));
@@ -29638,11 +29875,38 @@ static void *_p_FieldInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(
 static void *_p_ResetInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((CommonInterface *)  ((ResetInterface *) x));
 }
+static void *_p_MasterPortInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((MasterPortInterface *) x));
+}
+static void *_p_PortsInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *) (MasterPortInterface *) ((PortsInterface *) x));
+}
+static void *_p_AbstractParameterInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((AbstractParameterInterface *) x));
+}
+static void *_p_ParametersInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *) (AbstractParameterInterface *) ((ParametersInterface *) x));
+}
+static void *_p_MemoryMapInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((MemoryMapInterface *) x));
+}
+static void *_p_AddressBlockInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((AddressBlockInterface *) x));
+}
+static void *_p_RegisterInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((RegisterInterface *) x));
+}
+static void *_p_FieldInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((FieldInterface *) x));
+}
 static void *_p_PortsInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((PortsInterface *) x));
 }
+static void *_p_AbstractParameterInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ParameterizableInterface *)  ((AbstractParameterInterface *) x));
+}
 static void *_p_ParametersInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((ParameterizableInterface *)  ((ParametersInterface *) x));
+    return (void *)((ParameterizableInterface *) (AbstractParameterInterface *) ((ParametersInterface *) x));
 }
 static void *_p_MemoryMapInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((MemoryMapInterface *) x));
@@ -29659,32 +29923,23 @@ static void *_p_FieldInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUN
 static void *_p_ResetInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((ResetInterface *) x));
 }
-static void *_p_PortsInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((NameGroupInterface *)  ((PortsInterface *) x));
+static void *_p_PortsInterfaceTo_p_MasterPortInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((MasterPortInterface *)  ((PortsInterface *) x));
 }
-static void *_p_ParametersInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((NameGroupInterface *)  ((ParametersInterface *) x));
+static void *_p_ParametersInterfaceTo_p_AbstractParameterInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((AbstractParameterInterface *)  ((ParametersInterface *) x));
 }
-static void *_p_MemoryMapInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((NameGroupInterface *)  ((MemoryMapInterface *) x));
-}
-static void *_p_AddressBlockInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((NameGroupInterface *)  ((AddressBlockInterface *) x));
-}
-static void *_p_RegisterInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((NameGroupInterface *)  ((RegisterInterface *) x));
-}
-static void *_p_FieldInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
-    return (void *)((NameGroupInterface *)  ((FieldInterface *) x));
-}
+static swig_type_info _swigt__p_AbstractParameterInterface = {"_p_AbstractParameterInterface", "AbstractParameterInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_AccessTypes__Access = {"_p_AccessTypes__Access", "AccessTypes::Access *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_AddressBlockInterface = {"_p_AddressBlockInterface", "AddressBlockInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_CommonInterface = {"_p_CommonInterface", "CommonInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_DirectionTypes__Direction = {"_p_DirectionTypes__Direction", "DirectionTypes::Direction *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_FieldInterface = {"_p_FieldInterface", "FieldInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_General__ModifiedWrite = {"_p_General__ModifiedWrite", "General::ModifiedWrite *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_General__ReadAction = {"_p_General__ReadAction", "General::ReadAction *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_General__TestConstraint = {"_p_General__TestConstraint", "General::TestConstraint *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_General__Usage = {"_p_General__Usage", "General::Usage *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MasterPortInterface = {"_p_MasterPortInterface", "MasterPortInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MemoryMap = {"_p_MemoryMap", "MemoryMap *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MemoryMapInterface = {"_p_MemoryMapInterface", "MemoryMapInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MemoryRemap = {"_p_MemoryRemap", "MemoryRemap *", 0, 0, (void*)0, 0};
@@ -29703,10 +29958,10 @@ static swig_type_info _swigt__p_QSharedPointerT_Field_t = {"_p_QSharedPointerT_F
 static swig_type_info _swigt__p_QSharedPointerT_MemoryMapValidator_t = {"_p_QSharedPointerT_MemoryMapValidator_t", "QSharedPointer< MemoryMapValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_ParameterValidator_t = {"_p_QSharedPointerT_ParameterValidator_t", "QSharedPointer< ParameterValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_PortValidator_t = {"_p_QSharedPointerT_PortValidator_t", "QSharedPointer< PortValidator > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_Port_t = {"_p_QSharedPointerT_Port_t", "QSharedPointer< Port > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t", "QSharedPointer< QList< QSharedPointer< Choice > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t", "QSharedPointer< QList< QSharedPointer< Field > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t", "QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > > *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t", "QSharedPointer< QList< QSharedPointer< ModuleParameter > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t", "QSharedPointer< QList< QSharedPointer< Parameter > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t", "QSharedPointer< QList< QSharedPointer< RegisterBase > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_RegisterValidator_t = {"_p_QSharedPointerT_RegisterValidator_t", "QSharedPointer< RegisterValidator > *", 0, 0, (void*)0, 0};
@@ -29727,14 +29982,17 @@ static swig_type_info _swigt__p_swig__SwigPyIterator = {"_p_swig__SwigPyIterator
 static swig_type_info _swigt__p_value_type = {"_p_value_type", "value_type *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
+  &_swigt__p_AbstractParameterInterface,
   &_swigt__p_AccessTypes__Access,
   &_swigt__p_AddressBlockInterface,
   &_swigt__p_CommonInterface,
+  &_swigt__p_DirectionTypes__Direction,
   &_swigt__p_FieldInterface,
   &_swigt__p_General__ModifiedWrite,
   &_swigt__p_General__ReadAction,
   &_swigt__p_General__TestConstraint,
   &_swigt__p_General__Usage,
+  &_swigt__p_MasterPortInterface,
   &_swigt__p_MemoryMap,
   &_swigt__p_MemoryMapInterface,
   &_swigt__p_MemoryRemap,
@@ -29753,10 +30011,10 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_QSharedPointerT_MemoryMapValidator_t,
   &_swigt__p_QSharedPointerT_ParameterValidator_t,
   &_swigt__p_QSharedPointerT_PortValidator_t,
+  &_swigt__p_QSharedPointerT_Port_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t,
-  &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t,
   &_swigt__p_QSharedPointerT_RegisterValidator_t,
@@ -29777,20 +30035,23 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_value_type,
 };
 
+static swig_cast_info _swigc__p_AbstractParameterInterface[] = {  {&_swigt__p_AbstractParameterInterface, 0, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_AbstractParameterInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AccessTypes__Access[] = {  {&_swigt__p_AccessTypes__Access, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AddressBlockInterface[] = {  {&_swigt__p_AddressBlockInterface, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_CommonInterface, 0, 0, 0},  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_CommonInterface, 0, 0, 0},  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MasterPortInterface, _p_MasterPortInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_DirectionTypes__Direction[] = {  {&_swigt__p_DirectionTypes__Direction, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_FieldInterface[] = {  {&_swigt__p_FieldInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_General__ModifiedWrite[] = {  {&_swigt__p_General__ModifiedWrite, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_General__ReadAction[] = {  {&_swigt__p_General__ReadAction, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_General__TestConstraint[] = {  {&_swigt__p_General__TestConstraint, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_General__Usage[] = {  {&_swigt__p_General__Usage, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MasterPortInterface[] = {  {&_swigt__p_MasterPortInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_MasterPortInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MemoryMap[] = {  {&_swigt__p_MemoryMap, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MemoryMapInterface[] = {  {&_swigt__p_MemoryMapInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MemoryRemap[] = {  {&_swigt__p_MemoryRemap, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_NameGroup[] = {  {&_swigt__p_NameGroup, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_NameGroupInterface[] = {  {&_swigt__p_NameGroupInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_NameGroupInterface, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_NameGroupInterface[] = {  {&_swigt__p_NameGroupInterface, 0, 0, 0},  {&_swigt__p_MasterPortInterface, _p_MasterPortInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_NameGroupInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ParametersInterface[] = {  {&_swigt__p_ParametersInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PortsInterface[] = {  {&_swigt__p_PortsInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PythonAPI[] = {  {&_swigt__p_PythonAPI, 0, 0, 0},{0, 0, 0, 0}};
@@ -29803,10 +30064,10 @@ static swig_cast_info _swigc__p_QSharedPointerT_Field_t[] = {  {&_swigt__p_QShar
 static swig_cast_info _swigc__p_QSharedPointerT_MemoryMapValidator_t[] = {  {&_swigt__p_QSharedPointerT_MemoryMapValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_ParameterValidator_t[] = {  {&_swigt__p_QSharedPointerT_ParameterValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_PortValidator_t[] = {  {&_swigt__p_QSharedPointerT_PortValidator_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_Port_t[] = {  {&_swigt__p_QSharedPointerT_Port_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_RegisterValidator_t[] = {  {&_swigt__p_QSharedPointerT_RegisterValidator_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -29827,14 +30088,17 @@ static swig_cast_info _swigc__p_swig__SwigPyIterator[] = {  {&_swigt__p_swig__Sw
 static swig_cast_info _swigc__p_value_type[] = {  {&_swigt__p_value_type, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
+  _swigc__p_AbstractParameterInterface,
   _swigc__p_AccessTypes__Access,
   _swigc__p_AddressBlockInterface,
   _swigc__p_CommonInterface,
+  _swigc__p_DirectionTypes__Direction,
   _swigc__p_FieldInterface,
   _swigc__p_General__ModifiedWrite,
   _swigc__p_General__ReadAction,
   _swigc__p_General__TestConstraint,
   _swigc__p_General__Usage,
+  _swigc__p_MasterPortInterface,
   _swigc__p_MemoryMap,
   _swigc__p_MemoryMapInterface,
   _swigc__p_MemoryRemap,
@@ -29853,10 +30117,10 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_QSharedPointerT_MemoryMapValidator_t,
   _swigc__p_QSharedPointerT_ParameterValidator_t,
   _swigc__p_QSharedPointerT_PortValidator_t,
+  _swigc__p_QSharedPointerT_Port_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t,
-  _swigc__p_QSharedPointerT_QListT_QSharedPointerT_ModuleParameter_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t,
   _swigc__p_QSharedPointerT_RegisterValidator_t,

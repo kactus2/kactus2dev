@@ -228,9 +228,6 @@
     <ClCompile Include="..\VersionHelper.cpp">
       <Filter>Source Files\versionHelper</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\ports\PortsInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
       <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
@@ -281,6 +278,15 @@
     </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -338,9 +344,6 @@
     <ClInclude Include="..\VersionHelper.h">
       <Filter>Header Files\versionHelper</Filter>
     </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\ports\PortsInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h">
       <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
@@ -391,6 +394,15 @@
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
+      <Filter>Header Files\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
