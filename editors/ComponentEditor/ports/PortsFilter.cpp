@@ -12,7 +12,7 @@
 #include "PortsFilter.h"
 
 #include <editors/ComponentEditor/ports/portsmodel.h>
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <IPXACTmodels/Component/Port.h>
 

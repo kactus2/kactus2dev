@@ -25,7 +25,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

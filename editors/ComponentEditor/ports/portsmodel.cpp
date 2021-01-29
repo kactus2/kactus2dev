@@ -13,7 +13,7 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 

@@ -15,7 +15,7 @@
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <library/LibraryInterface.h>
 

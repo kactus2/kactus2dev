@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
