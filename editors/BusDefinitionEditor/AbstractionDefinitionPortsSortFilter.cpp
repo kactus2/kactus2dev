@@ -13,12 +13,16 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionPortsSortFilter::AbstractionDefinitionPortsSortFilter()
 //-----------------------------------------------------------------------------
-AbstractionDefinitionPortsSortFilter::AbstractionDefinitionPortsSortFilter(ColumnHandles columns, QObject *parent):
+AbstractionDefinitionPortsSortFilter::AbstractionDefinitionPortsSortFilter(ColumnHandles columns,
+    PortAbstractionInterface* portInterface, QObject *parent):
 QSortFilterProxyModel(parent),
-columns_(columns)
+columns_(columns),
+portInterface_(portInterface)
 {
 
 }
@@ -101,4 +105,27 @@ bool AbstractionDefinitionPortsSortFilter::isSystemGroupMandatory(QModelIndex co
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionPortsSortFilter::filterAcceptsRow()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionPortsSortFilter::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    if (source_parent.isValid())
+    {
+        return false;
+    }
+
+    std::string portName = portInterface_->getIndexedItemName(source_row);
+    return portInterface_->portIsWire(portName);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionPortsSortFilter::getPortInterface()
+//-----------------------------------------------------------------------------
+PortAbstractionInterface* AbstractionDefinitionPortsSortFilter::getPortInterface() const
+{
+    return portInterface_;
 }

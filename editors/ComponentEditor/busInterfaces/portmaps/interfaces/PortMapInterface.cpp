@@ -21,7 +21,7 @@
 #include <IPXACTmodels/Component/AbstractionType.h>
 #include <IPXACTmodels/Component/Port.h>
 
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <QVector>
 #include <QString>

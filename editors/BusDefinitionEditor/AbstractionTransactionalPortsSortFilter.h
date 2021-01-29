@@ -28,11 +28,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] columns     Storage for the column indexes.
-     *      @param [in] parent      Pointer to the owner of this model.
+     *      @param [in] columns         Storage for the column indexes.
+     *      @param [in] portInterface   Interface for accessing port abstractions.
+     *      @param [in] parent          Pointer to the owner of this model.
 	 */
     AbstractionTransactionalPortsSortFilter(AbstractionDefinitionPortsSortFilter::ColumnHandles columns,
-        QObject *parent);
+        PortAbstractionInterface* portInterface, QObject *parent);
 	
 	/*!
 	 *  The destructor.
@@ -49,6 +50,16 @@ protected:
      *      @return Background color for the selected index.
      */
     virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Check if the filter should accept the selected row.
+     *
+     *      @param [in] source_row      Row of the selected item.
+     *      @param [in] source_parent   Parent index of the item.
+     *
+     *      @return True, if the row is accepted, false otherwise.
+     */
+    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override final;
 
 private:
 	//! No copying. No assignment.

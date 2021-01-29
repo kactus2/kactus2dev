@@ -11,7 +11,7 @@
 
 #include "TransactionalPortsModel.h"
 
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>

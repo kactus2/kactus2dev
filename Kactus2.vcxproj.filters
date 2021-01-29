@@ -989,6 +989,18 @@
     <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
       <UniqueIdentifier>{ece98f23-9e39-43e0-8624-f2c64622e284}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\BusDefinitionEditor\interfaces">
+      <UniqueIdentifier>{3cebef82-5883-4778-b1e8-75e74187f053}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\BusDefinitionEditor\interfaces">
+      <UniqueIdentifier>{a7c8e980-018f-4596-aad8-996bf453851a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\ports\interfaces">
+      <UniqueIdentifier>{635c99e6-325d-44e3-8df8-8811e54cc299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\ports\interfaces">
+      <UniqueIdentifier>{c019f53b-f0e5-47cc-87f6-5fe5337f7d4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4876,9 +4888,6 @@
     <ClCompile Include="GeneratedFiles\moc_ConsoleEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\PortsInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\ParametersInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
@@ -4935,6 +4944,15 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\interfaces\PortMapInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\interfaces\PortAbstractionInterface.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\interfaces\PortsInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports\interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6729,9 +6747,6 @@
     <CustomBuild Include="mainwindow\PythonConsole\ConsoleEditor.h">
       <Filter>Header Files\mainwindow\PythonConsole</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\ports\PortsInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\parameters\ParametersInterface.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
@@ -7558,6 +7573,15 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\interfaces\PortMapInterface.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\BusDefinitionEditor\interfaces\PortAbstractionInterface.h">
+      <Filter>Header Files\editors\BusDefinitionEditor\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\interfaces\PortsInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\ports\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\ports\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

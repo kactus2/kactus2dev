@@ -285,7 +285,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/PortWireTypeDelegate.h \
     ./editors/ComponentEditor/ports/PortsEditorConstructor.h \
     ./editors/ComponentEditor/ports/PortsFilter.h \
-    ./editors/ComponentEditor/ports/PortsInterface.h \
+    ./editors/ComponentEditor/ports/interfaces/PortsInterface.h \
     ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeView.h \
     ./editors/ComponentEditor/ports/WirePortsEditorConstructor.h \
@@ -346,6 +346,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h \
     ./editors/ComponentEditor/busInterfaces/general/BridgeColumns.h \
     ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.h \
     ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.h \
@@ -863,7 +864,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h
+    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h \
+    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1103,6 +1105,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.cpp \
     ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.cpp \
     ./editors/ComponentEditor/busInterfaces/general/bridgesmodel.cpp \
@@ -1169,7 +1172,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/portsdelegate.cpp \
     ./editors/ComponentEditor/ports/portseditor.cpp \
     ./editors/ComponentEditor/ports/PortsFilter.cpp \
-    ./editors/ComponentEditor/ports/PortsInterface.cpp \
+    ./editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
@@ -1615,5 +1618,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.cpp
+    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.cpp \
+    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp
 RESOURCES += kactus.qrc

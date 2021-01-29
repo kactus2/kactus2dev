@@ -23,11 +23,11 @@
 // Function: AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor()
 //-----------------------------------------------------------------------------
 AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor(LibraryInterface* libraryAccess,
-    QWidget *parent):
+    PortAbstractionInterface* portInterface, QWidget *parent):
 QWidget(parent),
 portView_(this),
 portProxy_(),
-portModel_(libraryAccess, this),
+portModel_(libraryAccess, portInterface, this),
 portDelegate_(libraryAccess, this)
 {
     AbstractionDefinitionPortsSortFilter::ColumnHandles transactionalColumns;
@@ -36,7 +36,7 @@ portDelegate_(libraryAccess, this)
     transactionalColumns.systemGroupColumn_ = AbstractionTransactionalPortColumns::SYSTEM_GROUP;
     transactionalColumns.descriptionColumn_ = AbstractionTransactionalPortColumns::DESCRIPTION;
 
-    portProxy_ = new AbstractionTransactionalPortsSortFilter(transactionalColumns, this);
+    portProxy_ = new AbstractionTransactionalPortsSortFilter(transactionalColumns, portInterface, this);
     portProxy_->setSourceModel(&portModel_);
 
     portView_.setModel(portProxy_);
@@ -120,19 +120,11 @@ QModelIndexList AbstractionTransactionalPortsEditor::getSelectedIndexes()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::save()
+// Function: AbstractionTransactionalPortsEditor::resetPortModel()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::save()
+void AbstractionTransactionalPortsEditor::resetPortModel()
 {
-    portModel_.save();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::setAbsDef()
-//-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
-{
-    portModel_.setAbsDef(absDef);
+    portModel_.resetPortModel();
 }
 
 //-----------------------------------------------------------------------------

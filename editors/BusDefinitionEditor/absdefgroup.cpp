@@ -14,6 +14,7 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
@@ -24,15 +25,17 @@
 //-----------------------------------------------------------------------------
 // Function: AbsDefGroup::AbsDefGroup()
 //-----------------------------------------------------------------------------
-AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, QWidget *parent):
+AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface,
+    QWidget *parent):
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
 vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendVLNVEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 descriptionEditor_(new QPlainTextEdit(this)),
 portTabs_(this),
-wirePortsEditor_(libraryHandler, &portTabs_),
-transactionalPortsEditor_(libraryHandler, &portTabs_),
-abstraction_()
+wirePortsEditor_(libraryHandler, portInterface, &portTabs_),
+transactionalPortsEditor_(libraryHandler, portInterface, &portTabs_),
+abstraction_(),
+portInterface_(portInterface)
 {
     extendVLNVEditor_->setToolTip(QString("Extended abstraction definition is not currently supported in Kactus2"));
 
@@ -84,8 +87,7 @@ AbsDefGroup::~AbsDefGroup()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::save()
 {
-    wirePortsEditor_.save();
-    transactionalPortsEditor_.save();
+    portInterface_->save();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,8 +97,11 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 {
     abstraction_ = absDef;
 
-    wirePortsEditor_.setAbsDef(absDef);
-    transactionalPortsEditor_.setAbsDef(absDef);
+    portInterface_->setAbsDef(abstraction_);
+
+    wirePortsEditor_.resetPortModel();
+    transactionalPortsEditor_.resetPortModel();
+
     vlnvDisplay_->setVLNV(absDef->getVlnv());
 
     if (abstractionContainsTransactionalPorts())
