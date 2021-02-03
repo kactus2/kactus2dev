@@ -9,12 +9,22 @@
 // <Short description of the class/file contents>
 //-----------------------------------------------------------------------------
 
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+
 #include "PythonConsole.h"
 #include "ConsoleEditor.h"
 
 #include <QVBoxLayout>
 #include <QApplication>
+
 #include <mainwindow/MessageConsole/messageconsole.h>
+
+
+#include <PythonAPI/CLIConsole.h>
+
+
+#include <windows.h>
 
 //-----------------------------------------------------------------------------
 // Function: PythonConsole::PythonConsole()
@@ -22,66 +32,63 @@
 PythonConsole::PythonConsole(QWidget* parent): 
     QWidget(parent),
     console_(new ConsoleEditor(this)),
-   // inputEditor_(new QLineEdit(this)),
-    process_(0)
+    inputEditor_(new QLineEdit(this)),
+    interpreter_(new CLIConsole(this))
+
 {    
     //inputEditor_->setPlaceholderText(QStringLiteral("Type your commands here."));
-    
-    process_ = new QProcess(this);
-    process_->setProcessChannelMode(QProcess::SeparateChannels);
 
-    connect(process_, SIGNAL(readyRead()),
+  /*  connect(process_, SIGNAL(readyRead()),
         this, SLOT(onStandardOutputRead()), Qt::UniqueConnection);
     connect(process_, SIGNAL(readyReadStandardOutput()),
         this, SLOT(onStandardOutputRead()), Qt::UniqueConnection);
     connect(process_, SIGNAL(readyReadStandardError()),
         this, SLOT(onStandardErrorRead()), Qt::UniqueConnection);
     connect(process_, SIGNAL(finished(int, QProcess::ExitStatus)),
-        this, SLOT(onProcessFinished(int, QProcess::ExitStatus)), Qt::UniqueConnection);
+        this, SLOT(onProcessFinished(int, QProcess::ExitStatus)), Qt::UniqueConnection);*/
+
+
+    interpreter_->initialize();
 
     connect(console_, SIGNAL(entered(QString const&)),
         this, SLOT(onInputReceived(QString const&)));
 
-    QStringList environment = QProcess::systemEnvironment();
-    process_->setEnvironment(environment);
-    QString path = QApplication::applicationDirPath();
-    process_->setWorkingDirectory(path);
-    process_->start("python -i");
+    connect(interpreter_, SIGNAL(quit()), this, SLOT(onProcessFinished()), Qt::UniqueConnection);
 
-    if (!process_->waitForStarted())
-    {        
-        console_->setPlainText("Process could not be started successfully.");        
-        process_->close();        
-    }    
-    
-    connect(this, SIGNAL(destroyed(QObject*)), process_, SLOT(terminate()));
+    connect(inputEditor_, SIGNAL(editingFinished()),
+        this, SLOT(onInputReceived()));
 
     setupLayout();
 }
 
 void PythonConsole::onStandardOutputRead()
 {
-    QString output(process_->readAllStandardOutput());
+   // QString output(process_->readAllStandardOutput());
     //output.chop(2);
     //console_->appendPlainText();
-    console_->print(output);
+   // console_->print(output);
 }
 
 void PythonConsole::onStandardErrorRead()
 {
-    QString output(process_->readAllStandardError());
+   // QString output(process_->readAllStandardError());
     //console_->appendPlainText(output);
-    console_->printError(output);
+    //console_->printError(output);
 }
 
-void PythonConsole::onProcessFinished(int, QProcess::ExitStatus)
+void PythonConsole::onProcessFinished()
 {    
     console_->appendPlainText(tr("Process finished unexpectedly."));
 }
 
-void PythonConsole::onInputReceived(QString const& text)
+void PythonConsole::onInputReceived()
 {
-    process_->write(text.toLatin1());
+    QString line = inputEditor_->text();
+    line.append('\n');
+    interpreter_->execute(line.toStdString());
+
+
+    //process_->write(text.toLatin1());
   /*  if (inputEditor_->text().isEmpty() == false)
     {
         QString text = inputEditor_->text();
@@ -101,7 +108,7 @@ void PythonConsole::setupLayout()
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(console_);
-    //layout->addWidget(inputEditor_);
+    layout->addWidget(inputEditor_);
     layout->setContentsMargins(0, 0, 0, 2);
 
 }

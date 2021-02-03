@@ -19,6 +19,7 @@
 
 class MessageConsole;
 class ConsoleEditor;
+class CLIConsole;
 
 class PythonConsole : public QWidget
 {
@@ -37,17 +38,19 @@ private slots:
 
     void onStandardErrorRead();
 
-    void onProcessFinished(int, QProcess::ExitStatus);
+    void onProcessFinished();
 
-    void onInputReceived(QString const& text);
+    void onInputReceived();
 
 private:
 
     void setupLayout();
 
-    QProcess* process_;
+
     ConsoleEditor* console_;
-    //QLineEdit* inputEditor_;
+    QLineEdit* inputEditor_;
+
+    CLIConsole* interpreter_;
 };
 
 #endif // PYTHONCONSOLE_H

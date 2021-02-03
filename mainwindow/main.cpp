@@ -197,13 +197,15 @@ int main(int argc, char *argv[])
         }*/
 
         CLIConsole console(application.data());
-        if (console.initialize(argv[0]) == false)
+        if (console.initialize() == false)
         {
+            return 1;
         }
 
         QObject::connect(&console, SIGNAL(quit()), application.data(), SLOT(quit()));
      //   QObject::connect(process.data(), SIGNAL(finished(int, QProcess::ExitStatus)), application.data(), SLOT(quit()));
         
+
         return application->exec();
     }   
 }
