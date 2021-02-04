@@ -21,7 +21,7 @@
 #include <mainwindow/MessageConsole/messageconsole.h>
 
 
-#include <PythonAPI/CLIConsole.h>
+#include <PythonAPI/PythonInterpreter.h>
 
 
 #include <windows.h>
@@ -33,7 +33,7 @@ PythonConsole::PythonConsole(QWidget* parent):
     QWidget(parent),
     console_(new ConsoleEditor(this)),
     inputEditor_(new QLineEdit(this)),
-    interpreter_(new CLIConsole(this))
+    interpreter_(new PythonInterpreter(this))
 
 {    
     //inputEditor_->setPlaceholderText(QStringLiteral("Type your commands here."));

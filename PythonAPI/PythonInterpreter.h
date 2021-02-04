@@ -24,14 +24,14 @@
 #include <iostream>
 #include <QProcess>
 
-class CLIConsole : public QObject
+class PythonInterpreter : public QObject
 {
     Q_OBJECT
 
 public:
-    CLIConsole(QObject* parent);
+    explicit PythonInterpreter(QObject* parent = nullptr);
 
-    ~CLIConsole();
+    virtual ~PythonInterpreter();
 
     bool initialize();
     

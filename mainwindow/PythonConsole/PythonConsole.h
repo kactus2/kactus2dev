@@ -19,7 +19,7 @@
 
 class MessageConsole;
 class ConsoleEditor;
-class CLIConsole;
+class PythonInterpreter;
 
 class PythonConsole : public QWidget
 {
@@ -50,7 +50,7 @@ private:
     ConsoleEditor* console_;
     QLineEdit* inputEditor_;
 
-    CLIConsole* interpreter_;
+    PythonInterpreter* interpreter_;
 };
 
 #endif // PYTHONCONSOLE_H

@@ -3217,7 +3217,7 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
     </ClCompile>
-    <ClCompile Include="PythonAPI\CLIConsole.cpp">
+    <ClCompile Include="PythonAPI\PythonInterpreter.cpp">
       <Filter>Source Files\PythonAPI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5820,7 +5820,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="PythonAPI\CLIConsole.h">
+    <QtMoc Include="PythonAPI\PythonInterpreter.h">
       <Filter>Header Files\PythonAPI</Filter>
     </QtMoc>
   </ItemGroup>

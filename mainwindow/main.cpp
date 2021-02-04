@@ -38,7 +38,7 @@
 
 #include <iostream>
 
-#include "PythonAPI/CLIConsole.h"
+#include "PythonAPI/PythonInterpreter.h"
 
 
 //-----------------------------------------------------------------------------
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
             process->close();
         }*/
 
-        CLIConsole console(application.data());
+        PythonInterpreter console(application.data());
         if (console.initialize() == false)
         {
             return 1;

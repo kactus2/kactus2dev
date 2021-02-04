@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: CLIConsole.cpp
+// File: PythonInterpreter.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
@@ -9,7 +9,7 @@
 // <Short description of the class/file contents>
 //-----------------------------------------------------------------------------
 
-#include "CLIConsole.h"
+#include "PythonInterpreter.h"
 
 #include <QApplication>
 
@@ -21,10 +21,49 @@ namespace
     const std::string ps2 = "... ";
 };
 
+static PyObject*
+emb_init(PyObject *self, PyObject *args)
+{
+    Py_INCREF(Py_None);
+
+        return Py_None;
+}
+
+static PyObject*
+write(PyObject *self, PyObject *args)
+{
+    char const* s = nullptr;
+  
+    if (!PyArg_ParseTuple(args, "s", &s))
+        return NULL;
+
+    std::cout << s;
+
+    return Py_None;
+}
+
+static PyMethodDef EmbMethods[] = {
+    {"__init__", emb_init, METH_VARARGS, "doc string"},
+    {"write", write, METH_VARARGS,
+     "Write into std::cout"},
+    {NULL, NULL, 0, NULL}
+};
+
+static PyModuleDef EmbModule = {
+    PyModuleDef_HEAD_INIT, "emb", NULL, -1, EmbMethods,
+    NULL, NULL, NULL, NULL
+};
+
+static PyObject*
+PyInit_emb(void)
+{
+    return PyModule_Create(&EmbModule);
+}
+
 //-----------------------------------------------------------------------------
-// Function: CLIConsole::CLIConsole()
+// Function: PythonInterpreter::PythonInterpreter()
 //-----------------------------------------------------------------------------
-CLIConsole::CLIConsole(QObject* parent) : 
+PythonInterpreter::PythonInterpreter(QObject* parent) : 
     QObject(parent), 
     globalContext_(nullptr), 
     localContext_(nullptr),
@@ -35,9 +74,9 @@ CLIConsole::CLIConsole(QObject* parent) :
 }
 
 //-----------------------------------------------------------------------------
-// Function: CLIConsole::~CLIConsole()
+// Function: PythonInterpreter::~PythonInterpreter()
 //-----------------------------------------------------------------------------
-CLIConsole::~CLIConsole()
+PythonInterpreter::~PythonInterpreter()
 {
     Py_XDECREF(globalContext_);
     Py_XDECREF(localContext_);
@@ -45,10 +84,11 @@ CLIConsole::~CLIConsole()
     Py_FinalizeEx();
 }
 
+
 //-----------------------------------------------------------------------------
-// Function: CLIConsole::initialize()
+// Function: PythonInterpreter::initialize()
 //-----------------------------------------------------------------------------
-bool CLIConsole::initialize()
+bool PythonInterpreter::initialize()
 {
     std::string appName = QApplication::applicationName().toStdString();
     wchar_t *program = Py_DecodeLocale(appName.data(), NULL);
@@ -59,11 +99,13 @@ bool CLIConsole::initialize()
     }
 
     Py_SetProgramName(program); 
+    PyImport_AppendInittab("emb", &PyInit_emb);
     Py_Initialize();
+
 
 #ifdef Q_OS_WIN
     m_notifier = new QWinEventNotifier(GetStdHandle(STD_INPUT_HANDLE), this);
-    connect(m_notifier, &QWinEventNotifier::activated, this, &CLIConsole::readCommand);
+    connect(m_notifier, &QWinEventNotifier::activated, this, &PythonInterpreter::readCommand);
 
 #else
     m_notifier = new QSocketNotifier(_fileno(stdin), QSocketNotifier::Read, this);
@@ -92,9 +134,9 @@ bool CLIConsole::initialize()
 }
 
 //-----------------------------------------------------------------------------
-// Function: CLIConsole::execute()
+// Function: PythonInterpreter::execute()
 //-----------------------------------------------------------------------------
-void CLIConsole::execute(std::string const& line)
+void PythonInterpreter::execute(std::string const& line)
 {
     if (std::cin.eof())                          /* Ctrl-D pressed */
     {
@@ -188,9 +230,9 @@ void CLIConsole::execute(std::string const& line)
 }
 
 //-----------------------------------------------------------------------------
-// Function: CLIConsole::readCommand()
+// Function: PythonInterpreter::readCommand()
 //-----------------------------------------------------------------------------
-void CLIConsole::readCommand()
+void PythonInterpreter::readCommand()
 {
    std::string line;
 
@@ -210,9 +252,9 @@ void CLIConsole::readCommand()
 }
 
 //-----------------------------------------------------------------------------
-// Function: CLIConsole::writeCommand()
+// Function: PythonInterpreter::writeCommand()
 //-----------------------------------------------------------------------------
-void CLIConsole::writeCommand()
+void PythonInterpreter::writeCommand()
 {
    // std::cout << process_->readAllStandardOutput().toStdString();
 }
