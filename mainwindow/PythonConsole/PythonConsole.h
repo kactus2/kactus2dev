@@ -16,10 +16,14 @@
 #include <QPlainTextEdit>
 #include <QLineEdit>
 #include <QProcess>
+#include <QSharedPointer>
+#include <QTextStream>
 
 class MessageConsole;
 class ConsoleEditor;
 class PythonInterpreter;
+
+#include <PythonAPI/ChannelRelay.h>
 
 class PythonConsole : public QWidget
 {
@@ -31,26 +35,23 @@ public:
     
    
     //! The destructor.
-    ~PythonConsole() = default;
-
-private slots:
-    void onStandardOutputRead();
-
-    void onStandardErrorRead();
-
-    void onProcessFinished();
-
-    void onInputReceived();
+    virtual ~PythonConsole() = default;
 
 private:
 
     void setupLayout();
 
+    ChannelRelay* outputChannel_;
 
-    ConsoleEditor* console_;
-    QLineEdit* inputEditor_;
+    ChannelRelay* errorChannel_;
 
     PythonInterpreter* interpreter_;
+
+    ConsoleEditor* console_;
+   // QLineEdit* inputEditor_;
+
+    QTextStream inputBuffer_;
+
 };
 
 #endif // PYTHONCONSOLE_H

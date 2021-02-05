@@ -39,7 +39,8 @@
 #include <iostream>
 
 #include "PythonAPI/PythonInterpreter.h"
-
+#include "PythonAPI/StdInputListener.h"
+#include "PythonAPI/FileChannel.h"
 
 //-----------------------------------------------------------------------------
 //! Private utility functions for main.
@@ -176,35 +177,18 @@ int main(int argc, char *argv[])
             library->searchForIPXactFiles();
         }
 
+        QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
+        QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
 
-     /*  QScopedPointer<QProcess> process(new QProcess(application.data()));
-        process->setProcessChannelMode(QProcess::ForwardedChannels);
-       // process->setReadChannel(QProcess::StandardOutput);
-        
-
-        QStringList environment = QProcess::systemEnvironment();
-        process->setEnvironment(environment);
-
-        QString path = QApplication::applicationDirPath();
-        process->setWorkingDirectory(path);
-
-        process->start("python -i");
-
-        if (!process->waitForStarted(5000))
-        {        
-            mediator->showError(QStringLiteral("Could not start process."));
-            process->close();
-        }*/
-
-        PythonInterpreter console(application.data());
+        PythonInterpreter console(outChannel.data(), errChannel.data(), application.data());
         if (console.initialize() == false)
         {
             return 1;
         }
 
-        QObject::connect(&console, SIGNAL(quit()), application.data(), SLOT(quit()));
-     //   QObject::connect(process.data(), SIGNAL(finished(int, QProcess::ExitStatus)), application.data(), SLOT(quit()));
-        
+        QScopedPointer<StdInputListener> listener(new StdInputListener(&console, application.data()));
+
+        QObject::connect(listener.data(), SIGNAL(inputFailure()), application.data(), SLOT(quit()));
 
         return application->exec();
     }   

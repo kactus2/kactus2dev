@@ -17,43 +17,37 @@
 
 #include <QObject>
 
-#include <windows.h>
-#include <QWinEventNotifier>
 #include <string>
 #include <QSocketNotifier>
-#include <iostream>
+
 #include <QProcess>
 
-class PythonInterpreter : public QObject
+#include <PythonAPI/WriteChannel.h>
+
+class PythonInterpreter : public QObject, public WriteChannel
 {
     Q_OBJECT
 
 public:
-    explicit PythonInterpreter(QObject* parent = nullptr);
+    explicit PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel, QObject* parent = nullptr);
 
     virtual ~PythonInterpreter();
 
-    bool initialize();
-    
+    bool initialize(); 
 
-signals:
-    void quit();
-
-    void write(std::string text);
-
-public slots:
+    virtual void write(QString const& text) override final;
 
     void execute(std::string const& line);
-
    
 private:
-#ifdef Q_OS_WIN
-    QWinEventNotifier *m_notifier;
-#else
-    QSocketNotifier *m_notifier;
-#endif
+
+    void printPrompt() const;
   
     std::string inputBuffer_;
+
+    WriteChannel* outputChannel_;
+
+    WriteChannel* errorChannel_; 
 
     PyObject* globalContext_;
 
@@ -61,11 +55,6 @@ private:
 
     bool runMultiline_;
 
-
-private slots:
-    void readCommand();
-
-    void writeCommand();
    
 };
 

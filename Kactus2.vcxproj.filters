@@ -3220,6 +3220,15 @@
     <ClCompile Include="PythonAPI\PythonInterpreter.cpp">
       <Filter>Source Files\PythonAPI</Filter>
     </ClCompile>
+    <ClCompile Include="PythonAPI\StdInputListener.cpp">
+      <Filter>Source Files\PythonAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\ChannelRelay.cpp">
+      <Filter>Source Files\PythonAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\FileChannel.cpp">
+      <Filter>Source Files\PythonAPI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5807,6 +5816,12 @@
     <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="PythonAPI\WriteChannel.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonAPI\FileChannel.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5821,6 +5836,12 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="PythonAPI\PythonInterpreter.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </QtMoc>
+    <QtMoc Include="PythonAPI\StdInputListener.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </QtMoc>
+    <QtMoc Include="PythonAPI\ChannelRelay.h">
       <Filter>Header Files\PythonAPI</Filter>
     </QtMoc>
   </ItemGroup>

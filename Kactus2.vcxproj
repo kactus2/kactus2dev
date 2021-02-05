@@ -1145,7 +1145,10 @@ CreateHelp
     <ClCompile Include="Plugins\PluginSystem\PluginInfoWidget.cpp" />
     <ClCompile Include="Plugins\PluginSystem\PluginManager.cpp" />
     <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp" />
+    <ClCompile Include="PythonAPI\ChannelRelay.cpp" />
+    <ClCompile Include="PythonAPI\FileChannel.cpp" />
     <ClCompile Include="PythonAPI\PythonInterpreter.cpp" />
+    <ClCompile Include="PythonAPI\StdInputListener.cpp" />
     <ClCompile Include="settings\ComponentEditorSettingsPage.cpp" />
     <ClCompile Include="settings\FileTypesDelegate.cpp" />
     <ClCompile Include="settings\FileTypeSettingsPage.cpp" />
@@ -3019,6 +3022,10 @@ CreateHelp
     </QtMoc>
     <ClInclude Include="Plugins\PluginSystem\PluginSettingsModel.h" />
     <QtMoc Include="PythonAPI\PythonInterpreter.h" />
+    <QtMoc Include="PythonAPI\StdInputListener.h" />
+    <QtMoc Include="PythonAPI\ChannelRelay.h" />
+    <ClInclude Include="PythonAPI\FileChannel.h" />
+    <ClInclude Include="PythonAPI\WriteChannel.h" />
     <ClInclude Include="settings\FileTypeColumns.h" />
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h" />
     <ClInclude Include="wizards\common\IPXactDiff.h" />

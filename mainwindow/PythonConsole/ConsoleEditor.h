@@ -12,7 +12,11 @@
 #ifndef CONSOLEEDITOR_H
 #define CONSOLEEDITOR_H
 
+//#include <mainwindow/MessageConsole/messageconsole.h>
+
 #include <QPlainTextEdit>
+
+class WriteChannel;
 
 class ConsoleEditor : public QPlainTextEdit
 {
@@ -20,27 +24,28 @@ class ConsoleEditor : public QPlainTextEdit
 public:
 
     //! The constructor.
-    ConsoleEditor(QWidget* parent = nullptr);
+    ConsoleEditor(WriteChannel* outputChannel, QWidget* parent = nullptr);
     
     //! The destructor.
     virtual ~ConsoleEditor() = default;
 
+public slots:
+
     void print(QString const& input);
 
-    void printError(QString const& input);
 
+    void printError(QString const& input);
 protected:
 
     virtual void keyPressEvent(QKeyEvent *e) override;
-
-signals:
-    void entered(QString const& line);
 
 private:
 
     int lockedLines_;
 
     QString promptText_;
+
+    WriteChannel* outputChannel_;
 };
 
 

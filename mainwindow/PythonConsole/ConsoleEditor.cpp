@@ -13,15 +13,21 @@
 
 #include <QTextBlock>
 
+#include <PythonAPI/WriteChannel.h>
+
 //-----------------------------------------------------------------------------
 // Function: ConsoleEditor::ConsoleEditor()
 //-----------------------------------------------------------------------------
-ConsoleEditor::ConsoleEditor(QWidget* parent): QPlainTextEdit(parent), lockedLines_(0), promptText_()
+ConsoleEditor::ConsoleEditor(WriteChannel* outputChannel, QWidget* parent): 
+    QPlainTextEdit(parent),
+    lockedLines_(0), 
+    promptText_(),
+    outputChannel_(outputChannel)
 {    
     setContentsMargins(0, 0, 0, 0);
     setTabStopWidth(32 );
     setAcceptDrops(false);
-
+    setReadOnly(false);
     
     QTextCharFormat format = currentCharFormat();
     format.setFontFamily("Courier");
@@ -91,7 +97,7 @@ void ConsoleEditor::keyPressEvent(QKeyEvent *e)
     if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)        
     {
         QTextBlock block = textCursor().block();
-        QString line = block.text() + QLatin1Char('\n');
+        QString line = block.text();
         line.remove(0, promptText_.length());
 
         QTextCursor cursor = textCursor();
@@ -99,11 +105,10 @@ void ConsoleEditor::keyPressEvent(QKeyEvent *e)
         setTextCursor(cursor);
         QPlainTextEdit::keyPressEvent(e);
 
-        emit entered(line);
+        outputChannel_->write(line);
     }
     else
     {
         QPlainTextEdit::keyPressEvent(e);
     }
-    
 }

@@ -419,8 +419,8 @@ void DockWidgetHandler::setupConnectionEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupConsole()
 {
-    pythonConsoleDock_ = new QDockWidget(tr("Console"), mainWindow_);
-    pythonConsoleDock_->setObjectName(tr("Console"));
+    pythonConsoleDock_ = new QDockWidget(tr("Script (experimental)"), mainWindow_);
+    pythonConsoleDock_->setObjectName(tr("Python console"));
     pythonConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     pythonConsoleDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 

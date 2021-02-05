@@ -24,6 +24,8 @@
 #include <PythonAPI/PythonInterpreter.h>
 
 
+#include <PythonAPI/ChannelRelay.h>
+
 #include <windows.h>
 
 //-----------------------------------------------------------------------------
@@ -31,11 +33,18 @@
 //-----------------------------------------------------------------------------
 PythonConsole::PythonConsole(QWidget* parent): 
     QWidget(parent),
-    console_(new ConsoleEditor(this)),
-    inputEditor_(new QLineEdit(this)),
-    interpreter_(new PythonInterpreter(this))
+    outputChannel_(new ChannelRelay(this)),
+    errorChannel_(new ChannelRelay(this)),
+    interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, this)),
+    console_(new ConsoleEditor(interpreter_, this))
+    //inputEditor_(new QLineEdit(this)), 
 
 {    
+    connect(outputChannel_, SIGNAL(data(QString const&)),
+        console_, SLOT(print(QString const&)), Qt::UniqueConnection);
+    connect(errorChannel_, SIGNAL(data(QString const&)),
+        console_, SLOT(printError(QString const&)), Qt::UniqueConnection);
+
     //inputEditor_->setPlaceholderText(QStringLiteral("Type your commands here."));
 
   /*  connect(process_, SIGNAL(readyRead()),
@@ -50,56 +59,10 @@ PythonConsole::PythonConsole(QWidget* parent):
 
     interpreter_->initialize();
 
-    connect(console_, SIGNAL(entered(QString const&)),
-        this, SLOT(onInputReceived(QString const&)));
-
-    connect(interpreter_, SIGNAL(quit()), this, SLOT(onProcessFinished()), Qt::UniqueConnection);
-
-    connect(inputEditor_, SIGNAL(editingFinished()),
-        this, SLOT(onInputReceived()));
+  //  connect(interpreter_, SIGNAL(quit()), this, SLOT(onProcessFinished()), Qt::UniqueConnection);
 
     setupLayout();
 }
-
-void PythonConsole::onStandardOutputRead()
-{
-   // QString output(process_->readAllStandardOutput());
-    //output.chop(2);
-    //console_->appendPlainText();
-   // console_->print(output);
-}
-
-void PythonConsole::onStandardErrorRead()
-{
-   // QString output(process_->readAllStandardError());
-    //console_->appendPlainText(output);
-    //console_->printError(output);
-}
-
-void PythonConsole::onProcessFinished()
-{    
-    console_->appendPlainText(tr("Process finished unexpectedly."));
-}
-
-void PythonConsole::onInputReceived()
-{
-    QString line = inputEditor_->text();
-    line.append('\n');
-    interpreter_->execute(line.toStdString());
-
-
-    //process_->write(text.toLatin1());
-  /*  if (inputEditor_->text().isEmpty() == false)
-    {
-        QString text = inputEditor_->text();
-        console_->appendPlainText(text);
-
-        text.append('\n');
-        process_->write(text.toLatin1());
-        inputEditor_->clear();
-    }*/
-}
-
 
 //-----------------------------------------------------------------------------
 // Function: PythonConsole::PythonConsole()
@@ -108,7 +71,7 @@ void PythonConsole::setupLayout()
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(console_);
-    layout->addWidget(inputEditor_);
+    //layout->addWidget(inputEditor_);
     layout->setContentsMargins(0, 0, 0, 2);
 
 }

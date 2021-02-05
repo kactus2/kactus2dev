@@ -8,6 +8,8 @@
 // Description:
 // <Short description of the class/file contents>
 //-----------------------------------------------------------------------------
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
 
 #include "PythonInterpreter.h"
 
@@ -15,59 +17,25 @@
 
 #include <string.h>
 
+//#include <PythonAPI/OutputRedirector.cpp>
+
 namespace
 {
     const std::string ps1 = ">>> ";
     const std::string ps2 = "... ";
 };
 
-static PyObject*
-emb_init(PyObject *self, PyObject *args)
-{
-    Py_INCREF(Py_None);
-
-        return Py_None;
-}
-
-static PyObject*
-write(PyObject *self, PyObject *args)
-{
-    char const* s = nullptr;
-  
-    if (!PyArg_ParseTuple(args, "s", &s))
-        return NULL;
-
-    std::cout << s;
-
-    return Py_None;
-}
-
-static PyMethodDef EmbMethods[] = {
-    {"__init__", emb_init, METH_VARARGS, "doc string"},
-    {"write", write, METH_VARARGS,
-     "Write into std::cout"},
-    {NULL, NULL, 0, NULL}
-};
-
-static PyModuleDef EmbModule = {
-    PyModuleDef_HEAD_INIT, "emb", NULL, -1, EmbMethods,
-    NULL, NULL, NULL, NULL
-};
-
-static PyObject*
-PyInit_emb(void)
-{
-    return PyModule_Create(&EmbModule);
-}
-
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::PythonInterpreter()
 //-----------------------------------------------------------------------------
-PythonInterpreter::PythonInterpreter(QObject* parent) : 
+PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel, QObject* parent) :
     QObject(parent), 
+    WriteChannel(),
     globalContext_(nullptr), 
     localContext_(nullptr),
     inputBuffer_(),
+    outputChannel_(outputChannel),
+    errorChannel_(errorChannel),
     runMultiline_(false)
 {
    
@@ -84,7 +52,6 @@ PythonInterpreter::~PythonInterpreter()
     Py_FinalizeEx();
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::initialize()
 //-----------------------------------------------------------------------------
@@ -99,13 +66,14 @@ bool PythonInterpreter::initialize()
     }
 
     Py_SetProgramName(program); 
-    PyImport_AppendInittab("emb", &PyInit_emb);
+    //PyImport_AppendInittab("emb", &PyInit_emb);
+    //PyImport_AppendInittab("StandardOutputCapture", &PyInit_StandardOutputCapture);
     Py_Initialize();
-
+    
 
 #ifdef Q_OS_WIN
-    m_notifier = new QWinEventNotifier(GetStdHandle(STD_INPUT_HANDLE), this);
-    connect(m_notifier, &QWinEventNotifier::activated, this, &PythonInterpreter::readCommand);
+    //m_notifier = new QWinEventNotifier(GetStdHandle(STD_INPUT_HANDLE), this);
+    //connect(m_notifier, &QWinEventNotifier::activated, this, &PythonInterpreter::readCommand);
 
 #else
     m_notifier = new QSocketNotifier(_fileno(stdin), QSocketNotifier::Read, this);
@@ -120,17 +88,70 @@ bool PythonInterpreter::initialize()
 
     bool success = Py_IsInitialized();
     if (success)
-    {
-        std::cout << "Starting Python interpreter.\n" <<
-            "Python " << Py_GetVersion() << "\n";        
-        std::cout << ">>> ";
+    {        
+        outputChannel_->write(QString("Python ") + QString(Py_GetVersion()) + QString("\n"));
+        printPrompt();
     }
 
     localContext_ = PyDict_New();
     globalContext_ = PyDict_New();
     PyDict_SetItemString(globalContext_, "__builtins__", PyEval_GetBuiltins());
 
+
+   /* PyObject* customName = PyUnicode_FromString("StandardOutputCapture");
+    if (customName == NULL)
+    {
+        return false;
+    }
+
+    PyObject* customModule = PyImport_Import(customName);
+
+    PyObject* dict = PyModule_GetDict(customModule);
+    if (dict == nullptr) {
+        PyErr_Print();
+        std::cerr << "Fails to get the dictionary.\n";
+        return 1;
+    }
+    Py_DECREF(customModule);
+
+
+
+    PyObject* python_class = PyDict_GetItemString(dict, "StandardOutputCapture");
+    if (python_class == nullptr) {
+        PyErr_Print();
+        std::cerr << "Fails to get the Python class.\n";
+        return 1;
+    }
+    Py_DECREF(dict);
+
+    PyObject* catcher = nullptr;
+
+    // Creates an instance of the class
+    if (PyCallable_Check(python_class)) {
+         catcher = PyObject_CallObject(python_class, nullptr);
+        Py_DECREF(python_class);
+    }
+    else {
+        std::cout << "Cannot instantiate the Python class" << std::endl;
+        Py_DECREF(python_class);
+        return 1;
+    }
+
+
+    if (PySys_SetObject("stdout", catcher) < 0)
+    {
+        return false;
+    }*/
+
     return success;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonInterpreter::write()
+//-----------------------------------------------------------------------------
+void PythonInterpreter::write(QString const& text)
+{
+    execute(text.toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -138,15 +159,9 @@ bool PythonInterpreter::initialize()
 //-----------------------------------------------------------------------------
 void PythonInterpreter::execute(std::string const& line)
 {
-    if (std::cin.eof())                          /* Ctrl-D pressed */
-    {
-        emit quit();
-        return;
-    }
-
     if (line.empty() && inputBuffer_.empty())
     {
-        std::cout << ps1;
+        printPrompt();
         return;
     }    
 
@@ -219,42 +234,20 @@ void PythonInterpreter::execute(std::string const& line)
         inputBuffer_.clear();
     }
 
+    printPrompt();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonInterpreter::printPrompt()
+//-----------------------------------------------------------------------------
+void PythonInterpreter::printPrompt() const
+{
     if (runMultiline_)
     {
-        std::cout << ps2;
+        outputChannel_->write(QString::fromStdString(ps2));
     }
     else
     {
-        std::cout << ps1;
-    }    
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonInterpreter::readCommand()
-//-----------------------------------------------------------------------------
-void PythonInterpreter::readCommand()
-{
-   std::string line;
-
-    std::getline(std::cin, line);
-
-    if (std::cin.eof())
-    {        
-        emit quit();
+        outputChannel_->write(QString::fromStdString(ps1));
     }
-    else
-    {
-        execute(line);
-    }
-    
-    return;
-  
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonInterpreter::writeCommand()
-//-----------------------------------------------------------------------------
-void PythonInterpreter::writeCommand()
-{
-   // std::cout << process_->readAllStandardOutput().toStdString();
 }

@@ -29,7 +29,7 @@ public:
     GraphicalMessageMediator();
 
     //! The destructor.
-    virtual ~GraphicalMessageMediator();
+    virtual ~GraphicalMessageMediator() = default;
 
     //! Show the given message to the user.
     virtual void showMessage(QString const& message) const;
