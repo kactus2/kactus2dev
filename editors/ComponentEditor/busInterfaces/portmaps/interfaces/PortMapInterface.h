@@ -23,8 +23,9 @@ class PortMapValidator;
 class PortAbstraction;
 class AbstractionDefinition;
 class AbstractionType;
-class PortsInterface;
 class Component;
+class PortsInterface;
+class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing port maps.
@@ -40,12 +41,14 @@ public:
      *      @param [in] validator               Validator for address blocks.
      *      @param [in] expressionParser        Parser for expressions.
      *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] portInterface           Interface for accessing ports.
+     *      @param [in] physicalPortInterface   Interface for accessing physical ports.
+     *      @param [in] logicalPortInterface    Interface for accessing logical ports.
      */
     PortMapInterface(QSharedPointer<PortMapValidator> validator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        PortsInterface* portInterface);
+        PortsInterface* physicalPortInterface,
+        PortAbstractionInterface* logicalPortInterface);
 
 	/*!
      *  The destructor.
@@ -55,15 +58,15 @@ public:
     /*!
      *  Set available port maps.
      *
-     *      @param [in] absDef          The used new abstraction definition.
-     *      @param [in] abstraction     The selected abstraction type.
-     *      @param [in] interfaceMode   The selected interface mode.
-     *      @param [in] systemGroup     The selected system group.
-     *      @param [in] component       Component containing the port maps.
+     *      @param [in] absDef              The used new abstraction definition.
+     *      @param [in] abstraction         The selected abstraction type.
+     *      @param [in] newInterfaceMode    The selected interface mode.
+     *      @param [in] systemGroup         The selected system group.
+     *      @param [in] component           Component containing the port maps.
      */
     void setPortMaps(QSharedPointer<AbstractionDefinition const> absDef,
-        QSharedPointer<AbstractionType> abstraction, General::InterfaceMode interfaceMode, std::string systemGroup,
-        QSharedPointer<Component> component);
+        QSharedPointer<AbstractionType> abstraction, General::InterfaceMode newInterfaceMode,
+        std::string systemGroup, QSharedPointer<Component> component);
 
     /*!
      *  Get name of the indexed logical port.
@@ -679,11 +682,18 @@ public:
     PortAbstraction* getLogicalPortPointer(std::string const& logicalPortName) const;
 
     /*!
-     *  Get the interface for accessing ports.
+     *  Get the interface for accessing physical ports.
      *
-     *      @return Interface for accessing ports.
+     *      @return Interface for accessing physical ports.
      */
-    PortsInterface* getPortInterface() const;
+    PortsInterface* getPhysicalPortInterface() const;
+
+    /*!
+     *  Get the interface for accessing logical ports.
+     *
+     *      @return Interface for accessing logical ports.
+     */
+    PortAbstractionInterface* getLogicalPortInterface() const;
 
 private:
 
@@ -692,6 +702,9 @@ private:
     {
         //! The logical port of the port maps.
         QSharedPointer<PortAbstraction> logicalPort_;
+
+        //! Name of the contained logical port.
+        QString logicalPortName_;
 
         //! A list of port maps with the same logical port.
         QList<QSharedPointer<PortMap> > portMaps_;
@@ -801,8 +814,11 @@ private:
     //! Validator for port maps.
     QSharedPointer<PortMapValidator> validator_;
 
-    //! Interface for accessing ports.
-    PortsInterface* portInterface_;
+    //! Interface for accessing phyiscal ports.
+    PortsInterface* physicalPortInterface_;
+
+    //! Interface for accessign logical ports.
+    PortAbstractionInterface* logicalPortInterface_;
 };
 
 #endif // PORTMAPINTERFACE_H

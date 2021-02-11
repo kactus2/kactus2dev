@@ -144,8 +144,6 @@ public:
      */
     QString getWidth(General::InterfaceMode mode, QString const& systemGroup) const;
 
-private:
-
     /*!
      *  Find the selected system port.
      *
@@ -154,6 +152,8 @@ private:
      *      @return The selected system port, if it exists.
      */
     QSharedPointer<TransactionalPort> findSystemPort(QString const& systemGroup) const;
+
+private:
 
     //-----------------------------------------------------------------------------
     // Data.

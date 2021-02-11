@@ -255,10 +255,10 @@ QString PortMapAutoConnector::getBestMatchingPhysicalPort(int logicalIndex,
 //-----------------------------------------------------------------------------
 QMap<QString, double> PortMapAutoConnector::getPortsByDirection(DirectionTypes::Direction logicalDirection) const
 {
-    PortsInterface* portInterface = portMapInterface_->getPortInterface();
+    PortsInterface* portInterface = portMapInterface_->getPhysicalPortInterface();
     QMap<QString, double> availablePorts;
 
-    for (auto portName : portMapInterface_->getPortInterface()->getItemNames())
+    for (auto portName : portInterface->getItemNames())
     {
         if (portInterface->getDirectionType(portName) == logicalDirection)
         {
@@ -295,7 +295,7 @@ QMap<QString, double> PortMapAutoConnector::getPortsByLogicalWidth(double logica
     QMap<QString, double> portList) const
 {
     const double WIDTH_WEIGHT = 0.2;
-    PortsInterface* portInterface = portMapInterface_->getPortInterface();
+    PortsInterface* portInterface = portMapInterface_->getPhysicalPortInterface();
 
     QMap<QString, double> widthMatchingPorts;
 

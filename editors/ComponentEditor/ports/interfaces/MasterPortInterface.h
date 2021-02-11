@@ -84,17 +84,15 @@ public:
     /*!
      *  Get the icon path of the selected initiative.
      *
-     *      @param [in] portName    Name of the selected port.
+     *      @param [in] initiative  The selected initiative.
      *
      *      @return Icon path for the selected initiative.
      */
     std::string getIconPathForInitiative(QString const& initiative) const;
 
-
     //! No copying. No assignment.
     MasterPortInterface(const MasterPortInterface& other) = delete;
     MasterPortInterface& operator=(const MasterPortInterface& other) = delete;
-
 };
 
 #endif // MASTERPORTINTERFACE_H

@@ -20,6 +20,7 @@
 #include "BusInterfaceWizardPortMapPage.h"
 #include "BusInterfaceWizardConclusionPage.h"
 
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -69,11 +70,14 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<PortMapValidator> portMapValidator =
         busValidator->getAbstractionValidator()->getPortMapValidator();
 
-    PortsInterface* portInterface(new PortsInterface(portValidator, expressionParser, expressionFormatter));
-    portInterface->setPorts(component);
+    PortsInterface* physicalPortInterface(
+        new PortsInterface(portValidator, expressionParser, expressionFormatter));
+    physicalPortInterface->setPorts(component);
 
-    PortMapInterface* portMapInterface(
-        new PortMapInterface(portMapValidator, expressionParser, expressionFormatter, portInterface));
+    PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface());
+
+    PortMapInterface* portMapInterface(new PortMapInterface(
+        portMapValidator, expressionParser, expressionFormatter, physicalPortInterface, logicalPortInterface));
 
     BusInterfaceWizardGeneralOptionsPage* optionsPage =
         new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, !absDefVLNV.isValid(), parameterFinder,

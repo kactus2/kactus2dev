@@ -698,3 +698,13 @@ QSharedPointer<PortsInterface> PortsModel::getInterface() const
 {
     return portsInterface_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::getIconPath()
+//-----------------------------------------------------------------------------
+QString PortsModel::getIconPath(int const& portIndex) const
+{
+    std::string portName = getInterface()->getIndexedItemName(portIndex);
+    std::string iconPath = getInterface()->getIconPathForPort(portName);
+    return QString::fromStdString(iconPath);
+}

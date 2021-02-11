@@ -96,3 +96,21 @@ TransactionalTypes::Initiative TransactionalTypes::strToInitiative(QString const
         return TransactionalTypes::INITIATIVE_INVALID;
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalTypes::convertToMirrored()
+//-----------------------------------------------------------------------------
+TransactionalTypes::Initiative TransactionalTypes::convertToMirrored(QString const& initiative)
+{
+    TransactionalTypes::Initiative mirroredInitiative = TransactionalTypes::strToInitiative(initiative);
+    if (mirroredInitiative == TransactionalTypes::REQUIRES)
+    {
+        mirroredInitiative = TransactionalTypes::PROVIDES;
+    }
+    else if (mirroredInitiative == TransactionalTypes::PROVIDES)
+    {
+        mirroredInitiative = TransactionalTypes::REQUIRES;
+    }
+
+    return mirroredInitiative;
+}

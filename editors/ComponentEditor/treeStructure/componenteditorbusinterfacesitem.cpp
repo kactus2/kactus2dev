@@ -14,6 +14,7 @@
 
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 
@@ -168,9 +169,11 @@ void ComponentEditorBusInterfacesItem::createPortMapInterface()
     QSharedPointer<PortMapValidator> portMapValidator =
         validator_->getAbstractionValidator()->getPortMapValidator();
 
-    PortsInterface* portInterface(new PortsInterface(portValidator, expressionParser_, expressionFormatter_));
-    portInterface->setPorts(component_);
+    PortsInterface* physicalPortInterface(new PortsInterface(portValidator, expressionParser_, expressionFormatter_));
+    physicalPortInterface->setPorts(component_);
 
-    portMapInterface_ =
-        new PortMapInterface(portMapValidator, expressionParser_, expressionFormatter_, portInterface);
+    PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface());
+
+    portMapInterface_ = new PortMapInterface(
+        portMapValidator, expressionParser_, expressionFormatter_, physicalPortInterface, logicalPortInterface);
 }

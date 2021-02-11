@@ -59,6 +59,16 @@ public:
 	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
+    /*!
+     *  Get the data for the specified item for specified role.
+	 *
+	 *      @param [in] index   Identifies the item that's data is wanted.
+	 *      @param [in] role    Specifies what kind of data is wanted
+	 *
+	 *      @return QVariant containing the data
+     */
+	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole ) const;
+
 	/*!
      *  Set the data for specified item.
 	 *

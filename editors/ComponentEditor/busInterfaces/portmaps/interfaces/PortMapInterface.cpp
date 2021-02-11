@@ -22,6 +22,7 @@
 #include <IPXACTmodels/Component/Port.h>
 
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 
 #include <QVector>
 #include <QString>
@@ -38,7 +39,7 @@ namespace
 //-----------------------------------------------------------------------------
 PortMapInterface::PortMapInterface(QSharedPointer<PortMapValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    PortsInterface* portInterface):
+    PortsInterface* physicalPortInterface, PortAbstractionInterface* logicalPortInterface):
 ParameterizableInterface(expressionParser, expressionFormatter),
 CommonInterface(),
 validator_(validator),
@@ -47,7 +48,8 @@ abstraction_(),
 interfaceMode_(General::MASTER),
 systemGroup_(),
 abstractionDef_(),
-portInterface_(portInterface)
+logicalPortInterface_(logicalPortInterface),
+physicalPortInterface_(physicalPortInterface)
 {
 
 }
@@ -56,14 +58,16 @@ portInterface_(portInterface)
 // Function: PortMapInterface::setPortMaps()
 //-----------------------------------------------------------------------------
 void PortMapInterface::setPortMaps(QSharedPointer<AbstractionDefinition const> absDef,
-    QSharedPointer<AbstractionType> abstraction, General::InterfaceMode interfaceMode, std::string systemGroup,
+    QSharedPointer<AbstractionType> abstraction, General::InterfaceMode newInterfaceMode, std::string systemGroup,
     QSharedPointer<Component> component)
 {
     abstraction_ = abstraction;
     abstractionDef_ = absDef;
-    portInterface_->setPorts(component);
 
-    interfaceMode_ = interfaceMode;
+    logicalPortInterface_->setAbsDef(absDef);
+    physicalPortInterface_->setPorts(component);
+
+    interfaceMode_ = newInterfaceMode;
     systemGroup_ = QString::fromStdString(systemGroup);
 
     portMappings_.clear();
@@ -73,15 +77,18 @@ void PortMapInterface::setPortMaps(QSharedPointer<AbstractionDefinition const> a
 
     QSharedPointer<PortMapping> unconnectedMapping(new PortMapping());
     unconnectedMapping->logicalPort_ = unconnectedPort;
+    unconnectedMapping->logicalPortName_ = unconnectedMapping->logicalPort_->name();
 
     if (absDef)
     {
-        foreach(QSharedPointer<PortAbstraction> logicalPort, *absDef->getLogicalPorts())
+        std::string busModeString = General::interfaceMode2Str(interfaceMode_).toStdString();
+        for (auto logicalNameSTD : logicalPortInterface_->getItemNames())
         {
-            if (logicalPort->hasMode(interfaceMode, QString::fromStdString(systemGroup)))
+            QString logicalName = QString::fromStdString(logicalNameSTD);
+            if (logicalPortInterface_->portHasMode(logicalNameSTD, busModeString, systemGroup))
             {
                 QSharedPointer<PortMapping> newMapping(new PortMapping());
-                newMapping->logicalPort_ = logicalPort;
+                newMapping->logicalPortName_ = logicalName;
 
                 portMappings_.append(newMapping);
             }
@@ -96,7 +103,7 @@ void PortMapInterface::setPortMaps(QSharedPointer<AbstractionDefinition const> a
 
             for (int mappingIndex = 0; mappingIndex < portMappings_.size(); ++mappingIndex)
             {
-                if (portMappings_.at(mappingIndex)->logicalPort_->name() == currentMap->getLogicalPort()->name_)
+                if (portMappings_.at(mappingIndex)->logicalPortName_ == currentMap->getLogicalPort()->name_)
                 {
                     portMappings_[mappingIndex]->portMaps_.append(currentMap);
                     logicalPortFound = true;
@@ -108,11 +115,8 @@ void PortMapInterface::setPortMaps(QSharedPointer<AbstractionDefinition const> a
             {
                 if (currentMap->getLogicalPort() && !currentMap->getLogicalPort()->name_.isEmpty())
                 {
-                    QSharedPointer<PortAbstraction> newAbstractionPort(new PortAbstraction());
-                    newAbstractionPort->setLogicalName(currentMap->getLogicalPort()->name_);
-
                     QSharedPointer<PortMapping> newMapping(new PortMapping());
-                    newMapping->logicalPort_ = newAbstractionPort;
+                    newMapping->logicalPortName_ = currentMap->getLogicalPort()->name_;
                     newMapping->portMaps_.append(currentMap);
 
                     portMappings_.append(newMapping);
@@ -140,7 +144,7 @@ std::string PortMapInterface::getIndexedItemName(int const& itemIndex) const
         QSharedPointer<PortMapping> mapping = portMappings_.at(itemIndex);
         if (mapping)
         {
-            logicalPortName = mapping->logicalPort_->name().toStdString();
+            logicalPortName = mapping->logicalPortName_.toStdString();
         }
     }
 
@@ -192,7 +196,7 @@ int PortMapInterface::mappingIndex(std::string const& logicalPortName) const
     for (int i = 0; i < portMappings_.size(); ++i)
     {
         QSharedPointer<PortMapInterface::PortMapping> mapping = portMappings_.at(i);
-        if (mapping->logicalPort_->name() == portName)
+        if (mapping->logicalPortName_ == portName)
         {
             return i;
         }
@@ -209,7 +213,7 @@ std::vector<std::string> PortMapInterface::getItemNames() const
     QStringList qNames;
     for (auto mapping : portMappings_)
     {
-        QString logicalName = mapping->logicalPort_->name();
+        QString logicalName = mapping->logicalPortName_;
         if (!qNames.contains(logicalName))
         {
             qNames.append(logicalName);
@@ -254,9 +258,10 @@ std::string PortMapInterface::getLogicalPortName(std::string const& logicalPortN
 bool PortMapInterface::hasLogicalPort(std::string const& logicalPortName) const
 {
     QSharedPointer<PortMapInterface::PortMapping> mapping = getPortMapping(logicalPortName);
-    if (mapping && mapping->logicalPort_)
+    if (mapping && !mapping->logicalPortName_.isEmpty())
     {
-        return abstractionDef_->hasPort(mapping->logicalPort_->name(), interfaceMode_);
+        return logicalPortInterface_->portHasMode(
+            logicalPortName, General::interfaceMode2Str(interfaceMode_).toStdString(), systemGroup_.toStdString());
     }
 
     return false;
@@ -412,8 +417,11 @@ bool PortMapInterface::setPhysicalPort(std::string const& logicalName, int const
 //-----------------------------------------------------------------------------
 QSharedPointer<PortMap> PortMapInterface::createNewPortMap(QString const& logicalPortName)
 {
+    std::string interfaceMode = General::interfaceMode2Str(interfaceMode_).toStdString();
+
     QSharedPointer<PortMap> newPortMap;
-    if (abstractionDef_->hasPort(logicalPortName, interfaceMode_))
+    if (logicalPortInterface_->portHasMode(
+        logicalPortName.toStdString(), interfaceMode, systemGroup_.toStdString()))
     {
         newPortMap = QSharedPointer<PortMap>(new PortMap());
 
@@ -479,20 +487,13 @@ bool PortMapInterface::removeEmptyPhysicalPartSelect(QSharedPointer<PortMap::Phy
 //-----------------------------------------------------------------------------
 std::string PortMapInterface::getLogicalPresence(std::string const& logicalPortName)
 {
-    PresenceTypes::Presence requirement = PresenceTypes::UNKNOWN;
+    std::string busMode = General::interfaceMode2Str(interfaceMode_).toStdString();
 
-    QSharedPointer<PortMapInterface::PortMapping> portMapping = getPortMapping(logicalPortName);
-    if (portMapping)
+    PresenceTypes::Presence requirement =
+        logicalPortInterface_->getPresence(logicalPortName, busMode, systemGroup_.toStdString());
+    if (requirement == PresenceTypes::UNKNOWN)
     {
-        QSharedPointer<PortAbstraction> abstractPort = portMapping->logicalPort_;
-        if (abstractPort)
-        {
-            requirement = abstractPort->getPresence(interfaceMode_, systemGroup_);
-            if (requirement == PresenceTypes::UNKNOWN)
-            {
-                requirement = PresenceTypes::OPTIONAL;
-            }
-        }
+        requirement = PresenceTypes::OPTIONAL;
     }
 
     return PresenceTypes::presence2Str(requirement).toStdString();
@@ -754,20 +755,21 @@ std::string PortMapInterface::getLogicalLeftBoundValue(std::string const& logica
 //-----------------------------------------------------------------------------
 QString PortMapInterface::getLogicalLeftForLogicalPort(std::string const& logicalPortName) const
 {
-    QSharedPointer<PortMapInterface::PortMapping> mapping = getPortMapping(logicalPortName);
-    if (mapping && mapping->logicalPort_)
+    std::string busMode = General::interfaceMode2Str(interfaceMode_).toStdString();
+    std::string systemGroup = systemGroup_.toStdString();
+    if (logicalPortInterface_->portHasMode(logicalPortName, busMode, systemGroup))
     {
-        QSharedPointer<PortAbstraction> logicalPort = mapping->logicalPort_;
         QString logicalWidth("");
-        if (logicalPort->hasWire())
+
+        if (logicalPortInterface_->portIsWire(logicalPortName))
         {
-            QSharedPointer<WireAbstraction> abstractWire = logicalPort->getWire();
-            logicalWidth = abstractWire->getWidth(interfaceMode_, systemGroup_);
+            logicalWidth =
+                QString::fromStdString(logicalPortInterface_->getWidth(logicalPortName, busMode, systemGroup));
         }
-        else if (logicalPort->hasTransactional())
+        else if (logicalPortInterface_->portIsTransactional(logicalPortName))
         {
-            QSharedPointer<TransactionalAbstraction> abstractTransactional = logicalPort->getTransactional();
-            logicalWidth = abstractTransactional->getWidth(interfaceMode_, systemGroup_);
+            logicalWidth = QString::fromStdString(
+                logicalPortInterface_->getBusWidthValue(logicalPortName, busMode, systemGroup));
         }
 
         if (!logicalWidth.isEmpty())
@@ -1189,36 +1191,11 @@ bool PortMapInterface::setPhysicalRightBound(std::string const& logicalPortName,
 std::string PortMapInterface::getLogicalPortIconPath(std::string const& logicalPortName) const
 {
     std::string mappingPath = "";
-
-    QSharedPointer<PortMapping> mapping = getPortMapping(logicalPortName);
-    if (mapping)
+    std::string busMode = General::interfaceMode2Str(interfaceMode_).toStdString();
+    std::string systemGroup = systemGroup_.toStdString();
+    if (logicalPortInterface_->portHasMode(logicalPortName, busMode, systemGroup))
     {
-        QSharedPointer<PortAbstraction> mappingPort = mapping->logicalPort_;
-        if (mappingPort)
-        {
-            if (mappingPort->hasWire())
-            {
-                DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
-                if (abstractionDef_ && mappingPort)
-                {
-                    direction =
-                        abstractionDef_->getPortDirection(mappingPort->name(), interfaceMode_, systemGroup_);
-                }
-
-                mappingPath = portInterface_->getIconPathForDirection(direction);
-            }
-            else if (mappingPort->hasTransactional())
-            {
-                QString initiative("");
-                if (abstractionDef_ && mappingPort)
-                {
-                    initiative =
-                        abstractionDef_->getPortInitiative(mappingPort->name(), interfaceMode_, systemGroup_);
-                }
-
-                mappingPath = portInterface_->getIconPathForInitiative(initiative);
-            }
-        }
+        mappingPath = logicalPortInterface_->getIconPathForSignal(logicalPortName, busMode, systemGroup);
     }
 
     return mappingPath;
@@ -1238,7 +1215,7 @@ const
         QString portName = portMap->getPhysicalPort()->name_;
         if (!portName.isEmpty() && portName.compare(MULTIPLE_SELECTED, Qt::CaseSensitive) != 0)
         {
-            iconPath = portInterface_->getIconPathForPort(portName.toStdString());
+            iconPath = physicalPortInterface_->getIconPathForPort(portName.toStdString());
         }
     }
 
@@ -1250,13 +1227,8 @@ const
 //-----------------------------------------------------------------------------
 bool PortMapInterface::logicalPortExists(std::string const& logicalPortName) const
 {
-    bool portExists = false;
-    if (abstractionDef_)
-    {
-        portExists = abstractionDef_->hasPort(QString::fromStdString(logicalPortName), interfaceMode_);
-    }
-
-    return portExists;
+    std::string interfaceMode = General::interfaceMode2Str(interfaceMode_).toStdString();
+    return logicalPortInterface_->portHasMode(logicalPortName, interfaceMode, systemGroup_.toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -1425,12 +1397,11 @@ bool PortMapInterface::connectedPortsHaveValidPortTypes(std::string const& logic
     QSharedPointer<PortMap> validatedPortMap = getPortMap(logicalPortName, portMapIndex);
     if (validatedPortMap)
     {
-        QSharedPointer<PortAbstraction> logicalPort = getPortMapping(logicalPortName)->logicalPort_;
+        QSharedPointer<Port> physicalPortPointer =
+            physicalPortInterface_->getPort(validatedPortMap->getPhysicalPort()->name_.toStdString());
+        QSharedPointer<PortAbstraction> logicalPortPointer = logicalPortInterface_->getPort(logicalPortName);
 
-        QSharedPointer<Port> portPointer =
-            portInterface_->getPort(validatedPortMap->getPhysicalPort()->name_.toStdString());
-
-        return validator_->connectedPortsHaveValidPortTypes(logicalPort, portPointer);
+        return validator_->connectedPortsHaveValidPortTypes(logicalPortPointer, physicalPortPointer);
     }
 
     return false;
@@ -1445,11 +1416,11 @@ bool PortMapInterface::connectedPortsHaveValidDirections(std::string const& logi
     QSharedPointer<PortMap> validatedPortMap = getPortMap(logicalPortName, portMapIndex);
     if (validatedPortMap)
     {
-        QSharedPointer<PortAbstraction> logicalPort = getPortMapping(logicalPortName)->logicalPort_;
-        QSharedPointer<Port> portPointer =
-            portInterface_->getPort(validatedPortMap->getPhysicalPort()->name_.toStdString());
+        QSharedPointer<PortAbstraction> logicalPortPointer = logicalPortInterface_->getPort(logicalPortName);
+        QSharedPointer<Port> physicalPortPointer =
+            physicalPortInterface_->getPort(validatedPortMap->getPhysicalPort()->name_.toStdString());
 
-        return validator_->connectedPortsHaveValidDirections(logicalPort, portPointer);
+        return validator_->connectedPortsHaveValidDirections(logicalPortPointer, physicalPortPointer);
     }
 
     return false;
@@ -1464,11 +1435,11 @@ bool PortMapInterface::connectedPortsHaveValidInitiatives(std::string const& log
     QSharedPointer<PortMap> validatedPortMap = getPortMap(logicalPortName, portMapIndex);
     if (validatedPortMap)
     {
-        QSharedPointer<PortAbstraction> logicalPort = getPortMapping(logicalPortName)->logicalPort_;
-        QSharedPointer<Port> portPointer =
-            portInterface_->getPort(validatedPortMap->getPhysicalPort()->name_.toStdString());
+        QSharedPointer<PortAbstraction> logicalPortPointer = logicalPortInterface_->getPort(logicalPortName);
+        QSharedPointer<Port> physicalPortPointer =
+            physicalPortInterface_->getPort(validatedPortMap->getPhysicalPort()->name_.toStdString());
 
-        return validator_->connectedPortsHaveValidInitiatives(logicalPort, portPointer);
+        return validator_->connectedPortsHaveValidInitiatives(logicalPortPointer, physicalPortPointer);
     }
 
     return false;
@@ -1513,7 +1484,8 @@ bool PortMapInterface::logicalPortHasValidRange(std::string const& logicalPortNa
     QSharedPointer<PortMap> validatedPortMap = getPortMap(logicalPortName, portMapIndex);
     if (mapping && validatedPortMap && validatedPortMap->getLogicalPort())
     {
-        validator_->logicalPortHasValidRange(validatedPortMap->getLogicalPort()->range_, mapping->logicalPort_);
+        QSharedPointer<PortAbstraction> logicalPortPointer = logicalPortInterface_->getPort(logicalPortName);
+        validator_->logicalPortHasValidRange(validatedPortMap->getLogicalPort()->range_, logicalPortPointer);
     }
 
     return false;
@@ -1529,7 +1501,7 @@ QSharedPointer<PortMapInterface::PortMapping> PortMapInterface::getPortMapping(s
 
     for (auto mapping : portMappings_)
     {
-        if (mapping->logicalPort_->name() == logicalName)
+        if (mapping->logicalPortName_ == logicalName)
         {
             return mapping;
         }
@@ -1564,8 +1536,12 @@ bool PortMapInterface::connectPorts(std::string const& logicalPortName, std::str
     QString logicalName = QString::fromStdString(logicalPortName);
     QString physicalName = QString::fromStdString(physicalPortName);
 
-    if (logicalName.isEmpty() || physicalName.isEmpty() || !abstractionDef_->hasPort(logicalName) ||
-        !portInterface_->portExists(physicalPortName))
+    std::string interfaceMode = General::interfaceMode2Str(interfaceMode_).toStdString();
+    std::string systemGroup = systemGroup_.toStdString();
+
+    if (logicalName.isEmpty() || physicalName.isEmpty() ||
+        !logicalPortInterface_->portHasMode(logicalPortName, interfaceMode, systemGroup) ||
+        !physicalPortInterface_->portExists(physicalPortName))
     {
         return false;
     }
@@ -1577,16 +1553,18 @@ bool PortMapInterface::connectPorts(std::string const& logicalPortName, std::str
     
     QSharedPointer<PortMapInterface::PortMapping> mapping = getPortMapping(logicalPortName);
 
-    QSharedPointer<PortAbstraction> portAbstraction = mapping->logicalPort_;
-    QSharedPointer<WireAbstraction> logicalWire = portAbstraction->getWire();
-    if (logicalWire && !logicalWire->getWidth(interfaceMode_, systemGroup_).isEmpty())
+    QString logicalWireWidth = QString::fromStdString(
+        logicalPortInterface_->getWidth(logicalPortName, interfaceMode, systemGroup));
+    if (!logicalWireWidth.isEmpty())
     {
-        int logicalSize = parseExpressionToDecimal(logicalWire->getWidth(interfaceMode_, systemGroup_)).toInt();
+        int logicalSize = parseExpressionToDecimal(logicalWireWidth).toInt();
         int logicalLeft = logicalSize - 1;
         int logicalRight = 0;
         
-        int physicalLeft = QString::fromStdString(portInterface_->getLeftBoundValue(physicalPortName)).toInt();
-        int physicalRight = QString::fromStdString(portInterface_->getRightBoundValue(physicalPortName)).toInt();
+        int physicalLeft =
+            QString::fromStdString(physicalPortInterface_->getLeftBoundValue(physicalPortName)).toInt();
+        int physicalRight =
+            QString::fromStdString(physicalPortInterface_->getRightBoundValue(physicalPortName)).toInt();
         int physicalSize = abs(physicalLeft - physicalRight) + 1;
         
         if (logicalSize != physicalSize)
@@ -1716,21 +1694,31 @@ PortMap* PortMapInterface::getPortMapPointer(std::string const& logicalPortName,
 //-----------------------------------------------------------------------------
 PortAbstraction* PortMapInterface::getLogicalPortPointer(std::string const& logicalPortName) const
 {
-    PortAbstraction* logicalPortPointer = nullptr;
-
-    QSharedPointer<PortMapInterface::PortMapping> portMapping = getPortMapping(logicalPortName);
-    if (portMapping)
+    QSharedPointer<PortAbstraction> logicalPort = logicalPortInterface_->getPort(logicalPortName);
+    if (!logicalPort)
     {
-        logicalPortPointer = portMapping->logicalPort_.data();
+        QSharedPointer<PortMapInterface::PortMapping> portMapping = getPortMapping(logicalPortName);
+        if (portMapping)
+        {
+            logicalPort = portMapping->logicalPort_;
+        }
     }
 
-    return logicalPortPointer;
+    return logicalPort.data();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortMapInterface::getPortInterface()
+// Function: PortMapInterface::getPhysicalPortInterface()
 //-----------------------------------------------------------------------------
-PortsInterface* PortMapInterface::getPortInterface() const
+PortsInterface* PortMapInterface::getPhysicalPortInterface() const
 {
-    return portInterface_;
+    return physicalPortInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::getLogicalPortInterface()
+//-----------------------------------------------------------------------------
+PortAbstractionInterface* PortMapInterface::getLogicalPortInterface() const
+{
+    return logicalPortInterface_;
 }

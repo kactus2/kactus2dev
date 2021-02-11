@@ -48,7 +48,7 @@ public:
      *
      *      @param [in] absDef  Abstraction definition containing the port abstractions.
      */
-    void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
+    void setAbsDef(QSharedPointer<AbstractionDefinition const> absDef);
 
     /*!
      *  Get index of the first signal containing the selected port abstraction.
@@ -261,6 +261,18 @@ public:
     std::string getWidth(int const& portIndex) const;
 
     /*!
+     *  Get the width of the selected signal.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return Width of the selected signal.
+     */
+    std::string getWidth(std::string const& portName, std::string const& interfaceMode,
+        std::string const& systemGroup) const;
+
+    /*!
      *  Set a new width for the selected signal.
      *
      *      @param [in] portIndex   Index of the selected signal.
@@ -280,6 +292,18 @@ public:
     PresenceTypes::Presence getPresence(int const& portIndex) const;
 
     /*!
+     *  Get the presence of the selected signal.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return Presence of the selected signal.
+     */
+    PresenceTypes::Presence getPresence(std::string const& portName, std::string const& interfaceMode,
+        std::string const& systemGroup) const;
+
+    /*!
      *  Get the presence of the selected signal in string form.
      *
      *      @param [in] portIndex   Index of the selected signal.
@@ -287,6 +311,18 @@ public:
      *      @return Presence string of the selected signal.
      */
     std::string getPresenceString(int const& portIndex) const;
+
+    /*!
+     *  Get the presence of the selected signal in string form.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return Presence string of the selected signal.
+     */
+    std::string getPresenceString(std::string const& portName, std::string const& interfaceMode,
+        std::string const& systemGroup) const;
 
     /*!
      *  Set a new presence for the selected signal.
@@ -346,6 +382,18 @@ public:
     std::string getBusWidthValue(int const& portIndex) const;
 
     /*!
+     *  Get the bus width of the selected signal.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return Bus width of the selected signal.
+     */
+    std::string getBusWidthValue(std::string const& portName, std::string const& interfaceMode,
+        std::string const& systemGroup) const;
+
+    /*!
      *  Set a new bus width for the selected signal.
      *
      *      @param [in] portIndex       Index of the selected signal.
@@ -363,6 +411,18 @@ public:
      *      @return Initiative of the selected signal.
      */
     std::string getInitiative(int const& portIndex) const;
+
+    /*!
+     *  Get the initiative of the selected signal.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return Initiative of the selected signal.
+     */
+    std::string getInitiative(std::string const& portName, std::string const& interfaceMode,
+        std::string const& systemGroup) const;
 
     /*!
      *  Set a new initiative for the selected signal.
@@ -558,12 +618,46 @@ public:
      *
      *      @return Icon path for the selected signal.
      */
-    std::string getIconPathForPort(int const& signalIndex) const;
+    std::string getIconPathForSignal(int const& signalIndex) const;
+
+    /*!
+     *  Get the icon path of the selected signal.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return Icon path for the selected signal.
+     */
+    std::string getIconPathForSignal(std::string const& portName, std::string const& interfaceMode,
+        std::string const& systemGroup) const;
 
     /*!
      *  Write the ports from the table to the abstraction definition.
      */
-     void save();
+    void save();
+
+    /*!
+     *  Check if the selected port has the selected bus interface mode and system group.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return True, if the port has the selected bus interface mode with the selected system group, false
+     *              otherwise.
+     */
+    bool portHasMode(std::string const& portName, std::string const& interfaceMode, std::string const& systemGroup)
+        const;
+
+    /*!
+     *  Get the port abstraction with the selected name.
+     *
+     *      @param [in] portName    Name of the selected port.
+     *
+     *      @return The port abstraction with the selected name.
+     */
+    QSharedPointer<PortAbstraction> getPort(std::string const& portName) const;
 
     //! No copying. No assignment.
     PortAbstractionInterface(const PortAbstractionInterface& other) = delete;
@@ -626,15 +720,6 @@ private:
          */
         bool operator<(SignalRow const& other) const;
     };
-    
-    /*!
-     *  Get the port abstraction with the selected name.
-     *
-     *      @param [in] portName    Name of the selected port.
-     *
-     *      @return The port abstraction with the selected name.
-     */
-    QSharedPointer<PortAbstraction> getPort(std::string const& portName) const;
  
     /*!
      *  Get the signal of the selected index.
@@ -729,12 +814,14 @@ private:
     /*!
      *  Check if the selected port already contains the selected signal.
      *
-     *      @param [in] mode        The selected signal.
-     *      @param [in] portName    Name of the selected port.
+     *      @param [in] mode            The selected signal.
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] systemGroup     The selected system group.
      *
      *      @return True, if the selected port already contains the selected signal, false otherwise.
      */
-    bool modeExistsForPort(General::InterfaceMode const& mode, QString const& portName) const;
+    bool modeExistsForPort(General::InterfaceMode const& mode, QString const& portName,
+        QString const& systemGroup = "") const;
 
     /*!
      *  Construct a copy signal of the selected signal.

@@ -19,12 +19,11 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/Protocol.h>
-
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
-
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
 #include <QStringList>
+#include <QIcon>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsModel::AbstractionTransactionalPortsModel()
@@ -256,6 +255,14 @@ QVariant AbstractionTransactionalPortsModel::data(QModelIndex const& index, int 
             {
                 return KactusColors::ERROR;
             }
+        }
+    }
+    else if (role == Qt::DecorationRole && index.column() == AbstractionTransactionalPortColumns::INITIATIVE)
+    {
+        std::string iconPath = portInterface_->getIconPathForSignal(index.row());
+        if (!iconPath.empty())
+        {
+            return QIcon(QString::fromStdString(iconPath));
         }
     }
 

@@ -233,6 +233,14 @@ QVariant AbstractionWirePortsModel::data(QModelIndex const& index, int role) con
             return QVariant();
         }
     }
+    else if (role == Qt::DecorationRole && index.column() == LogicalPortColumns::DIRECTION)
+    {
+        std::string iconPath = portInterface_->getIconPathForSignal(index.row());
+        if (!iconPath.empty())
+        {
+            return QIcon(QString::fromStdString(iconPath));
+        }
+    }
 
     return QVariant();
 }
