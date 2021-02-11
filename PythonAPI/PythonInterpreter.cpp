@@ -6,24 +6,175 @@
 // Date: 03.02.2021
 //
 // Description:
-// <Short description of the class/file contents>
+// Convenience class for accessing Python interpreter.
 //-----------------------------------------------------------------------------
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #include "PythonInterpreter.h"
 
+#include "structmember.h"
+
 #include <QApplication>
 
 #include <string.h>
 
-//#include <PythonAPI/OutputRedirector.cpp>
 
-namespace
+typedef struct
 {
-    const std::string ps1 = ">>> ";
-    const std::string ps2 = "... ";
+    PyObject_HEAD
+    WriteChannel* channel;
+} CustomObject;
+
+static void Custom_dealloc(CustomObject *self)
+{
+    ((CustomObject *)self)->channel = NULL;
+
+    Py_TYPE(self)->tp_free((PyObject *)self);
+}
+
+static PyObject* Custom_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    CustomObject *self = (CustomObject *)type->tp_alloc(type, 0);
+    if (self != NULL)
+    {
+        self->channel = NULL;
+    }
+
+    return (PyObject *)self;
+}
+
+static int Custom_init(CustomObject *self, PyObject *args, PyObject *kwds)
+{
+    return 0;
+}
+
+static PyMemberDef Custom_members[] = 
+{
+    {"channel", T_OBJECT, offsetof(CustomObject, channel), 0,
+     "custom output channel"},
+    {NULL}  /* Sentinel */
 };
+
+static PyObject* Custom_write(CustomObject *self, PyObject * args)
+{
+    char* s;
+    int res = PyArg_ParseTuple(args, "s", &s);
+    if (!res)
+    {
+        PyErr_Print();
+    }
+
+    QString text(s);
+    if (self->channel != NULL)
+    {
+        self->channel->write(s);
+    }
+
+    return Py_BuildValue("i", text.length());
+}
+
+static PyObject* Custom_flush(CustomObject *self, PyObject * args)
+{
+
+    if (self->channel != NULL)
+    {
+        self->channel->write("\n");
+    }
+
+    return Py_None;
+}
+
+static PyMethodDef Custom_methods[] = 
+{
+    {"write", (PyCFunction)Custom_write, METH_VARARGS,
+    PyDoc_STR("Write")
+    },
+    {"flush", (PyCFunction)Custom_flush, METH_NOARGS,
+    PyDoc_STR("Flush write buffer")
+    },
+    {NULL}  /* Sentinel */
+};
+
+static PyTypeObject CustomType =
+{
+    PyVarObject_HEAD_INIT(NULL, 0)
+    "custom2.Custom",           /*tp_name*/
+    sizeof(CustomObject),       /*tp_basicsize*/
+    0,                          /*tp_itemsize*/
+    (destructor)Custom_dealloc, /*tp_dealloc*/
+    0,                          /*tp_vectorcall_offset*/
+    0,                          /*tp_getattr*/
+    0,                          /*tp_setattr*/
+    0,                          /*tp_as_async*/
+    0,                          /*tp_repr*/
+    0,                          /*tp_as_number*/
+    0,                          /*tp_as_sequence*/
+    0,                          /*tp_as_mapping*/
+    0,                          /*tp_hash */
+    0,                          /*tp_call*/
+    0,                          /*tp_str*/
+    0,                          /*tp_getattro*/
+    0,                          /*tp_setattro*/
+    0,                          /*tp_as_buffer*/
+    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,  /*tp_flags*/
+    PyDoc_STR(""),              /* tp_doc */
+    0,                          /* tp_traverse */
+    0,                          /* tp_clear */
+    0,                          /* tp_richcompare */
+    0,                          /* tp_weaklistoffset */
+    0,                          /* tp_iter */
+    0,                          /* tp_iternext */
+    Custom_methods,             /* tp_methods */
+    Custom_members,             /* tp_members */
+    0,                          /* tp_getset */
+ 0,//    &PyTextIOBase_Type ,        /* tp_base */
+    0,                          /* tp_dict */
+    0,                          /* tp_descr_get */
+    0,                          /* tp_descr_set */
+    0,                          /* tp_dictoffset */
+    (initproc)Custom_init,      /* tp_init */
+    0,                          /* tp_alloc */
+    Custom_new,                          /* tp_new */
+    0,                          /* tp_free */
+    0,                          /* tp_is_gc */
+    0,                          /* tp_bases */
+    0,                          /* tp_mro */
+    0,                          /* tp_cache */
+    0,                          /* tp_subclasses */
+    0,                          /* tp_weaklist */
+    0,                          /* tp_del */
+    0,                          /* tp_version_tag */
+    0,                          /* tp_finalize */
+};
+
+static PyModuleDef custommodule =
+{
+    PyModuleDef_HEAD_INIT,
+   "custom2",
+    PyDoc_STR("Example module that creates an extension type."),
+    -1,
+};
+
+PyMODINIT_FUNC PyInit_custom2(void)
+{
+    PyObject *m;
+    if (PyType_Ready(&CustomType) < 0)
+        return NULL;
+
+    m = PyModule_Create(&custommodule);
+    if (m == NULL)
+        return NULL;
+
+    Py_INCREF(&CustomType);
+    if (PyModule_AddObject(m, "Custom", (PyObject *)&CustomType) < 0) {
+        Py_DECREF(&CustomType);
+        Py_DECREF(m);
+        return NULL;
+    }
+
+    return m;
+}
 
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::PythonInterpreter()
@@ -65,20 +216,11 @@ bool PythonInterpreter::initialize()
 
     }
 
-    Py_SetProgramName(program); 
-    //PyImport_AppendInittab("emb", &PyInit_emb);
-    //PyImport_AppendInittab("StandardOutputCapture", &PyInit_StandardOutputCapture);
+    Py_SetProgramName(program);
+
+    PyImport_AppendInittab("custom2", &PyInit_custom2);
+
     Py_Initialize();
-    
-
-#ifdef Q_OS_WIN
-    //m_notifier = new QWinEventNotifier(GetStdHandle(STD_INPUT_HANDLE), this);
-    //connect(m_notifier, &QWinEventNotifier::activated, this, &PythonInterpreter::readCommand);
-
-#else
-    m_notifier = new QSocketNotifier(_fileno(stdin), QSocketNotifier::Read, this);
-    connect(m_notifier, &QSocketNotifier::activated, this, SLOT(readCommand()));
-#endif
 
     //m_notifier->setEnabled(true);
 
@@ -98,7 +240,7 @@ bool PythonInterpreter::initialize()
     PyDict_SetItemString(globalContext_, "__builtins__", PyEval_GetBuiltins());
 
 
-   /* PyObject* customName = PyUnicode_FromString("StandardOutputCapture");
+    PyObject* customName = PyUnicode_FromString("custom2");
     if (customName == NULL)
     {
         return false;
@@ -106,42 +248,66 @@ bool PythonInterpreter::initialize()
 
     PyObject* customModule = PyImport_Import(customName);
 
+    if (customModule == NULL)
+    {
+        return false;
+    }
+
     PyObject* dict = PyModule_GetDict(customModule);
     if (dict == nullptr) {
         PyErr_Print();
-        std::cerr << "Fails to get the dictionary.\n";
+        errorChannel_->write(QStringLiteral("Fails to get the dictionary.\n"));
         return 1;
     }
     Py_DECREF(customModule);
 
 
 
-    PyObject* python_class = PyDict_GetItemString(dict, "StandardOutputCapture");
+    PyObject* python_class = PyDict_GetItemString(dict, "Custom");
     if (python_class == nullptr) {
         PyErr_Print();
-        std::cerr << "Fails to get the Python class.\n";
+        errorChannel_->write(QStringLiteral("Fails to get the Python class.\n"));
         return 1;
     }
     Py_DECREF(dict);
 
-    PyObject* catcher = nullptr;
+    PyObject* outCatcher = nullptr;
+    PyObject* errCatcher = nullptr;
 
     // Creates an instance of the class
     if (PyCallable_Check(python_class)) {
-         catcher = PyObject_CallObject(python_class, nullptr);
-        Py_DECREF(python_class);
+        outCatcher = PyObject_CallObject(python_class, nullptr);
     }
     else {
-        std::cout << "Cannot instantiate the Python class" << std::endl;
+        outputChannel_->write(QStringLiteral("Cannot instantiate the Python class"));
         Py_DECREF(python_class);
-        return 1;
+        return false;
+    }
+
+    if (PyCallable_Check(python_class)) {
+        errCatcher = PyObject_CallObject(python_class, nullptr);
+    }
+    else {
+        outputChannel_->write(QStringLiteral("Cannot instantiate the Python class"));
+        Py_DECREF(python_class);
+        return false;
+    }
+
+    Py_DECREF(python_class);
+
+    ((CustomObject *)outCatcher)->channel = outputChannel_;
+    if (PySys_SetObject("stdout", outCatcher) < 0)
+    {
+        return false;
     }
 
 
-    if (PySys_SetObject("stdout", catcher) < 0)
+    ((CustomObject *)errCatcher)->channel = errorChannel_;
+    
+    if (PySys_SetObject("stderr", errCatcher) < 0)
     {
         return false;
-    }*/
+    }
 
     return success;
 }
@@ -244,10 +410,10 @@ void PythonInterpreter::printPrompt() const
 {
     if (runMultiline_)
     {
-        outputChannel_->write(QString::fromStdString(ps2));
+        outputChannel_->write("... ");
     }
     else
     {
-        outputChannel_->write(QString::fromStdString(ps1));
+        outputChannel_->write(">>> ");
     }
 }

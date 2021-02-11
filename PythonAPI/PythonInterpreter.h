@@ -6,7 +6,7 @@
 // Date: 03.02.2021
 //
 // Description:
-// <Short description of the class/file contents>
+// Convenience class for accessing Python interpreter.
 //-----------------------------------------------------------------------------
 
 #ifndef CLICONSOLE_H
@@ -16,6 +16,7 @@
 #include <Python.h>
 
 #include <QObject>
+#include <QFile>
 
 #include <string>
 #include <QSocketNotifier>
@@ -55,7 +56,7 @@ private:
 
     bool runMultiline_;
 
-   
+    QFile transcript_;
 };
 
 #endif // CLICONSOLE_H

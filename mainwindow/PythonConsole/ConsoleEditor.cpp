@@ -12,6 +12,8 @@
 #include "ConsoleEditor.h"
 
 #include <QTextBlock>
+#include <QScrollBar>
+#include <QFontDatabase>
 
 #include <PythonAPI/WriteChannel.h>
 
@@ -22,18 +24,18 @@ ConsoleEditor::ConsoleEditor(WriteChannel* outputChannel, QWidget* parent):
     QPlainTextEdit(parent),
     lockedLines_(0), 
     promptText_(),
-    outputChannel_(outputChannel)
+    outputChannel_(outputChannel),
+    fontFamily_()
 {    
     setContentsMargins(0, 0, 0, 0);
-    setTabStopWidth(32 );
+    setTabStopWidth(32);
     setAcceptDrops(false);
-    setReadOnly(false);
-    
-    QTextCharFormat format = currentCharFormat();
-    format.setFontFamily("Courier");
-    //format.setFontFamily("Lucida Console");
+    setUndoRedoEnabled(false);
 
-    setCurrentCharFormat(format);
+    QFont font;
+    font.setStyleHint(QFont::Monospace);
+     
+    fontFamily_ = font.defaultFamily();
 }
 
 //-----------------------------------------------------------------------------
@@ -41,6 +43,7 @@ ConsoleEditor::ConsoleEditor(WriteChannel* outputChannel, QWidget* parent):
 //-----------------------------------------------------------------------------
 void ConsoleEditor::print(QString const& input)
 {
+
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::End);
     
@@ -48,13 +51,15 @@ void ConsoleEditor::print(QString const& input)
     
     QTextCharFormat format = block.charFormat();
     format.setForeground(QBrush(Qt::black));
-    
+    format.setFontFamily(fontFamily_);
+
     cursor.insertText(input, format);
     lockedLines_ = cursor.blockNumber() - 1;
     promptText_ = cursor.block().text();
 
     format.setForeground(QBrush(Qt::black));
     setCurrentCharFormat(format);
+    verticalScrollBar()->setValue(verticalScrollBar()->maximum());
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +73,8 @@ void ConsoleEditor::printError(QString const& input)
     QTextBlock block = cursor.block();
 
     QTextCharFormat format = block.charFormat();
-    format.setForeground(QBrush(Qt::blue));
+    format.setForeground(QBrush(Qt::red));
+    format.setFontFamily(fontFamily_);
     
     cursor.insertText(input, format);
     lockedLines_ = cursor.blockNumber() - 1;
@@ -76,6 +82,7 @@ void ConsoleEditor::printError(QString const& input)
 
     format.setForeground(QBrush(Qt::black));
     setCurrentCharFormat(format);
+    verticalScrollBar()->setValue(verticalScrollBar()->maximum());
 }
 
 //-----------------------------------------------------------------------------

@@ -12,8 +12,6 @@
 #ifndef CONSOLEEDITOR_H
 #define CONSOLEEDITOR_H
 
-//#include <mainwindow/MessageConsole/messageconsole.h>
-
 #include <QPlainTextEdit>
 
 class WriteChannel;
@@ -46,6 +44,8 @@ private:
     QString promptText_;
 
     WriteChannel* outputChannel_;
+
+    QString fontFamily_;
 };
 
 

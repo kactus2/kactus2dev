@@ -33,12 +33,12 @@ public:
     //! The constructor.
     PythonConsole(QWidget* parent);
     
-   
     //! The destructor.
     virtual ~PythonConsole() = default;
 
 private:
 
+    //! Setup widget layout.
     void setupLayout();
 
     ChannelRelay* outputChannel_;
@@ -48,7 +48,6 @@ private:
     PythonInterpreter* interpreter_;
 
     ConsoleEditor* console_;
-   // QLineEdit* inputEditor_;
 
     QTextStream inputBuffer_;
 
