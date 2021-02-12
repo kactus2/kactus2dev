@@ -26,4 +26,5 @@ FileChannel::FileChannel(FILE* fileHandle):
 void FileChannel::write(QString const& text)
 {
     output_ << text;
+    output_.flush();
 }

@@ -16,7 +16,6 @@
 #include <Python.h>
 
 #include <QObject>
-#include <QFile>
 
 #include <string>
 #include <QSocketNotifier>
@@ -46,6 +45,8 @@ private:
   
     std::string inputBuffer_;
 
+    bool runMultiline_;
+
     WriteChannel* outputChannel_;
 
     WriteChannel* errorChannel_; 
@@ -54,9 +55,7 @@ private:
 
     PyObject* localContext_;
 
-    bool runMultiline_;
 
-    QFile transcript_;
 };
 
 #endif // CLICONSOLE_H

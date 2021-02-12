@@ -1146,6 +1146,7 @@ CreateHelp
     <ClCompile Include="Plugins\PluginSystem\PluginManager.cpp" />
     <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp" />
     <ClCompile Include="PythonAPI\ChannelRelay.cpp" />
+    <ClCompile Include="PythonAPI\extensions\OutputForwarder.cpp" />
     <ClCompile Include="PythonAPI\FileChannel.cpp" />
     <ClCompile Include="PythonAPI\PythonInterpreter.cpp" />
     <ClCompile Include="PythonAPI\StdInputListener.cpp" />
@@ -3024,6 +3025,7 @@ CreateHelp
     <QtMoc Include="PythonAPI\PythonInterpreter.h" />
     <QtMoc Include="PythonAPI\StdInputListener.h" />
     <QtMoc Include="PythonAPI\ChannelRelay.h" />
+    <ClInclude Include="PythonAPI\extensions\OutputForwarder.h" />
     <ClInclude Include="PythonAPI\FileChannel.h" />
     <ClInclude Include="PythonAPI\WriteChannel.h" />
     <ClInclude Include="settings\FileTypeColumns.h" />

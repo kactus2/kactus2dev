@@ -977,6 +977,12 @@
     <Filter Include="Source Files\PythonAPI">
       <UniqueIdentifier>{9fcc4f31-5a2a-46fc-b5b2-498ad595e620}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\PythonAPI\extensions">
+      <UniqueIdentifier>{3f30f903-92bb-4a5a-9476-097327ba3bec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PythonAPI\extensions">
+      <UniqueIdentifier>{8903e541-6a98-4fe5-8a56-e6b1640acce4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3228,6 +3234,9 @@
     </ClCompile>
     <ClCompile Include="PythonAPI\FileChannel.cpp">
       <Filter>Source Files\PythonAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\extensions\OutputForwarder.cpp">
+      <Filter>Source Files\PythonAPI\extensions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5821,6 +5830,9 @@
     </ClInclude>
     <ClInclude Include="PythonAPI\FileChannel.h">
       <Filter>Header Files\PythonAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonAPI\extensions\OutputForwarder.h">
+      <Filter>Header Files\PythonAPI\extensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

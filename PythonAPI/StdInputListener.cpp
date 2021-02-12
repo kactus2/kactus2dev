@@ -23,16 +23,14 @@
 StdInputListener::StdInputListener(WriteChannel* outputChannel, QObject* parent /*= nullptr*/) :
     QObject(parent),
     outputChannel_(outputChannel),
-    notifier_(nullptr)
-
-{
-
 #ifdef Q_OS_WIN
-    notifier_ = new QWinEventNotifier(GetStdHandle(STD_INPUT_HANDLE), this);
+    notifier_(new QWinEventNotifier(GetStdHandle(STD_INPUT_HANDLE), this))
+{
     QObject::connect(notifier_, &QWinEventNotifier::activated, this, &StdInputListener::inputReadable);
 
 #else
-    notifier = new QSocketNotifier(_fileno(stdin), QSocketNotifier::Read, this);
+    notifier(new QSocketNotifier(_fileno(stdin), QSocketNotifier::Read, this))
+{
     connect(notifier, &QSocketNotifier::activated, this, SLOT(inputReadable()));
 #endif
 }
