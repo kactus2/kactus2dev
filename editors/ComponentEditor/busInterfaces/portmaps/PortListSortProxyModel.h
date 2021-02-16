@@ -15,11 +15,11 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QSortFilterProxyModel>
-
 #include <QSharedPointer>
 
 class Component;
 class AbstractionType;
+class PortsInterface;
 
 //! The port types.
 namespace PortTypes
@@ -54,7 +54,7 @@ public:
 	 *      @param [in] component  The owner component of the ports.
 	 *      @param [in] parent     The parent object.
 	 */
-    PortListSortProxyModel(QSharedPointer<Component> component, QObject *parent = 0);
+    PortListSortProxyModel(QSharedPointer<Component> component, PortsInterface* portInterface, QObject *parent = 0);
 
 	 /*!
 	 *  Destructor.
@@ -212,6 +212,9 @@ private:
 
     //! The currently visible port type.
     QString visibleType_;
+
+    //! Interface for accessing ports.
+    PortsInterface* portInterface_;
 };
 
 #endif // PORTLISTSORTPROXYMODEL_H

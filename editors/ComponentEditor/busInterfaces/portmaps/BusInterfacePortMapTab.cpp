@@ -46,8 +46,8 @@ busif_(busif),
 component_(component),
 libHandler_(libHandler),
 physicalPortView_(this),
-physicalPortModel_(component_, expressionParser, this),
-physicalPortSorter_(component_, this),
+physicalPortModel_(portMapInterface->getPhysicalPortInterface(), this),
+physicalPortSorter_(component_, portMapInterface->getPhysicalPortInterface(), this),
 nameFilterEditor_(new QLineEdit(this)),
 typeFilter_(this),
 directionFilter_(this),
@@ -414,6 +414,7 @@ void BusInterfacePortMapTab::onPortConnected(QString const& portName)
 //-----------------------------------------------------------------------------
 void BusInterfacePortMapTab::onPortDisconnected(QString const& portName)
 {
+/*
     foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
     {
         foreach (QSharedPointer<PortMap> interfacePortMap, *busInterface->getAllPortMaps())
@@ -427,6 +428,7 @@ void BusInterfacePortMapTab::onPortDisconnected(QString const& portName)
             }
         }
     }
+*/
 
     physicalPortSorter_.onPortDisconnected(portName);
 }
