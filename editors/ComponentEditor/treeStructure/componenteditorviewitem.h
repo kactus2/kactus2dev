@@ -22,10 +22,10 @@ class LibraryInterface;
 class ComponentInstantiation;
 class DesignInstantiation;
 class DesignConfigurationInstantiation;
-
 class ViewValidator;
 class InstantiationsValidator;
 class ExpressionParser;
+class ModuleParameterInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for a single view in the component editor's navigation tree.
@@ -39,23 +39,31 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] view                    The view being edited.
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The used expression parser.
-     *      @param [in] viewValidator           Validator used for views.
-	 *      @param [in] parent                  The parent item.
+	 *      @param [in] view                        The view being edited.
+	 *      @param [in] model                       The model that owns the items.
+	 *      @param [in] libHandler                  The instance that manages the library.
+	 *      @param [in] component                   The component being edited.
+	 *      @param [in] parameterFinder             The parameter finder.
+     *      @param [in] expressionFormatter         The expression formatter.
+     *      @param [in] expressionParser            The used expression parser.
+     *      @param [in] viewValidator               Validator used for views.
+     *      @param [in] moduleParameterInterface    Interface for accessing module parameters.
+	 *      @param [in] parent                      The parent item.
 	 */
-	ComponentEditorViewItem(QSharedPointer<View> view, ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler, QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ViewValidator> viewValidator,
+	ComponentEditorViewItem(QSharedPointer<View> view,
+        ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ViewValidator> viewValidator,
+        ModuleParameterInterface* moduleParameterInterface,
         ComponentEditorItem* parent);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~ComponentEditorViewItem() = default;
 
 	/*!
@@ -157,6 +165,9 @@ private:
 
     //! The used validator for views.
     QSharedPointer<ViewValidator> viewValidator_;
+
+    //! Interface for accessing module parameters.
+    ModuleParameterInterface* moduleParameterInterface_;
 };
 
 #endif // COMPONENTEDITORVIEWITEM_H

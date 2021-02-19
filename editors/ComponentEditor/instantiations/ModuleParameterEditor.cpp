@@ -24,7 +24,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ParametersView.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -34,25 +34,20 @@
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterEditor::ModuleParameterEditor()
 //-----------------------------------------------------------------------------
-ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter>>> parameters,
+ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<ComponentInstantiation> instantiation,
     QSharedPointer<QList<QSharedPointer<Choice>>> componentChoices,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QWidget* parent):
+    ModuleParameterInterface* parameterInterface, QWidget* parent):
 QGroupBox(tr("Module parameters"), parent),
 proxy_(new QSortFilterProxyModel(this)),
 model_(0),
-parameterInterface_(),
-view_(0)
+moduleParameterInterface_(parameterInterface),
+view_(0),
+instantiation_(instantiation)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    QSharedPointer<ParameterValidator> validator(new ParameterValidator(expressionParser, componentChoices));
-
-    parameterInterface_ = QSharedPointer<ParametersInterface>(
-        new ParametersInterface(validator, expressionParser, expressionFormatter));
-    parameterInterface_->setChoices(componentChoices);
-
-    model_ = new ModuleParameterModel(parameterInterface_, expressionParser, parameterFinder, this);
+    model_ = new ModuleParameterModel(moduleParameterInterface_, expressionParser, parameterFinder, this);
 
     view_ = new ParametersView(this);
 
@@ -99,9 +94,9 @@ view_(0)
     connect(view_, SIGNAL(recalculateReferenceToIndexes(QModelIndexList)),
         model_, SLOT(onGetParametersMachingIndexes(QModelIndexList)), Qt::UniqueConnection);
     connect(model_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         this,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 
     view_->setSortingEnabled(true);
@@ -117,7 +112,7 @@ view_(0)
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);
 
-    setModuleParameters(parameters);
+    setModuleParameters(instantiation_);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,6 +128,8 @@ ModuleParameterEditor::~ModuleParameterEditor()
 //-----------------------------------------------------------------------------
 void ModuleParameterEditor::refresh()
 {
+    setModuleParameters(instantiation_);
+
     proxy_->invalidate();
 
     if (!view_->isColumnHidden(ModuleParameterColumns::ID))
@@ -160,10 +157,10 @@ void ModuleParameterEditor::disableEditing()
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterEditor::setModuleParameters()
 //-----------------------------------------------------------------------------
-void ModuleParameterEditor::setModuleParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > 
-    moduleParameters)
+void ModuleParameterEditor::setModuleParameters(QSharedPointer<ComponentInstantiation> containingInstantiation)
 {
-    parameterInterface_->setModuleParameters(moduleParameters);
+    instantiation_ = containingInstantiation;
+    moduleParameterInterface_->setModuleParameters(instantiation_);
 
     model_->resetModelItems();
 }

@@ -13,6 +13,7 @@
 #include "FileSetColumns.h"
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -27,20 +28,11 @@
 //-----------------------------------------------------------------------------
 // Function: FileSetsModel::FileSetsModel()
 //-----------------------------------------------------------------------------
-FileSetsModel::FileSetsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+FileSetsModel::FileSetsModel(FileSetInterface* fileSetInterface, QSharedPointer<ParameterFinder> parameterFinder,
     QObject *parent):
 QAbstractTableModel(parent),
-component_(component),
-fileSets_(component->getFileSets()),
-parameterFinder_(parameterFinder)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileSetsModel::~FileSetsModel()
-//-----------------------------------------------------------------------------
-FileSetsModel::~FileSetsModel()
+parameterFinder_(parameterFinder),
+fileSetInterface_(fileSetInterface)
 {
 
 }
@@ -54,7 +46,8 @@ int FileSetsModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/ ) cons
     {
 		return 0;
 	}
-	return fileSets_->size();
+    
+    return fileSetInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,31 +108,48 @@ QVariant FileSetsModel::headerData(int section, Qt::Orientation orientation, int
 //-----------------------------------------------------------------------------
 QVariant FileSetsModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= fileSets_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= fileSetInterface_->itemCount())
     {
 		return QVariant();
 	}
 
-    QSharedPointer<FileSet> fileSet = fileSets_->at(index.row());
-    
+    std::string fileSetName = fileSetInterface_->getIndexedItemName(index.row());
+
     if (index.column() == FileSetColumns::DESCRIPTION && (role == Qt::EditRole || role == Qt::ToolTipRole))
     {
-        return fileSet->description();
+        return QString::fromStdString(fileSetInterface_->getDescription(fileSetName));
     }
     else if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == FileSetColumns::NAME_COLUMN)
         {
-            return fileSet->name();
+            return QString::fromStdString(fileSetName);
         }
         else if (index.column() == FileSetColumns::DESCRIPTION)
         {
-            return fileSet->description().replace(QRegularExpression("\n.*$",
-                QRegularExpression::DotMatchesEverythingOption), "...");
+            QString fileSetDescription = QString::fromStdString(fileSetInterface_->getDescription(fileSetName));
+
+            return fileSetDescription.replace(
+                QRegularExpression("\n.*$", QRegularExpression::DotMatchesEverythingOption), "...");
         }
         else if (index.column() == FileSetColumns::GROUP_COLUMN)
         {
-            return fileSet->getGroups()->join(" ");
+            std::vector<std::string> fileSetGroups = fileSetInterface_->getGroups(fileSetName);
+
+            std::string combinedGroups;
+            for (int i = 0; i < fileSetGroups.size(); ++i)
+            {
+                auto singleGroup = fileSetGroups.at(i);
+
+                if (i > 0)
+                {
+                    combinedGroups += " ";
+                }
+
+                combinedGroups += singleGroup;
+            }
+
+            return QString::fromStdString(combinedGroups);
         }
         else
         {
@@ -168,33 +178,35 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool FileSetsModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= fileSets_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= fileSetInterface_->itemCount())
     {
 		return false;
 	}
 
-    QSharedPointer<FileSet> fileSet = fileSets_->at(index.row());
+    std::string fileSetName = fileSetInterface_->getIndexedItemName(index.row());
 
     if (Qt::EditRole == role)
     {
         if (index.column() == FileSetColumns::NAME_COLUMN)
         {
-            fileSet->setName(value.toString());
+            fileSetInterface_->setName(fileSetName, value.toString().toStdString());
         }
         else if (index.column() == FileSetColumns::DESCRIPTION)
         {
-            fileSet->setDescription(value.toString());
+            fileSetInterface_->setDescription(fileSetName, value.toString().toStdString());
         }
         else if(index.column() == FileSetColumns::GROUP_COLUMN)
         {
             QString str = value.toString();
             QStringList groupNames = str.split(' ', QString::SkipEmptyParts);
 
-            fileSet->getGroups()->clear();
-            foreach (QString name, groupNames)
+            std::vector<std::string> newGroups;
+            for (auto singleGroup : groupNames)
             {
-                fileSet->getGroups()->append(name);
+                newGroups.push_back(singleGroup.toStdString());
             }
+
+            fileSetInterface_->setGroups(fileSetName, newGroups);
         }
         else
         {
@@ -216,7 +228,7 @@ bool FileSetsModel::setData(const QModelIndex& index, const QVariant& value, int
 //-----------------------------------------------------------------------------
 void FileSetsModel::onAddItem(QModelIndex const& index)
 {
-	int row = fileSets_->size();
+    int row = fileSetInterface_->itemCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -225,7 +237,9 @@ void FileSetsModel::onAddItem(QModelIndex const& index)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	fileSets_->insert(row, QSharedPointer<FileSet>(new FileSet()));
+
+    fileSetInterface_->addFileSet(row);
+
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -241,7 +255,7 @@ void FileSetsModel::onAddItem(QModelIndex const& index)
 void FileSetsModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= fileSets_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= fileSetInterface_->itemCount())
     {
 		return;
 	}
@@ -249,9 +263,11 @@ void FileSetsModel::onRemoveItem(QModelIndex const& index)
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    decreaseReferencesWithRemovedFileSet(fileSets_->at(index.row()));
+    std::string removedName = fileSetInterface_->getIndexedItemName(index.row());
 
-	fileSets_->removeAt(index.row());
+    decreaseReferencesWithRemovedFileSet(removedName);
+
+    fileSetInterface_->removeFileSet(removedName);
 
     endRemoveRows();
 
@@ -265,12 +281,15 @@ void FileSetsModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: filesetsmodel::decreaseReferencesWithRemovedFileSet()
 //-----------------------------------------------------------------------------
-void FileSetsModel::decreaseReferencesWithRemovedFileSet(QSharedPointer<FileSet> currentFileSet)
+void FileSetsModel::decreaseReferencesWithRemovedFileSet(std::string const& fileSetName)
 {
     QStringList expressionList;
-    foreach (QSharedPointer<FileBuilder> builder, *currentFileSet->getDefaultFileBuilders())
+    std::vector<std::string> selectedFileSetNames;
+    selectedFileSetNames.push_back(fileSetName);
+
+    for (auto expression : fileSetInterface_->getExpressionsInSelectedFileSets(selectedFileSetNames))
     {
-        expressionList.append(builder->getReplaceDefaultFlags());
+        expressionList.append(QString::fromStdString(expression));
     }
 
     ReferenceCalculator referenceCalculator(parameterFinder_);
@@ -302,13 +321,10 @@ void FileSetsModel::onFileSetAdded(FileSet* fileSet)
     endResetModel();
 
     // Find out the corresponding index and signal fileSetAdded().
-    for (int i = 0; i < fileSets_->size(); ++i)
+    int fileSetIndex = fileSetInterface_->getItemIndex(fileSet->name().toStdString());
+    if (fileSetIndex >= 0)
     {
-        if (fileSets_->at(i).data() == fileSet)
-        {
-            emit fileSetAdded(i);
-            emit contentChanged();
-            break;
-        }
+        emit fileSetAdded(fileSetIndex);
+        emit contentChanged();
     }
 }

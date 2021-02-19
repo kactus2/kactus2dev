@@ -26,6 +26,7 @@ class ParametersModel;
 class ExpressionFormatter;
 class ParametersView;
 class ParametersInterface;
+class AbstractParameterInterface;
 
 //-----------------------------------------------------------------------------
 //! Group box that can be used to edit list of parameters.
@@ -108,7 +109,7 @@ signals:
      *      @param [in] parameterInterface  Interface for accessing parameters.
      */
     void recalculateReferencesToParameters(QVector<QString> const& parameterList,
-        QSharedPointer<ParametersInterface> parameterInterface);
+        AbstractParameterInterface* parameterInterface);
 
 private:
 	//! No copying. No assignment.
@@ -132,7 +133,7 @@ private:
     QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! Interface for accessing parameters.
-    QSharedPointer<ParametersInterface> parameterInterface_;
+    ParametersInterface* parameterInterface_;
 };
 
 #endif // PARAMETERGROUPBOX_H

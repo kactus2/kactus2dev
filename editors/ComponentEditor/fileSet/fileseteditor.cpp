@@ -16,6 +16,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+
 #include <QGridLayout>
 #include <QScrollArea>
 #include <QStringList>
@@ -24,17 +26,19 @@
 // Function: FileSetEditor::FileSetEditor()
 //-----------------------------------------------------------------------------
 FileSetEditor::FileSetEditor(LibraryInterface* handler, QSharedPointer<Component> component,
-                             QSharedPointer<FileSet> fileSet, QSharedPointer<ParameterFinder> parameterFinder,
-                             QSharedPointer<ExpressionParser> expressionParser,
-                             QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+    QSharedPointer<FileSet> fileSet, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    FileSetInterface* fileSetInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
 baseLocation_(handler->getPath(component->getVlnv())),
-fileSet_(fileSet),
 nameEditor_(fileSet, this),
 groupsEditor_(tr("Group identifiers"), this),
-fileBuilderEditor_(fileSet->getDefaultFileBuilders(), parameterFinder, expressionParser, expressionFormatter, this),
-files_(component, fileSet, handler, this),
-dependencies_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this)
+fileBuilderEditor_(fileSetInterface->getFileBuilderInterface(), parameterFinder, expressionParser,
+    expressionFormatter, fileSet->getDefaultFileBuilders(), this),
+files_(fileSet->getFiles(), fileSetInterface->getFileInterface(), component, handler, this),
+dependencies_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this),
+fileSetInterface_(fileSetInterface),
+availableFileSets_(component->getFileSets())
 {
     nameEditor_.setTitle("File set name and description");
 
@@ -56,18 +60,33 @@ FileSetEditor::~FileSetEditor()
 //-----------------------------------------------------------------------------
 void FileSetEditor::refresh()
 {
+    fileSetInterface_->setFileSets(availableFileSets_);
+
 	// set the values for the nameGroupBox
 	nameEditor_.refresh();
 
+    QStringList fileSetGroups;
+    for (auto singleGroup : fileSetInterface_->getGroups(nameEditor_.name().toStdString()))
+    {
+        fileSetGroups.append(QString::fromStdString(singleGroup));
+    }
+
 	// initialize groups 
-	groupsEditor_.initialize(*fileSet_->getGroups());
+    groupsEditor_.initialize(fileSetGroups);
 
 	files_.refresh();
 
 	fileBuilderEditor_.refresh();
 
 	// initialize dependencies
-	dependencies_.initialize(*fileSet_->getDependencies());
+    QStringList fileSetDependencies;
+    for (auto singleDependency : fileSetInterface_->getDependencies(nameEditor_.name().toStdString()))
+    {
+        fileSetDependencies.append(QString::fromStdString(singleDependency));
+    }
+
+
+    dependencies_.initialize(fileSetDependencies);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,8 +94,13 @@ void FileSetEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileSetEditor::onGroupsChange()
 {
-    fileSet_->getGroups()->clear();
-    fileSet_->getGroups()->append(groupsEditor_.items());
+    std::vector<std::string> newGroups;
+    for (auto group : groupsEditor_.items())
+    {
+        newGroups.push_back(group.toStdString());
+    }
+
+    fileSetInterface_->setGroups(nameEditor_.name().toStdString(), newGroups);
 
 	emit contentChanged();
 }
@@ -86,9 +110,14 @@ void FileSetEditor::onGroupsChange()
 //-----------------------------------------------------------------------------
 void FileSetEditor::onDependenciesChange()
 {
-    fileSet_->getDependencies()->clear();
-    fileSet_->getDependencies()->append(dependencies_.items());
-    
+    std::vector<std::string> newDependencies;
+    for (auto dependency : dependencies_.items())
+    {
+        newDependencies.push_back(dependency.toStdString());
+    }
+
+    fileSetInterface_->setDependencies(nameEditor_.name().toStdString(), newDependencies);
+
 	emit contentChanged();
 }
 
@@ -154,4 +183,7 @@ void FileSetEditor::connectSignals()
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(&fileBuilderEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&files_, SIGNAL(fileRenamed(std::string const&, std::string const&)),
+        this, SIGNAL(fileRenamed(std::string const&, std::string const&)), Qt::UniqueConnection);
 }

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ConsoleEditor.cpp
+// File: ScriptingTextEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
@@ -9,26 +9,28 @@
 // <Short description of the class/file contents>
 //-----------------------------------------------------------------------------
 
-#include "ConsoleEditor.h"
+#include "ScriptingTextEditor.h"
 
 #include <QTextBlock>
 #include <QScrollBar>
-#include <QFontDatabase>
+#include <QMenu>
+#include <QKeySequence>
 
 #include <PythonAPI/WriteChannel.h>
 
 //-----------------------------------------------------------------------------
-// Function: ConsoleEditor::ConsoleEditor()
+// Function: ScriptingTextEditor::ScriptingTextEditor()
 //-----------------------------------------------------------------------------
-ConsoleEditor::ConsoleEditor(WriteChannel* outputChannel, QWidget* parent): 
+ScriptingTextEditor::ScriptingTextEditor(WriteChannel* outputChannel, QWidget* parent): 
     QPlainTextEdit(parent),
-    lockedLines_(0), 
+    textLockPosition_(0), 
     promptText_(),
     outputChannel_(outputChannel),
-    fontFamily_()
+    fontFamily_(),
+    copyAction_(tr("Copy"), this)
 {    
     setContentsMargins(0, 0, 0, 0);
-    setTabStopWidth(32);
+   
     setAcceptDrops(false);
     setUndoRedoEnabled(false);
 
@@ -36,14 +38,18 @@ ConsoleEditor::ConsoleEditor(WriteChannel* outputChannel, QWidget* parent):
     font.setStyleHint(QFont::Monospace);
      
     fontFamily_ = font.defaultFamily();
+
+    copyAction_.setDisabled(true);
+
+    connect(&copyAction_, SIGNAL(triggered()), this, SLOT(copy()), Qt::UniqueConnection);
+    connect(this, SIGNAL(copyAvailable(bool)), &copyAction_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConsoleEditor::print()
+// Function: ScriptingTextEditor::print()
 //-----------------------------------------------------------------------------
-void ConsoleEditor::print(QString const& input)
+void ScriptingTextEditor::print(QString const& input)
 {
-
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::End);
     
@@ -54,7 +60,7 @@ void ConsoleEditor::print(QString const& input)
     format.setFontFamily(fontFamily_);
 
     cursor.insertText(input, format);
-    lockedLines_ = cursor.blockNumber() - 1;
+    textLockPosition_ = cursor.position();
     promptText_ = cursor.block().text();
 
     format.setForeground(QBrush(Qt::black));
@@ -63,9 +69,9 @@ void ConsoleEditor::print(QString const& input)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConsoleEditor::printError()
+// Function: ScriptingTextEditor::printError()
 //-----------------------------------------------------------------------------
-void ConsoleEditor::printError(QString const& input)
+void ScriptingTextEditor::printError(QString const& input)
 {
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::End);
@@ -77,7 +83,7 @@ void ConsoleEditor::printError(QString const& input)
     format.setFontFamily(fontFamily_);
     
     cursor.insertText(input, format);
-    lockedLines_ = cursor.blockNumber() - 1;
+    textLockPosition_ = cursor.position();
     promptText_ = cursor.block().text();
 
     format.setForeground(QBrush(Qt::black));
@@ -86,17 +92,17 @@ void ConsoleEditor::printError(QString const& input)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConsoleEditor::keyPressEvent()
+// Function: ScriptingTextEditor::keyPressEvent()
 //-----------------------------------------------------------------------------
-void ConsoleEditor::keyPressEvent(QKeyEvent *e)
+void ScriptingTextEditor::keyPressEvent(QKeyEvent *e)
 {
-    if ((textCursor().blockNumber() <= lockedLines_ || textCursor().positionInBlock() < promptText_.length()) &&
+    if ((textCursor().position() < textLockPosition_) &&
         (e->text().isEmpty() == false ||
          e->key() == Qt::Key_Backspace ||
          e->key() == Qt::Key_Delete ||
          e->key() == Qt::Key_Enter ||
          e->key() == Qt::Key_Return) || 
-        (e->key() == Qt::Key_Backspace && textCursor().positionInBlock() == promptText_.length()))
+        (e->key() == Qt::Key_Backspace && textCursor().position() == textLockPosition_))
     {
         return;
     }
@@ -118,4 +124,38 @@ void ConsoleEditor::keyPressEvent(QKeyEvent *e)
     {
         QPlainTextEdit::keyPressEvent(e);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptingTextEditor::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void ScriptingTextEditor::contextMenuEvent(QContextMenuEvent* event)
+{
+    QMenu menu;
+    menu.addAction(&copyAction_);
+    QAction* paste = menu.addAction(QStringLiteral("Paste"), this, SLOT(paste()), QKeySequence::Paste);
+    menu.addAction(QStringLiteral("Select all"), this, SLOT(selectAll()), QKeySequence::SelectAll);
+    menu.addAction(QStringLiteral("Clear"), this, SLOT(onClear()));
+
+    paste->setEnabled(canPaste());
+
+    menu.exec(event->globalPos());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptingTextEditor::canPaste()
+//-----------------------------------------------------------------------------
+bool ScriptingTextEditor::canPaste() const
+{
+    QTextCursor cursor = textCursor();    
+    return (cursor.selectionStart() >= textLockPosition_ && cursor.selectionEnd() >= textLockPosition_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptingTextEditor::onClear()
+//-----------------------------------------------------------------------------
+void ScriptingTextEditor::onClear()
+{
+    clear();
+    print(promptText_);
 }

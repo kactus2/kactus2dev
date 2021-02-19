@@ -23,6 +23,7 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
@@ -33,7 +34,7 @@
 #include <IPXACTmodels/Component/RemapPort.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
 
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceCounter::ComponentParameterReferenceCounter()
@@ -58,7 +59,7 @@ void ComponentParameterReferenceCounter::setComponent(QSharedPointer<Component> 
 // Function: ComponentParameterReferenceCounter::recalculateReferencesToParameters()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceCounter::recalculateReferencesToParameters(QVector<QString> const& parameterList,
-    QSharedPointer<ParametersInterface> parameterInterface)
+    AbstractParameterInterface* parameterInterface)
 {
     for (auto parameterName : parameterList)
     {
@@ -216,6 +217,7 @@ int ComponentParameterReferenceCounter::countReferencesInBaseMemoryMap(QString c
     QSharedPointer<MemoryMapBase> memoryMap) const
 {
     int referenceCount = 0;
+    referenceCount += countReferencesInMemoryMapValues(parameterID, memoryMap);
 
     foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
     {
@@ -230,6 +232,19 @@ int ComponentParameterReferenceCounter::countReferencesInBaseMemoryMap(QString c
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInMemoryMapValues()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInMemoryMapValues(QString const& parameterID,
+    QSharedPointer<MemoryMapBase> memoryMap) const
+{
+    int referenceCount = 0;
+
+    referenceCount += countReferencesInExpression(parameterID, memoryMap->getIsPresent());
+
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceCounter::countReferenceInAddressBlock()
 //-----------------------------------------------------------------------------
 int ComponentParameterReferenceCounter::countReferenceInAddressBlock(QString const& parameterID,
@@ -239,6 +254,7 @@ int ComponentParameterReferenceCounter::countReferenceInAddressBlock(QString con
 
     referenceCount += countReferencesInAddressBlockValues(parameterID, addressBlock);
     referenceCount += countReferencesInRegisters(parameterID, addressBlock->getRegisterData());
+    referenceCount += countReferencesInRegisterFiles(parameterID, addressBlock->getRegisterData());
 
     return referenceCount;
 }
@@ -263,7 +279,7 @@ int ComponentParameterReferenceCounter::countReferencesInAddressBlockValues(QStr
 // Function: ComponentParameterReferenceCounter::countReferencesInRegisters()
 //-----------------------------------------------------------------------------
 int ComponentParameterReferenceCounter::countReferencesInRegisters(QString const& parameterID,
-    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registers) const
+    QSharedPointer<QList<QSharedPointer<RegisterBase>>> registers) const
 {
     int referenceCounter = 0;
 
@@ -280,18 +296,66 @@ int ComponentParameterReferenceCounter::countReferencesInRegisters(QString const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceCounter::countReferencesInRegisters()
+// Function: ComponentParameterReferenceCounter::countReferencesInRegisterFiles()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInRegisterFiles(QString const& parameterID,
+    QSharedPointer<QList<QSharedPointer<RegisterBase>>> const& files) const
+{
+    int referenceCounter = 0;
+    for (auto registerData : *files)
+    {
+        QSharedPointer<RegisterFile> targetFile = registerData.dynamicCast<RegisterFile>();
+        if (targetFile)
+        {
+            referenceCounter += countReferencesInSingleRegisterFile(parameterID, targetFile);
+        }
+    }
+
+    return referenceCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSingleRegister()
 //-----------------------------------------------------------------------------
 int ComponentParameterReferenceCounter::countReferencesInSingleRegister(QString const& parameterID,
     QSharedPointer<Register> targetRegister) const
 {
     int referenceCount = 0;
 
-    referenceCount += countReferencesInExpression(parameterID, targetRegister->getAddressOffset());
-    referenceCount += countReferencesInExpression(parameterID, targetRegister->getDimension());
+    referenceCount += countReferencesInSingleBaseRegister(parameterID, targetRegister);
     referenceCount += countReferencesInExpression(parameterID, targetRegister->getSize());
-    referenceCount += countReferencesInExpression(parameterID, targetRegister->getIsPresent());
     referenceCount += countReferencesInFields(parameterID, targetRegister->getFields());
+
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSingleBaseRegister()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSingleBaseRegister(QString const& parameterID,
+    QSharedPointer<RegisterBase> baseRegister) const
+{
+    int referenceCount = 0;
+
+    referenceCount += countReferencesInExpression(parameterID, baseRegister->getAddressOffset());
+    referenceCount += countReferencesInExpression(parameterID, baseRegister->getDimension());
+    referenceCount += countReferencesInExpression(parameterID, baseRegister->getIsPresent());
+
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSingleRegisterFile()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSingleRegisterFile(QString const& parameterID,
+    QSharedPointer<RegisterFile> targetFile) const
+{
+    int referenceCount = 0;
+
+    referenceCount += countReferencesInSingleBaseRegister(parameterID, targetFile);
+    referenceCount += countReferencesInExpression(parameterID, targetFile->getRange());
+    referenceCount += countReferencesInRegisters(parameterID, targetFile->getRegisterData());
+    referenceCount += countReferencesInRegisterFiles(parameterID, targetFile->getRegisterData());
 
     return referenceCount;
 }

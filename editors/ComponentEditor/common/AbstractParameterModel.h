@@ -19,7 +19,7 @@
 #include <QSharedPointer>
 #include <QList>
 
-class ParametersInterface;
+class AbstractParameterInterface;
 
 //-----------------------------------------------------------------------------
 //! Base class for models editing parameters and model parameters.
@@ -38,7 +38,7 @@ public:
 	 *      @param [in] parameterFinder     Pointer to the instance for finding parameters.
 	 *      @param [in] parent              The parent object.
 	 */
-    AbstractParameterModel(QSharedPointer<ParametersInterface> parameterInterface,
+    AbstractParameterModel(AbstractParameterInterface* parameterInterface,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 
@@ -144,7 +144,7 @@ signals:
      *      @param [in] parameterInterface  Interface for accessing parameters.
      */
     void recalculateReferencesToParameters(QVector<QString> const& parameterList,
-        QSharedPointer<ParametersInterface> parameterInterface);
+        AbstractParameterInterface* parameterInterface);
 
 protected:
                   
@@ -153,7 +153,7 @@ protected:
      *
      *      @return Interface for accessing parameters.
      */
-    QSharedPointer<ParametersInterface> getInterface() const;
+    AbstractParameterInterface* getInterface() const;
 
     /*!
      *  Gets the column for name.
@@ -365,7 +365,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Interface for accessing parameters.
-    QSharedPointer<ParametersInterface> parameterInterface_;
+    AbstractParameterInterface* parameterInterface_;
 };
 
 #endif // ABSTRACTPARAMETERMODEL_H

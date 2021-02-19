@@ -15,12 +15,18 @@
 #include "DesignInstantiationsItem.h"
 #include "DesignConfigurationInstantiationsItem.h"
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
 #include <editors/ComponentEditor/instantiations/InstantiationsEditor.h>
-
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: InstantiationsItem::InstantiationsItem()
@@ -28,19 +34,19 @@
 InstantiationsItem::InstantiationsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
+    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),
 expressionParser_(expressionParser),
 validator_(new InstantiationsValidator(expressionParser, component->getFileSets(),
     QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())),
     libHandler)),
-componentInstantiationsItem_(new ComponentInstantiationsItem(model, libHandler, component, validator_,
-    referenceCounter, parameterFinder, expressionFormatter, expressionParser, this)),
+componentInstantiationsItem_(0),
 designConfigurationInstantiationsItem_(
     new DesignConfigurationInstantiationsItem(model, libHandler, component, validator_, referenceCounter,
         parameterFinder, expressionFormatter, expressionParser, this)),
 designInstantiationsItem_(new DesignInstantiationsItem(model, libHandler, component, validator_, parameterFinder,
-    referenceCounter, this))
+    referenceCounter, this)),
+componentInstantiationInterface_()
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -48,6 +54,12 @@ designInstantiationsItem_(new DesignInstantiationsItem(model, libHandler, compon
     setObjectName(tr("InstantiationsItem"));
 
     setReferenceCounter(referenceCounter);
+
+    constructInterfaces();
+
+    componentInstantiationsItem_ = QSharedPointer<ComponentInstantiationsItem>(new ComponentInstantiationsItem(
+        model, libHandler, component, validator_, referenceCounter, parameterFinder, expressionFormatter,
+        expressionParser, componentInstantiationInterface_, this));
 
     connect(componentInstantiationsItem_.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
@@ -103,8 +115,9 @@ ItemEditor* InstantiationsItem::editor()
 {
 	if (!editor_)
     {
- 		editor_ = new InstantiationsEditor(component_, parameterFinder_, libHandler_, validator_);
- 		editor_->setProtection(locked_);
+        editor_ = new InstantiationsEditor(
+            component_, parameterFinder_, libHandler_, validator_, componentInstantiationInterface_);
+        editor_->setProtection(locked_);
  
  		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
   		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -135,4 +148,38 @@ ItemEditor* InstantiationsItem::editor()
 void InstantiationsItem::createChild(int)
 {
     // No new children allowed.
+}
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsItem::constructInterfaces()
+//-----------------------------------------------------------------------------
+void InstantiationsItem::constructInterfaces()
+{
+    QSharedPointer<ComponentInstantiationParameterFinder> instantiationParameterFinder(
+        new ComponentInstantiationParameterFinder(QSharedPointer<ComponentInstantiation>()));
+
+    QSharedPointer<MultipleParameterFinder> cimpFinder =
+        QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
+    cimpFinder->addFinder(parameterFinder_);
+    cimpFinder->addFinder(instantiationParameterFinder);
+
+    QSharedPointer<IPXactSystemVerilogParser> cimpParser =
+        QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
+
+    QSharedPointer<ParameterValidator> validator(
+        new ParameterValidator(cimpParser, component_->getChoices()));
+
+    QSharedPointer<ExpressionFormatter> moduleFormatter(new ExpressionFormatter(cimpFinder));
+
+    ParametersInterface* parameterInterface =
+        new ParametersInterface(validator, cimpParser, moduleFormatter);
+
+
+    ModuleParameterInterface* moduleParameterInterface =
+        new ModuleParameterInterface(validator, cimpParser, moduleFormatter, instantiationParameterFinder);
+
+    FileBuilderInterface* fileBuilderInterface = new FileBuilderInterface(cimpParser, moduleFormatter);
+
+    componentInstantiationInterface_ = new ComponentInstantiationInterface(validator_, cimpParser,
+        moduleFormatter, parameterInterface, moduleParameterInterface, fileBuilderInterface);
 }

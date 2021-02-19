@@ -15,7 +15,7 @@
 #include <QObject>
 #include <QSharedPointer>
 
-class ParametersInterface;
+class AbstractParameterInterface;
 
 //-----------------------------------------------------------------------------
 //! ParameterCounter interface. 
@@ -51,7 +51,7 @@ public slots:
      *      @param [in] parameterInterface  Interface for accessing parameters.
      */
     virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
-        QSharedPointer<ParametersInterface> parameterInterface) = 0;
+        AbstractParameterInterface* parameterInterface) = 0;
 };
 
 #endif // REFERENCECOUNTER_H

@@ -58,8 +58,7 @@ parameterInterface_()
     QSharedPointer<ParameterValidator> validator(new ParameterValidator(expressionParser, 
         choices));
 
-    parameterInterface_ = QSharedPointer<ParametersInterface>(
-        new ParametersInterface(validator, expressionParser, expressionFormatter));
+    parameterInterface_ = new ParametersInterface(validator, expressionParser, expressionFormatter);
 
     parameterInterface_->setParameters(parameters);
     parameterInterface_->setChoices(choices);
@@ -107,9 +106,9 @@ parameterInterface_()
     connect(view_, SIGNAL(recalculateReferenceToIndexes(QModelIndexList)),
         model_, SLOT(onGetParametersMachingIndexes(QModelIndexList)), Qt::UniqueConnection);
     connect(model_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         this,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 
 	// set source model for proxy

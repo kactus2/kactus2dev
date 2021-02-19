@@ -205,6 +205,15 @@ protected:
      */
     bool isLocked(QModelIndex const& index) const;
 
+    /*!
+     *  Get the icon path of the selected index.
+     *
+     *      @param [in] portIndex   The selected index.
+     *
+     *      @return The icon path for the selected index.
+     */
+    QString getIconPath(int const& portIndex) const;
+
 public slots:
 
 	/*!

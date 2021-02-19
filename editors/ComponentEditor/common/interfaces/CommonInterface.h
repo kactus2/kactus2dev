@@ -50,7 +50,7 @@ public:
     /*!
      *  Validates the contained items.
      *
-     *      @return True, if all the ports are valid, false otherwise.
+     *      @return True, if all the items are valid, false otherwise.
      */
     virtual bool validateItems() const = 0;
 

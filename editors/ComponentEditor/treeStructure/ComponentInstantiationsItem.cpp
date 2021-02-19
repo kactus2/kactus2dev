@@ -27,18 +27,16 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
 //-----------------------------------------------------------------------------
-ComponentInstantiationsItem::ComponentInstantiationsItem(ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component, 
-    QSharedPointer<InstantiationsValidator> validator,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+ComponentInstantiationsItem::ComponentInstantiationsItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, ComponentInstantiationInterface* instantiationInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 validator_(validator),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+instantiationInterface_(instantiationInterface)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -90,7 +88,8 @@ ItemEditor* ComponentInstantiationsItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new ComponentInstantiationsEditor(component_, libHandler_, parameterFinder_, validator_, 0);
+        editor_ = new ComponentInstantiationsEditor(
+            component_, libHandler_, parameterFinder_, instantiationInterface_, 0);
         editor_->setProtection(locked_);
 
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -136,8 +135,10 @@ QSharedPointer<SingleComponentInstantiationItem> ComponentInstantiationsItem::cr
         QSharedPointer<ParameterReferenceCounter>(new ParameterReferenceCounter(cimpFinder));
     QSharedPointer<ExpressionFormatter> cimpFormatter =
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(cimpFinder));
+
     QSharedPointer<IPXactSystemVerilogParser> cimpParser =
         QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
+
     QSharedPointer<InstantiationsValidator> cimpValidator = QSharedPointer<InstantiationsValidator>(
         new InstantiationsValidator(cimpParser, component_->getFileSets(),
             QSharedPointer<ParameterValidator>(
@@ -145,7 +146,7 @@ QSharedPointer<SingleComponentInstantiationItem> ComponentInstantiationsItem::cr
 
     QSharedPointer<SingleComponentInstantiationItem> componentInstantiationItem(
         new SingleComponentInstantiationItem(model_, libHandler_, component_, instantiation, cimpValidator,
-            cimpCounter, cimpFinder, cimpFormatter, cimpParser, this));
+            cimpCounter, cimpFinder, cimpFormatter, cimpParser, instantiationInterface_, this));
 
     return componentInstantiationItem;
 }

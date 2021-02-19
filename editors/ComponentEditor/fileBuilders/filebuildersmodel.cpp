@@ -13,25 +13,22 @@
 #include "FileBuilderColumns.h"
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <IPXACTmodels/common/FileBuilder.h>
 
 #include <common/KactusColors.h>
 
-
-
 //-----------------------------------------------------------------------------
 // Function: filebuildersmodel::FileBuildersModel()
 //-----------------------------------------------------------------------------
-FileBuildersModel::FileBuildersModel(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
-                                     QSharedPointer<ParameterFinder> parameterFinder,
-                                     QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                     QSharedPointer<ExpressionParser> expressionParser, QObject* parent):
+FileBuildersModel::FileBuildersModel(FileBuilderInterface* builderInterface,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QObject* parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-fileBuilders_(fileBuilders),
-expressionFormatter_(expressionFormatter)
+fileBuilderInterface_(builderInterface)
 {
     setExpressionParser(expressionParser);
 }
@@ -53,7 +50,8 @@ int FileBuildersModel::rowCount( const QModelIndex& parent /*= QModelIndex() */ 
     {
 		return 0;
 	}
-    return fileBuilders_->size();
+
+    return fileBuilderInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +64,7 @@ int FileBuildersModel::columnCount( const QModelIndex& parent /*= QModelIndex() 
 		return 0;
 	}
 
-	return 4;
+    return FileBuilderColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +78,7 @@ QVariant FileBuildersModel::data( const QModelIndex& index, int role /*= Qt::Dis
 	}
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= fileBuilders_->size())
+    else if (index.row() < 0 || index.row() >= fileBuilderInterface_->itemCount())
     {
 		return QVariant();
 	}
@@ -89,11 +87,11 @@ QVariant FileBuildersModel::data( const QModelIndex& index, int role /*= Qt::Dis
     {
         if (isValidExpressionColumn(index))
         {
-            return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
+            return formattedExpressionForIndex(index);
         }
         else
         {
-            return expressionOrValueForIndex(index);
+            return valueForIndex(index);
         }
 	}
     else if (role == Qt::EditRole)
@@ -102,14 +100,7 @@ QVariant FileBuildersModel::data( const QModelIndex& index, int role /*= Qt::Dis
     }
     else if (role == Qt::ToolTipRole)
     {
-        if (isValidExpressionColumn(index))
-        {
-            return formattedValueFor(expressionOrValueForIndex(index).toString());
-        }
-        else
-        {
-            return expressionOrValueForIndex(index);
-        }
+        return valueForIndex(index);
     }
 	else if (Qt::BackgroundRole == role)
     {
@@ -183,34 +174,35 @@ bool FileBuildersModel::setData( const QModelIndex& index, const QVariant& value
 	}
 
 	// if row is invalid
-	else if (index.row() < 0 || index.row() >= fileBuilders_->size())
+    else if (index.row() < 0 || index.row() >= fileBuilderInterface_->itemCount())
     {
 		return false;
 	}
 
 	if (Qt::EditRole == role)
     {
-        QSharedPointer<FileBuilder> currentBuilder = fileBuilders_->at(index.row());
+        std::string builderType = fileBuilderInterface_->getIndexedFileType(index.row());
 
         if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
         {
-            currentBuilder->setFileType(value.toString());
+            fileBuilderInterface_->setFileType(builderType, value.toString().toStdString());
         }
         else if (index.column() == FileBuilderColumns::COMMAND_COLUMN)
         {
-            currentBuilder->setCommand(value.toString());
+            fileBuilderInterface_->setCommand(builderType, value.toString().toStdString());
         }
         else if (index.column() == FileBuilderColumns::FLAGS_COLUMN)
         {
-            currentBuilder->setFlags(value.toString());
+            fileBuilderInterface_->setFlags(builderType, value.toString().toStdString());
         }
         else if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(currentBuilder->getReplaceDefaultFlags());
+                removeReferencesFromSingleExpression(
+                    QString::fromStdString(fileBuilderInterface_->getReplaceDefaultFlagsExpression(builderType)));
             }
-            currentBuilder->setReplaceDefaultFlags(value.toString());
+            fileBuilderInterface_->setReplaceDefaultFlags(builderType, value.toString().toStdString());
         }
 
 		emit contentChanged();
@@ -244,6 +236,7 @@ Qt::ItemFlags FileBuildersModel::flags( const QModelIndex& index ) const
 bool FileBuildersModel::isValid() const
 {
 	// check all file builders
+/*
 	foreach (QSharedPointer<FileBuilder> fileBuilder, *fileBuilders_)
     {
 		// if one is invalid
@@ -251,6 +244,7 @@ bool FileBuildersModel::isValid() const
 // 			return false;
 // 		}
 	}
+*/
 
 	return true;
 }
@@ -266,7 +260,7 @@ void FileBuildersModel::onRemoveItem( const QModelIndex& index )
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= fileBuilders_->size())
+    else if (index.row() < 0 || index.row() >= fileBuilderInterface_->itemCount())
     {
 		return;
 	}
@@ -274,9 +268,9 @@ void FileBuildersModel::onRemoveItem( const QModelIndex& index )
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    decreaseReferencesWithRemovedFileBuilder(fileBuilders_->at(index.row()));
+    removeReferencesInItemOnRow(index.row());
+    fileBuilderInterface_->removeFileBuilder(fileBuilderInterface_->getIndexedFileType(index.row()));
 
-	fileBuilders_->removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -288,7 +282,7 @@ void FileBuildersModel::onRemoveItem( const QModelIndex& index )
 //-----------------------------------------------------------------------------
 void FileBuildersModel::onAddItem( const QModelIndex& index )
 {
-	int row = fileBuilders_->size();
+    int row = fileBuilderInterface_->itemCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -297,31 +291,13 @@ void FileBuildersModel::onAddItem( const QModelIndex& index )
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	fileBuilders_->insert(row, QSharedPointer<FileBuilder>(new FileBuilder()));
+
+    fileBuilderInterface_->addFileBuilder(row);
+
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: filebuildersmodel::decreaseReferencesWithRemovedFileBuilder()
-//-----------------------------------------------------------------------------
-void FileBuildersModel::decreaseReferencesWithRemovedFileBuilder(QSharedPointer<FileBuilder> builder)
-{
-    QStringList expressionList;
-    expressionList.append(builder->getReplaceDefaultFlags());
-
-    ReferenceCalculator referenceCalculator(getParameterFinder());
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
-
-    foreach (QString referencedID, referencedParameters.keys())
-    {
-        for (int i = 0; i < referencedParameters.value(referencedID); ++i)
-        {
-            emit decreaseReferences(referencedID);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -344,33 +320,73 @@ bool FileBuildersModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant FileBuildersModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<FileBuilder> currentBuilder = fileBuilders_->at(index.row());
+    if (isValidExpressionColumn(index))
+    {
+        return expressionForIndex(index);
+    }
+    else
+    {
+        return valueForIndex(index);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileBuildersModel::formattedExpressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant FileBuildersModel::formattedExpressionForIndex(QModelIndex const& index) const
+{
+    if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+    {
+        std::string fileType = fileBuilderInterface_->getIndexedFileType(index.row());
+        return QString::fromStdString(fileBuilderInterface_->getReplaceDefaultFlagsFormattedExpression(fileType));
+    }
+
+    return valueForIndex(index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileBuildersModel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant FileBuildersModel::expressionForIndex(QModelIndex const& index) const
+{
+    if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+    {
+        std::string fileType = fileBuilderInterface_->getIndexedFileType(index.row());
+        return QString::fromStdString(fileBuilderInterface_->getReplaceDefaultFlagsExpression(fileType));
+    }
+
+    return valueForIndex(index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileBuildersModel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant FileBuildersModel::valueForIndex(QModelIndex const& index) const
+{
+    if (!index.isValid())
+    {
+        return QVariant();
+    }
+
+    std::string builderType = fileBuilderInterface_->getIndexedFileType(index.row());
 
     if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
     {
-        QString fileType = currentBuilder->getFileType();
-        if (fileType == QLatin1String("user"))
-        {
-            return currentBuilder->getUserFileType();
-        }
-        else
-        {
-            return fileType;
-        }
+        return QString::fromStdString(builderType);
     }
     else if (index.column() == FileBuilderColumns::COMMAND_COLUMN)
     {
-        return currentBuilder->getCommand();
+        return QString::fromStdString(fileBuilderInterface_->getCommand(builderType));
     }
     else if (index.column() == FileBuilderColumns::FLAGS_COLUMN)
     {
-        return currentBuilder->getFlags();
+        return QString::fromStdString(fileBuilderInterface_->getFlags(builderType));
     }
     else if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
     {
-        return currentBuilder->getReplaceDefaultFlags();
+        return QString::fromStdString(fileBuilderInterface_->getReplaceDefaultFlagsValue(builderType));
     }
-    
+
     return QVariant();
 }
 
@@ -387,9 +403,6 @@ bool FileBuildersModel::validateIndex(QModelIndex const& /*index*/) const
 //-----------------------------------------------------------------------------
 int FileBuildersModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    const QSharedPointer<FileBuilder> currentBuilder = fileBuilders_->at(row);
-
-    int referencesInReplaceDefaultFlags = currentBuilder->getReplaceDefaultFlags().count(valueID);
-
-    return referencesInReplaceDefaultFlags;
+    return fileBuilderInterface_->getAllReferencesToIdInItem(
+        fileBuilderInterface_->getIndexedFileType(row), valueID.toStdString());
 }

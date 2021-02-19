@@ -235,7 +235,12 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         else if (index.column() == MemoryMapColumns::NAME_COLUMN)
         {
             blockInterface_->setName(blockName, value.toString().toStdString());
-        }									
+
+            QString oldName = QString::fromStdString(blockName);
+            QString newName = QString::fromStdString(blockInterface_->getIndexedItemName(index.row()));
+
+            emit addressBlockNameChanged(oldName, newName);
+        }
         else if (index.column() == MemoryMapColumns::BASE_COLUMN)
         {
             if (!value.isValid())
@@ -518,7 +523,7 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == MemoryMapColumns::USAGE_COLUMN)
     {
-        return QString::fromStdString(blockInterface_->getUsage(blockName));
+        return QString::fromStdString(blockInterface_->getUsageString(blockName));
     }
     else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
     {
@@ -530,7 +535,7 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
     {
-        return QString::fromStdString(blockInterface_->getAccess(blockName));
+        return QString::fromStdString(blockInterface_->getAccessString(blockName));
     }
     else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
     {

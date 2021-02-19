@@ -85,12 +85,12 @@
     <Filter Include="Header Files\common\expressionParser\MemoryMaps">
       <UniqueIdentifier>{a52270f7-3878-432f-a519-1327e42f5b09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{b161e93c-7d11-4c2a-b62d-0cf5561abd20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PythonAPI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PythonAPI_wrap.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="messageMediator\PythonMessageMediator.cpp">
@@ -228,9 +228,6 @@
     <ClCompile Include="..\VersionHelper.cpp">
       <Filter>Source Files\versionHelper</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\ports\PortsInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
       <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
@@ -278,6 +275,21 @@
     </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI_wrap.cxx">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -335,9 +347,6 @@
     <ClInclude Include="..\VersionHelper.h">
       <Filter>Header Files\versionHelper</Filter>
     </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\ports\PortsInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h">
       <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
@@ -385,6 +394,18 @@
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
+      <Filter>Header Files\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -477,5 +498,8 @@
     <QtMoc Include="..\common\dialogs\ObjectRemoveDialog\objectremovedialog.h">
       <Filter>Header Files\common\dialogs</Filter>
     </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="PythonAPI.i" />
   </ItemGroup>
 </Project>

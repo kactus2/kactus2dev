@@ -30,7 +30,9 @@ class ExpressionEditor;
 class ExpressionParser;
 class Register;
 class RegisterValidator;
-class FieldInterface;
+class RegisterInterface;
+class AddressBlock;
+class RegisterBase;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
@@ -44,27 +46,58 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] singleRegister      The register being edited.
-	 *      @param [in] component           The component being edited.
-	 *      @param [in] handler             The instance that manages the library.
-	 *      @param [in] parameterFinder     The parameter finder.
-     *      @param [in] expressionParser    The expression parser to use.
-     *      @param [in] fieldInterface      Interface for fields.
-	 *      @param [in] parent              The parent of this editor.
+	 *      @param [in] selectedRegister        The register being edited.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance that manages the library.
+	 *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] registerInterface       Interface for registers.
+     *      @param [in] containingRegisterData  Register data containing the edited register.
+	 *      @param [in] parent                  The parent of this editor.
 	 */
-    SingleRegisterEditor(QSharedPointer<Register> selectedRegister, QSharedPointer<Component> component,
-        LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser, FieldInterface* fieldInterface, QWidget* parent = 0);
+    SingleRegisterEditor(QSharedPointer<Register> selectedRegister,
+        QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        RegisterInterface* registerInterface,
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > > containingRegisterData,
+        QWidget* parent = 0);
 
     /*!
      *  The destructor.
      */
-    virtual ~SingleRegisterEditor();
+    virtual ~SingleRegisterEditor() = default;
 
     /*!
 	 *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
+public slots:
+
+    /*
+     *  Handles register name change from address block editor.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void onRegisterNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Handles register name change from name editor.
+     */
+    void onRegisterNameChanged();
+
+signals:
+    
+    /*
+     *  Informs of field name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void fieldNameChanged(QString const& oldName, QString const& newName);
 
 protected:
 
@@ -149,8 +182,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The selected register.
-    QSharedPointer<Register> selectedRegister_;
+    //! Name of the selected register.
+    std::string registerName_;
 
     //! The name editor.
     NameGroupEditor nameEditor_;
@@ -181,6 +214,12 @@ private:
 
     //! The used register validator.
     QSharedPointer<RegisterValidator> registerValidator_;
+
+    //! Register data containing the edited register.
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > > containingRegisterData_;
+
+    //! Interface for registers.
+    RegisterInterface* registerInterface_;
 };
 
 #endif // SINGLEREGISTEREDITOR_H

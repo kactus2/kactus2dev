@@ -170,6 +170,9 @@ private:
 
     //! The delegate for ports.
     PortsDelegate* delegate_;
+
+    //! Interface for accessing ports.
+    QSharedPointer<PortsInterface> portInterface_;
 };
 
 #endif // MASTERPORTSEDITOR_H

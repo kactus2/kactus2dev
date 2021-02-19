@@ -34,6 +34,7 @@ class ExpressionFormatter;
 class PortMapValidator;
 class Port;
 class AbstractionType;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! A model for displaying bus interface port maps.
@@ -47,17 +48,16 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component               The component to which this model is made.
-     *      @param [in] handler                 The library handler.
-     *      @param [in] expressionParser        The used expression parser.
-     *      @param [in] expressionFormatter     The used expression formatter.
-     *      @param [in] parameterFinder         The used parameter finder.
-     *      @param [in] portMapValidator        Validator used for port maps.
-     *      @param [in] parent                  The owner of this model.
+     *      @param [in] component           The component to which this model is made.
+     *      @param [in] handler             The library handler.
+     *      @param [in] parameterFinder     The used parameter finder.
+     *      @param [in] portMapInterface    Interface for accessing port maps.
+     *      @param [in] parent              The owner of this model.
      */
-    PortMapTreeModel(QSharedPointer<Component> component, LibraryInterface* handler,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortMapValidator> portMapValidator,
+    PortMapTreeModel(QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        PortMapInterface* portMapInterface,
         QObject *parent);
 
     /*!
@@ -155,16 +155,6 @@ public:
      */
     Qt::ItemFlags flags(QModelIndex const& index) const;
 
-	/*!
-     *  Set the abstraction definition that is used in this port map.
-	 *
-     *      @param [in] abstraction     The abstraction type containing the referenced abstraction definition.
-     *      @param [in] mode            The used bus interface mode.
-     *      @param [in] systemGroup     The used system group in case of system mode.
-	 */
-    void setAbsType(QSharedPointer<AbstractionType> abstraction, General::InterfaceMode mode,
-        QString const& systemGroup);
-
     /*!
      *  Get the list of acceptable mime types.
      *
@@ -222,9 +212,9 @@ public slots:
     /*!
      *  Add a port map to the correct parent item.
      *
-     *      @param [in] newPortMap  The selected port map.
+     *      @param [in] physicalPorts   The weighted physical ports.
      */
-    void onAddConnectedPortMap(QSharedPointer<PortMap> newPortMap);
+    void onAddAutoConnectedPortMaps(QVector<QString> physicalPorts);
 
 signals:
 
@@ -283,25 +273,6 @@ private:
     PortMapTreeModel& operator=(PortMapTreeModel const& rhs);
 
     /*!
-     *  Get the left bound of a logical port.
-     *
-     *      @param [in] logicalPort     The selected logical port.
-     *
-     *      @return The left bound of a logical port (portSize - 1).
-     */
-    QVariant getLogicalLeftBound(QSharedPointer<PortAbstraction> logicalPort) const;
-
-    /*!
-     *  Get the indexed port map.
-     *
-     *      @param [in] parentIndex     The parent index of the port map.
-     *      @param [in] row             The row of the port map.
-     *
-     *      @return The indexed port map on the selected row and belonging to the parent index.
-     */
-    QSharedPointer<PortMap> getIndexedPortMap(QModelIndex const& parentIndex, int row) const;
-
-    /*!
      *  Create a parent index for a port map.
      *
      *      @param [in] childItem   The selected port map.
@@ -311,73 +282,29 @@ private:
     QModelIndex createParentIndexForPortMap(PortMap* childItem) const;
 
     /*!
-     *  Get the name of the logical port on the selected index.
+     *  Get the formatted value of an expression in the selected index.
      *
-     *      @param [in] index           The index of the port map.
-     *      @param [in] portMap         The selected port map.
-     *      @param [in] logicalPort     The logical port containing the port map.
+     *      @param [in] index   The selected index.
      *
-     *      @return The name of the logical port.
+     *      @return The formatted value of an expression in the selected index.
      */
-    QVariant getLogicalPortName(QModelIndex const& index, QSharedPointer<PortMap> portMap,
-        QSharedPointer<PortAbstraction> logicalPort) const;
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
 
     /*!
-     *  Get the name of the physical port on the selected index.
+     *  Get the expression of the selected index.
      *
-     *      @param [in] itemIndex   The selected index.
-     *      @param [in] portMap     The selected port map.
+     *      @param [in] index   The selected index.
      *
-     *      @return The name of the physical port.
+     *      @return The expression of the selected index.
      */
-    QVariant getPhysicalPortName(QModelIndex const& itemIndex, QSharedPointer<PortMap> portMap) const;
+    virtual QVariant expressionForIndex(QModelIndex const& index) const;
 
     /*!
      *  Get the value for the selected index.
      *
      *      @param [in] index           The selected index.
-     *      @param [in] logicalPort     The logical port of the selected index.
-     *      @param [in] portMap         The selected port map.
      */
-    QVariant valueForIndex(QModelIndex const& index, QSharedPointer<PortAbstraction> logicalPort,
-        QSharedPointer<PortMap> portMap) const;
-
-    /*!
-     *  Get the icon for the selected logical signal.
-     *
-     *      @param [in] abstractPort    The selected logical signal.
-     *
-     *      @return Icon matching the direction or initiative of the selected logical signal.
-     */
-    QIcon getIconForLogicalPort(QSharedPointer<PortAbstraction> abstractPort) const;
-
-    /*!
-     *  Get the icon for the selected physical port.
-     *
-     *      @param [in] index       Index of the selected port.
-     *      @param [in] portMap     Port map containing the selected physical mapping.
-     *
-     *      @return Icon matching the direction or initiative of the selected logical signal.
-     */
-    QIcon getIconForPhysicalPort(QModelIndex const& index, QSharedPointer<PortMap> portMap) const;
-
-    /*!
-     *  Get an icon matching the given direction.
-     *
-     *      @param [in] direction   The selected direction.
-     *
-     *      @return The icon matching the selected direction.
-     */
-    QIcon getIconForDirection(DirectionTypes::Direction direction) const;
-
-    /*!
-     *  Get an icon matching the given initiative.
-     *
-     *      @param [in] initiative  The selected initiative.
-     *
-     *      @return The icon matching the selected initiative.
-     */
-    QIcon getIconForInitiative(QString const& initiative) const;
+    QVariant valueForIndex(QModelIndex const& index) const;
 
     /*!
      *  Check if an index is valid.
@@ -392,29 +319,12 @@ private:
      *  Switch the logical port of the port map.
      *
      *      @param [in] index               The current index of the port map.
-     *      @param [in] value               The name of the new logical port.
-     *      @param [in] switchedPortMap     The selected port map.
+     *      @param [in] logicalPortName     Name of the new logical port.
+     *      @param [in] portMapIndex        Index of the selected port map
+     *      @param [in] value               The new logical port name.
      */
-    void switchMappedLogicalPort(QModelIndex const& index, const QVariant& value,
-        QSharedPointer<PortMap> switchedPortMap);
-
-    /*!
-     *  Set the logical value at the selected index.
-     *
-     *      @param [in] index           The selected index.
-     *      @param [in] value           The new logical value.
-     *      @param [in] changedPortMap  The selected port map.
-     */
-    void setLogicalValue(QModelIndex const& index, const QVariant& value, QSharedPointer<PortMap> changedPortMap);
-
-    /*!
-     *  Set the physical value at the selected index.
-     *
-     *      @param [in] index           The selected index.
-     *      @param [in] value           The new physical value.
-     *      @param [in] changedPortMap  The selected port map.
-     */
-    void setPhysicalValue(QModelIndex const& index, const QVariant& value, QSharedPointer<PortMap> changedPortMap);
+    void switchMappedLogicalPort(QModelIndex const& index, std::string const& logicalPortName,
+        int const& portMapIndex, QVariant const& value);
 
     /*!
      *  Emit a port connection signal.
@@ -427,12 +337,21 @@ private:
     /*!
      *  Get the background color for the selected index.
      *
-     *      @param [in] index           The selected index.
-     *      @param [in] logicalPort     Logical port of the selected index.
-     *      @param [in] portMap         Port map of the index.
+     *      @param [in] index               The selected index.
+     *      @param [in] logicalPortName     Name of the selected logical port.
+     *      @param [in] portMapIndex        The selected port map index.
      */
-    QVariant getBackgroundColour(QModelIndex const& index, QSharedPointer<PortAbstraction> logicalPort,
-        QSharedPointer<PortMap> portMap) const;
+    QVariant getBackgroundColour(QModelIndex const& index, std::string const& logicalPortName,
+        int const& portMapIndex) const;
+
+    /*!
+     *  Get the logical port name and index of the port map matching the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return Pair containing the logical port name and index of the selected port map.
+     */
+    QPair<std::string, int> getPortNamePortMapIndex(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -444,36 +363,8 @@ private:
     //! The instance that manages the library.
     LibraryInterface* handler_;
 
-    //! The abstraction type referencing the selected abstraction definition.
-    QSharedPointer<AbstractionType> abstraction_;
-
-    //! The abstraction definition that is used.
-    QSharedPointer<AbstractionDefinition> absDef_;
-
-    //! Specifies the interface mode of this bus interface
-    General::InterfaceMode interfaceMode_;
-
-    //! The system group name in case of system mode.
-    QString systemGroup_;
-
-    //! The used expression formatter.
-    QSharedPointer<ExpressionFormatter> formatter_;
-
-    //! Structure for a port mapping.
-    struct PortMapping 
-    {
-        //! The logical port of the port maps.
-        QSharedPointer<PortAbstraction> logicalPort_;
-
-        //! A list of port maps with the same logical port.
-        QList<QSharedPointer<PortMap> > portMaps_;
-    };
-
-    //! A list of port mappings.
-    QList<PortMapping> portMappings_;
-
-    //! The used port map validator.
-    QSharedPointer<PortMapValidator> portMapValidator_;
+    //! Interface for accessing port maps.
+    PortMapInterface* portMapInterface_;
 };
 
 //-----------------------------------------------------------------------------

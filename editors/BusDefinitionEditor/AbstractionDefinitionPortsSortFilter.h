@@ -15,6 +15,8 @@
 #include <QSortFilterProxyModel>
 #include <QColor>
 
+class PortAbstractionInterface;
+
 //-----------------------------------------------------------------------------
 //! Sort filter proxy model for abstraction definition ports.
 //-----------------------------------------------------------------------------
@@ -42,11 +44,13 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] columns     Storage for the column indexes.
-     *      @param [in] parent      Pointer to the owner of this model.
+     *      @param [in] columns         Storage for the column indexes.
+     *      @param [in] portInterface   Interface for accessing port abstractions.
+     *      @param [in] parent          Pointer to the owner of this model.
 	 */
-	AbstractionDefinitionPortsSortFilter(ColumnHandles columns, QObject *parent);
-	
+    AbstractionDefinitionPortsSortFilter(ColumnHandles columns, PortAbstractionInterface* portInterface,
+        QObject *parent);
+
 	/*!
 	 *  The destructor.
 	 */
@@ -73,6 +77,23 @@ protected:
      */
     virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
 
+    /*!
+     *  Check if the filter should accept the selected row.
+     *
+     *      @param [in] source_row      Row of the selected item.
+     *      @param [in] source_parent   Parent index of the item.
+     *
+     *      @return True, if the row is accepted, false otherwise.
+     */
+    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+
+    /*!
+     *  Get the interface for accessing port abstractions.
+     *
+     *      @return Interface for accessing port abstractions.
+     */
+    PortAbstractionInterface* getPortInterface() const;
+
 private:
 	//! No copying. No assignment.
 	AbstractionDefinitionPortsSortFilter(const AbstractionDefinitionPortsSortFilter& other);
@@ -93,6 +114,9 @@ private:
 
     //! Storage for the used column indexes.
     ColumnHandles columns_;
+
+    //! Interface for accessing port abstractions.
+    PortAbstractionInterface* portInterface_;
 };
 
 #endif // ABSTRACTIONDEFINITIONPORTSSORTFILTER_H

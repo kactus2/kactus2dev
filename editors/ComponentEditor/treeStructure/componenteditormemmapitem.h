@@ -23,7 +23,7 @@ class MemoryMapGraphItem;
 class ExpressionParser;
 class MemoryMap;
 class MemoryMapValidator;
-class AddressBlockInterface;
+class MemoryMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for a single memory map in component editor's navigation tree.
@@ -46,7 +46,7 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] memoryMapValidator      Validator used for memory maps.
-     *      @param [in] blockInterface          Interface for accessing address blocks.
+     *      @param [in] mapInterface            Interface for accessing memory maps.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap,
@@ -58,7 +58,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<MemoryMapValidator> memoryMapValidator,
-        AddressBlockInterface* blockInterface,
+        MemoryMapInterface* mapInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -153,6 +153,24 @@ public slots:
      */
     void onMemoryRemapRemoved(int memoryRemapIndex, QString const& mapName);
 
+signals:
+    
+    /*
+     *  Informs of memory map name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void memoryMapNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Informs of memory remap name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
+
 private:
 	//! No copying. No assignment.
 	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);
@@ -173,8 +191,8 @@ private:
     //! The validator used for memory maps.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 
-    //! Interface for accessing address blocks.
-    AddressBlockInterface* blockInterface_;
+    //! Interface for accessing memory maps.
+    MemoryMapInterface* mapInterface_;
 };
 
 #endif // COMPONENTEDITORMEMMAPITEM_H

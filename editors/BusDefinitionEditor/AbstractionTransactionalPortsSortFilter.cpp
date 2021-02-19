@@ -14,13 +14,15 @@
 #include <common/KactusColors.h>
 
 #include <editors/BusDefinitionEditor/AbstractionTransactionalPortColumns.h>
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter()
 //-----------------------------------------------------------------------------
 AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter(
-    AbstractionDefinitionPortsSortFilter::ColumnHandles columns, QObject *parent):
-AbstractionDefinitionPortsSortFilter(columns, parent)
+    AbstractionDefinitionPortsSortFilter::ColumnHandles columns, PortAbstractionInterface* portInterface,
+    QObject *parent):
+AbstractionDefinitionPortsSortFilter(columns, portInterface, parent)
 {
 
 }
@@ -56,4 +58,20 @@ bool AbstractionTransactionalPortsSortFilter::indexedRowContainsPayload(QModelIn
     return !payloadNameIndex.data(Qt::DisplayRole).toString().isEmpty() ||
         !payloadTypeIndex.data(Qt::DisplayRole).toString().isEmpty() ||
         !payloadExtensionIndex.data(Qt::DisplayRole).toString().isEmpty();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTransactionalPortsSortFilter::filterAcceptsRow()
+//-----------------------------------------------------------------------------
+bool AbstractionTransactionalPortsSortFilter::filterAcceptsRow(int source_row, const QModelIndex &source_parent)
+const
+{
+    if (source_parent.isValid())
+    {
+        return false;
+    }
+
+    PortAbstractionInterface* portInterface = getPortInterface();
+    std::string portName = portInterface->getIndexedItemName(source_row);
+    return portInterface->portIsTransactional(portName);
 }

@@ -27,6 +27,8 @@
 class AbstractionDefinitionValidator;
 class BusDefinitionValidator;
 class ExpressionParser;
+class PortAbstractionInterface;
+
 //-----------------------------------------------------------------------------
 //! Bus Editor is editor for Bus- and Abstraction definition.
 //-----------------------------------------------------------------------------
@@ -151,6 +153,13 @@ private:
      *  Set the layout of the widget
      */
 	void setupLayout();
+
+    /*!
+     *  Create interface for accessing port abstractions.
+     *
+     *      @return Interface for accessing port abstractions.
+     */
+    PortAbstractionInterface* createPortAbstractionInterface();
 
     //-----------------------------------------------------------------------------
     // Data.

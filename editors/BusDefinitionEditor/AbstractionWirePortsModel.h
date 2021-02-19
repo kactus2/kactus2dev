@@ -28,6 +28,7 @@
 
 class BusDefinition;
 class LibraryInterface;
+class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Data model for the wires within abstraction definition.
@@ -42,10 +43,12 @@ public:
 	 *  The constructor.
 	 *
      *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] portInterface   Interface for accessing port abstractions.
      *      @param [in] parent          Pointer to the owner of this model.
 	 */
-    AbstractionWirePortsModel(LibraryInterface* libraryAccess, QObject *parent);
-	
+    AbstractionWirePortsModel(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
+        QObject *parent);
+
 	/*!
 	 *  The destructor.
 	 */
@@ -110,24 +113,17 @@ public:
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*!
-	 *  Set the abstraction definition for the model.
-	 *
-	 *      @param [in] absDef      The Abstraction definition to set.
-	 */
-	void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
-    
+    /*!
+     *  Reset the port abstraction model.
+     */
+    void resetPortModel();
+
 	/*!
 	 *  Set the bus definition for the model.
 	 *
 	 *      @param [in] busDefinition      The bus definition to set.
 	 */
     void setBusDef(QSharedPointer<BusDefinition> busDefinition);
-
-	/*!
-	 *  Write the ports from the table to the abstraction definition.
-	 */
-	void save();
 
 public slots:
 
@@ -212,42 +208,6 @@ private:
 	//! No copying. No assignment.
     AbstractionWirePortsModel(const AbstractionWirePortsModel& other);
     AbstractionWirePortsModel& operator=(const AbstractionWirePortsModel& other);
-    
-	/*!
-	 *  Save the port from table to a port abstraction.
-	 *
-	 *      @param [in] portAbs     Pointer to the port abstraction to save the port to.
-	 *      @param [in] i           Index of the port in the table.
-	 */
-	void savePort(QSharedPointer<PortAbstraction> portAbs, int i);
-
-	/*!
-	 *  Creates a single row into the table from port abstraction.
-	 *
-	 *      @param [in] portAbs         The port abstraction of the port.
-	 *      @param [in] modeSpesific    The mode specific definitions of the port.
-	 *      @param [in] mode            The mode of the port to be created.
-	 */
-	void createRow(QSharedPointer<PortAbstraction> portAbs, QSharedPointer<WirePort> modeSpesific,
-		General::InterfaceMode mode);
-     
-	/*!
-     *  Convert PortQualifier to string.
-	 *
-	 *      @param [in]  qualifier The Qualifier to convert.
-	 *
-	 *      @return A string representation for the Qualifier.
-     */
-	QString toString(Qualifier qualifier) const;
-
-	/*!
-     *  Convert a string to PortQualifier.
-	 *
-	 *      @param [in] str The string to convert.
-	 *
-	 *      @return A qualifier that matches the string.
-     */
-	Qualifier::Type toQualifier(QString const& str) const;
 
     /*!
      *  Send change data signals for all the affected items.
@@ -255,56 +215,6 @@ private:
      *      @param [in] changedIndexes  List of all the changed model indexes.
      */
     void sendDataChangeForAllChangedItems(QModelIndexList changedIndexes);
-
-    //! SignalRow represents a single row in the table by grouping the Port, Wire and WirePort elements.
-	struct SignalRow
-    {
-        //! Defines the Port represented in the row.
-        QSharedPointer<PortAbstraction> abstraction_;
-
-		//! Defines the mode of the wirePort (master, slave or system).
-		General::InterfaceMode mode_;
-        
-        //! Defines the wirePort represented on the row.
-        QSharedPointer<WirePort> wire_;
-
-		/*!
-         *  The default constructor.
-         */
-		SignalRow();
-
-		/*!
-         *  Copy constructor
-         */
-		SignalRow(SignalRow const& other) = default;
-
-		/*!
-		 *  Comparison of two SignalRows.
-		 *
-		 *      @param [in] other   The SignalRow to compare this to.
-		 *
-		 *      @return True, if the SignalRows are equal, otherwise false.
-		 */
-		bool operator==(SignalRow const& other) const;
-
-		/*!
-		 *  Comparison of two SignalRows.
-		 *
-		 *      @param [in] other   The SignalRow to compare this to.
-		 *
-		 *      @return True, if the SignalRows are not equal, otherwise false.
-		 */
-		bool operator!=(SignalRow const& other) const;
-
-		/*!
-		 *  Less than comparison of two SignalRows for table ordering.
-		 *
-		 *      @param [in] other   The SignalRow to compare this to.
-		 *
-		 *      @return True, if this precedes other, otherwise false.
-		 */
-		bool operator<(SignalRow const& other) const;
-	};
 
     /*!
      *  Create new master or slave signals for the selected ports.
@@ -315,85 +225,32 @@ private:
     void createNewSignal(General::InterfaceMode newSignalMode, QModelIndexList const& selection);
 
     /*!
-     *  Get a list of ports contained within the selected indexes.
+     *  Get a list signal rows contained within the selected indexes.
      *
      *      @param [in] selection   Indexes of the selected ports.
      *
-     *      @return List of ports contained within the selected indexes.
+     *      @return List of signal rows contained within the selected indexes.
      */
-    QVector<AbstractionWirePortsModel::SignalRow> getIndexedPorts(QModelIndexList const& selection);
-
-    /*!
-     *  Check if selected signaled port has already been selected.
-     *
-     *      @param [in] portSignal      Signal of the selected port.
-     *      @param [in] selectedPorts   List of the ports that have already been selected.
-     *
-     *      @return True, if the signaled port has been selected, false otherwise.
-     */
-    bool portHasBeenSelected(AbstractionWirePortsModel::SignalRow const& portSignal,
-        QVector<AbstractionWirePortsModel::SignalRow> const& selectedPorts) const;
-
-    /*!
-     *  Check if the selected port already contains the selected signal.
-     *
-     *      @param [in] mode        The selected signal.
-     *      @param [in] portName    Name of the selected port.
-     *
-     *      @return True, if the selected port already contains the selected signal, false otherwise.
-     */
-    bool modeExistsForPort(General::InterfaceMode const& mode, QString const& portName) const;
-
-    /*!
-     *  Get the mirrored direction for the selected signal.
-     *
-     *      @param [in] portName        Name of the selected port.
-     *      @param [in] opposingMode    The opposite interface mode of the selected signal.
-     *
-     *      @return The mirrored direction for the selected signal.
-     */
-    DirectionTypes::Direction getMirroredDirectionForSignal(QString const& portName,
-        General::InterfaceMode const& opposingMode) const;
+    QVector<int> getSelectedSignalRows(QModelIndexList const& selection);
 
     /*!
      *  Get the missing system groups for the selected port.
      *
-     *      @param [in] signal  Signal of the selected port.
+     *      @param [in] signalIndex     Signal of the selected port.
      *
      *      @return The system groups that have not been connected to the system signals of the selected port.
      */
-    QStringList getMissingSystemGroupsForSignal(AbstractionWirePortsModel::SignalRow const& signal) const;
-
-    /*!
-     *  Check if the selected port contains other signals.
-     *
-     *      @param [in] portSignal  Signal of the selected port.
-     *
-     *      @return True, if the selected port contains other signals, false otherwise.
-     */
-    bool portHasOtherSignals(AbstractionWirePortsModel::SignalRow const& portSignal) const;
-
-    /*!
-     *  Construct a copy of the port abstraction of the selected signal.
-     *
-     *      @param [in] signal  The selected port signal.
-     *
-     *      @return The constructed copy of the signal.
-     */
-    AbstractionWirePortsModel::SignalRow constructCopySignal(AbstractionWirePortsModel::SignalRow signal) const;
+    QStringList getMissingSystemGroupsForSignal(int const& signalIndex) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The abstraction definition being edited.
-	QSharedPointer<AbstractionDefinition> absDef_;
-
     //! The bus definition detailed in the abstraction definition.
     QSharedPointer<BusDefinition> busDefinition_;
 
-	//! Contains the rows in the table.
-	QList<SignalRow> table_;
+    //! Interface for accessing port abstractions.
+    PortAbstractionInterface* portInterface_;
 
     //! Interface to the library.
     LibraryInterface* libraryAccess_;

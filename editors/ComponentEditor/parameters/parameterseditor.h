@@ -46,11 +46,14 @@ public:
      *      @param [in] parameterInterface      Interface for accessing parameters.
      *      @param [in] parent                  Pointer to the owner of this widget.
 	 */
-    ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+    ParametersEditor(QSharedPointer<Component> component,
+        LibraryInterface* handler,
         QSharedPointer<ParameterValidator> validator,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ParametersInterface> parameterInterface, QWidget *parent = 0);
+        ParametersInterface* parameterInterface,
+        QWidget *parent = 0);
 
 	/*!
      *  The destructor.
@@ -88,7 +91,7 @@ private:
 	ParametersModel* model_;
 
     //! Interface for accessing parameters.
-    QSharedPointer<ParametersInterface> parameterInterface_;
+    ParametersInterface* parameterInterface_;
 };
 
 #endif // PARAMETERSEDITOR_H

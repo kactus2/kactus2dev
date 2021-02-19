@@ -1,38 +1,35 @@
 //-----------------------------------------------------------------------------
-// File: PythonConsole.cpp
+// File: ScriptingConsole.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 20.09.2019
 //
 // Description:
-// <Short description of the class/file contents>
+// Widget for scripting.
 //-----------------------------------------------------------------------------
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#include "PythonConsole.h"
-#include "ConsoleEditor.h"
+#include "ScriptingConsole.h"
+#include "ScriptingTextEditor.h"
 
 #include <QVBoxLayout>
-#include <QApplication>
 
-#include <mainwindow/MessageConsole/messageconsole.h>
 #include <PythonAPI/PythonInterpreter.h>
 
 #include <PythonAPI/ChannelRelay.h>
 
-
 //-----------------------------------------------------------------------------
-// Function: PythonConsole::PythonConsole()
+// Function: ScriptingConsole::ScriptingConsole()
 //-----------------------------------------------------------------------------
-PythonConsole::PythonConsole(QWidget* parent): 
+ScriptingConsole::ScriptingConsole(QWidget* parent): 
     QWidget(parent),
     outputChannel_(new ChannelRelay(this)),
     errorChannel_(new ChannelRelay(this)),
     interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, this)),
-    console_(new ConsoleEditor(interpreter_, this))
+    console_(new ScriptingTextEditor(interpreter_, this))
 {    
     connect(outputChannel_, SIGNAL(data(QString const&)),
         console_, SLOT(print(QString const&)), Qt::UniqueConnection);
@@ -41,15 +38,13 @@ PythonConsole::PythonConsole(QWidget* parent):
 
     interpreter_->initialize();
 
-  //  connect(interpreter_, SIGNAL(quit()), this, SLOT(onProcessFinished()), Qt::UniqueConnection);
-
     setupLayout();
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonConsole::PythonConsole()
+// Function: ScriptingConsole::ScriptingConsole()
 //-----------------------------------------------------------------------------
-void PythonConsole::setupLayout()
+void ScriptingConsole::setupLayout()
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(console_);

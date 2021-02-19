@@ -22,12 +22,13 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsEditor::AbstractionWirePortsEditor()
 //-----------------------------------------------------------------------------
-AbstractionWirePortsEditor::AbstractionWirePortsEditor(LibraryInterface* libaryAccess, QWidget *parent):
+AbstractionWirePortsEditor::AbstractionWirePortsEditor(LibraryInterface* libraryAccess,
+    PortAbstractionInterface* portInterface, QWidget* parent):
 QWidget(parent),
 portView_(this),
 portProxy_(),
-portModel_(libaryAccess, this),
-portDelegate_(libaryAccess, this)
+portModel_(libraryAccess, portInterface, this),
+portDelegate_(libraryAccess, this)
 {
     AbstractionDefinitionPortsSortFilter::ColumnHandles wireColumns;
     wireColumns.nameColumn_ = LogicalPortColumns::NAME;
@@ -35,7 +36,7 @@ portDelegate_(libaryAccess, this)
     wireColumns.systemGroupColumn_ = LogicalPortColumns::SYSTEM_GROUP;
     wireColumns.descriptionColumn_ = LogicalPortColumns::DESCRIPTION;
 
-    portProxy_ = new AbstractionDefinitionPortsSortFilter(wireColumns, this);
+    portProxy_ = new AbstractionDefinitionPortsSortFilter(wireColumns, portInterface, this);
     portProxy_->setSourceModel(&portModel_);
 
     portView_.setModel(portProxy_);
@@ -124,19 +125,11 @@ QModelIndexList AbstractionWirePortsEditor::getSelectedIndexes()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsEditor::save()
+// Function: AbstractionWirePortsEditor::resetPortModel()
 //-----------------------------------------------------------------------------
-void AbstractionWirePortsEditor::save()
+void AbstractionWirePortsEditor::resetPortModel()
 {
-    portModel_.save();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionWirePortsEditor::setAbsDef()
-//-----------------------------------------------------------------------------
-void AbstractionWirePortsEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
-{
-    portModel_.setAbsDef(absDef);
+    portModel_.resetPortModel();
 }
 
 //-----------------------------------------------------------------------------

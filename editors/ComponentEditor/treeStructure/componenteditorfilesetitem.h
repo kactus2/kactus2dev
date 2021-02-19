@@ -25,6 +25,7 @@ class ParameterFinder;
 class ExpressionParser;
 class ExpressionFormatter;
 class ReferenceCounter;
+class FileSetInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for a single file set in the component editor's navigation tree.
@@ -48,13 +49,20 @@ public:
      *      @param [in] expressionFormatter     Formatter used to format expressions.
      *      @param [in] validator               The validator for checking file set validity.
      *      @param [in] fileValidator           The validator for checking child item (file) validity.
+     *      @param [in] fileSetInterface        Interface for accessing file sets.
 	 *      @param [in] parent                  The parent item.
      */
-    ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet, ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler, QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<FileSetValidator> validator, QSharedPointer<FileValidator> fileValidator,
+    ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
+        ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<FileSetValidator> validator,
+        QSharedPointer<FileValidator> fileValidator,
+        FileSetInterface* fileSetInterface,
         ComponentEditorItem* parent);
 
     //! The destructor.
@@ -114,6 +122,14 @@ signals:
      */
     void childRemoved(int index);
 
+    /*!
+     *  Handle the name change of a file.
+     *
+     *      @param [in] oldName     Old name of the selected file.
+     *      @param [in] newName     The new name for the selected file.
+     */
+    void fileRenamed(std::string const& oldName, std::string const& newName);
+
 private:
 
     //! No copying. No assignment.
@@ -134,6 +150,9 @@ private:
 
     //! Formatter used to change parameter ids to parameter names.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
 };
 
 #endif // COMPONENTEDITORFILESETITEM_H

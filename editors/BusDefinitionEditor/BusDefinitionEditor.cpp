@@ -11,13 +11,14 @@
 
 #include "BusDefinitionEditor.h"
 
-#include <common/dialogs/newObjectDialog/newobjectdialog.h>
-
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 #include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
+
+#include <common/dialogs/newObjectDialog/newobjectdialog.h>
+
+#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 
 #include <QApplication>
 #include <QFile>
@@ -37,7 +38,7 @@ libHandler_(libHandler),
 busDef_(busDef),
 absDef_(absDef),
 busDefGroup_(libHandler, this),
-absDefGroup_(libHandler, this),
+absDefGroup_(libHandler, createPortAbstractionInterface(), this),
 expressionParser_(new SystemVerilogExpressionParser()),
 busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_)),
 absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
@@ -341,4 +342,13 @@ void BusDefinitionEditor::setupLayout()
     handleLayout->addWidget(line);
 
     scrollArea->setWidget(verticalSplitter);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefinitionEditor::()
+//-----------------------------------------------------------------------------
+PortAbstractionInterface* BusDefinitionEditor::createPortAbstractionInterface()
+{
+    PortAbstractionInterface* portInterface(new PortAbstractionInterface());
+    return portInterface;
 }

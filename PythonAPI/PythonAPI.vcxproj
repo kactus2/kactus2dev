@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E8D9DD36-B0CA-4043-9B08-CEA96BED5266}</ProjectGuid>
     <Keyword>QtVS_v302</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -43,7 +43,7 @@
   </ImportGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <QtInstall>5.10.1</QtInstall>
-    <QtModules>core;widgets</QtModules>
+    <QtModules>core;widgets;xml</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <QtInstall>5.10.1</QtInstall>
@@ -60,11 +60,14 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PreprocessorDefinitions>PYTHONAPI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(PYTHON_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <OutputFile>_pythonAPI_d.pyd</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python38_d.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -80,7 +83,7 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>_pythonAPI.pyd</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>$(PYTHON_LIB);C:\Apps\Python\libs\python37.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(PYTHON_LIB);IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -128,11 +131,14 @@
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\ports\PortsInterface.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.cpp" />
     <ClCompile Include="..\library\DocumentFileAccess.cpp" />
     <ClCompile Include="..\library\DocumentValidator.cpp" />
     <ClCompile Include="..\library\HierarchyView\hierarchyitem.cpp" />
@@ -148,7 +154,9 @@
     <ClCompile Include="..\VersionHelper.cpp" />
     <ClCompile Include="messageMediator\PythonMessageMediator.cpp" />
     <ClCompile Include="PythonAPI.cpp" />
-    <ClCompile Include="PythonAPI_wrap.cxx" />
+    <ClCompile Include="PythonAPI_wrap.cxx">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">swig -python -c++ PythonAPI.i</Command>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h" />
@@ -163,11 +171,12 @@
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h" />
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h" />
+    <ClInclude Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h" />
-    <ClInclude Include="..\editors\ComponentEditor\ports\PortsInterface.h" />
     <QtMoc Include="..\library\LibraryHandler.h" />
     <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h" />
     <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectExportDialog.h" />
@@ -200,6 +209,8 @@
     <ClInclude Include="..\editors\ComponentEditor\common\ListParameterFinder.h" />
     <QtMoc Include="..\editors\ComponentEditor\common\ParameterCache.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.h" />
+    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.h" />
     <ClInclude Include="..\library\DocumentFileAccess.h" />
     <ClInclude Include="..\library\DocumentValidator.h" />
     <QtMoc Include="..\library\HierarchyView\hierarchymodel.h" />
@@ -217,6 +228,10 @@
     <ClInclude Include="pythonapi_global.h" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="PythonAPI.i">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">swig -python -c++</Command>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

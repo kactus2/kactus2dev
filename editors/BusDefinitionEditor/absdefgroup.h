@@ -30,6 +30,7 @@ class VLNVDisplayer;
 class VLNVEditor;
 class LibraryInterface;
 class AbstractionDefinitionPortsSortFilter;
+class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for the logical ports of an abstraction definition.
@@ -44,9 +45,10 @@ public:
      *  The constructor.
 	 *
      *      @param [in] libraryHandler  Allows access to the library.
+     *      @param [in] portInterface   Interface for accssing port abstractions.
 	 *      @param [in] parent          The owner of the editor.
 	 */
-	AbsDefGroup(LibraryInterface* libraryHandler, QWidget *parent);
+	AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface, QWidget *parent);
 	
 	/*!
      *  The destructor.
@@ -153,6 +155,9 @@ private:
 
     //! The edited abstraction definition.
     QSharedPointer<AbstractionDefinition> abstraction_;
+
+    //! Interface for accessing port abstractions.
+    PortAbstractionInterface* portInterface_;
 };
 
 #endif // ABSDEFGROUP_H

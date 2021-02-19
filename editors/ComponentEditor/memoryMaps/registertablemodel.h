@@ -197,6 +197,14 @@ signals:
      */
     void graphicsChanged();
 
+    /*
+     *  Informs of field name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void fieldNameChanged(QString const& oldName, QString const& newName);
+
 	//! Emitted when a new field is added to the given index.
 	void fieldAdded(int index);
 
@@ -235,6 +243,29 @@ private:
      *      @return     The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Decrease the number of references when removing a field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     */
+    void decreaseReferencesWithRemovedField(QString const& fieldName);
+
+    /*!
+     *  Increase the number of references made in the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     */
+    void increaseReferencesInPastedField(QString const& fieldName);
+
+    /*!
+     *  Calculates the parameters used in the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return A map containing pairs of referenced ids and the number of references made to them.
+     */
+    QMap<QString, int> getReferencedParameters(QString const& fieldName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

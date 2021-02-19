@@ -13,7 +13,7 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 
@@ -697,4 +697,14 @@ int PortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& v
 QSharedPointer<PortsInterface> PortsModel::getInterface() const
 {
     return portsInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::getIconPath()
+//-----------------------------------------------------------------------------
+QString PortsModel::getIconPath(int const& portIndex) const
+{
+    std::string portName = getInterface()->getIndexedItemName(portIndex);
+    std::string iconPath = getInterface()->getIconPathForPort(portName);
+    return QString::fromStdString(iconPath);
 }

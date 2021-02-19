@@ -134,6 +134,16 @@ int main(int argc, char *argv[])
 
     QScopedPointer<LibraryHandler> library(new LibraryHandler(0, mediator.data(), 0));
 
+    wchar_t *program = Py_DecodeLocale(argv[0], NULL);
+    if (program == NULL)
+    {
+       // errorChannel_->write(QString("Fatal error: cannot decode application name."));
+        return false;
+    }
+
+    Py_SetProgramName(program);
+    PyMem_RawFree(program);
+
     if (startGui(argc))
     {
         // Create the main window and close the splash after 1.5 seconds.

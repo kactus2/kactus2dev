@@ -27,6 +27,7 @@ class ReferenceCounter;
 class ExpressionParser;
 class ParameterFinder;
 class ExpressionFormatter;
+class FileSetInterface;
 
 //-----------------------------------------------------------------------------
 //! The file sets-item in the component editor navigation tree.
@@ -107,11 +108,28 @@ private slots:
 
 private:
 
+    //! No copying. No assignment.
+    ComponentEditorFileSetsItem(const ComponentEditorFileSetsItem& other);
+    ComponentEditorFileSetsItem& operator=(const ComponentEditorFileSetsItem& other);
+
+    /*!
+     *  Check if the selected file set contains the selected file.
+     *
+     *      @param [in] file        The selected file.
+     *      @param [in] fileset     The selected file set.
+     *
+     *      @return True, if the file set contains the file, false otherwise.
+     */
     bool isParentFileSet(File* file, const FileSet* fileset) const;
 
-	//! No copying. No assignment.
-	ComponentEditorFileSetsItem(const ComponentEditorFileSetsItem& other);
-	ComponentEditorFileSetsItem& operator=(const ComponentEditorFileSetsItem& other);
+    /*!
+     *  Construct the interfaces for the file sets.
+     */
+    void constructFileSetInterface();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! The file sets to edit.
     QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
@@ -125,6 +143,8 @@ private:
     //! Validator for file set items.
     QSharedPointer<FileSetValidator> fileSetValidator_;
 
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
 };
 
 #endif // COMPONENTEDITORFILESETSITEM_H

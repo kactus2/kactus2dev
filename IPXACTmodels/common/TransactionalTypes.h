@@ -76,6 +76,15 @@ namespace TransactionalTypes
 	 */
     IPXACTMODELS_EXPORT bool isIpXactInitiativeType(QString const& initiativeType);
 
+    /*!
+     *  Convert the selected initiative to mirrored initiative.
+     *
+     *      @param [in] initiative  The selected initiative.
+     *
+     *      @return The mirrored initiative.
+     */
+    IPXACTMODELS_EXPORT TransactionalTypes::Initiative convertToMirrored(QString const& initiative);
+
     //! The number of supported kind type definitions.
     const unsigned int KIND_TYPE_COUNT = 5;
 

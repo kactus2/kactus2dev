@@ -258,13 +258,24 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
     {
         if (index.column() == MemoryMapsColumns::NAME_COLUMN)
         {
+            QString parentMapName = QString::fromStdString(mapName);
+
             if (itemIsMemoryMap)
             {
                 mapInterface_->setName(mapName, value.toString().toStdString());
+
+                QString newName = QString::fromStdString(mapInterface_->getIndexedItemName(index.row()));
+
+                emit memoryMapNameChanged(parentMapName, newName);
             }
             else
             {
                 mapInterface_->setRemapName(mapName, remapName, value.toString().toStdString());
+
+                QString oldName = QString::fromStdString(remapName);
+                QString newName = QString::fromStdString(mapInterface_->getIndexedRemapName(mapName, index.row()));
+
+                emit memoryRemapNameChanged(parentMapName, oldName, newName);
             }
 
             emit graphicsChanged();

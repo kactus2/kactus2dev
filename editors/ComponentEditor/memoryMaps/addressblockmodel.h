@@ -208,6 +208,14 @@ signals:
 	//! Emitted when a register item is removed from the given index.
 	void itemRemoved(int index);
 
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
+
 private:
 
 	//! No copying.
@@ -250,11 +258,27 @@ private:
     QVariant valueForIndex(const QModelIndex& index) const;
 
     /*!
-     *  Increase the number of references made in the selected expressions.
+     *  Decrease the number of references when removing a register.
      *
-     *      @param [in] expressionList  List of expressions.
+     *      @param [in] registerName    Name of the removed register.
      */
-    void increaseReferencesInPastedExpressions(QStringList const& expressionList);
+    void decreaseReferencesWithRemovedRegister(QString const& registerName);
+
+    /*!
+     *  Increase the number of references made in the selected register.
+     *
+     *      @param [in] registerName    Name of the selected register.
+     */
+    void increaseReferencesInPastedRegister(QString const& registerName);
+
+    /*!
+     *  Calculates the parameters used in the selected register.
+     *
+     *      @param [in] registerName    Name of the selected register.
+     *
+     *      @return A map containing pairs of referenced ids and the number of references made to them.
+     */
+    QMap<QString, int> getReferencedParameters(QString const& registerName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

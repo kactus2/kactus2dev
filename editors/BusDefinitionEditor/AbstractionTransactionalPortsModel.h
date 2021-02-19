@@ -31,6 +31,7 @@ class BusDefinition;
 class AbstractionDefinition;
 class Protocol;
 class LibraryInterface;
+class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Data model for the transactional ports within abstraction definition.
@@ -45,10 +46,12 @@ public:
 	 *  The constructor.
 	 *
      *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] portInterface   Interface for accessing port abstractions.
      *      @param [in] parent          Pointer to the owner of this model.
 	 */
-    AbstractionTransactionalPortsModel(LibraryInterface* libraryAccess, QObject *parent);
-	
+    AbstractionTransactionalPortsModel(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
+        QObject *parent);
+
 	/*!
 	 *  The destructor.
 	 */
@@ -113,24 +116,17 @@ public:
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*!
-	 *  Set the abstraction definition for the model.
-	 *
-	 *      @param [in] absDef  The Abstraction definition to set.
-	 */
-	void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
-    
+    /*!
+     *  Reset the port abstraction model.
+     */
+    void resetPortModel();
+
 	/*!
 	 *  Set the bus definition for the model.
 	 *
 	 *      @param [in] busDefinition   The bus definition to set.
 	 */
     void setBusDef(QSharedPointer<BusDefinition> busDefinition);
-
-	/*!
-	 *  Write the ports from the table to the abstraction definition.
-	 */
-	void save();
 
 public slots:
 
@@ -208,98 +204,12 @@ private:
     AbstractionTransactionalPortsModel(const AbstractionTransactionalPortsModel& other);
     AbstractionTransactionalPortsModel& operator=(const AbstractionTransactionalPortsModel& other);
     
-	/*!
-	 *  Save the port from table to a port abstraction.
-	 *
-	 *      @param [in] portAbs     Pointer to the port abstraction to save the port to.
-	 *      @param [in] i           Index of the port in the table.
-	 */
-	void savePort(QSharedPointer<PortAbstraction> portAbs, int i);
-
-	/*!
-	 *  Creates a single row into the table from port abstraction.
-	 *
-	 *      @param [in] portAbs         The port abstraction of the port.
-	 *      @param [in] modeSpesific    The mode specific definitions of the port.
-	 *      @param [in] mode            The mode of the port to be created.
-	 */
-	void createRow(QSharedPointer<PortAbstraction> portAbs, QSharedPointer<TransactionalPort> modeSpesific,
-		General::InterfaceMode mode);
-     
-	/*!
-     *  Convert PortQualifier to string.
-	 *
-	 *      @param [in]  qualifier The Qualifier to convert.
-	 *
-	 *      @return A string representation for the Qualifier.
-     */
-	QString qualifierToString(Qualifier qualifier) const;
-
-	/*!
-     *  Convert a string to PortQualifier.
-	 *
-	 *      @param [in] str The string to convert.
-	 *
-	 *      @return A qualifier that matches the string.
-     */
-	Qualifier::Type toQualifier(QString const& str) const;
-
     /*!
      *  Send change data signals for all the affected items.
      *
      *      @param [in] changedIndexes  List of all the changed model indexes.
      */
     void sendDataChangeForAllChangedItems(QModelIndexList changedIndexes);
-
-    //! SignalRow represents a single row in the table by grouping the port abstraction and transactional elements.
-	struct SignalRow
-    {
-        //! Defines the Port represented in the row.
-        QSharedPointer<PortAbstraction> abstraction_;
-
-		//! Defines the mode of the transactional port (master, slave or system).
-		General::InterfaceMode mode_;
-        
-        //! Defines the transactionalPort represented on the row.
-        QSharedPointer<TransactionalPort> transactionalPort_;
-
-		/*!
-         *  The default constructor.
-         */
-		SignalRow();
-
-		/*!
-         *  Copy constructor
-         */
-		SignalRow(SignalRow const& other) = default;
-
-		/*!
-		 *  Comparison of two SignalRows.
-		 *
-		 *      @param [in] other   The SignalRow to compare this to.
-		 *
-		 *      @return True, if the SignalRows are equal, otherwise false.
-		 */
-		bool operator==(SignalRow const& other) const;
-
-		/*!
-		 *  Comparison of two SignalRows.
-		 *
-		 *      @param [in] other   The SignalRow to compare this to.
-		 *
-		 *      @return True, if the SignalRows are not equal, otherwise false.
-		 */
-		bool operator!=(SignalRow const& other) const;
-
-		/*!
-		 *  Less than comparison of two SignalRows for table ordering.
-		 *
-		 *      @param [in] other   The SignalRow to compare this to.
-		 *
-		 *      @return True, if this precedes other, otherwise false.
-		 */
-		bool operator<(SignalRow const& other) const;
-	};
 
     /*!
      *  Create new master or slave signals for the selected ports.
@@ -310,111 +220,32 @@ private:
     void createNewSignal(General::InterfaceMode newSignalMode, QModelIndexList const& selection);
 
     /*!
-     *  Get a list of ports contained within the selected indexes.
+     *  Get a list signal rows contained within the selected indexes.
      *
      *      @param [in] selection   Indexes of the selected ports.
      *
-     *      @return List of ports contained within the selected indexes.
+     *      @return List of signal rows contained within the selected indexes.
      */
-    QVector<AbstractionTransactionalPortsModel::SignalRow> getIndexedPorts(QModelIndexList const& selection);
-
-    /*!
-     *  Check if selected signaled port has already been selected.
-     *
-     *      @param [in] portSignal      Signal of the selected port.
-     *      @param [in] selectedPorts   List of the ports that have already been selected.
-     *
-     *      @return True, if the signaled port has been selected, false otherwise.
-     */
-    bool portHasBeenSelected(AbstractionTransactionalPortsModel::SignalRow const& portSignal,
-        QVector<AbstractionTransactionalPortsModel::SignalRow> const& selectedPorts) const;
-
-    /*!
-     *  Check if the selected port already contains the selected signal.
-     *
-     *      @param [in] mode        The selected signal.
-     *      @param [in] portName    Name of the selected port.
-     *
-     *      @return True, if the selected port already contains the selected signal, false otherwise.
-     */
-    bool modeExistsForPort(General::InterfaceMode const& mode, QString const& portName) const;
+    QVector<int> getSelectedSignalRows(QModelIndexList const& selection);
 
     /*!
      *  Get the missing system groups for the selected port.
      *
-     *      @param [in] signal  Signal of the selected port.
+     *      @param [in] signalIndex     Signal of the selected port.
      *
      *      @return The system groups that have not been connected to the system signals of the selected port.
      */
-    QStringList getMissingSystemGroupsForSignal(AbstractionTransactionalPortsModel::SignalRow const& signal) const;
-
-    /*!
-     *  Check if the selected port contains other signals.
-     *
-     *      @param [in] portSignal  Signal of the selected port.
-     *
-     *      @return True, if the selected port contains other signals, false otherwise.
-     */
-    bool portHasOtherSignals(AbstractionTransactionalPortsModel::SignalRow const& portSignal) const;
-
-    /*!
-     *  Get the initiative of the selected port for the data function.
-     *
-     *      @param [in] port    The selected port.
-     *
-     *      @return Initiative of the selected port.
-     */
-    QString getInitiativeForData(QSharedPointer<TransactionalPort> port) const;
-
-    /*!
-     *  Get the correct initiative value from the selected initiative value for the set data function.
-     *
-     *      @param [in] newInitiativeValue  The selected initiative value.
-     *
-     *      @return Initiative value usable for the transactional port.
-     */
-    QString getInitiativeForSetData(QString const& newInitiativeValue) const;
-
-    /*!
-     *  Get the protocol type of the selected protocol.
-     *
-     *      @param [in] portProtocol    The selected protocol.
-     *
-     *      @return The type of the selected protocol.
-     */
-    QString getProtocolTypeText(QSharedPointer<Protocol> portProtocol) const;
-
-    /*!
-     *  Check if the protocol type of the selected protocol is empty.
-     *
-     *      @param [in] portProtocol    The selected protocol.
-     *
-     *      @return True, if the port protocol is empty, false otherwise.
-     */
-    bool portProcotolTypeIsEmpty(QSharedPointer<Protocol> portProtocol) const;
-
-    /*!
-     *  Construct a copy of the port abstraction of the selected signal.
-     *
-     *      @param [in] signal  The selected port signal.
-     *
-     *      @return The constructed copy signal.
-     */
-    AbstractionTransactionalPortsModel::SignalRow constructSignalCopy(
-        AbstractionTransactionalPortsModel::SignalRow signal);
+    QStringList getMissingSystemGroupsForSignal(int const& signalIndex) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The abstraction definition being edited.
-	QSharedPointer<AbstractionDefinition> absDef_;
-
     //! The bus definition detailed in the abstraction definition.
     QSharedPointer<BusDefinition> busDefinition_;
 
-	//! Contains the rows in the table.
-	QList<SignalRow> table_;
+    //! Interface for accessing port abstractions.
+    PortAbstractionInterface* portInterface_;
 
     //! Interface to the library.
     LibraryInterface* libraryAccess_;

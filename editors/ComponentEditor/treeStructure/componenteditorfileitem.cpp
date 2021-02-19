@@ -39,12 +39,16 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileItem::ComponentEditorFileItem()
 //-----------------------------------------------------------------------------
-ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler, QSharedPointer<Component> component, QSharedPointer<FileValidator> validator,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ReferenceCounter> referenceCounter, ComponentEditorItem* parent):
+ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
+    QSharedPointer<QList<QSharedPointer<File>>> availableFiles, FileInterface* fileInterface,
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<FileValidator> validator, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ReferenceCounter> referenceCounter,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 file_(file),
+availableFiles_(availableFiles),
+fileInterface_(fileInterface),
 validator_(validator),
 editAction_(new QAction(tr("Edit"), this)),
 editWithAction_(new QAction(tr("Edit/Run with..."), this)),
@@ -100,13 +104,17 @@ ItemEditor* ComponentEditorFileItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new FileEditor(libHandler_, component_, file_, parameterFinder_, expressionParser_);
-		editor_->setProtection(locked_);
+        editor_ = new FileEditor(libHandler_, component_, file_->name().toStdString(), parameterFinder_,
+            expressionParser_, fileInterface_, availableFiles_);
+        editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
         connect(editor_, SIGNAL(editFile()), this, SLOT(openItem()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(runFile()), this, SLOT(run()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(openContainingFolder()), this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(fileRenamed(std::string const&, std::string const&)),
+            editor_, SLOT(fileRenamed(std::string const&, std::string const&)), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
 	}

@@ -11,10 +11,12 @@
 
 #include "WirePortsModel.h"
 
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/ports/WirePortColumns.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+
+#include <QIcon>
 
 using namespace std;
 
@@ -74,6 +76,24 @@ QVariant WirePortsModel::headerData(int section, Qt::Orientation orientation, in
     }
 
     return PortsModel::headerData(section, orientation, role);
+}
+
+//-----------------------------------------------------------------------------
+// Function: WirePortsModel::data()
+//-----------------------------------------------------------------------------
+QVariant WirePortsModel::data(QModelIndex const& index, int role) const
+{
+    if (!index.isValid() || index.row() < 0 || index.row() >= getInterface()->itemCount())
+    {
+        return QVariant();
+    }
+
+    if (role == Qt::DecorationRole && index.column() == WirePortColumns::DIRECTION)
+    {
+        return QIcon(getIconPath(index.row()));
+    }
+    
+    return PortsModel::data(index, role);
 }
 
 //-----------------------------------------------------------------------------

@@ -12,26 +12,24 @@
 #include "ComponentInstantiationsModel.h"
 #include "ComponentInstantiationsColumns.h"
 
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+#include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
+
 #include <QStringList>
-
 #include <QRegularExpression>
-
-#include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsModel::ComponentInstantiationsModel()
 //-----------------------------------------------------------------------------
-ComponentInstantiationsModel::ComponentInstantiationsModel(QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> finder, QSharedPointer<InstantiationsValidator> validator, QObject* parent):
+ComponentInstantiationsModel::ComponentInstantiationsModel(QSharedPointer<ParameterFinder> finder,
+    ComponentInstantiationInterface* instantiationInterface, QObject* parent):
 QAbstractTableModel(parent),
-component_(component),
-instantiations_(component->getComponentInstantiations()),
 parameterFinder_(finder),
-validator_(validator)
+instantiationInterface_(instantiationInterface)
 {
 
 }
@@ -53,7 +51,7 @@ int ComponentInstantiationsModel::rowCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-    return instantiations_->size();
+    return instantiationInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -127,24 +125,24 @@ QVariant ComponentInstantiationsModel::headerData(int section, Qt::Orientation o
 //-----------------------------------------------------------------------------
 QVariant ComponentInstantiationsModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= instantiations_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= instantiationInterface_->itemCount())
     {
         return QVariant();
     }
 
-    QSharedPointer<ComponentInstantiation> instantiation = instantiations_->at(index.row());
+    std::string instantiationName = instantiationInterface_->getIndexedItemName(index.row());
 
     if (role == Qt::EditRole && index.column() == ComponentInstantiationsColumns::DESCRIPTION)
     {
-        return instantiation->description();
+        return QString::fromStdString(instantiationInterface_->getDescription(instantiationName));
     }
     else if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == ComponentInstantiationsColumns::NAME)
         {
-            if (!instantiation->name().isEmpty())
+            if (!instantiationName.empty())
             {
-                return instantiation->name();
+                return QString::fromStdString(instantiationName);
             }
             else
             {
@@ -153,16 +151,18 @@ QVariant ComponentInstantiationsModel::data(QModelIndex const& index, int role) 
         }
         else if (index.column() == ComponentInstantiationsColumns::DISPLAY_NAME)
         {
-            return instantiation->displayName();
+            return QString::fromStdString(instantiationInterface_->getDisplayName(instantiationName));
         }
         else if (index.column() == ComponentInstantiationsColumns::LANGUAGE)
         {
-            return instantiation->getLanguage();
+            return QString::fromStdString(instantiationInterface_->getLanguage(instantiationName));
         }
         else if (index.column() == ComponentInstantiationsColumns::DESCRIPTION)
         {
-            return instantiation->description().replace(QRegularExpression("\n.*$", 
-                QRegularExpression::DotMatchesEverythingOption), "...");
+            QString instantiationDescription =
+                QString::fromStdString(instantiationInterface_->getDescription(instantiationName));
+            return instantiationDescription.replace(
+                QRegularExpression("\n.*$", QRegularExpression::DotMatchesEverythingOption), "...");
         }
         else
         {
@@ -171,8 +171,8 @@ QVariant ComponentInstantiationsModel::data(QModelIndex const& index, int role) 
 	}
 	else if (role == Qt::ForegroundRole)
     {
-        if (index.column() == ComponentInstantiationsColumns::NAME && 
-            !validator_->hasValidName(instantiation->name()))
+        if (index.column() == ComponentInstantiationsColumns::NAME &&
+            !instantiationInterface_->itemHasValidName(instantiationName))
         {
             return KactusColors::ERROR;
         }
@@ -203,30 +203,32 @@ QVariant ComponentInstantiationsModel::data(QModelIndex const& index, int role) 
 //-----------------------------------------------------------------------------
 bool ComponentInstantiationsModel::setData(QModelIndex const& index, const QVariant& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= instantiations_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= instantiationInterface_->itemCount())
     {
 		return false;
 	}
 
-    QSharedPointer<ComponentInstantiation> instantiation = instantiations_->at(index.row());
+    std::string instantiationName = instantiationInterface_->getIndexedItemName(index.row());
 
 	if (role == Qt::EditRole)
     {
+        std::string newValue = value.toString().toStdString();
+
         if (index.column() == ComponentInstantiationsColumns::NAME)
         {
-            instantiation->setName(value.toString());
+            instantiationInterface_->setName(instantiationName, newValue);
         }
         else if (index.column() == ComponentInstantiationsColumns::DISPLAY_NAME)
         {
-            instantiation->setDisplayName(value.toString());
+            instantiationInterface_->setDisplayName(instantiationName, newValue);
         }
         else if (index.column() == ComponentInstantiationsColumns::LANGUAGE)
         {
-            instantiation->setLanguage(value.toString());
+            instantiationInterface_->setLanguage(instantiationName, newValue);
         }
         else if (index.column() == ComponentInstantiationsColumns::DESCRIPTION)
         {
-            instantiation->setDescription(value.toString());
+            instantiationInterface_->setDescription(instantiationName, newValue);
         }
         else
         {
@@ -248,7 +250,7 @@ bool ComponentInstantiationsModel::setData(QModelIndex const& index, const QVari
 //-----------------------------------------------------------------------------
 void ComponentInstantiationsModel::onAddItem(QModelIndex const& index)
 {
-	int row = instantiations_->size();
+    int row = instantiationInterface_->itemCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -257,7 +259,9 @@ void ComponentInstantiationsModel::onAddItem(QModelIndex const& index)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	instantiations_->insert(row, QSharedPointer<ComponentInstantiation>(new ComponentInstantiation()));
+
+    instantiationInterface_->addComponentInstantiation(row);
+
 	endInsertRows();
 	
 	emit componentInstantiationAdded(row);
@@ -270,18 +274,20 @@ void ComponentInstantiationsModel::onAddItem(QModelIndex const& index)
 void ComponentInstantiationsModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= instantiations_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= instantiationInterface_->itemCount())
     {
 		return;
 	}
 
+    std::string instantiationName = instantiationInterface_->getIndexedItemName(index.row());
+
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    decreaseReferencesInRemovedComponentInstantiation(instantiations_->at(index.row()));
+    decreaseReferencesInRemovedComponentInstantiation(instantiationName);
+    instantiationInterface_->removeComponentInstantiation(instantiationName);
 
-	instantiations_->removeAt(index.row());
-	endRemoveRows();
+    endRemoveRows();
 
 	emit componentInstantiationRemoved(index.row());
 	emit contentChanged();
@@ -291,22 +297,16 @@ void ComponentInstantiationsModel::onRemoveItem(QModelIndex const& index)
 // Function: ComponentInstantiationsModel::decreaseReferencesInRemovedComponentInstantiation()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationsModel::decreaseReferencesInRemovedComponentInstantiation(
-    QSharedPointer<ComponentInstantiation> instantiation)
+    std::string const& instantiationName)
 {
     QStringList expressionList;
-    foreach (QSharedPointer<FileBuilder> builder, *instantiation->getDefaultFileBuilders())
-    {
-        expressionList.append(builder->getReplaceDefaultFlags());
-    }
 
-    foreach (QSharedPointer<ModuleParameter> moduleParameter, *instantiation->getModuleParameters())
-    {
-        expressionList.append(getAllReferencableValuesFromParameter(moduleParameter));
-    }
+    std::vector<std::string> names;
+    names.push_back(instantiationName);
 
-    foreach (QSharedPointer<Parameter> singleParameter, *instantiation->getParameters())
+    for (auto expression : instantiationInterface_->getExpressionsInSelectedItems(names))
     {
-        expressionList.append(getAllReferencableValuesFromParameter(singleParameter));
+        expressionList.append(QString::fromStdString(expression));
     }
 
     ReferenceCalculator referenceCalculator(parameterFinder_);

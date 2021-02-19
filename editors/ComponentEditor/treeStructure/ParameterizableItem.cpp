@@ -52,9 +52,9 @@ void ParameterizableItem::connectItemEditorToReferenceCounter()
     void recalculateReferencesToParameters(std::vector<std::string> const& parameterList);
 
     connect(editor_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         referenceCounter_.data(),
-        SLOT(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SLOT(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 }
 

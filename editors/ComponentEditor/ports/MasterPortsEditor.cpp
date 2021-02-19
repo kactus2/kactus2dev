@@ -17,6 +17,7 @@
 #include <editors/ComponentEditor/ports/PortsView.h>
 #include <editors/ComponentEditor/ports/PortsFilter.h>
 #include <editors/ComponentEditor/ports/PortsEditorConstructor.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
@@ -39,7 +40,8 @@ view_(editorConstructor->constructView(defaultPath, this)),
 model_(0),
 proxy_(editorConstructor->constructFilter(portsInterface, this)),
 delegate_(editorConstructor->constructDelegate(
-    component, parameterCompleter, parameterFinder, portValidator, this))
+    component, parameterCompleter, parameterFinder, portValidator, this)),
+portInterface_(portsInterface)
 {
     model_ = editorConstructor->constructModel(parameterFinder, portsInterface, proxy_, this);
 
@@ -152,6 +154,6 @@ void MasterPortsEditor::setComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> MasterPortsEditor::getIndexedPort(QModelIndex const& portIndex) const
 {
-//     return model_->getPortAtIndex(portIndex);
-    return QSharedPointer<Port>();
+    std::string portName = portInterface_->getIndexedItemName(portIndex.row());
+    return portInterface_->getPort(portName);
 }

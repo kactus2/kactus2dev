@@ -14,9 +14,15 @@
 
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
+#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorbusinterfacesitem::ComponentEditorBusInterfacesItem()
@@ -32,7 +38,8 @@ ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
 parentWnd_(parentWnd),
 expressionParser_(expressionParser),
-validator_()
+validator_(),
+portMapInterface_()
 {
     createBusInterfaceValidator();
 
@@ -40,11 +47,13 @@ validator_()
     setExpressionFormatter(expressionFormatter);
     setReferenceCounter(referenceCounter);
 
+    createPortMapInterface();
+
 	foreach (QSharedPointer<BusInterface> busif, *busifs_)
     {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
             busif, model, libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, validator_, this, parentWnd));
+            expressionParser_, validator_, portMapInterface_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
             this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
@@ -123,7 +132,7 @@ void ComponentEditorBusInterfacesItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
         busifs_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
-        expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
+        expressionFormatter_, expressionParser_, validator_, portMapInterface_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
@@ -149,4 +158,22 @@ QSharedPointer<ComponentEditorItem> ComponentEditorBusInterfacesItem::getBusInte
 
 	// if child was not found
 	return QSharedPointer<ComponentEditorItem>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::createPortMapInterface()
+//-----------------------------------------------------------------------------
+void ComponentEditorBusInterfacesItem::createPortMapInterface()
+{
+    QSharedPointer<PortValidator> portValidator(new PortValidator(expressionParser_, component_->getViews()));
+    QSharedPointer<PortMapValidator> portMapValidator =
+        validator_->getAbstractionValidator()->getPortMapValidator();
+
+    PortsInterface* physicalPortInterface(new PortsInterface(portValidator, expressionParser_, expressionFormatter_));
+    physicalPortInterface->setPorts(component_);
+
+    PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface());
+
+    portMapInterface_ = new PortMapInterface(
+        portMapValidator, expressionParser_, expressionFormatter_, physicalPortInterface, logicalPortInterface);
 }

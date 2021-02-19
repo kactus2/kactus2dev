@@ -291,7 +291,7 @@ QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
-        return QString::fromStdString(registerInterface_->getAccess(registerName));
+        return QString::fromStdString(registerInterface_->getAccessString(registerName));
     }
 
     return QVariant();
@@ -330,6 +330,12 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
         if (index.column() == AddressBlockColumns::NAME)
         {
             registerInterface_->setName(registerName, value.toString().toStdString());
+
+            QString oldName = QString::fromStdString(registerName);
+            QString newName = QString::fromStdString(registerInterface_->getIndexedItemName(index.row()));
+
+            emit registerNameChanged(oldName, newName);
+
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
         }
         else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
@@ -518,7 +524,7 @@ void AddressBlockModel::onRemoveItem(QModelIndex const& index )
     // remove the specified item
     beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    removeReferencesInItemOnRow(index.row());
+    decreaseReferencesWithRemovedRegister(QString::fromStdString(removedRegisterName));
     registerInterface_->removeRegister(removedRegisterName, dataIndex);
 
     endRemoveRows();
@@ -528,6 +534,42 @@ void AddressBlockModel::onRemoveItem(QModelIndex const& index )
 
     // tell also parent widget that contents have been changed
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::decreaseReferencesWithRemovedRegister()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::decreaseReferencesWithRemovedRegister(QString const& registerName)
+{
+    QMap<QString, int> referencedParameters = getReferencedParameters(registerName);
+
+    foreach(QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::getReferencedParameters()
+//-----------------------------------------------------------------------------
+QMap<QString, int> AddressBlockModel::getReferencedParameters(QString const& registerName) const
+{
+    std::vector<std::string> registerNameList;
+    registerNameList.push_back(registerName.toStdString());
+
+    auto expressionList = registerInterface_->getExpressionsInSelectedRegisters(registerNameList);
+    QStringList expressionListQT;
+    for (auto expression : expressionList)
+    {
+        expressionListQT.append(QString::fromStdString(expression));
+    }
+
+    ReferenceCalculator refCalculator(getParameterFinder());
+
+    return refCalculator.getReferencedParameters(expressionListQT);
 }
 
 //-----------------------------------------------------------------------------
@@ -568,33 +610,25 @@ void AddressBlockModel::onPasteRows()
     
     beginInsertRows(QModelIndex(), rowBegin, rowEnd);
 
-    std::vector<std::string> insertedItemNames = registerInterface_->pasteRows();
+    registerInterface_->pasteRows();
 
     for (int i = rowBegin; i <= rowEnd; ++i)
     {
         emit itemAdded(i);
+        increaseReferencesInPastedRegister(QString::fromStdString(registerInterface_->getIndexedItemName(i)));
     }
 
     endInsertRows();
-
-    QStringList pastedExpressions;
-    for (auto expression : registerInterface_->getExpressionsInSelectedRegisters(insertedItemNames))
-    {
-        pastedExpressions.append(QString::fromStdString(expression));
-    }
-    increaseReferencesInPastedExpressions(pastedExpressions);
 
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockModel::increaseReferencesInPastedField()
+// Function: AddressBlockModel::increaseReferencesInPastedRegister()
 //-----------------------------------------------------------------------------
-void AddressBlockModel::increaseReferencesInPastedExpressions(QStringList const& expressionList)
+void AddressBlockModel::increaseReferencesInPastedRegister(QString const& registerName)
 {
-    ReferenceCalculator referenceCalculator(getParameterFinder());
-
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
+    QMap<QString, int> referencedParameters = getReferencedParameters(registerName);
 
     QMapIterator<QString, int> refParameterIterator(referencedParameters);
     while (refParameterIterator.hasNext())

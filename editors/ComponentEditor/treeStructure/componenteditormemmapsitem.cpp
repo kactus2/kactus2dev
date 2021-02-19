@@ -60,7 +60,7 @@ mapInterface_()
     {
 		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMap, model,
             libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
-            memoryMapValidator_, mapInterface_->getSubInterface(), this));
+            memoryMapValidator_, mapInterface_, this));
 		memoryMapItem->setVisualizer(visualizer_);
 		childItems_.append(memoryMapItem);
 
@@ -69,6 +69,13 @@ mapInterface_()
 
         connect(this, SIGNAL(memoryRemapRemoved(int, QString const&)),
             memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+            memoryMapItem.data(), SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+            Qt::UniqueConnection);
+        connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            memoryMapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            Qt::UniqueConnection);
     }
 }
 
@@ -129,6 +136,12 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
         connect(editor_, SIGNAL(memoryRemapRemoved(int, QString const&)),
             this, SIGNAL(memoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
 
+        connect(editor_, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+            this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
 	}
 	return editor_;
@@ -149,7 +162,7 @@ void ComponentEditorMemMapsItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMaps_->at(index),
         model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser_, memoryMapValidator_, mapInterface_->getSubInterface(), this));
+        expressionParser_, memoryMapValidator_, mapInterface_, this));
 	memoryMapItem->setLocked(locked_);
 	childItems_.insert(index, memoryMapItem);
 	
@@ -158,6 +171,13 @@ void ComponentEditorMemMapsItem::createChild( int index )
 
     connect(this, SIGNAL(memoryRemapRemoved(int, QString const&)),
         memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        memoryMapItem.data(), SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        Qt::UniqueConnection);
+    connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        memoryMapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        Qt::UniqueConnection);
 
 	if (visualizer_)
     {

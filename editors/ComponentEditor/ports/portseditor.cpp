@@ -17,7 +17,7 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/ports/MasterPortsEditor.h>
 #include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.h>

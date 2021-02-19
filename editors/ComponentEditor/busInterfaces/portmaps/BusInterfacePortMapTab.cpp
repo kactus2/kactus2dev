@@ -17,11 +17,15 @@
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <QSplitter>
 #include <QSharedPointer>
@@ -36,8 +40,7 @@
 //-----------------------------------------------------------------------------
 BusInterfacePortMapTab::BusInterfacePortMapTab(LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busif, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder,
-    QSharedPointer<PortMapValidator> portMapValidator, QWidget* parent):
+    QSharedPointer<ParameterFinder> finder, PortMapInterface* portMapInterface, QWidget* parent):
 QWidget(parent),
 busif_(busif),
 component_(component),
@@ -50,15 +53,16 @@ typeFilter_(this),
 directionFilter_(this),
 hideConnectedPortsBox_(this),
 physicalPrefixEditor_(new QLineEdit(this)),
-portMapsModel_(component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
+portMapsModel_(component, libHandler, finder, portMapInterface, this),
 portMapsSorter_(busif_, this),
 portMapsView_(this),
 portMapsDelegate_(0),
 autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
 removeAllMappingsButton_(QIcon(":/icons/common/graphics/cross.png"), "Remove all", this),
-autoConnector_(component, expressionParser, libHandler, this),
+autoConnector_(component, expressionParser, portMapInterface, libHandler, this),
 abstractionSelector_(new QComboBox(this)),
-abstractions_()
+abstractions_(),
+portMapInterface_(portMapInterface)
 {
     hideConnectedPortsBox_.setCheckState(Qt::Checked);
 
@@ -163,6 +167,8 @@ void BusInterfacePortMapTab::addItemsToDirectionFilter()
 //-----------------------------------------------------------------------------
 void BusInterfacePortMapTab::refresh()
 {
+    setupAbstraction();
+
     physicalPortModel_.refresh();
     portMapsModel_.refresh();
 
@@ -211,6 +217,16 @@ void BusInterfacePortMapTab::setAbstractionDefinitions()
 //-----------------------------------------------------------------------------
 void BusInterfacePortMapTab::onAbstractionChanged()
 {
+    setupAbstraction();
+
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacePortMapTab::setupAbstraction()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::setupAbstraction()
+{
     QSharedPointer<AbstractionType> currentAbstraction;
 
     int currentAbstractionIndex = abstractionSelector_->currentIndex();
@@ -243,11 +259,18 @@ void BusInterfacePortMapTab::setAbsType(QSharedPointer<AbstractionType> abstract
 
     physicalPortSorter_.setNewAbstractionType(abstraction);
 
-    portMapsModel_.setAbsType(abstraction, busMode, systemGroup);
-    portMapsDelegate_->updateLogicalPortNames(definitionVLNV, busMode, systemGroup);
-    autoConnector_.setAbstractionDefinition(abstraction, definitionVLNV, busMode, systemGroup);
+    QSharedPointer<Document const> absDefDocument = libHandler_->getModelReadOnly(definitionVLNV);
+    if (absDefDocument && libHandler_->getDocumentType(definitionVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    {
+        QSharedPointer<AbstractionDefinition const> abstractionDefinition =
+            absDefDocument.dynamicCast<AbstractionDefinition const>();
 
-    refresh();
+        portMapInterface_->setPortMaps(
+            abstractionDefinition, abstraction, busMode, systemGroup.toStdString(), component_);
+
+        portMapsDelegate_->updateLogicalPortNames(definitionVLNV, busMode, systemGroup);
+        autoConnector_.setAbstractionDefinition(definitionVLNV, busMode, systemGroup);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -369,8 +392,8 @@ void BusInterfacePortMapTab::connectItems()
         &autoConnector_, SLOT(setPrefix(QString const&)), Qt::UniqueConnection);
     connect(&autoConnectButton_, SIGNAL(clicked()), &autoConnector_, SLOT(onAutoConnect()), Qt::UniqueConnection);
 
-    connect(&autoConnector_, SIGNAL(portMapCreated(QSharedPointer<PortMap>)),
-        &portMapsModel_, SLOT(onAddConnectedPortMap(QSharedPointer<PortMap>)), Qt::UniqueConnection);
+    connect(&autoConnector_, SIGNAL(portMapsAutoConnected(QVector<QString>)),
+        &portMapsModel_, SLOT(onAddAutoConnectedPortMaps(QVector<QString>)), Qt::UniqueConnection);
     connect(&portMapsView_, SIGNAL(autoConnecteLogicalSignals(QStringList const&)),
         &autoConnector_, SLOT(onAutoConnectLogicalSignals(QStringList const&)), Qt::UniqueConnection);
 

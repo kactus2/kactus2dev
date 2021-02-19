@@ -14,6 +14,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/AccessTypes.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h>
@@ -49,7 +50,7 @@ subInterface_(subInterface)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldInterface::setParameters()
+// Function: FieldInterface::setFields()
 //-----------------------------------------------------------------------------
 void FieldInterface::setFields(QSharedPointer<QList<QSharedPointer<Field> > > newFields)
 {
@@ -389,9 +390,9 @@ bool FieldInterface::setVolatile(string const& fieldName, string const& newVolat
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldInterface::getAccess()
+// Function: FieldInterface::getAccessString()
 //-----------------------------------------------------------------------------
-string FieldInterface::getAccess(string const& fieldName) const
+string FieldInterface::getAccessString(string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -400,6 +401,20 @@ string FieldInterface::getAccess(string const& fieldName) const
     }
 
     return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getAccessType()
+//-----------------------------------------------------------------------------
+AccessTypes::Access FieldInterface::getAccessType(std::string const& fieldName) const
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        return field->getAccess();
+    }
+
+    return AccessTypes::ACCESS_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -419,9 +434,9 @@ bool FieldInterface::setAccess(string const& fieldName, string const& newAccess)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldInterface::getModifiedWrite()
+// Function: FieldInterface::getModifiedWriteString()
 //-----------------------------------------------------------------------------
-string FieldInterface::getModifiedWrite(string const& fieldName) const
+string FieldInterface::getModifiedWriteString(string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -430,6 +445,20 @@ string FieldInterface::getModifiedWrite(string const& fieldName) const
     }
 
     return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getModifiedWriteValue()
+//-----------------------------------------------------------------------------
+General::ModifiedWrite FieldInterface::getModifiedWriteValue(std::string const& fieldName) const
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        return field->getModifiedWrite();
+    }
+
+    return General::MODIFIED_WRITE_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -448,9 +477,9 @@ bool FieldInterface::setModifiedWrite(string const& fieldName, string const& new
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldInterface::getReadAction()
+// Function: FieldInterface::getReadActiongetReadActionString()
 //-----------------------------------------------------------------------------
-string FieldInterface::getReadAction(string const& fieldName) const
+string FieldInterface::getReadActionString(string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -459,6 +488,20 @@ string FieldInterface::getReadAction(string const& fieldName) const
     }
 
     return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getReadAction()
+//-----------------------------------------------------------------------------
+General::ReadAction FieldInterface::getReadAction(std::string const& fieldName) const
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        return field->getReadAction();
+    }
+
+    return General::READ_ACTION_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -534,9 +577,9 @@ bool FieldInterface::setTestable(string const& fieldName, string const& newTesta
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldInterface::getTestConstraint()
+// Function: FieldInterface::getTestConstraintString()
 //-----------------------------------------------------------------------------
-string FieldInterface::getTestConstraint(string const& fieldName) const
+string FieldInterface::getTestConstraintString(string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -545,6 +588,20 @@ string FieldInterface::getTestConstraint(string const& fieldName) const
     }
 
     return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getTestConstraint()
+//-----------------------------------------------------------------------------
+General::TestConstraint FieldInterface::getTestConstraint(std::string const& fieldName) const
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        return field->getTestConstraint();
+    }
+
+    return General::TESTCONSTRAINT_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -876,4 +933,302 @@ std::vector<std::string> FieldInterface::getExpressionsInSelectedFields(std::vec
 ResetInterface* FieldInterface::getSubInterface() const
 {
     return subInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::hasWriteConstraint()
+//-----------------------------------------------------------------------------
+bool FieldInterface::hasWriteConstraint(std::string const& fieldName) const
+{
+    QSharedPointer<WriteValueConstraint> fieldWriteConstraint = getWriteValueConstraint(fieldName);
+    if (fieldWriteConstraint)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getWriteConstraint()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getWriteConstraint(std::string const& fieldName) const
+{
+    std::string writeConstraintText =
+        WriteValueConversions::typeToString(WriteValueConstraint::TYPE_COUNT).toStdString();
+
+    QSharedPointer<WriteValueConstraint> fieldWriteConstraint = getWriteValueConstraint(fieldName);
+    if (fieldWriteConstraint)
+    {
+        writeConstraintText = WriteValueConversions::typeToString(fieldWriteConstraint->getType()).toStdString();
+    }
+
+    return writeConstraintText;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getWriteValueConstraint()
+//-----------------------------------------------------------------------------
+QSharedPointer<WriteValueConstraint> FieldInterface::getWriteValueConstraint(std::string const& fieldName) const
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        QSharedPointer<WriteValueConstraint> fieldWriteConstraint = field->getWriteConstraint();
+        if (fieldWriteConstraint)
+        {
+            return fieldWriteConstraint;
+        }
+    }
+
+    return QSharedPointer<WriteValueConstraint>();
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setWriteConstraint()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setWriteConstraint(std::string const& fieldName, std::string const& newConstraintText)
+{
+    QSharedPointer<Field> selectedField = getField(fieldName);
+    if (!selectedField)
+    {
+        return false;
+    }
+
+    QSharedPointer<WriteValueConstraint> writeConstraint = selectedField->getWriteConstraint();
+    if (writeConstraint)
+    {
+        WriteValueConstraint::Type constraintType =
+            WriteValueConversions::stringToType(QString::fromStdString(newConstraintText));
+
+        if (constraintType == WriteValueConstraint::TYPE_COUNT)
+        {
+            selectedField->setWriteConstraint(QSharedPointer<WriteValueConstraint>(0));
+        }
+        else
+        {
+            writeConstraint->setType(constraintType);
+        }
+    }
+    else
+    {
+        QSharedPointer<WriteValueConstraint> newConstraint(new WriteValueConstraint());
+        WriteValueConstraint::Type constraintType =
+            WriteValueConversions::stringToType(QString::fromStdString(newConstraintText));
+
+        if (constraintType != WriteValueConstraint::TYPE_COUNT)
+        {
+            newConstraint->setType(constraintType);
+            selectedField->setWriteConstraint(newConstraint);
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getWriteConstraintMinimumValue()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getWriteConstraintMinimumValue(std::string const& fieldName, int const& baseNumber)
+    const
+{
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    if (constraint)
+    {
+        return parseExpressionToBaseNumber(constraint->getMinimum(), baseNumber).toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getWriteConstraintMinimumFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getWriteConstraintMinimumFormattedExpression(std::string const& fieldName) const
+{
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    if (constraint)
+    {
+        return formattedValueFor(constraint->getMinimum()).toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getWriteConstraintMinimumExpression()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getWriteConstraintMinimumExpression(std::string const& fieldName) const
+{
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    if (constraint)
+    {
+        return constraint->getMinimum().toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setWriteConstraintMinimum()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setWriteConstraintMinimum(std::string const& fieldName,
+    std::string const& newWriteConstraintMinimum)
+{
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    if (!constraint)
+    {
+        return false;
+    }
+
+    constraint->setMinimum(QString::fromStdString(newWriteConstraintMinimum));
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getWriteConstraintMaximumValue()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getWriteConstraintMaximumValue(std::string const& fieldName, int const& baseNumber)
+const
+{
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    if (constraint)
+    {
+        return parseExpressionToBaseNumber(constraint->getMaximum(), baseNumber).toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getWriteConstraintMaximumFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getWriteConstraintMaximumFormattedExpression(std::string const& fieldName) const
+{
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    if (constraint)
+    {
+        return formattedValueFor(constraint->getMaximum()).toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getWriteConstraintMaximumExpression()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getWriteConstraintMaximumExpression(std::string const& fieldName) const
+{
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    if (constraint)
+    {
+        return constraint->getMaximum().toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setWriteConstraintMaximum()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setWriteConstraintMaximum(std::string const& fieldName,
+    std::string const& newWriteConstraintMaximum)
+{
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    if (!constraint)
+    {
+        return false;
+    }
+
+    constraint->setMaximum(QString::fromStdString(newWriteConstraintMaximum));
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getReservedValue()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getReservedValue(std::string const& fieldName, int const& baseNumber) const
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        return parseExpressionToBaseNumber(field->getReserved(), baseNumber).toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getReservedFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getReservedFormattedExpression(std::string const& fieldName) const
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        return formattedValueFor(field->getReserved()).toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getReservedExpression()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getReservedExpression(std::string const& fieldName) const
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        return field->getReserved().toStdString();
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setReserved()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setReserved(std::string const& fieldName, std::string const& newReserved)
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (!field)
+    {
+        return false;
+    }
+
+    field->setReserved(QString::fromStdString(newReserved));
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getID()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getID(std::string const& fieldName)
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (field)
+    {
+        return field->getId().toStdString();
+    }
+
+    return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setID()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setID(std::string const& fieldName, std::string const& newID)
+{
+    QSharedPointer<Field> field = getField(fieldName);
+    if (!field)
+    {
+        return false;
+    }
+
+    field->setId(QString::fromStdString(newID));
+    return true;
 }

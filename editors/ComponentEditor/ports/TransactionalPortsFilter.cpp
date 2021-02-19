@@ -14,7 +14,7 @@
 #include <IPXACTmodels/Component/Port.h>
 
 #include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsFilter::TransactionalPortsFilter()

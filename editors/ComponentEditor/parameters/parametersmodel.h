@@ -25,6 +25,7 @@
 
 class Choice;
 class Component;
+class ParametersInterface;
 
 //-----------------------------------------------------------------------------
 //! Table model that can be used to display parameters to be edited.
@@ -43,8 +44,9 @@ public:
      *      @param [in] parameterFinder     The parameter finder.
 	 *      @param [in] parent              The owner of this model.
      */
-    ParametersModel(QSharedPointer<ParametersInterface> parameterInterface,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+    ParametersModel(ParametersInterface* parameterInterface,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
         QObject *parent);
 
 	/*!

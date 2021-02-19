@@ -22,6 +22,8 @@ class DesignConfigurationInstantiationsEditor;
 class DesignInstantiationsEditor;
 class LibraryInterface;
 class InstantiationsValidator;
+class ComponentInstantiationInterface;
+
 //-----------------------------------------------------------------------------
 //! Editor for component, design and design configuration instantiations. 
 //-----------------------------------------------------------------------------
@@ -34,16 +36,23 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component           The component being edited.
-     *      @param [in] parameterFinder     Finder used to identify parameters.
-	 *      @param [in] handler             The instance managing the library.
-     *      @param [in] viewValidator       The validator used for instantiations.
-	 *      @param [in] parent              The parent of this editor.
+	 *      @param [in] component                           The component being edited.
+     *      @param [in] parameterFinder                     Finder used to identify parameters.
+	 *      @param [in] handler                             The instance managing the library.
+     *      @param [in] validator                           The validator used for instantiations.
+     *      @param [in] componentInstantiationInterface     Interface for accessing component instantiations.
+	 *      @param [in] parent                              The parent of this editor.
 	 */
-	InstantiationsEditor(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
-        LibraryInterface* handler, QSharedPointer<InstantiationsValidator> validator, QWidget* parent = 0);
-	
-	//! The destructor.
+    InstantiationsEditor(QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        LibraryInterface* handler,
+        QSharedPointer<InstantiationsValidator> validator,
+        ComponentInstantiationInterface* componentInstantiationInterface,
+        QWidget* parent = 0);
+
+	/*!
+     *  The destructor.
+     */
 	virtual ~InstantiationsEditor();
 
 	/*!

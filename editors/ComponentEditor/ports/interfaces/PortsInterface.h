@@ -13,7 +13,9 @@
 #define PORTSINTERFACE_H
 
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
-#include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/MasterPortInterface.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 class Component;
 class Port;
@@ -22,7 +24,7 @@ class PortValidator;
 //-----------------------------------------------------------------------------
 //! Interface for editing component ports.
 //-----------------------------------------------------------------------------
-class PortsInterface : public ParameterizableInterface, public NameGroupInterface
+class PortsInterface : public ParameterizableInterface, public MasterPortInterface
 {
 public:
 
@@ -119,6 +121,15 @@ public:
      *      @return Number of references to the selected ID in the selected port.
      */
     virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const override final;
+
+    /*!
+     *  Check if the selected port exists.
+     *
+     *      @param [in] portName    Name of the selected port.
+     *
+     *      @return True, if the port exists, false otherwise.
+     */
+    bool portExists(std::string const& portName) const;
 
     /*!
      *  Validates the contained ports.
@@ -277,6 +288,15 @@ public:
      *      @return Direction of the selected port.
      */
     std::string getDirection(std::string const& portName) const;
+
+    /*!
+     *  Get the direction of the selected port.
+     *
+     *      @param [in] portName    Name of the selected port.
+     *
+     *      @return Direction of the selected port.
+     */
+    DirectionTypes::Direction getDirectionType(std::string const& portName) const;
 
     /*!
      *  Set direction for the selected port.
@@ -606,14 +626,14 @@ public:
 	 *
 	 *      @param [in] newPortName     Name of the new port.
 	 */
-	void addWirePort(std::string const& newPortName = std::string(""));
+	virtual void addWirePort(std::string const& newPortName = std::string("")) override final;
 
     /*!
      *  Add a transactional port.
      *
      *      @param [in] newPortName     Name of the new port.
      */
-    void addTransactionalPort(std::string const& newPortName = std::string(""));
+    virtual void addTransactionalPort(std::string const& newPortName = std::string("")) override final;
 
     /*!
      *  Remove the selected port.
@@ -656,7 +676,7 @@ public:
      *
      *      @return True, if the selected port is a wire, false otherwise.
      */
-    bool portIsWire(std::string const& portName) const;
+    virtual bool portIsWire(std::string const& portName) const override final;
 
     /*!
      *  Check if the selected port has a valid left bound value.
@@ -692,7 +712,7 @@ public:
      *
      *      @return True, if the selected port is transactional, false otherwise.
      */
-    bool portIsTransactional(std::string const& portName) const;
+    virtual bool portIsTransactional(std::string const& portName) const override final;
 
     /*!
      *  Check if the selected port has a valid bus width.
@@ -748,11 +768,14 @@ public:
      */
     bool portHasValidMinConnections(std::string const& portName) const;
 
-    //! No copying. No assignment.
-    PortsInterface(const PortsInterface& other) = delete;
-    PortsInterface& operator=(const PortsInterface& other) = delete;
-
-private:
+    /*!
+     *  Get the icon path of the selected port.
+     *
+     *      @param [in] portName    Name of the selected port.
+     *
+     *      @return Icon path for the selected port.
+     */
+    std::string getIconPathForPort(std::string const& portName) const;
 
     /*!
      *  Get the port with the selected name.
@@ -762,6 +785,12 @@ private:
      *      @return The port with the selected name.
      */
     QSharedPointer<Port> getPort(std::string const& portName) const;
+
+    //! No copying. No assignment.
+    PortsInterface(const PortsInterface& other) = delete;
+    PortsInterface& operator=(const PortsInterface& other) = delete;
+
+private:
 
     /*!
      *  Set the type name and definition of a port.

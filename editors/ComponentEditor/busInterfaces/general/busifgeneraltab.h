@@ -134,7 +134,7 @@ signals:
      *      @param [in] parameterInterface  Interface for accessing parameters.
      */
     void recalculateReferencesToParameters(QVector<QString> const& parameterList,
-        QSharedPointer<ParametersInterface> parameterInterface);
+        AbstractParameterInterface* parameterInterface);
 
 protected:
 

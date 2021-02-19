@@ -328,15 +328,15 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getAccess(fieldName));
+        return QString::fromStdString(fieldInterface_->getAccessString(fieldName));
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getModifiedWrite(fieldName));
+        return QString::fromStdString(fieldInterface_->getModifiedWriteString(fieldName));
     }
     else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getReadAction(fieldName));
+        return QString::fromStdString(fieldInterface_->getReadActionString(fieldName));
     }
     else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
     {
@@ -344,7 +344,7 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getTestConstraint(fieldName));
+        return QString::fromStdString(fieldInterface_->getTestConstraintString(fieldName));
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
@@ -373,6 +373,11 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
         if (index.column() == RegisterColumns::NAME_COLUMN)
         {
             fieldInterface_->setName(fieldName, value.toString().toStdString());
+
+            QString oldName = QString::fromStdString(fieldName);
+            QString newName = QString::fromStdString(fieldInterface_->getIndexedItemName(index.row()));
+
+            emit fieldNameChanged(oldName, newName);
 
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
             emit graphicsChanged();
@@ -587,7 +592,7 @@ void RegisterTableModel::onRemoveItem( const QModelIndex& index )
 	// remove the specified item
     beginRemoveRows(QModelIndex(), itemRow, itemRow);
 
-    removeReferencesInItemOnRow(itemRow);
+    decreaseReferencesWithRemovedField(QString::fromStdString(fieldName));
     fieldInterface_->removeField(fieldName);
 
     endRemoveRows();
@@ -597,6 +602,58 @@ void RegisterTableModel::onRemoveItem( const QModelIndex& index )
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::decreaseReferencesWithRemovedField()
+//-----------------------------------------------------------------------------
+void RegisterTableModel::decreaseReferencesWithRemovedField(QString const& fieldName)
+{
+    QMap<QString, int> referencedParameters = getReferencedParameters(fieldName);
+
+    foreach(QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::increaseReferencesInPastedField()
+//-----------------------------------------------------------------------------
+void RegisterTableModel::increaseReferencesInPastedField(QString const& fieldName)
+{
+    QMap<QString, int> referencedParameters = getReferencedParameters(fieldName);
+
+    foreach(QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit increaseReferences(referencedId);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::getReferencedParameters()
+//-----------------------------------------------------------------------------
+QMap<QString, int> RegisterTableModel::getReferencedParameters(QString const& fieldName) const
+{
+    std::vector<std::string> fieldNameList;
+    fieldNameList.push_back(fieldName.toStdString());
+
+    auto expressionList = fieldInterface_->getExpressionsInSelectedFields(fieldNameList);
+    QStringList expressionListQT;
+    for (auto expression : expressionList)
+    {
+        expressionListQT.append(QString::fromStdString(expression));
+    }
+
+    ReferenceCalculator memoryMapReferenceCalculator(getParameterFinder());
+
+    return memoryMapReferenceCalculator.getReferencedParameters(expressionListQT);
 }
 
 //-----------------------------------------------------------------------------
@@ -618,45 +675,31 @@ void RegisterTableModel::onCopyRows(QModelIndexList indexList)
 //-----------------------------------------------------------------------------
 void RegisterTableModel::onPasteRows()
 {
-    int pastedFieldCount = fieldInterface_->getPasteRowCount();
-    if (pastedFieldCount == 0)
+    int fieldRowBegin = fieldInterface_->itemCount();
+
+    std::vector<std::string> pastedFieldNames = fieldInterface_->pasteRows();
+
+    int fieldCount = static_cast<int>(pastedFieldNames.size());
+    if (fieldCount == 0)
     {
         return;
     }
 
-    int fieldCount = fieldInterface_->itemCount();
-
-    beginInsertRows(QModelIndex(), fieldCount, fieldCount + pastedFieldCount - 1);
-
-    std::vector<std::string> insertedItemNames = fieldInterface_->pasteRows();
-
-    endInsertRows();
-
-    for (int i = 0; i < insertedItemNames.size(); ++i)
+    if (fieldCount > 0)
     {
-        emit fieldAdded(fieldCount + i);
-    }
+        int rowEnd = fieldRowBegin + fieldCount - 1;
 
-    std::vector<std::string> pastedExpressions =
-        fieldInterface_->getExpressionsInSelectedFields(insertedItemNames);
+        beginInsertRows(QModelIndex(), fieldRowBegin, rowEnd);
 
-    QStringList pastedExpressionsQT;
-    for (auto expression : pastedExpressions)
-    {
-        pastedExpressionsQT.append(QString::fromStdString(expression));
-    }
-
-    ReferenceCalculator referenceCalculator(getParameterFinder());
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(pastedExpressionsQT);
-
-    QMapIterator<QString, int> refParameterIterator(referencedParameters);
-    while (refParameterIterator.hasNext())
-    {
-        refParameterIterator.next();
-        for (int i = 0; i < refParameterIterator.value(); ++i)
+        for (int i = fieldRowBegin; i <= rowEnd; ++i)
         {
-            emit increaseReferences(refParameterIterator.key());
+            std::string copyName = fieldInterface_->getIndexedItemName(i);
+            increaseReferencesInPastedField(QString::fromStdString(copyName));
+
+            emit fieldAdded(i);
         }
+
+        endInsertRows();
     }
 
     emit contentChanged();

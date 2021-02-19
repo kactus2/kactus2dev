@@ -65,7 +65,7 @@ void PortMapValidator::busInterfaceChanged(QSharedPointer<ConfigurableVLNVRefere
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::busInterfaceChanged()
 //-----------------------------------------------------------------------------
-void PortMapValidator::abstractionDefinitionChanged(QSharedPointer<AbstractionDefinition> newDefinition,
+void PortMapValidator::abstractionDefinitionChanged(QSharedPointer<AbstractionDefinition const> newDefinition,
     General::InterfaceMode newInterfaceMode)
 {
     if (newDefinition)
@@ -309,8 +309,8 @@ bool PortMapValidator::connectedPortsHaveValidDirections(QSharedPointer<PortAbst
             return true;
         }
         
-        DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_,
-            systemGroup_);
+        DirectionTypes::Direction logicalDirection =
+            logicalPort->getWire()->getDirection(interfaceMode_, systemGroup_);
         DirectionTypes::Direction physicalDirection = physicalPort->getWire()->getDirection();
 
         if ((logicalDirection == DirectionTypes::IN && physicalDirection == DirectionTypes::OUT) ||

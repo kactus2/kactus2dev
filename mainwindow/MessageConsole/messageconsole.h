@@ -61,7 +61,11 @@ protected:
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
-    
+
+    /*! Set the color for text to be printed.
+     *
+     *      @param [in] color  The color to apply to text.
+    */
     void setTextColor(QColor const& color);
 	
     //! Copy the selected text to the clip board.

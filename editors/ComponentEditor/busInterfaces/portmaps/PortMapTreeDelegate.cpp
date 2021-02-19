@@ -24,6 +24,7 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 
 #include <QPen>
 #include <QIcon>
@@ -86,7 +87,12 @@ void PortMapTreeDelegate::updateLogicalPortNames(VLNV const& vlnv, General::Inte
                     {
                         if (mode == General::SYSTEM)
                         {
-                            if (!logicalPort->getWire()->findSystemPort(systemGroup))
+                            if (logicalPort->getWire() && !logicalPort->getWire()->findSystemPort(systemGroup))
+                            {
+                                continue;
+                            }
+                            else if (logicalPort->getTransactional() &&
+                                !logicalPort->getTransactional()->findSystemPort(systemGroup))
                             {
                                 continue;
                             }

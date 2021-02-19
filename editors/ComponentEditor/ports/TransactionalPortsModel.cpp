@@ -11,10 +11,12 @@
 
 #include "TransactionalPortsModel.h"
 
-#include <editors/ComponentEditor/ports/PortsInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
+
+#include <QIcon>
 
 using namespace std;
 
@@ -78,6 +80,24 @@ QVariant TransactionalPortsModel::headerData(int section, Qt::Orientation orient
     }
 
     return PortsModel::headerData(section, orientation, role);
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalPortsModel::data()
+//-----------------------------------------------------------------------------
+QVariant TransactionalPortsModel::data(QModelIndex const& index, int role) const
+{
+    if (!index.isValid() || index.row() < 0 || index.row() >= getInterface()->itemCount())
+    {
+        return QVariant();
+    }
+
+    if (role == Qt::DecorationRole && index.column() == TransactionalPortColumns::INITIATIVE)
+    {
+        return QIcon(getIconPath(index.row()));
+    }
+
+    return PortsModel::data(index, role);
 }
 
 //-----------------------------------------------------------------------------

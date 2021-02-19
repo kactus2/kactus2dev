@@ -24,6 +24,7 @@ class FileBuilder;
 class ParameterFinder;
 class ExpressionFormatter;
 class ExpressionParser;
+class FileBuilderInterface;
 
 //-----------------------------------------------------------------------------
 //! Model that contains the items to edit file builders.
@@ -37,19 +38,21 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileBuilders            Contains the file builders to edit.
+	 *      @param [in] builderInterface        Interface for accessing file builders.
      *      @param [in] parameterFinder         Finder used to identify parameters.
      *      @param [in] expressionFormatter     Formatter used to format expressions.
      *      @param [in] expressionParser        Parser used to calculate expressions.
 	 *      @param [in] parent                  Pointer to the owner of this model.
 	 */
-	FileBuildersModel(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
+    FileBuildersModel(FileBuilderInterface* builderInterface,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QObject* parent);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~FileBuildersModel();
 
 	/*!
@@ -193,21 +196,38 @@ private:
 	FileBuildersModel& operator=(const FileBuildersModel& other);
 	
     /*!
-     *  Decrease the amount of references made in the selected file builder.
+     *  Get the formatted value of an expression in the selected index.
      *
-     *      @param [in] builder     The selected file builder.
+     *      @param [in] index   The selected index.
+     *
+     *      @return The formatted value of an expression in the selected index.
      */
-    void decreaseReferencesWithRemovedFileBuilder(QSharedPointer<FileBuilder> builder);
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the expression of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The expression of the selected index.
+     */
+    virtual QVariant expressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      @return     The data in the given index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Contains the file builders to edit.
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders_;
-
-    //! The formatter for changing parameter ids to parameter names.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+    //! Interface for accessing file builders.
+    FileBuilderInterface* fileBuilderInterface_;
 };
 
 #endif // FILEBUILDERSMODEL_H

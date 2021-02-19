@@ -40,7 +40,7 @@ class GraphicsConnection;
 class Design;
 class MessageMediator;
 class VendorExtensionsEditor;
-class PythonConsole;
+class ScriptingConsole;
 
 #include <QSharedPointer>
 #include <QDockWidget>
@@ -576,7 +576,7 @@ private:
     QDockWidget* connectionDock_;
 
     QDockWidget* pythonConsoleDock_;
-    PythonConsole* pythonConsole_;
+    ScriptingConsole* pythonConsole_;
 
     //! The dock widget that contains the vendor extension editor.
     QDockWidget* extensionDock_;

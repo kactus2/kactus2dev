@@ -12,7 +12,7 @@
 #include "DockWidgetHandler.h"
 
 #include <mainwindow/MessageConsole/messageconsole.h>
-#include <mainwindow/PythonConsole/PythonConsole.h>
+#include <mainwindow/ScriptingConsole/ScriptingConsole.h>
 
 #include <Help/HelpSystem/HelpWindow.h>
 #include <Help/HelpSystem/ContextHelpBrowser.h>
@@ -282,9 +282,9 @@ void DockWidgetHandler::setupDesignParametersEditor()
         Qt::UniqueConnection);
 
     connect(designParametersEditor_,
-        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         designParameterReferenceCounter_.data(),
-        SLOT(recalculateReferencesToParameters(QVector<QString> const&, QSharedPointer<ParametersInterface>)),
+        SLOT(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         Qt::UniqueConnection);
 }
 
@@ -424,7 +424,7 @@ void DockWidgetHandler::setupConsole()
     pythonConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     pythonConsoleDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    pythonConsole_ = new PythonConsole(pythonConsoleDock_);
+    pythonConsole_ = new ScriptingConsole(pythonConsoleDock_);
     pythonConsoleDock_->setWidget(pythonConsole_);
 
     mainWindow_->addDockWidget(Qt::BottomDockWidgetArea, pythonConsoleDock_);

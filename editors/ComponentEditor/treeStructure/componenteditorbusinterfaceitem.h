@@ -19,6 +19,7 @@
 class BusInterface;
 class BusInterfaceValidator;
 class ExpressionParser;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for single bus interface in the component editor's navigation tree.
@@ -41,19 +42,21 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression parser.
      *      @param [in] validator               The validator for bus interfaces.
+     *      @param [in] portMapInterface        Interface for accessing port maps.
 	 *      @param [in] parent                  The owner of this item.
 	 *      @param [in] parentWnd               The parent window.
 	 */
-	ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
-		ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
+    ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
+        ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<BusInterfaceValidator> validator,
-		ComponentEditorItem* parent,
+        PortMapInterface* portMapInterface,
+        ComponentEditorItem* parent,
         QWidget* parentWnd);
 
 	//! The destructor
@@ -122,7 +125,11 @@ private:
     //! The expression parse used to form the results of the expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
 
+    //! Validator for bus interfaces.
     QSharedPointer<BusInterfaceValidator> validator_;
+
+    //! Interface for accessing port maps.
+    PortMapInterface* portMapInterface_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACEITEM_H

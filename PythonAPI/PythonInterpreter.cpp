@@ -17,8 +17,6 @@
 
 #include <QApplication>
 
-#include <string.h>
-
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::PythonInterpreter()
 //-----------------------------------------------------------------------------
@@ -43,7 +41,6 @@ PythonInterpreter::~PythonInterpreter()
 {
     Py_DECREF(globalContext_);
     Py_DECREF(localContext_);
-
     Py_FinalizeEx();
 }
 
@@ -52,20 +49,10 @@ PythonInterpreter::~PythonInterpreter()
 //-----------------------------------------------------------------------------
 bool PythonInterpreter::initialize()
 {
-    std::string appName = QApplication::applicationName().toStdString();
-    wchar_t *program = Py_DecodeLocale(appName.data(), NULL);
-    if (program == NULL) {
-        errorChannel_->write(QString("Fatal error: cannot decode application name."));
-        return false;
-    }
-
-    Py_SetProgramName(program);
-
     PyImport_AppendInittab("OutputForwarder", &PyInit_OutputForwarder);
 
     Py_InitializeEx(0); //<! Disable signals.
 
-    PyMem_RawFree(program);
     
     if (Py_IsInitialized() == false)
     {        
@@ -73,102 +60,52 @@ bool PythonInterpreter::initialize()
         return false;
     }
 
-
-    outputChannel_->write(QString("Python ") + QString(Py_GetVersion()) + QString("\n"));
-    printPrompt();
+    outputChannel_->write(QString("Python ") + QString(Py_GetVersion()) + QString("\n"));    
 
     localContext_ = PyDict_New();
     globalContext_ = PyDict_New();
     PyDict_SetItemString(globalContext_, "__builtins__", PyEval_GetBuiltins());
 
-
-    PyObject* OutputForwarderName = PyUnicode_FromString("OutputForwarder");
-    if (OutputForwarderName == NULL)
+    if (setOutputChannels() == false)
     {
         return false;
     }
 
-    PyObject* OutputForwarderModule = PyImport_Import(OutputForwarderName);
-    Py_DECREF(OutputForwarderName);
-    if (OutputForwarderModule == NULL)
+    PyObject* emptyList = PyList_New(0);
+    PyObject* apiModule = PyImport_ImportModuleEx("pythonAPI", globalContext_, localContext_, emptyList);
+    if (apiModule == NULL)
     {
-        return false;
-    }
-  
-    PyObject* dict = PyModule_GetDict(OutputForwarderModule);
-    Py_DECREF(OutputForwarderModule);
-    
-    if (dict == NULL) {
+        errorChannel_->write(QStringLiteral("Could not import Kactus2 pythonAPI."));
         PyErr_Print();
-        errorChannel_->write(QStringLiteral("Fails to get the dictionary.\n"));
-        return 1;
     }
-    
-    PyObject* python_class = PyDict_GetItemString(dict, "OutputForwarder");
+    Py_XDECREF(emptyList);
 
-    if (python_class == NULL) {
-        PyErr_Print();
-        errorChannel_->write(QStringLiteral("Fails to get the Python class.\n"));
-        return 1;
-    }
-
-    PyObject* outCatcher = nullptr;
-    PyObject* errCatcher = nullptr;
-
-    // Creates an instance of the class
-    if (PyCallable_Check(python_class)) {
-        outCatcher = PyObject_CallObject(python_class, nullptr);
-    }
-    else {
-        outputChannel_->write(QStringLiteral("Cannot instantiate the Python class"));
-
-        return false;
-    }
-    
-    if (PyCallable_Check(python_class)) {
-        errCatcher = PyObject_CallObject(python_class, nullptr);
-    }
-    else {
-        outputChannel_->write(QStringLiteral("Cannot instantiate the Python class"));
-        return false;
-    }
-
-    ((OutputForwarderObject *)outCatcher)->channel = outputChannel_;
-    if (PySys_SetObject("stdout", outCatcher) < 0)
-    {
-        return false;
-    }
-
-    ((OutputForwarderObject *)errCatcher)->channel = errorChannel_;
-    
-    if (PySys_SetObject("stderr", errCatcher) < 0)
-    {
-        return false;
-    }
-
+    printPrompt();
     return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::write()
 //-----------------------------------------------------------------------------
-void PythonInterpreter::write(QString const& text)
+void PythonInterpreter::write(QString const& command)
 {
-    execute(text.toStdString());
+    execute(command.toStdString());
 }
 
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::execute()
 //-----------------------------------------------------------------------------
-void PythonInterpreter::execute(std::string const& line)
+void PythonInterpreter::execute(std::string const& command)
 {
-    if (line.empty() && inputBuffer_.empty())
+    Q_ASSERT_X(Py_IsInitialized(), "Python interpreter", "Trying to execute without initializing.");
+
+    if (command.empty() && inputBuffer_.empty())
     {
         printPrompt();
         return;
     }    
 
-    inputBuffer_.append(line);
+    inputBuffer_.append(command);
     inputBuffer_.push_back('\n');
 
     auto inputSize = inputBuffer_.length();
@@ -241,6 +178,72 @@ void PythonInterpreter::execute(std::string const& line)
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonInterpreter::setOutputChannels()
+//-----------------------------------------------------------------------------
+bool PythonInterpreter::setOutputChannels()
+{
+    PyObject* OutputForwarderName = PyUnicode_FromString("OutputForwarder");
+    if (OutputForwarderName == NULL)
+    {
+        return false;
+    }
+
+    PyObject* OutputForwarderModule = PyImport_Import(OutputForwarderName);
+    Py_DECREF(OutputForwarderName);
+    if (OutputForwarderModule == NULL)
+    {
+        return false;
+    }
+
+    PyObject* dict = PyModule_GetDict(OutputForwarderModule);
+    Py_DECREF(OutputForwarderModule);
+
+    if (dict == NULL) {
+        PyErr_Print();
+        errorChannel_->write(QStringLiteral("Fails to get the dictionary.\n"));
+        return 1;
+    }
+
+    PyObject* python_class = PyDict_GetItemString(dict, "OutputForwarder");
+
+    if (python_class == NULL) {
+        PyErr_Print();
+        errorChannel_->write(QStringLiteral("Fails to get the Python class.\n"));
+        return 1;
+    }
+
+    PyObject* outCatcher = nullptr;
+    PyObject* errCatcher = nullptr;
+
+    // Creates an instance of the class
+    if (PyCallable_Check(python_class))
+    {
+        outCatcher = PyObject_CallObject(python_class, nullptr);
+        errCatcher = PyObject_CallObject(python_class, nullptr);
+    }
+    else
+    {
+        outputChannel_->write(QStringLiteral("Cannot instantiate the Python class"));
+
+        return false;
+    }
+
+    ((OutputForwarderObject *)outCatcher)->channel = outputChannel_;
+    if (PySys_SetObject("stdout", outCatcher) < 0)
+    {
+        return false;
+    }
+
+    ((OutputForwarderObject *)errCatcher)->channel = errorChannel_;
+    if (PySys_SetObject("stderr", errCatcher) < 0)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonInterpreter::printPrompt()
 //-----------------------------------------------------------------------------
 void PythonInterpreter::printPrompt() const
@@ -254,3 +257,4 @@ void PythonInterpreter::printPrompt() const
         outputChannel_->write(">>> ");
     }
 }
+

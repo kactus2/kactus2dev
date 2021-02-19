@@ -105,6 +105,11 @@ void MemoryMapsEditor::connectSignals()
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
     connect(model_, SIGNAL(memoryRemapAdded(int, QString const&)),
         this, SIGNAL(memoryRemapAdded(int, QString const&)), Qt::UniqueConnection);
     connect(model_, SIGNAL(memoryRemapRemoved(int, QString const&)),
@@ -139,6 +144,11 @@ void MemoryMapsEditor::connectSignals()
     connect(view_, SIGNAL(copyRows(QModelIndexList)),
         model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
     connect(view_, SIGNAL(pasteRows(QModelIndex)), model_, SLOT(onPasteRows(QModelIndex)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)), this,
+        SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

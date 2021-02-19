@@ -14,7 +14,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceCounter::ParameterReferenceCounter()
@@ -124,7 +124,7 @@ int ParameterReferenceCounter::countReferencesInExpression(QString const& parame
 // Function: ParameterReferenceCounter::recalculateReferencesToParameters()
 //-----------------------------------------------------------------------------
 void ParameterReferenceCounter::recalculateReferencesToParameters(QVector<QString> const& parameterList,
-    QSharedPointer<ParametersInterface> parameterInterface)
+    AbstractParameterInterface* parameterInterface)
 {
     for (auto parameterName : parameterList)
     {
@@ -142,7 +142,7 @@ void ParameterReferenceCounter::recalculateReferencesToParameters(QVector<QStrin
 // Function: ParameterReferenceCounter::countReferencesInInterfacedParameters()
 //-----------------------------------------------------------------------------
 int ParameterReferenceCounter::countReferencesInInterfacedParameters(QString const& parameterID,
-    QSharedPointer<ParametersInterface> parameterInterface) const
+    AbstractParameterInterface* parameterInterface) const
 {
     int referenceCount = 0;
 

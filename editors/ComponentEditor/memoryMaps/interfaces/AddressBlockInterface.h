@@ -15,6 +15,9 @@
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/AccessTypes.h>
+
 class AddressBlock;
 class MemoryBlockBase;
 class AddressBlockValidator;
@@ -271,13 +274,22 @@ public:
     bool setWidth(std::string const& blockName, std::string const& newWidth) const;
     
     /*!
+     *  Get the usage string of the selected address block.
+     *
+     *      @param [in] blockName   Name of the selected address block.
+     *
+     *      @return Usage string of the selected address block.
+     */
+    std::string getUsageString(std::string const& blockName) const;
+
+    /*!
      *  Get the usage of the selected address block.
      *
      *      @param [in] blockName   Name of the selected address block.
      *
      *      @return Usage of the selected address block.
      */
-    std::string getUsage(std::string const& blockName) const;
+    General::Usage getUsage(std::string const& blockName) const;
 
     /*!
      *  Set a new usage value for the selected address block.
@@ -290,13 +302,22 @@ public:
     bool setUsage(std::string const& blockName, std::string const& newUsage) const;
     
     /*!
+     *  Get the access string of the selected address block.
+     *
+     *      @param [in] blockName   Name of the selected address block.
+     *
+     *      @return Access string of the selected address block.
+     */
+    std::string getAccessString(std::string const& blockName) const;
+
+    /*!
      *  Get the access of the selected address block.
      *
      *      @param [in] blockName   Name of the selected address block.
      *
      *      @return Access of the selected address block.
      */
-    std::string getAccess(std::string const& blockName) const;
+    AccessTypes::Access getAccess(std::string const& blockName) const;
 
     /*!
      *  Set a new access for the selected address block.
@@ -326,6 +347,16 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool setVolatile(std::string const& blockName, bool newVolatile) const;
+
+    /*!
+     *  Set a new volatile value for the selected address block.
+     *
+     *      @param [in] blockName           Name of the selected address block.
+     *      @param [in] newVolatileValue    The new volatile value.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setVolatile(std::string const& blockName, std::string const& newVolatileValue);
 
     /*!
      *  Calculate all the references to the selected ID in the selected item.
@@ -459,6 +490,15 @@ public:
      *      @return Interface for accessing registers.
      */
     RegisterInterface* getSubInterface() const;
+
+    /*!
+     *  Check if the selected address block contains registers.
+     *
+     *      @param [in] blockName   Name of the selected address block.
+     *
+     *      @return True, if the address block contains registers, false otherwise.
+     */
+    bool hasRegisters(std::string const& blockName) const;
 
 private:
 

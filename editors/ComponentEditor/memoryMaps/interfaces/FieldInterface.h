@@ -15,9 +15,13 @@
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/AccessTypes.h>
+
 class Field;
 class FieldValidator;
 class ResetInterface;
+class WriteValueConstraint;
 
 #include <QVector>
 #include <QMap>
@@ -230,13 +234,22 @@ public:
     bool setVolatile(std::string const& fieldName, std::string const& newVolatile);
 
     /*!
+     *  Get the access string of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Access string of the selected field.
+     */
+    std::string getAccessString(std::string const& fieldName) const;
+
+    /*!
      *  Get the access of the selected field.
      *
      *      @param [in] fieldName   Name of the selected field.
      *
      *      @return Access of the selected field.
      */
-    std::string getAccess(std::string const& fieldName) const;
+    AccessTypes::Access getAccessType(std::string const& fieldName) const;
 
     /*!
      *  Set the access of the selected field.
@@ -249,13 +262,22 @@ public:
     bool setAccess(std::string const& fieldName, std::string const& newAccess);
 
     /*!
+     *  Get the modified write value string of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Modified write value string of the selected field.
+     */
+    std::string getModifiedWriteString(std::string const& fieldName) const;
+
+    /*!
      *  Get the modified write value of the selected field.
      *
      *      @param [in] fieldName   Name of the selected field.
      *
      *      @return Modified write value of the selected field.
      */
-    std::string getModifiedWrite(std::string const& fieldName) const;
+    General::ModifiedWrite getModifiedWriteValue(std::string const& fieldName) const;
 
     /*!
      *  Set the modified write value of the selected field.
@@ -268,13 +290,22 @@ public:
     bool setModifiedWrite(std::string const& fieldName, std::string const& newModifiedWrite);
 
     /*!
+     *  Get the read action string of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Read action string of the selected field.
+     */
+    std::string getReadActionString(std::string const& fieldName) const;
+
+    /*!
      *  Get the read action of the selected field.
      *
      *      @param [in] fieldName   Name of the selected field.
      *
      *      @return Read action of the selected field.
      */
-    std::string getReadAction(std::string const& fieldName) const;
+    General::ReadAction getReadAction(std::string const& fieldName) const;
 
     /*!
      *  Set the read action of the selected field.
@@ -315,13 +346,22 @@ public:
     bool setTestable(std::string const& fieldName, std::string const& newTestable);
 
     /*!
+     *  Get the test constraint string of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Test constraint string of the selected field.
+     */
+    std::string getTestConstraintString(std::string const& fieldName) const;
+
+    /*!
      *  Get the test constraint of the selected field.
      *
      *      @param [in] fieldName   Name of the selected field.
      *
      *      @return Test constraint of the selected field.
      */
-    std::string getTestConstraint(std::string const& fieldName) const;
+    General::TestConstraint getTestConstraint(std::string const& fieldName) const;
 
     /*!
      *  Set the test constraint of the selected field.
@@ -496,6 +536,167 @@ public:
      */
     ResetInterface* getSubInterface() const;
 
+    /*!
+     *  Check if the selected field has a write value constraint.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return True, if the selected field has write value constraint, false otherwise.
+     */
+    bool hasWriteConstraint(std::string const& fieldName) const;
+
+    /*!
+     *  Get the write value constraint type of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return The write value constraint type of the selected field.
+     */
+    std::string getWriteConstraint(std::string const& fieldName) const;
+
+    /*!
+     *  Set a new write value constraint type for the selected field.
+     *
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] newConstraintText   The new write value constraint type.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setWriteConstraint(std::string const& fieldName, std::string const& newConstraintText);
+
+    /*!
+     *  Get the calculated write value constraint minimum value of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *      @param [in] baseNumber  Base for displaying the value.
+     *
+     *      @return Calculated write value constraint minimum value of the selected field.
+     */
+    std::string getWriteConstraintMinimumValue(std::string const& fieldName, int const& baseNumber = 0) const;
+
+    /*!
+     *  Get the formatted write value constraint minimum expression of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Formatted write value constraint minimum expression of the selected field.
+     */
+    std::string getWriteConstraintMinimumFormattedExpression(std::string const& fieldName) const;
+
+    /*!
+     *  Get the write value constraint minimum expression of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Write value constraint minimum expression of the selected parameter.
+     */
+    std::string getWriteConstraintMinimumExpression(std::string const& fieldName) const;
+
+    /*!
+     *  Set a new write value constraint minimum value for the selected field.
+     *
+     *      @param [in] parameterName               Name of the selected parameter.
+     *      @param [in] newWriteConstraintMinimum   New write value constraint minimum value.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setWriteConstraintMinimum(std::string const& fieldName, std::string const& newWriteConstraintMinimum);
+
+    /*!
+     *  Get the calculated write value constraint maximum value of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *      @param [in] baseNumber  Base for displaying the value.
+     *
+     *      @return Calculated write value constraint maximum value of the selected field.
+     */
+    std::string getWriteConstraintMaximumValue(std::string const& fieldName, int const& baseNumber = 0) const;
+
+    /*!
+     *  Get the formatted write value constraint maximum expression of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Formatted write value constraint maximum expression of the selected field.
+     */
+    std::string getWriteConstraintMaximumFormattedExpression(std::string const& fieldName) const;
+
+    /*!
+     *  Get the write value constraint maximum expression of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Write value constraint maximum expression of the selected parameter.
+     */
+    std::string getWriteConstraintMaximumExpression(std::string const& fieldName) const;
+
+    /*!
+     *  Set a new write value constraint maximum value for the selected field.
+     *
+     *      @param [in] parameterName               Name of the selected parameter.
+     *      @param [in] newWriteConstraintMaximum   New write value constraint maximum value.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setWriteConstraintMaximum(std::string const& fieldName, std::string const& newWriteConstraintMaximum);
+
+    /*!
+     *  Get the calculated reserved value of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *      @param [in] baseNumber  Base for displaying the value.
+     *
+     *      @return Calculated reserved value of the selected field.
+     */
+    std::string getReservedValue(std::string const& fieldName, int const& baseNumber = 0) const;
+
+    /*!
+     *  Get the formatted reserved expression of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Formatted reserved expression of the selected field.
+     */
+    std::string getReservedFormattedExpression(std::string const& fieldName) const;
+
+    /*!
+     *  Get the reserved expression of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Reserved expression of the selected parameter.
+     */
+    std::string getReservedExpression(std::string const& fieldName) const;
+
+    /*!
+     *  Set a new reserved value for the selected field.
+     *
+     *      @param [in] parameterName   Name of the selected parameter.
+     *      @param [in] newReserved     New reserved value.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setReserved(std::string const& fieldName, std::string const& newReserved);
+
+    /*!
+     *  Get the ID of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return ID of the selected field.
+     */
+    std::string getID(std::string const& fieldName);
+
+    /*!
+     *  Set a ID for the selected field.
+     *
+     *      @param [in] parameterName   Name of the selected parameter.
+     *      @param [in] newID           New ID.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setID(std::string const& fieldName, std::string const& newID);
+
 private:
 
     /*!
@@ -506,6 +707,15 @@ private:
      *      @return The selected field.
      */
     QSharedPointer<Field> getField(std::string const& fieldName) const;
+
+    /*!
+     *  Get the write value constraing of the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return Write value constraint of the selected field.
+     */
+    QSharedPointer<WriteValueConstraint> getWriteValueConstraint(std::string const& fieldName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

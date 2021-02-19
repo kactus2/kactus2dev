@@ -22,6 +22,7 @@
 class AbstractionDefinitionPortsSortFilter;
 class AbstractionDefinition;
 class BusDefinition;
+class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for the wire ports of an abstraction definition.
@@ -36,9 +37,11 @@ public:
      *  The constructor.
      *
      *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] portInterface   Interface for accessing port abstractions.
      *      @param [in] parent          The owner of the editor.
      */
-    AbstractionWirePortsEditor(LibraryInterface* libaryAccess, QWidget *parent);
+    AbstractionWirePortsEditor(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
+        QWidget* parent);
 
     /*!
      *  The destructor.
@@ -46,16 +49,9 @@ public:
     virtual ~AbstractionWirePortsEditor() = default;
 
     /*!
-     *  Saves the changes made in the editor.
+     *  Reset the port abstraction model.
      */
-    void save();
-
-    /*!
-     *  Set the abstraction definition for the editor.
-     *
-     *      @param [in] absDef  The Abstraction definition to edit.
-     */
-    void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
+    void resetPortModel();
 
     /*!
      *  Set the bus definition referenced by the abstraction definition.
