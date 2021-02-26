@@ -57,5 +57,5 @@ MessageMediator* KactusAPI::getMessageChannel()
 //-----------------------------------------------------------------------------
 std::string KactusAPI::getVersion()
 {
-    return VersionHelper::versionFull().toStdString();
+    return "Kactus2 " + VersionHelper::versionFull().toStdString();
 }

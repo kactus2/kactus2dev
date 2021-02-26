@@ -185,26 +185,28 @@ int main(int argc, char *argv[])
         QStringList arguments = application->arguments();
         CommandLineParser parser;
 
-        parser.readArguments(arguments);
-
-        if (!parser.helpOrVersionOptionSet())
+        parser.process(arguments, mediator.data());
+        
+        if (parser.commandlineMode())
         {
             library->searchForIPXactFiles();
+
+            QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
+            QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
+
+            PythonInterpreter console(outChannel.data(), errChannel.data(), application.data());
+            if (console.initialize() == false)
+            {
+                return 1;
+            }
+
+            QScopedPointer<StdInputListener> listener(new StdInputListener(&console, application.data()));
+
+            QObject::connect(listener.data(), SIGNAL(inputFailure()), application.data(), SLOT(quit()));
+
+            return application->exec();
         }
 
-        QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
-        QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
-
-        PythonInterpreter console(outChannel.data(), errChannel.data(), application.data());
-        if (console.initialize() == false)
-        {
-            return 1;
-        }
-
-        QScopedPointer<StdInputListener> listener(new StdInputListener(&console, application.data()));
-
-        QObject::connect(listener.data(), SIGNAL(inputFailure()), application.data(), SLOT(quit()));
-
-        return application->exec();
+        return 1;
     }   
 }

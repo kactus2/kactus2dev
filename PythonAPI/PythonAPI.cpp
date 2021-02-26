@@ -46,8 +46,6 @@
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 
-#include <QCoreApplication>
-
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::PythonAPI()
 //-----------------------------------------------------------------------------

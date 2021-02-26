@@ -250,7 +250,7 @@ bool PythonInterpreter::setAPI()
 
     if (apiModule == NULL)
     {
-        errorChannel_->write(QStringLiteral("Could not import Kactus2 pythonAPI."));
+        errorChannel_->write(QStringLiteral("Could not import Kactus2 PythonAPI.\n"));
         PyErr_Print();
     }
     else
@@ -259,7 +259,7 @@ bool PythonInterpreter::setAPI()
 
         if (dict == NULL) {
             PyErr_Print();
-            errorChannel_->write(QStringLiteral("Fails to get the dictionary for pythonAPI.\n"));
+            errorChannel_->write(QStringLiteral("Could not import Kactus2 PythonAPI.\n"));
             return false;
         }
 
@@ -267,7 +267,7 @@ bool PythonInterpreter::setAPI()
 
         if (python_class == NULL) {
             PyErr_Print();
-            errorChannel_->write(QStringLiteral("Fails to get the Python class PythonAPI.\n"));
+            errorChannel_->write(QStringLiteral("Could not import Kactus2 PythonAPI.\n"));
             return false;
         }
 
