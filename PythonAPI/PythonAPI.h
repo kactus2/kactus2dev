@@ -6,7 +6,7 @@
 // Date: 12.02.2020
 //
 // Description:
-// Interface for accessing Kactus2 data through python.
+// Interface for accessing Kactus2 data using Python.
 //-----------------------------------------------------------------------------
 
 // #pragma once
@@ -42,9 +42,8 @@ class ParameterValidator;
 class MemoryMapValidator;
 
 //-----------------------------------------------------------------------------
-//! Interface for accessing Kactus2 data through python.
+//! Interface for accessing Kactus2 data using Python.
 //-----------------------------------------------------------------------------
-// class PYTHONAPI_EXPORT PythonAPI
 class PythonAPI
 {
 public:
@@ -58,13 +57,13 @@ public:
      *  The destructor.
      */
     ~PythonAPI() = default;
-
+   
     /*!
-     *  Setup the library.
+     *  Get Kactus2 version.
      *
-     *      @param [in] settingsFile    Path of the settings file.
+     *      @return The current Kactus2 version.
      */
-    void setupLibrary(QString const& settingsFile);
+    std::string getVersion() const;
 
     /*!
      *  Get the number of files in the library.

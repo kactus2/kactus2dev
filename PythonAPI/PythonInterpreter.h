@@ -48,7 +48,7 @@ public:
      *
      *     @return True, if initialization was successful, otherwise false.
      */
-     bool initialize(); 
+     bool initialize();
 
     /*!
      * Write a command for interpreter to execute.
@@ -72,6 +72,13 @@ private:
      *     @return True, if the outputs could be redirected, otherwise false.
      */
      bool setOutputChannels();
+
+     /*!
+      * Import and set the core api available in python context.
+      *
+      *     @return True, if the api was set, otherwise false.
+      */
+      bool setAPI();
 
     /*!
      * Write prompt to output.

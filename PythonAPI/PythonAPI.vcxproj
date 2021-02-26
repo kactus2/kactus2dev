@@ -67,7 +67,7 @@
       <OutputFile>_pythonAPI_d.pyd</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python38_d.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python38_d.lib;IPXACTmodelsd.lib;Kactus2_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -88,32 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.cpp" />
-    <ClCompile Include="..\common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.cpp" />
-    <ClCompile Include="..\common\dialogs\newObjectDialog\newobjectdialog.cpp" />
-    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectExportDialog.cpp" />
-    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.cpp" />
-    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionListItem.cpp" />
-    <ClCompile Include="..\common\dialogs\ObjectRemoveDialog\objectremovedialog.cpp" />
     <ClCompile Include="..\common\validators\LibraryPathValidator\librarypathvalidator.cpp" />
-    <ClCompile Include="..\common\widgets\assistedLineEdit\AssistedLineEdit.cpp" />
-    <ClCompile Include="..\common\widgets\assistedLineEdit\LineContentAssistWidget.cpp" />
-    <ClCompile Include="..\common\widgets\colorBox\ColorBox.cpp" />
-    <ClCompile Include="..\common\widgets\kactusAttributeEditor\KactusAttributeEditor.cpp" />
-    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.cpp" />
-    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.cpp" />
-    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp" />
-    <ClCompile Include="..\common\widgets\tagEditor\FlowLayout.cpp" />
-    <ClCompile Include="..\common\widgets\tagEditor\TagCompleterModel.cpp" />
-    <ClCompile Include="..\common\widgets\tagEditor\TagContainer.cpp" />
-    <ClCompile Include="..\common\widgets\tagEditor\TagDisplay.cpp" />
-    <ClCompile Include="..\common\widgets\tagEditor\TagEditor.cpp" />
-    <ClCompile Include="..\common\widgets\tagEditor\TagEditorContainer.cpp" />
-    <ClCompile Include="..\common\widgets\tagEditor\TagLabel.cpp" />
-    <ClCompile Include="..\common\widgets\tagEditor\TagManager.cpp" />
-    <ClCompile Include="..\common\widgets\vlnvEditor\VLNVContentMatcher.cpp" />
-    <ClCompile Include="..\common\widgets\vlnvEditor\VLNVDataTree.cpp" />
-    <ClCompile Include="..\common\widgets\vlnvEditor\vlnveditor.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
@@ -139,20 +114,7 @@
     <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.cpp" />
-    <ClCompile Include="..\library\DocumentFileAccess.cpp" />
-    <ClCompile Include="..\library\DocumentValidator.cpp" />
-    <ClCompile Include="..\library\HierarchyView\hierarchyitem.cpp" />
-    <ClCompile Include="..\library\HierarchyView\hierarchymodel.cpp" />
-    <ClCompile Include="..\library\ItemExporter.cpp" />
-    <ClCompile Include="..\library\LibraryErrorModel.cpp" />
-    <ClCompile Include="..\library\LibraryHandler.cpp" />
-    <ClCompile Include="..\library\LibraryItem.cpp" />
-    <ClCompile Include="..\library\LibraryItemSelectionFactory.cpp" />
-    <ClCompile Include="..\library\LibraryLoader.cpp" />
-    <ClCompile Include="..\library\LibraryTreeModel.cpp" />
-    <ClCompile Include="..\library\TableViewDialog.cpp" />
     <ClCompile Include="..\VersionHelper.cpp" />
-    <ClCompile Include="messageMediator\PythonMessageMediator.cpp" />
     <ClCompile Include="PythonAPI.cpp" />
     <ClCompile Include="PythonAPI_wrap.cxx">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">swig -python -c++ PythonAPI.i</Command>
@@ -177,33 +139,7 @@
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h" />
-    <QtMoc Include="..\library\LibraryHandler.h" />
-    <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h" />
-    <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectExportDialog.h" />
-    <QtMoc Include="..\common\dialogs\newObjectDialog\newobjectdialog.h" />
-    <QtMoc Include="..\common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.h" />
-    <QtMoc Include="..\common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h" />
-    <ClInclude Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionListItem.h" />
-    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.h" />
-    <QtMoc Include="..\common\widgets\kactusAttributeEditor\KactusAttributeEditor.h" />
-    <QtMoc Include="..\common\widgets\vlnvEditor\vlnveditor.h" />
-    <QtMoc Include="..\common\widgets\tagEditor\TagEditorContainer.h" />
-    <QtMoc Include="..\common\widgets\tagEditor\TagContainer.h" />
-    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.h" />
-    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.h" />
     <QtMoc Include="..\common\validators\LibraryPathValidator\librarypathvalidator.h" />
-    <QtMoc Include="..\common\widgets\tagEditor\TagLabel.h" />
-    <QtMoc Include="..\common\widgets\colorBox\ColorBox.h" />
-    <QtMoc Include="..\common\widgets\assistedLineEdit\AssistedLineEdit.h" />
-    <QtMoc Include="..\common\dialogs\ObjectRemoveDialog\objectremovedialog.h" />
-    <ClInclude Include="..\common\widgets\assistedLineEdit\LineContentAssistWidget.h" />
-    <ClInclude Include="..\common\widgets\tagEditor\FlowLayout.h" />
-    <QtMoc Include="..\common\widgets\tagEditor\TagEditor.h" />
-    <QtMoc Include="..\common\widgets\tagEditor\TagDisplay.h" />
-    <QtMoc Include="..\common\widgets\tagEditor\TagCompleterModel.h" />
-    <ClInclude Include="..\common\widgets\tagEditor\TagManager.h" />
-    <ClInclude Include="..\common\widgets\vlnvEditor\VLNVContentMatcher.h" />
-    <ClInclude Include="..\common\widgets\vlnvEditor\VLNVDataTree.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\ListParameterFinder.h" />
@@ -211,26 +147,16 @@
     <ClInclude Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.h" />
-    <ClInclude Include="..\library\DocumentFileAccess.h" />
-    <ClInclude Include="..\library\DocumentValidator.h" />
-    <QtMoc Include="..\library\HierarchyView\hierarchymodel.h" />
-    <QtMoc Include="..\library\HierarchyView\hierarchyitem.h" />
-    <QtMoc Include="..\library\LibraryErrorModel.h" />
-    <QtMoc Include="..\library\ItemExporter.h" />
-    <QtMoc Include="..\library\LibraryItem.h" />
-    <ClInclude Include="..\library\LibraryItemSelectionFactory.h" />
-    <ClInclude Include="..\library\LibraryLoader.h" />
-    <QtMoc Include="..\library\LibraryTreeModel.h" />
-    <ClInclude Include="..\library\TableViewDialog.h" />
     <ClInclude Include="..\VersionHelper.h" />
-    <ClInclude Include="messageMediator\PythonMessageMediator.h" />
     <ClInclude Include="PythonAPI.h" />
     <ClInclude Include="pythonapi_global.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="PythonAPI.i">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">swig -python -c++</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">swig -python -c++ -O -doxygen %(Identity)</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Running SWIG</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PythonAPI_wrap.cxx</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,6 @@
 /* File : pythonAPI.i */
+
+%feature("autodoc", "3");
 %module pythonAPI
 
 %include "std_string.i"

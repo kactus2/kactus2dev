@@ -6,12 +6,14 @@
 // Date: 12.02.2020
 //
 // Description:
-// Interface for accessing Kactus2 data through python.
+// Interface for accessing Kactus2 data using Python.
 //-----------------------------------------------------------------------------
 
 #include "PythonAPI.h"
 
 #include <library/LibraryHandler.h>
+
+#include <common/KactusAPI.h>
 
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
@@ -24,10 +26,6 @@
 #include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-
-#include <PythonAPI/messageMediator/PythonMessageMediator.h>
-
-#include <VersionHelper.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -54,8 +52,8 @@
 // Function: PythonAPI::PythonAPI()
 //-----------------------------------------------------------------------------
 PythonAPI::PythonAPI():
-library_(),
-messager_(new PythonMessageMediator()),
+library_(KactusAPI::getLibrary()),
+messager_(KactusAPI::getMessageChannel()),
 activeComponent_(),
 portsInterface_(),
 componentParameterInterface_(),
@@ -76,29 +74,11 @@ mapValidator_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::setupLibrary()
+// Function: PythonAPI::getVersion()
 //-----------------------------------------------------------------------------
-void PythonAPI::setupLibrary(QString const& settingsFile)
+std::string PythonAPI::getVersion() const
 {
-    QCoreApplication::setOrganizationDomain(QStringLiteral("tut.fi"));
-    QCoreApplication::setOrganizationName(QStringLiteral("TUT"));
-    QCoreApplication::setApplicationName(QStringLiteral("Kactus2"));
-    QCoreApplication::setApplicationVersion(VersionHelper::createVersionString());
-
-    messager_->showMessage(settingsFile);
-
-    QSettings::setDefaultFormat(QSettings::IniFormat);
-    QSettings settings(settingsFile, QSettings::IniFormat);
-
-    QStringList pluginsPath = settings.value(QStringLiteral("Platform/PluginsPath"),
-        QStringList(QStringLiteral("Plugins"))).toStringList();
-    for (auto singlePath : pluginsPath)
-    {
-        messager_->showMessage(singlePath);
-    }
-
-    library_ = new LibraryHandler(0, messager_, 0);
-    library_->searchForIPXactFiles();
+    return KactusAPI::getVersion();
 }
 
 //-----------------------------------------------------------------------------

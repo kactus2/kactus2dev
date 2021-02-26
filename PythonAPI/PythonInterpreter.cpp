@@ -14,6 +14,7 @@
 #include "PythonInterpreter.h"
 
 #include <PythonAPI/extensions/OutputForwarder.h>
+#include <PythonAPI/PythonAPI.h>
 
 #include <QApplication>
 
@@ -71,14 +72,8 @@ bool PythonInterpreter::initialize()
         return false;
     }
 
-    PyObject* emptyList = PyList_New(0);
-    PyObject* apiModule = PyImport_ImportModuleEx("pythonAPI", globalContext_, localContext_, emptyList);
-    if (apiModule == NULL)
-    {
-        errorChannel_->write(QStringLiteral("Could not import Kactus2 pythonAPI."));
-        PyErr_Print();
-    }
-    Py_XDECREF(emptyList);
+    setAPI();
+
 
     printPrompt();
     return true;
@@ -238,6 +233,52 @@ bool PythonInterpreter::setOutputChannels()
     if (PySys_SetObject("stderr", errCatcher) < 0)
     {
         return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonInterpreter::setAPI()
+//-----------------------------------------------------------------------------
+bool PythonInterpreter::setAPI()
+{
+ 
+    PyObject* emptyList = PyList_New(0);
+    PyObject* apiModule = PyImport_ImportModuleEx("pythonAPI", globalContext_, localContext_, emptyList);
+    Py_XDECREF(emptyList);
+
+    if (apiModule == NULL)
+    {
+        errorChannel_->write(QStringLiteral("Could not import Kactus2 pythonAPI."));
+        PyErr_Print();
+    }
+    else
+    {
+        PyObject* dict = PyModule_GetDict(apiModule);
+
+        if (dict == NULL) {
+            PyErr_Print();
+            errorChannel_->write(QStringLiteral("Fails to get the dictionary for pythonAPI.\n"));
+            return false;
+        }
+
+        PyObject* python_class = PyDict_GetItemString(dict, "PythonAPI");
+
+        if (python_class == NULL) {
+            PyErr_Print();
+            errorChannel_->write(QStringLiteral("Fails to get the Python class PythonAPI.\n"));
+            return false;
+        }
+
+        PyObject* apiObject;
+        // Creates an instance of the class
+        if (PyCallable_Check(python_class))
+        {
+            apiObject = PyObject_CallObject(python_class, nullptr);
+            PyDict_SetItemString(localContext_, "kactus2", apiObject);
+        }
+
     }
 
     return true;

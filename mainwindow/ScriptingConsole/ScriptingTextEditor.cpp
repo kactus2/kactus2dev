@@ -6,7 +6,7 @@
 // Date: 14.10.2019
 //
 // Description:
-// <Short description of the class/file contents>
+// Text editor for script write and run.
 //-----------------------------------------------------------------------------
 
 #include "ScriptingTextEditor.h"

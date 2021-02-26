@@ -4990,6 +4990,9 @@
     <ClCompile Include="mainwindow\ScriptingConsole\ScriptingTextEditor.cpp">
       <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
     </ClCompile>
+    <ClCompile Include="common\KactusAPI.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7636,6 +7639,9 @@
     </ClInclude>
     <ClInclude Include="PythonAPI\extensions\OutputForwarder.h">
       <Filter>Header Files\PythonAPI\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="common\KactusAPI.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

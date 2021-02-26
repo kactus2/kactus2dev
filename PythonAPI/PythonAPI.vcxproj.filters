@@ -19,24 +19,6 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
-    <Filter Include="Source Files\messageMediator">
-      <UniqueIdentifier>{33cc340e-8f34-4c36-a4a4-2f32c97f2521}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\messageMediator">
-      <UniqueIdentifier>{8539fc62-92c7-4e91-8fa8-3ea4670e18fe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\library">
-      <UniqueIdentifier>{f9c5d5b7-36ba-47ad-beaa-dcbda2e4fd50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\library">
-      <UniqueIdentifier>{7eb5d35e-d2ec-4e8d-ac22-10eac727b2fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\library\hierarchyView">
-      <UniqueIdentifier>{6dc0698c-9d83-4cd2-9b1c-d6e6a5a187bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\library\hieararchyView">
-      <UniqueIdentifier>{3052aff4-e09f-455b-81ee-eb620bfbc2c0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common">
       <UniqueIdentifier>{a4643d2f-976e-41db-b8c3-dcebe194ff08}</UniqueIdentifier>
     </Filter>
@@ -48,18 +30,6 @@
     </Filter>
     <Filter Include="Header Files\common\expressionParser">
       <UniqueIdentifier>{627d01cc-73d8-4f84-ad5b-e6b1f23ea67e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\dialogs">
-      <UniqueIdentifier>{3fe300b2-79bb-474b-80c9-57c485ec4865}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\dialogs">
-      <UniqueIdentifier>{2733597d-a06d-4b98-8281-5ec712f9b64c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets">
-      <UniqueIdentifier>{4ca92370-7939-415d-98c3-702548f98b72}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets">
-      <UniqueIdentifier>{09c9d69a-99e1-4809-bcc6-8420a7ca5b0e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\validators">
       <UniqueIdentifier>{8b35980a-477a-49b6-992e-6dbe8b13886e}</UniqueIdentifier>
@@ -93,24 +63,6 @@
     <ClCompile Include="PythonAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="messageMediator\PythonMessageMediator.cpp">
-      <Filter>Source Files\messageMediator</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\LibraryHandler.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\DocumentFileAccess.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\LibraryLoader.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\LibraryTreeModel.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\DocumentValidator.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
       <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
@@ -126,104 +78,8 @@
     <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
       <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
-    <ClCompile Include="..\library\HierarchyView\hierarchymodel.cpp">
-      <Filter>Source Files\library\hieararchyView</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\HierarchyView\hierarchyitem.cpp">
-      <Filter>Source Files\library\hieararchyView</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\LibraryErrorModel.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\TableViewDialog.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.cpp">
-      <Filter>Source Files\common\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionListItem.cpp">
-      <Filter>Source Files\common\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\LibraryItemSelectionFactory.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\ItemExporter.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\dialogs\ObjectExportDialog\ObjectExportDialog.cpp">
-      <Filter>Source Files\common\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\dialogs\newObjectDialog\newobjectdialog.cpp">
-      <Filter>Source Files\common\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\kactusAttributeEditor\KactusAttributeEditor.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\vlnvEditor\vlnveditor.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\tagEditor\TagEditorContainer.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\tagEditor\TagContainer.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\validators\LibraryPathValidator\librarypathvalidator.cpp">
       <Filter>Source Files\common\validators</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.cpp">
-      <Filter>Source Files\common\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.cpp">
-      <Filter>Source Files\common\dialogs</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\tagEditor\TagLabel.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\tagEditor\FlowLayout.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\tagEditor\TagEditor.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\tagEditor\TagDisplay.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\colorBox\ColorBox.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\tagEditor\TagManager.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\tagEditor\TagCompleterModel.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\vlnvEditor\VLNVContentMatcher.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\vlnvEditor\VLNVDataTree.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\library\LibraryItem.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\assistedLineEdit\AssistedLineEdit.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\widgets\assistedLineEdit\LineContentAssistWidget.cpp">
-      <Filter>Source Files\common\widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\dialogs\ObjectRemoveDialog\objectremovedialog.cpp">
-      <Filter>Source Files\common\dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\VersionHelper.cpp">
       <Filter>Source Files\versionHelper</Filter>
@@ -296,18 +152,6 @@
     <ClInclude Include="PythonAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="messageMediator\PythonMessageMediator.h">
-      <Filter>Header Files\messageMediator</Filter>
-    </ClInclude>
-    <ClInclude Include="..\library\DocumentFileAccess.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
-    <ClInclude Include="..\library\LibraryLoader.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
-    <ClInclude Include="..\library\DocumentValidator.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
       <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
@@ -319,30 +163,6 @@
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\common\ComponentParameterFinder.h">
       <Filter>Header Files\common\expressionParser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\library\TableViewDialog.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionListItem.h">
-      <Filter>Header Files\common\dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\library\LibraryItemSelectionFactory.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\widgets\tagEditor\FlowLayout.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\widgets\tagEditor\TagManager.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\widgets\vlnvEditor\VLNVContentMatcher.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\widgets\vlnvEditor\VLNVDataTree.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\widgets\assistedLineEdit\LineContentAssistWidget.h">
-      <Filter>Header Files\common\widgets</Filter>
     </ClInclude>
     <ClInclude Include="..\VersionHelper.h">
       <Filter>Header Files\versionHelper</Filter>
@@ -414,89 +234,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="..\library\LibraryHandler.h">
-      <Filter>Header Files\library</Filter>
-    </QtMoc>
-    <QtMoc Include="..\library\LibraryTreeModel.h">
-      <Filter>Header Files\library</Filter>
-    </QtMoc>
     <QtMoc Include="..\editors\ComponentEditor\common\ParameterCache.h">
       <Filter>Header Files\common\expressionParser</Filter>
     </QtMoc>
-    <QtMoc Include="..\library\HierarchyView\hierarchymodel.h">
-      <Filter>Header Files\library\hierarchyView</Filter>
-    </QtMoc>
-    <QtMoc Include="..\library\HierarchyView\hierarchyitem.h">
-      <Filter>Header Files\library\hierarchyView</Filter>
-    </QtMoc>
-    <QtMoc Include="..\library\LibraryErrorModel.h">
-      <Filter>Header Files\library</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h">
-      <Filter>Header Files\common\dialogs</Filter>
-    </QtMoc>
-    <QtMoc Include="..\library\ItemExporter.h">
-      <Filter>Header Files\library</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\dialogs\ObjectExportDialog\ObjectExportDialog.h">
-      <Filter>Header Files\common\dialogs</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\dialogs\newObjectDialog\newobjectdialog.h">
-      <Filter>Header Files\common\dialogs</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\kactusAttributeEditor\KactusAttributeEditor.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\vlnvEditor\vlnveditor.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\tagEditor\TagEditorContainer.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\tagEditor\TagContainer.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
     <QtMoc Include="..\common\validators\LibraryPathValidator\librarypathvalidator.h">
       <Filter>Header Files\common\validators</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.h">
-      <Filter>Header Files\common\dialogs</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\dialogs\LibrarySettingsDialog\librarysettingsdelegate.h">
-      <Filter>Header Files\common\dialogs</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\tagEditor\TagLabel.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\tagEditor\TagEditor.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\tagEditor\TagDisplay.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\colorBox\ColorBox.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\tagEditor\TagCompleterModel.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\library\LibraryItem.h">
-      <Filter>Header Files\library</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\widgets\assistedLineEdit\AssistedLineEdit.h">
-      <Filter>Header Files\common\widgets</Filter>
-    </QtMoc>
-    <QtMoc Include="..\common\dialogs\ObjectRemoveDialog\objectremovedialog.h">
-      <Filter>Header Files\common\dialogs</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

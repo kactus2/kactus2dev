@@ -21,6 +21,8 @@
 #include <common/ui/ConsoleMediator.h>
 #include <common/ui/GraphicalMessageMediator.h>
 
+#include <common/KactusAPI.h>
+
 #include <VersionHelper.h>
 
 #include <library/LibraryHandler.h>
@@ -132,7 +134,10 @@ int main(int argc, char *argv[])
 
     loadPlugins(settings);
 
-    QScopedPointer<LibraryHandler> library(new LibraryHandler(0, mediator.data(), 0));
+    LibraryHandler::initialize(0, mediator.data(), 0);
+    QScopedPointer<LibraryHandler> library(LibraryHandler::getInstance());
+
+    QScopedPointer<KactusAPI> api(new KactusAPI(library.data(), mediator.data()));
 
     wchar_t *program = Py_DecodeLocale(argv[0], NULL);
     if (program == NULL)

@@ -48,24 +48,32 @@ public slots:
 
 protected:
 
+    //! Event handler for key press handling.
     virtual void keyPressEvent(QKeyEvent *e) override;
 
+    //! Event handler for context menu requests.
     void contextMenuEvent(QContextMenuEvent* event);    
 
 private slots:
     
+    //! Clears the editor of all text.
     void onClear();
 
 private:
 
+    //! Check if text can be pasted at currently selected position.
     bool canPaste() const;
 
+    //! Lock position in the text i.e. text before the position cannot be changed.
     int textLockPosition_;
 
+    //! The current prompt text.
     QString promptText_;
 
+    //! Write channel to write user input into.
     WriteChannel* outputChannel_;
 
+    //! The used monospace font family.
     QString fontFamily_;
 
     //! Copy the selected text to the clip board.

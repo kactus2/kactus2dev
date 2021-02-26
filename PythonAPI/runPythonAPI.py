@@ -52,8 +52,6 @@ def handleCommandsForOpenComponent(componentName):
 print (api)
 print ("\n", end='')
 
-api.setupLibrary(pythonAPI.QString.fromStdString(r"C:\Users\teuhom\AppData\Roaming\TUT\Kactus2.ini"))
-
 print ("\n", end='')
 
 pythonHelps.helpText()

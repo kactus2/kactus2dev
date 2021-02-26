@@ -27,6 +27,8 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <common/Global.h>
+
 #include <QString>
 #include <QStringList>
 #include <QDir>
@@ -49,18 +51,15 @@ class ItemExporter;
 //-----------------------------------------------------------------------------
 //! LibraryHandler is the class that implements the services to manage the IP-XACT library.
 //-----------------------------------------------------------------------------
-class LibraryHandler : public QObject, public LibraryInterface
+class KACTUS2_API LibraryHandler : public QObject, public LibraryInterface
 {
     Q_OBJECT
 
 public:
 
-    /*! The constructor
-     *
-     *      @param [in] dialer  The dialer that provides search options.
-     *      @param [in] parent  The parent widget of this instance.
-     */
-    LibraryHandler(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent = nullptr);
+    static LibraryHandler* getInstance();
+
+    static void initialize(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent);
 
     //! No copying
     LibraryHandler(const LibraryHandler &other) = delete;
@@ -525,6 +524,14 @@ private:
     // The private functions used by public class methods
     //-----------------------------------------------------------------------------
 
+    /*! The constructor
+ *
+ *      @param [in] dialer  The dialer that provides search options.
+ *      @param [in] parent  The parent widget of this instance.
+ */
+    LibraryHandler(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent = nullptr);
+
+
     //! Connect the signals and slots that keep the data models synchronized.
     void syncronizeModels();
 
@@ -649,6 +656,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+
+    static LibraryHandler* LibraryHandler::instance_;
 
     //! Widget to parent open dialogs.
     QWidget* parentWidget_;

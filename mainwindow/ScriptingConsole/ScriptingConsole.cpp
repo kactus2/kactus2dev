@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: ScriptingConsole::ScriptingConsole()
 //-----------------------------------------------------------------------------
-ScriptingConsole::ScriptingConsole(QWidget* parent): 
+ScriptingConsole::ScriptingConsole(QWidget* parent):
     QWidget(parent),
     outputChannel_(new ChannelRelay(this)),
     errorChannel_(new ChannelRelay(this)),
