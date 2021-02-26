@@ -11,6 +11,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
+    ./common/KactusAPI.h \
     ./common/NameGenerationPolicy.h \
     ./common/Global.h \
     ./common/KactusColors.h \
@@ -151,8 +152,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.h \
     ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.h \
-    ./mainwindow/PythonConsole/PythonConsole.h \
-    ./mainwindow/PythonConsole/ConsoleEditor.h \
+    ./mainwindow/ScriptingConsole/ScriptingConsole.h \
+    ./mainwindow/ScriptingConsole/ScriptingTextEditor.h \
     ./settings/FileTypeColumns.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
@@ -285,7 +286,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/PortWireTypeDelegate.h \
     ./editors/ComponentEditor/ports/PortsEditorConstructor.h \
     ./editors/ComponentEditor/ports/PortsFilter.h \
-    ./editors/ComponentEditor/ports/interfaces/PortsInterface.h \
     ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeView.h \
     ./editors/ComponentEditor/ports/WirePortsEditorConstructor.h \
@@ -299,6 +299,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
     ./editors/ComponentEditor/ports/PortsView.h \
+    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.h \
+    ./editors/ComponentEditor/ports/interfaces/PortsInterface.h \
     ./editors/ComponentEditor/parameters/AbstractParameterInterface.h \
     ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
@@ -663,6 +665,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
+    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h \
     ./editors/common/BusInterfaceUtilities.h \
     ./editors/common/ColumnTypes.h \
     ./editors/common/DefaultRouting.h \
@@ -864,10 +867,15 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h \
-    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.h
+    ./PythonAPI/FileChannel.h \
+    ./PythonAPI/WriteChannel.h \
+    ./PythonAPI/ChannelRelay.h \
+    ./PythonAPI/PythonInterpreter.h \
+    ./PythonAPI/StdInputListener.h \
+    ./PythonAPI/extensions/OutputForwarder.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
+    ./common/KactusAPI.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -988,8 +996,8 @@ SOURCES += ./VersionHelper.cpp \
     ./mainwindow/SaveHierarchy/SaveAsItem.cpp \
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.cpp \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.cpp \
-    ./mainwindow/PythonConsole/ConsoleEditor.cpp \
-    ./mainwindow/PythonConsole/PythonConsole.cpp \
+    ./mainwindow/ScriptingConsole/ScriptingConsole.cpp \
+    ./mainwindow/ScriptingConsole/ScriptingTextEditor.cpp \
     ./settings/ComponentEditorSettingsPage.cpp \
     ./settings/FileTypesDelegate.cpp \
     ./settings/FileTypeSettingsPage.cpp \
@@ -1172,7 +1180,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/portsdelegate.cpp \
     ./editors/ComponentEditor/ports/portseditor.cpp \
     ./editors/ComponentEditor/ports/PortsFilter.cpp \
-    ./editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
@@ -1190,6 +1197,8 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/WirePortsEditorConstructor.cpp \
     ./editors/ComponentEditor/ports/WirePortsFilter.cpp \
     ./editors/ComponentEditor/ports/WirePortsModel.cpp \
+    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp \
+    ./editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
@@ -1427,6 +1436,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.cpp \
+    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.cpp \
     ./editors/CatalogEditor/CatalogEditor.cpp \
     ./editors/CatalogEditor/CatalogFileDelegate.cpp \
     ./editors/CatalogEditor/CatalogFileFilter.cpp \
@@ -1618,6 +1628,9 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.cpp \
-    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp
+    ./PythonAPI/ChannelRelay.cpp \
+    ./PythonAPI/FileChannel.cpp \
+    ./PythonAPI/PythonInterpreter.cpp \
+    ./PythonAPI/StdInputListener.cpp \
+    ./PythonAPI/extensions/OutputForwarder.cpp
 RESOURCES += kactus.qrc

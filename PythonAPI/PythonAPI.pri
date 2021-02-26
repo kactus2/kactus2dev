@@ -9,19 +9,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./PythonAPI.h \
     ./pythonapi_global.h \
-    ./messageMediator/PythonMessageMediator.h \
-    ../library/DocumentFileAccess.h \
-    ../library/DocumentValidator.h \
-    ../library/LibraryItemSelectionFactory.h \
-    ../library/LibraryLoader.h \
-    ../library/TableViewDialog.h \
-    ../library/LibraryHandler.h \
-    ../library/LibraryErrorModel.h \
-    ../library/ItemExporter.h \
-    ../library/LibraryItem.h \
-    ../library/LibraryTreeModel.h \
-    ../library/HierarchyView/hierarchymodel.h \
-    ../library/HierarchyView/hierarchyitem.h \
     ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h \
     ../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../editors/ComponentEditor/common/ComponentParameterFinder.h \
@@ -35,31 +22,6 @@ HEADERS += ./PythonAPI.h \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
-    ../common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
-    ../common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
-    ../common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
-    ../common/dialogs/newObjectDialog/newobjectdialog.h \
-    ../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
-    ../common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
-    ../common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
-    ../common/widgets/assistedLineEdit/LineContentAssistWidget.h \
-    ../common/widgets/tagEditor/FlowLayout.h \
-    ../common/widgets/tagEditor/TagManager.h \
-    ../common/widgets/vlnvEditor/VLNVContentMatcher.h \
-    ../common/widgets/vlnvEditor/VLNVDataTree.h \
-    ../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
-    ../common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
-    ../common/widgets/vlnvEditor/vlnveditor.h \
-    ../common/widgets/tagEditor/TagEditorContainer.h \
-    ../common/widgets/tagEditor/TagContainer.h \
-    ../common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
-    ../common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
-    ../common/widgets/tagEditor/TagLabel.h \
-    ../common/widgets/colorBox/ColorBox.h \
-    ../common/widgets/assistedLineEdit/AssistedLineEdit.h \
-    ../common/widgets/tagEditor/TagEditor.h \
-    ../common/widgets/tagEditor/TagDisplay.h \
-    ../common/widgets/tagEditor/TagCompleterModel.h \
     ../common/validators/LibraryPathValidator/librarypathvalidator.h \
     ../VersionHelper.h \
     ../editors/ComponentEditor/common/interfaces/CommonInterface.h \
@@ -70,25 +32,49 @@ HEADERS += ./PythonAPI.h \
     ../editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h \
     ../editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h \
     ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
-    ../editors/ComponentEditor/parameters/ParametersInterface.h \
-    ../editors/ComponentEditor/ports/interfaces/PortsInterface.h \
     ../editors/ComponentEditor/parameters/AbstractParameterInterface.h \
-    ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.h
+    ../editors/ComponentEditor/parameters/ParametersInterface.h \
+    ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.h \
+    ../editors/ComponentEditor/ports/interfaces/PortsInterface.h \
+    ../common/dialogs/librarysettingsdialog/librarysettingsdelegate.h \
+    ../common/dialogs/librarysettingsdialog/librarysettingsdialog.h \
+    ../common/dialogs/newobjectdialog/newobjectdialog.h \
+    ../common/dialogs/objectexportdialog/objectexportdialog.h \
+    ../common/dialogs/objectexportdialog/objectselectiondialog.h \
+    ../common/dialogs/objectexportdialog/objectselectionlistitem.h \
+    ../common/dialogs/objectremovedialog/objectremovedialog.h \
+    ../common/widgets/assistedlineedit/assistedlineedit.h \
+    ../common/widgets/assistedlineedit/linecontentassistwidget.h \
+    ../common/widgets/colorbox/colorbox.h \
+    ../common/widgets/kactusattributeeditor/kactusattributeeditor.h \
+    ../common/widgets/libraryselectorwidget/librarypatheditor/librarypatheditor.h \
+    ../common/widgets/libraryselectorwidget/librarypathselector/librarypathselector.h \
+    ../common/widgets/libraryselectorwidget/libraryselectorwidget.h \
+    ../common/widgets/tageditor/flowlayout.h \
+    ../common/widgets/tageditor/tagcompletermodel.h \
+    ../common/widgets/tageditor/tagcontainer.h \
+    ../common/widgets/tageditor/tagdisplay.h \
+    ../common/widgets/tageditor/tageditor.h \
+    ../common/widgets/tageditor/tageditorcontainer.h \
+    ../common/widgets/tageditor/taglabel.h \
+    ../common/widgets/tageditor/tagmanager.h \
+    ../common/widgets/vlnveditor/vlnvcontentmatcher.h \
+    ../common/widgets/vlnveditor/vlnvdatatree.h \
+    ../common/widgets/vlnveditor/vlnveditor.h \
+    ../library/documentfileaccess.h \
+    ../library/documentvalidator.h \
+    ../library/hierarchyview/hierarchyitem.h \
+    ../library/hierarchyview/hierarchymodel.h \
+    ../library/itemexporter.h \
+    ../library/libraryerrormodel.h \
+    ../library/libraryhandler.h \
+    ../library/libraryitem.h \
+    ../library/libraryitemselectionfactory.h \
+    ../library/libraryloader.h \
+    ../library/librarytreemodel.h \
+    ../library/tableviewdialog.h \
+    ./messagemediator/pythonmessagemediator.h
 SOURCES += ./PythonAPI.cpp \
-    ./PythonAPI_wrap.cxx \
-    ./messageMediator/PythonMessageMediator.cpp \
-    ../library/DocumentFileAccess.cpp \
-    ../library/DocumentValidator.cpp \
-    ../library/ItemExporter.cpp \
-    ../library/LibraryErrorModel.cpp \
-    ../library/LibraryHandler.cpp \
-    ../library/LibraryItem.cpp \
-    ../library/LibraryItemSelectionFactory.cpp \
-    ../library/LibraryLoader.cpp \
-    ../library/LibraryTreeModel.cpp \
-    ../library/TableViewDialog.cpp \
-    ../library/HierarchyView/hierarchyitem.cpp \
-    ../library/HierarchyView/hierarchymodel.cpp \
     ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp \
     ../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../editors/ComponentEditor/common/ExpressionFormatter.cpp \
@@ -102,31 +88,6 @@ SOURCES += ./PythonAPI.cpp \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.cpp \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
-    ../common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
-    ../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
-    ../common/dialogs/newObjectDialog/newobjectdialog.cpp \
-    ../common/dialogs/ObjectExportDialog/ObjectExportDialog.cpp \
-    ../common/dialogs/ObjectExportDialog/ObjectSelectionDialog.cpp \
-    ../common/dialogs/ObjectExportDialog/ObjectSelectionListItem.cpp \
-    ../common/dialogs/ObjectRemoveDialog/objectremovedialog.cpp \
-    ../common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
-    ../common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
-    ../common/widgets/colorBox/ColorBox.cpp \
-    ../common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
-    ../common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
-    ../common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.cpp \
-    ../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
-    ../common/widgets/tagEditor/FlowLayout.cpp \
-    ../common/widgets/tagEditor/TagCompleterModel.cpp \
-    ../common/widgets/tagEditor/TagContainer.cpp \
-    ../common/widgets/tagEditor/TagDisplay.cpp \
-    ../common/widgets/tagEditor/TagEditor.cpp \
-    ../common/widgets/tagEditor/TagEditorContainer.cpp \
-    ../common/widgets/tagEditor/TagLabel.cpp \
-    ../common/widgets/tagEditor/TagManager.cpp \
-    ../common/widgets/vlnvEditor/VLNVContentMatcher.cpp \
-    ../common/widgets/vlnvEditor/VLNVDataTree.cpp \
-    ../common/widgets/vlnvEditor/vlnveditor.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ../VersionHelper.cpp \
     ../editors/ComponentEditor/common/interfaces/CommonInterface.cpp \
@@ -137,7 +98,46 @@ SOURCES += ./PythonAPI.cpp \
     ../editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.cpp \
     ../editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.cpp \
     ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
-    ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
-    ../editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
     ../editors/ComponentEditor/parameters/AbstractParameterInterface.cpp \
-    ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp
+    ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
+    ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp \
+    ../editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
+    ./PythonAPI_wrap.cxx \
+    ../common/dialogs/librarysettingsdialog/librarysettingsdelegate.cpp \
+    ../common/dialogs/librarysettingsdialog/librarysettingsdialog.cpp \
+    ../common/dialogs/newobjectdialog/newobjectdialog.cpp \
+    ../common/dialogs/objectexportdialog/objectexportdialog.cpp \
+    ../common/dialogs/objectexportdialog/objectselectiondialog.cpp \
+    ../common/dialogs/objectexportdialog/objectselectionlistitem.cpp \
+    ../common/dialogs/objectremovedialog/objectremovedialog.cpp \
+    ../common/widgets/assistedlineedit/assistedlineedit.cpp \
+    ../common/widgets/assistedlineedit/linecontentassistwidget.cpp \
+    ../common/widgets/colorbox/colorbox.cpp \
+    ../common/widgets/kactusattributeeditor/kactusattributeeditor.cpp \
+    ../common/widgets/libraryselectorwidget/librarypatheditor/librarypatheditor.cpp \
+    ../common/widgets/libraryselectorwidget/librarypathselector/librarypathselector.cpp \
+    ../common/widgets/libraryselectorwidget/libraryselectorwidget.cpp \
+    ../common/widgets/tageditor/flowlayout.cpp \
+    ../common/widgets/tageditor/tagcompletermodel.cpp \
+    ../common/widgets/tageditor/tagcontainer.cpp \
+    ../common/widgets/tageditor/tagdisplay.cpp \
+    ../common/widgets/tageditor/tageditor.cpp \
+    ../common/widgets/tageditor/tageditorcontainer.cpp \
+    ../common/widgets/tageditor/taglabel.cpp \
+    ../common/widgets/tageditor/tagmanager.cpp \
+    ../common/widgets/vlnveditor/vlnvcontentmatcher.cpp \
+    ../common/widgets/vlnveditor/vlnvdatatree.cpp \
+    ../common/widgets/vlnveditor/vlnveditor.cpp \
+    ../library/documentfileaccess.cpp \
+    ../library/documentvalidator.cpp \
+    ../library/hierarchyview/hierarchyitem.cpp \
+    ../library/hierarchyview/hierarchymodel.cpp \
+    ../library/itemexporter.cpp \
+    ../library/libraryerrormodel.cpp \
+    ../library/libraryhandler.cpp \
+    ../library/libraryitem.cpp \
+    ../library/libraryitemselectionfactory.cpp \
+    ../library/libraryloader.cpp \
+    ../library/librarytreemodel.cpp \
+    ../library/tableviewdialog.cpp \
+    ./messagemediator/pythonmessagemediator.cpp
