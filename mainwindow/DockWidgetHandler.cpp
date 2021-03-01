@@ -86,8 +86,8 @@ DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* m
     interfaceDock_(0),
     connectionEditor_(0),
     connectionDock_(0),
-    pythonConsoleDock_(0), 
-    pythonConsole_(0),
+    scriptConsoleDock_(0), 
+    scriptConsole_(0),
     extensionDock_(0),
     extensionEditor_(0),
     helpWnd_(0),
@@ -289,6 +289,14 @@ void DockWidgetHandler::setupDesignParametersEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::applySettings()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::applySettings()
+{
+    scriptConsole_->applySettings();
+}
+
+//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::setupInstanceEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupInstanceEditor()
@@ -419,15 +427,15 @@ void DockWidgetHandler::setupConnectionEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupConsole()
 {
-    pythonConsoleDock_ = new QDockWidget(tr("Script (experimental)"), mainWindow_);
-    pythonConsoleDock_->setObjectName(tr("Python console"));
-    pythonConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    pythonConsoleDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    scriptConsoleDock_ = new QDockWidget(tr("Script (experimental)"), mainWindow_);
+    scriptConsoleDock_->setObjectName(tr("Python console"));
+    scriptConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    scriptConsoleDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    pythonConsole_ = new ScriptingConsole(pythonConsoleDock_);
-    pythonConsoleDock_->setWidget(pythonConsole_);
+    scriptConsole_ = new ScriptingConsole(scriptConsoleDock_);
+    scriptConsoleDock_->setWidget(scriptConsole_);
 
-    mainWindow_->addDockWidget(Qt::BottomDockWidgetArea, pythonConsoleDock_);
+    mainWindow_->addDockWidget(Qt::BottomDockWidgetArea, scriptConsoleDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -502,9 +510,9 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
     visibilities_.insert(TabDocument::VENDOREXTENSIONWINDOW, extensionsVisible);
     extensionDock_->toggleViewAction()->setChecked(extensionsVisible);
 
-    const bool consoleVisible = settings.value("ConsoleVisibility", true).toBool();
-    visibilities_.insert(TabDocument::CONSOLEWINDOW, consoleVisible);
-    pythonConsoleDock_->toggleViewAction()->setChecked(connectionVisible);
+    const bool consoleVisible = settings.value("ScriptVisibility", true).toBool();
+    visibilities_.insert(TabDocument::SCRIPTWINDOW, consoleVisible);
+    scriptConsoleDock_->toggleViewAction()->setChecked(connectionVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -560,6 +568,7 @@ void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu) const
     visibilityMenu.addAction(libraryDock_->toggleViewAction());
     visibilityMenu.addAction(interfaceDock_->toggleViewAction());
     visibilityMenu.addAction(consoleDock_->toggleViewAction());
+    visibilityMenu.addAction(scriptConsoleDock_->toggleViewAction());
     visibilityMenu.addAction(extensionDock_->toggleViewAction());
 }
 
@@ -716,7 +725,7 @@ void DockWidgetHandler::updateWindows(int const& tabCount, QWidget* currentTabWi
         tabCount, currentTabWidget, TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::ADHOC_WINDOW, adhocDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::VENDOREXTENSIONWINDOW, extensionDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::CONSOLEWINDOW, pythonConsoleDock_);
+    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::SCRIPTWINDOW, scriptConsoleDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -765,7 +774,7 @@ unsigned int DockWidgetHandler::defaultWindows()
 {
     return TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW |
         TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW |
-        TabDocument::CONSOLEWINDOW;
+        TabDocument::SCRIPTWINDOW;
 }
 
 //-----------------------------------------------------------------------------
@@ -918,6 +927,8 @@ void DockWidgetHandler::connectVisibilityControls()
         this, SLOT(onAdHocEditorAction(bool)), Qt::UniqueConnection);
     connect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)), Qt::UniqueConnection);
+    connect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        this, SLOT(onVendorExtensionVisibilityAction(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -942,6 +953,8 @@ void DockWidgetHandler::disconnectVisibilityControls()
         this, SLOT(onAdHocVisibilityAction(bool)));
     disconnect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
     disconnect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        this, SLOT(onVendorExtensionVisibilityAction(bool)));
+    disconnect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)));
 }
 
@@ -1181,6 +1194,7 @@ void DockWidgetHandler::createVisibilityAndFilterSettings(QSettings& settings) c
     settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
     settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
     settings.setValue("VendorExtensionVisibility", visibilities_.value(TabDocument::VENDOREXTENSIONWINDOW));
+    settings.setValue("ScriptVisibility", visibilities_.value(TabDocument::SCRIPTWINDOW));
 
     // Save filters.
     settings.beginGroup("LibraryFilters");

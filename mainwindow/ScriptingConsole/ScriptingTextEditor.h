@@ -16,7 +16,10 @@
 
 #include <QAction>
 
+#include "ScriptingSideArea.h"
+
 class WriteChannel;
+class ScriptingHistory;
 
 //-----------------------------------------------------------------------------
 //! Text editor for script write and run.
@@ -27,10 +30,19 @@ class ScriptingTextEditor : public QPlainTextEdit
 public:
 
     //! The constructor.
-    ScriptingTextEditor(WriteChannel* outputChannel, QWidget* parent = nullptr);
-    
+    ScriptingTextEditor(WriteChannel* outputChannel, ScriptingHistory* history, QWidget* parent = nullptr);
+
+
     //! The destructor.
     virtual ~ScriptingTextEditor() = default;
+
+    void applySettings();
+
+    void insertInput(QString const& input);
+
+    int sideAreaWidth() const;
+
+    void sideAreaPaintEvent();
 
 public slots:
 
@@ -54,15 +66,28 @@ protected:
     //! Event handler for context menu requests.
     void contextMenuEvent(QContextMenuEvent* event);    
 
+    void resizeEvent(QResizeEvent *event) override;
+
 private slots:
     
     //! Clears the editor of all text.
     void onClear();
 
+    void updateSideArea(const QRect &rect, int dy);
+
 private:
 
     //! Check if text can be pasted at currently selected position.
     bool canPaste() const;
+
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    ScriptingSideArea* promtSideArea_;
+
+    ScriptingHistory* history_;
 
     //! Lock position in the text i.e. text before the position cannot be changed.
     int textLockPosition_;
@@ -73,12 +98,10 @@ private:
     //! Write channel to write user input into.
     WriteChannel* outputChannel_;
 
-    //! The used monospace font family.
-    QString fontFamily_;
-
     //! Copy the selected text to the clip board.
     QAction copyAction_;
 
+    bool useTabs_;
 };
 
 #endif // SCRIPTINGTEXTEDITOR_H

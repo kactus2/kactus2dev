@@ -62,7 +62,7 @@ namespace
     //-----------------------------------------------------------------------------
     QCoreApplication* createApplication(int &argc, char* argv[])
     {
-        QCoreApplication* application = 0; 
+        QCoreApplication* application = nullptr; 
         if (startGui(argc))
         {
             QApplication* guiApplication = new QApplication(argc, argv);        
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
     LibraryHandler::initialize(0, mediator.data(), 0);
     QScopedPointer<LibraryHandler> library(LibraryHandler::getInstance());
 
-    QScopedPointer<KactusAPI> api(new KactusAPI(library.data(), mediator.data()));
+    QScopedPointer<KactusAPI> coreAPI(new KactusAPI(library.data(), mediator.data()));
 
     wchar_t *program = Py_DecodeLocale(argv[0], NULL);
     if (program == NULL)

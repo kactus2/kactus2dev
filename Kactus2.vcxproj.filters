@@ -4993,6 +4993,15 @@
     <ClCompile Include="common\KactusAPI.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingSideArea.cpp">
+      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingHistory.cpp">
+      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ScriptingHistory.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6801,6 +6810,9 @@
     <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingTextEditor.h">
       <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
     </CustomBuild>
+    <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingHistory.h">
+      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7642,6 +7654,9 @@
     </ClInclude>
     <ClInclude Include="common\KactusAPI.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\ScriptingConsole\ScriptingSideArea.h">
+      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

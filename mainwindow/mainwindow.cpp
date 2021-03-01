@@ -2104,6 +2104,7 @@ void MainWindow::openSettings()
     {
         designTabs_->applySettings();
         updateGeneratorPluginActions();
+        dockHandler_->applySettings();
     }
 }
 

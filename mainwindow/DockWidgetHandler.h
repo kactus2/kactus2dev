@@ -238,6 +238,9 @@ public:
      */
     void setupDesignParameterFinder(QSharedPointer<Design> newDesign);
 
+    //! Apply the current application settings to widgets.
+    void applySettings();
+
 public slots:
 
     /*!
@@ -575,8 +578,8 @@ private:
     //! The dock widget that contains the connection editor.
     QDockWidget* connectionDock_;
 
-    QDockWidget* pythonConsoleDock_;
-    ScriptingConsole* pythonConsole_;
+    QDockWidget* scriptConsoleDock_;
+    ScriptingConsole* scriptConsole_;
 
     //! The dock widget that contains the vendor extension editor.
     QDockWidget* extensionDock_;
