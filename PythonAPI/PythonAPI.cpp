@@ -76,7 +76,62 @@ mapValidator_()
 //-----------------------------------------------------------------------------
 std::string PythonAPI::getVersion() const
 {
-    return KactusAPI::getVersion();
+    return KactusAPI::getVersion().toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::listPlugins()
+//-----------------------------------------------------------------------------
+std::vector<std::string> PythonAPI::listPlugins() const
+{
+    return std::vector<std::string>();// KactusAPI::listPlugins();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getLibraryPaths()
+//-----------------------------------------------------------------------------
+std::vector<std::string> PythonAPI::getLibraryPaths()
+{
+    QStringList locations = KactusAPI::getLibraryPaths();
+
+    std::vector<std::string> paths(locations.count());
+    for (auto const& path : locations)
+    {
+        paths.push_back(path.toStdString());
+    }
+  
+    return paths;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setLibraryPaths()
+//-----------------------------------------------------------------------------
+void PythonAPI::setLibraryPaths(std::vector<std::string> paths) const
+{
+    QStringList libraryPaths;
+    for (auto const& path : paths)
+    {
+        libraryPaths.append(QString::fromStdString(path));
+    }
+
+
+    KactusAPI::setLibraryPaths(libraryPaths);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getDefaultLibraryPath()
+//-----------------------------------------------------------------------------
+std::string PythonAPI::getDefaultLibraryPath()
+{
+    return KactusAPI::getDefaultLibraryPath().toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setDefaultLibraryPath()
+//-----------------------------------------------------------------------------
+void PythonAPI::setDefaultLibraryPath(std::string const& path)
+{
+    KactusAPI::setDefaultLibraryPath(QString::fromStdString(path));
 }
 
 //-----------------------------------------------------------------------------

@@ -37,7 +37,10 @@ libLocationsTable_(0),
 addLocationButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
 removeLocationButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
 changed_(false),
-checkMarkIcon_(":/icons/common/graphics/checkMark.png")
+checkMarkIcon_(":/icons/common/graphics/checkMark.png"),
+locations_(),
+activeLocations_(),
+defaultLocation_()
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle(tr("Configure Library"));
@@ -119,13 +122,6 @@ checkMarkIcon_(":/icons/common/graphics/checkMark.png")
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibrarySettingsDialog::~LibrarySettingsDialog()
-//-----------------------------------------------------------------------------
-LibrarySettingsDialog::~LibrarySettingsDialog()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibrarySettingsDialog::validate()
 //-----------------------------------------------------------------------------
 bool LibrarySettingsDialog::validate()
@@ -138,6 +134,30 @@ bool LibrarySettingsDialog::validate()
 //-----------------------------------------------------------------------------
 void LibrarySettingsDialog::apply()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDialog::getLocations()
+//-----------------------------------------------------------------------------
+QStringList LibrarySettingsDialog::getLocations() const
+{
+    return locations_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDialog::getActiveLocations()
+//-----------------------------------------------------------------------------
+QStringList LibrarySettingsDialog::getActiveLocations() const
+{
+    return activeLocations_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDialog::getDefaultLocation()
+//-----------------------------------------------------------------------------
+QString LibrarySettingsDialog::getDefaultLocation() const
+{
+    return defaultLocation_;
 }
 
 //-----------------------------------------------------------------------------
@@ -262,15 +282,6 @@ void LibrarySettingsDialog::changeActivePathStatus(QTableWidgetItem* item)
 //-----------------------------------------------------------------------------
 void LibrarySettingsDialog::accept()
 {
-    // Create a string list containing all the locations and save it to the settings.
-    QStringList locations;
-
-    // the active locations used to search for IP-XACT objects
-    QStringList activeLocations;
-
-    // the checked item in the list is the default location
-    QString defaultLocation;
-
     for (int i = 0; i < libLocationsTable_->rowCount(); ++i)
     {
         QTableWidgetItem* defItem = libLocationsTable_->item(i, LibrarySettingsColumns::DEFAULT);
@@ -280,24 +291,15 @@ void LibrarySettingsDialog::accept()
         // if the row contains the default library
         if (!defItem->icon().isNull())
         {
-            defaultLocation = pathItem->text();
+            defaultLocation_ = pathItem->text();
         }
         if (!activeItem->icon().isNull())
         {
-            activeLocations.append(pathItem->text());
+            activeLocations_.append(pathItem->text());
         }
 
         // add the library path to the known library locations
-        locations.append(pathItem->text());
-    }
-
-    settings_.setValue("Library/Locations", locations);
-    settings_.setValue("Library/DefaultLocation", defaultLocation);
-    settings_.setValue("Library/ActiveLocations", activeLocations);
-
-    if (changed_)
-    {
-        emit scanLibrary();
+        locations_.append(pathItem->text());
     }
 
     QDialog::accept();
@@ -309,11 +311,11 @@ void LibrarySettingsDialog::accept()
 void LibrarySettingsDialog::loadSettings()
 {
     // Load the library locations.
-    QString defaultLocation = settings_.value(QStringLiteral("Library/DefaultLocation")).toString();
-    QStringList activeLocations = settings_.value(QStringLiteral("Library/ActiveLocations")).toStringList();
-    QStringList locations = settings_.value(QStringLiteral("Library/Locations")).toStringList();
+    defaultLocation_ = settings_.value(QStringLiteral("Library/DefaultLocation")).toString();
+    activeLocations_ = settings_.value(QStringLiteral("Library/ActiveLocations")).toStringList();
+    locations_ = settings_.value(QStringLiteral("Library/Locations")).toStringList();
 
-    foreach (QString const& location, locations)
+    for (QString const& location : locations_)
     {
         QString fullLocation = location;
 
@@ -322,8 +324,8 @@ void LibrarySettingsDialog::loadSettings()
             fullLocation = QFileInfo(location).absoluteFilePath();
         }
 
-        bool isDefaultLocation = location.compare(defaultLocation) == 0;
-        createRowForDirectory(fullLocation, activeLocations.contains(location), isDefaultLocation);
+        bool isDefaultLocation = location.compare(defaultLocation_) == 0;
+        createRowForDirectory(fullLocation, activeLocations_.contains(location), isDefaultLocation);
     }
 
     libLocationsTable_->setCurrentIndex(QModelIndex());

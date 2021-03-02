@@ -60,7 +60,7 @@ int CommandLineParser::process(QStringList const& arguments, MessageMediator* me
 
     if (optionParser_.isSet(QStringLiteral("version")))
     {
-        QString versionText = QString::fromStdString(KactusAPI::getVersion()) +
+        QString versionText = KactusAPI::getVersion() +
             "Copyright (C) 2021 Tampere University\n" +
             "License GPL2: GNU GPL version 2 <https://gnu.org/licenses/gpl.html>\n";
         

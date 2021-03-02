@@ -50,9 +50,12 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     
     connect(historyAction, SIGNAL(toggled(bool)), historyListing_, SLOT(setVisible(bool)), Qt::UniqueConnection);
 
-    QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString(), this, SLOT(onSaveAction()));
+    QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/edit.png"), QString(), this, SLOT(onSaveAction()));
     saveAction->setToolTip(QStringLiteral("Save script"));
 
+    QAction* runAction = toolBar_->addAction(QIcon(":/icons/common/graphics/runProgram.png"), QString());
+    runAction->setToolTip(QStringLiteral("Run file (Disabled)"));
+    runAction->setEnabled(false);
 
     connect(history_, SIGNAL(commandAdded(QString const&)), 
         this, SLOT(onCommandInput(QString const&)), Qt::UniqueConnection);

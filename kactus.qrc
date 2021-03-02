@@ -126,7 +126,7 @@
         <file>common/graphics/provides.png</file>
         <file>common/graphics/requires.png</file>
         <file>common/graphics/requires_provides.png</file>
-		<file>common/graphics/history.png</file>
+		<file>common/graphics/history.png</file> 
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

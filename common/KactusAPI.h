@@ -15,6 +15,8 @@
 
 #include <common/ui/MessageMediator.h>
 
+#include <Plugins/PluginSystem/IPlugin.h>
+
 #ifndef KACTUSAPI_H
 #define KACTUSAPI_H
 
@@ -56,7 +58,18 @@ public:
      *
      *     @return The current Kactus2 version.
      */
-    static std::string getVersion();
+    static QString getVersion();
+
+    //static std::vector<std::string> listPlugins();
+
+    static QStringList getLibraryPaths();
+
+    static void setLibraryPaths(QStringList const&activeLocations,
+        QStringList const& allLocations = QStringList() );
+
+    static QString getDefaultLibraryPath();
+
+    static void setDefaultLibraryPath(QString const& path);
 
 private:
 

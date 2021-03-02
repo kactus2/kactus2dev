@@ -28,7 +28,7 @@
 
 namespace std {
 //	%template(portsVector) vector<SimplePort*>;
-	%template(stringVector) vector<string>;
+	%template(stringVector) vector<string>;	
 //	%template(fieldInterfaceVector) vector<FieldInterface*>;
 //	%template(resetInterfaceVector) vector<ResetInterface*>;
 //	%template(registerInterfaceVector) vector<RegisterInterface*>;

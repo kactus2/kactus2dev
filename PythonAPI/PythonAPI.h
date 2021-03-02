@@ -15,6 +15,10 @@
 
 #include <QString>
 
+#include <Plugins/PluginSystem/IPlugin.h>
+
+#include <common/KactusAPI.h>
+
 #include <string>
 #include <vector>
 #include <QSharedPointer>
@@ -41,6 +45,7 @@ class ExpressionFormatter;
 class ParameterValidator;
 class MemoryMapValidator;
 
+
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data using Python.
 //-----------------------------------------------------------------------------
@@ -64,6 +69,16 @@ public:
      *      @return The current Kactus2 version.
      */
     std::string getVersion() const;
+
+    std::vector<std::string> listPlugins() const;
+
+    std::vector<std::string> getLibraryPaths();
+
+    void setLibraryPaths(std::vector<std::string> paths) const;
+
+    std::string getDefaultLibraryPath();
+
+    void setDefaultLibraryPath(std::string const& path);
 
     /*!
      *  Get the number of files in the library.
