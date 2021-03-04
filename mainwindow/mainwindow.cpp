@@ -34,7 +34,6 @@
 #include <mainwindow/SaveHierarchy/DocumentTreeBuilder.h>
 #include <mainwindow/SaveHierarchy/SaveHierarchyDialog.h>
 
-#include <common/KactusAPI.h>
 #include <common/NameGenerationPolicy.h>
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 #include <common/dialogs/NewDesignDialog/NewDesignDialog.h>
@@ -62,6 +61,7 @@
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+// #include <Plugins/PluginSystem/ConsolePluginUtility.h>
 
 #include <settings/SettingsDialog.h>
 
@@ -3670,12 +3670,9 @@ void MainWindow::setLibraryLocations()
 {
     QSettings settings;
     LibrarySettingsDialog dialog(settings, this);
+    connect(&dialog, SIGNAL(scanLibrary()), this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        KactusAPI::setLibraryPaths(dialog.getActiveLocations(), dialog.getLocations());
-        KactusAPI::setDefaultLibraryPath(dialog.getDefaultLocation());
-    }
+    dialog.exec();
 }
 
 //-----------------------------------------------------------------------------

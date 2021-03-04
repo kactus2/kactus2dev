@@ -19,6 +19,9 @@ try:
 except ImportError:
     import __builtin__
 
+_swig_new_instance_method = _pythonAPI.SWIG_PyInstanceMethod_New
+_swig_new_static_method = _pythonAPI.SWIG_PyStaticMethod_New
+
 def _swig_repr(self):
     try:
         strthis = "proxy of " + self.this.__repr__()
@@ -62,60 +65,30 @@ class _SwigNonDynamicMeta(type):
 
 
 class SwigPyIterator(object):
+    r"""Proxy of C++ swig::SwigPyIterator class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     __swig_destroy__ = _pythonAPI.delete_SwigPyIterator
-
-    def value(self):
-        return _pythonAPI.SwigPyIterator_value(self)
-
-    def incr(self, n=1):
-        return _pythonAPI.SwigPyIterator_incr(self, n)
-
-    def decr(self, n=1):
-        return _pythonAPI.SwigPyIterator_decr(self, n)
-
-    def distance(self, x):
-        return _pythonAPI.SwigPyIterator_distance(self, x)
-
-    def equal(self, x):
-        return _pythonAPI.SwigPyIterator_equal(self, x)
-
-    def copy(self):
-        return _pythonAPI.SwigPyIterator_copy(self)
-
-    def next(self):
-        return _pythonAPI.SwigPyIterator_next(self)
-
-    def __next__(self):
-        return _pythonAPI.SwigPyIterator___next__(self)
-
-    def previous(self):
-        return _pythonAPI.SwigPyIterator_previous(self)
-
-    def advance(self, n):
-        return _pythonAPI.SwigPyIterator_advance(self, n)
-
-    def __eq__(self, x):
-        return _pythonAPI.SwigPyIterator___eq__(self, x)
-
-    def __ne__(self, x):
-        return _pythonAPI.SwigPyIterator___ne__(self, x)
-
-    def __iadd__(self, n):
-        return _pythonAPI.SwigPyIterator___iadd__(self, n)
-
-    def __isub__(self, n):
-        return _pythonAPI.SwigPyIterator___isub__(self, n)
-
-    def __add__(self, n):
-        return _pythonAPI.SwigPyIterator___add__(self, n)
-
-    def __sub__(self, *args):
-        return _pythonAPI.SwigPyIterator___sub__(self, *args)
+    value = _swig_new_instance_method(_pythonAPI.SwigPyIterator_value)
+    incr = _swig_new_instance_method(_pythonAPI.SwigPyIterator_incr)
+    decr = _swig_new_instance_method(_pythonAPI.SwigPyIterator_decr)
+    distance = _swig_new_instance_method(_pythonAPI.SwigPyIterator_distance)
+    equal = _swig_new_instance_method(_pythonAPI.SwigPyIterator_equal)
+    copy = _swig_new_instance_method(_pythonAPI.SwigPyIterator_copy)
+    next = _swig_new_instance_method(_pythonAPI.SwigPyIterator_next)
+    __next__ = _swig_new_instance_method(_pythonAPI.SwigPyIterator___next__)
+    previous = _swig_new_instance_method(_pythonAPI.SwigPyIterator_previous)
+    advance = _swig_new_instance_method(_pythonAPI.SwigPyIterator_advance)
+    __eq__ = _swig_new_instance_method(_pythonAPI.SwigPyIterator___eq__)
+    __ne__ = _swig_new_instance_method(_pythonAPI.SwigPyIterator___ne__)
+    __iadd__ = _swig_new_instance_method(_pythonAPI.SwigPyIterator___iadd__)
+    __isub__ = _swig_new_instance_method(_pythonAPI.SwigPyIterator___isub__)
+    __add__ = _swig_new_instance_method(_pythonAPI.SwigPyIterator___add__)
+    __sub__ = _swig_new_instance_method(_pythonAPI.SwigPyIterator___sub__)
     def __iter__(self):
         return self
 
@@ -123,1518 +96,712 @@ class SwigPyIterator(object):
 _pythonAPI.SwigPyIterator_swigregister(SwigPyIterator)
 
 class QString(object):
+    r"""Proxy of C++ QString class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
-
-    @staticmethod
-    def fromStdString(s):
-        return _pythonAPI.QString_fromStdString(s)
-
-    def toStdString(self):
-        return _pythonAPI.QString_toStdString(self)
-
-    def size(self):
-        return _pythonAPI.QString_size(self)
-
-    def count(self):
-        return _pythonAPI.QString_count(self)
-
-    def length(self):
-        return _pythonAPI.QString_length(self)
-
-    def isEmpty(self):
-        return _pythonAPI.QString_isEmpty(self)
+    fromStdString = _swig_new_static_method(_pythonAPI.QString_fromStdString)
+    toStdString = _swig_new_instance_method(_pythonAPI.QString_toStdString)
+    size = _swig_new_instance_method(_pythonAPI.QString_size)
+    count = _swig_new_instance_method(_pythonAPI.QString_count)
+    length = _swig_new_instance_method(_pythonAPI.QString_length)
+    isEmpty = _swig_new_instance_method(_pythonAPI.QString_isEmpty)
 
     def __init__(self):
+        r"""__init__(QString self) -> QString"""
         _pythonAPI.QString_swiginit(self, _pythonAPI.new_QString())
     __swig_destroy__ = _pythonAPI.delete_QString
 
 # Register QString in _pythonAPI:
 _pythonAPI.QString_swigregister(QString)
-
-def QString_fromStdString(s):
-    return _pythonAPI.QString_fromStdString(s)
+QString_fromStdString = _pythonAPI.QString_fromStdString
 
 class NameGroup(object):
+    r"""Proxy of C++ NameGroup class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, *args):
+        r"""
+        __init__(NameGroup self) -> NameGroup
+        __init__(NameGroup self, QString name, QString displayName=QString(), QString description=QString()) -> NameGroup
+
+        Parameters
+        ----------
+        name: QString const &
+        displayName: QString const &
+        description: QString const &
+
+        __init__(NameGroup self, NameGroup other) -> NameGroup
+
+        Parameters
+        ----------
+        other: NameGroup const &
+
+        """
         _pythonAPI.NameGroup_swiginit(self, _pythonAPI.new_NameGroup(*args))
     __swig_destroy__ = _pythonAPI.delete_NameGroup
-
-    def name(self):
-        return _pythonAPI.NameGroup_name(self)
-
-    def displayName(self):
-        return _pythonAPI.NameGroup_displayName(self)
-
-    def description(self):
-        return _pythonAPI.NameGroup_description(self)
+    name = _swig_new_instance_method(_pythonAPI.NameGroup_name)
+    displayName = _swig_new_instance_method(_pythonAPI.NameGroup_displayName)
+    description = _swig_new_instance_method(_pythonAPI.NameGroup_description)
 
 # Register NameGroup in _pythonAPI:
 _pythonAPI.NameGroup_swigregister(NameGroup)
 
 class stringVector(object):
+    r"""Proxy of C++ std::vector< std::string > class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
-
-    def iterator(self):
-        return _pythonAPI.stringVector_iterator(self)
+    iterator = _swig_new_instance_method(_pythonAPI.stringVector_iterator)
     def __iter__(self):
         return self.iterator()
-
-    def __nonzero__(self):
-        return _pythonAPI.stringVector___nonzero__(self)
-
-    def __bool__(self):
-        return _pythonAPI.stringVector___bool__(self)
-
-    def __len__(self):
-        return _pythonAPI.stringVector___len__(self)
-
-    def __getslice__(self, i, j):
-        return _pythonAPI.stringVector___getslice__(self, i, j)
-
-    def __setslice__(self, *args):
-        return _pythonAPI.stringVector___setslice__(self, *args)
-
-    def __delslice__(self, i, j):
-        return _pythonAPI.stringVector___delslice__(self, i, j)
-
-    def __delitem__(self, *args):
-        return _pythonAPI.stringVector___delitem__(self, *args)
-
-    def __getitem__(self, *args):
-        return _pythonAPI.stringVector___getitem__(self, *args)
-
-    def __setitem__(self, *args):
-        return _pythonAPI.stringVector___setitem__(self, *args)
-
-    def pop(self):
-        return _pythonAPI.stringVector_pop(self)
-
-    def append(self, x):
-        return _pythonAPI.stringVector_append(self, x)
-
-    def empty(self):
-        return _pythonAPI.stringVector_empty(self)
-
-    def size(self):
-        return _pythonAPI.stringVector_size(self)
-
-    def swap(self, v):
-        return _pythonAPI.stringVector_swap(self, v)
-
-    def begin(self):
-        return _pythonAPI.stringVector_begin(self)
-
-    def end(self):
-        return _pythonAPI.stringVector_end(self)
-
-    def rbegin(self):
-        return _pythonAPI.stringVector_rbegin(self)
-
-    def rend(self):
-        return _pythonAPI.stringVector_rend(self)
-
-    def clear(self):
-        return _pythonAPI.stringVector_clear(self)
-
-    def get_allocator(self):
-        return _pythonAPI.stringVector_get_allocator(self)
-
-    def pop_back(self):
-        return _pythonAPI.stringVector_pop_back(self)
-
-    def erase(self, *args):
-        return _pythonAPI.stringVector_erase(self, *args)
+    __nonzero__ = _swig_new_instance_method(_pythonAPI.stringVector___nonzero__)
+    __bool__ = _swig_new_instance_method(_pythonAPI.stringVector___bool__)
+    __len__ = _swig_new_instance_method(_pythonAPI.stringVector___len__)
+    __getslice__ = _swig_new_instance_method(_pythonAPI.stringVector___getslice__)
+    __setslice__ = _swig_new_instance_method(_pythonAPI.stringVector___setslice__)
+    __delslice__ = _swig_new_instance_method(_pythonAPI.stringVector___delslice__)
+    __delitem__ = _swig_new_instance_method(_pythonAPI.stringVector___delitem__)
+    __getitem__ = _swig_new_instance_method(_pythonAPI.stringVector___getitem__)
+    __setitem__ = _swig_new_instance_method(_pythonAPI.stringVector___setitem__)
+    pop = _swig_new_instance_method(_pythonAPI.stringVector_pop)
+    append = _swig_new_instance_method(_pythonAPI.stringVector_append)
+    empty = _swig_new_instance_method(_pythonAPI.stringVector_empty)
+    size = _swig_new_instance_method(_pythonAPI.stringVector_size)
+    swap = _swig_new_instance_method(_pythonAPI.stringVector_swap)
+    begin = _swig_new_instance_method(_pythonAPI.stringVector_begin)
+    end = _swig_new_instance_method(_pythonAPI.stringVector_end)
+    rbegin = _swig_new_instance_method(_pythonAPI.stringVector_rbegin)
+    rend = _swig_new_instance_method(_pythonAPI.stringVector_rend)
+    clear = _swig_new_instance_method(_pythonAPI.stringVector_clear)
+    get_allocator = _swig_new_instance_method(_pythonAPI.stringVector_get_allocator)
+    pop_back = _swig_new_instance_method(_pythonAPI.stringVector_pop_back)
+    erase = _swig_new_instance_method(_pythonAPI.stringVector_erase)
 
     def __init__(self, *args):
+        r"""
+        __init__(stringVector self) -> stringVector
+        __init__(stringVector self, stringVector other) -> stringVector
+
+        Parameters
+        ----------
+        other: std::vector< std::string > const &
+
+        __init__(stringVector self, std::vector< std::string >::size_type size) -> stringVector
+
+        Parameters
+        ----------
+        size: std::vector< std::string >::size_type
+
+        __init__(stringVector self, std::vector< std::string >::size_type size, std::vector< std::string >::value_type const & value) -> stringVector
+
+        Parameters
+        ----------
+        size: std::vector< std::string >::size_type
+        value: std::vector< std::string >::value_type const &
+
+        """
         _pythonAPI.stringVector_swiginit(self, _pythonAPI.new_stringVector(*args))
-
-    def push_back(self, x):
-        return _pythonAPI.stringVector_push_back(self, x)
-
-    def front(self):
-        return _pythonAPI.stringVector_front(self)
-
-    def back(self):
-        return _pythonAPI.stringVector_back(self)
-
-    def assign(self, n, x):
-        return _pythonAPI.stringVector_assign(self, n, x)
-
-    def resize(self, *args):
-        return _pythonAPI.stringVector_resize(self, *args)
-
-    def insert(self, *args):
-        return _pythonAPI.stringVector_insert(self, *args)
-
-    def reserve(self, n):
-        return _pythonAPI.stringVector_reserve(self, n)
-
-    def capacity(self):
-        return _pythonAPI.stringVector_capacity(self)
+    push_back = _swig_new_instance_method(_pythonAPI.stringVector_push_back)
+    front = _swig_new_instance_method(_pythonAPI.stringVector_front)
+    back = _swig_new_instance_method(_pythonAPI.stringVector_back)
+    assign = _swig_new_instance_method(_pythonAPI.stringVector_assign)
+    resize = _swig_new_instance_method(_pythonAPI.stringVector_resize)
+    insert = _swig_new_instance_method(_pythonAPI.stringVector_insert)
+    reserve = _swig_new_instance_method(_pythonAPI.stringVector_reserve)
+    capacity = _swig_new_instance_method(_pythonAPI.stringVector_capacity)
     __swig_destroy__ = _pythonAPI.delete_stringVector
 
 # Register stringVector in _pythonAPI:
 _pythonAPI.stringVector_swigregister(stringVector)
 
 class PythonAPI(object):
+    r"""Proxy of C++ PythonAPI class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self):
+        r"""__init__(PythonAPI self) -> PythonAPI"""
         _pythonAPI.PythonAPI_swiginit(self, _pythonAPI.new_PythonAPI())
     __swig_destroy__ = _pythonAPI.delete_PythonAPI
-
-    def setupLibrary(self, settingsFile):
-        return _pythonAPI.PythonAPI_setupLibrary(self, settingsFile)
-
-    def getFileCount(self):
-        return _pythonAPI.PythonAPI_getFileCount(self)
-
-    def listVLNVs(self, *args):
-        return _pythonAPI.PythonAPI_listVLNVs(self, *args)
-
-    def listComponentVLNVs(self):
-        return _pythonAPI.PythonAPI_listComponentVLNVs(self)
-
-    def openComponent(self, componentVLNV):
-        return _pythonAPI.PythonAPI_openComponent(self, componentVLNV)
-
-    def closeOpenComponent(self):
-        return _pythonAPI.PythonAPI_closeOpenComponent(self)
-
-    def getComponentName(self):
-        return _pythonAPI.PythonAPI_getComponentName(self)
-
-    def getComponentDescription(self):
-        return _pythonAPI.PythonAPI_getComponentDescription(self)
-
-    def saveComponent(self):
-        return _pythonAPI.PythonAPI_saveComponent(self)
-
-    def getPortsInterface(self):
-        return _pythonAPI.PythonAPI_getPortsInterface(self)
-
-    def getComponentParameterInterface(self):
-        return _pythonAPI.PythonAPI_getComponentParameterInterface(self)
-
-    def getMapInterface(self):
-        return _pythonAPI.PythonAPI_getMapInterface(self)
-
-    def setBlocksForInterface(self, mapName):
-        return _pythonAPI.PythonAPI_setBlocksForInterface(self, mapName)
-
-    def setRegistersForInterface(self, mapName, blockName):
-        return _pythonAPI.PythonAPI_setRegistersForInterface(self, mapName, blockName)
-
-    def setFieldsForInterface(self, mapName, blockName, registerName):
-        return _pythonAPI.PythonAPI_setFieldsForInterface(self, mapName, blockName, registerName)
-
-    def setResetsForInterface(self, mapName, blockName, registerName, fieldName):
-        return _pythonAPI.PythonAPI_setResetsForInterface(self, mapName, blockName, registerName, fieldName)
+    getVersion = _swig_new_instance_method(_pythonAPI.PythonAPI_getVersion)
+    listPlugins = _swig_new_instance_method(_pythonAPI.PythonAPI_listPlugins)
+    getLibraryPaths = _swig_new_instance_method(_pythonAPI.PythonAPI_getLibraryPaths)
+    setLibraryPaths = _swig_new_instance_method(_pythonAPI.PythonAPI_setLibraryPaths)
+    getDefaultLibraryPath = _swig_new_instance_method(_pythonAPI.PythonAPI_getDefaultLibraryPath)
+    setDefaultLibraryPath = _swig_new_instance_method(_pythonAPI.PythonAPI_setDefaultLibraryPath)
+    importFile = _swig_new_instance_method(_pythonAPI.PythonAPI_importFile)
+    getFileCount = _swig_new_instance_method(_pythonAPI.PythonAPI_getFileCount)
+    listVLNVs = _swig_new_instance_method(_pythonAPI.PythonAPI_listVLNVs)
+    listComponentVLNVs = _swig_new_instance_method(_pythonAPI.PythonAPI_listComponentVLNVs)
+    openComponent = _swig_new_instance_method(_pythonAPI.PythonAPI_openComponent)
+    closeOpenComponent = _swig_new_instance_method(_pythonAPI.PythonAPI_closeOpenComponent)
+    getComponentName = _swig_new_instance_method(_pythonAPI.PythonAPI_getComponentName)
+    getComponentDescription = _swig_new_instance_method(_pythonAPI.PythonAPI_getComponentDescription)
+    saveComponent = _swig_new_instance_method(_pythonAPI.PythonAPI_saveComponent)
+    getPortsInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_getPortsInterface)
+    getComponentParameterInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_getComponentParameterInterface)
+    getMapInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_getMapInterface)
+    setBlocksForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setBlocksForInterface)
+    setRegistersForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setRegistersForInterface)
+    setFieldsForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setFieldsForInterface)
+    setResetsForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setResetsForInterface)
 
 # Register PythonAPI in _pythonAPI:
 _pythonAPI.PythonAPI_swigregister(PythonAPI)
 
 class CommonInterface(object):
+    r"""Proxy of C++ CommonInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     __swig_destroy__ = _pythonAPI.delete_CommonInterface
-
-    def getItemNames(self):
-        return _pythonAPI.CommonInterface_getItemNames(self)
-
-    def itemCount(self):
-        return _pythonAPI.CommonInterface_itemCount(self)
-
-    def validateItems(self):
-        return _pythonAPI.CommonInterface_validateItems(self)
+    getItemNames = _swig_new_instance_method(_pythonAPI.CommonInterface_getItemNames)
+    itemCount = _swig_new_instance_method(_pythonAPI.CommonInterface_itemCount)
+    validateItems = _swig_new_instance_method(_pythonAPI.CommonInterface_validateItems)
 
 # Register CommonInterface in _pythonAPI:
 _pythonAPI.CommonInterface_swigregister(CommonInterface)
 
 class NameGroupInterface(CommonInterface):
+    r"""Proxy of C++ NameGroupInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     __swig_destroy__ = _pythonAPI.delete_NameGroupInterface
-
-    def getItemIndex(self, itemName):
-        return _pythonAPI.NameGroupInterface_getItemIndex(self, itemName)
-
-    def getIndexedItemName(self, itemIndex):
-        return _pythonAPI.NameGroupInterface_getIndexedItemName(self, itemIndex)
-
-    def setName(self, currentName, newName):
-        return _pythonAPI.NameGroupInterface_setName(self, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.NameGroupInterface_getDescription(self, itemName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.NameGroupInterface_setDescription(self, itemName, newDescription)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.NameGroupInterface_itemHasValidName(self, itemName)
+    getItemIndex = _swig_new_instance_method(_pythonAPI.NameGroupInterface_getItemIndex)
+    getIndexedItemName = _swig_new_instance_method(_pythonAPI.NameGroupInterface_getIndexedItemName)
+    setName = _swig_new_instance_method(_pythonAPI.NameGroupInterface_setName)
+    getDescription = _swig_new_instance_method(_pythonAPI.NameGroupInterface_getDescription)
+    setDescription = _swig_new_instance_method(_pythonAPI.NameGroupInterface_setDescription)
+    itemHasValidName = _swig_new_instance_method(_pythonAPI.NameGroupInterface_itemHasValidName)
 
 # Register NameGroupInterface in _pythonAPI:
 _pythonAPI.NameGroupInterface_swigregister(NameGroupInterface)
 
 class ParameterizableInterface(object):
+    r"""Proxy of C++ ParameterizableInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     __swig_destroy__ = _pythonAPI.delete_ParameterizableInterface
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.ParameterizableInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+    getAllReferencesToIdInItem = _swig_new_instance_method(_pythonAPI.ParameterizableInterface_getAllReferencesToIdInItem)
 
 # Register ParameterizableInterface in _pythonAPI:
 _pythonAPI.ParameterizableInterface_swigregister(ParameterizableInterface)
 
 class MasterPortInterface(NameGroupInterface):
+    r"""Proxy of C++ MasterPortInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     __swig_destroy__ = _pythonAPI.delete_MasterPortInterface
-
-    def addWirePort(self, *args):
-        return _pythonAPI.MasterPortInterface_addWirePort(self, *args)
-
-    def addTransactionalPort(self, *args):
-        return _pythonAPI.MasterPortInterface_addTransactionalPort(self, *args)
-
-    def portIsWire(self, portName):
-        return _pythonAPI.MasterPortInterface_portIsWire(self, portName)
-
-    def portIsTransactional(self, portName):
-        return _pythonAPI.MasterPortInterface_portIsTransactional(self, portName)
-
-    def getIconPathForMissingPort(self):
-        return _pythonAPI.MasterPortInterface_getIconPathForMissingPort(self)
-
-    def getIconPathForDirection(self, direction):
-        return _pythonAPI.MasterPortInterface_getIconPathForDirection(self, direction)
-
-    def getIconPathForInitiative(self, initiative):
-        return _pythonAPI.MasterPortInterface_getIconPathForInitiative(self, initiative)
+    addWirePort = _swig_new_instance_method(_pythonAPI.MasterPortInterface_addWirePort)
+    addTransactionalPort = _swig_new_instance_method(_pythonAPI.MasterPortInterface_addTransactionalPort)
+    portIsWire = _swig_new_instance_method(_pythonAPI.MasterPortInterface_portIsWire)
+    portIsTransactional = _swig_new_instance_method(_pythonAPI.MasterPortInterface_portIsTransactional)
+    getIconPathForMissingPort = _swig_new_instance_method(_pythonAPI.MasterPortInterface_getIconPathForMissingPort)
+    getIconPathForDirection = _swig_new_instance_method(_pythonAPI.MasterPortInterface_getIconPathForDirection)
+    getIconPathForInitiative = _swig_new_instance_method(_pythonAPI.MasterPortInterface_getIconPathForInitiative)
 
 # Register MasterPortInterface in _pythonAPI:
 _pythonAPI.MasterPortInterface_swigregister(MasterPortInterface)
 
 class PortsInterface(ParameterizableInterface, MasterPortInterface):
+    r"""Proxy of C++ PortsInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, validator, expressionParser, expressionFormatter):
+        r"""
+        __init__(PortsInterface self, QSharedPointer< PortValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> PortsInterface
+
+        Parameters
+        ----------
+        validator: QSharedPointer< PortValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+
+        """
         _pythonAPI.PortsInterface_swiginit(self, _pythonAPI.new_PortsInterface(validator, expressionParser, expressionFormatter))
     __swig_destroy__ = _pythonAPI.delete_PortsInterface
-
-    def setPorts(self, component):
-        return _pythonAPI.PortsInterface_setPorts(self, component)
-
-    def getItemIndex(self, itemName):
-        return _pythonAPI.PortsInterface_getItemIndex(self, itemName)
-
-    def getIndexedItemName(self, itemIndex):
-        return _pythonAPI.PortsInterface_getIndexedItemName(self, itemIndex)
-
-    def itemCount(self):
-        return _pythonAPI.PortsInterface_itemCount(self)
-
-    def getItemNames(self):
-        return _pythonAPI.PortsInterface_getItemNames(self)
-
-    def setName(self, currentName, newName):
-        return _pythonAPI.PortsInterface_setName(self, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.PortsInterface_getDescription(self, itemName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.PortsInterface_setDescription(self, itemName, newDescription)
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.PortsInterface_getAllReferencesToIdInItem(self, itemName, valueID)
-
-    def portExists(self, portName):
-        return _pythonAPI.PortsInterface_portExists(self, portName)
-
-    def validateItems(self):
-        return _pythonAPI.PortsInterface_validateItems(self)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.PortsInterface_itemHasValidName(self, itemName)
-
-    def getTypeName(self, portName):
-        return _pythonAPI.PortsInterface_getTypeName(self, portName)
-
-    def setTypeName(self, portName, newType):
-        return _pythonAPI.PortsInterface_setTypeName(self, portName, newType)
-
-    def getArrayLeftValue(self, portName, baseNumber=0):
-        return _pythonAPI.PortsInterface_getArrayLeftValue(self, portName, baseNumber)
-
-    def getArrayLeftFormattedExpression(self, portName):
-        return _pythonAPI.PortsInterface_getArrayLeftFormattedExpression(self, portName)
-
-    def getArrayLeftExpression(self, portName):
-        return _pythonAPI.PortsInterface_getArrayLeftExpression(self, portName)
-
-    def setArrayLeft(self, portName, newArrayLeft):
-        return _pythonAPI.PortsInterface_setArrayLeft(self, portName, newArrayLeft)
-
-    def getArrayRightValue(self, portName, baseNumber=0):
-        return _pythonAPI.PortsInterface_getArrayRightValue(self, portName, baseNumber)
-
-    def getArrayRightFormattedExpression(self, portName):
-        return _pythonAPI.PortsInterface_getArrayRightFormattedExpression(self, portName)
-
-    def getArrayRightExpression(self, portName):
-        return _pythonAPI.PortsInterface_getArrayRightExpression(self, portName)
-
-    def setArrayRight(self, portName, newArrayRight):
-        return _pythonAPI.PortsInterface_setArrayRight(self, portName, newArrayRight)
-
-    def getTags(self, portName):
-        return _pythonAPI.PortsInterface_getTags(self, portName)
-
-    def setTags(self, portName, tagList):
-        return _pythonAPI.PortsInterface_setTags(self, portName, tagList)
-
-    def isAdHoc(self, portName):
-        return _pythonAPI.PortsInterface_isAdHoc(self, portName)
-
-    def setAdHoc(self, portName, newAdHocVisibility):
-        return _pythonAPI.PortsInterface_setAdHoc(self, portName, newAdHocVisibility)
-
-    def getDirection(self, portName):
-        return _pythonAPI.PortsInterface_getDirection(self, portName)
-
-    def getDirectionType(self, portName):
-        return _pythonAPI.PortsInterface_getDirectionType(self, portName)
-
-    def setDirection(self, portName, newDirection):
-        return _pythonAPI.PortsInterface_setDirection(self, portName, newDirection)
-
-    def getLeftBoundValue(self, portName, baseNumber=0):
-        return _pythonAPI.PortsInterface_getLeftBoundValue(self, portName, baseNumber)
-
-    def getLeftBoundFormattedExpression(self, portName):
-        return _pythonAPI.PortsInterface_getLeftBoundFormattedExpression(self, portName)
-
-    def getLeftBoundExpression(self, portName):
-        return _pythonAPI.PortsInterface_getLeftBoundExpression(self, portName)
-
-    def setLeftBound(self, portName, newLeftBound):
-        return _pythonAPI.PortsInterface_setLeftBound(self, portName, newLeftBound)
-
-    def getRightBoundValue(self, portName, baseNumber=0):
-        return _pythonAPI.PortsInterface_getRightBoundValue(self, portName, baseNumber)
-
-    def getRightBoundFormattedExpression(self, portName):
-        return _pythonAPI.PortsInterface_getRightBoundFormattedExpression(self, portName)
-
-    def getRightBoundExpression(self, portName):
-        return _pythonAPI.PortsInterface_getRightBoundExpression(self, portName)
-
-    def setRightBound(self, portName, newRightBound):
-        return _pythonAPI.PortsInterface_setRightBound(self, portName, newRightBound)
-
-    def hasExpressionInLeftOrRightBound(self, portName):
-        return _pythonAPI.PortsInterface_hasExpressionInLeftOrRightBound(self, portName)
-
-    def getWidth(self, portName):
-        return _pythonAPI.PortsInterface_getWidth(self, portName)
-
-    def setWidth(self, portName, newWidth):
-        return _pythonAPI.PortsInterface_setWidth(self, portName, newWidth)
-
-    def getDefaultValue(self, portName, baseNumber=0):
-        return _pythonAPI.PortsInterface_getDefaultValue(self, portName, baseNumber)
-
-    def getDefaultValueFormattedExpression(self, portName):
-        return _pythonAPI.PortsInterface_getDefaultValueFormattedExpression(self, portName)
-
-    def getDefaultValueExpression(self, portName):
-        return _pythonAPI.PortsInterface_getDefaultValueExpression(self, portName)
-
-    def setDefaultValue(self, portName, newDefaultValue):
-        return _pythonAPI.PortsInterface_setDefaultValue(self, portName, newDefaultValue)
-
-    def getBusWidthValue(self, portName, baseNumber=0):
-        return _pythonAPI.PortsInterface_getBusWidthValue(self, portName, baseNumber)
-
-    def getBusWidthFormattedExpression(self, portName):
-        return _pythonAPI.PortsInterface_getBusWidthFormattedExpression(self, portName)
-
-    def getBusWidthExpression(self, portName):
-        return _pythonAPI.PortsInterface_getBusWidthExpression(self, portName)
-
-    def setBusWidth(self, portName, newBusWidth):
-        return _pythonAPI.PortsInterface_setBusWidth(self, portName, newBusWidth)
-
-    def getInitiative(self, portName):
-        return _pythonAPI.PortsInterface_getInitiative(self, portName)
-
-    def setInitiative(self, portName, newInitiative):
-        return _pythonAPI.PortsInterface_setInitiative(self, portName, newInitiative)
-
-    def getKind(self, portName):
-        return _pythonAPI.PortsInterface_getKind(self, portName)
-
-    def setKind(self, portName, newKind):
-        return _pythonAPI.PortsInterface_setKind(self, portName, newKind)
-
-    def getProtocolType(self, portName):
-        return _pythonAPI.PortsInterface_getProtocolType(self, portName)
-
-    def setProtocolType(self, portName, newProtocolType):
-        return _pythonAPI.PortsInterface_setProtocolType(self, portName, newProtocolType)
-
-    def getMaxConnectionsValue(self, portName, baseNumber=0):
-        return _pythonAPI.PortsInterface_getMaxConnectionsValue(self, portName, baseNumber)
-
-    def getMaxConnectionsFormattedExpression(self, portName):
-        return _pythonAPI.PortsInterface_getMaxConnectionsFormattedExpression(self, portName)
-
-    def getMaxConnectionsExpression(self, portName):
-        return _pythonAPI.PortsInterface_getMaxConnectionsExpression(self, portName)
-
-    def setMaxConnections(self, portName, newMaxConnections):
-        return _pythonAPI.PortsInterface_setMaxConnections(self, portName, newMaxConnections)
-
-    def getMinConnectionsValue(self, portName, baseNumber=0):
-        return _pythonAPI.PortsInterface_getMinConnectionsValue(self, portName, baseNumber)
-
-    def getMinConnectionsFormattedExpression(self, portName):
-        return _pythonAPI.PortsInterface_getMinConnectionsFormattedExpression(self, portName)
-
-    def getMinConnectionsExpression(self, portName):
-        return _pythonAPI.PortsInterface_getMinConnectionsExpression(self, portName)
-
-    def setMinConnections(self, portName, newMinConnections):
-        return _pythonAPI.PortsInterface_setMinConnections(self, portName, newMinConnections)
-
-    def addWirePort(self, *args):
-        return _pythonAPI.PortsInterface_addWirePort(self, *args)
-
-    def addTransactionalPort(self, *args):
-        return _pythonAPI.PortsInterface_addTransactionalPort(self, *args)
-
-    def removePort(self, portName):
-        return _pythonAPI.PortsInterface_removePort(self, portName)
-
-    def portLeftArrayValueIsValid(self, portName):
-        return _pythonAPI.PortsInterface_portLeftArrayValueIsValid(self, portName)
-
-    def portRightArrayValueIsValid(self, portName):
-        return _pythonAPI.PortsInterface_portRightArrayValueIsValid(self, portName)
-
-    def portHasValidTypes(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidTypes(self, portName)
-
-    def portIsWire(self, portName):
-        return _pythonAPI.PortsInterface_portIsWire(self, portName)
-
-    def portHasValidLeftBound(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidLeftBound(self, portName)
-
-    def portHasValidRightBound(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidRightBound(self, portName)
-
-    def portHasValidDefaultValue(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidDefaultValue(self, portName)
-
-    def portIsTransactional(self, portName):
-        return _pythonAPI.PortsInterface_portIsTransactional(self, portName)
-
-    def portHasValidBusWidth(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidBusWidth(self, portName)
-
-    def portHasValidInitiative(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidInitiative(self, portName)
-
-    def portHasValidKind(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidKind(self, portName)
-
-    def portHasValidProtocol(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidProtocol(self, portName)
-
-    def portHasValidMaxConnections(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidMaxConnections(self, portName)
-
-    def portHasValidMinConnections(self, portName):
-        return _pythonAPI.PortsInterface_portHasValidMinConnections(self, portName)
-
-    def getIconPathForPort(self, portName):
-        return _pythonAPI.PortsInterface_getIconPathForPort(self, portName)
-
-    def getPort(self, portName):
-        return _pythonAPI.PortsInterface_getPort(self, portName)
+    setPorts = _swig_new_instance_method(_pythonAPI.PortsInterface_setPorts)
+    portExists = _swig_new_instance_method(_pythonAPI.PortsInterface_portExists)
+    getTypeName = _swig_new_instance_method(_pythonAPI.PortsInterface_getTypeName)
+    setTypeName = _swig_new_instance_method(_pythonAPI.PortsInterface_setTypeName)
+    getArrayLeftValue = _swig_new_instance_method(_pythonAPI.PortsInterface_getArrayLeftValue)
+    getArrayLeftFormattedExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getArrayLeftFormattedExpression)
+    getArrayLeftExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getArrayLeftExpression)
+    setArrayLeft = _swig_new_instance_method(_pythonAPI.PortsInterface_setArrayLeft)
+    getArrayRightValue = _swig_new_instance_method(_pythonAPI.PortsInterface_getArrayRightValue)
+    getArrayRightFormattedExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getArrayRightFormattedExpression)
+    getArrayRightExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getArrayRightExpression)
+    setArrayRight = _swig_new_instance_method(_pythonAPI.PortsInterface_setArrayRight)
+    getTags = _swig_new_instance_method(_pythonAPI.PortsInterface_getTags)
+    setTags = _swig_new_instance_method(_pythonAPI.PortsInterface_setTags)
+    isAdHoc = _swig_new_instance_method(_pythonAPI.PortsInterface_isAdHoc)
+    setAdHoc = _swig_new_instance_method(_pythonAPI.PortsInterface_setAdHoc)
+    getDirection = _swig_new_instance_method(_pythonAPI.PortsInterface_getDirection)
+    getDirectionType = _swig_new_instance_method(_pythonAPI.PortsInterface_getDirectionType)
+    setDirection = _swig_new_instance_method(_pythonAPI.PortsInterface_setDirection)
+    getLeftBoundValue = _swig_new_instance_method(_pythonAPI.PortsInterface_getLeftBoundValue)
+    getLeftBoundFormattedExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getLeftBoundFormattedExpression)
+    getLeftBoundExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getLeftBoundExpression)
+    setLeftBound = _swig_new_instance_method(_pythonAPI.PortsInterface_setLeftBound)
+    getRightBoundValue = _swig_new_instance_method(_pythonAPI.PortsInterface_getRightBoundValue)
+    getRightBoundFormattedExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getRightBoundFormattedExpression)
+    getRightBoundExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getRightBoundExpression)
+    setRightBound = _swig_new_instance_method(_pythonAPI.PortsInterface_setRightBound)
+    hasExpressionInLeftOrRightBound = _swig_new_instance_method(_pythonAPI.PortsInterface_hasExpressionInLeftOrRightBound)
+    getWidth = _swig_new_instance_method(_pythonAPI.PortsInterface_getWidth)
+    setWidth = _swig_new_instance_method(_pythonAPI.PortsInterface_setWidth)
+    getDefaultValue = _swig_new_instance_method(_pythonAPI.PortsInterface_getDefaultValue)
+    getDefaultValueFormattedExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getDefaultValueFormattedExpression)
+    getDefaultValueExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getDefaultValueExpression)
+    setDefaultValue = _swig_new_instance_method(_pythonAPI.PortsInterface_setDefaultValue)
+    getBusWidthValue = _swig_new_instance_method(_pythonAPI.PortsInterface_getBusWidthValue)
+    getBusWidthFormattedExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getBusWidthFormattedExpression)
+    getBusWidthExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getBusWidthExpression)
+    setBusWidth = _swig_new_instance_method(_pythonAPI.PortsInterface_setBusWidth)
+    getInitiative = _swig_new_instance_method(_pythonAPI.PortsInterface_getInitiative)
+    setInitiative = _swig_new_instance_method(_pythonAPI.PortsInterface_setInitiative)
+    getKind = _swig_new_instance_method(_pythonAPI.PortsInterface_getKind)
+    setKind = _swig_new_instance_method(_pythonAPI.PortsInterface_setKind)
+    getProtocolType = _swig_new_instance_method(_pythonAPI.PortsInterface_getProtocolType)
+    setProtocolType = _swig_new_instance_method(_pythonAPI.PortsInterface_setProtocolType)
+    getMaxConnectionsValue = _swig_new_instance_method(_pythonAPI.PortsInterface_getMaxConnectionsValue)
+    getMaxConnectionsFormattedExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getMaxConnectionsFormattedExpression)
+    getMaxConnectionsExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getMaxConnectionsExpression)
+    setMaxConnections = _swig_new_instance_method(_pythonAPI.PortsInterface_setMaxConnections)
+    getMinConnectionsValue = _swig_new_instance_method(_pythonAPI.PortsInterface_getMinConnectionsValue)
+    getMinConnectionsFormattedExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getMinConnectionsFormattedExpression)
+    getMinConnectionsExpression = _swig_new_instance_method(_pythonAPI.PortsInterface_getMinConnectionsExpression)
+    setMinConnections = _swig_new_instance_method(_pythonAPI.PortsInterface_setMinConnections)
+    addWirePort = _swig_new_instance_method(_pythonAPI.PortsInterface_addWirePort)
+    addTransactionalPort = _swig_new_instance_method(_pythonAPI.PortsInterface_addTransactionalPort)
+    removePort = _swig_new_instance_method(_pythonAPI.PortsInterface_removePort)
+    portLeftArrayValueIsValid = _swig_new_instance_method(_pythonAPI.PortsInterface_portLeftArrayValueIsValid)
+    portRightArrayValueIsValid = _swig_new_instance_method(_pythonAPI.PortsInterface_portRightArrayValueIsValid)
+    portHasValidTypes = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidTypes)
+    portHasValidLeftBound = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidLeftBound)
+    portHasValidRightBound = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidRightBound)
+    portHasValidDefaultValue = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidDefaultValue)
+    portHasValidBusWidth = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidBusWidth)
+    portHasValidInitiative = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidInitiative)
+    portHasValidKind = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidKind)
+    portHasValidProtocol = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidProtocol)
+    portHasValidMaxConnections = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidMaxConnections)
+    portHasValidMinConnections = _swig_new_instance_method(_pythonAPI.PortsInterface_portHasValidMinConnections)
+    getIconPathForPort = _swig_new_instance_method(_pythonAPI.PortsInterface_getIconPathForPort)
+    getPort = _swig_new_instance_method(_pythonAPI.PortsInterface_getPort)
 
 # Register PortsInterface in _pythonAPI:
 _pythonAPI.PortsInterface_swigregister(PortsInterface)
 
 class AbstractParameterInterface(ParameterizableInterface, NameGroupInterface):
+    r"""Proxy of C++ AbstractParameterInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
 
     def __init__(self, *args, **kwargs):
         raise AttributeError("No constructor defined - class is abstract")
     __repr__ = _swig_repr
     __swig_destroy__ = _pythonAPI.delete_AbstractParameterInterface
-
-    def setChoices(self, newChoices):
-        return _pythonAPI.AbstractParameterInterface_setChoices(self, newChoices)
-
-    def setName(self, currentName, newName):
-        return _pythonAPI.AbstractParameterInterface_setName(self, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.AbstractParameterInterface_getDescription(self, itemName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.AbstractParameterInterface_setDescription(self, itemName, newDescription)
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.AbstractParameterInterface_getAllReferencesToIdInItem(self, itemName, valueID)
-
-    def getExpressionsInSelectedItems(self, parameterNames):
-        return _pythonAPI.AbstractParameterInterface_getExpressionsInSelectedItems(self, parameterNames)
-
-    def validateItems(self):
-        return _pythonAPI.AbstractParameterInterface_validateItems(self)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.AbstractParameterInterface_itemHasValidName(self, itemName)
-
-    def getDisplayName(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getDisplayName(self, parameterName)
-
-    def setDisplayName(self, parameterName, newDisplayName):
-        return _pythonAPI.AbstractParameterInterface_setDisplayName(self, parameterName, newDisplayName)
-
-    def getType(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getType(self, parameterName)
-
-    def setType(self, parameterName, newType):
-        return _pythonAPI.AbstractParameterInterface_setType(self, parameterName, newType)
-
-    def getBitWidthLeftValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.AbstractParameterInterface_getBitWidthLeftValue(self, parameterName, baseNumber)
-
-    def getBitWidthLeftFormattedExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getBitWidthLeftFormattedExpression(self, parameterName)
-
-    def getBitWidthLeftExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getBitWidthLeftExpression(self, parameterName)
-
-    def setBitWidthLeft(self, parameterName, newBitWidthLeft):
-        return _pythonAPI.AbstractParameterInterface_setBitWidthLeft(self, parameterName, newBitWidthLeft)
-
-    def getBitWidthRightValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.AbstractParameterInterface_getBitWidthRightValue(self, parameterName, baseNumber)
-
-    def getBitWidthRightFormattedExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getBitWidthRightFormattedExpression(self, parameterName)
-
-    def getBitWidthRightExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getBitWidthRightExpression(self, parameterName)
-
-    def setBitWidthRight(self, parameterName, newBitWidthRight):
-        return _pythonAPI.AbstractParameterInterface_setBitWidthRight(self, parameterName, newBitWidthRight)
-
-    def getMinimum(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getMinimum(self, parameterName)
-
-    def setMinimum(self, parameterName, newMinimum):
-        return _pythonAPI.AbstractParameterInterface_setMinimum(self, parameterName, newMinimum)
-
-    def getMaximum(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getMaximum(self, parameterName)
-
-    def setMaximum(self, parameterName, newMaximum):
-        return _pythonAPI.AbstractParameterInterface_setMaximum(self, parameterName, newMaximum)
-
-    def getChoice(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getChoice(self, parameterName)
-
-    def setChoice(self, parameterName, newChoice):
-        return _pythonAPI.AbstractParameterInterface_setChoice(self, parameterName, newChoice)
-
-    def getValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.AbstractParameterInterface_getValue(self, parameterName, baseNumber)
-
-    def getValueFormattedExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getValueFormattedExpression(self, parameterName)
-
-    def getValueExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getValueExpression(self, parameterName)
-
-    def setValue(self, parameterName, newValue):
-        return _pythonAPI.AbstractParameterInterface_setValue(self, parameterName, newValue)
-
-    def getResolve(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getResolve(self, parameterName)
-
-    def setResolve(self, parameterName, newResolve):
-        return _pythonAPI.AbstractParameterInterface_setResolve(self, parameterName, newResolve)
-
-    def getArrayLeftValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.AbstractParameterInterface_getArrayLeftValue(self, parameterName, baseNumber)
-
-    def getArrayLeftFormattedExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getArrayLeftFormattedExpression(self, parameterName)
-
-    def getArrayLeftExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getArrayLeftExpression(self, parameterName)
-
-    def setArrayLeft(self, parameterName, newArrayLeft):
-        return _pythonAPI.AbstractParameterInterface_setArrayLeft(self, parameterName, newArrayLeft)
-
-    def getArrayRightValue(self, parameterName, baseNumber=0):
-        return _pythonAPI.AbstractParameterInterface_getArrayRightValue(self, parameterName, baseNumber)
-
-    def getArrayRightFormattedExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getArrayRightFormattedExpression(self, parameterName)
-
-    def getArrayRightExpression(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getArrayRightExpression(self, parameterName)
-
-    def setArrayRight(self, parameterName, newArrayRight):
-        return _pythonAPI.AbstractParameterInterface_setArrayRight(self, parameterName, newArrayRight)
-
-    def getID(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getID(self, parameterName)
-
-    def setID(self, parameterName, newID):
-        return _pythonAPI.AbstractParameterInterface_setID(self, parameterName, newID)
-
-    def getUsageCount(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_getUsageCount(self, parameterName)
-
-    def setUsageCount(self, parameterName, newUsageCount):
-        return _pythonAPI.AbstractParameterInterface_setUsageCount(self, parameterName, newUsageCount)
-
-    def increaseUsageCount(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_increaseUsageCount(self, parameterName)
-
-    def reduceUsageCount(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_reduceUsageCount(self, parameterName)
-
-    def hasValidType(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_hasValidType(self, parameterName)
-
-    def hasValidBitWidth(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_hasValidBitWidth(self, parameterName)
-
-    def hasValidMinimum(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_hasValidMinimum(self, parameterName)
-
-    def hasValidMaximum(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_hasValidMaximum(self, parameterName)
-
-    def hasValidChoice(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_hasValidChoice(self, parameterName)
-
-    def hasValidValue(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_hasValidValue(self, parameterName)
-
-    def hasValidResolve(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_hasValidResolve(self, parameterName)
-
-    def hasValidArrayValues(self, parameterName):
-        return _pythonAPI.AbstractParameterInterface_hasValidArrayValues(self, parameterName)
+    setChoices = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setChoices)
+    getExpressionsInSelectedItems = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getExpressionsInSelectedItems)
+    getDisplayName = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getDisplayName)
+    setDisplayName = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setDisplayName)
+    getType = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getType)
+    setType = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setType)
+    getBitWidthLeftValue = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getBitWidthLeftValue)
+    getBitWidthLeftFormattedExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getBitWidthLeftFormattedExpression)
+    getBitWidthLeftExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getBitWidthLeftExpression)
+    setBitWidthLeft = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setBitWidthLeft)
+    getBitWidthRightValue = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getBitWidthRightValue)
+    getBitWidthRightFormattedExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getBitWidthRightFormattedExpression)
+    getBitWidthRightExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getBitWidthRightExpression)
+    setBitWidthRight = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setBitWidthRight)
+    getMinimum = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getMinimum)
+    setMinimum = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setMinimum)
+    getMaximum = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getMaximum)
+    setMaximum = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setMaximum)
+    getChoice = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getChoice)
+    setChoice = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setChoice)
+    getValue = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getValue)
+    getValueFormattedExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getValueFormattedExpression)
+    getValueExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getValueExpression)
+    setValue = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setValue)
+    getResolve = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getResolve)
+    setResolve = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setResolve)
+    getArrayLeftValue = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getArrayLeftValue)
+    getArrayLeftFormattedExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getArrayLeftFormattedExpression)
+    getArrayLeftExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getArrayLeftExpression)
+    setArrayLeft = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setArrayLeft)
+    getArrayRightValue = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getArrayRightValue)
+    getArrayRightFormattedExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getArrayRightFormattedExpression)
+    getArrayRightExpression = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getArrayRightExpression)
+    setArrayRight = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setArrayRight)
+    getID = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getID)
+    setID = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setID)
+    getUsageCount = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_getUsageCount)
+    setUsageCount = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_setUsageCount)
+    increaseUsageCount = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_increaseUsageCount)
+    reduceUsageCount = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_reduceUsageCount)
+    hasValidType = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_hasValidType)
+    hasValidBitWidth = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_hasValidBitWidth)
+    hasValidMinimum = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_hasValidMinimum)
+    hasValidMaximum = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_hasValidMaximum)
+    hasValidChoice = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_hasValidChoice)
+    hasValidValue = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_hasValidValue)
+    hasValidResolve = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_hasValidResolve)
+    hasValidArrayValues = _swig_new_instance_method(_pythonAPI.AbstractParameterInterface_hasValidArrayValues)
 
 # Register AbstractParameterInterface in _pythonAPI:
 _pythonAPI.AbstractParameterInterface_swigregister(AbstractParameterInterface)
 
 class ParametersInterface(AbstractParameterInterface):
+    r"""Proxy of C++ ParametersInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, validator, expressionParser, expressionFormatter):
+        r"""
+        __init__(ParametersInterface self, QSharedPointer< ParameterValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> ParametersInterface
+
+        Parameters
+        ----------
+        validator: QSharedPointer< ParameterValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+
+        """
         _pythonAPI.ParametersInterface_swiginit(self, _pythonAPI.new_ParametersInterface(validator, expressionParser, expressionFormatter))
     __swig_destroy__ = _pythonAPI.delete_ParametersInterface
-
-    def setParameters(self, newParameters):
-        return _pythonAPI.ParametersInterface_setParameters(self, newParameters)
-
-    def getItemIndex(self, itemName):
-        return _pythonAPI.ParametersInterface_getItemIndex(self, itemName)
-
-    def getIndexedItemName(self, itemIndex):
-        return _pythonAPI.ParametersInterface_getIndexedItemName(self, itemIndex)
-
-    def itemCount(self):
-        return _pythonAPI.ParametersInterface_itemCount(self)
-
-    def getItemNames(self):
-        return _pythonAPI.ParametersInterface_getItemNames(self)
-
-    def addParameter(self, *args):
-        return _pythonAPI.ParametersInterface_addParameter(self, *args)
-
-    def removeParameter(self, parameterName):
-        return _pythonAPI.ParametersInterface_removeParameter(self, parameterName)
+    setParameters = _swig_new_instance_method(_pythonAPI.ParametersInterface_setParameters)
+    addParameter = _swig_new_instance_method(_pythonAPI.ParametersInterface_addParameter)
+    removeParameter = _swig_new_instance_method(_pythonAPI.ParametersInterface_removeParameter)
 
 # Register ParametersInterface in _pythonAPI:
 _pythonAPI.ParametersInterface_swigregister(ParametersInterface)
 
 class MemoryMapInterface(ParameterizableInterface, NameGroupInterface):
+    r"""Proxy of C++ MemoryMapInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, mapValidator, expressionParser, expressionFormatter, subInterface):
+        r"""
+        __init__(MemoryMapInterface self, QSharedPointer< MemoryMapValidator > mapValidator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, AddressBlockInterface subInterface) -> MemoryMapInterface
+
+        Parameters
+        ----------
+        mapValidator: QSharedPointer< MemoryMapValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+        subInterface: AddressBlockInterface *
+
+        """
         _pythonAPI.MemoryMapInterface_swiginit(self, _pythonAPI.new_MemoryMapInterface(mapValidator, expressionParser, expressionFormatter, subInterface))
     __swig_destroy__ = _pythonAPI.delete_MemoryMapInterface
-
-    def setMemoryMaps(self, component):
-        return _pythonAPI.MemoryMapInterface_setMemoryMaps(self, component)
-
-    def getItemIndex(self, itemName):
-        return _pythonAPI.MemoryMapInterface_getItemIndex(self, itemName)
-
-    def getMemoryRemapIndex(self, mapName, remapName):
-        return _pythonAPI.MemoryMapInterface_getMemoryRemapIndex(self, mapName, remapName)
-
-    def getIndexedItemName(self, itemIndex):
-        return _pythonAPI.MemoryMapInterface_getIndexedItemName(self, itemIndex)
-
-    def getIndexedRemapName(self, mapName, itemIndex):
-        return _pythonAPI.MemoryMapInterface_getIndexedRemapName(self, mapName, itemIndex)
-
-    def itemCount(self):
-        return _pythonAPI.MemoryMapInterface_itemCount(self)
-
-    def remapCount(self, mapName):
-        return _pythonAPI.MemoryMapInterface_remapCount(self, mapName)
-
-    def getItemNames(self):
-        return _pythonAPI.MemoryMapInterface_getItemNames(self)
-
-    def getRemapNames(self, mapName):
-        return _pythonAPI.MemoryMapInterface_getRemapNames(self, mapName)
-
-    def setName(self, currentName, newName):
-        return _pythonAPI.MemoryMapInterface_setName(self, currentName, newName)
-
-    def setRemapName(self, mapName, currentName, newName):
-        return _pythonAPI.MemoryMapInterface_setRemapName(self, mapName, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.MemoryMapInterface_getDescription(self, itemName)
-
-    def getRemapDescription(self, mapName, remapName):
-        return _pythonAPI.MemoryMapInterface_getRemapDescription(self, mapName, remapName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.MemoryMapInterface_setDescription(self, itemName, newDescription)
-
-    def setRemapDescription(self, mapName, itemName, newDescription):
-        return _pythonAPI.MemoryMapInterface_setRemapDescription(self, mapName, itemName, newDescription)
-
-    def getIsPresentValue(self, *args):
-        return _pythonAPI.MemoryMapInterface_getIsPresentValue(self, *args)
-
-    def getIsPresentFormattedExpression(self, *args):
-        return _pythonAPI.MemoryMapInterface_getIsPresentFormattedExpression(self, *args)
-
-    def getIsPresentExpression(self, *args):
-        return _pythonAPI.MemoryMapInterface_getIsPresentExpression(self, *args)
-
-    def setIsPresent(self, *args):
-        return _pythonAPI.MemoryMapInterface_setIsPresent(self, *args)
-
-    def getRemapState(self, *args):
-        return _pythonAPI.MemoryMapInterface_getRemapState(self, *args)
-
-    def setRemapState(self, mapName, remapName, newRemapState):
-        return _pythonAPI.MemoryMapInterface_setRemapState(self, mapName, remapName, newRemapState)
-
-    def getAddressUnitBits(self, mapName):
-        return _pythonAPI.MemoryMapInterface_getAddressUnitBits(self, mapName)
-
-    def setAddressUnitBits(self, mapName, newAddressUnitBits):
-        return _pythonAPI.MemoryMapInterface_setAddressUnitBits(self, mapName, newAddressUnitBits)
-
-    def getInterfaceBinding(self, mapName):
-        return _pythonAPI.MemoryMapInterface_getInterfaceBinding(self, mapName)
-
-    def getAssociatedSlaveInterfaces(self, mapName):
-        return _pythonAPI.MemoryMapInterface_getAssociatedSlaveInterfaces(self, mapName)
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.MemoryMapInterface_getAllReferencesToIdInItem(self, itemName, valueID)
-
-    def getMapExpressions(self, mapName, remapName):
-        return _pythonAPI.MemoryMapInterface_getMapExpressions(self, mapName, remapName)
-
-    def getAllReferencesToIdInRemapItem(self, mapName, remapName, valueID):
-        return _pythonAPI.MemoryMapInterface_getAllReferencesToIdInRemapItem(self, mapName, remapName, valueID)
-
-    def validateItems(self):
-        return _pythonAPI.MemoryMapInterface_validateItems(self)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.MemoryMapInterface_itemHasValidName(self, itemName)
-
-    def remapHasValidName(self, mapName, itemName):
-        return _pythonAPI.MemoryMapInterface_remapHasValidName(self, mapName, itemName)
-
-    def remapHasValidRemapState(self, mapName, itemName):
-        return _pythonAPI.MemoryMapInterface_remapHasValidRemapState(self, mapName, itemName)
-
-    def itemHasValidIsPresent(self, *args):
-        return _pythonAPI.MemoryMapInterface_itemHasValidIsPresent(self, *args)
-
-    def memoryMapHasValidAddressUnitBits(self, mapName):
-        return _pythonAPI.MemoryMapInterface_memoryMapHasValidAddressUnitBits(self, mapName)
-
-    def addMemoryMap(self, *args):
-        return _pythonAPI.MemoryMapInterface_addMemoryMap(self, *args)
-
-    def addMemoryRemap(self, *args):
-        return _pythonAPI.MemoryMapInterface_addMemoryRemap(self, *args)
-
-    def removeMap(self, mapName):
-        return _pythonAPI.MemoryMapInterface_removeMap(self, mapName)
-
-    def removeRemap(self, mapName, remapName):
-        return _pythonAPI.MemoryMapInterface_removeRemap(self, mapName, remapName)
-
-    def copyRows(self, selectedRows):
-        return _pythonAPI.MemoryMapInterface_copyRows(self, selectedRows)
-
-    def pasteMemoryMaps(self):
-        return _pythonAPI.MemoryMapInterface_pasteMemoryMaps(self)
-
-    def pasteMemoryRemaps(self, memoryMapName):
-        return _pythonAPI.MemoryMapInterface_pasteMemoryRemaps(self, memoryMapName)
-
-    def getSubInterface(self):
-        return _pythonAPI.MemoryMapInterface_getSubInterface(self)
-
-    def getMapPointer(self, mapName):
-        return _pythonAPI.MemoryMapInterface_getMapPointer(self, mapName)
-
-    def getRemapPointer(self, mapName, remapName):
-        return _pythonAPI.MemoryMapInterface_getRemapPointer(self, mapName, remapName)
+    setMemoryMaps = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_setMemoryMaps)
+    getMemoryRemapIndex = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getMemoryRemapIndex)
+    getIndexedRemapName = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getIndexedRemapName)
+    remapCount = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_remapCount)
+    getRemapNames = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getRemapNames)
+    setRemapName = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_setRemapName)
+    getRemapDescription = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getRemapDescription)
+    setRemapDescription = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_setRemapDescription)
+    getIsPresentValue = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getIsPresentValue)
+    getIsPresentFormattedExpression = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getIsPresentFormattedExpression)
+    getIsPresentExpression = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getIsPresentExpression)
+    setIsPresent = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_setIsPresent)
+    getRemapState = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getRemapState)
+    setRemapState = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_setRemapState)
+    getAddressUnitBits = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getAddressUnitBits)
+    setAddressUnitBits = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_setAddressUnitBits)
+    getInterfaceBinding = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getInterfaceBinding)
+    getAssociatedSlaveInterfaces = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getAssociatedSlaveInterfaces)
+    getMapExpressions = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getMapExpressions)
+    getAllReferencesToIdInRemapItem = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getAllReferencesToIdInRemapItem)
+    remapHasValidName = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_remapHasValidName)
+    remapHasValidRemapState = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_remapHasValidRemapState)
+    itemHasValidIsPresent = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_itemHasValidIsPresent)
+    memoryMapHasValidAddressUnitBits = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_memoryMapHasValidAddressUnitBits)
+    addMemoryMap = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_addMemoryMap)
+    addMemoryRemap = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_addMemoryRemap)
+    removeMap = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_removeMap)
+    removeRemap = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_removeRemap)
+    copyRows = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_copyRows)
+    pasteMemoryMaps = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_pasteMemoryMaps)
+    pasteMemoryRemaps = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_pasteMemoryRemaps)
+    getSubInterface = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getSubInterface)
+    getMapPointer = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getMapPointer)
+    getRemapPointer = _swig_new_instance_method(_pythonAPI.MemoryMapInterface_getRemapPointer)
 
 # Register MemoryMapInterface in _pythonAPI:
 _pythonAPI.MemoryMapInterface_swigregister(MemoryMapInterface)
 
 class AddressBlockInterface(ParameterizableInterface, NameGroupInterface):
+    r"""Proxy of C++ AddressBlockInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, blockValidator, expressionParser, expressionFormatter, subInterface):
+        r"""
+        __init__(AddressBlockInterface self, QSharedPointer< AddressBlockValidator > blockValidator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, RegisterInterface subInterface) -> AddressBlockInterface
+
+        Parameters
+        ----------
+        blockValidator: QSharedPointer< AddressBlockValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+        subInterface: RegisterInterface *
+
+        """
         _pythonAPI.AddressBlockInterface_swiginit(self, _pythonAPI.new_AddressBlockInterface(blockValidator, expressionParser, expressionFormatter, subInterface))
     __swig_destroy__ = _pythonAPI.delete_AddressBlockInterface
-
-    def setAddressBlocks(self, newAddressBlocks):
-        return _pythonAPI.AddressBlockInterface_setAddressBlocks(self, newAddressBlocks)
-
-    def getItemIndex(self, itemName):
-        return _pythonAPI.AddressBlockInterface_getItemIndex(self, itemName)
-
-    def getIndexedItemName(self, itemIndex):
-        return _pythonAPI.AddressBlockInterface_getIndexedItemName(self, itemIndex)
-
-    def itemCount(self):
-        return _pythonAPI.AddressBlockInterface_itemCount(self)
-
-    def getItemNames(self):
-        return _pythonAPI.AddressBlockInterface_getItemNames(self)
-
-    def setName(self, currentName, newName):
-        return _pythonAPI.AddressBlockInterface_setName(self, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.AddressBlockInterface_getDescription(self, itemName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.AddressBlockInterface_setDescription(self, itemName, newDescription)
-
-    def getBaseAddressValue(self, blockName, baseNumber=0):
-        return _pythonAPI.AddressBlockInterface_getBaseAddressValue(self, blockName, baseNumber)
-
-    def getBaseAddressFormattedExpression(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getBaseAddressFormattedExpression(self, blockName)
-
-    def getBaseAddressExpression(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getBaseAddressExpression(self, blockName)
-
-    def setBaseAddress(self, blockName, newBaseAdress):
-        return _pythonAPI.AddressBlockInterface_setBaseAddress(self, blockName, newBaseAdress)
-
-    def getIsPresentValue(self, blockName, baseNumber=0):
-        return _pythonAPI.AddressBlockInterface_getIsPresentValue(self, blockName, baseNumber)
-
-    def getIsPresentFormattedExpression(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getIsPresentFormattedExpression(self, blockName)
-
-    def getIsPresentExpression(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getIsPresentExpression(self, blockName)
-
-    def setIsPresent(self, blockName, newIsPresent):
-        return _pythonAPI.AddressBlockInterface_setIsPresent(self, blockName, newIsPresent)
-
-    def getRangeValue(self, blockName, baseNumber=0):
-        return _pythonAPI.AddressBlockInterface_getRangeValue(self, blockName, baseNumber)
-
-    def getRangeFormattedExpression(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getRangeFormattedExpression(self, blockName)
-
-    def getRangeExpression(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getRangeExpression(self, blockName)
-
-    def setRange(self, blockName, newRange):
-        return _pythonAPI.AddressBlockInterface_setRange(self, blockName, newRange)
-
-    def getWidthValue(self, blockName, baseNumber=0):
-        return _pythonAPI.AddressBlockInterface_getWidthValue(self, blockName, baseNumber)
-
-    def getWidthFormattedExpression(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getWidthFormattedExpression(self, blockName)
-
-    def getWidthExpression(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getWidthExpression(self, blockName)
-
-    def setWidth(self, blockName, newWidth):
-        return _pythonAPI.AddressBlockInterface_setWidth(self, blockName, newWidth)
-
-    def getUsageString(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getUsageString(self, blockName)
-
-    def getUsage(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getUsage(self, blockName)
-
-    def setUsage(self, blockName, newUsage):
-        return _pythonAPI.AddressBlockInterface_setUsage(self, blockName, newUsage)
-
-    def getAccessString(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getAccessString(self, blockName)
-
-    def getAccess(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getAccess(self, blockName)
-
-    def setAccess(self, blockName, newAccess):
-        return _pythonAPI.AddressBlockInterface_setAccess(self, blockName, newAccess)
-
-    def getVolatile(self, blockName):
-        return _pythonAPI.AddressBlockInterface_getVolatile(self, blockName)
-
-    def setVolatile(self, *args):
-        return _pythonAPI.AddressBlockInterface_setVolatile(self, *args)
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.AddressBlockInterface_getAllReferencesToIdInItem(self, itemName, valueID)
-
-    def validateItems(self):
-        return _pythonAPI.AddressBlockInterface_validateItems(self)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.AddressBlockInterface_itemHasValidName(self, itemName)
-
-    def hasValidBaseAddress(self, itemName):
-        return _pythonAPI.AddressBlockInterface_hasValidBaseAddress(self, itemName)
-
-    def hasValidRange(self, itemName):
-        return _pythonAPI.AddressBlockInterface_hasValidRange(self, itemName)
-
-    def hasValidWidth(self, itemName):
-        return _pythonAPI.AddressBlockInterface_hasValidWidth(self, itemName)
-
-    def hasValidIsPresent(self, itemName):
-        return _pythonAPI.AddressBlockInterface_hasValidIsPresent(self, itemName)
-
-    def hasValidUsage(self, itemName):
-        return _pythonAPI.AddressBlockInterface_hasValidUsage(self, itemName)
-
-    def addBlock(self, *args):
-        return _pythonAPI.AddressBlockInterface_addBlock(self, *args)
-
-    def removeBlock(self, blockName):
-        return _pythonAPI.AddressBlockInterface_removeBlock(self, blockName)
-
-    def copyRows(self, selectedRows):
-        return _pythonAPI.AddressBlockInterface_copyRows(self, selectedRows)
-
-    def pasteRows(self):
-        return _pythonAPI.AddressBlockInterface_pasteRows(self)
-
-    def getPasteRowCount(self):
-        return _pythonAPI.AddressBlockInterface_getPasteRowCount(self)
-
-    def getExpressionsInSelectedItems(self, itemNames):
-        return _pythonAPI.AddressBlockInterface_getExpressionsInSelectedItems(self, itemNames)
-
-    def setAddressUnitBits(self, newAddressUnitbits):
-        return _pythonAPI.AddressBlockInterface_setAddressUnitBits(self, newAddressUnitbits)
-
-    def getSubInterface(self):
-        return _pythonAPI.AddressBlockInterface_getSubInterface(self)
-
-    def hasRegisters(self, blockName):
-        return _pythonAPI.AddressBlockInterface_hasRegisters(self, blockName)
+    setAddressBlocks = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setAddressBlocks)
+    getBaseAddressValue = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getBaseAddressValue)
+    getBaseAddressFormattedExpression = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getBaseAddressFormattedExpression)
+    getBaseAddressExpression = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getBaseAddressExpression)
+    setBaseAddress = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setBaseAddress)
+    getIsPresentValue = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getIsPresentValue)
+    getIsPresentFormattedExpression = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getIsPresentFormattedExpression)
+    getIsPresentExpression = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getIsPresentExpression)
+    setIsPresent = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setIsPresent)
+    getRangeValue = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getRangeValue)
+    getRangeFormattedExpression = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getRangeFormattedExpression)
+    getRangeExpression = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getRangeExpression)
+    setRange = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setRange)
+    getWidthValue = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getWidthValue)
+    getWidthFormattedExpression = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getWidthFormattedExpression)
+    getWidthExpression = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getWidthExpression)
+    setWidth = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setWidth)
+    getUsageString = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getUsageString)
+    getUsage = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getUsage)
+    setUsage = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setUsage)
+    getAccessString = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getAccessString)
+    getAccess = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getAccess)
+    setAccess = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setAccess)
+    getVolatile = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getVolatile)
+    setVolatile = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setVolatile)
+    hasValidBaseAddress = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_hasValidBaseAddress)
+    hasValidRange = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_hasValidRange)
+    hasValidWidth = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_hasValidWidth)
+    hasValidIsPresent = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_hasValidIsPresent)
+    hasValidUsage = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_hasValidUsage)
+    addBlock = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_addBlock)
+    removeBlock = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_removeBlock)
+    copyRows = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_copyRows)
+    pasteRows = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_pasteRows)
+    getPasteRowCount = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getPasteRowCount)
+    getExpressionsInSelectedItems = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getExpressionsInSelectedItems)
+    setAddressUnitBits = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_setAddressUnitBits)
+    getSubInterface = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_getSubInterface)
+    hasRegisters = _swig_new_instance_method(_pythonAPI.AddressBlockInterface_hasRegisters)
 
 # Register AddressBlockInterface in _pythonAPI:
 _pythonAPI.AddressBlockInterface_swigregister(AddressBlockInterface)
 
 class RegisterInterface(ParameterizableInterface, NameGroupInterface):
+    r"""Proxy of C++ RegisterInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, validator, expressionParser, expressionFormatter, subInterface):
+        r"""
+        __init__(RegisterInterface self, QSharedPointer< RegisterValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, FieldInterface subInterface) -> RegisterInterface
+
+        Parameters
+        ----------
+        validator: QSharedPointer< RegisterValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+        subInterface: FieldInterface *
+
+        """
         _pythonAPI.RegisterInterface_swiginit(self, _pythonAPI.new_RegisterInterface(validator, expressionParser, expressionFormatter, subInterface))
     __swig_destroy__ = _pythonAPI.delete_RegisterInterface
-
-    def setRegisters(self, newRegisterData):
-        return _pythonAPI.RegisterInterface_setRegisters(self, newRegisterData)
-
-    def getItemIndex(self, itemName):
-        return _pythonAPI.RegisterInterface_getItemIndex(self, itemName)
-
-    def getIndexedItemName(self, itemIndex):
-        return _pythonAPI.RegisterInterface_getIndexedItemName(self, itemIndex)
-
-    def itemCount(self):
-        return _pythonAPI.RegisterInterface_itemCount(self)
-
-    def registerDataCount(self):
-        return _pythonAPI.RegisterInterface_registerDataCount(self)
-
-    def indexInRegisterData(self, index):
-        return _pythonAPI.RegisterInterface_indexInRegisterData(self, index)
-
-    def getItemNames(self):
-        return _pythonAPI.RegisterInterface_getItemNames(self)
-
-    def setName(self, currentName, newName):
-        return _pythonAPI.RegisterInterface_setName(self, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.RegisterInterface_getDescription(self, itemName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.RegisterInterface_setDescription(self, itemName, newDescription)
-
-    def getOffsetValue(self, registerName, baseNumber=0):
-        return _pythonAPI.RegisterInterface_getOffsetValue(self, registerName, baseNumber)
-
-    def getOffsetFormattedExpression(self, registerName):
-        return _pythonAPI.RegisterInterface_getOffsetFormattedExpression(self, registerName)
-
-    def getOffsetExpression(self, registerName):
-        return _pythonAPI.RegisterInterface_getOffsetExpression(self, registerName)
-
-    def setOffset(self, registerName, newOffset):
-        return _pythonAPI.RegisterInterface_setOffset(self, registerName, newOffset)
-
-    def getDimensionValue(self, registerName, baseNumber=0):
-        return _pythonAPI.RegisterInterface_getDimensionValue(self, registerName, baseNumber)
-
-    def getDimensionFormattedExpression(self, registerName):
-        return _pythonAPI.RegisterInterface_getDimensionFormattedExpression(self, registerName)
-
-    def getDimensionExpression(self, registerName):
-        return _pythonAPI.RegisterInterface_getDimensionExpression(self, registerName)
-
-    def setDimension(self, registerName, newDimension):
-        return _pythonAPI.RegisterInterface_setDimension(self, registerName, newDimension)
-
-    def getIsPresentValue(self, registerName, baseNumber=0):
-        return _pythonAPI.RegisterInterface_getIsPresentValue(self, registerName, baseNumber)
-
-    def getIsPresentFormattedExpression(self, registerName):
-        return _pythonAPI.RegisterInterface_getIsPresentFormattedExpression(self, registerName)
-
-    def getIsPresentExpression(self, registerName):
-        return _pythonAPI.RegisterInterface_getIsPresentExpression(self, registerName)
-
-    def setIsPresent(self, registerName, newIsPresent):
-        return _pythonAPI.RegisterInterface_setIsPresent(self, registerName, newIsPresent)
-
-    def getSizeValue(self, registerName, baseNumber=0):
-        return _pythonAPI.RegisterInterface_getSizeValue(self, registerName, baseNumber)
-
-    def getSizeFormattedExpression(self, registerName):
-        return _pythonAPI.RegisterInterface_getSizeFormattedExpression(self, registerName)
-
-    def getSizeExpression(self, registerName):
-        return _pythonAPI.RegisterInterface_getSizeExpression(self, registerName)
-
-    def setSize(self, registerName, newSize):
-        return _pythonAPI.RegisterInterface_setSize(self, registerName, newSize)
-
-    def getVolatile(self, registerName):
-        return _pythonAPI.RegisterInterface_getVolatile(self, registerName)
-
-    def setVolatile(self, registerName, newVolatile):
-        return _pythonAPI.RegisterInterface_setVolatile(self, registerName, newVolatile)
-
-    def getAccessString(self, registerName):
-        return _pythonAPI.RegisterInterface_getAccessString(self, registerName)
-
-    def getAccess(self, registerName):
-        return _pythonAPI.RegisterInterface_getAccess(self, registerName)
-
-    def setAccess(self, registerName, newAccess):
-        return _pythonAPI.RegisterInterface_setAccess(self, registerName, newAccess)
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.RegisterInterface_getAllReferencesToIdInItem(self, itemName, valueID)
-
-    def validateItems(self):
-        return _pythonAPI.RegisterInterface_validateItems(self)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.RegisterInterface_itemHasValidName(self, itemName)
-
-    def hasValidDimension(self, registerName):
-        return _pythonAPI.RegisterInterface_hasValidDimension(self, registerName)
-
-    def hasValidOffset(self, registerName):
-        return _pythonAPI.RegisterInterface_hasValidOffset(self, registerName)
-
-    def hasValidIsPresent(self, registerName):
-        return _pythonAPI.RegisterInterface_hasValidIsPresent(self, registerName)
-
-    def hasValidSize(self, registerName):
-        return _pythonAPI.RegisterInterface_hasValidSize(self, registerName)
-
-    def addRegister(self, *args):
-        return _pythonAPI.RegisterInterface_addRegister(self, *args)
-
-    def removeRegister(self, registerName, dataIndex):
-        return _pythonAPI.RegisterInterface_removeRegister(self, registerName, dataIndex)
-
-    def copyRows(self, selectedRows):
-        return _pythonAPI.RegisterInterface_copyRows(self, selectedRows)
-
-    def pasteRows(self):
-        return _pythonAPI.RegisterInterface_pasteRows(self)
-
-    def getPasteRowCount(self):
-        return _pythonAPI.RegisterInterface_getPasteRowCount(self)
-
-    def getExpressionsInSelectedRegisters(self, registerNames):
-        return _pythonAPI.RegisterInterface_getExpressionsInSelectedRegisters(self, registerNames)
-
-    def setAddressUnitBits(self, newAddressUnitbits):
-        return _pythonAPI.RegisterInterface_setAddressUnitBits(self, newAddressUnitbits)
-
-    def getSubInterface(self):
-        return _pythonAPI.RegisterInterface_getSubInterface(self)
+    setRegisters = _swig_new_instance_method(_pythonAPI.RegisterInterface_setRegisters)
+    registerDataCount = _swig_new_instance_method(_pythonAPI.RegisterInterface_registerDataCount)
+    indexInRegisterData = _swig_new_instance_method(_pythonAPI.RegisterInterface_indexInRegisterData)
+    getOffsetValue = _swig_new_instance_method(_pythonAPI.RegisterInterface_getOffsetValue)
+    getOffsetFormattedExpression = _swig_new_instance_method(_pythonAPI.RegisterInterface_getOffsetFormattedExpression)
+    getOffsetExpression = _swig_new_instance_method(_pythonAPI.RegisterInterface_getOffsetExpression)
+    setOffset = _swig_new_instance_method(_pythonAPI.RegisterInterface_setOffset)
+    getDimensionValue = _swig_new_instance_method(_pythonAPI.RegisterInterface_getDimensionValue)
+    getDimensionFormattedExpression = _swig_new_instance_method(_pythonAPI.RegisterInterface_getDimensionFormattedExpression)
+    getDimensionExpression = _swig_new_instance_method(_pythonAPI.RegisterInterface_getDimensionExpression)
+    setDimension = _swig_new_instance_method(_pythonAPI.RegisterInterface_setDimension)
+    getIsPresentValue = _swig_new_instance_method(_pythonAPI.RegisterInterface_getIsPresentValue)
+    getIsPresentFormattedExpression = _swig_new_instance_method(_pythonAPI.RegisterInterface_getIsPresentFormattedExpression)
+    getIsPresentExpression = _swig_new_instance_method(_pythonAPI.RegisterInterface_getIsPresentExpression)
+    setIsPresent = _swig_new_instance_method(_pythonAPI.RegisterInterface_setIsPresent)
+    getSizeValue = _swig_new_instance_method(_pythonAPI.RegisterInterface_getSizeValue)
+    getSizeFormattedExpression = _swig_new_instance_method(_pythonAPI.RegisterInterface_getSizeFormattedExpression)
+    getSizeExpression = _swig_new_instance_method(_pythonAPI.RegisterInterface_getSizeExpression)
+    setSize = _swig_new_instance_method(_pythonAPI.RegisterInterface_setSize)
+    getVolatile = _swig_new_instance_method(_pythonAPI.RegisterInterface_getVolatile)
+    setVolatile = _swig_new_instance_method(_pythonAPI.RegisterInterface_setVolatile)
+    getAccessString = _swig_new_instance_method(_pythonAPI.RegisterInterface_getAccessString)
+    getAccess = _swig_new_instance_method(_pythonAPI.RegisterInterface_getAccess)
+    setAccess = _swig_new_instance_method(_pythonAPI.RegisterInterface_setAccess)
+    hasValidDimension = _swig_new_instance_method(_pythonAPI.RegisterInterface_hasValidDimension)
+    hasValidOffset = _swig_new_instance_method(_pythonAPI.RegisterInterface_hasValidOffset)
+    hasValidIsPresent = _swig_new_instance_method(_pythonAPI.RegisterInterface_hasValidIsPresent)
+    hasValidSize = _swig_new_instance_method(_pythonAPI.RegisterInterface_hasValidSize)
+    addRegister = _swig_new_instance_method(_pythonAPI.RegisterInterface_addRegister)
+    removeRegister = _swig_new_instance_method(_pythonAPI.RegisterInterface_removeRegister)
+    copyRows = _swig_new_instance_method(_pythonAPI.RegisterInterface_copyRows)
+    pasteRows = _swig_new_instance_method(_pythonAPI.RegisterInterface_pasteRows)
+    getPasteRowCount = _swig_new_instance_method(_pythonAPI.RegisterInterface_getPasteRowCount)
+    getExpressionsInSelectedRegisters = _swig_new_instance_method(_pythonAPI.RegisterInterface_getExpressionsInSelectedRegisters)
+    setAddressUnitBits = _swig_new_instance_method(_pythonAPI.RegisterInterface_setAddressUnitBits)
+    getSubInterface = _swig_new_instance_method(_pythonAPI.RegisterInterface_getSubInterface)
 
 # Register RegisterInterface in _pythonAPI:
 _pythonAPI.RegisterInterface_swigregister(RegisterInterface)
 
 class FieldInterface(ParameterizableInterface, NameGroupInterface):
+    r"""Proxy of C++ FieldInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, validator, expressionParser, expressionFormatter, subInterface):
+        r"""
+        __init__(FieldInterface self, QSharedPointer< FieldValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, ResetInterface subInterface) -> FieldInterface
+
+        Parameters
+        ----------
+        validator: QSharedPointer< FieldValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+        subInterface: ResetInterface *
+
+        """
         _pythonAPI.FieldInterface_swiginit(self, _pythonAPI.new_FieldInterface(validator, expressionParser, expressionFormatter, subInterface))
     __swig_destroy__ = _pythonAPI.delete_FieldInterface
-
-    def setFields(self, newFields):
-        return _pythonAPI.FieldInterface_setFields(self, newFields)
-
-    def getItemIndex(self, itemName):
-        return _pythonAPI.FieldInterface_getItemIndex(self, itemName)
-
-    def getIndexedItemName(self, itemIndex):
-        return _pythonAPI.FieldInterface_getIndexedItemName(self, itemIndex)
-
-    def itemCount(self):
-        return _pythonAPI.FieldInterface_itemCount(self)
-
-    def getItemNames(self):
-        return _pythonAPI.FieldInterface_getItemNames(self)
-
-    def setName(self, currentName, newName):
-        return _pythonAPI.FieldInterface_setName(self, currentName, newName)
-
-    def getDescription(self, itemName):
-        return _pythonAPI.FieldInterface_getDescription(self, itemName)
-
-    def setDescription(self, itemName, newDescription):
-        return _pythonAPI.FieldInterface_setDescription(self, itemName, newDescription)
-
-    def getOffsetValue(self, fieldName, baseNumber=0):
-        return _pythonAPI.FieldInterface_getOffsetValue(self, fieldName, baseNumber)
-
-    def getOffsetFormattedExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getOffsetFormattedExpression(self, fieldName)
-
-    def getOffsetExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getOffsetExpression(self, fieldName)
-
-    def setOffset(self, fieldName, newOffset):
-        return _pythonAPI.FieldInterface_setOffset(self, fieldName, newOffset)
-
-    def getWidthValue(self, fieldName, baseNumber=0):
-        return _pythonAPI.FieldInterface_getWidthValue(self, fieldName, baseNumber)
-
-    def getWidthFormattedExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getWidthFormattedExpression(self, fieldName)
-
-    def getWidthExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getWidthExpression(self, fieldName)
-
-    def setWidth(self, fieldName, newWidth):
-        return _pythonAPI.FieldInterface_setWidth(self, fieldName, newWidth)
-
-    def getResets(self, fieldName):
-        return _pythonAPI.FieldInterface_getResets(self, fieldName)
-
-    def getResetsToolTip(self, fieldName):
-        return _pythonAPI.FieldInterface_getResetsToolTip(self, fieldName)
-
-    def getVolatile(self, fieldName):
-        return _pythonAPI.FieldInterface_getVolatile(self, fieldName)
-
-    def setVolatile(self, fieldName, newVolatile):
-        return _pythonAPI.FieldInterface_setVolatile(self, fieldName, newVolatile)
-
-    def getAccessString(self, fieldName):
-        return _pythonAPI.FieldInterface_getAccessString(self, fieldName)
-
-    def getAccessType(self, fieldName):
-        return _pythonAPI.FieldInterface_getAccessType(self, fieldName)
-
-    def setAccess(self, fieldName, newAccess):
-        return _pythonAPI.FieldInterface_setAccess(self, fieldName, newAccess)
-
-    def getModifiedWriteString(self, fieldName):
-        return _pythonAPI.FieldInterface_getModifiedWriteString(self, fieldName)
-
-    def getModifiedWriteValue(self, fieldName):
-        return _pythonAPI.FieldInterface_getModifiedWriteValue(self, fieldName)
-
-    def setModifiedWrite(self, fieldName, newModifiedWrite):
-        return _pythonAPI.FieldInterface_setModifiedWrite(self, fieldName, newModifiedWrite)
-
-    def getReadActionString(self, fieldName):
-        return _pythonAPI.FieldInterface_getReadActionString(self, fieldName)
-
-    def getReadAction(self, fieldName):
-        return _pythonAPI.FieldInterface_getReadAction(self, fieldName)
-
-    def setReadAction(self, fieldName, newReadAction):
-        return _pythonAPI.FieldInterface_setReadAction(self, fieldName, newReadAction)
-
-    def getTestableValue(self, fieldName):
-        return _pythonAPI.FieldInterface_getTestableValue(self, fieldName)
-
-    def getTestableBool(self, fieldName):
-        return _pythonAPI.FieldInterface_getTestableBool(self, fieldName)
-
-    def setTestable(self, fieldName, newTestable):
-        return _pythonAPI.FieldInterface_setTestable(self, fieldName, newTestable)
-
-    def getTestConstraintString(self, fieldName):
-        return _pythonAPI.FieldInterface_getTestConstraintString(self, fieldName)
-
-    def getTestConstraint(self, fieldName):
-        return _pythonAPI.FieldInterface_getTestConstraint(self, fieldName)
-
-    def setTestConstraint(self, fieldName, newTestConstraint):
-        return _pythonAPI.FieldInterface_setTestConstraint(self, fieldName, newTestConstraint)
-
-    def getIsPresentValue(self, fieldName, baseNumber=0):
-        return _pythonAPI.FieldInterface_getIsPresentValue(self, fieldName, baseNumber)
-
-    def getIsPresentFormattedExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getIsPresentFormattedExpression(self, fieldName)
-
-    def getIsPresentExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getIsPresentExpression(self, fieldName)
-
-    def setIsPresent(self, fieldName, newIsPresent):
-        return _pythonAPI.FieldInterface_setIsPresent(self, fieldName, newIsPresent)
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.FieldInterface_getAllReferencesToIdInItem(self, itemName, valueID)
-
-    def validateItems(self):
-        return _pythonAPI.FieldInterface_validateItems(self)
-
-    def itemHasValidName(self, itemName):
-        return _pythonAPI.FieldInterface_itemHasValidName(self, itemName)
-
-    def hasValidOffset(self, fieldName):
-        return _pythonAPI.FieldInterface_hasValidOffset(self, fieldName)
-
-    def hasValidWidth(self, fieldName):
-        return _pythonAPI.FieldInterface_hasValidWidth(self, fieldName)
-
-    def hasValidResets(self, fieldName):
-        return _pythonAPI.FieldInterface_hasValidResets(self, fieldName)
-
-    def hasValidIsPresent(self, fieldName):
-        return _pythonAPI.FieldInterface_hasValidIsPresent(self, fieldName)
-
-    def hasValidAccess(self, fieldName):
-        return _pythonAPI.FieldInterface_hasValidAccess(self, fieldName)
-
-    def addField(self, *args):
-        return _pythonAPI.FieldInterface_addField(self, *args)
-
-    def removeField(self, fieldName):
-        return _pythonAPI.FieldInterface_removeField(self, fieldName)
-
-    def copyRows(self, selectedRows):
-        return _pythonAPI.FieldInterface_copyRows(self, selectedRows)
-
-    def pasteRows(self):
-        return _pythonAPI.FieldInterface_pasteRows(self)
-
-    def getPasteRowCount(self):
-        return _pythonAPI.FieldInterface_getPasteRowCount(self)
-
-    def getExpressionsInSelectedFields(self, fieldNames):
-        return _pythonAPI.FieldInterface_getExpressionsInSelectedFields(self, fieldNames)
-
-    def getSubInterface(self):
-        return _pythonAPI.FieldInterface_getSubInterface(self)
-
-    def hasWriteConstraint(self, fieldName):
-        return _pythonAPI.FieldInterface_hasWriteConstraint(self, fieldName)
-
-    def getWriteConstraint(self, fieldName):
-        return _pythonAPI.FieldInterface_getWriteConstraint(self, fieldName)
-
-    def setWriteConstraint(self, fieldName, newConstraintText):
-        return _pythonAPI.FieldInterface_setWriteConstraint(self, fieldName, newConstraintText)
-
-    def getWriteConstraintMinimumValue(self, fieldName, baseNumber=0):
-        return _pythonAPI.FieldInterface_getWriteConstraintMinimumValue(self, fieldName, baseNumber)
-
-    def getWriteConstraintMinimumFormattedExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getWriteConstraintMinimumFormattedExpression(self, fieldName)
-
-    def getWriteConstraintMinimumExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getWriteConstraintMinimumExpression(self, fieldName)
-
-    def setWriteConstraintMinimum(self, fieldName, newWriteConstraintMinimum):
-        return _pythonAPI.FieldInterface_setWriteConstraintMinimum(self, fieldName, newWriteConstraintMinimum)
-
-    def getWriteConstraintMaximumValue(self, fieldName, baseNumber=0):
-        return _pythonAPI.FieldInterface_getWriteConstraintMaximumValue(self, fieldName, baseNumber)
-
-    def getWriteConstraintMaximumFormattedExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getWriteConstraintMaximumFormattedExpression(self, fieldName)
-
-    def getWriteConstraintMaximumExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getWriteConstraintMaximumExpression(self, fieldName)
-
-    def setWriteConstraintMaximum(self, fieldName, newWriteConstraintMaximum):
-        return _pythonAPI.FieldInterface_setWriteConstraintMaximum(self, fieldName, newWriteConstraintMaximum)
-
-    def getReservedValue(self, fieldName, baseNumber=0):
-        return _pythonAPI.FieldInterface_getReservedValue(self, fieldName, baseNumber)
-
-    def getReservedFormattedExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getReservedFormattedExpression(self, fieldName)
-
-    def getReservedExpression(self, fieldName):
-        return _pythonAPI.FieldInterface_getReservedExpression(self, fieldName)
-
-    def setReserved(self, fieldName, newReserved):
-        return _pythonAPI.FieldInterface_setReserved(self, fieldName, newReserved)
-
-    def getID(self, fieldName):
-        return _pythonAPI.FieldInterface_getID(self, fieldName)
-
-    def setID(self, fieldName, newID):
-        return _pythonAPI.FieldInterface_setID(self, fieldName, newID)
+    setFields = _swig_new_instance_method(_pythonAPI.FieldInterface_setFields)
+    getOffsetValue = _swig_new_instance_method(_pythonAPI.FieldInterface_getOffsetValue)
+    getOffsetFormattedExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getOffsetFormattedExpression)
+    getOffsetExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getOffsetExpression)
+    setOffset = _swig_new_instance_method(_pythonAPI.FieldInterface_setOffset)
+    getWidthValue = _swig_new_instance_method(_pythonAPI.FieldInterface_getWidthValue)
+    getWidthFormattedExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getWidthFormattedExpression)
+    getWidthExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getWidthExpression)
+    setWidth = _swig_new_instance_method(_pythonAPI.FieldInterface_setWidth)
+    getResets = _swig_new_instance_method(_pythonAPI.FieldInterface_getResets)
+    getResetsToolTip = _swig_new_instance_method(_pythonAPI.FieldInterface_getResetsToolTip)
+    getVolatile = _swig_new_instance_method(_pythonAPI.FieldInterface_getVolatile)
+    setVolatile = _swig_new_instance_method(_pythonAPI.FieldInterface_setVolatile)
+    getAccessString = _swig_new_instance_method(_pythonAPI.FieldInterface_getAccessString)
+    getAccessType = _swig_new_instance_method(_pythonAPI.FieldInterface_getAccessType)
+    setAccess = _swig_new_instance_method(_pythonAPI.FieldInterface_setAccess)
+    getModifiedWriteString = _swig_new_instance_method(_pythonAPI.FieldInterface_getModifiedWriteString)
+    getModifiedWriteValue = _swig_new_instance_method(_pythonAPI.FieldInterface_getModifiedWriteValue)
+    setModifiedWrite = _swig_new_instance_method(_pythonAPI.FieldInterface_setModifiedWrite)
+    getReadActionString = _swig_new_instance_method(_pythonAPI.FieldInterface_getReadActionString)
+    getReadAction = _swig_new_instance_method(_pythonAPI.FieldInterface_getReadAction)
+    setReadAction = _swig_new_instance_method(_pythonAPI.FieldInterface_setReadAction)
+    getTestableValue = _swig_new_instance_method(_pythonAPI.FieldInterface_getTestableValue)
+    getTestableBool = _swig_new_instance_method(_pythonAPI.FieldInterface_getTestableBool)
+    setTestable = _swig_new_instance_method(_pythonAPI.FieldInterface_setTestable)
+    getTestConstraintString = _swig_new_instance_method(_pythonAPI.FieldInterface_getTestConstraintString)
+    getTestConstraint = _swig_new_instance_method(_pythonAPI.FieldInterface_getTestConstraint)
+    setTestConstraint = _swig_new_instance_method(_pythonAPI.FieldInterface_setTestConstraint)
+    getIsPresentValue = _swig_new_instance_method(_pythonAPI.FieldInterface_getIsPresentValue)
+    getIsPresentFormattedExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getIsPresentFormattedExpression)
+    getIsPresentExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getIsPresentExpression)
+    setIsPresent = _swig_new_instance_method(_pythonAPI.FieldInterface_setIsPresent)
+    hasValidOffset = _swig_new_instance_method(_pythonAPI.FieldInterface_hasValidOffset)
+    hasValidWidth = _swig_new_instance_method(_pythonAPI.FieldInterface_hasValidWidth)
+    hasValidResets = _swig_new_instance_method(_pythonAPI.FieldInterface_hasValidResets)
+    hasValidIsPresent = _swig_new_instance_method(_pythonAPI.FieldInterface_hasValidIsPresent)
+    hasValidAccess = _swig_new_instance_method(_pythonAPI.FieldInterface_hasValidAccess)
+    addField = _swig_new_instance_method(_pythonAPI.FieldInterface_addField)
+    removeField = _swig_new_instance_method(_pythonAPI.FieldInterface_removeField)
+    copyRows = _swig_new_instance_method(_pythonAPI.FieldInterface_copyRows)
+    pasteRows = _swig_new_instance_method(_pythonAPI.FieldInterface_pasteRows)
+    getPasteRowCount = _swig_new_instance_method(_pythonAPI.FieldInterface_getPasteRowCount)
+    getExpressionsInSelectedFields = _swig_new_instance_method(_pythonAPI.FieldInterface_getExpressionsInSelectedFields)
+    getSubInterface = _swig_new_instance_method(_pythonAPI.FieldInterface_getSubInterface)
+    hasWriteConstraint = _swig_new_instance_method(_pythonAPI.FieldInterface_hasWriteConstraint)
+    getWriteConstraint = _swig_new_instance_method(_pythonAPI.FieldInterface_getWriteConstraint)
+    setWriteConstraint = _swig_new_instance_method(_pythonAPI.FieldInterface_setWriteConstraint)
+    getWriteConstraintMinimumValue = _swig_new_instance_method(_pythonAPI.FieldInterface_getWriteConstraintMinimumValue)
+    getWriteConstraintMinimumFormattedExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getWriteConstraintMinimumFormattedExpression)
+    getWriteConstraintMinimumExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getWriteConstraintMinimumExpression)
+    setWriteConstraintMinimum = _swig_new_instance_method(_pythonAPI.FieldInterface_setWriteConstraintMinimum)
+    getWriteConstraintMaximumValue = _swig_new_instance_method(_pythonAPI.FieldInterface_getWriteConstraintMaximumValue)
+    getWriteConstraintMaximumFormattedExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getWriteConstraintMaximumFormattedExpression)
+    getWriteConstraintMaximumExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getWriteConstraintMaximumExpression)
+    setWriteConstraintMaximum = _swig_new_instance_method(_pythonAPI.FieldInterface_setWriteConstraintMaximum)
+    getReservedValue = _swig_new_instance_method(_pythonAPI.FieldInterface_getReservedValue)
+    getReservedFormattedExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getReservedFormattedExpression)
+    getReservedExpression = _swig_new_instance_method(_pythonAPI.FieldInterface_getReservedExpression)
+    setReserved = _swig_new_instance_method(_pythonAPI.FieldInterface_setReserved)
+    getID = _swig_new_instance_method(_pythonAPI.FieldInterface_getID)
+    setID = _swig_new_instance_method(_pythonAPI.FieldInterface_setID)
 
 # Register FieldInterface in _pythonAPI:
 _pythonAPI.FieldInterface_swigregister(FieldInterface)
 
 class ResetInterface(ParameterizableInterface, CommonInterface):
+    r"""Proxy of C++ ResetInterface class."""
+
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def __init__(self, validator, expressionParser, expressionFormatter):
+        r"""
+        __init__(ResetInterface self, QSharedPointer< FieldValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> ResetInterface
+
+        Parameters
+        ----------
+        validator: QSharedPointer< FieldValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+
+        """
         _pythonAPI.ResetInterface_swiginit(self, _pythonAPI.new_ResetInterface(validator, expressionParser, expressionFormatter))
     __swig_destroy__ = _pythonAPI.delete_ResetInterface
-
-    def setResets(self, containingField):
-        return _pythonAPI.ResetInterface_setResets(self, containingField)
-
-    def getItemNames(self):
-        return _pythonAPI.ResetInterface_getItemNames(self)
-
-    def itemCount(self):
-        return _pythonAPI.ResetInterface_itemCount(self)
-
-    def getResetTypeReference(self, itemIndex):
-        return _pythonAPI.ResetInterface_getResetTypeReference(self, itemIndex)
-
-    def setResetTypeReference(self, currentResetType, newResetType):
-        return _pythonAPI.ResetInterface_setResetTypeReference(self, currentResetType, newResetType)
-
-    def getResetValue(self, resetType, baseNumber=0):
-        return _pythonAPI.ResetInterface_getResetValue(self, resetType, baseNumber)
-
-    def getResetValueFormattedExpression(self, resetType):
-        return _pythonAPI.ResetInterface_getResetValueFormattedExpression(self, resetType)
-
-    def getResetValueExpression(self, resetType):
-        return _pythonAPI.ResetInterface_getResetValueExpression(self, resetType)
-
-    def setResetValue(self, resetType, newResetValue):
-        return _pythonAPI.ResetInterface_setResetValue(self, resetType, newResetValue)
-
-    def getResetMaskValue(self, resetType, baseNumber=0):
-        return _pythonAPI.ResetInterface_getResetMaskValue(self, resetType, baseNumber)
-
-    def getResetMaskFormattedExpression(self, resetType):
-        return _pythonAPI.ResetInterface_getResetMaskFormattedExpression(self, resetType)
-
-    def getResetMaskExpression(self, resetType):
-        return _pythonAPI.ResetInterface_getResetMaskExpression(self, resetType)
-
-    def setResetMask(self, resetType, newResetMask):
-        return _pythonAPI.ResetInterface_setResetMask(self, resetType, newResetMask)
-
-    def validateItems(self):
-        return _pythonAPI.ResetInterface_validateItems(self)
-
-    def hasValidResetType(self, resetType):
-        return _pythonAPI.ResetInterface_hasValidResetType(self, resetType)
-
-    def hasValidResetValue(self, resetType):
-        return _pythonAPI.ResetInterface_hasValidResetValue(self, resetType)
-
-    def hasValidResetMask(self, resetType):
-        return _pythonAPI.ResetInterface_hasValidResetMask(self, resetType)
-
-    def addReset(self, *args):
-        return _pythonAPI.ResetInterface_addReset(self, *args)
-
-    def removeReset(self, resetName):
-        return _pythonAPI.ResetInterface_removeReset(self, resetName)
-
-    def getAllReferencesToIdInItem(self, itemName, valueID):
-        return _pythonAPI.ResetInterface_getAllReferencesToIdInItem(self, itemName, valueID)
+    setResets = _swig_new_instance_method(_pythonAPI.ResetInterface_setResets)
+    getResetTypeReference = _swig_new_instance_method(_pythonAPI.ResetInterface_getResetTypeReference)
+    setResetTypeReference = _swig_new_instance_method(_pythonAPI.ResetInterface_setResetTypeReference)
+    getResetValue = _swig_new_instance_method(_pythonAPI.ResetInterface_getResetValue)
+    getResetValueFormattedExpression = _swig_new_instance_method(_pythonAPI.ResetInterface_getResetValueFormattedExpression)
+    getResetValueExpression = _swig_new_instance_method(_pythonAPI.ResetInterface_getResetValueExpression)
+    setResetValue = _swig_new_instance_method(_pythonAPI.ResetInterface_setResetValue)
+    getResetMaskValue = _swig_new_instance_method(_pythonAPI.ResetInterface_getResetMaskValue)
+    getResetMaskFormattedExpression = _swig_new_instance_method(_pythonAPI.ResetInterface_getResetMaskFormattedExpression)
+    getResetMaskExpression = _swig_new_instance_method(_pythonAPI.ResetInterface_getResetMaskExpression)
+    setResetMask = _swig_new_instance_method(_pythonAPI.ResetInterface_setResetMask)
+    hasValidResetType = _swig_new_instance_method(_pythonAPI.ResetInterface_hasValidResetType)
+    hasValidResetValue = _swig_new_instance_method(_pythonAPI.ResetInterface_hasValidResetValue)
+    hasValidResetMask = _swig_new_instance_method(_pythonAPI.ResetInterface_hasValidResetMask)
+    addReset = _swig_new_instance_method(_pythonAPI.ResetInterface_addReset)
+    removeReset = _swig_new_instance_method(_pythonAPI.ResetInterface_removeReset)
 
 # Register ResetInterface in _pythonAPI:
 _pythonAPI.ResetInterface_swigregister(ResetInterface)

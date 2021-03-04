@@ -1013,6 +1013,12 @@
     <Filter Include="Source Files\mainwindow\ScriptingConsole">
       <UniqueIdentifier>{1f1bbc33-e4ee-4a75-90e5-ea474c67ce62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\common\FileHandler">
+      <UniqueIdentifier>{1f5c20b3-cd33-42d6-844a-9d3eaccfa9ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\common\FileHandler">
+      <UniqueIdentifier>{dbbab44d-61c3-4e98-8091-f4654fcdbc6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -5002,6 +5008,9 @@
     <ClCompile Include="GeneratedFiles\moc_ScriptingHistory.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\FileHandler\FileHandler.cpp">
+      <Filter>Source Files\editors\common\FileHandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7657,6 +7666,9 @@
     </ClInclude>
     <ClInclude Include="mainwindow\ScriptingConsole\ScriptingSideArea.h">
       <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\FileHandler\FileHandler.h">
+      <Filter>Header Files\editors\common\FileHandler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -20,6 +20,7 @@
 #include <QSharedPointer>
 #include <QTabWidget>
 #include <QPlainTextEdit>
+#include <QMap>
 
 class Component;
 class ExpressionParser;
@@ -64,16 +65,29 @@ public:
     void loadPlugins(PluginManager const& pluginManager);
 
     /*!
+     *  Locates component declarations from the selected file.
+     *
+     *      @param [in] filePath            Path to the selected file.
+     *      @param [in] componentXMLPath    Path to the target component XML file.
+     *      @param [in] targetComponent     Target component to which import all parsed elements.
+     *
+     *      @return List of component declarations found in the selected file.
+     */
+    QStringList constructComponentDataFromFile(QString const& filePath, QString const& componentXMLPath,
+        QSharedPointer<const Component> targetComponent);
+
+    /*!
      *  Runs all import plugins with matching file types for a given file and component.
      *
+     *      @param [in] componentName       Name of thes selected component.
      *      @param [in] filePath            The relative path to the input file.
      *      @param [in] componentXmlPath    The path to the target component XML file.
      *      @param [in] targetComponent     The target component to which import all parsed elements.     
      *
      *      @return The component with all the imported elements.     
      */
-    QSharedPointer<Component> run(QString const& filePath, QString const& componentXmlPath, 
-        QSharedPointer<const Component> targetComponent);
+    QSharedPointer<Component> run(QString const& componentName, QString const& filePath,
+        QString const& componentXmlPath, QSharedPointer<const Component> targetComponent);
 
     /*!
      *  Gets all file types for which a import parser(s) can be run.
@@ -148,14 +162,15 @@ private:
     /*!
      *  Imports a file to the given component.
      *
+     *      @param [in] componentName           Name of the selected component.
      *      @param [in] filePath                The path to the file to import.
      *      @param [in] absoluteBasePath        The absolute base path for relative filePaths.
      *      @param [in] importPluginsForFile    The import plugins to use.
      *      @param [in] importComponent         The component to import to.
      */
-    void importFile(QString const& filePath, QString const& absoluteBasePath, 
+    void importFile(QString const& componentName, QString const& filePath, QString const& absoluteBasePath,
         QList<ImportPlugin*> importPluginsForFile, QSharedPointer<Component> importComponent);
-        
+
     /*!
      *  Reads the content of a given file.
      *
@@ -192,9 +207,28 @@ private:
      */
     void addHighlightIfPossible(ImportPlugin* parser, Highlighter* highlighter) const;
    
+    /*!
+     *  Get the selected component declaration.
+     *
+     *      @param [in] componentName   Name of the selected component declaration.
+     *
+     *      @return The selected component declaration.
+     */
+    QString getComponentFromFile(QString const& componentName) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! Container for component declarations.
+    struct AvailableComponent
+    {
+        //! Name of the component.
+        QString componentName_;
+
+        //! The component declaration.
+        QString componentFile_;
+    };
 
     //! The expression parser to use for verilog expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
@@ -210,6 +244,12 @@ private:
 
     //! The container widget for source display widgets.
     QTabWidget* displayTabs_;
+
+    //! Table containing file extensions as key combined with file types as value.
+    QMap<QString, QString> fileSuffixTable_;
+
+    //! List of currently available component declarations.
+    QVector<AvailableComponent> componentsInFile_;
 };
 
 #endif // IMPORTRUNNER_H

@@ -60,16 +60,44 @@ public:
      */
     static QString getVersion();
 
-    //static std::vector<std::string> listPlugins();
+    /*!
+     * Gets the paths where IP-XACT files are stored.
+     *
+     *     @return The paths where IP-XACT files are stored.
+     */
+     static QStringList getLibraryPaths();
 
-    static QStringList getLibraryPaths();
-
-    static void setLibraryPaths(QStringList const&activeLocations,
+    /*!
+     * Set the paths where IP-XACT files are stored.
+     *
+     *     @param [in] activeLocations  The locations that are currently available to store the files.
+     *     @param [in] allLocations     All the locations available, but not all need to be active.
+     */
+     static void setLibraryPaths(QStringList const&activeLocations,
         QStringList const& allLocations = QStringList() );
 
+    /*!
+     * Get the default library path for IP-XACT files.
+     *
+     *     @return The default path for IP-XACT files.
+     */
     static QString getDefaultLibraryPath();
 
+    /*!
+     * Set the default library path for IP-XACT files.
+     *
+     *     @param [in] path  The default path to set for IP-XACT files.
+     */
     static void setDefaultLibraryPath(QString const& path);
+
+    /*!
+     * Import a source file (RTL) into the library as a component.
+     *
+     *     @param [in] filePath     The path to the file to import.
+     *     @param [in] targetVLNV   The VLNV to use for the imported component.
+     *     @param [in] overwrite    Overwrite the component in the library, if it already exists.
+     */
+    static void importFile(QString const& filePath, VLNV const& targetVLNV, bool overwrite);
 
 private:
 

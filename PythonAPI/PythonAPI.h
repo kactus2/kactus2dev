@@ -80,6 +80,8 @@ public:
 
     void setDefaultLibraryPath(std::string const& path);
 
+    void importFile(std::string path, std::string vlnv, bool overwrite = false);
+
     /*!
      *  Get the number of files in the library.
      *

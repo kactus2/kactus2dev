@@ -4976,6 +4976,20 @@ SWIGINTERN std::vector< std::string >::iterator std_vector_Sl_std_string_Sg__ins
 SWIGINTERN void std_vector_Sl_std_string_Sg__insert__SWIG_1(std::vector< std::string > *self,std::vector< std::string >::iterator pos,std::vector< std::string >::size_type n,std::vector< std::string >::value_type const &x){ self->insert(pos, n, x); }
 
 SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r;
+  if (!PyBool_Check(obj))
+    return SWIG_ERROR;
+  r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
+}
+
+
+SWIGINTERN int
 SWIG_AsVal_int (PyObject * obj, int *val)
 {
   long v;
@@ -4988,20 +5002,6 @@ SWIG_AsVal_int (PyObject * obj, int *val)
     }
   }  
   return res;
-}
-
-
-SWIGINTERN int
-SWIG_AsVal_bool (PyObject *obj, bool *val)
-{
-  int r;
-  if (!PyBool_Check(obj))
-    return SWIG_ERROR;
-  r = PyObject_IsTrue(obj);
-  if (r == -1)
-    return SWIG_ERROR;
-  if (val) *val = r ? true : false;
-  return SWIG_OK;
 }
 
 #ifdef __cplusplus
@@ -5135,28 +5135,14 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_incr(PyObject *self, PyObject *args) {
   if (!(argc = SWIG_Python_UnpackTuple(args, "SwigPyIterator_incr", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_swig__SwigPyIterator, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_SwigPyIterator_incr__SWIG_1(self, argc, argv);
-    }
+    PyObject *retobj = _wrap_SwigPyIterator_incr__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_swig__SwigPyIterator, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_SwigPyIterator_incr__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_SwigPyIterator_incr__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -5243,28 +5229,14 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator_decr(PyObject *self, PyObject *args) {
   if (!(argc = SWIG_Python_UnpackTuple(args, "SwigPyIterator_decr", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_swig__SwigPyIterator, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_SwigPyIterator_decr__SWIG_1(self, argc, argv);
-    }
+    PyObject *retobj = _wrap_SwigPyIterator_decr__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_swig__SwigPyIterator, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_SwigPyIterator_decr__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_SwigPyIterator_decr__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -5772,32 +5744,20 @@ SWIGINTERN PyObject *_wrap_SwigPyIterator___sub__(PyObject *self, PyObject *args
   if (!(argc = SWIG_Python_UnpackTuple(args, "SwigPyIterator___sub__", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_swig__SwigPyIterator, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
+    int _v = 0;
+    {
       int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_swig__SwigPyIterator, SWIG_POINTER_NO_NULL | 0);
       _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_SwigPyIterator___sub____SWIG_1(self, argc, argv);
-      }
     }
+    if (!_v) goto check_1;
+    return _wrap_SwigPyIterator___sub____SWIG_1(self, argc, argv);
   }
+check_1:
+  
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_swig__SwigPyIterator, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_SwigPyIterator___sub____SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_SwigPyIterator___sub____SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -6155,51 +6115,35 @@ SWIGINTERN PyObject *_wrap_new_NameGroup(PyObject *self, PyObject *args) {
   if (!(argc = SWIG_Python_UnpackTuple(args, "new_NameGroup", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 0) {
-    return _wrap_new_NameGroup__SWIG_0(self, argc, argv);
+    PyObject *retobj = _wrap_new_NameGroup__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 1) {
-    int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_NameGroup__SWIG_3(self, argc, argv);
+    int _v = 0;
+    {
+      int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
+      _v = SWIG_CheckState(res);
     }
+    if (!_v) goto check_2;
+    return _wrap_new_NameGroup__SWIG_3(self, argc, argv);
   }
+check_2:
+  
   if (argc == 1) {
-    int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_NameGroup, SWIG_POINTER_NO_NULL | 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_NameGroup__SWIG_4(self, argc, argv);
-    }
+    PyObject *retobj = _wrap_new_NameGroup__SWIG_4(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 2) {
-    int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_new_NameGroup__SWIG_2(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_new_NameGroup__SWIG_2(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    int res = SWIG_ConvertPtr(argv[0], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_ConvertPtr(argv[2], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_new_NameGroup__SWIG_1(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_new_NameGroup__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -6562,48 +6506,14 @@ SWIGINTERN PyObject *_wrap_stringVector___setslice__(PyObject *self, PyObject *a
   if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector___setslice__", 0, 4, argv))) SWIG_fail;
   --argc;
   if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_ptrdiff_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_stringVector___setslice____SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_stringVector___setslice____SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 4) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_ptrdiff_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          int res = swig::asptr(argv[3], (std::vector< std::string,std::allocator< std::string > >**)(0));
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_stringVector___setslice____SWIG_1(self, argc, argv);
-          }
-        }
-      }
-    }
+    PyObject *retobj = _wrap_stringVector___setslice____SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -6849,31 +6759,21 @@ SWIGINTERN PyObject *_wrap_stringVector___delitem__(PyObject *self, PyObject *ar
   if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector___delitem__", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
+    int _v = 0;
+    {
       {
         _v = PySlice_Check(argv[1]);
       }
-      if (_v) {
-        return _wrap_stringVector___delitem____SWIG_1(self, argc, argv);
-      }
     }
+    if (!_v) goto check_1;
+    return _wrap_stringVector___delitem____SWIG_1(self, argc, argv);
   }
+check_1:
+  
   if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_stringVector___delitem____SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_stringVector___delitem____SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -6928,31 +6828,21 @@ SWIGINTERN PyObject *_wrap_stringVector___getitem__(PyObject *self, PyObject *ar
   if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector___getitem__", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
+    int _v = 0;
+    {
       {
         _v = PySlice_Check(argv[1]);
       }
-      if (_v) {
-        return _wrap_stringVector___getitem____SWIG_0(self, argc, argv);
-      }
     }
+    if (!_v) goto check_1;
+    return _wrap_stringVector___getitem____SWIG_0(self, argc, argv);
   }
+check_1:
+  
   if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_stringVector___getitem____SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_stringVector___getitem____SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -7020,52 +6910,31 @@ SWIGINTERN PyObject *_wrap_stringVector___setitem__(PyObject *self, PyObject *ar
   if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector___setitem__", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
+    PyObject *retobj = _wrap_stringVector___setitem____SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  if (argc == 3) {
+    int _v = 0;
+    {
       {
         _v = PySlice_Check(argv[1]);
       }
-      if (_v) {
-        return _wrap_stringVector___setitem____SWIG_1(self, argc, argv);
-      }
     }
+    if (!_v) goto check_2;
+    {
+      int res = swig::asptr(argv[2], (std::vector< std::string,std::allocator< std::string > >**)(0));
+      _v = SWIG_CheckState(res);
+    }
+    if (!_v) goto check_2;
+    return _wrap_stringVector___setitem____SWIG_0(self, argc, argv);
   }
+check_2:
+  
   if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        _v = PySlice_Check(argv[1]);
-      }
-      if (_v) {
-        int res = swig::asptr(argv[2], (std::vector< std::string,std::allocator< std::string > >**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_stringVector___setitem____SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_ptrdiff_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_stringVector___setitem____SWIG_2(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_stringVector___setitem____SWIG_2(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -7567,35 +7436,14 @@ SWIGINTERN PyObject *_wrap_stringVector_erase(PyObject *self, PyObject *args) {
   if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector_erase", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
-      if (_v) {
-        return _wrap_stringVector_erase__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_stringVector_erase__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
-      if (_v) {
-        swig::SwigPyIterator *iter = 0;
-        int res = SWIG_ConvertPtr(argv[2], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-        _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
-        if (_v) {
-          return _wrap_stringVector_erase__SWIG_1(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_stringVector_erase__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -7652,39 +7500,32 @@ SWIGINTERN PyObject *_wrap_new_stringVector(PyObject *self, PyObject *args) {
   if (!(argc = SWIG_Python_UnpackTuple(args, "new_stringVector", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 0) {
-    return _wrap_new_stringVector__SWIG_0(self, argc, argv);
+    PyObject *retobj = _wrap_new_stringVector__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 1) {
-    int _v;
+    int _v = 0;
     {
-      int res = SWIG_AsVal_size_t(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      return _wrap_new_stringVector__SWIG_2(self, argc, argv);
-    }
-  }
-  if (argc == 1) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_new_stringVector__SWIG_1(self, argc, argv);
-    }
-  }
-  if (argc == 2) {
-    int _v;
-    {
-      int res = SWIG_AsVal_size_t(argv[0], NULL);
-      _v = SWIG_CheckState(res);
-    }
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_new_stringVector__SWIG_3(self, argc, argv);
+      {
+        int res = SWIG_AsVal_size_t(argv[0], NULL);
+        _v = SWIG_CheckState(res);
       }
     }
+    if (!_v) goto check_2;
+    return _wrap_new_stringVector__SWIG_2(self, argc, argv);
+  }
+check_2:
+  
+  if (argc == 1) {
+    PyObject *retobj = _wrap_new_stringVector__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  if (argc == 2) {
+    PyObject *retobj = _wrap_new_stringVector__SWIG_3(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -7878,36 +7719,14 @@ SWIGINTERN PyObject *_wrap_stringVector_resize(PyObject *self, PyObject *args) {
   if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector_resize", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_stringVector_resize__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_stringVector_resize__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_size_t(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_stringVector_resize__SWIG_1(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_stringVector_resize__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -8036,44 +7855,14 @@ SWIGINTERN PyObject *_wrap_stringVector_insert(PyObject *self, PyObject *args) {
   if (!(argc = SWIG_Python_UnpackTuple(args, "stringVector_insert", 0, 4, argv))) SWIG_fail;
   --argc;
   if (argc == 3) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_stringVector_insert__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_stringVector_insert__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 4) {
-    int _v;
-    int res = swig::asptr(argv[0], (std::vector< std::string,std::allocator< std::string > >**)(0));
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      swig::SwigPyIterator *iter = 0;
-      int res = SWIG_ConvertPtr(argv[1], SWIG_as_voidptrptr(&iter), swig::SwigPyIterator::descriptor(), 0);
-      _v = (SWIG_IsOK(res) && iter && (dynamic_cast<swig::SwigPyIterator_T<std::vector< std::string >::iterator > *>(iter) != 0));
-      if (_v) {
-        {
-          int res = SWIG_AsVal_size_t(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          int res = SWIG_AsPtr_std_string(argv[3], (std::string**)(0));
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_stringVector_insert__SWIG_1(self, argc, argv);
-          }
-        }
-      }
-    }
+    PyObject *retobj = _wrap_stringVector_insert__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -8205,35 +7994,278 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PythonAPI_setupLibrary(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_PythonAPI_getVersion(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
-  QString *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
-  PyObject *swig_obj[2] ;
+  PyObject *swig_obj[1] ;
+  std::string result;
   
-  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setupLibrary", 2, 2, swig_obj)) SWIG_fail;
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setupLibrary" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getVersion" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setupLibrary" "', argument " "2"" of type '" "QString const &""'"); 
+  result = ((PythonAPI const *)arg1)->getVersion();
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_listPlugins(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_listPlugins" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setupLibrary" "', argument " "2"" of type '" "QString const &""'"); 
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  result = ((PythonAPI const *)arg1)->listPlugins();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_getLibraryPaths(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getLibraryPaths" "', argument " "1"" of type '" "PythonAPI *""'"); 
   }
-  arg2 = reinterpret_cast< QString * >(argp2);
-  (arg1)->setupLibrary((QString const &)*arg2);
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  result = (arg1)->getLibraryPaths();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_setLibraryPaths(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setLibraryPaths", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setLibraryPaths" "', argument " "1"" of type '" "PythonAPI const *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "PythonAPI_setLibraryPaths" "', argument " "2"" of type '" "std::vector< std::string,std::allocator< std::string > >""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ((PythonAPI const *)arg1)->setLibraryPaths(arg2);
   resultobj = SWIG_Py_Void();
   return resultobj;
 fail:
   return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_getDefaultLibraryPath(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::string result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getDefaultLibraryPath" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  result = (arg1)->getDefaultLibraryPath();
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_setDefaultLibraryPath(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setDefaultLibraryPath", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setDefaultLibraryPath" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setDefaultLibraryPath" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setDefaultLibraryPath" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->setDefaultLibraryPath((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_importFile__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string arg2 ;
+  std::string arg3 ;
+  bool arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val4 ;
+  int ecode4 = 0 ;
+  
+  if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_importFile" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "PythonAPI_importFile" "', argument " "2"" of type '" "std::string""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "PythonAPI_importFile" "', argument " "3"" of type '" "std::string""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  ecode4 = SWIG_AsVal_bool(swig_obj[3], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "PythonAPI_importFile" "', argument " "4"" of type '" "bool""'");
+  } 
+  arg4 = static_cast< bool >(val4);
+  (arg1)->importFile(arg2,arg3,arg4);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_importFile__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string arg2 ;
+  std::string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_importFile" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "PythonAPI_importFile" "', argument " "2"" of type '" "std::string""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "PythonAPI_importFile" "', argument " "3"" of type '" "std::string""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  (arg1)->importFile(arg2,arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_importFile(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[5] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "PythonAPI_importFile", 0, 4, argv))) SWIG_fail;
+  --argc;
+  if (argc == 3) {
+    PyObject *retobj = _wrap_PythonAPI_importFile__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  if (argc == 4) {
+    PyObject *retobj = _wrap_PythonAPI_importFile__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PythonAPI_importFile'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    PythonAPI::importFile(std::string,std::string,bool)\n"
+    "    PythonAPI::importFile(std::string,std::string)\n");
+  return 0;
 }
 
 
@@ -8320,26 +8352,14 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs(PyObject *self, PyObject *args) {
   if (!(argc = SWIG_Python_UnpackTuple(args, "PythonAPI_listVLNVs", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PythonAPI, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_PythonAPI_listVLNVs__SWIG_1(self, argc, argv);
-    }
+    PyObject *retobj = _wrap_PythonAPI_listVLNVs__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PythonAPI, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_ConvertPtr(argv[1], 0, SWIGTYPE_p_QString, SWIG_POINTER_NO_NULL | 0);
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PythonAPI_listVLNVs__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PythonAPI_listVLNVs__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -9351,26 +9371,14 @@ SWIGINTERN PyObject *_wrap_MasterPortInterface_addWirePort(PyObject *self, PyObj
   if (!(argc = SWIG_Python_UnpackTuple(args, "MasterPortInterface_addWirePort", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MasterPortInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_MasterPortInterface_addWirePort__SWIG_1(self, argc, argv);
-    }
+    PyObject *retobj = _wrap_MasterPortInterface_addWirePort__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MasterPortInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MasterPortInterface_addWirePort__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MasterPortInterface_addWirePort__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -9446,26 +9454,14 @@ SWIGINTERN PyObject *_wrap_MasterPortInterface_addTransactionalPort(PyObject *se
   if (!(argc = SWIG_Python_UnpackTuple(args, "MasterPortInterface_addTransactionalPort", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MasterPortInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_MasterPortInterface_addTransactionalPort__SWIG_1(self, argc, argv);
-    }
+    PyObject *retobj = _wrap_MasterPortInterface_addTransactionalPort__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MasterPortInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MasterPortInterface_addTransactionalPort__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MasterPortInterface_addTransactionalPort__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -9773,314 +9769,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PortsInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getItemIndex" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (int)((PortsInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  int *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getIndexedItemName" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "PortsInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  result = ((PortsInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_itemCount" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  result = (int)((PortsInterface const *)arg1)->itemCount();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< std::string,std::allocator< std::string > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getItemNames" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  result = ((PortsInterface const *)arg1)->getItemNames();
-  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setName" "', argument " "1"" of type '" "PortsInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getDescription" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((PortsInterface const *)arg1)->getDescription((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_setDescription" "', argument " "1"" of type '" "PortsInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((PortsInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_PortsInterface_portExists(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PortsInterface *arg1 = (PortsInterface *) 0 ;
@@ -10109,66 +9797,6 @@ SWIGINTERN PyObject *_wrap_PortsInterface_portExists(PyObject *SWIGUNUSEDPARM(se
     arg2 = ptr;
   }
   result = (bool)((PortsInterface const *)arg1)->portExists((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_validateItems" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  result = (bool)((PortsInterface const *)arg1)->validateItems();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_itemHasValidName" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((PortsInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
@@ -10358,36 +9986,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getArrayLeftValue(PyObject *self, PyOb
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getArrayLeftValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_getArrayLeftValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getArrayLeftValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_PortsInterface_getArrayLeftValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getArrayLeftValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -10616,36 +10222,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getArrayRightValue(PyObject *self, PyO
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getArrayRightValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_getArrayRightValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getArrayRightValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_PortsInterface_getArrayRightValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getArrayRightValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -11171,36 +10755,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getLeftBoundValue(PyObject *self, PyOb
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getLeftBoundValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_getLeftBoundValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getLeftBoundValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_PortsInterface_getLeftBoundValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getLeftBoundValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -11429,36 +10991,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getRightBoundValue(PyObject *self, PyO
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getRightBoundValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_getRightBoundValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getRightBoundValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_PortsInterface_getRightBoundValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getRightBoundValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -11813,36 +11353,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getDefaultValue(PyObject *self, PyObje
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getDefaultValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_getDefaultValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getDefaultValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_PortsInterface_getDefaultValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getDefaultValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -12071,36 +11589,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getBusWidthValue(PyObject *self, PyObj
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getBusWidthValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_getBusWidthValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getBusWidthValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_PortsInterface_getBusWidthValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getBusWidthValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -12596,36 +12092,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getMaxConnectionsValue(PyObject *self,
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getMaxConnectionsValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_getMaxConnectionsValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getMaxConnectionsValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_PortsInterface_getMaxConnectionsValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getMaxConnectionsValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -12854,36 +12328,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_getMinConnectionsValue(PyObject *self,
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_getMinConnectionsValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_getMinConnectionsValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getMinConnectionsValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_PortsInterface_getMinConnectionsValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_getMinConnectionsValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -13085,26 +12537,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_addWirePort(PyObject *self, PyObject *
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_addWirePort", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_PortsInterface_addWirePort__SWIG_1(self, argc, argv);
-    }
+    PyObject *retobj = _wrap_PortsInterface_addWirePort__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_addWirePort__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_addWirePort__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -13180,26 +12620,14 @@ SWIGINTERN PyObject *_wrap_PortsInterface_addTransactionalPort(PyObject *self, P
   if (!(argc = SWIG_Python_UnpackTuple(args, "PortsInterface_addTransactionalPort", 0, 2, argv))) SWIG_fail;
   --argc;
   if (argc == 1) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      return _wrap_PortsInterface_addTransactionalPort__SWIG_1(self, argc, argv);
-    }
+    PyObject *retobj = _wrap_PortsInterface_addTransactionalPort__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_PortsInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_PortsInterface_addTransactionalPort__SWIG_0(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_PortsInterface_addTransactionalPort__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -13359,43 +12787,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PortsInterface_portIsWire(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portIsWire", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portIsWire" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portIsWire" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portIsWire" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((PortsInterface const *)arg1)->portIsWire((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidLeftBound(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PortsInterface *arg1 = (PortsInterface *) 0 ;
@@ -13498,43 +12889,6 @@ SWIGINTERN PyObject *_wrap_PortsInterface_portHasValidDefaultValue(PyObject *SWI
     arg2 = ptr;
   }
   result = (bool)((PortsInterface const *)arg1)->portHasValidDefaultValue((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_PortsInterface_portIsTransactional(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PortsInterface *arg1 = (PortsInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "PortsInterface_portIsTransactional", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PortsInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PortsInterface_portIsTransactional" "', argument " "1"" of type '" "PortsInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< PortsInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PortsInterface_portIsTransactional" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PortsInterface_portIsTransactional" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((PortsInterface const *)arg1)->portIsTransactional((std::string const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
@@ -13910,199 +13264,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setName" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getDescription" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((AbstractParameterInterface const *)arg1)->getDescription((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AbstractParameterInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_setDescription" "', argument " "1"" of type '" "AbstractParameterInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((AbstractParameterInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getExpressionsInSelectedItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
@@ -14131,66 +13292,6 @@ SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getExpressionsInSelectedIt
   resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AbstractParameterInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_validateItems" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
-  result = (bool)((AbstractParameterInterface const *)arg1)->validateItems();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AbstractParameterInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AbstractParameterInterface *arg1 = (AbstractParameterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AbstractParameterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AbstractParameterInterface_itemHasValidName" "', argument " "1"" of type '" "AbstractParameterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AbstractParameterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AbstractParameterInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AbstractParameterInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((AbstractParameterInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -14464,36 +13565,14 @@ SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthLeftValue(PyObj
   if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getBitWidthLeftValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AbstractParameterInterface_getBitWidthLeftValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getBitWidthLeftValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AbstractParameterInterface_getBitWidthLeftValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getBitWidthLeftValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -14722,36 +13801,14 @@ SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getBitWidthRightValue(PyOb
   if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getBitWidthRightValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AbstractParameterInterface_getBitWidthRightValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getBitWidthRightValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AbstractParameterInterface_getBitWidthRightValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getBitWidthRightValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -15247,36 +14304,14 @@ SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getValue(PyObject *self, P
   if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AbstractParameterInterface_getValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AbstractParameterInterface_getValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -15594,36 +14629,14 @@ SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayLeftValue(PyObject
   if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getArrayLeftValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AbstractParameterInterface_getArrayLeftValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getArrayLeftValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AbstractParameterInterface_getArrayLeftValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getArrayLeftValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -15852,36 +14865,14 @@ SWIGINTERN PyObject *_wrap_AbstractParameterInterface_getArrayRightValue(PyObjec
   if (!(argc = SWIG_Python_UnpackTuple(args, "AbstractParameterInterface_getArrayRightValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AbstractParameterInterface_getArrayRightValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getArrayRightValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AbstractParameterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AbstractParameterInterface_getArrayRightValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AbstractParameterInterface_getArrayRightValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -16690,121 +15681,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ParametersInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getItemIndex" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ParametersInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ParametersInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (int)((ParametersInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  int *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ParametersInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getIndexedItemName" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ParametersInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  result = ((ParametersInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_itemCount" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  result = (int)((ParametersInterface const *)arg1)->itemCount();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ParametersInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ParametersInterface *arg1 = (ParametersInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< std::string,std::allocator< std::string > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ParametersInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ParametersInterface_getItemNames" "', argument " "1"" of type '" "ParametersInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ParametersInterface * >(argp1);
-  result = ((ParametersInterface const *)arg1)->getItemNames();
-  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_ParametersInterface_addParameter__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   ParametersInterface *arg1 = (ParametersInterface *) 0 ;
@@ -16889,38 +15765,14 @@ SWIGINTERN PyObject *_wrap_ParametersInterface_addParameter(PyObject *self, PyOb
   if (!(argc = SWIG_Python_UnpackTuple(args, "ParametersInterface_addParameter", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_ParametersInterface_addParameter__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_ParametersInterface_addParameter__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ParametersInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_ParametersInterface_addParameter__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_ParametersInterface_addParameter__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -17109,43 +15961,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getItemIndex" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (int)((MemoryMapInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_MemoryMapInterface_getMemoryRemapIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
@@ -17198,38 +16013,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  int *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getIndexedItemName" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "MemoryMapInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  result = ((MemoryMapInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIndexedRemapName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
@@ -17266,29 +16049,6 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIndexedRemapName(PyObject *SWIG
   arg3 = &temp3;
   result = ((MemoryMapInterface const *)arg1)->getIndexedRemapName(arg2,(int const &)*arg3);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_itemCount" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  result = (int)((MemoryMapInterface const *)arg1)->itemCount();
-  resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
   return NULL;
@@ -17332,29 +16092,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< std::string,std::allocator< std::string > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getItemNames" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  result = ((MemoryMapInterface const *)arg1)->getItemNames();
-  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
@@ -17388,58 +16125,6 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapNames(PyObject *SWIGUNUSED
   return resultobj;
 fail:
   if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setName" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
@@ -17511,43 +16196,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getDescription" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((MemoryMapInterface const *)arg1)->getDescription((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
@@ -17590,58 +16238,6 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapDescription(PyObject *SWIG
   }
   result = ((MemoryMapInterface const *)arg1)->getRemapDescription((std::string const &)*arg2,(std::string const &)*arg3);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_setDescription" "', argument " "1"" of type '" "MemoryMapInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
@@ -17876,57 +16472,19 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentValue(PyObject *self, 
   if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIsPresentValue", 0, 4, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MemoryMapInterface_getIsPresentValue__SWIG_2(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getIsPresentValue__SWIG_2(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MemoryMapInterface_getIsPresentValue__SWIG_1(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getIsPresentValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          {
-            int res = SWIG_AsVal_int(argv[3], NULL);
-            _v = SWIG_CheckState(res);
-          }
-          if (_v) {
-            return _wrap_MemoryMapInterface_getIsPresentValue__SWIG_0(self, argc, argv);
-          }
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getIsPresentValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -18035,34 +16593,14 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentFormattedExpression(Py
   if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIsPresentFormattedExpression", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MemoryMapInterface_getIsPresentFormattedExpression__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getIsPresentFormattedExpression__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MemoryMapInterface_getIsPresentFormattedExpression__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getIsPresentFormattedExpression__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -18170,34 +16708,14 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getIsPresentExpression(PyObject *s
   if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getIsPresentExpression", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MemoryMapInterface_getIsPresentExpression__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getIsPresentExpression__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MemoryMapInterface_getIsPresentExpression__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getIsPresentExpression__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -18335,42 +16853,14 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_setIsPresent(PyObject *self, PyObj
   if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_setIsPresent", 0, 4, argv))) SWIG_fail;
   --argc;
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MemoryMapInterface_setIsPresent__SWIG_1(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_setIsPresent__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          int res = SWIG_AsPtr_std_string(argv[3], (std::string**)(0));
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_MemoryMapInterface_setIsPresent__SWIG_0(self, argc, argv);
-          }
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_setIsPresent__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -18478,34 +16968,14 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getRemapState(PyObject *self, PyOb
   if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getRemapState", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MemoryMapInterface_getRemapState__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getRemapState__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MemoryMapInterface_getRemapState__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_getRemapState__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -18747,58 +17217,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((MemoryMapInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_MemoryMapInterface_getMapExpressions(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
@@ -18910,66 +17328,6 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_getAllReferencesToIdInRemapItem(Py
 fail:
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res4)) delete arg4;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_validateItems" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  result = (bool)((MemoryMapInterface const *)arg1)->validateItems();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_MemoryMapInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  MemoryMapInterface *arg1 = (MemoryMapInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "MemoryMapInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_MemoryMapInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MemoryMapInterface_itemHasValidName" "', argument " "1"" of type '" "MemoryMapInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< MemoryMapInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MemoryMapInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "MemoryMapInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((MemoryMapInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -19174,34 +17532,14 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_itemHasValidIsPresent(PyObject *se
   if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_itemHasValidIsPresent", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MemoryMapInterface_itemHasValidIsPresent__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_itemHasValidIsPresent__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MemoryMapInterface_itemHasValidIsPresent__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_itemHasValidIsPresent__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -19334,38 +17672,14 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_addMemoryMap(PyObject *self, PyObj
   if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_addMemoryMap", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_MemoryMapInterface_addMemoryMap__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_addMemoryMap__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MemoryMapInterface_addMemoryMap__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_addMemoryMap__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -19471,34 +17785,14 @@ SWIGINTERN PyObject *_wrap_MemoryMapInterface_addMemoryRemap(PyObject *self, PyO
   if (!(argc = SWIG_Python_UnpackTuple(args, "MemoryMapInterface_addMemoryRemap", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_MemoryMapInterface_addMemoryRemap__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_addMemoryRemap__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_MemoryMapInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_MemoryMapInterface_addMemoryRemap__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_MemoryMapInterface_addMemoryRemap__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -19937,262 +18231,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getItemIndex" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (int)((AddressBlockInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  int *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getIndexedItemName" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "AddressBlockInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  result = ((AddressBlockInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_itemCount" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  result = (int)((AddressBlockInterface const *)arg1)->itemCount();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< std::string,std::allocator< std::string > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getItemNames" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  result = ((AddressBlockInterface const *)arg1)->getItemNames();
-  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setName" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getDescription" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((AddressBlockInterface const *)arg1)->getDescription((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_setDescription" "', argument " "1"" of type '" "AddressBlockInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_AddressBlockInterface_getBaseAddressValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
@@ -20284,36 +18322,14 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getBaseAddressValue(PyObject *s
   if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getBaseAddressValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AddressBlockInterface_getBaseAddressValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_getBaseAddressValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AddressBlockInterface_getBaseAddressValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_getBaseAddressValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -20542,36 +18558,14 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getIsPresentValue(PyObject *sel
   if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getIsPresentValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AddressBlockInterface_getIsPresentValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_getIsPresentValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AddressBlockInterface_getIsPresentValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_getIsPresentValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -20800,36 +18794,14 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getRangeValue(PyObject *self, P
   if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getRangeValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AddressBlockInterface_getRangeValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_getRangeValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AddressBlockInterface_getRangeValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_getRangeValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -21058,36 +19030,14 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_getWidthValue(PyObject *self, P
   if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getWidthValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_AddressBlockInterface_getWidthValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_getWidthValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AddressBlockInterface_getWidthValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_getWidthValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -21618,40 +19568,22 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_setVolatile(PyObject *self, PyO
   if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_setVolatile", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_bool(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_AddressBlockInterface_setVolatile__SWIG_0(self, argc, argv);
-        }
-      }
-    }
-  }
-  if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
+    int _v = 0;
+    {
+      {
+        int res = SWIG_AsVal_bool(argv[2], NULL);
         _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_AddressBlockInterface_setVolatile__SWIG_1(self, argc, argv);
-        }
       }
     }
+    if (!_v) goto check_1;
+    return _wrap_AddressBlockInterface_setVolatile__SWIG_0(self, argc, argv);
+  }
+check_1:
+  
+  if (argc == 3) {
+    PyObject *retobj = _wrap_AddressBlockInterface_setVolatile__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -21660,118 +19592,6 @@ fail:
     "    AddressBlockInterface::setVolatile(std::string const &,bool) const\n"
     "    AddressBlockInterface::setVolatile(std::string const &,std::string const &)\n");
   return 0;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((AddressBlockInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_validateItems" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  result = (bool)((AddressBlockInterface const *)arg1)->validateItems();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_AddressBlockInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  AddressBlockInterface *arg1 = (AddressBlockInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "AddressBlockInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_AddressBlockInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "AddressBlockInterface_itemHasValidName" "', argument " "1"" of type '" "AddressBlockInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< AddressBlockInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "AddressBlockInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "AddressBlockInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((AddressBlockInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
 }
 
 
@@ -22044,38 +19864,14 @@ SWIGINTERN PyObject *_wrap_AddressBlockInterface_addBlock(PyObject *self, PyObje
   if (!(argc = SWIG_Python_UnpackTuple(args, "AddressBlockInterface_addBlock", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_AddressBlockInterface_addBlock__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_addBlock__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_AddressBlockInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_AddressBlockInterface_addBlock__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_AddressBlockInterface_addBlock__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -22475,98 +20271,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RegisterInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getItemIndex" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (int)((RegisterInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  int *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getIndexedItemName" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "RegisterInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  result = ((RegisterInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_itemCount" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  result = (int)((RegisterInterface const *)arg1)->itemCount();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_RegisterInterface_registerDataCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   RegisterInterface *arg1 = (RegisterInterface *) 0 ;
@@ -22618,170 +20322,6 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_indexInRegisterData(PyObject *SWIGU
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< std::string,std::allocator< std::string > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getItemNames" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  result = ((RegisterInterface const *)arg1)->getItemNames();
-  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_setName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_setName" "', argument " "1"" of type '" "RegisterInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "RegisterInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getDescription" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((RegisterInterface const *)arg1)->getDescription((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_setDescription" "', argument " "1"" of type '" "RegisterInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "RegisterInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
@@ -22877,36 +20417,14 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_getOffsetValue(PyObject *self, PyOb
   if (!(argc = SWIG_Python_UnpackTuple(args, "RegisterInterface_getOffsetValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_RegisterInterface_getOffsetValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_getOffsetValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_RegisterInterface_getOffsetValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_getOffsetValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -23135,36 +20653,14 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_getDimensionValue(PyObject *self, P
   if (!(argc = SWIG_Python_UnpackTuple(args, "RegisterInterface_getDimensionValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_RegisterInterface_getDimensionValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_getDimensionValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_RegisterInterface_getDimensionValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_getDimensionValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -23393,36 +20889,14 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_getIsPresentValue(PyObject *self, P
   if (!(argc = SWIG_Python_UnpackTuple(args, "RegisterInterface_getIsPresentValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_RegisterInterface_getIsPresentValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_getIsPresentValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_RegisterInterface_getIsPresentValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_getIsPresentValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -23651,36 +21125,14 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_getSizeValue(PyObject *self, PyObje
   if (!(argc = SWIG_Python_UnpackTuple(args, "RegisterInterface_getSizeValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_RegisterInterface_getSizeValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_getSizeValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_RegisterInterface_getSizeValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_getSizeValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -24033,118 +21485,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_RegisterInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "RegisterInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((RegisterInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_validateItems" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  result = (bool)((RegisterInterface const *)arg1)->validateItems();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegisterInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegisterInterface *arg1 = (RegisterInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "RegisterInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_RegisterInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegisterInterface_itemHasValidName" "', argument " "1"" of type '" "RegisterInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegisterInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "RegisterInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "RegisterInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((RegisterInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_RegisterInterface_hasValidDimension(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   RegisterInterface *arg1 = (RegisterInterface *) 0 ;
@@ -24397,50 +21737,14 @@ SWIGINTERN PyObject *_wrap_RegisterInterface_addRegister(PyObject *self, PyObjec
   if (!(argc = SWIG_Python_UnpackTuple(args, "RegisterInterface_addRegister", 0, 4, argv))) SWIG_fail;
   --argc;
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_RegisterInterface_addRegister__SWIG_1(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_addRegister__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 4) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_RegisterInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          int res = SWIG_AsPtr_std_string(argv[3], (std::string**)(0));
-          _v = SWIG_CheckState(res);
-          if (_v) {
-            return _wrap_RegisterInterface_addRegister__SWIG_0(self, argc, argv);
-          }
-        }
-      }
-    }
+    PyObject *retobj = _wrap_RegisterInterface_addRegister__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -24808,262 +22112,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_FieldInterface_getItemIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getItemIndex", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getItemIndex" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getItemIndex" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (int)((FieldInterface const *)arg1)->getItemIndex((std::string const &)*arg2);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_getIndexedItemName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  int *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getIndexedItemName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getIndexedItemName" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FieldInterface_getIndexedItemName" "', argument " "2"" of type '" "int""'");
-  } 
-  temp2 = static_cast< int >(val2);
-  arg2 = &temp2;
-  result = ((FieldInterface const *)arg1)->getIndexedItemName((int const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_itemCount" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  result = (int)((FieldInterface const *)arg1)->itemCount();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< std::string,std::allocator< std::string > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getItemNames" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  result = ((FieldInterface const *)arg1)->getItemNames();
-  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_setName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_setName", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_setName" "', argument " "1"" of type '" "FieldInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setName" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setName((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_getDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  std::string result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getDescription", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getDescription" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((FieldInterface const *)arg1)->getDescription((std::string const &)*arg2);
-  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_setDescription(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_setDescription", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_setDescription" "', argument " "1"" of type '" "FieldInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setDescription" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_setDescription" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (bool)(arg1)->setDescription((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_FieldInterface_getOffsetValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   FieldInterface *arg1 = (FieldInterface *) 0 ;
@@ -25155,36 +22203,14 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getOffsetValue(PyObject *self, PyObjec
   if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getOffsetValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_FieldInterface_getOffsetValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getOffsetValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_FieldInterface_getOffsetValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getOffsetValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -25413,36 +22439,14 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getWidthValue(PyObject *self, PyObject
   if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getWidthValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_FieldInterface_getWidthValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getWidthValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_FieldInterface_getWidthValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getWidthValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -26464,36 +23468,14 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getIsPresentValue(PyObject *self, PyOb
   if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getIsPresentValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_FieldInterface_getIsPresentValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getIsPresentValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_FieldInterface_getIsPresentValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getIsPresentValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -26627,118 +23609,6 @@ SWIGINTERN PyObject *_wrap_FieldInterface_setIsPresent(PyObject *SWIGUNUSEDPARM(
 fail:
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FieldInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((FieldInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_validateItems" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  result = (bool)((FieldInterface const *)arg1)->validateItems();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_FieldInterface_itemHasValidName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  FieldInterface *arg1 = (FieldInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[2] ;
-  bool result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "FieldInterface_itemHasValidName", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FieldInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FieldInterface_itemHasValidName" "', argument " "1"" of type '" "FieldInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< FieldInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FieldInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FieldInterface_itemHasValidName" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((FieldInterface const *)arg1)->itemHasValidName((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -27012,38 +23882,14 @@ SWIGINTERN PyObject *_wrap_FieldInterface_addField(PyObject *self, PyObject *arg
   if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_addField", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_FieldInterface_addField__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_addField__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_FieldInterface_addField__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_addField__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -27447,36 +24293,14 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMinimumValue(PyObjec
   if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraintMinimumValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_FieldInterface_getWriteConstraintMinimumValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getWriteConstraintMinimumValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_FieldInterface_getWriteConstraintMinimumValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getWriteConstraintMinimumValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -27705,36 +24529,14 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getWriteConstraintMaximumValue(PyObjec
   if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getWriteConstraintMaximumValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_FieldInterface_getWriteConstraintMaximumValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getWriteConstraintMaximumValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_FieldInterface_getWriteConstraintMaximumValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getWriteConstraintMaximumValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -27963,36 +24765,14 @@ SWIGINTERN PyObject *_wrap_FieldInterface_getReservedValue(PyObject *self, PyObj
   if (!(argc = SWIG_Python_UnpackTuple(args, "FieldInterface_getReservedValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_FieldInterface_getReservedValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getReservedValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_FieldInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_FieldInterface_getReservedValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_FieldInterface_getReservedValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -28351,52 +25131,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ResetInterface_getItemNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ResetInterface *arg1 = (ResetInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< std::string,std::allocator< std::string > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getItemNames" "', argument " "1"" of type '" "ResetInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  result = ((ResetInterface const *)arg1)->getItemNames();
-  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ResetInterface_itemCount(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ResetInterface *arg1 = (ResetInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  int result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_itemCount" "', argument " "1"" of type '" "ResetInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  result = (int)((ResetInterface const *)arg1)->itemCount();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetTypeReference(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
@@ -28572,36 +25306,14 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetValue(PyObject *self, PyObject
   if (!(argc = SWIG_Python_UnpackTuple(args, "ResetInterface_getResetValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ResetInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_ResetInterface_getResetValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_ResetInterface_getResetValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ResetInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_ResetInterface_getResetValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_ResetInterface_getResetValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -28830,36 +25542,14 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskValue(PyObject *self, PyOb
   if (!(argc = SWIG_Python_UnpackTuple(args, "ResetInterface_getResetMaskValue", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ResetInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        return _wrap_ResetInterface_getResetMaskValue__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_ResetInterface_getResetMaskValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ResetInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      int res = SWIG_AsPtr_std_string(argv[1], (std::string**)(0));
-      _v = SWIG_CheckState(res);
-      if (_v) {
-        {
-          int res = SWIG_AsVal_int(argv[2], NULL);
-          _v = SWIG_CheckState(res);
-        }
-        if (_v) {
-          return _wrap_ResetInterface_getResetMaskValue__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_ResetInterface_getResetMaskValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -28993,29 +25683,6 @@ SWIGINTERN PyObject *_wrap_ResetInterface_setResetMask(PyObject *SWIGUNUSEDPARM(
 fail:
   if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ResetInterface_validateItems(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ResetInterface *arg1 = (ResetInterface *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  bool result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_validateItems" "', argument " "1"" of type '" "ResetInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  result = (bool)((ResetInterface const *)arg1)->validateItems();
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  return resultobj;
-fail:
   return NULL;
 }
 
@@ -29215,38 +25882,14 @@ SWIGINTERN PyObject *_wrap_ResetInterface_addReset(PyObject *self, PyObject *arg
   if (!(argc = SWIG_Python_UnpackTuple(args, "ResetInterface_addReset", 0, 3, argv))) SWIG_fail;
   --argc;
   if (argc == 2) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ResetInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        return _wrap_ResetInterface_addReset__SWIG_1(self, argc, argv);
-      }
-    }
+    PyObject *retobj = _wrap_ResetInterface_addReset__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   if (argc == 3) {
-    int _v;
-    void *vptr = 0;
-    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_ResetInterface, 0);
-    _v = SWIG_CheckState(res);
-    if (_v) {
-      {
-        int res = SWIG_AsVal_int(argv[1], NULL);
-        _v = SWIG_CheckState(res);
-      }
-      if (_v) {
-        int res = SWIG_AsPtr_std_string(argv[2], (std::string**)(0));
-        _v = SWIG_CheckState(res);
-        if (_v) {
-          return _wrap_ResetInterface_addReset__SWIG_0(self, argc, argv);
-        }
-      }
-    }
+    PyObject *retobj = _wrap_ResetInterface_addReset__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
   }
   
 fail:
@@ -29295,58 +25938,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ResetInterface_getAllReferencesToIdInItem(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
-  int res3 = SWIG_OLDOBJ ;
-  PyObject *swig_obj[3] ;
-  int result;
-  
-  if (!SWIG_Python_UnpackTuple(args, "ResetInterface_getAllReferencesToIdInItem", 3, 3, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getAllReferencesToIdInItem" "', argument " "1"" of type '" "ResetInterface const *""'"); 
-  }
-  arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getAllReferencesToIdInItem" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ResetInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getAllReferencesToIdInItem" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  result = (int)((ResetInterface const *)arg1)->getAllReferencesToIdInItem((std::string const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  if (SWIG_IsNewObj(res3)) delete arg3;
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *ResetInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
@@ -29360,527 +25951,6337 @@ SWIGINTERN PyObject *ResetInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyO
 
 static PyMethodDef SwigMethods[] = {
 	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
-	 { "delete_SwigPyIterator", _wrap_delete_SwigPyIterator, METH_O, NULL},
-	 { "SwigPyIterator_value", _wrap_SwigPyIterator_value, METH_O, NULL},
-	 { "SwigPyIterator_incr", _wrap_SwigPyIterator_incr, METH_VARARGS, NULL},
-	 { "SwigPyIterator_decr", _wrap_SwigPyIterator_decr, METH_VARARGS, NULL},
-	 { "SwigPyIterator_distance", _wrap_SwigPyIterator_distance, METH_VARARGS, NULL},
-	 { "SwigPyIterator_equal", _wrap_SwigPyIterator_equal, METH_VARARGS, NULL},
-	 { "SwigPyIterator_copy", _wrap_SwigPyIterator_copy, METH_O, NULL},
-	 { "SwigPyIterator_next", _wrap_SwigPyIterator_next, METH_O, NULL},
-	 { "SwigPyIterator___next__", _wrap_SwigPyIterator___next__, METH_O, NULL},
-	 { "SwigPyIterator_previous", _wrap_SwigPyIterator_previous, METH_O, NULL},
-	 { "SwigPyIterator_advance", _wrap_SwigPyIterator_advance, METH_VARARGS, NULL},
-	 { "SwigPyIterator___eq__", _wrap_SwigPyIterator___eq__, METH_VARARGS, NULL},
-	 { "SwigPyIterator___ne__", _wrap_SwigPyIterator___ne__, METH_VARARGS, NULL},
-	 { "SwigPyIterator___iadd__", _wrap_SwigPyIterator___iadd__, METH_VARARGS, NULL},
-	 { "SwigPyIterator___isub__", _wrap_SwigPyIterator___isub__, METH_VARARGS, NULL},
-	 { "SwigPyIterator___add__", _wrap_SwigPyIterator___add__, METH_VARARGS, NULL},
-	 { "SwigPyIterator___sub__", _wrap_SwigPyIterator___sub__, METH_VARARGS, NULL},
+	 { "SWIG_PyStaticMethod_New", SWIG_PyStaticMethod_New, METH_O, NULL},
+	 { "delete_SwigPyIterator", _wrap_delete_SwigPyIterator, METH_O, "delete_SwigPyIterator(SwigPyIterator self)"},
+	 { "SwigPyIterator_value", _wrap_SwigPyIterator_value, METH_O, "SwigPyIterator_value(SwigPyIterator self) -> PyObject *"},
+	 { "SwigPyIterator_incr", _wrap_SwigPyIterator_incr, METH_VARARGS, "\n"
+		"SwigPyIterator_incr(SwigPyIterator self, size_t n=1) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: size_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_decr", _wrap_SwigPyIterator_decr, METH_VARARGS, "\n"
+		"SwigPyIterator_decr(SwigPyIterator self, size_t n=1) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: size_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_distance", _wrap_SwigPyIterator_distance, METH_VARARGS, "\n"
+		"SwigPyIterator_distance(SwigPyIterator self, SwigPyIterator x) -> ptrdiff_t\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_equal", _wrap_SwigPyIterator_equal, METH_VARARGS, "\n"
+		"SwigPyIterator_equal(SwigPyIterator self, SwigPyIterator x) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_copy", _wrap_SwigPyIterator_copy, METH_O, "SwigPyIterator_copy(SwigPyIterator self) -> SwigPyIterator"},
+	 { "SwigPyIterator_next", _wrap_SwigPyIterator_next, METH_O, "SwigPyIterator_next(SwigPyIterator self) -> PyObject *"},
+	 { "SwigPyIterator___next__", _wrap_SwigPyIterator___next__, METH_O, "SwigPyIterator___next__(SwigPyIterator self) -> PyObject *"},
+	 { "SwigPyIterator_previous", _wrap_SwigPyIterator_previous, METH_O, "SwigPyIterator_previous(SwigPyIterator self) -> PyObject *"},
+	 { "SwigPyIterator_advance", _wrap_SwigPyIterator_advance, METH_VARARGS, "\n"
+		"SwigPyIterator_advance(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___eq__", _wrap_SwigPyIterator___eq__, METH_VARARGS, "\n"
+		"SwigPyIterator___eq__(SwigPyIterator self, SwigPyIterator x) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___ne__", _wrap_SwigPyIterator___ne__, METH_VARARGS, "\n"
+		"SwigPyIterator___ne__(SwigPyIterator self, SwigPyIterator x) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___iadd__", _wrap_SwigPyIterator___iadd__, METH_VARARGS, "\n"
+		"SwigPyIterator___iadd__(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___isub__", _wrap_SwigPyIterator___isub__, METH_VARARGS, "\n"
+		"SwigPyIterator___isub__(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___add__", _wrap_SwigPyIterator___add__, METH_VARARGS, "\n"
+		"SwigPyIterator___add__(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___sub__", _wrap_SwigPyIterator___sub__, METH_VARARGS, "\n"
+		"SwigPyIterator___sub__(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		"SwigPyIterator___sub__(SwigPyIterator self, SwigPyIterator x) -> ptrdiff_t\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
 	 { "SwigPyIterator_swigregister", SwigPyIterator_swigregister, METH_O, NULL},
-	 { "QString_fromStdString", _wrap_QString_fromStdString, METH_O, NULL},
-	 { "QString_toStdString", _wrap_QString_toStdString, METH_O, NULL},
-	 { "QString_size", _wrap_QString_size, METH_O, NULL},
-	 { "QString_count", _wrap_QString_count, METH_O, NULL},
-	 { "QString_length", _wrap_QString_length, METH_O, NULL},
-	 { "QString_isEmpty", _wrap_QString_isEmpty, METH_O, NULL},
-	 { "new_QString", _wrap_new_QString, METH_NOARGS, NULL},
-	 { "delete_QString", _wrap_delete_QString, METH_O, NULL},
+	 { "QString_fromStdString", _wrap_QString_fromStdString, METH_O, "\n"
+		"QString_fromStdString(std::string const & s) -> QString\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"s: std::string const &\n"
+		"\n"
+		""},
+	 { "QString_toStdString", _wrap_QString_toStdString, METH_O, "QString_toStdString(QString self) -> std::string"},
+	 { "QString_size", _wrap_QString_size, METH_O, "QString_size(QString self) -> int"},
+	 { "QString_count", _wrap_QString_count, METH_O, "QString_count(QString self) -> int"},
+	 { "QString_length", _wrap_QString_length, METH_O, "QString_length(QString self) -> int"},
+	 { "QString_isEmpty", _wrap_QString_isEmpty, METH_O, "QString_isEmpty(QString self) -> bool"},
+	 { "new_QString", _wrap_new_QString, METH_NOARGS, "new_QString() -> QString"},
+	 { "delete_QString", _wrap_delete_QString, METH_O, "delete_QString(QString self)"},
 	 { "QString_swigregister", QString_swigregister, METH_O, NULL},
 	 { "QString_swiginit", QString_swiginit, METH_VARARGS, NULL},
-	 { "new_NameGroup", _wrap_new_NameGroup, METH_VARARGS, NULL},
-	 { "delete_NameGroup", _wrap_delete_NameGroup, METH_O, NULL},
-	 { "NameGroup_name", _wrap_NameGroup_name, METH_O, NULL},
-	 { "NameGroup_displayName", _wrap_NameGroup_displayName, METH_O, NULL},
-	 { "NameGroup_description", _wrap_NameGroup_description, METH_O, NULL},
+	 { "new_NameGroup", _wrap_new_NameGroup, METH_VARARGS, "\n"
+		"NameGroup()\n"
+		"NameGroup(QString name, QString displayName=QString(), QString description=QString())\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"name: QString const &\n"
+		"displayName: QString const &\n"
+		"description: QString const &\n"
+		"\n"
+		"new_NameGroup(NameGroup other) -> NameGroup\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"other: NameGroup const &\n"
+		"\n"
+		""},
+	 { "delete_NameGroup", _wrap_delete_NameGroup, METH_O, "delete_NameGroup(NameGroup self)"},
+	 { "NameGroup_name", _wrap_NameGroup_name, METH_O, "NameGroup_name(NameGroup self) -> QString"},
+	 { "NameGroup_displayName", _wrap_NameGroup_displayName, METH_O, "NameGroup_displayName(NameGroup self) -> QString"},
+	 { "NameGroup_description", _wrap_NameGroup_description, METH_O, "NameGroup_description(NameGroup self) -> QString"},
 	 { "NameGroup_swigregister", NameGroup_swigregister, METH_O, NULL},
 	 { "NameGroup_swiginit", NameGroup_swiginit, METH_VARARGS, NULL},
-	 { "stringVector_iterator", _wrap_stringVector_iterator, METH_O, NULL},
-	 { "stringVector___nonzero__", _wrap_stringVector___nonzero__, METH_O, NULL},
-	 { "stringVector___bool__", _wrap_stringVector___bool__, METH_O, NULL},
-	 { "stringVector___len__", _wrap_stringVector___len__, METH_O, NULL},
-	 { "stringVector___getslice__", _wrap_stringVector___getslice__, METH_VARARGS, NULL},
-	 { "stringVector___setslice__", _wrap_stringVector___setslice__, METH_VARARGS, NULL},
-	 { "stringVector___delslice__", _wrap_stringVector___delslice__, METH_VARARGS, NULL},
-	 { "stringVector___delitem__", _wrap_stringVector___delitem__, METH_VARARGS, NULL},
-	 { "stringVector___getitem__", _wrap_stringVector___getitem__, METH_VARARGS, NULL},
-	 { "stringVector___setitem__", _wrap_stringVector___setitem__, METH_VARARGS, NULL},
-	 { "stringVector_pop", _wrap_stringVector_pop, METH_O, NULL},
-	 { "stringVector_append", _wrap_stringVector_append, METH_VARARGS, NULL},
-	 { "stringVector_empty", _wrap_stringVector_empty, METH_O, NULL},
-	 { "stringVector_size", _wrap_stringVector_size, METH_O, NULL},
-	 { "stringVector_swap", _wrap_stringVector_swap, METH_VARARGS, NULL},
-	 { "stringVector_begin", _wrap_stringVector_begin, METH_O, NULL},
-	 { "stringVector_end", _wrap_stringVector_end, METH_O, NULL},
-	 { "stringVector_rbegin", _wrap_stringVector_rbegin, METH_O, NULL},
-	 { "stringVector_rend", _wrap_stringVector_rend, METH_O, NULL},
-	 { "stringVector_clear", _wrap_stringVector_clear, METH_O, NULL},
-	 { "stringVector_get_allocator", _wrap_stringVector_get_allocator, METH_O, NULL},
-	 { "stringVector_pop_back", _wrap_stringVector_pop_back, METH_O, NULL},
-	 { "stringVector_erase", _wrap_stringVector_erase, METH_VARARGS, NULL},
-	 { "new_stringVector", _wrap_new_stringVector, METH_VARARGS, NULL},
-	 { "stringVector_push_back", _wrap_stringVector_push_back, METH_VARARGS, NULL},
-	 { "stringVector_front", _wrap_stringVector_front, METH_O, NULL},
-	 { "stringVector_back", _wrap_stringVector_back, METH_O, NULL},
-	 { "stringVector_assign", _wrap_stringVector_assign, METH_VARARGS, NULL},
-	 { "stringVector_resize", _wrap_stringVector_resize, METH_VARARGS, NULL},
-	 { "stringVector_insert", _wrap_stringVector_insert, METH_VARARGS, NULL},
-	 { "stringVector_reserve", _wrap_stringVector_reserve, METH_VARARGS, NULL},
-	 { "stringVector_capacity", _wrap_stringVector_capacity, METH_O, NULL},
-	 { "delete_stringVector", _wrap_delete_stringVector, METH_O, NULL},
+	 { "stringVector_iterator", _wrap_stringVector_iterator, METH_O, "stringVector_iterator(stringVector self) -> SwigPyIterator"},
+	 { "stringVector___nonzero__", _wrap_stringVector___nonzero__, METH_O, "stringVector___nonzero__(stringVector self) -> bool"},
+	 { "stringVector___bool__", _wrap_stringVector___bool__, METH_O, "stringVector___bool__(stringVector self) -> bool"},
+	 { "stringVector___len__", _wrap_stringVector___len__, METH_O, "stringVector___len__(stringVector self) -> std::vector< std::string >::size_type"},
+	 { "stringVector___getslice__", _wrap_stringVector___getslice__, METH_VARARGS, "\n"
+		"stringVector___getslice__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::difference_type j) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"j: std::vector< std::string >::difference_type\n"
+		"\n"
+		""},
+	 { "stringVector___setslice__", _wrap_stringVector___setslice__, METH_VARARGS, "\n"
+		"stringVector___setslice__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::difference_type j)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"j: std::vector< std::string >::difference_type\n"
+		"\n"
+		"stringVector___setslice__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::difference_type j, stringVector v)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"j: std::vector< std::string >::difference_type\n"
+		"v: std::vector< std::string,std::allocator< std::string > > const &\n"
+		"\n"
+		""},
+	 { "stringVector___delslice__", _wrap_stringVector___delslice__, METH_VARARGS, "\n"
+		"stringVector___delslice__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::difference_type j)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"j: std::vector< std::string >::difference_type\n"
+		"\n"
+		""},
+	 { "stringVector___delitem__", _wrap_stringVector___delitem__, METH_VARARGS, "\n"
+		"stringVector___delitem__(stringVector self, std::vector< std::string >::difference_type i)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"\n"
+		"stringVector___delitem__(stringVector self, PySliceObject * slice)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"slice: PySliceObject *\n"
+		"\n"
+		""},
+	 { "stringVector___getitem__", _wrap_stringVector___getitem__, METH_VARARGS, "\n"
+		"stringVector___getitem__(stringVector self, PySliceObject * slice) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"slice: PySliceObject *\n"
+		"\n"
+		"stringVector___getitem__(stringVector self, std::vector< std::string >::difference_type i) -> std::vector< std::string >::value_type const &\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"\n"
+		""},
+	 { "stringVector___setitem__", _wrap_stringVector___setitem__, METH_VARARGS, "\n"
+		"stringVector___setitem__(stringVector self, PySliceObject * slice, stringVector v)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"slice: PySliceObject *\n"
+		"v: std::vector< std::string,std::allocator< std::string > > const &\n"
+		"\n"
+		"stringVector___setitem__(stringVector self, PySliceObject * slice)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"slice: PySliceObject *\n"
+		"\n"
+		"stringVector___setitem__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_pop", _wrap_stringVector_pop, METH_O, "stringVector_pop(stringVector self) -> std::vector< std::string >::value_type"},
+	 { "stringVector_append", _wrap_stringVector_append, METH_VARARGS, "\n"
+		"stringVector_append(stringVector self, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_empty", _wrap_stringVector_empty, METH_O, "stringVector_empty(stringVector self) -> bool"},
+	 { "stringVector_size", _wrap_stringVector_size, METH_O, "stringVector_size(stringVector self) -> std::vector< std::string >::size_type"},
+	 { "stringVector_swap", _wrap_stringVector_swap, METH_VARARGS, "\n"
+		"stringVector_swap(stringVector self, stringVector v)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"v: std::vector< std::string > &\n"
+		"\n"
+		""},
+	 { "stringVector_begin", _wrap_stringVector_begin, METH_O, "stringVector_begin(stringVector self) -> std::vector< std::string >::iterator"},
+	 { "stringVector_end", _wrap_stringVector_end, METH_O, "stringVector_end(stringVector self) -> std::vector< std::string >::iterator"},
+	 { "stringVector_rbegin", _wrap_stringVector_rbegin, METH_O, "stringVector_rbegin(stringVector self) -> std::vector< std::string >::reverse_iterator"},
+	 { "stringVector_rend", _wrap_stringVector_rend, METH_O, "stringVector_rend(stringVector self) -> std::vector< std::string >::reverse_iterator"},
+	 { "stringVector_clear", _wrap_stringVector_clear, METH_O, "stringVector_clear(stringVector self)"},
+	 { "stringVector_get_allocator", _wrap_stringVector_get_allocator, METH_O, "stringVector_get_allocator(stringVector self) -> std::vector< std::string >::allocator_type"},
+	 { "stringVector_pop_back", _wrap_stringVector_pop_back, METH_O, "stringVector_pop_back(stringVector self)"},
+	 { "stringVector_erase", _wrap_stringVector_erase, METH_VARARGS, "\n"
+		"stringVector_erase(stringVector self, std::vector< std::string >::iterator pos) -> std::vector< std::string >::iterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"pos: std::vector< std::string >::iterator\n"
+		"\n"
+		"stringVector_erase(stringVector self, std::vector< std::string >::iterator first, std::vector< std::string >::iterator last) -> std::vector< std::string >::iterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"first: std::vector< std::string >::iterator\n"
+		"last: std::vector< std::string >::iterator\n"
+		"\n"
+		""},
+	 { "new_stringVector", _wrap_new_stringVector, METH_VARARGS, "\n"
+		"stringVector()\n"
+		"stringVector(stringVector other)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"other: std::vector< std::string > const &\n"
+		"\n"
+		"stringVector(std::vector< std::string >::size_type size)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"size: std::vector< std::string >::size_type\n"
+		"\n"
+		"new_stringVector(std::vector< std::string >::size_type size, std::vector< std::string >::value_type const & value) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"size: std::vector< std::string >::size_type\n"
+		"value: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_push_back", _wrap_stringVector_push_back, METH_VARARGS, "\n"
+		"stringVector_push_back(stringVector self, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_front", _wrap_stringVector_front, METH_O, "stringVector_front(stringVector self) -> std::vector< std::string >::value_type const &"},
+	 { "stringVector_back", _wrap_stringVector_back, METH_O, "stringVector_back(stringVector self) -> std::vector< std::string >::value_type const &"},
+	 { "stringVector_assign", _wrap_stringVector_assign, METH_VARARGS, "\n"
+		"stringVector_assign(stringVector self, std::vector< std::string >::size_type n, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: std::vector< std::string >::size_type\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_resize", _wrap_stringVector_resize, METH_VARARGS, "\n"
+		"stringVector_resize(stringVector self, std::vector< std::string >::size_type new_size)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"new_size: std::vector< std::string >::size_type\n"
+		"\n"
+		"stringVector_resize(stringVector self, std::vector< std::string >::size_type new_size, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"new_size: std::vector< std::string >::size_type\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_insert", _wrap_stringVector_insert, METH_VARARGS, "\n"
+		"stringVector_insert(stringVector self, std::vector< std::string >::iterator pos, std::vector< std::string >::value_type const & x) -> std::vector< std::string >::iterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"pos: std::vector< std::string >::iterator\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		"stringVector_insert(stringVector self, std::vector< std::string >::iterator pos, std::vector< std::string >::size_type n, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"pos: std::vector< std::string >::iterator\n"
+		"n: std::vector< std::string >::size_type\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_reserve", _wrap_stringVector_reserve, METH_VARARGS, "\n"
+		"stringVector_reserve(stringVector self, std::vector< std::string >::size_type n)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: std::vector< std::string >::size_type\n"
+		"\n"
+		""},
+	 { "stringVector_capacity", _wrap_stringVector_capacity, METH_O, "stringVector_capacity(stringVector self) -> std::vector< std::string >::size_type"},
+	 { "delete_stringVector", _wrap_delete_stringVector, METH_O, "delete_stringVector(stringVector self)"},
 	 { "stringVector_swigregister", stringVector_swigregister, METH_O, NULL},
 	 { "stringVector_swiginit", stringVector_swiginit, METH_VARARGS, NULL},
-	 { "new_PythonAPI", _wrap_new_PythonAPI, METH_NOARGS, NULL},
-	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, NULL},
-	 { "PythonAPI_setupLibrary", _wrap_PythonAPI_setupLibrary, METH_VARARGS, NULL},
-	 { "PythonAPI_getFileCount", _wrap_PythonAPI_getFileCount, METH_O, NULL},
-	 { "PythonAPI_listVLNVs", _wrap_PythonAPI_listVLNVs, METH_VARARGS, NULL},
-	 { "PythonAPI_listComponentVLNVs", _wrap_PythonAPI_listComponentVLNVs, METH_O, NULL},
-	 { "PythonAPI_openComponent", _wrap_PythonAPI_openComponent, METH_VARARGS, NULL},
-	 { "PythonAPI_closeOpenComponent", _wrap_PythonAPI_closeOpenComponent, METH_O, NULL},
-	 { "PythonAPI_getComponentName", _wrap_PythonAPI_getComponentName, METH_O, NULL},
-	 { "PythonAPI_getComponentDescription", _wrap_PythonAPI_getComponentDescription, METH_O, NULL},
-	 { "PythonAPI_saveComponent", _wrap_PythonAPI_saveComponent, METH_O, NULL},
-	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, NULL},
-	 { "PythonAPI_getComponentParameterInterface", _wrap_PythonAPI_getComponentParameterInterface, METH_O, NULL},
-	 { "PythonAPI_getMapInterface", _wrap_PythonAPI_getMapInterface, METH_O, NULL},
-	 { "PythonAPI_setBlocksForInterface", _wrap_PythonAPI_setBlocksForInterface, METH_VARARGS, NULL},
-	 { "PythonAPI_setRegistersForInterface", _wrap_PythonAPI_setRegistersForInterface, METH_VARARGS, NULL},
-	 { "PythonAPI_setFieldsForInterface", _wrap_PythonAPI_setFieldsForInterface, METH_VARARGS, NULL},
-	 { "PythonAPI_setResetsForInterface", _wrap_PythonAPI_setResetsForInterface, METH_VARARGS, NULL},
+	 { "new_PythonAPI", _wrap_new_PythonAPI, METH_NOARGS, "new_PythonAPI() -> PythonAPI"},
+	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, "delete_PythonAPI(PythonAPI self)"},
+	 { "PythonAPI_getVersion", _wrap_PythonAPI_getVersion, METH_O, "PythonAPI_getVersion(PythonAPI self) -> std::string"},
+	 { "PythonAPI_listPlugins", _wrap_PythonAPI_listPlugins, METH_O, "PythonAPI_listPlugins(PythonAPI self) -> stringVector"},
+	 { "PythonAPI_getLibraryPaths", _wrap_PythonAPI_getLibraryPaths, METH_O, "PythonAPI_getLibraryPaths(PythonAPI self) -> stringVector"},
+	 { "PythonAPI_setLibraryPaths", _wrap_PythonAPI_setLibraryPaths, METH_VARARGS, "\n"
+		"PythonAPI_setLibraryPaths(PythonAPI self, stringVector paths)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"paths: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "PythonAPI_getDefaultLibraryPath", _wrap_PythonAPI_getDefaultLibraryPath, METH_O, "PythonAPI_getDefaultLibraryPath(PythonAPI self) -> std::string"},
+	 { "PythonAPI_setDefaultLibraryPath", _wrap_PythonAPI_setDefaultLibraryPath, METH_VARARGS, "\n"
+		"PythonAPI_setDefaultLibraryPath(PythonAPI self, std::string const & path)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"path: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_importFile", _wrap_PythonAPI_importFile, METH_VARARGS, "\n"
+		"PythonAPI_importFile(PythonAPI self, std::string path, std::string vlnv, bool overwrite=False)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"path: std::string\n"
+		"vlnv: std::string\n"
+		"overwrite: bool\n"
+		"\n"
+		""},
+	 { "PythonAPI_getFileCount", _wrap_PythonAPI_getFileCount, METH_O, "PythonAPI_getFileCount(PythonAPI self) -> int"},
+	 { "PythonAPI_listVLNVs", _wrap_PythonAPI_listVLNVs, METH_VARARGS, "\n"
+		"PythonAPI_listVLNVs(PythonAPI self, QString vendor=QString(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"vendor: QString const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_listComponentVLNVs", _wrap_PythonAPI_listComponentVLNVs, METH_O, "PythonAPI_listComponentVLNVs(PythonAPI self)"},
+	 { "PythonAPI_openComponent", _wrap_PythonAPI_openComponent, METH_VARARGS, "\n"
+		"PythonAPI_openComponent(PythonAPI self, QString componentVLNV) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"componentVLNV: QString const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_closeOpenComponent", _wrap_PythonAPI_closeOpenComponent, METH_O, "PythonAPI_closeOpenComponent(PythonAPI self)"},
+	 { "PythonAPI_getComponentName", _wrap_PythonAPI_getComponentName, METH_O, "PythonAPI_getComponentName(PythonAPI self) -> QString"},
+	 { "PythonAPI_getComponentDescription", _wrap_PythonAPI_getComponentDescription, METH_O, "PythonAPI_getComponentDescription(PythonAPI self) -> QString"},
+	 { "PythonAPI_saveComponent", _wrap_PythonAPI_saveComponent, METH_O, "PythonAPI_saveComponent(PythonAPI self)"},
+	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, "PythonAPI_getPortsInterface(PythonAPI self) -> PortsInterface"},
+	 { "PythonAPI_getComponentParameterInterface", _wrap_PythonAPI_getComponentParameterInterface, METH_O, "PythonAPI_getComponentParameterInterface(PythonAPI self) -> ParametersInterface"},
+	 { "PythonAPI_getMapInterface", _wrap_PythonAPI_getMapInterface, METH_O, "PythonAPI_getMapInterface(PythonAPI self) -> MemoryMapInterface"},
+	 { "PythonAPI_setBlocksForInterface", _wrap_PythonAPI_setBlocksForInterface, METH_VARARGS, "\n"
+		"PythonAPI_setBlocksForInterface(PythonAPI self, std::string const & mapName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_setRegistersForInterface", _wrap_PythonAPI_setRegistersForInterface, METH_VARARGS, "\n"
+		"PythonAPI_setRegistersForInterface(PythonAPI self, std::string const & mapName, std::string const & blockName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_setFieldsForInterface", _wrap_PythonAPI_setFieldsForInterface, METH_VARARGS, "\n"
+		"PythonAPI_setFieldsForInterface(PythonAPI self, std::string const & mapName, std::string const & blockName, std::string const & registerName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"blockName: std::string const &\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_setResetsForInterface", _wrap_PythonAPI_setResetsForInterface, METH_VARARGS, "\n"
+		"PythonAPI_setResetsForInterface(PythonAPI self, std::string const & mapName, std::string const & blockName, std::string const & registerName, std::string const & fieldName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"blockName: std::string const &\n"
+		"registerName: std::string const &\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
 	 { "PythonAPI_swigregister", PythonAPI_swigregister, METH_O, NULL},
 	 { "PythonAPI_swiginit", PythonAPI_swiginit, METH_VARARGS, NULL},
-	 { "delete_CommonInterface", _wrap_delete_CommonInterface, METH_O, NULL},
-	 { "CommonInterface_getItemNames", _wrap_CommonInterface_getItemNames, METH_O, NULL},
-	 { "CommonInterface_itemCount", _wrap_CommonInterface_itemCount, METH_O, NULL},
-	 { "CommonInterface_validateItems", _wrap_CommonInterface_validateItems, METH_O, NULL},
+	 { "delete_CommonInterface", _wrap_delete_CommonInterface, METH_O, "delete_CommonInterface(CommonInterface self)"},
+	 { "CommonInterface_getItemNames", _wrap_CommonInterface_getItemNames, METH_O, "CommonInterface_getItemNames(CommonInterface self) -> stringVector"},
+	 { "CommonInterface_itemCount", _wrap_CommonInterface_itemCount, METH_O, "CommonInterface_itemCount(CommonInterface self) -> int"},
+	 { "CommonInterface_validateItems", _wrap_CommonInterface_validateItems, METH_O, "CommonInterface_validateItems(CommonInterface self) -> bool"},
 	 { "CommonInterface_swigregister", CommonInterface_swigregister, METH_O, NULL},
-	 { "delete_NameGroupInterface", _wrap_delete_NameGroupInterface, METH_O, NULL},
-	 { "NameGroupInterface_getItemIndex", _wrap_NameGroupInterface_getItemIndex, METH_VARARGS, NULL},
-	 { "NameGroupInterface_getIndexedItemName", _wrap_NameGroupInterface_getIndexedItemName, METH_VARARGS, NULL},
-	 { "NameGroupInterface_setName", _wrap_NameGroupInterface_setName, METH_VARARGS, NULL},
-	 { "NameGroupInterface_getDescription", _wrap_NameGroupInterface_getDescription, METH_VARARGS, NULL},
-	 { "NameGroupInterface_setDescription", _wrap_NameGroupInterface_setDescription, METH_VARARGS, NULL},
-	 { "NameGroupInterface_itemHasValidName", _wrap_NameGroupInterface_itemHasValidName, METH_VARARGS, NULL},
+	 { "delete_NameGroupInterface", _wrap_delete_NameGroupInterface, METH_O, "delete_NameGroupInterface(NameGroupInterface self)"},
+	 { "NameGroupInterface_getItemIndex", _wrap_NameGroupInterface_getItemIndex, METH_VARARGS, "\n"
+		"NameGroupInterface_getItemIndex(NameGroupInterface self, std::string const & itemName) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_getIndexedItemName", _wrap_NameGroupInterface_getIndexedItemName, METH_VARARGS, "\n"
+		"NameGroupInterface_getIndexedItemName(NameGroupInterface self, int const & itemIndex) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemIndex: int const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_setName", _wrap_NameGroupInterface_setName, METH_VARARGS, "\n"
+		"NameGroupInterface_setName(NameGroupInterface self, std::string const & currentName, std::string const & newName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"currentName: std::string const &\n"
+		"newName: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_getDescription", _wrap_NameGroupInterface_getDescription, METH_VARARGS, "\n"
+		"NameGroupInterface_getDescription(NameGroupInterface self, std::string const & itemName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_setDescription", _wrap_NameGroupInterface_setDescription, METH_VARARGS, "\n"
+		"NameGroupInterface_setDescription(NameGroupInterface self, std::string const & itemName, std::string const & newDescription) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"newDescription: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_itemHasValidName", _wrap_NameGroupInterface_itemHasValidName, METH_VARARGS, "\n"
+		"NameGroupInterface_itemHasValidName(NameGroupInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
 	 { "NameGroupInterface_swigregister", NameGroupInterface_swigregister, METH_O, NULL},
-	 { "delete_ParameterizableInterface", _wrap_delete_ParameterizableInterface, METH_O, NULL},
-	 { "ParameterizableInterface_getAllReferencesToIdInItem", _wrap_ParameterizableInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
+	 { "delete_ParameterizableInterface", _wrap_delete_ParameterizableInterface, METH_O, "delete_ParameterizableInterface(ParameterizableInterface self)"},
+	 { "ParameterizableInterface_getAllReferencesToIdInItem", _wrap_ParameterizableInterface_getAllReferencesToIdInItem, METH_VARARGS, "\n"
+		"ParameterizableInterface_getAllReferencesToIdInItem(ParameterizableInterface self, std::string const & itemName, std::string const & valueID) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"valueID: std::string const &\n"
+		"\n"
+		""},
 	 { "ParameterizableInterface_swigregister", ParameterizableInterface_swigregister, METH_O, NULL},
-	 { "delete_MasterPortInterface", _wrap_delete_MasterPortInterface, METH_O, NULL},
-	 { "MasterPortInterface_addWirePort", _wrap_MasterPortInterface_addWirePort, METH_VARARGS, NULL},
-	 { "MasterPortInterface_addTransactionalPort", _wrap_MasterPortInterface_addTransactionalPort, METH_VARARGS, NULL},
-	 { "MasterPortInterface_portIsWire", _wrap_MasterPortInterface_portIsWire, METH_VARARGS, NULL},
-	 { "MasterPortInterface_portIsTransactional", _wrap_MasterPortInterface_portIsTransactional, METH_VARARGS, NULL},
-	 { "MasterPortInterface_getIconPathForMissingPort", _wrap_MasterPortInterface_getIconPathForMissingPort, METH_O, NULL},
-	 { "MasterPortInterface_getIconPathForDirection", _wrap_MasterPortInterface_getIconPathForDirection, METH_VARARGS, NULL},
-	 { "MasterPortInterface_getIconPathForInitiative", _wrap_MasterPortInterface_getIconPathForInitiative, METH_VARARGS, NULL},
+	 { "delete_MasterPortInterface", _wrap_delete_MasterPortInterface, METH_O, "delete_MasterPortInterface(MasterPortInterface self)"},
+	 { "MasterPortInterface_addWirePort", _wrap_MasterPortInterface_addWirePort, METH_VARARGS, "\n"
+		"MasterPortInterface_addWirePort(MasterPortInterface self, std::string const & newPortName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newPortName: std::string const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_addTransactionalPort", _wrap_MasterPortInterface_addTransactionalPort, METH_VARARGS, "\n"
+		"MasterPortInterface_addTransactionalPort(MasterPortInterface self, std::string const & newPortName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newPortName: std::string const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_portIsWire", _wrap_MasterPortInterface_portIsWire, METH_VARARGS, "\n"
+		"MasterPortInterface_portIsWire(MasterPortInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_portIsTransactional", _wrap_MasterPortInterface_portIsTransactional, METH_VARARGS, "\n"
+		"MasterPortInterface_portIsTransactional(MasterPortInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_getIconPathForMissingPort", _wrap_MasterPortInterface_getIconPathForMissingPort, METH_O, "MasterPortInterface_getIconPathForMissingPort(MasterPortInterface self) -> std::string"},
+	 { "MasterPortInterface_getIconPathForDirection", _wrap_MasterPortInterface_getIconPathForDirection, METH_VARARGS, "\n"
+		"MasterPortInterface_getIconPathForDirection(MasterPortInterface self, DirectionTypes::Direction direction) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"direction: DirectionTypes::Direction\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_getIconPathForInitiative", _wrap_MasterPortInterface_getIconPathForInitiative, METH_VARARGS, "\n"
+		"MasterPortInterface_getIconPathForInitiative(MasterPortInterface self, QString initiative) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"initiative: QString const &\n"
+		"\n"
+		""},
 	 { "MasterPortInterface_swigregister", MasterPortInterface_swigregister, METH_O, NULL},
-	 { "new_PortsInterface", _wrap_new_PortsInterface, METH_VARARGS, NULL},
-	 { "delete_PortsInterface", _wrap_delete_PortsInterface, METH_O, NULL},
-	 { "PortsInterface_setPorts", _wrap_PortsInterface_setPorts, METH_VARARGS, NULL},
-	 { "PortsInterface_getItemIndex", _wrap_PortsInterface_getItemIndex, METH_VARARGS, NULL},
-	 { "PortsInterface_getIndexedItemName", _wrap_PortsInterface_getIndexedItemName, METH_VARARGS, NULL},
-	 { "PortsInterface_itemCount", _wrap_PortsInterface_itemCount, METH_O, NULL},
-	 { "PortsInterface_getItemNames", _wrap_PortsInterface_getItemNames, METH_O, NULL},
-	 { "PortsInterface_setName", _wrap_PortsInterface_setName, METH_VARARGS, NULL},
-	 { "PortsInterface_getDescription", _wrap_PortsInterface_getDescription, METH_VARARGS, NULL},
-	 { "PortsInterface_setDescription", _wrap_PortsInterface_setDescription, METH_VARARGS, NULL},
-	 { "PortsInterface_getAllReferencesToIdInItem", _wrap_PortsInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
-	 { "PortsInterface_portExists", _wrap_PortsInterface_portExists, METH_VARARGS, NULL},
-	 { "PortsInterface_validateItems", _wrap_PortsInterface_validateItems, METH_O, NULL},
-	 { "PortsInterface_itemHasValidName", _wrap_PortsInterface_itemHasValidName, METH_VARARGS, NULL},
-	 { "PortsInterface_getTypeName", _wrap_PortsInterface_getTypeName, METH_VARARGS, NULL},
-	 { "PortsInterface_setTypeName", _wrap_PortsInterface_setTypeName, METH_VARARGS, NULL},
-	 { "PortsInterface_getArrayLeftValue", _wrap_PortsInterface_getArrayLeftValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getArrayLeftFormattedExpression", _wrap_PortsInterface_getArrayLeftFormattedExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_getArrayLeftExpression", _wrap_PortsInterface_getArrayLeftExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_setArrayLeft", _wrap_PortsInterface_setArrayLeft, METH_VARARGS, NULL},
-	 { "PortsInterface_getArrayRightValue", _wrap_PortsInterface_getArrayRightValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getArrayRightFormattedExpression", _wrap_PortsInterface_getArrayRightFormattedExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_getArrayRightExpression", _wrap_PortsInterface_getArrayRightExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_setArrayRight", _wrap_PortsInterface_setArrayRight, METH_VARARGS, NULL},
-	 { "PortsInterface_getTags", _wrap_PortsInterface_getTags, METH_VARARGS, NULL},
-	 { "PortsInterface_setTags", _wrap_PortsInterface_setTags, METH_VARARGS, NULL},
-	 { "PortsInterface_isAdHoc", _wrap_PortsInterface_isAdHoc, METH_VARARGS, NULL},
-	 { "PortsInterface_setAdHoc", _wrap_PortsInterface_setAdHoc, METH_VARARGS, NULL},
-	 { "PortsInterface_getDirection", _wrap_PortsInterface_getDirection, METH_VARARGS, NULL},
-	 { "PortsInterface_getDirectionType", _wrap_PortsInterface_getDirectionType, METH_VARARGS, NULL},
-	 { "PortsInterface_setDirection", _wrap_PortsInterface_setDirection, METH_VARARGS, NULL},
-	 { "PortsInterface_getLeftBoundValue", _wrap_PortsInterface_getLeftBoundValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getLeftBoundFormattedExpression", _wrap_PortsInterface_getLeftBoundFormattedExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_getLeftBoundExpression", _wrap_PortsInterface_getLeftBoundExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_setLeftBound", _wrap_PortsInterface_setLeftBound, METH_VARARGS, NULL},
-	 { "PortsInterface_getRightBoundValue", _wrap_PortsInterface_getRightBoundValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getRightBoundFormattedExpression", _wrap_PortsInterface_getRightBoundFormattedExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_getRightBoundExpression", _wrap_PortsInterface_getRightBoundExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_setRightBound", _wrap_PortsInterface_setRightBound, METH_VARARGS, NULL},
-	 { "PortsInterface_hasExpressionInLeftOrRightBound", _wrap_PortsInterface_hasExpressionInLeftOrRightBound, METH_VARARGS, NULL},
-	 { "PortsInterface_getWidth", _wrap_PortsInterface_getWidth, METH_VARARGS, NULL},
-	 { "PortsInterface_setWidth", _wrap_PortsInterface_setWidth, METH_VARARGS, NULL},
-	 { "PortsInterface_getDefaultValue", _wrap_PortsInterface_getDefaultValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getDefaultValueFormattedExpression", _wrap_PortsInterface_getDefaultValueFormattedExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_getDefaultValueExpression", _wrap_PortsInterface_getDefaultValueExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_setDefaultValue", _wrap_PortsInterface_setDefaultValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getBusWidthValue", _wrap_PortsInterface_getBusWidthValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getBusWidthFormattedExpression", _wrap_PortsInterface_getBusWidthFormattedExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_getBusWidthExpression", _wrap_PortsInterface_getBusWidthExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_setBusWidth", _wrap_PortsInterface_setBusWidth, METH_VARARGS, NULL},
-	 { "PortsInterface_getInitiative", _wrap_PortsInterface_getInitiative, METH_VARARGS, NULL},
-	 { "PortsInterface_setInitiative", _wrap_PortsInterface_setInitiative, METH_VARARGS, NULL},
-	 { "PortsInterface_getKind", _wrap_PortsInterface_getKind, METH_VARARGS, NULL},
-	 { "PortsInterface_setKind", _wrap_PortsInterface_setKind, METH_VARARGS, NULL},
-	 { "PortsInterface_getProtocolType", _wrap_PortsInterface_getProtocolType, METH_VARARGS, NULL},
-	 { "PortsInterface_setProtocolType", _wrap_PortsInterface_setProtocolType, METH_VARARGS, NULL},
-	 { "PortsInterface_getMaxConnectionsValue", _wrap_PortsInterface_getMaxConnectionsValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getMaxConnectionsFormattedExpression", _wrap_PortsInterface_getMaxConnectionsFormattedExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_getMaxConnectionsExpression", _wrap_PortsInterface_getMaxConnectionsExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_setMaxConnections", _wrap_PortsInterface_setMaxConnections, METH_VARARGS, NULL},
-	 { "PortsInterface_getMinConnectionsValue", _wrap_PortsInterface_getMinConnectionsValue, METH_VARARGS, NULL},
-	 { "PortsInterface_getMinConnectionsFormattedExpression", _wrap_PortsInterface_getMinConnectionsFormattedExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_getMinConnectionsExpression", _wrap_PortsInterface_getMinConnectionsExpression, METH_VARARGS, NULL},
-	 { "PortsInterface_setMinConnections", _wrap_PortsInterface_setMinConnections, METH_VARARGS, NULL},
-	 { "PortsInterface_addWirePort", _wrap_PortsInterface_addWirePort, METH_VARARGS, NULL},
-	 { "PortsInterface_addTransactionalPort", _wrap_PortsInterface_addTransactionalPort, METH_VARARGS, NULL},
-	 { "PortsInterface_removePort", _wrap_PortsInterface_removePort, METH_VARARGS, NULL},
-	 { "PortsInterface_portLeftArrayValueIsValid", _wrap_PortsInterface_portLeftArrayValueIsValid, METH_VARARGS, NULL},
-	 { "PortsInterface_portRightArrayValueIsValid", _wrap_PortsInterface_portRightArrayValueIsValid, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidTypes", _wrap_PortsInterface_portHasValidTypes, METH_VARARGS, NULL},
-	 { "PortsInterface_portIsWire", _wrap_PortsInterface_portIsWire, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidLeftBound", _wrap_PortsInterface_portHasValidLeftBound, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidRightBound", _wrap_PortsInterface_portHasValidRightBound, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidDefaultValue", _wrap_PortsInterface_portHasValidDefaultValue, METH_VARARGS, NULL},
-	 { "PortsInterface_portIsTransactional", _wrap_PortsInterface_portIsTransactional, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidBusWidth", _wrap_PortsInterface_portHasValidBusWidth, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidInitiative", _wrap_PortsInterface_portHasValidInitiative, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidKind", _wrap_PortsInterface_portHasValidKind, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidProtocol", _wrap_PortsInterface_portHasValidProtocol, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidMaxConnections", _wrap_PortsInterface_portHasValidMaxConnections, METH_VARARGS, NULL},
-	 { "PortsInterface_portHasValidMinConnections", _wrap_PortsInterface_portHasValidMinConnections, METH_VARARGS, NULL},
-	 { "PortsInterface_getIconPathForPort", _wrap_PortsInterface_getIconPathForPort, METH_VARARGS, NULL},
-	 { "PortsInterface_getPort", _wrap_PortsInterface_getPort, METH_VARARGS, NULL},
+	 { "new_PortsInterface", _wrap_new_PortsInterface, METH_VARARGS, "\n"
+		"new_PortsInterface(QSharedPointer< PortValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> PortsInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< PortValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_PortsInterface", _wrap_delete_PortsInterface, METH_O, "delete_PortsInterface(PortsInterface self)"},
+	 { "PortsInterface_setPorts", _wrap_PortsInterface_setPorts, METH_VARARGS, "\n"
+		"PortsInterface_setPorts(PortsInterface self, QSharedPointer< Component > component)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"component: QSharedPointer< Component >\n"
+		"\n"
+		""},
+	 { "PortsInterface_portExists", _wrap_PortsInterface_portExists, METH_VARARGS, "\n"
+		"PortsInterface_portExists(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getTypeName", _wrap_PortsInterface_getTypeName, METH_VARARGS, "\n"
+		"PortsInterface_getTypeName(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setTypeName", _wrap_PortsInterface_setTypeName, METH_VARARGS, "\n"
+		"PortsInterface_setTypeName(PortsInterface self, std::string const & portName, std::string const & newType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newType: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayLeftValue", _wrap_PortsInterface_getArrayLeftValue, METH_VARARGS, "\n"
+		"PortsInterface_getArrayLeftValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayLeftFormattedExpression", _wrap_PortsInterface_getArrayLeftFormattedExpression, METH_VARARGS, "\n"
+		"PortsInterface_getArrayLeftFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayLeftExpression", _wrap_PortsInterface_getArrayLeftExpression, METH_VARARGS, "\n"
+		"PortsInterface_getArrayLeftExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setArrayLeft", _wrap_PortsInterface_setArrayLeft, METH_VARARGS, "\n"
+		"PortsInterface_setArrayLeft(PortsInterface self, std::string const & portName, std::string const & newArrayLeft) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newArrayLeft: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayRightValue", _wrap_PortsInterface_getArrayRightValue, METH_VARARGS, "\n"
+		"PortsInterface_getArrayRightValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayRightFormattedExpression", _wrap_PortsInterface_getArrayRightFormattedExpression, METH_VARARGS, "\n"
+		"PortsInterface_getArrayRightFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayRightExpression", _wrap_PortsInterface_getArrayRightExpression, METH_VARARGS, "\n"
+		"PortsInterface_getArrayRightExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setArrayRight", _wrap_PortsInterface_setArrayRight, METH_VARARGS, "\n"
+		"PortsInterface_setArrayRight(PortsInterface self, std::string const & portName, std::string const & newArrayRight) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newArrayRight: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getTags", _wrap_PortsInterface_getTags, METH_VARARGS, "\n"
+		"PortsInterface_getTags(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setTags", _wrap_PortsInterface_setTags, METH_VARARGS, "\n"
+		"PortsInterface_setTags(PortsInterface self, std::string const & portName, std::string const & tagList) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"tagList: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_isAdHoc", _wrap_PortsInterface_isAdHoc, METH_VARARGS, "\n"
+		"PortsInterface_isAdHoc(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setAdHoc", _wrap_PortsInterface_setAdHoc, METH_VARARGS, "\n"
+		"PortsInterface_setAdHoc(PortsInterface self, std::string const & portName, bool newAdHocVisibility) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newAdHocVisibility: bool\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDirection", _wrap_PortsInterface_getDirection, METH_VARARGS, "\n"
+		"PortsInterface_getDirection(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDirectionType", _wrap_PortsInterface_getDirectionType, METH_VARARGS, "\n"
+		"PortsInterface_getDirectionType(PortsInterface self, std::string const & portName) -> DirectionTypes::Direction\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setDirection", _wrap_PortsInterface_setDirection, METH_VARARGS, "\n"
+		"PortsInterface_setDirection(PortsInterface self, std::string const & portName, std::string const & newDirection) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newDirection: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getLeftBoundValue", _wrap_PortsInterface_getLeftBoundValue, METH_VARARGS, "\n"
+		"PortsInterface_getLeftBoundValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getLeftBoundFormattedExpression", _wrap_PortsInterface_getLeftBoundFormattedExpression, METH_VARARGS, "\n"
+		"PortsInterface_getLeftBoundFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getLeftBoundExpression", _wrap_PortsInterface_getLeftBoundExpression, METH_VARARGS, "\n"
+		"PortsInterface_getLeftBoundExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setLeftBound", _wrap_PortsInterface_setLeftBound, METH_VARARGS, "\n"
+		"PortsInterface_setLeftBound(PortsInterface self, std::string const & portName, std::string const & newLeftBound) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newLeftBound: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getRightBoundValue", _wrap_PortsInterface_getRightBoundValue, METH_VARARGS, "\n"
+		"PortsInterface_getRightBoundValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getRightBoundFormattedExpression", _wrap_PortsInterface_getRightBoundFormattedExpression, METH_VARARGS, "\n"
+		"PortsInterface_getRightBoundFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getRightBoundExpression", _wrap_PortsInterface_getRightBoundExpression, METH_VARARGS, "\n"
+		"PortsInterface_getRightBoundExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setRightBound", _wrap_PortsInterface_setRightBound, METH_VARARGS, "\n"
+		"PortsInterface_setRightBound(PortsInterface self, std::string const & portName, std::string const & newRightBound) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newRightBound: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_hasExpressionInLeftOrRightBound", _wrap_PortsInterface_hasExpressionInLeftOrRightBound, METH_VARARGS, "\n"
+		"PortsInterface_hasExpressionInLeftOrRightBound(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getWidth", _wrap_PortsInterface_getWidth, METH_VARARGS, "\n"
+		"PortsInterface_getWidth(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setWidth", _wrap_PortsInterface_setWidth, METH_VARARGS, "\n"
+		"PortsInterface_setWidth(PortsInterface self, std::string const & portName, std::string const & newWidth) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newWidth: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDefaultValue", _wrap_PortsInterface_getDefaultValue, METH_VARARGS, "\n"
+		"PortsInterface_getDefaultValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDefaultValueFormattedExpression", _wrap_PortsInterface_getDefaultValueFormattedExpression, METH_VARARGS, "\n"
+		"PortsInterface_getDefaultValueFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDefaultValueExpression", _wrap_PortsInterface_getDefaultValueExpression, METH_VARARGS, "\n"
+		"PortsInterface_getDefaultValueExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setDefaultValue", _wrap_PortsInterface_setDefaultValue, METH_VARARGS, "\n"
+		"PortsInterface_setDefaultValue(PortsInterface self, std::string const & portName, std::string const & newDefaultValue) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newDefaultValue: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getBusWidthValue", _wrap_PortsInterface_getBusWidthValue, METH_VARARGS, "\n"
+		"PortsInterface_getBusWidthValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getBusWidthFormattedExpression", _wrap_PortsInterface_getBusWidthFormattedExpression, METH_VARARGS, "\n"
+		"PortsInterface_getBusWidthFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getBusWidthExpression", _wrap_PortsInterface_getBusWidthExpression, METH_VARARGS, "\n"
+		"PortsInterface_getBusWidthExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setBusWidth", _wrap_PortsInterface_setBusWidth, METH_VARARGS, "\n"
+		"PortsInterface_setBusWidth(PortsInterface self, std::string const & portName, std::string const & newBusWidth) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newBusWidth: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getInitiative", _wrap_PortsInterface_getInitiative, METH_VARARGS, "\n"
+		"PortsInterface_getInitiative(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setInitiative", _wrap_PortsInterface_setInitiative, METH_VARARGS, "\n"
+		"PortsInterface_setInitiative(PortsInterface self, std::string const & portName, std::string const & newInitiative) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newInitiative: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getKind", _wrap_PortsInterface_getKind, METH_VARARGS, "\n"
+		"PortsInterface_getKind(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setKind", _wrap_PortsInterface_setKind, METH_VARARGS, "\n"
+		"PortsInterface_setKind(PortsInterface self, std::string const & portName, std::string const & newKind) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newKind: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getProtocolType", _wrap_PortsInterface_getProtocolType, METH_VARARGS, "\n"
+		"PortsInterface_getProtocolType(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setProtocolType", _wrap_PortsInterface_setProtocolType, METH_VARARGS, "\n"
+		"PortsInterface_setProtocolType(PortsInterface self, std::string const & portName, std::string const & newProtocolType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newProtocolType: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMaxConnectionsValue", _wrap_PortsInterface_getMaxConnectionsValue, METH_VARARGS, "\n"
+		"PortsInterface_getMaxConnectionsValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMaxConnectionsFormattedExpression", _wrap_PortsInterface_getMaxConnectionsFormattedExpression, METH_VARARGS, "\n"
+		"PortsInterface_getMaxConnectionsFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMaxConnectionsExpression", _wrap_PortsInterface_getMaxConnectionsExpression, METH_VARARGS, "\n"
+		"PortsInterface_getMaxConnectionsExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setMaxConnections", _wrap_PortsInterface_setMaxConnections, METH_VARARGS, "\n"
+		"PortsInterface_setMaxConnections(PortsInterface self, std::string const & portName, std::string const & newMaxConnections) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newMaxConnections: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMinConnectionsValue", _wrap_PortsInterface_getMinConnectionsValue, METH_VARARGS, "\n"
+		"PortsInterface_getMinConnectionsValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMinConnectionsFormattedExpression", _wrap_PortsInterface_getMinConnectionsFormattedExpression, METH_VARARGS, "\n"
+		"PortsInterface_getMinConnectionsFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMinConnectionsExpression", _wrap_PortsInterface_getMinConnectionsExpression, METH_VARARGS, "\n"
+		"PortsInterface_getMinConnectionsExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setMinConnections", _wrap_PortsInterface_setMinConnections, METH_VARARGS, "\n"
+		"PortsInterface_setMinConnections(PortsInterface self, std::string const & portName, std::string const & newMinConnections) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newMinConnections: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_addWirePort", _wrap_PortsInterface_addWirePort, METH_VARARGS, "\n"
+		"PortsInterface_addWirePort(PortsInterface self, std::string const & newPortName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newPortName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_addTransactionalPort", _wrap_PortsInterface_addTransactionalPort, METH_VARARGS, "\n"
+		"PortsInterface_addTransactionalPort(PortsInterface self, std::string const & newPortName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newPortName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_removePort", _wrap_PortsInterface_removePort, METH_VARARGS, "\n"
+		"PortsInterface_removePort(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portLeftArrayValueIsValid", _wrap_PortsInterface_portLeftArrayValueIsValid, METH_VARARGS, "\n"
+		"PortsInterface_portLeftArrayValueIsValid(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portRightArrayValueIsValid", _wrap_PortsInterface_portRightArrayValueIsValid, METH_VARARGS, "\n"
+		"PortsInterface_portRightArrayValueIsValid(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidTypes", _wrap_PortsInterface_portHasValidTypes, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidTypes(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidLeftBound", _wrap_PortsInterface_portHasValidLeftBound, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidLeftBound(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidRightBound", _wrap_PortsInterface_portHasValidRightBound, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidRightBound(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidDefaultValue", _wrap_PortsInterface_portHasValidDefaultValue, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidDefaultValue(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidBusWidth", _wrap_PortsInterface_portHasValidBusWidth, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidBusWidth(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidInitiative", _wrap_PortsInterface_portHasValidInitiative, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidInitiative(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidKind", _wrap_PortsInterface_portHasValidKind, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidKind(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidProtocol", _wrap_PortsInterface_portHasValidProtocol, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidProtocol(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidMaxConnections", _wrap_PortsInterface_portHasValidMaxConnections, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidMaxConnections(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidMinConnections", _wrap_PortsInterface_portHasValidMinConnections, METH_VARARGS, "\n"
+		"PortsInterface_portHasValidMinConnections(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getIconPathForPort", _wrap_PortsInterface_getIconPathForPort, METH_VARARGS, "\n"
+		"PortsInterface_getIconPathForPort(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getPort", _wrap_PortsInterface_getPort, METH_VARARGS, "\n"
+		"PortsInterface_getPort(PortsInterface self, std::string const & portName) -> QSharedPointer< Port >\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
 	 { "PortsInterface_swigregister", PortsInterface_swigregister, METH_O, NULL},
 	 { "PortsInterface_swiginit", PortsInterface_swiginit, METH_VARARGS, NULL},
-	 { "delete_AbstractParameterInterface", _wrap_delete_AbstractParameterInterface, METH_O, NULL},
-	 { "AbstractParameterInterface_setChoices", _wrap_AbstractParameterInterface_setChoices, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setName", _wrap_AbstractParameterInterface_setName, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getDescription", _wrap_AbstractParameterInterface_getDescription, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setDescription", _wrap_AbstractParameterInterface_setDescription, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getAllReferencesToIdInItem", _wrap_AbstractParameterInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getExpressionsInSelectedItems", _wrap_AbstractParameterInterface_getExpressionsInSelectedItems, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_validateItems", _wrap_AbstractParameterInterface_validateItems, METH_O, NULL},
-	 { "AbstractParameterInterface_itemHasValidName", _wrap_AbstractParameterInterface_itemHasValidName, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getDisplayName", _wrap_AbstractParameterInterface_getDisplayName, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setDisplayName", _wrap_AbstractParameterInterface_setDisplayName, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getType", _wrap_AbstractParameterInterface_getType, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setType", _wrap_AbstractParameterInterface_setType, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getBitWidthLeftValue", _wrap_AbstractParameterInterface_getBitWidthLeftValue, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getBitWidthLeftFormattedExpression", _wrap_AbstractParameterInterface_getBitWidthLeftFormattedExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getBitWidthLeftExpression", _wrap_AbstractParameterInterface_getBitWidthLeftExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setBitWidthLeft", _wrap_AbstractParameterInterface_setBitWidthLeft, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getBitWidthRightValue", _wrap_AbstractParameterInterface_getBitWidthRightValue, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getBitWidthRightFormattedExpression", _wrap_AbstractParameterInterface_getBitWidthRightFormattedExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getBitWidthRightExpression", _wrap_AbstractParameterInterface_getBitWidthRightExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setBitWidthRight", _wrap_AbstractParameterInterface_setBitWidthRight, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getMinimum", _wrap_AbstractParameterInterface_getMinimum, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setMinimum", _wrap_AbstractParameterInterface_setMinimum, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getMaximum", _wrap_AbstractParameterInterface_getMaximum, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setMaximum", _wrap_AbstractParameterInterface_setMaximum, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getChoice", _wrap_AbstractParameterInterface_getChoice, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setChoice", _wrap_AbstractParameterInterface_setChoice, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getValue", _wrap_AbstractParameterInterface_getValue, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getValueFormattedExpression", _wrap_AbstractParameterInterface_getValueFormattedExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getValueExpression", _wrap_AbstractParameterInterface_getValueExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setValue", _wrap_AbstractParameterInterface_setValue, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getResolve", _wrap_AbstractParameterInterface_getResolve, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setResolve", _wrap_AbstractParameterInterface_setResolve, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getArrayLeftValue", _wrap_AbstractParameterInterface_getArrayLeftValue, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getArrayLeftFormattedExpression", _wrap_AbstractParameterInterface_getArrayLeftFormattedExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getArrayLeftExpression", _wrap_AbstractParameterInterface_getArrayLeftExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setArrayLeft", _wrap_AbstractParameterInterface_setArrayLeft, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getArrayRightValue", _wrap_AbstractParameterInterface_getArrayRightValue, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getArrayRightFormattedExpression", _wrap_AbstractParameterInterface_getArrayRightFormattedExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getArrayRightExpression", _wrap_AbstractParameterInterface_getArrayRightExpression, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setArrayRight", _wrap_AbstractParameterInterface_setArrayRight, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getID", _wrap_AbstractParameterInterface_getID, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setID", _wrap_AbstractParameterInterface_setID, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_getUsageCount", _wrap_AbstractParameterInterface_getUsageCount, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_setUsageCount", _wrap_AbstractParameterInterface_setUsageCount, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_increaseUsageCount", _wrap_AbstractParameterInterface_increaseUsageCount, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_reduceUsageCount", _wrap_AbstractParameterInterface_reduceUsageCount, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_hasValidType", _wrap_AbstractParameterInterface_hasValidType, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_hasValidBitWidth", _wrap_AbstractParameterInterface_hasValidBitWidth, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_hasValidMinimum", _wrap_AbstractParameterInterface_hasValidMinimum, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_hasValidMaximum", _wrap_AbstractParameterInterface_hasValidMaximum, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_hasValidChoice", _wrap_AbstractParameterInterface_hasValidChoice, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_hasValidValue", _wrap_AbstractParameterInterface_hasValidValue, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_hasValidResolve", _wrap_AbstractParameterInterface_hasValidResolve, METH_VARARGS, NULL},
-	 { "AbstractParameterInterface_hasValidArrayValues", _wrap_AbstractParameterInterface_hasValidArrayValues, METH_VARARGS, NULL},
+	 { "delete_AbstractParameterInterface", _wrap_delete_AbstractParameterInterface, METH_O, "delete_AbstractParameterInterface(AbstractParameterInterface self)"},
+	 { "AbstractParameterInterface_setChoices", _wrap_AbstractParameterInterface_setChoices, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setChoices(AbstractParameterInterface self, QSharedPointer< QList< QSharedPointer< Choice > > > newChoices)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newChoices: QSharedPointer< QList< QSharedPointer< Choice > > >\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getExpressionsInSelectedItems", _wrap_AbstractParameterInterface_getExpressionsInSelectedItems, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getExpressionsInSelectedItems(AbstractParameterInterface self, stringVector parameterNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getDisplayName", _wrap_AbstractParameterInterface_getDisplayName, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getDisplayName(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setDisplayName", _wrap_AbstractParameterInterface_setDisplayName, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setDisplayName(AbstractParameterInterface self, std::string const & parameterName, std::string const & newDisplayName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newDisplayName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getType", _wrap_AbstractParameterInterface_getType, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getType(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setType", _wrap_AbstractParameterInterface_setType, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setType(AbstractParameterInterface self, std::string const & parameterName, std::string const & newType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newType: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthLeftValue", _wrap_AbstractParameterInterface_getBitWidthLeftValue, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getBitWidthLeftValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthLeftFormattedExpression", _wrap_AbstractParameterInterface_getBitWidthLeftFormattedExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getBitWidthLeftFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthLeftExpression", _wrap_AbstractParameterInterface_getBitWidthLeftExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getBitWidthLeftExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setBitWidthLeft", _wrap_AbstractParameterInterface_setBitWidthLeft, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setBitWidthLeft(AbstractParameterInterface self, std::string const & parameterName, std::string const & newBitWidthLeft) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newBitWidthLeft: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthRightValue", _wrap_AbstractParameterInterface_getBitWidthRightValue, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getBitWidthRightValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthRightFormattedExpression", _wrap_AbstractParameterInterface_getBitWidthRightFormattedExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getBitWidthRightFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthRightExpression", _wrap_AbstractParameterInterface_getBitWidthRightExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getBitWidthRightExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setBitWidthRight", _wrap_AbstractParameterInterface_setBitWidthRight, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setBitWidthRight(AbstractParameterInterface self, std::string const & parameterName, std::string const & newBitWidthRight) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newBitWidthRight: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getMinimum", _wrap_AbstractParameterInterface_getMinimum, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getMinimum(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setMinimum", _wrap_AbstractParameterInterface_setMinimum, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setMinimum(AbstractParameterInterface self, std::string const & parameterName, std::string const & newMinimum) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newMinimum: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getMaximum", _wrap_AbstractParameterInterface_getMaximum, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getMaximum(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setMaximum", _wrap_AbstractParameterInterface_setMaximum, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setMaximum(AbstractParameterInterface self, std::string const & parameterName, std::string const & newMaximum) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newMaximum: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getChoice", _wrap_AbstractParameterInterface_getChoice, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getChoice(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setChoice", _wrap_AbstractParameterInterface_setChoice, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setChoice(AbstractParameterInterface self, std::string const & parameterName, std::string const & newChoice) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newChoice: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getValue", _wrap_AbstractParameterInterface_getValue, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getValueFormattedExpression", _wrap_AbstractParameterInterface_getValueFormattedExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getValueFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getValueExpression", _wrap_AbstractParameterInterface_getValueExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getValueExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setValue", _wrap_AbstractParameterInterface_setValue, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setValue(AbstractParameterInterface self, std::string const & parameterName, std::string const & newValue) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newValue: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getResolve", _wrap_AbstractParameterInterface_getResolve, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getResolve(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setResolve", _wrap_AbstractParameterInterface_setResolve, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setResolve(AbstractParameterInterface self, std::string const & parameterName, std::string const & newResolve) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newResolve: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayLeftValue", _wrap_AbstractParameterInterface_getArrayLeftValue, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getArrayLeftValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayLeftFormattedExpression", _wrap_AbstractParameterInterface_getArrayLeftFormattedExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getArrayLeftFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayLeftExpression", _wrap_AbstractParameterInterface_getArrayLeftExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getArrayLeftExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setArrayLeft", _wrap_AbstractParameterInterface_setArrayLeft, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setArrayLeft(AbstractParameterInterface self, std::string const & parameterName, std::string const & newArrayLeft) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newArrayLeft: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayRightValue", _wrap_AbstractParameterInterface_getArrayRightValue, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getArrayRightValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayRightFormattedExpression", _wrap_AbstractParameterInterface_getArrayRightFormattedExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getArrayRightFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayRightExpression", _wrap_AbstractParameterInterface_getArrayRightExpression, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getArrayRightExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setArrayRight", _wrap_AbstractParameterInterface_setArrayRight, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setArrayRight(AbstractParameterInterface self, std::string const & parameterName, std::string const & newArrayRight) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newArrayRight: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getID", _wrap_AbstractParameterInterface_getID, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getID(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setID", _wrap_AbstractParameterInterface_setID, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setID(AbstractParameterInterface self, std::string const & parameterName, std::string const & newID) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newID: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getUsageCount", _wrap_AbstractParameterInterface_getUsageCount, METH_VARARGS, "\n"
+		"AbstractParameterInterface_getUsageCount(AbstractParameterInterface self, std::string const & parameterName) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setUsageCount", _wrap_AbstractParameterInterface_setUsageCount, METH_VARARGS, "\n"
+		"AbstractParameterInterface_setUsageCount(AbstractParameterInterface self, std::string const & parameterName, int const & newUsageCount) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newUsageCount: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_increaseUsageCount", _wrap_AbstractParameterInterface_increaseUsageCount, METH_VARARGS, "\n"
+		"AbstractParameterInterface_increaseUsageCount(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_reduceUsageCount", _wrap_AbstractParameterInterface_reduceUsageCount, METH_VARARGS, "\n"
+		"AbstractParameterInterface_reduceUsageCount(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidType", _wrap_AbstractParameterInterface_hasValidType, METH_VARARGS, "\n"
+		"AbstractParameterInterface_hasValidType(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidBitWidth", _wrap_AbstractParameterInterface_hasValidBitWidth, METH_VARARGS, "\n"
+		"AbstractParameterInterface_hasValidBitWidth(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidMinimum", _wrap_AbstractParameterInterface_hasValidMinimum, METH_VARARGS, "\n"
+		"AbstractParameterInterface_hasValidMinimum(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidMaximum", _wrap_AbstractParameterInterface_hasValidMaximum, METH_VARARGS, "\n"
+		"AbstractParameterInterface_hasValidMaximum(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidChoice", _wrap_AbstractParameterInterface_hasValidChoice, METH_VARARGS, "\n"
+		"AbstractParameterInterface_hasValidChoice(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidValue", _wrap_AbstractParameterInterface_hasValidValue, METH_VARARGS, "\n"
+		"AbstractParameterInterface_hasValidValue(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidResolve", _wrap_AbstractParameterInterface_hasValidResolve, METH_VARARGS, "\n"
+		"AbstractParameterInterface_hasValidResolve(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidArrayValues", _wrap_AbstractParameterInterface_hasValidArrayValues, METH_VARARGS, "\n"
+		"AbstractParameterInterface_hasValidArrayValues(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
 	 { "AbstractParameterInterface_swigregister", AbstractParameterInterface_swigregister, METH_O, NULL},
-	 { "new_ParametersInterface", _wrap_new_ParametersInterface, METH_VARARGS, NULL},
-	 { "delete_ParametersInterface", _wrap_delete_ParametersInterface, METH_O, NULL},
-	 { "ParametersInterface_setParameters", _wrap_ParametersInterface_setParameters, METH_VARARGS, NULL},
-	 { "ParametersInterface_getItemIndex", _wrap_ParametersInterface_getItemIndex, METH_VARARGS, NULL},
-	 { "ParametersInterface_getIndexedItemName", _wrap_ParametersInterface_getIndexedItemName, METH_VARARGS, NULL},
-	 { "ParametersInterface_itemCount", _wrap_ParametersInterface_itemCount, METH_O, NULL},
-	 { "ParametersInterface_getItemNames", _wrap_ParametersInterface_getItemNames, METH_O, NULL},
-	 { "ParametersInterface_addParameter", _wrap_ParametersInterface_addParameter, METH_VARARGS, NULL},
-	 { "ParametersInterface_removeParameter", _wrap_ParametersInterface_removeParameter, METH_VARARGS, NULL},
+	 { "new_ParametersInterface", _wrap_new_ParametersInterface, METH_VARARGS, "\n"
+		"new_ParametersInterface(QSharedPointer< ParameterValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> ParametersInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< ParameterValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_ParametersInterface", _wrap_delete_ParametersInterface, METH_O, "delete_ParametersInterface(ParametersInterface self)"},
+	 { "ParametersInterface_setParameters", _wrap_ParametersInterface_setParameters, METH_VARARGS, "\n"
+		"ParametersInterface_setParameters(ParametersInterface self, QSharedPointer< QList< QSharedPointer< Parameter > > > newParameters)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newParameters: QSharedPointer< QList< QSharedPointer< Parameter > > >\n"
+		"\n"
+		""},
+	 { "ParametersInterface_addParameter", _wrap_ParametersInterface_addParameter, METH_VARARGS, "\n"
+		"ParametersInterface_addParameter(ParametersInterface self, int const & row, std::string const & newParameterName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newParameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "ParametersInterface_removeParameter", _wrap_ParametersInterface_removeParameter, METH_VARARGS, "\n"
+		"ParametersInterface_removeParameter(ParametersInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
 	 { "ParametersInterface_swigregister", ParametersInterface_swigregister, METH_O, NULL},
 	 { "ParametersInterface_swiginit", ParametersInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_MemoryMapInterface", _wrap_new_MemoryMapInterface, METH_VARARGS, NULL},
-	 { "delete_MemoryMapInterface", _wrap_delete_MemoryMapInterface, METH_O, NULL},
-	 { "MemoryMapInterface_setMemoryMaps", _wrap_MemoryMapInterface_setMemoryMaps, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getItemIndex", _wrap_MemoryMapInterface_getItemIndex, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getMemoryRemapIndex", _wrap_MemoryMapInterface_getMemoryRemapIndex, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getIndexedItemName", _wrap_MemoryMapInterface_getIndexedItemName, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getIndexedRemapName", _wrap_MemoryMapInterface_getIndexedRemapName, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_itemCount", _wrap_MemoryMapInterface_itemCount, METH_O, NULL},
-	 { "MemoryMapInterface_remapCount", _wrap_MemoryMapInterface_remapCount, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getItemNames", _wrap_MemoryMapInterface_getItemNames, METH_O, NULL},
-	 { "MemoryMapInterface_getRemapNames", _wrap_MemoryMapInterface_getRemapNames, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_setName", _wrap_MemoryMapInterface_setName, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_setRemapName", _wrap_MemoryMapInterface_setRemapName, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getDescription", _wrap_MemoryMapInterface_getDescription, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getRemapDescription", _wrap_MemoryMapInterface_getRemapDescription, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_setDescription", _wrap_MemoryMapInterface_setDescription, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_setRemapDescription", _wrap_MemoryMapInterface_setRemapDescription, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getIsPresentValue", _wrap_MemoryMapInterface_getIsPresentValue, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getIsPresentFormattedExpression", _wrap_MemoryMapInterface_getIsPresentFormattedExpression, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getIsPresentExpression", _wrap_MemoryMapInterface_getIsPresentExpression, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_setIsPresent", _wrap_MemoryMapInterface_setIsPresent, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getRemapState", _wrap_MemoryMapInterface_getRemapState, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_setRemapState", _wrap_MemoryMapInterface_setRemapState, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getAddressUnitBits", _wrap_MemoryMapInterface_getAddressUnitBits, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_setAddressUnitBits", _wrap_MemoryMapInterface_setAddressUnitBits, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getInterfaceBinding", _wrap_MemoryMapInterface_getInterfaceBinding, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getAssociatedSlaveInterfaces", _wrap_MemoryMapInterface_getAssociatedSlaveInterfaces, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getAllReferencesToIdInItem", _wrap_MemoryMapInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getMapExpressions", _wrap_MemoryMapInterface_getMapExpressions, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getAllReferencesToIdInRemapItem", _wrap_MemoryMapInterface_getAllReferencesToIdInRemapItem, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_validateItems", _wrap_MemoryMapInterface_validateItems, METH_O, NULL},
-	 { "MemoryMapInterface_itemHasValidName", _wrap_MemoryMapInterface_itemHasValidName, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_remapHasValidName", _wrap_MemoryMapInterface_remapHasValidName, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_remapHasValidRemapState", _wrap_MemoryMapInterface_remapHasValidRemapState, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_itemHasValidIsPresent", _wrap_MemoryMapInterface_itemHasValidIsPresent, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_memoryMapHasValidAddressUnitBits", _wrap_MemoryMapInterface_memoryMapHasValidAddressUnitBits, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_addMemoryMap", _wrap_MemoryMapInterface_addMemoryMap, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_addMemoryRemap", _wrap_MemoryMapInterface_addMemoryRemap, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_removeMap", _wrap_MemoryMapInterface_removeMap, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_removeRemap", _wrap_MemoryMapInterface_removeRemap, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_copyRows", _wrap_MemoryMapInterface_copyRows, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_pasteMemoryMaps", _wrap_MemoryMapInterface_pasteMemoryMaps, METH_O, NULL},
-	 { "MemoryMapInterface_pasteMemoryRemaps", _wrap_MemoryMapInterface_pasteMemoryRemaps, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getSubInterface", _wrap_MemoryMapInterface_getSubInterface, METH_O, NULL},
-	 { "MemoryMapInterface_getMapPointer", _wrap_MemoryMapInterface_getMapPointer, METH_VARARGS, NULL},
-	 { "MemoryMapInterface_getRemapPointer", _wrap_MemoryMapInterface_getRemapPointer, METH_VARARGS, NULL},
+	 { "new_MemoryMapInterface", _wrap_new_MemoryMapInterface, METH_VARARGS, "\n"
+		"new_MemoryMapInterface(QSharedPointer< MemoryMapValidator > mapValidator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, AddressBlockInterface subInterface) -> MemoryMapInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapValidator: QSharedPointer< MemoryMapValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"subInterface: AddressBlockInterface *\n"
+		"\n"
+		""},
+	 { "delete_MemoryMapInterface", _wrap_delete_MemoryMapInterface, METH_O, "delete_MemoryMapInterface(MemoryMapInterface self)"},
+	 { "MemoryMapInterface_setMemoryMaps", _wrap_MemoryMapInterface_setMemoryMaps, METH_VARARGS, "\n"
+		"MemoryMapInterface_setMemoryMaps(MemoryMapInterface self, QSharedPointer< Component > component)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"component: QSharedPointer< Component >\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getMemoryRemapIndex", _wrap_MemoryMapInterface_getMemoryRemapIndex, METH_VARARGS, "\n"
+		"MemoryMapInterface_getMemoryRemapIndex(MemoryMapInterface self, std::string const & mapName, std::string const & remapName) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getIndexedRemapName", _wrap_MemoryMapInterface_getIndexedRemapName, METH_VARARGS, "\n"
+		"MemoryMapInterface_getIndexedRemapName(MemoryMapInterface self, std::string mapName, int const & itemIndex) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string\n"
+		"itemIndex: int const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_remapCount", _wrap_MemoryMapInterface_remapCount, METH_VARARGS, "\n"
+		"MemoryMapInterface_remapCount(MemoryMapInterface self, std::string const & mapName) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getRemapNames", _wrap_MemoryMapInterface_getRemapNames, METH_VARARGS, "\n"
+		"MemoryMapInterface_getRemapNames(MemoryMapInterface self, std::string const & mapName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setRemapName", _wrap_MemoryMapInterface_setRemapName, METH_VARARGS, "\n"
+		"MemoryMapInterface_setRemapName(MemoryMapInterface self, std::string const & mapName, std::string const & currentName, std::string const & newName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"currentName: std::string const &\n"
+		"newName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getRemapDescription", _wrap_MemoryMapInterface_getRemapDescription, METH_VARARGS, "\n"
+		"MemoryMapInterface_getRemapDescription(MemoryMapInterface self, std::string const & mapName, std::string const & remapName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setRemapDescription", _wrap_MemoryMapInterface_setRemapDescription, METH_VARARGS, "\n"
+		"MemoryMapInterface_setRemapDescription(MemoryMapInterface self, std::string const & mapName, std::string const & itemName, std::string const & newDescription) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"itemName: std::string const &\n"
+		"newDescription: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getIsPresentValue", _wrap_MemoryMapInterface_getIsPresentValue, METH_VARARGS, "\n"
+		"MemoryMapInterface_getIsPresentValue(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\", int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getIsPresentFormattedExpression", _wrap_MemoryMapInterface_getIsPresentFormattedExpression, METH_VARARGS, "\n"
+		"MemoryMapInterface_getIsPresentFormattedExpression(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\") -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getIsPresentExpression", _wrap_MemoryMapInterface_getIsPresentExpression, METH_VARARGS, "\n"
+		"MemoryMapInterface_getIsPresentExpression(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\") -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setIsPresent", _wrap_MemoryMapInterface_setIsPresent, METH_VARARGS, "\n"
+		"MemoryMapInterface_setIsPresent(MemoryMapInterface self, std::string const & mapName, std::string const & newIsPresent, std::string const & remapName=\"\") -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"newIsPresent: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getRemapState", _wrap_MemoryMapInterface_getRemapState, METH_VARARGS, "\n"
+		"MemoryMapInterface_getRemapState(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\") -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setRemapState", _wrap_MemoryMapInterface_setRemapState, METH_VARARGS, "\n"
+		"MemoryMapInterface_setRemapState(MemoryMapInterface self, std::string const & mapName, std::string const & remapName, std::string const & newRemapState) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"newRemapState: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getAddressUnitBits", _wrap_MemoryMapInterface_getAddressUnitBits, METH_VARARGS, "\n"
+		"MemoryMapInterface_getAddressUnitBits(MemoryMapInterface self, std::string const & mapName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setAddressUnitBits", _wrap_MemoryMapInterface_setAddressUnitBits, METH_VARARGS, "\n"
+		"MemoryMapInterface_setAddressUnitBits(MemoryMapInterface self, std::string const & mapName, std::string const & newAddressUnitBits) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"newAddressUnitBits: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getInterfaceBinding", _wrap_MemoryMapInterface_getInterfaceBinding, METH_VARARGS, "\n"
+		"MemoryMapInterface_getInterfaceBinding(MemoryMapInterface self, std::string const & mapName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getAssociatedSlaveInterfaces", _wrap_MemoryMapInterface_getAssociatedSlaveInterfaces, METH_VARARGS, "\n"
+		"MemoryMapInterface_getAssociatedSlaveInterfaces(MemoryMapInterface self, std::string const & mapName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getMapExpressions", _wrap_MemoryMapInterface_getMapExpressions, METH_VARARGS, "\n"
+		"MemoryMapInterface_getMapExpressions(MemoryMapInterface self, std::string const & mapName, std::string const & remapName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getAllReferencesToIdInRemapItem", _wrap_MemoryMapInterface_getAllReferencesToIdInRemapItem, METH_VARARGS, "\n"
+		"MemoryMapInterface_getAllReferencesToIdInRemapItem(MemoryMapInterface self, std::string const & mapName, std::string & remapName, std::string const & valueID) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string &\n"
+		"valueID: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_remapHasValidName", _wrap_MemoryMapInterface_remapHasValidName, METH_VARARGS, "\n"
+		"MemoryMapInterface_remapHasValidName(MemoryMapInterface self, std::string const & mapName, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_remapHasValidRemapState", _wrap_MemoryMapInterface_remapHasValidRemapState, METH_VARARGS, "\n"
+		"MemoryMapInterface_remapHasValidRemapState(MemoryMapInterface self, std::string const & mapName, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_itemHasValidIsPresent", _wrap_MemoryMapInterface_itemHasValidIsPresent, METH_VARARGS, "\n"
+		"MemoryMapInterface_itemHasValidIsPresent(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\") -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_memoryMapHasValidAddressUnitBits", _wrap_MemoryMapInterface_memoryMapHasValidAddressUnitBits, METH_VARARGS, "\n"
+		"MemoryMapInterface_memoryMapHasValidAddressUnitBits(MemoryMapInterface self, std::string const & mapName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_addMemoryMap", _wrap_MemoryMapInterface_addMemoryMap, METH_VARARGS, "\n"
+		"MemoryMapInterface_addMemoryMap(MemoryMapInterface self, int const & row, std::string const & newMapName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newMapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_addMemoryRemap", _wrap_MemoryMapInterface_addMemoryRemap, METH_VARARGS, "\n"
+		"MemoryMapInterface_addMemoryRemap(MemoryMapInterface self, std::string const & mapName, std::string const & newRemapName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"newRemapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_removeMap", _wrap_MemoryMapInterface_removeMap, METH_VARARGS, "\n"
+		"MemoryMapInterface_removeMap(MemoryMapInterface self, std::string const & mapName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_removeRemap", _wrap_MemoryMapInterface_removeRemap, METH_VARARGS, "\n"
+		"MemoryMapInterface_removeRemap(MemoryMapInterface self, std::string const & mapName, std::string remapName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_copyRows", _wrap_MemoryMapInterface_copyRows, METH_VARARGS, "\n"
+		"MemoryMapInterface_copyRows(MemoryMapInterface self, stringVector selectedRows)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"selectedRows: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_pasteMemoryMaps", _wrap_MemoryMapInterface_pasteMemoryMaps, METH_O, "MemoryMapInterface_pasteMemoryMaps(MemoryMapInterface self) -> stringVector"},
+	 { "MemoryMapInterface_pasteMemoryRemaps", _wrap_MemoryMapInterface_pasteMemoryRemaps, METH_VARARGS, "\n"
+		"MemoryMapInterface_pasteMemoryRemaps(MemoryMapInterface self, std::string const & memoryMapName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"memoryMapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getSubInterface", _wrap_MemoryMapInterface_getSubInterface, METH_O, "MemoryMapInterface_getSubInterface(MemoryMapInterface self) -> AddressBlockInterface"},
+	 { "MemoryMapInterface_getMapPointer", _wrap_MemoryMapInterface_getMapPointer, METH_VARARGS, "\n"
+		"MemoryMapInterface_getMapPointer(MemoryMapInterface self, std::string const & mapName) -> MemoryMap *\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getRemapPointer", _wrap_MemoryMapInterface_getRemapPointer, METH_VARARGS, "\n"
+		"MemoryMapInterface_getRemapPointer(MemoryMapInterface self, std::string const & mapName, std::string const & remapName) -> MemoryRemap *\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
 	 { "MemoryMapInterface_swigregister", MemoryMapInterface_swigregister, METH_O, NULL},
 	 { "MemoryMapInterface_swiginit", MemoryMapInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_AddressBlockInterface", _wrap_new_AddressBlockInterface, METH_VARARGS, NULL},
-	 { "delete_AddressBlockInterface", _wrap_delete_AddressBlockInterface, METH_O, NULL},
-	 { "AddressBlockInterface_setAddressBlocks", _wrap_AddressBlockInterface_setAddressBlocks, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getItemIndex", _wrap_AddressBlockInterface_getItemIndex, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getIndexedItemName", _wrap_AddressBlockInterface_getIndexedItemName, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_itemCount", _wrap_AddressBlockInterface_itemCount, METH_O, NULL},
-	 { "AddressBlockInterface_getItemNames", _wrap_AddressBlockInterface_getItemNames, METH_O, NULL},
-	 { "AddressBlockInterface_setName", _wrap_AddressBlockInterface_setName, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getDescription", _wrap_AddressBlockInterface_getDescription, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setDescription", _wrap_AddressBlockInterface_setDescription, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getBaseAddressValue", _wrap_AddressBlockInterface_getBaseAddressValue, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getBaseAddressFormattedExpression", _wrap_AddressBlockInterface_getBaseAddressFormattedExpression, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getBaseAddressExpression", _wrap_AddressBlockInterface_getBaseAddressExpression, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setBaseAddress", _wrap_AddressBlockInterface_setBaseAddress, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getIsPresentValue", _wrap_AddressBlockInterface_getIsPresentValue, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getIsPresentFormattedExpression", _wrap_AddressBlockInterface_getIsPresentFormattedExpression, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getIsPresentExpression", _wrap_AddressBlockInterface_getIsPresentExpression, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setIsPresent", _wrap_AddressBlockInterface_setIsPresent, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getRangeValue", _wrap_AddressBlockInterface_getRangeValue, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getRangeFormattedExpression", _wrap_AddressBlockInterface_getRangeFormattedExpression, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getRangeExpression", _wrap_AddressBlockInterface_getRangeExpression, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setRange", _wrap_AddressBlockInterface_setRange, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getWidthValue", _wrap_AddressBlockInterface_getWidthValue, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getWidthFormattedExpression", _wrap_AddressBlockInterface_getWidthFormattedExpression, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getWidthExpression", _wrap_AddressBlockInterface_getWidthExpression, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setWidth", _wrap_AddressBlockInterface_setWidth, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getUsageString", _wrap_AddressBlockInterface_getUsageString, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getUsage", _wrap_AddressBlockInterface_getUsage, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setUsage", _wrap_AddressBlockInterface_setUsage, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getAccessString", _wrap_AddressBlockInterface_getAccessString, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getAccess", _wrap_AddressBlockInterface_getAccess, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setAccess", _wrap_AddressBlockInterface_setAccess, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getVolatile", _wrap_AddressBlockInterface_getVolatile, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setVolatile", _wrap_AddressBlockInterface_setVolatile, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getAllReferencesToIdInItem", _wrap_AddressBlockInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_validateItems", _wrap_AddressBlockInterface_validateItems, METH_O, NULL},
-	 { "AddressBlockInterface_itemHasValidName", _wrap_AddressBlockInterface_itemHasValidName, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_hasValidBaseAddress", _wrap_AddressBlockInterface_hasValidBaseAddress, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_hasValidRange", _wrap_AddressBlockInterface_hasValidRange, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_hasValidWidth", _wrap_AddressBlockInterface_hasValidWidth, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_hasValidIsPresent", _wrap_AddressBlockInterface_hasValidIsPresent, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_hasValidUsage", _wrap_AddressBlockInterface_hasValidUsage, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_addBlock", _wrap_AddressBlockInterface_addBlock, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_removeBlock", _wrap_AddressBlockInterface_removeBlock, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_copyRows", _wrap_AddressBlockInterface_copyRows, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_pasteRows", _wrap_AddressBlockInterface_pasteRows, METH_O, NULL},
-	 { "AddressBlockInterface_getPasteRowCount", _wrap_AddressBlockInterface_getPasteRowCount, METH_O, NULL},
-	 { "AddressBlockInterface_getExpressionsInSelectedItems", _wrap_AddressBlockInterface_getExpressionsInSelectedItems, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_setAddressUnitBits", _wrap_AddressBlockInterface_setAddressUnitBits, METH_VARARGS, NULL},
-	 { "AddressBlockInterface_getSubInterface", _wrap_AddressBlockInterface_getSubInterface, METH_O, NULL},
-	 { "AddressBlockInterface_hasRegisters", _wrap_AddressBlockInterface_hasRegisters, METH_VARARGS, NULL},
+	 { "new_AddressBlockInterface", _wrap_new_AddressBlockInterface, METH_VARARGS, "\n"
+		"new_AddressBlockInterface(QSharedPointer< AddressBlockValidator > blockValidator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, RegisterInterface subInterface) -> AddressBlockInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockValidator: QSharedPointer< AddressBlockValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"subInterface: RegisterInterface *\n"
+		"\n"
+		""},
+	 { "delete_AddressBlockInterface", _wrap_delete_AddressBlockInterface, METH_O, "delete_AddressBlockInterface(AddressBlockInterface self)"},
+	 { "AddressBlockInterface_setAddressBlocks", _wrap_AddressBlockInterface_setAddressBlocks, METH_VARARGS, "\n"
+		"AddressBlockInterface_setAddressBlocks(AddressBlockInterface self, QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > > newAddressBlocks)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newAddressBlocks: QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > >\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getBaseAddressValue", _wrap_AddressBlockInterface_getBaseAddressValue, METH_VARARGS, "\n"
+		"AddressBlockInterface_getBaseAddressValue(AddressBlockInterface self, std::string const & blockName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getBaseAddressFormattedExpression", _wrap_AddressBlockInterface_getBaseAddressFormattedExpression, METH_VARARGS, "\n"
+		"AddressBlockInterface_getBaseAddressFormattedExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getBaseAddressExpression", _wrap_AddressBlockInterface_getBaseAddressExpression, METH_VARARGS, "\n"
+		"AddressBlockInterface_getBaseAddressExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setBaseAddress", _wrap_AddressBlockInterface_setBaseAddress, METH_VARARGS, "\n"
+		"AddressBlockInterface_setBaseAddress(AddressBlockInterface self, std::string const & blockName, std::string const & newBaseAdress) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newBaseAdress: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getIsPresentValue", _wrap_AddressBlockInterface_getIsPresentValue, METH_VARARGS, "\n"
+		"AddressBlockInterface_getIsPresentValue(AddressBlockInterface self, std::string const & blockName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getIsPresentFormattedExpression", _wrap_AddressBlockInterface_getIsPresentFormattedExpression, METH_VARARGS, "\n"
+		"AddressBlockInterface_getIsPresentFormattedExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getIsPresentExpression", _wrap_AddressBlockInterface_getIsPresentExpression, METH_VARARGS, "\n"
+		"AddressBlockInterface_getIsPresentExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setIsPresent", _wrap_AddressBlockInterface_setIsPresent, METH_VARARGS, "\n"
+		"AddressBlockInterface_setIsPresent(AddressBlockInterface self, std::string const & blockName, std::string const & newIsPresent) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newIsPresent: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getRangeValue", _wrap_AddressBlockInterface_getRangeValue, METH_VARARGS, "\n"
+		"AddressBlockInterface_getRangeValue(AddressBlockInterface self, std::string const & blockName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getRangeFormattedExpression", _wrap_AddressBlockInterface_getRangeFormattedExpression, METH_VARARGS, "\n"
+		"AddressBlockInterface_getRangeFormattedExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getRangeExpression", _wrap_AddressBlockInterface_getRangeExpression, METH_VARARGS, "\n"
+		"AddressBlockInterface_getRangeExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setRange", _wrap_AddressBlockInterface_setRange, METH_VARARGS, "\n"
+		"AddressBlockInterface_setRange(AddressBlockInterface self, std::string const & blockName, std::string const & newRange) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newRange: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getWidthValue", _wrap_AddressBlockInterface_getWidthValue, METH_VARARGS, "\n"
+		"AddressBlockInterface_getWidthValue(AddressBlockInterface self, std::string const & blockName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getWidthFormattedExpression", _wrap_AddressBlockInterface_getWidthFormattedExpression, METH_VARARGS, "\n"
+		"AddressBlockInterface_getWidthFormattedExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getWidthExpression", _wrap_AddressBlockInterface_getWidthExpression, METH_VARARGS, "\n"
+		"AddressBlockInterface_getWidthExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setWidth", _wrap_AddressBlockInterface_setWidth, METH_VARARGS, "\n"
+		"AddressBlockInterface_setWidth(AddressBlockInterface self, std::string const & blockName, std::string const & newWidth) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newWidth: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getUsageString", _wrap_AddressBlockInterface_getUsageString, METH_VARARGS, "\n"
+		"AddressBlockInterface_getUsageString(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getUsage", _wrap_AddressBlockInterface_getUsage, METH_VARARGS, "\n"
+		"AddressBlockInterface_getUsage(AddressBlockInterface self, std::string const & blockName) -> General::Usage\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setUsage", _wrap_AddressBlockInterface_setUsage, METH_VARARGS, "\n"
+		"AddressBlockInterface_setUsage(AddressBlockInterface self, std::string const & blockName, std::string const & newUsage) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newUsage: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getAccessString", _wrap_AddressBlockInterface_getAccessString, METH_VARARGS, "\n"
+		"AddressBlockInterface_getAccessString(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getAccess", _wrap_AddressBlockInterface_getAccess, METH_VARARGS, "\n"
+		"AddressBlockInterface_getAccess(AddressBlockInterface self, std::string const & blockName) -> AccessTypes::Access\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setAccess", _wrap_AddressBlockInterface_setAccess, METH_VARARGS, "\n"
+		"AddressBlockInterface_setAccess(AddressBlockInterface self, std::string const & blockName, std::string const & newAccess) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newAccess: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getVolatile", _wrap_AddressBlockInterface_getVolatile, METH_VARARGS, "\n"
+		"AddressBlockInterface_getVolatile(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setVolatile", _wrap_AddressBlockInterface_setVolatile, METH_VARARGS, "\n"
+		"AddressBlockInterface_setVolatile(AddressBlockInterface self, std::string const & blockName, bool newVolatile) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newVolatile: bool\n"
+		"\n"
+		"AddressBlockInterface_setVolatile(AddressBlockInterface self, std::string const & blockName, std::string const & newVolatileValue) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newVolatileValue: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidBaseAddress", _wrap_AddressBlockInterface_hasValidBaseAddress, METH_VARARGS, "\n"
+		"AddressBlockInterface_hasValidBaseAddress(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidRange", _wrap_AddressBlockInterface_hasValidRange, METH_VARARGS, "\n"
+		"AddressBlockInterface_hasValidRange(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidWidth", _wrap_AddressBlockInterface_hasValidWidth, METH_VARARGS, "\n"
+		"AddressBlockInterface_hasValidWidth(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidIsPresent", _wrap_AddressBlockInterface_hasValidIsPresent, METH_VARARGS, "\n"
+		"AddressBlockInterface_hasValidIsPresent(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidUsage", _wrap_AddressBlockInterface_hasValidUsage, METH_VARARGS, "\n"
+		"AddressBlockInterface_hasValidUsage(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_addBlock", _wrap_AddressBlockInterface_addBlock, METH_VARARGS, "\n"
+		"AddressBlockInterface_addBlock(AddressBlockInterface self, int const & row, std::string const & newBlockName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newBlockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_removeBlock", _wrap_AddressBlockInterface_removeBlock, METH_VARARGS, "\n"
+		"AddressBlockInterface_removeBlock(AddressBlockInterface self, std::string const & blockName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_copyRows", _wrap_AddressBlockInterface_copyRows, METH_VARARGS, "\n"
+		"AddressBlockInterface_copyRows(AddressBlockInterface self, std::vector< int,std::allocator< int > > selectedRows)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"selectedRows: std::vector< int,std::allocator< int > >\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_pasteRows", _wrap_AddressBlockInterface_pasteRows, METH_O, "AddressBlockInterface_pasteRows(AddressBlockInterface self) -> stringVector"},
+	 { "AddressBlockInterface_getPasteRowCount", _wrap_AddressBlockInterface_getPasteRowCount, METH_O, "AddressBlockInterface_getPasteRowCount(AddressBlockInterface self) -> int"},
+	 { "AddressBlockInterface_getExpressionsInSelectedItems", _wrap_AddressBlockInterface_getExpressionsInSelectedItems, METH_VARARGS, "\n"
+		"AddressBlockInterface_getExpressionsInSelectedItems(AddressBlockInterface self, stringVector itemNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setAddressUnitBits", _wrap_AddressBlockInterface_setAddressUnitBits, METH_VARARGS, "\n"
+		"AddressBlockInterface_setAddressUnitBits(AddressBlockInterface self, std::string const & newAddressUnitbits)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newAddressUnitbits: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getSubInterface", _wrap_AddressBlockInterface_getSubInterface, METH_O, "AddressBlockInterface_getSubInterface(AddressBlockInterface self) -> RegisterInterface"},
+	 { "AddressBlockInterface_hasRegisters", _wrap_AddressBlockInterface_hasRegisters, METH_VARARGS, "\n"
+		"AddressBlockInterface_hasRegisters(AddressBlockInterface self, std::string const & blockName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
 	 { "AddressBlockInterface_swigregister", AddressBlockInterface_swigregister, METH_O, NULL},
 	 { "AddressBlockInterface_swiginit", AddressBlockInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_RegisterInterface", _wrap_new_RegisterInterface, METH_VARARGS, NULL},
-	 { "delete_RegisterInterface", _wrap_delete_RegisterInterface, METH_O, NULL},
-	 { "RegisterInterface_setRegisters", _wrap_RegisterInterface_setRegisters, METH_VARARGS, NULL},
-	 { "RegisterInterface_getItemIndex", _wrap_RegisterInterface_getItemIndex, METH_VARARGS, NULL},
-	 { "RegisterInterface_getIndexedItemName", _wrap_RegisterInterface_getIndexedItemName, METH_VARARGS, NULL},
-	 { "RegisterInterface_itemCount", _wrap_RegisterInterface_itemCount, METH_O, NULL},
-	 { "RegisterInterface_registerDataCount", _wrap_RegisterInterface_registerDataCount, METH_O, NULL},
-	 { "RegisterInterface_indexInRegisterData", _wrap_RegisterInterface_indexInRegisterData, METH_VARARGS, NULL},
-	 { "RegisterInterface_getItemNames", _wrap_RegisterInterface_getItemNames, METH_O, NULL},
-	 { "RegisterInterface_setName", _wrap_RegisterInterface_setName, METH_VARARGS, NULL},
-	 { "RegisterInterface_getDescription", _wrap_RegisterInterface_getDescription, METH_VARARGS, NULL},
-	 { "RegisterInterface_setDescription", _wrap_RegisterInterface_setDescription, METH_VARARGS, NULL},
-	 { "RegisterInterface_getOffsetValue", _wrap_RegisterInterface_getOffsetValue, METH_VARARGS, NULL},
-	 { "RegisterInterface_getOffsetFormattedExpression", _wrap_RegisterInterface_getOffsetFormattedExpression, METH_VARARGS, NULL},
-	 { "RegisterInterface_getOffsetExpression", _wrap_RegisterInterface_getOffsetExpression, METH_VARARGS, NULL},
-	 { "RegisterInterface_setOffset", _wrap_RegisterInterface_setOffset, METH_VARARGS, NULL},
-	 { "RegisterInterface_getDimensionValue", _wrap_RegisterInterface_getDimensionValue, METH_VARARGS, NULL},
-	 { "RegisterInterface_getDimensionFormattedExpression", _wrap_RegisterInterface_getDimensionFormattedExpression, METH_VARARGS, NULL},
-	 { "RegisterInterface_getDimensionExpression", _wrap_RegisterInterface_getDimensionExpression, METH_VARARGS, NULL},
-	 { "RegisterInterface_setDimension", _wrap_RegisterInterface_setDimension, METH_VARARGS, NULL},
-	 { "RegisterInterface_getIsPresentValue", _wrap_RegisterInterface_getIsPresentValue, METH_VARARGS, NULL},
-	 { "RegisterInterface_getIsPresentFormattedExpression", _wrap_RegisterInterface_getIsPresentFormattedExpression, METH_VARARGS, NULL},
-	 { "RegisterInterface_getIsPresentExpression", _wrap_RegisterInterface_getIsPresentExpression, METH_VARARGS, NULL},
-	 { "RegisterInterface_setIsPresent", _wrap_RegisterInterface_setIsPresent, METH_VARARGS, NULL},
-	 { "RegisterInterface_getSizeValue", _wrap_RegisterInterface_getSizeValue, METH_VARARGS, NULL},
-	 { "RegisterInterface_getSizeFormattedExpression", _wrap_RegisterInterface_getSizeFormattedExpression, METH_VARARGS, NULL},
-	 { "RegisterInterface_getSizeExpression", _wrap_RegisterInterface_getSizeExpression, METH_VARARGS, NULL},
-	 { "RegisterInterface_setSize", _wrap_RegisterInterface_setSize, METH_VARARGS, NULL},
-	 { "RegisterInterface_getVolatile", _wrap_RegisterInterface_getVolatile, METH_VARARGS, NULL},
-	 { "RegisterInterface_setVolatile", _wrap_RegisterInterface_setVolatile, METH_VARARGS, NULL},
-	 { "RegisterInterface_getAccessString", _wrap_RegisterInterface_getAccessString, METH_VARARGS, NULL},
-	 { "RegisterInterface_getAccess", _wrap_RegisterInterface_getAccess, METH_VARARGS, NULL},
-	 { "RegisterInterface_setAccess", _wrap_RegisterInterface_setAccess, METH_VARARGS, NULL},
-	 { "RegisterInterface_getAllReferencesToIdInItem", _wrap_RegisterInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
-	 { "RegisterInterface_validateItems", _wrap_RegisterInterface_validateItems, METH_O, NULL},
-	 { "RegisterInterface_itemHasValidName", _wrap_RegisterInterface_itemHasValidName, METH_VARARGS, NULL},
-	 { "RegisterInterface_hasValidDimension", _wrap_RegisterInterface_hasValidDimension, METH_VARARGS, NULL},
-	 { "RegisterInterface_hasValidOffset", _wrap_RegisterInterface_hasValidOffset, METH_VARARGS, NULL},
-	 { "RegisterInterface_hasValidIsPresent", _wrap_RegisterInterface_hasValidIsPresent, METH_VARARGS, NULL},
-	 { "RegisterInterface_hasValidSize", _wrap_RegisterInterface_hasValidSize, METH_VARARGS, NULL},
-	 { "RegisterInterface_addRegister", _wrap_RegisterInterface_addRegister, METH_VARARGS, NULL},
-	 { "RegisterInterface_removeRegister", _wrap_RegisterInterface_removeRegister, METH_VARARGS, NULL},
-	 { "RegisterInterface_copyRows", _wrap_RegisterInterface_copyRows, METH_VARARGS, NULL},
-	 { "RegisterInterface_pasteRows", _wrap_RegisterInterface_pasteRows, METH_O, NULL},
-	 { "RegisterInterface_getPasteRowCount", _wrap_RegisterInterface_getPasteRowCount, METH_O, NULL},
-	 { "RegisterInterface_getExpressionsInSelectedRegisters", _wrap_RegisterInterface_getExpressionsInSelectedRegisters, METH_VARARGS, NULL},
-	 { "RegisterInterface_setAddressUnitBits", _wrap_RegisterInterface_setAddressUnitBits, METH_VARARGS, NULL},
-	 { "RegisterInterface_getSubInterface", _wrap_RegisterInterface_getSubInterface, METH_O, NULL},
+	 { "new_RegisterInterface", _wrap_new_RegisterInterface, METH_VARARGS, "\n"
+		"new_RegisterInterface(QSharedPointer< RegisterValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, FieldInterface subInterface) -> RegisterInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< RegisterValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"subInterface: FieldInterface *\n"
+		"\n"
+		""},
+	 { "delete_RegisterInterface", _wrap_delete_RegisterInterface, METH_O, "delete_RegisterInterface(RegisterInterface self)"},
+	 { "RegisterInterface_setRegisters", _wrap_RegisterInterface_setRegisters, METH_VARARGS, "\n"
+		"RegisterInterface_setRegisters(RegisterInterface self, QSharedPointer< QList< QSharedPointer< RegisterBase > > > newRegisterData)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newRegisterData: QSharedPointer< QList< QSharedPointer< RegisterBase > > >\n"
+		"\n"
+		""},
+	 { "RegisterInterface_registerDataCount", _wrap_RegisterInterface_registerDataCount, METH_O, "RegisterInterface_registerDataCount(RegisterInterface self) -> int"},
+	 { "RegisterInterface_indexInRegisterData", _wrap_RegisterInterface_indexInRegisterData, METH_VARARGS, "\n"
+		"RegisterInterface_indexInRegisterData(RegisterInterface self, int const & index) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"index: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getOffsetValue", _wrap_RegisterInterface_getOffsetValue, METH_VARARGS, "\n"
+		"RegisterInterface_getOffsetValue(RegisterInterface self, std::string const & registerName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getOffsetFormattedExpression", _wrap_RegisterInterface_getOffsetFormattedExpression, METH_VARARGS, "\n"
+		"RegisterInterface_getOffsetFormattedExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getOffsetExpression", _wrap_RegisterInterface_getOffsetExpression, METH_VARARGS, "\n"
+		"RegisterInterface_getOffsetExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setOffset", _wrap_RegisterInterface_setOffset, METH_VARARGS, "\n"
+		"RegisterInterface_setOffset(RegisterInterface self, std::string const & registerName, std::string const & newOffset) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newOffset: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getDimensionValue", _wrap_RegisterInterface_getDimensionValue, METH_VARARGS, "\n"
+		"RegisterInterface_getDimensionValue(RegisterInterface self, std::string const & registerName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getDimensionFormattedExpression", _wrap_RegisterInterface_getDimensionFormattedExpression, METH_VARARGS, "\n"
+		"RegisterInterface_getDimensionFormattedExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getDimensionExpression", _wrap_RegisterInterface_getDimensionExpression, METH_VARARGS, "\n"
+		"RegisterInterface_getDimensionExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setDimension", _wrap_RegisterInterface_setDimension, METH_VARARGS, "\n"
+		"RegisterInterface_setDimension(RegisterInterface self, std::string const & registerName, std::string const & newDimension) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newDimension: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getIsPresentValue", _wrap_RegisterInterface_getIsPresentValue, METH_VARARGS, "\n"
+		"RegisterInterface_getIsPresentValue(RegisterInterface self, std::string const & registerName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getIsPresentFormattedExpression", _wrap_RegisterInterface_getIsPresentFormattedExpression, METH_VARARGS, "\n"
+		"RegisterInterface_getIsPresentFormattedExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getIsPresentExpression", _wrap_RegisterInterface_getIsPresentExpression, METH_VARARGS, "\n"
+		"RegisterInterface_getIsPresentExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setIsPresent", _wrap_RegisterInterface_setIsPresent, METH_VARARGS, "\n"
+		"RegisterInterface_setIsPresent(RegisterInterface self, std::string const & registerName, std::string const & newIsPresent) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newIsPresent: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getSizeValue", _wrap_RegisterInterface_getSizeValue, METH_VARARGS, "\n"
+		"RegisterInterface_getSizeValue(RegisterInterface self, std::string const & registerName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getSizeFormattedExpression", _wrap_RegisterInterface_getSizeFormattedExpression, METH_VARARGS, "\n"
+		"RegisterInterface_getSizeFormattedExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getSizeExpression", _wrap_RegisterInterface_getSizeExpression, METH_VARARGS, "\n"
+		"RegisterInterface_getSizeExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setSize", _wrap_RegisterInterface_setSize, METH_VARARGS, "\n"
+		"RegisterInterface_setSize(RegisterInterface self, std::string const & registerName, std::string const & newSize) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newSize: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getVolatile", _wrap_RegisterInterface_getVolatile, METH_VARARGS, "\n"
+		"RegisterInterface_getVolatile(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setVolatile", _wrap_RegisterInterface_setVolatile, METH_VARARGS, "\n"
+		"RegisterInterface_setVolatile(RegisterInterface self, std::string const & registerName, std::string const & newVolatile) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newVolatile: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getAccessString", _wrap_RegisterInterface_getAccessString, METH_VARARGS, "\n"
+		"RegisterInterface_getAccessString(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getAccess", _wrap_RegisterInterface_getAccess, METH_VARARGS, "\n"
+		"RegisterInterface_getAccess(RegisterInterface self, std::string const & registerName) -> AccessTypes::Access\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setAccess", _wrap_RegisterInterface_setAccess, METH_VARARGS, "\n"
+		"RegisterInterface_setAccess(RegisterInterface self, std::string const & registerName, std::string const & newAccess) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newAccess: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_hasValidDimension", _wrap_RegisterInterface_hasValidDimension, METH_VARARGS, "\n"
+		"RegisterInterface_hasValidDimension(RegisterInterface self, std::string const & registerName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_hasValidOffset", _wrap_RegisterInterface_hasValidOffset, METH_VARARGS, "\n"
+		"RegisterInterface_hasValidOffset(RegisterInterface self, std::string const & registerName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_hasValidIsPresent", _wrap_RegisterInterface_hasValidIsPresent, METH_VARARGS, "\n"
+		"RegisterInterface_hasValidIsPresent(RegisterInterface self, std::string const & registerName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_hasValidSize", _wrap_RegisterInterface_hasValidSize, METH_VARARGS, "\n"
+		"RegisterInterface_hasValidSize(RegisterInterface self, std::string const & registerName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_addRegister", _wrap_RegisterInterface_addRegister, METH_VARARGS, "\n"
+		"RegisterInterface_addRegister(RegisterInterface self, int const & row, int const & dataIndex, std::string const & newRegisterName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"dataIndex: int const &\n"
+		"newRegisterName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_removeRegister", _wrap_RegisterInterface_removeRegister, METH_VARARGS, "\n"
+		"RegisterInterface_removeRegister(RegisterInterface self, std::string const & registerName, int const & dataIndex) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"dataIndex: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_copyRows", _wrap_RegisterInterface_copyRows, METH_VARARGS, "\n"
+		"RegisterInterface_copyRows(RegisterInterface self, std::vector< int,std::allocator< int > > selectedRows)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"selectedRows: std::vector< int,std::allocator< int > >\n"
+		"\n"
+		""},
+	 { "RegisterInterface_pasteRows", _wrap_RegisterInterface_pasteRows, METH_O, "RegisterInterface_pasteRows(RegisterInterface self) -> stringVector"},
+	 { "RegisterInterface_getPasteRowCount", _wrap_RegisterInterface_getPasteRowCount, METH_O, "RegisterInterface_getPasteRowCount(RegisterInterface self) -> int"},
+	 { "RegisterInterface_getExpressionsInSelectedRegisters", _wrap_RegisterInterface_getExpressionsInSelectedRegisters, METH_VARARGS, "\n"
+		"RegisterInterface_getExpressionsInSelectedRegisters(RegisterInterface self, stringVector registerNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setAddressUnitBits", _wrap_RegisterInterface_setAddressUnitBits, METH_VARARGS, "\n"
+		"RegisterInterface_setAddressUnitBits(RegisterInterface self, int const & newAddressUnitbits)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newAddressUnitbits: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getSubInterface", _wrap_RegisterInterface_getSubInterface, METH_O, "RegisterInterface_getSubInterface(RegisterInterface self) -> FieldInterface"},
 	 { "RegisterInterface_swigregister", RegisterInterface_swigregister, METH_O, NULL},
 	 { "RegisterInterface_swiginit", RegisterInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_FieldInterface", _wrap_new_FieldInterface, METH_VARARGS, NULL},
-	 { "delete_FieldInterface", _wrap_delete_FieldInterface, METH_O, NULL},
-	 { "FieldInterface_setFields", _wrap_FieldInterface_setFields, METH_VARARGS, NULL},
-	 { "FieldInterface_getItemIndex", _wrap_FieldInterface_getItemIndex, METH_VARARGS, NULL},
-	 { "FieldInterface_getIndexedItemName", _wrap_FieldInterface_getIndexedItemName, METH_VARARGS, NULL},
-	 { "FieldInterface_itemCount", _wrap_FieldInterface_itemCount, METH_O, NULL},
-	 { "FieldInterface_getItemNames", _wrap_FieldInterface_getItemNames, METH_O, NULL},
-	 { "FieldInterface_setName", _wrap_FieldInterface_setName, METH_VARARGS, NULL},
-	 { "FieldInterface_getDescription", _wrap_FieldInterface_getDescription, METH_VARARGS, NULL},
-	 { "FieldInterface_setDescription", _wrap_FieldInterface_setDescription, METH_VARARGS, NULL},
-	 { "FieldInterface_getOffsetValue", _wrap_FieldInterface_getOffsetValue, METH_VARARGS, NULL},
-	 { "FieldInterface_getOffsetFormattedExpression", _wrap_FieldInterface_getOffsetFormattedExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_getOffsetExpression", _wrap_FieldInterface_getOffsetExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_setOffset", _wrap_FieldInterface_setOffset, METH_VARARGS, NULL},
-	 { "FieldInterface_getWidthValue", _wrap_FieldInterface_getWidthValue, METH_VARARGS, NULL},
-	 { "FieldInterface_getWidthFormattedExpression", _wrap_FieldInterface_getWidthFormattedExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_getWidthExpression", _wrap_FieldInterface_getWidthExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_setWidth", _wrap_FieldInterface_setWidth, METH_VARARGS, NULL},
-	 { "FieldInterface_getResets", _wrap_FieldInterface_getResets, METH_VARARGS, NULL},
-	 { "FieldInterface_getResetsToolTip", _wrap_FieldInterface_getResetsToolTip, METH_VARARGS, NULL},
-	 { "FieldInterface_getVolatile", _wrap_FieldInterface_getVolatile, METH_VARARGS, NULL},
-	 { "FieldInterface_setVolatile", _wrap_FieldInterface_setVolatile, METH_VARARGS, NULL},
-	 { "FieldInterface_getAccessString", _wrap_FieldInterface_getAccessString, METH_VARARGS, NULL},
-	 { "FieldInterface_getAccessType", _wrap_FieldInterface_getAccessType, METH_VARARGS, NULL},
-	 { "FieldInterface_setAccess", _wrap_FieldInterface_setAccess, METH_VARARGS, NULL},
-	 { "FieldInterface_getModifiedWriteString", _wrap_FieldInterface_getModifiedWriteString, METH_VARARGS, NULL},
-	 { "FieldInterface_getModifiedWriteValue", _wrap_FieldInterface_getModifiedWriteValue, METH_VARARGS, NULL},
-	 { "FieldInterface_setModifiedWrite", _wrap_FieldInterface_setModifiedWrite, METH_VARARGS, NULL},
-	 { "FieldInterface_getReadActionString", _wrap_FieldInterface_getReadActionString, METH_VARARGS, NULL},
-	 { "FieldInterface_getReadAction", _wrap_FieldInterface_getReadAction, METH_VARARGS, NULL},
-	 { "FieldInterface_setReadAction", _wrap_FieldInterface_setReadAction, METH_VARARGS, NULL},
-	 { "FieldInterface_getTestableValue", _wrap_FieldInterface_getTestableValue, METH_VARARGS, NULL},
-	 { "FieldInterface_getTestableBool", _wrap_FieldInterface_getTestableBool, METH_VARARGS, NULL},
-	 { "FieldInterface_setTestable", _wrap_FieldInterface_setTestable, METH_VARARGS, NULL},
-	 { "FieldInterface_getTestConstraintString", _wrap_FieldInterface_getTestConstraintString, METH_VARARGS, NULL},
-	 { "FieldInterface_getTestConstraint", _wrap_FieldInterface_getTestConstraint, METH_VARARGS, NULL},
-	 { "FieldInterface_setTestConstraint", _wrap_FieldInterface_setTestConstraint, METH_VARARGS, NULL},
-	 { "FieldInterface_getIsPresentValue", _wrap_FieldInterface_getIsPresentValue, METH_VARARGS, NULL},
-	 { "FieldInterface_getIsPresentFormattedExpression", _wrap_FieldInterface_getIsPresentFormattedExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_getIsPresentExpression", _wrap_FieldInterface_getIsPresentExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_setIsPresent", _wrap_FieldInterface_setIsPresent, METH_VARARGS, NULL},
-	 { "FieldInterface_getAllReferencesToIdInItem", _wrap_FieldInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
-	 { "FieldInterface_validateItems", _wrap_FieldInterface_validateItems, METH_O, NULL},
-	 { "FieldInterface_itemHasValidName", _wrap_FieldInterface_itemHasValidName, METH_VARARGS, NULL},
-	 { "FieldInterface_hasValidOffset", _wrap_FieldInterface_hasValidOffset, METH_VARARGS, NULL},
-	 { "FieldInterface_hasValidWidth", _wrap_FieldInterface_hasValidWidth, METH_VARARGS, NULL},
-	 { "FieldInterface_hasValidResets", _wrap_FieldInterface_hasValidResets, METH_VARARGS, NULL},
-	 { "FieldInterface_hasValidIsPresent", _wrap_FieldInterface_hasValidIsPresent, METH_VARARGS, NULL},
-	 { "FieldInterface_hasValidAccess", _wrap_FieldInterface_hasValidAccess, METH_VARARGS, NULL},
-	 { "FieldInterface_addField", _wrap_FieldInterface_addField, METH_VARARGS, NULL},
-	 { "FieldInterface_removeField", _wrap_FieldInterface_removeField, METH_VARARGS, NULL},
-	 { "FieldInterface_copyRows", _wrap_FieldInterface_copyRows, METH_VARARGS, NULL},
-	 { "FieldInterface_pasteRows", _wrap_FieldInterface_pasteRows, METH_O, NULL},
-	 { "FieldInterface_getPasteRowCount", _wrap_FieldInterface_getPasteRowCount, METH_O, NULL},
-	 { "FieldInterface_getExpressionsInSelectedFields", _wrap_FieldInterface_getExpressionsInSelectedFields, METH_VARARGS, NULL},
-	 { "FieldInterface_getSubInterface", _wrap_FieldInterface_getSubInterface, METH_O, NULL},
-	 { "FieldInterface_hasWriteConstraint", _wrap_FieldInterface_hasWriteConstraint, METH_VARARGS, NULL},
-	 { "FieldInterface_getWriteConstraint", _wrap_FieldInterface_getWriteConstraint, METH_VARARGS, NULL},
-	 { "FieldInterface_setWriteConstraint", _wrap_FieldInterface_setWriteConstraint, METH_VARARGS, NULL},
-	 { "FieldInterface_getWriteConstraintMinimumValue", _wrap_FieldInterface_getWriteConstraintMinimumValue, METH_VARARGS, NULL},
-	 { "FieldInterface_getWriteConstraintMinimumFormattedExpression", _wrap_FieldInterface_getWriteConstraintMinimumFormattedExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_getWriteConstraintMinimumExpression", _wrap_FieldInterface_getWriteConstraintMinimumExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_setWriteConstraintMinimum", _wrap_FieldInterface_setWriteConstraintMinimum, METH_VARARGS, NULL},
-	 { "FieldInterface_getWriteConstraintMaximumValue", _wrap_FieldInterface_getWriteConstraintMaximumValue, METH_VARARGS, NULL},
-	 { "FieldInterface_getWriteConstraintMaximumFormattedExpression", _wrap_FieldInterface_getWriteConstraintMaximumFormattedExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_getWriteConstraintMaximumExpression", _wrap_FieldInterface_getWriteConstraintMaximumExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_setWriteConstraintMaximum", _wrap_FieldInterface_setWriteConstraintMaximum, METH_VARARGS, NULL},
-	 { "FieldInterface_getReservedValue", _wrap_FieldInterface_getReservedValue, METH_VARARGS, NULL},
-	 { "FieldInterface_getReservedFormattedExpression", _wrap_FieldInterface_getReservedFormattedExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_getReservedExpression", _wrap_FieldInterface_getReservedExpression, METH_VARARGS, NULL},
-	 { "FieldInterface_setReserved", _wrap_FieldInterface_setReserved, METH_VARARGS, NULL},
-	 { "FieldInterface_getID", _wrap_FieldInterface_getID, METH_VARARGS, NULL},
-	 { "FieldInterface_setID", _wrap_FieldInterface_setID, METH_VARARGS, NULL},
+	 { "new_FieldInterface", _wrap_new_FieldInterface, METH_VARARGS, "\n"
+		"new_FieldInterface(QSharedPointer< FieldValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, ResetInterface subInterface) -> FieldInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< FieldValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"subInterface: ResetInterface *\n"
+		"\n"
+		""},
+	 { "delete_FieldInterface", _wrap_delete_FieldInterface, METH_O, "delete_FieldInterface(FieldInterface self)"},
+	 { "FieldInterface_setFields", _wrap_FieldInterface_setFields, METH_VARARGS, "\n"
+		"FieldInterface_setFields(FieldInterface self, QSharedPointer< QList< QSharedPointer< Field > > > newFields)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newFields: QSharedPointer< QList< QSharedPointer< Field > > >\n"
+		"\n"
+		""},
+	 { "FieldInterface_getOffsetValue", _wrap_FieldInterface_getOffsetValue, METH_VARARGS, "\n"
+		"FieldInterface_getOffsetValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getOffsetFormattedExpression", _wrap_FieldInterface_getOffsetFormattedExpression, METH_VARARGS, "\n"
+		"FieldInterface_getOffsetFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getOffsetExpression", _wrap_FieldInterface_getOffsetExpression, METH_VARARGS, "\n"
+		"FieldInterface_getOffsetExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setOffset", _wrap_FieldInterface_setOffset, METH_VARARGS, "\n"
+		"FieldInterface_setOffset(FieldInterface self, std::string const & fieldName, std::string const & newOffset) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newOffset: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWidthValue", _wrap_FieldInterface_getWidthValue, METH_VARARGS, "\n"
+		"FieldInterface_getWidthValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWidthFormattedExpression", _wrap_FieldInterface_getWidthFormattedExpression, METH_VARARGS, "\n"
+		"FieldInterface_getWidthFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWidthExpression", _wrap_FieldInterface_getWidthExpression, METH_VARARGS, "\n"
+		"FieldInterface_getWidthExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setWidth", _wrap_FieldInterface_setWidth, METH_VARARGS, "\n"
+		"FieldInterface_setWidth(FieldInterface self, std::string const & fieldName, std::string const & newWidth) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newWidth: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getResets", _wrap_FieldInterface_getResets, METH_VARARGS, "\n"
+		"FieldInterface_getResets(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getResetsToolTip", _wrap_FieldInterface_getResetsToolTip, METH_VARARGS, "\n"
+		"FieldInterface_getResetsToolTip(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getVolatile", _wrap_FieldInterface_getVolatile, METH_VARARGS, "\n"
+		"FieldInterface_getVolatile(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setVolatile", _wrap_FieldInterface_setVolatile, METH_VARARGS, "\n"
+		"FieldInterface_setVolatile(FieldInterface self, std::string const & fieldName, std::string const & newVolatile) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newVolatile: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getAccessString", _wrap_FieldInterface_getAccessString, METH_VARARGS, "\n"
+		"FieldInterface_getAccessString(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getAccessType", _wrap_FieldInterface_getAccessType, METH_VARARGS, "\n"
+		"FieldInterface_getAccessType(FieldInterface self, std::string const & fieldName) -> AccessTypes::Access\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setAccess", _wrap_FieldInterface_setAccess, METH_VARARGS, "\n"
+		"FieldInterface_setAccess(FieldInterface self, std::string const & fieldName, std::string const & newAccess) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newAccess: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getModifiedWriteString", _wrap_FieldInterface_getModifiedWriteString, METH_VARARGS, "\n"
+		"FieldInterface_getModifiedWriteString(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getModifiedWriteValue", _wrap_FieldInterface_getModifiedWriteValue, METH_VARARGS, "\n"
+		"FieldInterface_getModifiedWriteValue(FieldInterface self, std::string const & fieldName) -> General::ModifiedWrite\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setModifiedWrite", _wrap_FieldInterface_setModifiedWrite, METH_VARARGS, "\n"
+		"FieldInterface_setModifiedWrite(FieldInterface self, std::string const & fieldName, std::string const & newModifiedWrite) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newModifiedWrite: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReadActionString", _wrap_FieldInterface_getReadActionString, METH_VARARGS, "\n"
+		"FieldInterface_getReadActionString(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReadAction", _wrap_FieldInterface_getReadAction, METH_VARARGS, "\n"
+		"FieldInterface_getReadAction(FieldInterface self, std::string const & fieldName) -> General::ReadAction\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setReadAction", _wrap_FieldInterface_setReadAction, METH_VARARGS, "\n"
+		"FieldInterface_setReadAction(FieldInterface self, std::string const & fieldName, std::string const & newReadAction) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newReadAction: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getTestableValue", _wrap_FieldInterface_getTestableValue, METH_VARARGS, "\n"
+		"FieldInterface_getTestableValue(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getTestableBool", _wrap_FieldInterface_getTestableBool, METH_VARARGS, "\n"
+		"FieldInterface_getTestableBool(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setTestable", _wrap_FieldInterface_setTestable, METH_VARARGS, "\n"
+		"FieldInterface_setTestable(FieldInterface self, std::string const & fieldName, std::string const & newTestable) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newTestable: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getTestConstraintString", _wrap_FieldInterface_getTestConstraintString, METH_VARARGS, "\n"
+		"FieldInterface_getTestConstraintString(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getTestConstraint", _wrap_FieldInterface_getTestConstraint, METH_VARARGS, "\n"
+		"FieldInterface_getTestConstraint(FieldInterface self, std::string const & fieldName) -> General::TestConstraint\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setTestConstraint", _wrap_FieldInterface_setTestConstraint, METH_VARARGS, "\n"
+		"FieldInterface_setTestConstraint(FieldInterface self, std::string const & fieldName, std::string const & newTestConstraint) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newTestConstraint: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getIsPresentValue", _wrap_FieldInterface_getIsPresentValue, METH_VARARGS, "\n"
+		"FieldInterface_getIsPresentValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getIsPresentFormattedExpression", _wrap_FieldInterface_getIsPresentFormattedExpression, METH_VARARGS, "\n"
+		"FieldInterface_getIsPresentFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getIsPresentExpression", _wrap_FieldInterface_getIsPresentExpression, METH_VARARGS, "\n"
+		"FieldInterface_getIsPresentExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setIsPresent", _wrap_FieldInterface_setIsPresent, METH_VARARGS, "\n"
+		"FieldInterface_setIsPresent(FieldInterface self, std::string const & fieldName, std::string const & newIsPresent) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newIsPresent: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidOffset", _wrap_FieldInterface_hasValidOffset, METH_VARARGS, "\n"
+		"FieldInterface_hasValidOffset(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidWidth", _wrap_FieldInterface_hasValidWidth, METH_VARARGS, "\n"
+		"FieldInterface_hasValidWidth(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidResets", _wrap_FieldInterface_hasValidResets, METH_VARARGS, "\n"
+		"FieldInterface_hasValidResets(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidIsPresent", _wrap_FieldInterface_hasValidIsPresent, METH_VARARGS, "\n"
+		"FieldInterface_hasValidIsPresent(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidAccess", _wrap_FieldInterface_hasValidAccess, METH_VARARGS, "\n"
+		"FieldInterface_hasValidAccess(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_addField", _wrap_FieldInterface_addField, METH_VARARGS, "\n"
+		"FieldInterface_addField(FieldInterface self, int const & row, std::string const & newFieldName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newFieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_removeField", _wrap_FieldInterface_removeField, METH_VARARGS, "\n"
+		"FieldInterface_removeField(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_copyRows", _wrap_FieldInterface_copyRows, METH_VARARGS, "\n"
+		"FieldInterface_copyRows(FieldInterface self, std::vector< int,std::allocator< int > > selectedRows)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"selectedRows: std::vector< int,std::allocator< int > >\n"
+		"\n"
+		""},
+	 { "FieldInterface_pasteRows", _wrap_FieldInterface_pasteRows, METH_O, "FieldInterface_pasteRows(FieldInterface self) -> stringVector"},
+	 { "FieldInterface_getPasteRowCount", _wrap_FieldInterface_getPasteRowCount, METH_O, "FieldInterface_getPasteRowCount(FieldInterface self) -> int"},
+	 { "FieldInterface_getExpressionsInSelectedFields", _wrap_FieldInterface_getExpressionsInSelectedFields, METH_VARARGS, "\n"
+		"FieldInterface_getExpressionsInSelectedFields(FieldInterface self, stringVector fieldNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "FieldInterface_getSubInterface", _wrap_FieldInterface_getSubInterface, METH_O, "FieldInterface_getSubInterface(FieldInterface self) -> ResetInterface"},
+	 { "FieldInterface_hasWriteConstraint", _wrap_FieldInterface_hasWriteConstraint, METH_VARARGS, "\n"
+		"FieldInterface_hasWriteConstraint(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraint", _wrap_FieldInterface_getWriteConstraint, METH_VARARGS, "\n"
+		"FieldInterface_getWriteConstraint(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setWriteConstraint", _wrap_FieldInterface_setWriteConstraint, METH_VARARGS, "\n"
+		"FieldInterface_setWriteConstraint(FieldInterface self, std::string const & fieldName, std::string const & newConstraintText) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newConstraintText: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMinimumValue", _wrap_FieldInterface_getWriteConstraintMinimumValue, METH_VARARGS, "\n"
+		"FieldInterface_getWriteConstraintMinimumValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMinimumFormattedExpression", _wrap_FieldInterface_getWriteConstraintMinimumFormattedExpression, METH_VARARGS, "\n"
+		"FieldInterface_getWriteConstraintMinimumFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMinimumExpression", _wrap_FieldInterface_getWriteConstraintMinimumExpression, METH_VARARGS, "\n"
+		"FieldInterface_getWriteConstraintMinimumExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setWriteConstraintMinimum", _wrap_FieldInterface_setWriteConstraintMinimum, METH_VARARGS, "\n"
+		"FieldInterface_setWriteConstraintMinimum(FieldInterface self, std::string const & fieldName, std::string const & newWriteConstraintMinimum) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newWriteConstraintMinimum: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMaximumValue", _wrap_FieldInterface_getWriteConstraintMaximumValue, METH_VARARGS, "\n"
+		"FieldInterface_getWriteConstraintMaximumValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMaximumFormattedExpression", _wrap_FieldInterface_getWriteConstraintMaximumFormattedExpression, METH_VARARGS, "\n"
+		"FieldInterface_getWriteConstraintMaximumFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMaximumExpression", _wrap_FieldInterface_getWriteConstraintMaximumExpression, METH_VARARGS, "\n"
+		"FieldInterface_getWriteConstraintMaximumExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setWriteConstraintMaximum", _wrap_FieldInterface_setWriteConstraintMaximum, METH_VARARGS, "\n"
+		"FieldInterface_setWriteConstraintMaximum(FieldInterface self, std::string const & fieldName, std::string const & newWriteConstraintMaximum) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newWriteConstraintMaximum: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReservedValue", _wrap_FieldInterface_getReservedValue, METH_VARARGS, "\n"
+		"FieldInterface_getReservedValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReservedFormattedExpression", _wrap_FieldInterface_getReservedFormattedExpression, METH_VARARGS, "\n"
+		"FieldInterface_getReservedFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReservedExpression", _wrap_FieldInterface_getReservedExpression, METH_VARARGS, "\n"
+		"FieldInterface_getReservedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setReserved", _wrap_FieldInterface_setReserved, METH_VARARGS, "\n"
+		"FieldInterface_setReserved(FieldInterface self, std::string const & fieldName, std::string const & newReserved) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newReserved: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getID", _wrap_FieldInterface_getID, METH_VARARGS, "\n"
+		"FieldInterface_getID(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setID", _wrap_FieldInterface_setID, METH_VARARGS, "\n"
+		"FieldInterface_setID(FieldInterface self, std::string const & fieldName, std::string const & newID) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newID: std::string const &\n"
+		"\n"
+		""},
 	 { "FieldInterface_swigregister", FieldInterface_swigregister, METH_O, NULL},
 	 { "FieldInterface_swiginit", FieldInterface_swiginit, METH_VARARGS, NULL},
-	 { "new_ResetInterface", _wrap_new_ResetInterface, METH_VARARGS, NULL},
-	 { "delete_ResetInterface", _wrap_delete_ResetInterface, METH_O, NULL},
-	 { "ResetInterface_setResets", _wrap_ResetInterface_setResets, METH_VARARGS, NULL},
-	 { "ResetInterface_getItemNames", _wrap_ResetInterface_getItemNames, METH_O, NULL},
-	 { "ResetInterface_itemCount", _wrap_ResetInterface_itemCount, METH_O, NULL},
-	 { "ResetInterface_getResetTypeReference", _wrap_ResetInterface_getResetTypeReference, METH_VARARGS, NULL},
-	 { "ResetInterface_setResetTypeReference", _wrap_ResetInterface_setResetTypeReference, METH_VARARGS, NULL},
-	 { "ResetInterface_getResetValue", _wrap_ResetInterface_getResetValue, METH_VARARGS, NULL},
-	 { "ResetInterface_getResetValueFormattedExpression", _wrap_ResetInterface_getResetValueFormattedExpression, METH_VARARGS, NULL},
-	 { "ResetInterface_getResetValueExpression", _wrap_ResetInterface_getResetValueExpression, METH_VARARGS, NULL},
-	 { "ResetInterface_setResetValue", _wrap_ResetInterface_setResetValue, METH_VARARGS, NULL},
-	 { "ResetInterface_getResetMaskValue", _wrap_ResetInterface_getResetMaskValue, METH_VARARGS, NULL},
-	 { "ResetInterface_getResetMaskFormattedExpression", _wrap_ResetInterface_getResetMaskFormattedExpression, METH_VARARGS, NULL},
-	 { "ResetInterface_getResetMaskExpression", _wrap_ResetInterface_getResetMaskExpression, METH_VARARGS, NULL},
-	 { "ResetInterface_setResetMask", _wrap_ResetInterface_setResetMask, METH_VARARGS, NULL},
-	 { "ResetInterface_validateItems", _wrap_ResetInterface_validateItems, METH_O, NULL},
-	 { "ResetInterface_hasValidResetType", _wrap_ResetInterface_hasValidResetType, METH_VARARGS, NULL},
-	 { "ResetInterface_hasValidResetValue", _wrap_ResetInterface_hasValidResetValue, METH_VARARGS, NULL},
-	 { "ResetInterface_hasValidResetMask", _wrap_ResetInterface_hasValidResetMask, METH_VARARGS, NULL},
-	 { "ResetInterface_addReset", _wrap_ResetInterface_addReset, METH_VARARGS, NULL},
-	 { "ResetInterface_removeReset", _wrap_ResetInterface_removeReset, METH_VARARGS, NULL},
-	 { "ResetInterface_getAllReferencesToIdInItem", _wrap_ResetInterface_getAllReferencesToIdInItem, METH_VARARGS, NULL},
+	 { "new_ResetInterface", _wrap_new_ResetInterface, METH_VARARGS, "\n"
+		"new_ResetInterface(QSharedPointer< FieldValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> ResetInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< FieldValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_ResetInterface", _wrap_delete_ResetInterface, METH_O, "delete_ResetInterface(ResetInterface self)"},
+	 { "ResetInterface_setResets", _wrap_ResetInterface_setResets, METH_VARARGS, "\n"
+		"ResetInterface_setResets(ResetInterface self, QSharedPointer< Field > containingField)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"containingField: QSharedPointer< Field >\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetTypeReference", _wrap_ResetInterface_getResetTypeReference, METH_VARARGS, "\n"
+		"ResetInterface_getResetTypeReference(ResetInterface self, int const & itemIndex) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemIndex: int const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_setResetTypeReference", _wrap_ResetInterface_setResetTypeReference, METH_VARARGS, "\n"
+		"ResetInterface_setResetTypeReference(ResetInterface self, std::string const & currentResetType, std::string const & newResetType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"currentResetType: std::string const &\n"
+		"newResetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetValue", _wrap_ResetInterface_getResetValue, METH_VARARGS, "\n"
+		"ResetInterface_getResetValue(ResetInterface self, std::string const & resetType, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetValueFormattedExpression", _wrap_ResetInterface_getResetValueFormattedExpression, METH_VARARGS, "\n"
+		"ResetInterface_getResetValueFormattedExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetValueExpression", _wrap_ResetInterface_getResetValueExpression, METH_VARARGS, "\n"
+		"ResetInterface_getResetValueExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_setResetValue", _wrap_ResetInterface_setResetValue, METH_VARARGS, "\n"
+		"ResetInterface_setResetValue(ResetInterface self, std::string const & resetType, std::string const & newResetValue) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"newResetValue: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetMaskValue", _wrap_ResetInterface_getResetMaskValue, METH_VARARGS, "\n"
+		"ResetInterface_getResetMaskValue(ResetInterface self, std::string const & resetType, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetMaskFormattedExpression", _wrap_ResetInterface_getResetMaskFormattedExpression, METH_VARARGS, "\n"
+		"ResetInterface_getResetMaskFormattedExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetMaskExpression", _wrap_ResetInterface_getResetMaskExpression, METH_VARARGS, "\n"
+		"ResetInterface_getResetMaskExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_setResetMask", _wrap_ResetInterface_setResetMask, METH_VARARGS, "\n"
+		"ResetInterface_setResetMask(ResetInterface self, std::string const & resetType, std::string const & newResetMask) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"newResetMask: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_hasValidResetType", _wrap_ResetInterface_hasValidResetType, METH_VARARGS, "\n"
+		"ResetInterface_hasValidResetType(ResetInterface self, std::string const & resetType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_hasValidResetValue", _wrap_ResetInterface_hasValidResetValue, METH_VARARGS, "\n"
+		"ResetInterface_hasValidResetValue(ResetInterface self, std::string const & resetType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_hasValidResetMask", _wrap_ResetInterface_hasValidResetMask, METH_VARARGS, "\n"
+		"ResetInterface_hasValidResetMask(ResetInterface self, std::string const & resetType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_addReset", _wrap_ResetInterface_addReset, METH_VARARGS, "\n"
+		"ResetInterface_addReset(ResetInterface self, int const & row, std::string const & newResetName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newResetName: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_removeReset", _wrap_ResetInterface_removeReset, METH_VARARGS, "\n"
+		"ResetInterface_removeReset(ResetInterface self, std::string const & resetName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetName: std::string const &\n"
+		"\n"
+		""},
 	 { "ResetInterface_swigregister", ResetInterface_swigregister, METH_O, NULL},
 	 { "ResetInterface_swiginit", ResetInterface_swiginit, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
 static PyMethodDef SwigMethods_proxydocs[] = {
+	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
+	 { "SWIG_PyStaticMethod_New", SWIG_PyStaticMethod_New, METH_O, NULL},
+	 { "delete_SwigPyIterator", _wrap_delete_SwigPyIterator, METH_O, "delete_SwigPyIterator(SwigPyIterator self)"},
+	 { "SwigPyIterator_value", _wrap_SwigPyIterator_value, METH_O, "value(SwigPyIterator self) -> PyObject *"},
+	 { "SwigPyIterator_incr", _wrap_SwigPyIterator_incr, METH_VARARGS, "\n"
+		"incr(SwigPyIterator self, size_t n=1) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: size_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_decr", _wrap_SwigPyIterator_decr, METH_VARARGS, "\n"
+		"decr(SwigPyIterator self, size_t n=1) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: size_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_distance", _wrap_SwigPyIterator_distance, METH_VARARGS, "\n"
+		"distance(SwigPyIterator self, SwigPyIterator x) -> ptrdiff_t\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_equal", _wrap_SwigPyIterator_equal, METH_VARARGS, "\n"
+		"equal(SwigPyIterator self, SwigPyIterator x) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_copy", _wrap_SwigPyIterator_copy, METH_O, "copy(SwigPyIterator self) -> SwigPyIterator"},
+	 { "SwigPyIterator_next", _wrap_SwigPyIterator_next, METH_O, "next(SwigPyIterator self) -> PyObject *"},
+	 { "SwigPyIterator___next__", _wrap_SwigPyIterator___next__, METH_O, "__next__(SwigPyIterator self) -> PyObject *"},
+	 { "SwigPyIterator_previous", _wrap_SwigPyIterator_previous, METH_O, "previous(SwigPyIterator self) -> PyObject *"},
+	 { "SwigPyIterator_advance", _wrap_SwigPyIterator_advance, METH_VARARGS, "\n"
+		"advance(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___eq__", _wrap_SwigPyIterator___eq__, METH_VARARGS, "\n"
+		"__eq__(SwigPyIterator self, SwigPyIterator x) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___ne__", _wrap_SwigPyIterator___ne__, METH_VARARGS, "\n"
+		"__ne__(SwigPyIterator self, SwigPyIterator x) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___iadd__", _wrap_SwigPyIterator___iadd__, METH_VARARGS, "\n"
+		"__iadd__(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___isub__", _wrap_SwigPyIterator___isub__, METH_VARARGS, "\n"
+		"__isub__(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___add__", _wrap_SwigPyIterator___add__, METH_VARARGS, "\n"
+		"__add__(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		""},
+	 { "SwigPyIterator___sub__", _wrap_SwigPyIterator___sub__, METH_VARARGS, "\n"
+		"__sub__(SwigPyIterator self, ptrdiff_t n) -> SwigPyIterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: ptrdiff_t\n"
+		"\n"
+		"__sub__(SwigPyIterator self, SwigPyIterator x) -> ptrdiff_t\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: swig::SwigPyIterator const &\n"
+		"\n"
+		""},
+	 { "SwigPyIterator_swigregister", SwigPyIterator_swigregister, METH_O, NULL},
+	 { "QString_fromStdString", _wrap_QString_fromStdString, METH_O, "\n"
+		"fromStdString(std::string const & s) -> QString\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"s: std::string const &\n"
+		"\n"
+		""},
+	 { "QString_toStdString", _wrap_QString_toStdString, METH_O, "toStdString(QString self) -> std::string"},
+	 { "QString_size", _wrap_QString_size, METH_O, "size(QString self) -> int"},
+	 { "QString_count", _wrap_QString_count, METH_O, "count(QString self) -> int"},
+	 { "QString_length", _wrap_QString_length, METH_O, "length(QString self) -> int"},
+	 { "QString_isEmpty", _wrap_QString_isEmpty, METH_O, "isEmpty(QString self) -> bool"},
+	 { "new_QString", _wrap_new_QString, METH_NOARGS, "new_QString() -> QString"},
+	 { "delete_QString", _wrap_delete_QString, METH_O, "delete_QString(QString self)"},
+	 { "QString_swigregister", QString_swigregister, METH_O, NULL},
+	 { "QString_swiginit", QString_swiginit, METH_VARARGS, NULL},
+	 { "new_NameGroup", _wrap_new_NameGroup, METH_VARARGS, "\n"
+		"NameGroup()\n"
+		"NameGroup(QString name, QString displayName=QString(), QString description=QString())\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"name: QString const &\n"
+		"displayName: QString const &\n"
+		"description: QString const &\n"
+		"\n"
+		"new_NameGroup(NameGroup other) -> NameGroup\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"other: NameGroup const &\n"
+		"\n"
+		""},
+	 { "delete_NameGroup", _wrap_delete_NameGroup, METH_O, "delete_NameGroup(NameGroup self)"},
+	 { "NameGroup_name", _wrap_NameGroup_name, METH_O, "name(NameGroup self) -> QString"},
+	 { "NameGroup_displayName", _wrap_NameGroup_displayName, METH_O, "displayName(NameGroup self) -> QString"},
+	 { "NameGroup_description", _wrap_NameGroup_description, METH_O, "description(NameGroup self) -> QString"},
+	 { "NameGroup_swigregister", NameGroup_swigregister, METH_O, NULL},
+	 { "NameGroup_swiginit", NameGroup_swiginit, METH_VARARGS, NULL},
+	 { "stringVector_iterator", _wrap_stringVector_iterator, METH_O, "iterator(stringVector self) -> SwigPyIterator"},
+	 { "stringVector___nonzero__", _wrap_stringVector___nonzero__, METH_O, "__nonzero__(stringVector self) -> bool"},
+	 { "stringVector___bool__", _wrap_stringVector___bool__, METH_O, "__bool__(stringVector self) -> bool"},
+	 { "stringVector___len__", _wrap_stringVector___len__, METH_O, "__len__(stringVector self) -> std::vector< std::string >::size_type"},
+	 { "stringVector___getslice__", _wrap_stringVector___getslice__, METH_VARARGS, "\n"
+		"__getslice__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::difference_type j) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"j: std::vector< std::string >::difference_type\n"
+		"\n"
+		""},
+	 { "stringVector___setslice__", _wrap_stringVector___setslice__, METH_VARARGS, "\n"
+		"__setslice__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::difference_type j)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"j: std::vector< std::string >::difference_type\n"
+		"\n"
+		"__setslice__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::difference_type j, stringVector v)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"j: std::vector< std::string >::difference_type\n"
+		"v: std::vector< std::string,std::allocator< std::string > > const &\n"
+		"\n"
+		""},
+	 { "stringVector___delslice__", _wrap_stringVector___delslice__, METH_VARARGS, "\n"
+		"__delslice__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::difference_type j)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"j: std::vector< std::string >::difference_type\n"
+		"\n"
+		""},
+	 { "stringVector___delitem__", _wrap_stringVector___delitem__, METH_VARARGS, "\n"
+		"__delitem__(stringVector self, std::vector< std::string >::difference_type i)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"\n"
+		"__delitem__(stringVector self, PySliceObject * slice)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"slice: PySliceObject *\n"
+		"\n"
+		""},
+	 { "stringVector___getitem__", _wrap_stringVector___getitem__, METH_VARARGS, "\n"
+		"__getitem__(stringVector self, PySliceObject * slice) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"slice: PySliceObject *\n"
+		"\n"
+		"__getitem__(stringVector self, std::vector< std::string >::difference_type i) -> std::vector< std::string >::value_type const &\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"\n"
+		""},
+	 { "stringVector___setitem__", _wrap_stringVector___setitem__, METH_VARARGS, "\n"
+		"__setitem__(stringVector self, PySliceObject * slice, stringVector v)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"slice: PySliceObject *\n"
+		"v: std::vector< std::string,std::allocator< std::string > > const &\n"
+		"\n"
+		"__setitem__(stringVector self, PySliceObject * slice)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"slice: PySliceObject *\n"
+		"\n"
+		"__setitem__(stringVector self, std::vector< std::string >::difference_type i, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"i: std::vector< std::string >::difference_type\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_pop", _wrap_stringVector_pop, METH_O, "pop(stringVector self) -> std::vector< std::string >::value_type"},
+	 { "stringVector_append", _wrap_stringVector_append, METH_VARARGS, "\n"
+		"append(stringVector self, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_empty", _wrap_stringVector_empty, METH_O, "empty(stringVector self) -> bool"},
+	 { "stringVector_size", _wrap_stringVector_size, METH_O, "size(stringVector self) -> std::vector< std::string >::size_type"},
+	 { "stringVector_swap", _wrap_stringVector_swap, METH_VARARGS, "\n"
+		"swap(stringVector self, stringVector v)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"v: std::vector< std::string > &\n"
+		"\n"
+		""},
+	 { "stringVector_begin", _wrap_stringVector_begin, METH_O, "begin(stringVector self) -> std::vector< std::string >::iterator"},
+	 { "stringVector_end", _wrap_stringVector_end, METH_O, "end(stringVector self) -> std::vector< std::string >::iterator"},
+	 { "stringVector_rbegin", _wrap_stringVector_rbegin, METH_O, "rbegin(stringVector self) -> std::vector< std::string >::reverse_iterator"},
+	 { "stringVector_rend", _wrap_stringVector_rend, METH_O, "rend(stringVector self) -> std::vector< std::string >::reverse_iterator"},
+	 { "stringVector_clear", _wrap_stringVector_clear, METH_O, "clear(stringVector self)"},
+	 { "stringVector_get_allocator", _wrap_stringVector_get_allocator, METH_O, "get_allocator(stringVector self) -> std::vector< std::string >::allocator_type"},
+	 { "stringVector_pop_back", _wrap_stringVector_pop_back, METH_O, "pop_back(stringVector self)"},
+	 { "stringVector_erase", _wrap_stringVector_erase, METH_VARARGS, "\n"
+		"erase(stringVector self, std::vector< std::string >::iterator pos) -> std::vector< std::string >::iterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"pos: std::vector< std::string >::iterator\n"
+		"\n"
+		"erase(stringVector self, std::vector< std::string >::iterator first, std::vector< std::string >::iterator last) -> std::vector< std::string >::iterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"first: std::vector< std::string >::iterator\n"
+		"last: std::vector< std::string >::iterator\n"
+		"\n"
+		""},
+	 { "new_stringVector", _wrap_new_stringVector, METH_VARARGS, "\n"
+		"stringVector()\n"
+		"stringVector(stringVector other)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"other: std::vector< std::string > const &\n"
+		"\n"
+		"stringVector(std::vector< std::string >::size_type size)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"size: std::vector< std::string >::size_type\n"
+		"\n"
+		"new_stringVector(std::vector< std::string >::size_type size, std::vector< std::string >::value_type const & value) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"size: std::vector< std::string >::size_type\n"
+		"value: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_push_back", _wrap_stringVector_push_back, METH_VARARGS, "\n"
+		"push_back(stringVector self, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_front", _wrap_stringVector_front, METH_O, "front(stringVector self) -> std::vector< std::string >::value_type const &"},
+	 { "stringVector_back", _wrap_stringVector_back, METH_O, "back(stringVector self) -> std::vector< std::string >::value_type const &"},
+	 { "stringVector_assign", _wrap_stringVector_assign, METH_VARARGS, "\n"
+		"assign(stringVector self, std::vector< std::string >::size_type n, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: std::vector< std::string >::size_type\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_resize", _wrap_stringVector_resize, METH_VARARGS, "\n"
+		"resize(stringVector self, std::vector< std::string >::size_type new_size)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"new_size: std::vector< std::string >::size_type\n"
+		"\n"
+		"resize(stringVector self, std::vector< std::string >::size_type new_size, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"new_size: std::vector< std::string >::size_type\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_insert", _wrap_stringVector_insert, METH_VARARGS, "\n"
+		"insert(stringVector self, std::vector< std::string >::iterator pos, std::vector< std::string >::value_type const & x) -> std::vector< std::string >::iterator\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"pos: std::vector< std::string >::iterator\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		"insert(stringVector self, std::vector< std::string >::iterator pos, std::vector< std::string >::size_type n, std::vector< std::string >::value_type const & x)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"pos: std::vector< std::string >::iterator\n"
+		"n: std::vector< std::string >::size_type\n"
+		"x: std::vector< std::string >::value_type const &\n"
+		"\n"
+		""},
+	 { "stringVector_reserve", _wrap_stringVector_reserve, METH_VARARGS, "\n"
+		"reserve(stringVector self, std::vector< std::string >::size_type n)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"n: std::vector< std::string >::size_type\n"
+		"\n"
+		""},
+	 { "stringVector_capacity", _wrap_stringVector_capacity, METH_O, "capacity(stringVector self) -> std::vector< std::string >::size_type"},
+	 { "delete_stringVector", _wrap_delete_stringVector, METH_O, "delete_stringVector(stringVector self)"},
+	 { "stringVector_swigregister", stringVector_swigregister, METH_O, NULL},
+	 { "stringVector_swiginit", stringVector_swiginit, METH_VARARGS, NULL},
+	 { "new_PythonAPI", _wrap_new_PythonAPI, METH_NOARGS, "new_PythonAPI() -> PythonAPI"},
+	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, "delete_PythonAPI(PythonAPI self)"},
+	 { "PythonAPI_getVersion", _wrap_PythonAPI_getVersion, METH_O, "getVersion(PythonAPI self) -> std::string"},
+	 { "PythonAPI_listPlugins", _wrap_PythonAPI_listPlugins, METH_O, "listPlugins(PythonAPI self) -> stringVector"},
+	 { "PythonAPI_getLibraryPaths", _wrap_PythonAPI_getLibraryPaths, METH_O, "getLibraryPaths(PythonAPI self) -> stringVector"},
+	 { "PythonAPI_setLibraryPaths", _wrap_PythonAPI_setLibraryPaths, METH_VARARGS, "\n"
+		"setLibraryPaths(PythonAPI self, stringVector paths)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"paths: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "PythonAPI_getDefaultLibraryPath", _wrap_PythonAPI_getDefaultLibraryPath, METH_O, "getDefaultLibraryPath(PythonAPI self) -> std::string"},
+	 { "PythonAPI_setDefaultLibraryPath", _wrap_PythonAPI_setDefaultLibraryPath, METH_VARARGS, "\n"
+		"setDefaultLibraryPath(PythonAPI self, std::string const & path)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"path: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_importFile", _wrap_PythonAPI_importFile, METH_VARARGS, "\n"
+		"importFile(PythonAPI self, std::string path, std::string vlnv, bool overwrite=False)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"path: std::string\n"
+		"vlnv: std::string\n"
+		"overwrite: bool\n"
+		"\n"
+		""},
+	 { "PythonAPI_getFileCount", _wrap_PythonAPI_getFileCount, METH_O, "getFileCount(PythonAPI self) -> int"},
+	 { "PythonAPI_listVLNVs", _wrap_PythonAPI_listVLNVs, METH_VARARGS, "\n"
+		"listVLNVs(PythonAPI self, QString vendor=QString(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"vendor: QString const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_listComponentVLNVs", _wrap_PythonAPI_listComponentVLNVs, METH_O, "listComponentVLNVs(PythonAPI self)"},
+	 { "PythonAPI_openComponent", _wrap_PythonAPI_openComponent, METH_VARARGS, "\n"
+		"openComponent(PythonAPI self, QString componentVLNV) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"componentVLNV: QString const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_closeOpenComponent", _wrap_PythonAPI_closeOpenComponent, METH_O, "closeOpenComponent(PythonAPI self)"},
+	 { "PythonAPI_getComponentName", _wrap_PythonAPI_getComponentName, METH_O, "getComponentName(PythonAPI self) -> QString"},
+	 { "PythonAPI_getComponentDescription", _wrap_PythonAPI_getComponentDescription, METH_O, "getComponentDescription(PythonAPI self) -> QString"},
+	 { "PythonAPI_saveComponent", _wrap_PythonAPI_saveComponent, METH_O, "saveComponent(PythonAPI self)"},
+	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, "getPortsInterface(PythonAPI self) -> PortsInterface"},
+	 { "PythonAPI_getComponentParameterInterface", _wrap_PythonAPI_getComponentParameterInterface, METH_O, "getComponentParameterInterface(PythonAPI self) -> ParametersInterface"},
+	 { "PythonAPI_getMapInterface", _wrap_PythonAPI_getMapInterface, METH_O, "getMapInterface(PythonAPI self) -> MemoryMapInterface"},
+	 { "PythonAPI_setBlocksForInterface", _wrap_PythonAPI_setBlocksForInterface, METH_VARARGS, "\n"
+		"setBlocksForInterface(PythonAPI self, std::string const & mapName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_setRegistersForInterface", _wrap_PythonAPI_setRegistersForInterface, METH_VARARGS, "\n"
+		"setRegistersForInterface(PythonAPI self, std::string const & mapName, std::string const & blockName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_setFieldsForInterface", _wrap_PythonAPI_setFieldsForInterface, METH_VARARGS, "\n"
+		"setFieldsForInterface(PythonAPI self, std::string const & mapName, std::string const & blockName, std::string const & registerName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"blockName: std::string const &\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_setResetsForInterface", _wrap_PythonAPI_setResetsForInterface, METH_VARARGS, "\n"
+		"setResetsForInterface(PythonAPI self, std::string const & mapName, std::string const & blockName, std::string const & registerName, std::string const & fieldName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"blockName: std::string const &\n"
+		"registerName: std::string const &\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_swigregister", PythonAPI_swigregister, METH_O, NULL},
+	 { "PythonAPI_swiginit", PythonAPI_swiginit, METH_VARARGS, NULL},
+	 { "delete_CommonInterface", _wrap_delete_CommonInterface, METH_O, "delete_CommonInterface(CommonInterface self)"},
+	 { "CommonInterface_getItemNames", _wrap_CommonInterface_getItemNames, METH_O, "getItemNames(CommonInterface self) -> stringVector"},
+	 { "CommonInterface_itemCount", _wrap_CommonInterface_itemCount, METH_O, "itemCount(CommonInterface self) -> int"},
+	 { "CommonInterface_validateItems", _wrap_CommonInterface_validateItems, METH_O, "validateItems(CommonInterface self) -> bool"},
+	 { "CommonInterface_swigregister", CommonInterface_swigregister, METH_O, NULL},
+	 { "delete_NameGroupInterface", _wrap_delete_NameGroupInterface, METH_O, "delete_NameGroupInterface(NameGroupInterface self)"},
+	 { "NameGroupInterface_getItemIndex", _wrap_NameGroupInterface_getItemIndex, METH_VARARGS, "\n"
+		"getItemIndex(NameGroupInterface self, std::string const & itemName) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_getIndexedItemName", _wrap_NameGroupInterface_getIndexedItemName, METH_VARARGS, "\n"
+		"getIndexedItemName(NameGroupInterface self, int const & itemIndex) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemIndex: int const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_setName", _wrap_NameGroupInterface_setName, METH_VARARGS, "\n"
+		"setName(NameGroupInterface self, std::string const & currentName, std::string const & newName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"currentName: std::string const &\n"
+		"newName: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_getDescription", _wrap_NameGroupInterface_getDescription, METH_VARARGS, "\n"
+		"getDescription(NameGroupInterface self, std::string const & itemName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_setDescription", _wrap_NameGroupInterface_setDescription, METH_VARARGS, "\n"
+		"setDescription(NameGroupInterface self, std::string const & itemName, std::string const & newDescription) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"newDescription: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_itemHasValidName", _wrap_NameGroupInterface_itemHasValidName, METH_VARARGS, "\n"
+		"itemHasValidName(NameGroupInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "NameGroupInterface_swigregister", NameGroupInterface_swigregister, METH_O, NULL},
+	 { "delete_ParameterizableInterface", _wrap_delete_ParameterizableInterface, METH_O, "delete_ParameterizableInterface(ParameterizableInterface self)"},
+	 { "ParameterizableInterface_getAllReferencesToIdInItem", _wrap_ParameterizableInterface_getAllReferencesToIdInItem, METH_VARARGS, "\n"
+		"getAllReferencesToIdInItem(ParameterizableInterface self, std::string const & itemName, std::string const & valueID) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"valueID: std::string const &\n"
+		"\n"
+		""},
+	 { "ParameterizableInterface_swigregister", ParameterizableInterface_swigregister, METH_O, NULL},
+	 { "delete_MasterPortInterface", _wrap_delete_MasterPortInterface, METH_O, "delete_MasterPortInterface(MasterPortInterface self)"},
+	 { "MasterPortInterface_addWirePort", _wrap_MasterPortInterface_addWirePort, METH_VARARGS, "\n"
+		"addWirePort(MasterPortInterface self, std::string const & newPortName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newPortName: std::string const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_addTransactionalPort", _wrap_MasterPortInterface_addTransactionalPort, METH_VARARGS, "\n"
+		"addTransactionalPort(MasterPortInterface self, std::string const & newPortName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newPortName: std::string const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_portIsWire", _wrap_MasterPortInterface_portIsWire, METH_VARARGS, "\n"
+		"portIsWire(MasterPortInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_portIsTransactional", _wrap_MasterPortInterface_portIsTransactional, METH_VARARGS, "\n"
+		"portIsTransactional(MasterPortInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_getIconPathForMissingPort", _wrap_MasterPortInterface_getIconPathForMissingPort, METH_O, "getIconPathForMissingPort(MasterPortInterface self) -> std::string"},
+	 { "MasterPortInterface_getIconPathForDirection", _wrap_MasterPortInterface_getIconPathForDirection, METH_VARARGS, "\n"
+		"getIconPathForDirection(MasterPortInterface self, DirectionTypes::Direction direction) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"direction: DirectionTypes::Direction\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_getIconPathForInitiative", _wrap_MasterPortInterface_getIconPathForInitiative, METH_VARARGS, "\n"
+		"getIconPathForInitiative(MasterPortInterface self, QString initiative) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"initiative: QString const &\n"
+		"\n"
+		""},
+	 { "MasterPortInterface_swigregister", MasterPortInterface_swigregister, METH_O, NULL},
+	 { "new_PortsInterface", _wrap_new_PortsInterface, METH_VARARGS, "\n"
+		"new_PortsInterface(QSharedPointer< PortValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> PortsInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< PortValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_PortsInterface", _wrap_delete_PortsInterface, METH_O, "delete_PortsInterface(PortsInterface self)"},
+	 { "PortsInterface_setPorts", _wrap_PortsInterface_setPorts, METH_VARARGS, "\n"
+		"setPorts(PortsInterface self, QSharedPointer< Component > component)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"component: QSharedPointer< Component >\n"
+		"\n"
+		""},
+	 { "PortsInterface_portExists", _wrap_PortsInterface_portExists, METH_VARARGS, "\n"
+		"portExists(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getTypeName", _wrap_PortsInterface_getTypeName, METH_VARARGS, "\n"
+		"getTypeName(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setTypeName", _wrap_PortsInterface_setTypeName, METH_VARARGS, "\n"
+		"setTypeName(PortsInterface self, std::string const & portName, std::string const & newType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newType: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayLeftValue", _wrap_PortsInterface_getArrayLeftValue, METH_VARARGS, "\n"
+		"getArrayLeftValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayLeftFormattedExpression", _wrap_PortsInterface_getArrayLeftFormattedExpression, METH_VARARGS, "\n"
+		"getArrayLeftFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayLeftExpression", _wrap_PortsInterface_getArrayLeftExpression, METH_VARARGS, "\n"
+		"getArrayLeftExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setArrayLeft", _wrap_PortsInterface_setArrayLeft, METH_VARARGS, "\n"
+		"setArrayLeft(PortsInterface self, std::string const & portName, std::string const & newArrayLeft) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newArrayLeft: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayRightValue", _wrap_PortsInterface_getArrayRightValue, METH_VARARGS, "\n"
+		"getArrayRightValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayRightFormattedExpression", _wrap_PortsInterface_getArrayRightFormattedExpression, METH_VARARGS, "\n"
+		"getArrayRightFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getArrayRightExpression", _wrap_PortsInterface_getArrayRightExpression, METH_VARARGS, "\n"
+		"getArrayRightExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setArrayRight", _wrap_PortsInterface_setArrayRight, METH_VARARGS, "\n"
+		"setArrayRight(PortsInterface self, std::string const & portName, std::string const & newArrayRight) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newArrayRight: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getTags", _wrap_PortsInterface_getTags, METH_VARARGS, "\n"
+		"getTags(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setTags", _wrap_PortsInterface_setTags, METH_VARARGS, "\n"
+		"setTags(PortsInterface self, std::string const & portName, std::string const & tagList) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"tagList: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_isAdHoc", _wrap_PortsInterface_isAdHoc, METH_VARARGS, "\n"
+		"isAdHoc(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setAdHoc", _wrap_PortsInterface_setAdHoc, METH_VARARGS, "\n"
+		"setAdHoc(PortsInterface self, std::string const & portName, bool newAdHocVisibility) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newAdHocVisibility: bool\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDirection", _wrap_PortsInterface_getDirection, METH_VARARGS, "\n"
+		"getDirection(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDirectionType", _wrap_PortsInterface_getDirectionType, METH_VARARGS, "\n"
+		"getDirectionType(PortsInterface self, std::string const & portName) -> DirectionTypes::Direction\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setDirection", _wrap_PortsInterface_setDirection, METH_VARARGS, "\n"
+		"setDirection(PortsInterface self, std::string const & portName, std::string const & newDirection) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newDirection: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getLeftBoundValue", _wrap_PortsInterface_getLeftBoundValue, METH_VARARGS, "\n"
+		"getLeftBoundValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getLeftBoundFormattedExpression", _wrap_PortsInterface_getLeftBoundFormattedExpression, METH_VARARGS, "\n"
+		"getLeftBoundFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getLeftBoundExpression", _wrap_PortsInterface_getLeftBoundExpression, METH_VARARGS, "\n"
+		"getLeftBoundExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setLeftBound", _wrap_PortsInterface_setLeftBound, METH_VARARGS, "\n"
+		"setLeftBound(PortsInterface self, std::string const & portName, std::string const & newLeftBound) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newLeftBound: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getRightBoundValue", _wrap_PortsInterface_getRightBoundValue, METH_VARARGS, "\n"
+		"getRightBoundValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getRightBoundFormattedExpression", _wrap_PortsInterface_getRightBoundFormattedExpression, METH_VARARGS, "\n"
+		"getRightBoundFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getRightBoundExpression", _wrap_PortsInterface_getRightBoundExpression, METH_VARARGS, "\n"
+		"getRightBoundExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setRightBound", _wrap_PortsInterface_setRightBound, METH_VARARGS, "\n"
+		"setRightBound(PortsInterface self, std::string const & portName, std::string const & newRightBound) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newRightBound: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_hasExpressionInLeftOrRightBound", _wrap_PortsInterface_hasExpressionInLeftOrRightBound, METH_VARARGS, "\n"
+		"hasExpressionInLeftOrRightBound(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getWidth", _wrap_PortsInterface_getWidth, METH_VARARGS, "\n"
+		"getWidth(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setWidth", _wrap_PortsInterface_setWidth, METH_VARARGS, "\n"
+		"setWidth(PortsInterface self, std::string const & portName, std::string const & newWidth) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newWidth: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDefaultValue", _wrap_PortsInterface_getDefaultValue, METH_VARARGS, "\n"
+		"getDefaultValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDefaultValueFormattedExpression", _wrap_PortsInterface_getDefaultValueFormattedExpression, METH_VARARGS, "\n"
+		"getDefaultValueFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getDefaultValueExpression", _wrap_PortsInterface_getDefaultValueExpression, METH_VARARGS, "\n"
+		"getDefaultValueExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setDefaultValue", _wrap_PortsInterface_setDefaultValue, METH_VARARGS, "\n"
+		"setDefaultValue(PortsInterface self, std::string const & portName, std::string const & newDefaultValue) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newDefaultValue: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getBusWidthValue", _wrap_PortsInterface_getBusWidthValue, METH_VARARGS, "\n"
+		"getBusWidthValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getBusWidthFormattedExpression", _wrap_PortsInterface_getBusWidthFormattedExpression, METH_VARARGS, "\n"
+		"getBusWidthFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getBusWidthExpression", _wrap_PortsInterface_getBusWidthExpression, METH_VARARGS, "\n"
+		"getBusWidthExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setBusWidth", _wrap_PortsInterface_setBusWidth, METH_VARARGS, "\n"
+		"setBusWidth(PortsInterface self, std::string const & portName, std::string const & newBusWidth) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newBusWidth: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getInitiative", _wrap_PortsInterface_getInitiative, METH_VARARGS, "\n"
+		"getInitiative(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setInitiative", _wrap_PortsInterface_setInitiative, METH_VARARGS, "\n"
+		"setInitiative(PortsInterface self, std::string const & portName, std::string const & newInitiative) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newInitiative: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getKind", _wrap_PortsInterface_getKind, METH_VARARGS, "\n"
+		"getKind(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setKind", _wrap_PortsInterface_setKind, METH_VARARGS, "\n"
+		"setKind(PortsInterface self, std::string const & portName, std::string const & newKind) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newKind: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getProtocolType", _wrap_PortsInterface_getProtocolType, METH_VARARGS, "\n"
+		"getProtocolType(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setProtocolType", _wrap_PortsInterface_setProtocolType, METH_VARARGS, "\n"
+		"setProtocolType(PortsInterface self, std::string const & portName, std::string const & newProtocolType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newProtocolType: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMaxConnectionsValue", _wrap_PortsInterface_getMaxConnectionsValue, METH_VARARGS, "\n"
+		"getMaxConnectionsValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMaxConnectionsFormattedExpression", _wrap_PortsInterface_getMaxConnectionsFormattedExpression, METH_VARARGS, "\n"
+		"getMaxConnectionsFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMaxConnectionsExpression", _wrap_PortsInterface_getMaxConnectionsExpression, METH_VARARGS, "\n"
+		"getMaxConnectionsExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setMaxConnections", _wrap_PortsInterface_setMaxConnections, METH_VARARGS, "\n"
+		"setMaxConnections(PortsInterface self, std::string const & portName, std::string const & newMaxConnections) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newMaxConnections: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMinConnectionsValue", _wrap_PortsInterface_getMinConnectionsValue, METH_VARARGS, "\n"
+		"getMinConnectionsValue(PortsInterface self, std::string const & portName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMinConnectionsFormattedExpression", _wrap_PortsInterface_getMinConnectionsFormattedExpression, METH_VARARGS, "\n"
+		"getMinConnectionsFormattedExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getMinConnectionsExpression", _wrap_PortsInterface_getMinConnectionsExpression, METH_VARARGS, "\n"
+		"getMinConnectionsExpression(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_setMinConnections", _wrap_PortsInterface_setMinConnections, METH_VARARGS, "\n"
+		"setMinConnections(PortsInterface self, std::string const & portName, std::string const & newMinConnections) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"newMinConnections: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_addWirePort", _wrap_PortsInterface_addWirePort, METH_VARARGS, "\n"
+		"addWirePort(PortsInterface self, std::string const & newPortName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newPortName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_addTransactionalPort", _wrap_PortsInterface_addTransactionalPort, METH_VARARGS, "\n"
+		"addTransactionalPort(PortsInterface self, std::string const & newPortName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newPortName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_removePort", _wrap_PortsInterface_removePort, METH_VARARGS, "\n"
+		"removePort(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portLeftArrayValueIsValid", _wrap_PortsInterface_portLeftArrayValueIsValid, METH_VARARGS, "\n"
+		"portLeftArrayValueIsValid(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portRightArrayValueIsValid", _wrap_PortsInterface_portRightArrayValueIsValid, METH_VARARGS, "\n"
+		"portRightArrayValueIsValid(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidTypes", _wrap_PortsInterface_portHasValidTypes, METH_VARARGS, "\n"
+		"portHasValidTypes(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidLeftBound", _wrap_PortsInterface_portHasValidLeftBound, METH_VARARGS, "\n"
+		"portHasValidLeftBound(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidRightBound", _wrap_PortsInterface_portHasValidRightBound, METH_VARARGS, "\n"
+		"portHasValidRightBound(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidDefaultValue", _wrap_PortsInterface_portHasValidDefaultValue, METH_VARARGS, "\n"
+		"portHasValidDefaultValue(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidBusWidth", _wrap_PortsInterface_portHasValidBusWidth, METH_VARARGS, "\n"
+		"portHasValidBusWidth(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidInitiative", _wrap_PortsInterface_portHasValidInitiative, METH_VARARGS, "\n"
+		"portHasValidInitiative(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidKind", _wrap_PortsInterface_portHasValidKind, METH_VARARGS, "\n"
+		"portHasValidKind(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidProtocol", _wrap_PortsInterface_portHasValidProtocol, METH_VARARGS, "\n"
+		"portHasValidProtocol(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidMaxConnections", _wrap_PortsInterface_portHasValidMaxConnections, METH_VARARGS, "\n"
+		"portHasValidMaxConnections(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_portHasValidMinConnections", _wrap_PortsInterface_portHasValidMinConnections, METH_VARARGS, "\n"
+		"portHasValidMinConnections(PortsInterface self, std::string const & portName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getIconPathForPort", _wrap_PortsInterface_getIconPathForPort, METH_VARARGS, "\n"
+		"getIconPathForPort(PortsInterface self, std::string const & portName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_getPort", _wrap_PortsInterface_getPort, METH_VARARGS, "\n"
+		"getPort(PortsInterface self, std::string const & portName) -> QSharedPointer< Port >\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"portName: std::string const &\n"
+		"\n"
+		""},
+	 { "PortsInterface_swigregister", PortsInterface_swigregister, METH_O, NULL},
+	 { "PortsInterface_swiginit", PortsInterface_swiginit, METH_VARARGS, NULL},
+	 { "delete_AbstractParameterInterface", _wrap_delete_AbstractParameterInterface, METH_O, "delete_AbstractParameterInterface(AbstractParameterInterface self)"},
+	 { "AbstractParameterInterface_setChoices", _wrap_AbstractParameterInterface_setChoices, METH_VARARGS, "\n"
+		"setChoices(AbstractParameterInterface self, QSharedPointer< QList< QSharedPointer< Choice > > > newChoices)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newChoices: QSharedPointer< QList< QSharedPointer< Choice > > >\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getExpressionsInSelectedItems", _wrap_AbstractParameterInterface_getExpressionsInSelectedItems, METH_VARARGS, "\n"
+		"getExpressionsInSelectedItems(AbstractParameterInterface self, stringVector parameterNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getDisplayName", _wrap_AbstractParameterInterface_getDisplayName, METH_VARARGS, "\n"
+		"getDisplayName(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setDisplayName", _wrap_AbstractParameterInterface_setDisplayName, METH_VARARGS, "\n"
+		"setDisplayName(AbstractParameterInterface self, std::string const & parameterName, std::string const & newDisplayName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newDisplayName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getType", _wrap_AbstractParameterInterface_getType, METH_VARARGS, "\n"
+		"getType(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setType", _wrap_AbstractParameterInterface_setType, METH_VARARGS, "\n"
+		"setType(AbstractParameterInterface self, std::string const & parameterName, std::string const & newType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newType: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthLeftValue", _wrap_AbstractParameterInterface_getBitWidthLeftValue, METH_VARARGS, "\n"
+		"getBitWidthLeftValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthLeftFormattedExpression", _wrap_AbstractParameterInterface_getBitWidthLeftFormattedExpression, METH_VARARGS, "\n"
+		"getBitWidthLeftFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthLeftExpression", _wrap_AbstractParameterInterface_getBitWidthLeftExpression, METH_VARARGS, "\n"
+		"getBitWidthLeftExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setBitWidthLeft", _wrap_AbstractParameterInterface_setBitWidthLeft, METH_VARARGS, "\n"
+		"setBitWidthLeft(AbstractParameterInterface self, std::string const & parameterName, std::string const & newBitWidthLeft) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newBitWidthLeft: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthRightValue", _wrap_AbstractParameterInterface_getBitWidthRightValue, METH_VARARGS, "\n"
+		"getBitWidthRightValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthRightFormattedExpression", _wrap_AbstractParameterInterface_getBitWidthRightFormattedExpression, METH_VARARGS, "\n"
+		"getBitWidthRightFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getBitWidthRightExpression", _wrap_AbstractParameterInterface_getBitWidthRightExpression, METH_VARARGS, "\n"
+		"getBitWidthRightExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setBitWidthRight", _wrap_AbstractParameterInterface_setBitWidthRight, METH_VARARGS, "\n"
+		"setBitWidthRight(AbstractParameterInterface self, std::string const & parameterName, std::string const & newBitWidthRight) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newBitWidthRight: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getMinimum", _wrap_AbstractParameterInterface_getMinimum, METH_VARARGS, "\n"
+		"getMinimum(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setMinimum", _wrap_AbstractParameterInterface_setMinimum, METH_VARARGS, "\n"
+		"setMinimum(AbstractParameterInterface self, std::string const & parameterName, std::string const & newMinimum) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newMinimum: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getMaximum", _wrap_AbstractParameterInterface_getMaximum, METH_VARARGS, "\n"
+		"getMaximum(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setMaximum", _wrap_AbstractParameterInterface_setMaximum, METH_VARARGS, "\n"
+		"setMaximum(AbstractParameterInterface self, std::string const & parameterName, std::string const & newMaximum) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newMaximum: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getChoice", _wrap_AbstractParameterInterface_getChoice, METH_VARARGS, "\n"
+		"getChoice(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setChoice", _wrap_AbstractParameterInterface_setChoice, METH_VARARGS, "\n"
+		"setChoice(AbstractParameterInterface self, std::string const & parameterName, std::string const & newChoice) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newChoice: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getValue", _wrap_AbstractParameterInterface_getValue, METH_VARARGS, "\n"
+		"getValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getValueFormattedExpression", _wrap_AbstractParameterInterface_getValueFormattedExpression, METH_VARARGS, "\n"
+		"getValueFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getValueExpression", _wrap_AbstractParameterInterface_getValueExpression, METH_VARARGS, "\n"
+		"getValueExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setValue", _wrap_AbstractParameterInterface_setValue, METH_VARARGS, "\n"
+		"setValue(AbstractParameterInterface self, std::string const & parameterName, std::string const & newValue) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newValue: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getResolve", _wrap_AbstractParameterInterface_getResolve, METH_VARARGS, "\n"
+		"getResolve(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setResolve", _wrap_AbstractParameterInterface_setResolve, METH_VARARGS, "\n"
+		"setResolve(AbstractParameterInterface self, std::string const & parameterName, std::string const & newResolve) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newResolve: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayLeftValue", _wrap_AbstractParameterInterface_getArrayLeftValue, METH_VARARGS, "\n"
+		"getArrayLeftValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayLeftFormattedExpression", _wrap_AbstractParameterInterface_getArrayLeftFormattedExpression, METH_VARARGS, "\n"
+		"getArrayLeftFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayLeftExpression", _wrap_AbstractParameterInterface_getArrayLeftExpression, METH_VARARGS, "\n"
+		"getArrayLeftExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setArrayLeft", _wrap_AbstractParameterInterface_setArrayLeft, METH_VARARGS, "\n"
+		"setArrayLeft(AbstractParameterInterface self, std::string const & parameterName, std::string const & newArrayLeft) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newArrayLeft: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayRightValue", _wrap_AbstractParameterInterface_getArrayRightValue, METH_VARARGS, "\n"
+		"getArrayRightValue(AbstractParameterInterface self, std::string const & parameterName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayRightFormattedExpression", _wrap_AbstractParameterInterface_getArrayRightFormattedExpression, METH_VARARGS, "\n"
+		"getArrayRightFormattedExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getArrayRightExpression", _wrap_AbstractParameterInterface_getArrayRightExpression, METH_VARARGS, "\n"
+		"getArrayRightExpression(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setArrayRight", _wrap_AbstractParameterInterface_setArrayRight, METH_VARARGS, "\n"
+		"setArrayRight(AbstractParameterInterface self, std::string const & parameterName, std::string const & newArrayRight) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newArrayRight: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getID", _wrap_AbstractParameterInterface_getID, METH_VARARGS, "\n"
+		"getID(AbstractParameterInterface self, std::string const & parameterName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setID", _wrap_AbstractParameterInterface_setID, METH_VARARGS, "\n"
+		"setID(AbstractParameterInterface self, std::string const & parameterName, std::string const & newID) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newID: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_getUsageCount", _wrap_AbstractParameterInterface_getUsageCount, METH_VARARGS, "\n"
+		"getUsageCount(AbstractParameterInterface self, std::string const & parameterName) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_setUsageCount", _wrap_AbstractParameterInterface_setUsageCount, METH_VARARGS, "\n"
+		"setUsageCount(AbstractParameterInterface self, std::string const & parameterName, int const & newUsageCount) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"newUsageCount: int const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_increaseUsageCount", _wrap_AbstractParameterInterface_increaseUsageCount, METH_VARARGS, "\n"
+		"increaseUsageCount(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_reduceUsageCount", _wrap_AbstractParameterInterface_reduceUsageCount, METH_VARARGS, "\n"
+		"reduceUsageCount(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidType", _wrap_AbstractParameterInterface_hasValidType, METH_VARARGS, "\n"
+		"hasValidType(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidBitWidth", _wrap_AbstractParameterInterface_hasValidBitWidth, METH_VARARGS, "\n"
+		"hasValidBitWidth(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidMinimum", _wrap_AbstractParameterInterface_hasValidMinimum, METH_VARARGS, "\n"
+		"hasValidMinimum(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidMaximum", _wrap_AbstractParameterInterface_hasValidMaximum, METH_VARARGS, "\n"
+		"hasValidMaximum(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidChoice", _wrap_AbstractParameterInterface_hasValidChoice, METH_VARARGS, "\n"
+		"hasValidChoice(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidValue", _wrap_AbstractParameterInterface_hasValidValue, METH_VARARGS, "\n"
+		"hasValidValue(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidResolve", _wrap_AbstractParameterInterface_hasValidResolve, METH_VARARGS, "\n"
+		"hasValidResolve(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_hasValidArrayValues", _wrap_AbstractParameterInterface_hasValidArrayValues, METH_VARARGS, "\n"
+		"hasValidArrayValues(AbstractParameterInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "AbstractParameterInterface_swigregister", AbstractParameterInterface_swigregister, METH_O, NULL},
+	 { "new_ParametersInterface", _wrap_new_ParametersInterface, METH_VARARGS, "\n"
+		"new_ParametersInterface(QSharedPointer< ParameterValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> ParametersInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< ParameterValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_ParametersInterface", _wrap_delete_ParametersInterface, METH_O, "delete_ParametersInterface(ParametersInterface self)"},
+	 { "ParametersInterface_setParameters", _wrap_ParametersInterface_setParameters, METH_VARARGS, "\n"
+		"setParameters(ParametersInterface self, QSharedPointer< QList< QSharedPointer< Parameter > > > newParameters)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newParameters: QSharedPointer< QList< QSharedPointer< Parameter > > >\n"
+		"\n"
+		""},
+	 { "ParametersInterface_addParameter", _wrap_ParametersInterface_addParameter, METH_VARARGS, "\n"
+		"addParameter(ParametersInterface self, int const & row, std::string const & newParameterName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newParameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "ParametersInterface_removeParameter", _wrap_ParametersInterface_removeParameter, METH_VARARGS, "\n"
+		"removeParameter(ParametersInterface self, std::string const & parameterName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"parameterName: std::string const &\n"
+		"\n"
+		""},
+	 { "ParametersInterface_swigregister", ParametersInterface_swigregister, METH_O, NULL},
+	 { "ParametersInterface_swiginit", ParametersInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_MemoryMapInterface", _wrap_new_MemoryMapInterface, METH_VARARGS, "\n"
+		"new_MemoryMapInterface(QSharedPointer< MemoryMapValidator > mapValidator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, AddressBlockInterface subInterface) -> MemoryMapInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapValidator: QSharedPointer< MemoryMapValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"subInterface: AddressBlockInterface *\n"
+		"\n"
+		""},
+	 { "delete_MemoryMapInterface", _wrap_delete_MemoryMapInterface, METH_O, "delete_MemoryMapInterface(MemoryMapInterface self)"},
+	 { "MemoryMapInterface_setMemoryMaps", _wrap_MemoryMapInterface_setMemoryMaps, METH_VARARGS, "\n"
+		"setMemoryMaps(MemoryMapInterface self, QSharedPointer< Component > component)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"component: QSharedPointer< Component >\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getMemoryRemapIndex", _wrap_MemoryMapInterface_getMemoryRemapIndex, METH_VARARGS, "\n"
+		"getMemoryRemapIndex(MemoryMapInterface self, std::string const & mapName, std::string const & remapName) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getIndexedRemapName", _wrap_MemoryMapInterface_getIndexedRemapName, METH_VARARGS, "\n"
+		"getIndexedRemapName(MemoryMapInterface self, std::string mapName, int const & itemIndex) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string\n"
+		"itemIndex: int const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_remapCount", _wrap_MemoryMapInterface_remapCount, METH_VARARGS, "\n"
+		"remapCount(MemoryMapInterface self, std::string const & mapName) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getRemapNames", _wrap_MemoryMapInterface_getRemapNames, METH_VARARGS, "\n"
+		"getRemapNames(MemoryMapInterface self, std::string const & mapName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setRemapName", _wrap_MemoryMapInterface_setRemapName, METH_VARARGS, "\n"
+		"setRemapName(MemoryMapInterface self, std::string const & mapName, std::string const & currentName, std::string const & newName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"currentName: std::string const &\n"
+		"newName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getRemapDescription", _wrap_MemoryMapInterface_getRemapDescription, METH_VARARGS, "\n"
+		"getRemapDescription(MemoryMapInterface self, std::string const & mapName, std::string const & remapName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setRemapDescription", _wrap_MemoryMapInterface_setRemapDescription, METH_VARARGS, "\n"
+		"setRemapDescription(MemoryMapInterface self, std::string const & mapName, std::string const & itemName, std::string const & newDescription) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"itemName: std::string const &\n"
+		"newDescription: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getIsPresentValue", _wrap_MemoryMapInterface_getIsPresentValue, METH_VARARGS, "\n"
+		"getIsPresentValue(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\", int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getIsPresentFormattedExpression", _wrap_MemoryMapInterface_getIsPresentFormattedExpression, METH_VARARGS, "\n"
+		"getIsPresentFormattedExpression(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\") -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getIsPresentExpression", _wrap_MemoryMapInterface_getIsPresentExpression, METH_VARARGS, "\n"
+		"getIsPresentExpression(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\") -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setIsPresent", _wrap_MemoryMapInterface_setIsPresent, METH_VARARGS, "\n"
+		"setIsPresent(MemoryMapInterface self, std::string const & mapName, std::string const & newIsPresent, std::string const & remapName=\"\") -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"newIsPresent: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getRemapState", _wrap_MemoryMapInterface_getRemapState, METH_VARARGS, "\n"
+		"getRemapState(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\") -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setRemapState", _wrap_MemoryMapInterface_setRemapState, METH_VARARGS, "\n"
+		"setRemapState(MemoryMapInterface self, std::string const & mapName, std::string const & remapName, std::string const & newRemapState) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"newRemapState: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getAddressUnitBits", _wrap_MemoryMapInterface_getAddressUnitBits, METH_VARARGS, "\n"
+		"getAddressUnitBits(MemoryMapInterface self, std::string const & mapName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_setAddressUnitBits", _wrap_MemoryMapInterface_setAddressUnitBits, METH_VARARGS, "\n"
+		"setAddressUnitBits(MemoryMapInterface self, std::string const & mapName, std::string const & newAddressUnitBits) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"newAddressUnitBits: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getInterfaceBinding", _wrap_MemoryMapInterface_getInterfaceBinding, METH_VARARGS, "\n"
+		"getInterfaceBinding(MemoryMapInterface self, std::string const & mapName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getAssociatedSlaveInterfaces", _wrap_MemoryMapInterface_getAssociatedSlaveInterfaces, METH_VARARGS, "\n"
+		"getAssociatedSlaveInterfaces(MemoryMapInterface self, std::string const & mapName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getMapExpressions", _wrap_MemoryMapInterface_getMapExpressions, METH_VARARGS, "\n"
+		"getMapExpressions(MemoryMapInterface self, std::string const & mapName, std::string const & remapName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getAllReferencesToIdInRemapItem", _wrap_MemoryMapInterface_getAllReferencesToIdInRemapItem, METH_VARARGS, "\n"
+		"getAllReferencesToIdInRemapItem(MemoryMapInterface self, std::string const & mapName, std::string & remapName, std::string const & valueID) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string &\n"
+		"valueID: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_remapHasValidName", _wrap_MemoryMapInterface_remapHasValidName, METH_VARARGS, "\n"
+		"remapHasValidName(MemoryMapInterface self, std::string const & mapName, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_remapHasValidRemapState", _wrap_MemoryMapInterface_remapHasValidRemapState, METH_VARARGS, "\n"
+		"remapHasValidRemapState(MemoryMapInterface self, std::string const & mapName, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_itemHasValidIsPresent", _wrap_MemoryMapInterface_itemHasValidIsPresent, METH_VARARGS, "\n"
+		"itemHasValidIsPresent(MemoryMapInterface self, std::string const & mapName, std::string const & remapName=\"\") -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_memoryMapHasValidAddressUnitBits", _wrap_MemoryMapInterface_memoryMapHasValidAddressUnitBits, METH_VARARGS, "\n"
+		"memoryMapHasValidAddressUnitBits(MemoryMapInterface self, std::string const & mapName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_addMemoryMap", _wrap_MemoryMapInterface_addMemoryMap, METH_VARARGS, "\n"
+		"addMemoryMap(MemoryMapInterface self, int const & row, std::string const & newMapName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newMapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_addMemoryRemap", _wrap_MemoryMapInterface_addMemoryRemap, METH_VARARGS, "\n"
+		"addMemoryRemap(MemoryMapInterface self, std::string const & mapName, std::string const & newRemapName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"newRemapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_removeMap", _wrap_MemoryMapInterface_removeMap, METH_VARARGS, "\n"
+		"removeMap(MemoryMapInterface self, std::string const & mapName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_removeRemap", _wrap_MemoryMapInterface_removeRemap, METH_VARARGS, "\n"
+		"removeRemap(MemoryMapInterface self, std::string const & mapName, std::string remapName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_copyRows", _wrap_MemoryMapInterface_copyRows, METH_VARARGS, "\n"
+		"copyRows(MemoryMapInterface self, stringVector selectedRows)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"selectedRows: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_pasteMemoryMaps", _wrap_MemoryMapInterface_pasteMemoryMaps, METH_O, "pasteMemoryMaps(MemoryMapInterface self) -> stringVector"},
+	 { "MemoryMapInterface_pasteMemoryRemaps", _wrap_MemoryMapInterface_pasteMemoryRemaps, METH_VARARGS, "\n"
+		"pasteMemoryRemaps(MemoryMapInterface self, std::string const & memoryMapName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"memoryMapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getSubInterface", _wrap_MemoryMapInterface_getSubInterface, METH_O, "getSubInterface(MemoryMapInterface self) -> AddressBlockInterface"},
+	 { "MemoryMapInterface_getMapPointer", _wrap_MemoryMapInterface_getMapPointer, METH_VARARGS, "\n"
+		"getMapPointer(MemoryMapInterface self, std::string const & mapName) -> MemoryMap *\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_getRemapPointer", _wrap_MemoryMapInterface_getRemapPointer, METH_VARARGS, "\n"
+		"getRemapPointer(MemoryMapInterface self, std::string const & mapName, std::string const & remapName) -> MemoryRemap *\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"mapName: std::string const &\n"
+		"remapName: std::string const &\n"
+		"\n"
+		""},
+	 { "MemoryMapInterface_swigregister", MemoryMapInterface_swigregister, METH_O, NULL},
+	 { "MemoryMapInterface_swiginit", MemoryMapInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_AddressBlockInterface", _wrap_new_AddressBlockInterface, METH_VARARGS, "\n"
+		"new_AddressBlockInterface(QSharedPointer< AddressBlockValidator > blockValidator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, RegisterInterface subInterface) -> AddressBlockInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockValidator: QSharedPointer< AddressBlockValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"subInterface: RegisterInterface *\n"
+		"\n"
+		""},
+	 { "delete_AddressBlockInterface", _wrap_delete_AddressBlockInterface, METH_O, "delete_AddressBlockInterface(AddressBlockInterface self)"},
+	 { "AddressBlockInterface_setAddressBlocks", _wrap_AddressBlockInterface_setAddressBlocks, METH_VARARGS, "\n"
+		"setAddressBlocks(AddressBlockInterface self, QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > > newAddressBlocks)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newAddressBlocks: QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > >\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getBaseAddressValue", _wrap_AddressBlockInterface_getBaseAddressValue, METH_VARARGS, "\n"
+		"getBaseAddressValue(AddressBlockInterface self, std::string const & blockName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getBaseAddressFormattedExpression", _wrap_AddressBlockInterface_getBaseAddressFormattedExpression, METH_VARARGS, "\n"
+		"getBaseAddressFormattedExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getBaseAddressExpression", _wrap_AddressBlockInterface_getBaseAddressExpression, METH_VARARGS, "\n"
+		"getBaseAddressExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setBaseAddress", _wrap_AddressBlockInterface_setBaseAddress, METH_VARARGS, "\n"
+		"setBaseAddress(AddressBlockInterface self, std::string const & blockName, std::string const & newBaseAdress) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newBaseAdress: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getIsPresentValue", _wrap_AddressBlockInterface_getIsPresentValue, METH_VARARGS, "\n"
+		"getIsPresentValue(AddressBlockInterface self, std::string const & blockName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getIsPresentFormattedExpression", _wrap_AddressBlockInterface_getIsPresentFormattedExpression, METH_VARARGS, "\n"
+		"getIsPresentFormattedExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getIsPresentExpression", _wrap_AddressBlockInterface_getIsPresentExpression, METH_VARARGS, "\n"
+		"getIsPresentExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setIsPresent", _wrap_AddressBlockInterface_setIsPresent, METH_VARARGS, "\n"
+		"setIsPresent(AddressBlockInterface self, std::string const & blockName, std::string const & newIsPresent) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newIsPresent: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getRangeValue", _wrap_AddressBlockInterface_getRangeValue, METH_VARARGS, "\n"
+		"getRangeValue(AddressBlockInterface self, std::string const & blockName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getRangeFormattedExpression", _wrap_AddressBlockInterface_getRangeFormattedExpression, METH_VARARGS, "\n"
+		"getRangeFormattedExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getRangeExpression", _wrap_AddressBlockInterface_getRangeExpression, METH_VARARGS, "\n"
+		"getRangeExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setRange", _wrap_AddressBlockInterface_setRange, METH_VARARGS, "\n"
+		"setRange(AddressBlockInterface self, std::string const & blockName, std::string const & newRange) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newRange: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getWidthValue", _wrap_AddressBlockInterface_getWidthValue, METH_VARARGS, "\n"
+		"getWidthValue(AddressBlockInterface self, std::string const & blockName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getWidthFormattedExpression", _wrap_AddressBlockInterface_getWidthFormattedExpression, METH_VARARGS, "\n"
+		"getWidthFormattedExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getWidthExpression", _wrap_AddressBlockInterface_getWidthExpression, METH_VARARGS, "\n"
+		"getWidthExpression(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setWidth", _wrap_AddressBlockInterface_setWidth, METH_VARARGS, "\n"
+		"setWidth(AddressBlockInterface self, std::string const & blockName, std::string const & newWidth) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newWidth: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getUsageString", _wrap_AddressBlockInterface_getUsageString, METH_VARARGS, "\n"
+		"getUsageString(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getUsage", _wrap_AddressBlockInterface_getUsage, METH_VARARGS, "\n"
+		"getUsage(AddressBlockInterface self, std::string const & blockName) -> General::Usage\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setUsage", _wrap_AddressBlockInterface_setUsage, METH_VARARGS, "\n"
+		"setUsage(AddressBlockInterface self, std::string const & blockName, std::string const & newUsage) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newUsage: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getAccessString", _wrap_AddressBlockInterface_getAccessString, METH_VARARGS, "\n"
+		"getAccessString(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getAccess", _wrap_AddressBlockInterface_getAccess, METH_VARARGS, "\n"
+		"getAccess(AddressBlockInterface self, std::string const & blockName) -> AccessTypes::Access\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setAccess", _wrap_AddressBlockInterface_setAccess, METH_VARARGS, "\n"
+		"setAccess(AddressBlockInterface self, std::string const & blockName, std::string const & newAccess) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newAccess: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getVolatile", _wrap_AddressBlockInterface_getVolatile, METH_VARARGS, "\n"
+		"getVolatile(AddressBlockInterface self, std::string const & blockName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setVolatile", _wrap_AddressBlockInterface_setVolatile, METH_VARARGS, "\n"
+		"setVolatile(AddressBlockInterface self, std::string const & blockName, bool newVolatile) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newVolatile: bool\n"
+		"\n"
+		"setVolatile(AddressBlockInterface self, std::string const & blockName, std::string const & newVolatileValue) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"newVolatileValue: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidBaseAddress", _wrap_AddressBlockInterface_hasValidBaseAddress, METH_VARARGS, "\n"
+		"hasValidBaseAddress(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidRange", _wrap_AddressBlockInterface_hasValidRange, METH_VARARGS, "\n"
+		"hasValidRange(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidWidth", _wrap_AddressBlockInterface_hasValidWidth, METH_VARARGS, "\n"
+		"hasValidWidth(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidIsPresent", _wrap_AddressBlockInterface_hasValidIsPresent, METH_VARARGS, "\n"
+		"hasValidIsPresent(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_hasValidUsage", _wrap_AddressBlockInterface_hasValidUsage, METH_VARARGS, "\n"
+		"hasValidUsage(AddressBlockInterface self, std::string const & itemName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_addBlock", _wrap_AddressBlockInterface_addBlock, METH_VARARGS, "\n"
+		"addBlock(AddressBlockInterface self, int const & row, std::string const & newBlockName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newBlockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_removeBlock", _wrap_AddressBlockInterface_removeBlock, METH_VARARGS, "\n"
+		"removeBlock(AddressBlockInterface self, std::string const & blockName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_copyRows", _wrap_AddressBlockInterface_copyRows, METH_VARARGS, "\n"
+		"copyRows(AddressBlockInterface self, std::vector< int,std::allocator< int > > selectedRows)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"selectedRows: std::vector< int,std::allocator< int > >\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_pasteRows", _wrap_AddressBlockInterface_pasteRows, METH_O, "pasteRows(AddressBlockInterface self) -> stringVector"},
+	 { "AddressBlockInterface_getPasteRowCount", _wrap_AddressBlockInterface_getPasteRowCount, METH_O, "getPasteRowCount(AddressBlockInterface self) -> int"},
+	 { "AddressBlockInterface_getExpressionsInSelectedItems", _wrap_AddressBlockInterface_getExpressionsInSelectedItems, METH_VARARGS, "\n"
+		"getExpressionsInSelectedItems(AddressBlockInterface self, stringVector itemNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_setAddressUnitBits", _wrap_AddressBlockInterface_setAddressUnitBits, METH_VARARGS, "\n"
+		"setAddressUnitBits(AddressBlockInterface self, std::string const & newAddressUnitbits)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newAddressUnitbits: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_getSubInterface", _wrap_AddressBlockInterface_getSubInterface, METH_O, "getSubInterface(AddressBlockInterface self) -> RegisterInterface"},
+	 { "AddressBlockInterface_hasRegisters", _wrap_AddressBlockInterface_hasRegisters, METH_VARARGS, "\n"
+		"hasRegisters(AddressBlockInterface self, std::string const & blockName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"blockName: std::string const &\n"
+		"\n"
+		""},
+	 { "AddressBlockInterface_swigregister", AddressBlockInterface_swigregister, METH_O, NULL},
+	 { "AddressBlockInterface_swiginit", AddressBlockInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_RegisterInterface", _wrap_new_RegisterInterface, METH_VARARGS, "\n"
+		"new_RegisterInterface(QSharedPointer< RegisterValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, FieldInterface subInterface) -> RegisterInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< RegisterValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"subInterface: FieldInterface *\n"
+		"\n"
+		""},
+	 { "delete_RegisterInterface", _wrap_delete_RegisterInterface, METH_O, "delete_RegisterInterface(RegisterInterface self)"},
+	 { "RegisterInterface_setRegisters", _wrap_RegisterInterface_setRegisters, METH_VARARGS, "\n"
+		"setRegisters(RegisterInterface self, QSharedPointer< QList< QSharedPointer< RegisterBase > > > newRegisterData)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newRegisterData: QSharedPointer< QList< QSharedPointer< RegisterBase > > >\n"
+		"\n"
+		""},
+	 { "RegisterInterface_registerDataCount", _wrap_RegisterInterface_registerDataCount, METH_O, "registerDataCount(RegisterInterface self) -> int"},
+	 { "RegisterInterface_indexInRegisterData", _wrap_RegisterInterface_indexInRegisterData, METH_VARARGS, "\n"
+		"indexInRegisterData(RegisterInterface self, int const & index) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"index: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getOffsetValue", _wrap_RegisterInterface_getOffsetValue, METH_VARARGS, "\n"
+		"getOffsetValue(RegisterInterface self, std::string const & registerName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getOffsetFormattedExpression", _wrap_RegisterInterface_getOffsetFormattedExpression, METH_VARARGS, "\n"
+		"getOffsetFormattedExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getOffsetExpression", _wrap_RegisterInterface_getOffsetExpression, METH_VARARGS, "\n"
+		"getOffsetExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setOffset", _wrap_RegisterInterface_setOffset, METH_VARARGS, "\n"
+		"setOffset(RegisterInterface self, std::string const & registerName, std::string const & newOffset) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newOffset: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getDimensionValue", _wrap_RegisterInterface_getDimensionValue, METH_VARARGS, "\n"
+		"getDimensionValue(RegisterInterface self, std::string const & registerName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getDimensionFormattedExpression", _wrap_RegisterInterface_getDimensionFormattedExpression, METH_VARARGS, "\n"
+		"getDimensionFormattedExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getDimensionExpression", _wrap_RegisterInterface_getDimensionExpression, METH_VARARGS, "\n"
+		"getDimensionExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setDimension", _wrap_RegisterInterface_setDimension, METH_VARARGS, "\n"
+		"setDimension(RegisterInterface self, std::string const & registerName, std::string const & newDimension) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newDimension: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getIsPresentValue", _wrap_RegisterInterface_getIsPresentValue, METH_VARARGS, "\n"
+		"getIsPresentValue(RegisterInterface self, std::string const & registerName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getIsPresentFormattedExpression", _wrap_RegisterInterface_getIsPresentFormattedExpression, METH_VARARGS, "\n"
+		"getIsPresentFormattedExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getIsPresentExpression", _wrap_RegisterInterface_getIsPresentExpression, METH_VARARGS, "\n"
+		"getIsPresentExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setIsPresent", _wrap_RegisterInterface_setIsPresent, METH_VARARGS, "\n"
+		"setIsPresent(RegisterInterface self, std::string const & registerName, std::string const & newIsPresent) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newIsPresent: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getSizeValue", _wrap_RegisterInterface_getSizeValue, METH_VARARGS, "\n"
+		"getSizeValue(RegisterInterface self, std::string const & registerName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getSizeFormattedExpression", _wrap_RegisterInterface_getSizeFormattedExpression, METH_VARARGS, "\n"
+		"getSizeFormattedExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getSizeExpression", _wrap_RegisterInterface_getSizeExpression, METH_VARARGS, "\n"
+		"getSizeExpression(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setSize", _wrap_RegisterInterface_setSize, METH_VARARGS, "\n"
+		"setSize(RegisterInterface self, std::string const & registerName, std::string const & newSize) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newSize: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getVolatile", _wrap_RegisterInterface_getVolatile, METH_VARARGS, "\n"
+		"getVolatile(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setVolatile", _wrap_RegisterInterface_setVolatile, METH_VARARGS, "\n"
+		"setVolatile(RegisterInterface self, std::string const & registerName, std::string const & newVolatile) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newVolatile: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getAccessString", _wrap_RegisterInterface_getAccessString, METH_VARARGS, "\n"
+		"getAccessString(RegisterInterface self, std::string const & registerName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getAccess", _wrap_RegisterInterface_getAccess, METH_VARARGS, "\n"
+		"getAccess(RegisterInterface self, std::string const & registerName) -> AccessTypes::Access\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setAccess", _wrap_RegisterInterface_setAccess, METH_VARARGS, "\n"
+		"setAccess(RegisterInterface self, std::string const & registerName, std::string const & newAccess) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"newAccess: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_hasValidDimension", _wrap_RegisterInterface_hasValidDimension, METH_VARARGS, "\n"
+		"hasValidDimension(RegisterInterface self, std::string const & registerName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_hasValidOffset", _wrap_RegisterInterface_hasValidOffset, METH_VARARGS, "\n"
+		"hasValidOffset(RegisterInterface self, std::string const & registerName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_hasValidIsPresent", _wrap_RegisterInterface_hasValidIsPresent, METH_VARARGS, "\n"
+		"hasValidIsPresent(RegisterInterface self, std::string const & registerName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_hasValidSize", _wrap_RegisterInterface_hasValidSize, METH_VARARGS, "\n"
+		"hasValidSize(RegisterInterface self, std::string const & registerName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_addRegister", _wrap_RegisterInterface_addRegister, METH_VARARGS, "\n"
+		"addRegister(RegisterInterface self, int const & row, int const & dataIndex, std::string const & newRegisterName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"dataIndex: int const &\n"
+		"newRegisterName: std::string const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_removeRegister", _wrap_RegisterInterface_removeRegister, METH_VARARGS, "\n"
+		"removeRegister(RegisterInterface self, std::string const & registerName, int const & dataIndex) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerName: std::string const &\n"
+		"dataIndex: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_copyRows", _wrap_RegisterInterface_copyRows, METH_VARARGS, "\n"
+		"copyRows(RegisterInterface self, std::vector< int,std::allocator< int > > selectedRows)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"selectedRows: std::vector< int,std::allocator< int > >\n"
+		"\n"
+		""},
+	 { "RegisterInterface_pasteRows", _wrap_RegisterInterface_pasteRows, METH_O, "pasteRows(RegisterInterface self) -> stringVector"},
+	 { "RegisterInterface_getPasteRowCount", _wrap_RegisterInterface_getPasteRowCount, METH_O, "getPasteRowCount(RegisterInterface self) -> int"},
+	 { "RegisterInterface_getExpressionsInSelectedRegisters", _wrap_RegisterInterface_getExpressionsInSelectedRegisters, METH_VARARGS, "\n"
+		"getExpressionsInSelectedRegisters(RegisterInterface self, stringVector registerNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"registerNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "RegisterInterface_setAddressUnitBits", _wrap_RegisterInterface_setAddressUnitBits, METH_VARARGS, "\n"
+		"setAddressUnitBits(RegisterInterface self, int const & newAddressUnitbits)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newAddressUnitbits: int const &\n"
+		"\n"
+		""},
+	 { "RegisterInterface_getSubInterface", _wrap_RegisterInterface_getSubInterface, METH_O, "getSubInterface(RegisterInterface self) -> FieldInterface"},
+	 { "RegisterInterface_swigregister", RegisterInterface_swigregister, METH_O, NULL},
+	 { "RegisterInterface_swiginit", RegisterInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_FieldInterface", _wrap_new_FieldInterface, METH_VARARGS, "\n"
+		"new_FieldInterface(QSharedPointer< FieldValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, ResetInterface subInterface) -> FieldInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< FieldValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"subInterface: ResetInterface *\n"
+		"\n"
+		""},
+	 { "delete_FieldInterface", _wrap_delete_FieldInterface, METH_O, "delete_FieldInterface(FieldInterface self)"},
+	 { "FieldInterface_setFields", _wrap_FieldInterface_setFields, METH_VARARGS, "\n"
+		"setFields(FieldInterface self, QSharedPointer< QList< QSharedPointer< Field > > > newFields)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newFields: QSharedPointer< QList< QSharedPointer< Field > > >\n"
+		"\n"
+		""},
+	 { "FieldInterface_getOffsetValue", _wrap_FieldInterface_getOffsetValue, METH_VARARGS, "\n"
+		"getOffsetValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getOffsetFormattedExpression", _wrap_FieldInterface_getOffsetFormattedExpression, METH_VARARGS, "\n"
+		"getOffsetFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getOffsetExpression", _wrap_FieldInterface_getOffsetExpression, METH_VARARGS, "\n"
+		"getOffsetExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setOffset", _wrap_FieldInterface_setOffset, METH_VARARGS, "\n"
+		"setOffset(FieldInterface self, std::string const & fieldName, std::string const & newOffset) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newOffset: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWidthValue", _wrap_FieldInterface_getWidthValue, METH_VARARGS, "\n"
+		"getWidthValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWidthFormattedExpression", _wrap_FieldInterface_getWidthFormattedExpression, METH_VARARGS, "\n"
+		"getWidthFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWidthExpression", _wrap_FieldInterface_getWidthExpression, METH_VARARGS, "\n"
+		"getWidthExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setWidth", _wrap_FieldInterface_setWidth, METH_VARARGS, "\n"
+		"setWidth(FieldInterface self, std::string const & fieldName, std::string const & newWidth) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newWidth: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getResets", _wrap_FieldInterface_getResets, METH_VARARGS, "\n"
+		"getResets(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getResetsToolTip", _wrap_FieldInterface_getResetsToolTip, METH_VARARGS, "\n"
+		"getResetsToolTip(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getVolatile", _wrap_FieldInterface_getVolatile, METH_VARARGS, "\n"
+		"getVolatile(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setVolatile", _wrap_FieldInterface_setVolatile, METH_VARARGS, "\n"
+		"setVolatile(FieldInterface self, std::string const & fieldName, std::string const & newVolatile) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newVolatile: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getAccessString", _wrap_FieldInterface_getAccessString, METH_VARARGS, "\n"
+		"getAccessString(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getAccessType", _wrap_FieldInterface_getAccessType, METH_VARARGS, "\n"
+		"getAccessType(FieldInterface self, std::string const & fieldName) -> AccessTypes::Access\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setAccess", _wrap_FieldInterface_setAccess, METH_VARARGS, "\n"
+		"setAccess(FieldInterface self, std::string const & fieldName, std::string const & newAccess) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newAccess: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getModifiedWriteString", _wrap_FieldInterface_getModifiedWriteString, METH_VARARGS, "\n"
+		"getModifiedWriteString(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getModifiedWriteValue", _wrap_FieldInterface_getModifiedWriteValue, METH_VARARGS, "\n"
+		"getModifiedWriteValue(FieldInterface self, std::string const & fieldName) -> General::ModifiedWrite\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setModifiedWrite", _wrap_FieldInterface_setModifiedWrite, METH_VARARGS, "\n"
+		"setModifiedWrite(FieldInterface self, std::string const & fieldName, std::string const & newModifiedWrite) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newModifiedWrite: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReadActionString", _wrap_FieldInterface_getReadActionString, METH_VARARGS, "\n"
+		"getReadActionString(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReadAction", _wrap_FieldInterface_getReadAction, METH_VARARGS, "\n"
+		"getReadAction(FieldInterface self, std::string const & fieldName) -> General::ReadAction\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setReadAction", _wrap_FieldInterface_setReadAction, METH_VARARGS, "\n"
+		"setReadAction(FieldInterface self, std::string const & fieldName, std::string const & newReadAction) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newReadAction: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getTestableValue", _wrap_FieldInterface_getTestableValue, METH_VARARGS, "\n"
+		"getTestableValue(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getTestableBool", _wrap_FieldInterface_getTestableBool, METH_VARARGS, "\n"
+		"getTestableBool(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setTestable", _wrap_FieldInterface_setTestable, METH_VARARGS, "\n"
+		"setTestable(FieldInterface self, std::string const & fieldName, std::string const & newTestable) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newTestable: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getTestConstraintString", _wrap_FieldInterface_getTestConstraintString, METH_VARARGS, "\n"
+		"getTestConstraintString(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getTestConstraint", _wrap_FieldInterface_getTestConstraint, METH_VARARGS, "\n"
+		"getTestConstraint(FieldInterface self, std::string const & fieldName) -> General::TestConstraint\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setTestConstraint", _wrap_FieldInterface_setTestConstraint, METH_VARARGS, "\n"
+		"setTestConstraint(FieldInterface self, std::string const & fieldName, std::string const & newTestConstraint) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newTestConstraint: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getIsPresentValue", _wrap_FieldInterface_getIsPresentValue, METH_VARARGS, "\n"
+		"getIsPresentValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getIsPresentFormattedExpression", _wrap_FieldInterface_getIsPresentFormattedExpression, METH_VARARGS, "\n"
+		"getIsPresentFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getIsPresentExpression", _wrap_FieldInterface_getIsPresentExpression, METH_VARARGS, "\n"
+		"getIsPresentExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setIsPresent", _wrap_FieldInterface_setIsPresent, METH_VARARGS, "\n"
+		"setIsPresent(FieldInterface self, std::string const & fieldName, std::string const & newIsPresent) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newIsPresent: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidOffset", _wrap_FieldInterface_hasValidOffset, METH_VARARGS, "\n"
+		"hasValidOffset(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidWidth", _wrap_FieldInterface_hasValidWidth, METH_VARARGS, "\n"
+		"hasValidWidth(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidResets", _wrap_FieldInterface_hasValidResets, METH_VARARGS, "\n"
+		"hasValidResets(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidIsPresent", _wrap_FieldInterface_hasValidIsPresent, METH_VARARGS, "\n"
+		"hasValidIsPresent(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_hasValidAccess", _wrap_FieldInterface_hasValidAccess, METH_VARARGS, "\n"
+		"hasValidAccess(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_addField", _wrap_FieldInterface_addField, METH_VARARGS, "\n"
+		"addField(FieldInterface self, int const & row, std::string const & newFieldName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newFieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_removeField", _wrap_FieldInterface_removeField, METH_VARARGS, "\n"
+		"removeField(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_copyRows", _wrap_FieldInterface_copyRows, METH_VARARGS, "\n"
+		"copyRows(FieldInterface self, std::vector< int,std::allocator< int > > selectedRows)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"selectedRows: std::vector< int,std::allocator< int > >\n"
+		"\n"
+		""},
+	 { "FieldInterface_pasteRows", _wrap_FieldInterface_pasteRows, METH_O, "pasteRows(FieldInterface self) -> stringVector"},
+	 { "FieldInterface_getPasteRowCount", _wrap_FieldInterface_getPasteRowCount, METH_O, "getPasteRowCount(FieldInterface self) -> int"},
+	 { "FieldInterface_getExpressionsInSelectedFields", _wrap_FieldInterface_getExpressionsInSelectedFields, METH_VARARGS, "\n"
+		"getExpressionsInSelectedFields(FieldInterface self, stringVector fieldNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "FieldInterface_getSubInterface", _wrap_FieldInterface_getSubInterface, METH_O, "getSubInterface(FieldInterface self) -> ResetInterface"},
+	 { "FieldInterface_hasWriteConstraint", _wrap_FieldInterface_hasWriteConstraint, METH_VARARGS, "\n"
+		"hasWriteConstraint(FieldInterface self, std::string const & fieldName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraint", _wrap_FieldInterface_getWriteConstraint, METH_VARARGS, "\n"
+		"getWriteConstraint(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setWriteConstraint", _wrap_FieldInterface_setWriteConstraint, METH_VARARGS, "\n"
+		"setWriteConstraint(FieldInterface self, std::string const & fieldName, std::string const & newConstraintText) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newConstraintText: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMinimumValue", _wrap_FieldInterface_getWriteConstraintMinimumValue, METH_VARARGS, "\n"
+		"getWriteConstraintMinimumValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMinimumFormattedExpression", _wrap_FieldInterface_getWriteConstraintMinimumFormattedExpression, METH_VARARGS, "\n"
+		"getWriteConstraintMinimumFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMinimumExpression", _wrap_FieldInterface_getWriteConstraintMinimumExpression, METH_VARARGS, "\n"
+		"getWriteConstraintMinimumExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setWriteConstraintMinimum", _wrap_FieldInterface_setWriteConstraintMinimum, METH_VARARGS, "\n"
+		"setWriteConstraintMinimum(FieldInterface self, std::string const & fieldName, std::string const & newWriteConstraintMinimum) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newWriteConstraintMinimum: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMaximumValue", _wrap_FieldInterface_getWriteConstraintMaximumValue, METH_VARARGS, "\n"
+		"getWriteConstraintMaximumValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMaximumFormattedExpression", _wrap_FieldInterface_getWriteConstraintMaximumFormattedExpression, METH_VARARGS, "\n"
+		"getWriteConstraintMaximumFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getWriteConstraintMaximumExpression", _wrap_FieldInterface_getWriteConstraintMaximumExpression, METH_VARARGS, "\n"
+		"getWriteConstraintMaximumExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setWriteConstraintMaximum", _wrap_FieldInterface_setWriteConstraintMaximum, METH_VARARGS, "\n"
+		"setWriteConstraintMaximum(FieldInterface self, std::string const & fieldName, std::string const & newWriteConstraintMaximum) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newWriteConstraintMaximum: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReservedValue", _wrap_FieldInterface_getReservedValue, METH_VARARGS, "\n"
+		"getReservedValue(FieldInterface self, std::string const & fieldName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReservedFormattedExpression", _wrap_FieldInterface_getReservedFormattedExpression, METH_VARARGS, "\n"
+		"getReservedFormattedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getReservedExpression", _wrap_FieldInterface_getReservedExpression, METH_VARARGS, "\n"
+		"getReservedExpression(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setReserved", _wrap_FieldInterface_setReserved, METH_VARARGS, "\n"
+		"setReserved(FieldInterface self, std::string const & fieldName, std::string const & newReserved) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newReserved: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_getID", _wrap_FieldInterface_getID, METH_VARARGS, "\n"
+		"getID(FieldInterface self, std::string const & fieldName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_setID", _wrap_FieldInterface_setID, METH_VARARGS, "\n"
+		"setID(FieldInterface self, std::string const & fieldName, std::string const & newID) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fieldName: std::string const &\n"
+		"newID: std::string const &\n"
+		"\n"
+		""},
+	 { "FieldInterface_swigregister", FieldInterface_swigregister, METH_O, NULL},
+	 { "FieldInterface_swiginit", FieldInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_ResetInterface", _wrap_new_ResetInterface, METH_VARARGS, "\n"
+		"new_ResetInterface(QSharedPointer< FieldValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> ResetInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< FieldValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_ResetInterface", _wrap_delete_ResetInterface, METH_O, "delete_ResetInterface(ResetInterface self)"},
+	 { "ResetInterface_setResets", _wrap_ResetInterface_setResets, METH_VARARGS, "\n"
+		"setResets(ResetInterface self, QSharedPointer< Field > containingField)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"containingField: QSharedPointer< Field >\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetTypeReference", _wrap_ResetInterface_getResetTypeReference, METH_VARARGS, "\n"
+		"getResetTypeReference(ResetInterface self, int const & itemIndex) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemIndex: int const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_setResetTypeReference", _wrap_ResetInterface_setResetTypeReference, METH_VARARGS, "\n"
+		"setResetTypeReference(ResetInterface self, std::string const & currentResetType, std::string const & newResetType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"currentResetType: std::string const &\n"
+		"newResetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetValue", _wrap_ResetInterface_getResetValue, METH_VARARGS, "\n"
+		"getResetValue(ResetInterface self, std::string const & resetType, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetValueFormattedExpression", _wrap_ResetInterface_getResetValueFormattedExpression, METH_VARARGS, "\n"
+		"getResetValueFormattedExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetValueExpression", _wrap_ResetInterface_getResetValueExpression, METH_VARARGS, "\n"
+		"getResetValueExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_setResetValue", _wrap_ResetInterface_setResetValue, METH_VARARGS, "\n"
+		"setResetValue(ResetInterface self, std::string const & resetType, std::string const & newResetValue) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"newResetValue: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetMaskValue", _wrap_ResetInterface_getResetMaskValue, METH_VARARGS, "\n"
+		"getResetMaskValue(ResetInterface self, std::string const & resetType, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetMaskFormattedExpression", _wrap_ResetInterface_getResetMaskFormattedExpression, METH_VARARGS, "\n"
+		"getResetMaskFormattedExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getResetMaskExpression", _wrap_ResetInterface_getResetMaskExpression, METH_VARARGS, "\n"
+		"getResetMaskExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_setResetMask", _wrap_ResetInterface_setResetMask, METH_VARARGS, "\n"
+		"setResetMask(ResetInterface self, std::string const & resetType, std::string const & newResetMask) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"newResetMask: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_hasValidResetType", _wrap_ResetInterface_hasValidResetType, METH_VARARGS, "\n"
+		"hasValidResetType(ResetInterface self, std::string const & resetType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_hasValidResetValue", _wrap_ResetInterface_hasValidResetValue, METH_VARARGS, "\n"
+		"hasValidResetValue(ResetInterface self, std::string const & resetType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_hasValidResetMask", _wrap_ResetInterface_hasValidResetMask, METH_VARARGS, "\n"
+		"hasValidResetMask(ResetInterface self, std::string const & resetType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetType: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_addReset", _wrap_ResetInterface_addReset, METH_VARARGS, "\n"
+		"addReset(ResetInterface self, int const & row, std::string const & newResetName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newResetName: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_removeReset", _wrap_ResetInterface_removeReset, METH_VARARGS, "\n"
+		"removeReset(ResetInterface self, std::string const & resetName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"resetName: std::string const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_swigregister", ResetInterface_swigregister, METH_O, NULL},
+	 { "ResetInterface_swiginit", ResetInterface_swiginit, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 

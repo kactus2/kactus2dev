@@ -84,7 +84,7 @@ std::string PythonAPI::getVersion() const
 //-----------------------------------------------------------------------------
 std::vector<std::string> PythonAPI::listPlugins() const
 {
-    return std::vector<std::string>();// KactusAPI::listPlugins();
+    return std::vector<std::string>();
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +114,6 @@ void PythonAPI::setLibraryPaths(std::vector<std::string> paths) const
         libraryPaths.append(QString::fromStdString(path));
     }
 
-
     KactusAPI::setLibraryPaths(libraryPaths);
 }
 
@@ -132,6 +131,16 @@ std::string PythonAPI::getDefaultLibraryPath()
 void PythonAPI::setDefaultLibraryPath(std::string const& path)
 {
     KactusAPI::setDefaultLibraryPath(QString::fromStdString(path));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setDefaultLibraryPath()
+//-----------------------------------------------------------------------------
+void PythonAPI::importFile(std::string path, std::string vlnv, bool overwrite /*= false*/)
+{
+    VLNV targetVLNV(VLNV::COMPONENT, QString::fromStdString(vlnv));
+
+    KactusAPI::importFile(QString::fromStdString(path), targetVLNV, overwrite);
 }
 
 //-----------------------------------------------------------------------------

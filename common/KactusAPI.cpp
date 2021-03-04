@@ -14,6 +14,11 @@
 #include <VersionHelper.h>
 #include <common/ui/ConsoleMediator.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
+#include <wizards/ComponentWizard/ImportRunner.h>
+
 #include <PluginS/PluginSystem/PluginManager.h>
 
 LibraryInterface* KactusAPI::library_ = nullptr;
@@ -129,17 +134,54 @@ void KactusAPI::setDefaultLibraryPath(QString const& path)
     }
 }
 
-/*
-std::vector<std::string> KactusAPI::listPlugins()
+//-----------------------------------------------------------------------------
+// Function: KactusAPI::importFile()
+//-----------------------------------------------------------------------------
+void KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool overwrite)
 {
-    std::vector<std::string> names;
+    bool existing = library_->contains(targetVLNV);
 
-    for (auto plugin : PluginManager::getInstance().getActivePlugins())
+    if (existing && overwrite == false)
     {
-        names.push_back(plugin->getName().toStdString());
+        return;
     }
 
-    return names;
-}
+    QSharedPointer<Component const> existingComponent(nullptr);
+    QString xmlPath = getDefaultLibraryPath() + "/" + targetVLNV.toString("/") + "/" + targetVLNV.getName() + ".xml";
 
-*/
+    if (existing)
+    {
+        existingComponent = library_->getModel<Component>(targetVLNV);
+        xmlPath = library_->getPath(targetVLNV);
+    }
+    else
+    {
+        existingComponent = QSharedPointer<Component const>(new Component(targetVLNV));
+    }
+
+    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(existingComponent));
+    QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
+    ImportRunner runner(parameterFinder, nullptr, nullptr);
+    runner.setExpressionParser(expressionParser);
+    runner.loadPlugins(PluginManager::getInstance());
+
+    QString xmlPath = getDefaultLibraryPath() + "/" + targetVLNV.toString("/") + "/" + targetVLNV.getName() + ".xml";
+
+    QStringList names = runner.constructComponentDataFromFile(filePath, xmlPath, existingComponent);
+
+    if (names.isEmpty() == false)
+    {
+        QSharedPointer<Component> importedComponent = 
+            runner.run(names.first(), filePath, xmlPath, existingComponent);
+  
+        if (existing)
+        {
+            library_->writeModelToFile(importedComponent);
+        }
+        else
+        {
+            library_->writeModelToFile(xmlPath, importedComponent);
+        }
+    }
+}

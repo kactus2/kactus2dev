@@ -40,11 +40,7 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~LibrarySettingsDialog() = default;
-
-    // Disable copying.
-    LibrarySettingsDialog(LibrarySettingsDialog const& rhs) = delete;
-    LibrarySettingsDialog& operator=(LibrarySettingsDialog const& rhs) = delete;
+    ~LibrarySettingsDialog();
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -57,12 +53,6 @@ public:
      *  Applies the changes that were done in the page.
      */
     void apply();
-
-    QStringList getLocations() const;
-
-    QStringList getActiveLocations() const;
-
-    QString getDefaultLocation() const;
 
 public slots:
 
@@ -84,6 +74,13 @@ public slots:
      */
 	void onSelectLocation(QTableWidgetItem* cur, QTableWidgetItem* prev);
 
+signals:
+	
+    /*!
+     *  Emitted when the library settings has changed and a scan should be performed.
+     */
+	void scanLibrary();
+
 private slots:
 
 	/*!
@@ -99,6 +96,10 @@ private slots:
     virtual void accept();
 
 private:
+
+    // Disable copying.
+    LibrarySettingsDialog(LibrarySettingsDialog const& rhs);
+    LibrarySettingsDialog& operator=(LibrarySettingsDialog const& rhs);
 
     /*!
      *  Loads the settings from the settings store.
@@ -155,15 +156,6 @@ private:
 
      //! Check icon for the active and default library paths.
      QIcon checkMarkIcon_;
-
-     // Create a string list containing all the locations and save it to the settings.
-     QStringList locations_;
-
-     // the active locations used to search for IP-XACT objects
-     QStringList activeLocations_;
-
-     // the checked item in the list is the default location
-     QString defaultLocation_;
 };
 
 //-----------------------------------------------------------------------------
