@@ -15,7 +15,6 @@
 
 #include <common/ui/MessageMediator.h>
 
-#include <Plugins/PluginSystem/IPlugin.h>
 
 #ifndef KACTUSAPI_H
 #define KACTUSAPI_H
@@ -96,8 +95,10 @@ public:
      *     @param [in] filePath     The path to the file to import.
      *     @param [in] targetVLNV   The VLNV to use for the imported component.
      *     @param [in] overwrite    Overwrite the component in the library, if it already exists.
+     *
+     *     @return The number of imported IP-XACT documents.
      */
-    static void importFile(QString const& filePath, VLNV const& targetVLNV, bool overwrite);
+    static int importFile(QString const& filePath, VLNV const& targetVLNV, bool overwrite);
 
 private:
 

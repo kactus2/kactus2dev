@@ -42,22 +42,29 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     connect(errorChannel_, SIGNAL(data(QString const&)),
         scriptEditor_, SLOT(printError(QString const&)), Qt::UniqueConnection);
 
-    interpreter_->initialize();
+    bool enabled = interpreter_->initialize();
 
     QAction* historyAction = toolBar_->addAction(QIcon(":/icons/common/graphics/history.png"), QString());
     historyAction->setToolTip(QStringLiteral("Show history"));
     historyAction->setCheckable(true);
-    
+    historyAction->setEnabled(enabled);
+
     connect(historyAction, SIGNAL(toggled(bool)), historyListing_, SLOT(setVisible(bool)), Qt::UniqueConnection);
 
-    QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString(), this, SLOT(onSaveAction()));
+    QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/edit.png"), QString(), this, SLOT(onSaveAction()));
     saveAction->setToolTip(QStringLiteral("Save script"));
+    saveAction->setEnabled(enabled);
 
-
-    connect(history_, SIGNAL(commandAdded(QString const&)), 
+    connect(history_, SIGNAL(commandAdded(QString const&)),
         this, SLOT(onCommandInput(QString const&)), Qt::UniqueConnection);
     connect(historyListing_, SIGNAL(itemClicked(QListWidgetItem*)),
         this, SLOT(onHistoryItemClicked(QListWidgetItem*)), Qt::UniqueConnection);
+
+    if (enabled == false)
+    {
+        scriptEditor_->printError(tr("Could not initialize interpreter. Script disabled."));
+        scriptEditor_->setReadOnly(true);
+    }
 
     setupLayout();
 }
@@ -75,7 +82,7 @@ void ScriptingConsole::applySettings()
 //-----------------------------------------------------------------------------
 void ScriptingConsole::onSaveAction()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), tr("Python Script (*.py)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), tr("Python File (*.py)"));
     if (fileName.isEmpty() == false)
     {
         QFile outputFile(fileName);

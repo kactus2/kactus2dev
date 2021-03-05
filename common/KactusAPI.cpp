@@ -19,8 +19,6 @@
 
 #include <wizards/ComponentWizard/ImportRunner.h>
 
-#include <PluginS/PluginSystem/PluginManager.h>
-
 LibraryInterface* KactusAPI::library_ = nullptr;
 MessageMediator* KactusAPI::messageChannel_ = new ConsoleMediator();
 
@@ -137,13 +135,13 @@ void KactusAPI::setDefaultLibraryPath(QString const& path)
 //-----------------------------------------------------------------------------
 // Function: KactusAPI::importFile()
 //-----------------------------------------------------------------------------
-void KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool overwrite)
+int KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool overwrite)
 {
     bool existing = library_->contains(targetVLNV);
 
     if (existing && overwrite == false)
     {
-        return;
+        return 0;
     }
 
     QSharedPointer<Component const> existingComponent(nullptr);
@@ -166,8 +164,6 @@ void KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool
     runner.setExpressionParser(expressionParser);
     runner.loadPlugins(PluginManager::getInstance());
 
-    QString xmlPath = getDefaultLibraryPath() + "/" + targetVLNV.toString("/") + "/" + targetVLNV.getName() + ".xml";
-
     QStringList names = runner.constructComponentDataFromFile(filePath, xmlPath, existingComponent);
 
     if (names.isEmpty() == false)
@@ -183,5 +179,9 @@ void KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool
         {
             library_->writeModelToFile(xmlPath, importedComponent);
         }
+
+        return 1;
     }
+
+    return 0;
 }

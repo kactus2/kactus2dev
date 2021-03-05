@@ -15,6 +15,8 @@
 
 #include <common/KactusAPI.h>
 
+#include <Plugins/PluginSystem/IPlugin.h>
+
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
@@ -80,17 +82,9 @@ std::string PythonAPI::getVersion() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::listPlugins()
-//-----------------------------------------------------------------------------
-std::vector<std::string> PythonAPI::listPlugins() const
-{
-    return std::vector<std::string>();
-}
-
-//-----------------------------------------------------------------------------
 // Function: PythonAPI::getLibraryPaths()
 //-----------------------------------------------------------------------------
-std::vector<std::string> PythonAPI::getLibraryPaths()
+std::vector<std::string> PythonAPI::getLibraryPaths() const
 {
     QStringList locations = KactusAPI::getLibraryPaths();
 
@@ -120,7 +114,7 @@ void PythonAPI::setLibraryPaths(std::vector<std::string> paths) const
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getDefaultLibraryPath()
 //-----------------------------------------------------------------------------
-std::string PythonAPI::getDefaultLibraryPath()
+std::string PythonAPI::getDefaultLibraryPath() const
 {
     return KactusAPI::getDefaultLibraryPath().toStdString();
 }
@@ -128,7 +122,7 @@ std::string PythonAPI::getDefaultLibraryPath()
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::setDefaultLibraryPath()
 //-----------------------------------------------------------------------------
-void PythonAPI::setDefaultLibraryPath(std::string const& path)
+void PythonAPI::setDefaultLibraryPath(std::string const& path) const
 {
     KactusAPI::setDefaultLibraryPath(QString::fromStdString(path));
 }
@@ -136,11 +130,11 @@ void PythonAPI::setDefaultLibraryPath(std::string const& path)
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::setDefaultLibraryPath()
 //-----------------------------------------------------------------------------
-void PythonAPI::importFile(std::string path, std::string vlnv, bool overwrite /*= false*/)
+int PythonAPI::importFile(std::string const& path, std::string vlnv, bool overwrite /*= false*/) const
 {
     VLNV targetVLNV(VLNV::COMPONENT, QString::fromStdString(vlnv));
 
-    KactusAPI::importFile(QString::fromStdString(path), targetVLNV, overwrite);
+    return KactusAPI::importFile(QString::fromStdString(path), targetVLNV, overwrite);
 }
 
 //-----------------------------------------------------------------------------

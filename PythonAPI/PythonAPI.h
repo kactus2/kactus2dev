@@ -15,8 +15,6 @@
 
 #include <QString>
 
-#include <Plugins/PluginSystem/IPlugin.h>
-
 #include <common/KactusAPI.h>
 
 #include <string>
@@ -70,17 +68,44 @@ public:
      */
     std::string getVersion() const;
 
-    std::vector<std::string> listPlugins() const;
+    /*!
+     * Gets the paths where IP-XACT files are stored.
+     *
+     *     @return The paths where IP-XACT files are stored.
+     */
+    std::vector<std::string> getLibraryPaths() const;
 
-    std::vector<std::string> getLibraryPaths();
-
+    /*!
+     * Set the paths where IP-XACT files are stored.
+     *
+     *     @param [in] paths  The locations that are currently available to store the files.
+     */
     void setLibraryPaths(std::vector<std::string> paths) const;
 
-    std::string getDefaultLibraryPath();
+    /*!
+     * Get the default library path for IP-XACT files.
+     *
+     *     @return The default path for IP-XACT files.
+     */
+    std::string getDefaultLibraryPath() const;
 
-    void setDefaultLibraryPath(std::string const& path);
-
-    void importFile(std::string path, std::string vlnv, bool overwrite = false);
+    /*!
+     * Set the default library path for IP-XACT files.
+     *
+     *     @param [in] path  The default path to set for IP-XACT files.
+     */
+    void setDefaultLibraryPath(std::string const& path) const;
+    
+    /*!
+     * Import a source file (RTL) into the library as a component.
+     *
+     *     @param [in] filePath     The path to the file to import.
+     *     @param [in] targetVLNV   The VLNV to use for the imported component.
+     *     @param [in] overwrite    Overwrite the component in the library, if it already exists.
+     *
+     *     @return The number of imported IP-XACT components.
+     */
+    int importFile(std::string const& path, std::string vlnv, bool overwrite = false) const;
 
     /*!
      *  Get the number of files in the library.
