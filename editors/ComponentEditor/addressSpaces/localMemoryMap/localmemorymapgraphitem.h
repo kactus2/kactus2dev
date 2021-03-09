@@ -49,7 +49,7 @@ public:
     LocalMemoryMapGraphItem& operator=(const LocalMemoryMapGraphItem& other) = delete;
 
     //! Refresh the item and sub-items.
-    virtual void refresh() override final;
+    virtual void refresh();
 
     /*!
      *  Get number of bits the addressable unit contains.

@@ -153,13 +153,6 @@ public:
      */
     bool isConflicted() const;
 
-    /*!
-     *  Checks if the item is to be used in the visualization.
-     *
-     *      @return True, if the item should be used, otherwise false.
-     */
-    virtual bool isPresent() const;
-
 signals:
 
 	//! Emitted when this item's editor should be displayed.

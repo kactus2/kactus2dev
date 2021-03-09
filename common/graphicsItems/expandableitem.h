@@ -39,7 +39,7 @@ public:
     //! No assignment
     ExpandableItem& operator=(const ExpandableItem& other) = delete;
 
-	/*! Check if the item has its children visible or not.
+	/*! Check if the item is expanded and has its children visible or not.
 	 *
 	 * \return True if children are visible.
 	*/
@@ -101,6 +101,13 @@ protected:
 	void setExpansionRectVisible(bool visible);
 
 private:	
+
+    /*!
+     * Update the expand arrow direction based on expansion state.
+     *
+     *     @param [in] expanded     Indicates if the item is expanded or not.
+     */
+     void updateExpandArrow(bool expanded);
 
     //! Updates the item rectangle to correct size.
     void updateRectangle();

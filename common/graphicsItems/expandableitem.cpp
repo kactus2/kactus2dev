@@ -24,10 +24,7 @@ expansionArrow_(new QGraphicsPixmapItem(this))
     expandCollapseItem_->setRect(-GraphicsExpandCollapseItem::SIDE, 0,
         GraphicsExpandCollapseItem::SIDE, VisualizerItem::DEFAULT_HEIGHT);
 
-    QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_right.png"));
-    QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
-        GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
-    expansionArrow_->setPixmap(scaledPic);
+    updateExpandArrow(false);
 
     expansionArrow_->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
     expansionArrow_->setZValue(1);
@@ -35,52 +32,6 @@ expansionArrow_(new QGraphicsPixmapItem(this))
     // Set the position for the expand/collapse item with the icon.
     expansionArrow_->setPos(-GraphicsExpandCollapseItem::SIDE, 
         GraphicsExpandCollapseItem::SIDE / 2 + VisualizerItem::CORNER_INDENTATION);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ExpandableItem::onExpandStateChange()
-//-----------------------------------------------------------------------------
-void ExpandableItem::onExpandStateChange(bool expanded)
-{
-	// if there are children	
-	for (QGraphicsItem* child : childItems())
-    {
-		Q_ASSERT(child);
-
-		// if the item is visualizer item
-        VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
-        if (childItem)
-        {
-            childItem->setVisible(expanded);
-        }
-    }
-
-    if (expanded)
-    {
-        QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_down.png"));
-        QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
-            Qt::KeepAspectRatio);
-        expansionArrow_->setPixmap(scaledPic);
-    }
-    else
-    {        
-        QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_right.png"));
-        QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
-            Qt::KeepAspectRatio);
-        expansionArrow_->setPixmap(scaledPic);
-    }
-    
-    updateRectangle();
-
-    emit expandStateChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ExpandableItem::setShowExpandableItem()
-//-----------------------------------------------------------------------------
-void ExpandableItem::setShowExpandableItem( bool show )
-{
-    expansionArrow_->setVisible(show);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,6 +49,39 @@ void ExpandableItem::resizeToContent()
 {
     updateRectangle();
 	repositionLabels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::onExpandStateChange()
+//-----------------------------------------------------------------------------
+void ExpandableItem::onExpandStateChange(bool expanded)
+{
+    // if there are children	
+    for (QGraphicsItem* child : childItems())
+    {
+        Q_ASSERT(child);
+
+        // if the item is visualizer item
+        VisualizerItem* childItem = dynamic_cast<VisualizerItem*>(child);
+        if (childItem)
+        {
+            childItem->setVisible(expanded && childItem->isPresent());
+        }
+    }
+
+    updateExpandArrow(expanded);
+
+    updateRectangle();
+
+    emit expandStateChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::setShowExpandableItem()
+//-----------------------------------------------------------------------------
+void ExpandableItem::setShowExpandableItem(bool show)
+{
+    expansionArrow_->setVisible(show);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,6 +115,27 @@ void ExpandableItem::setExpansionPen(QPen const& pen)
 void ExpandableItem::setExpansionRectVisible(bool visible)
 {
     expandCollapseItem_->setVisible(visible);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::updateExpandArrow()
+//-----------------------------------------------------------------------------
+void ExpandableItem::updateExpandArrow(bool expanded)
+{
+    QString iconName;
+    if (expanded)
+    {
+        iconName = QStringLiteral(":/icons/common/graphics/triangle_arrow_down.png");
+    }
+    else
+    {
+        iconName = QStringLiteral(":/icons/common/graphics/triangle_arrow_right.png");
+    }
+
+    QPixmap pic(iconName);
+    QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
+        Qt::KeepAspectRatio);
+    expansionArrow_->setPixmap(scaledPic);
 }
 
 //-----------------------------------------------------------------------------

@@ -52,7 +52,7 @@ public:
 	 *      @param parent Pointer to the owner of this graphics item.
 	 *
 	*/
-	VisualizerItem(QGraphicsItem* parent = 0);
+	explicit VisualizerItem(QGraphicsItem* parent = 0);
 	
 	//! The destructor
 	virtual ~VisualizerItem() = default;
@@ -62,9 +62,6 @@ public:
 
     //! No assignment
     VisualizerItem& operator=(const VisualizerItem& other) = delete;
-
-	//! Refresh the item and possible sub-items
-    virtual void refresh(){ };
 
 	/*! Get the displayed name of the object. 
      *
@@ -86,6 +83,13 @@ public:
 	 *      @return The width of the item and it's sub-items.
 	*/
 	virtual qreal itemTotalWidth() const;
+    
+    /*!
+     *  Checks if the item is to be used in the visualization.
+     *
+     *      @return True, if the item should be used, otherwise false.
+     */
+    virtual bool isPresent() const;
  
 protected slots:
 

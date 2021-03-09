@@ -190,14 +190,6 @@ void MemoryVisualizationItem::redoChildLayout()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::isPresent()
-//-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::isPresent() const
-{
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: memoryvisualizationitem::parseExpression()
 //-----------------------------------------------------------------------------
 int MemoryVisualizationItem::parseExpression(QString const& expression) const
@@ -345,10 +337,11 @@ void MemoryVisualizationItem::repositionChildren()
 {
     qreal yCoordinate = rect().bottom();
     
+    bool parentExpanded = isExpanded();
     for (MemoryVisualizationItem* current : childItems_)
     {
         bool present = current->isPresent();
-        current->setVisible(present && isExpanded());
+        current->setVisible(present && parentExpanded);
 
         if (present)
         {

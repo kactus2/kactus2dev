@@ -224,7 +224,7 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 
 	graphItem_ = new MemoryMapGraphItem(parentMemoryMap_, memoryRemap_, expressionParser_);
 	visualizer_->addMemoryMapItem(graphItem_);
-	graphItem_->refresh();
+	graphItem_->updateDisplay();
 
     changeAdressUnitBitsOnAddressBlocks();
 
@@ -258,7 +258,7 @@ void MemoryRemapItem::updateGraphics()
 {    
     if (graphItem_)
     {
-        graphItem_->refresh();
+        graphItem_->updateDisplay();
     }
 }
 
@@ -313,9 +313,4 @@ void MemoryRemapItem::changeAdressUnitBitsOnAddressBlocks()
     {
         emit assignNewAddressUnitBits(addressUnitBits);
     }
-
-  /*  if (graphItem_)
-    {
-        graphItem_->recursiveRefresh();
-    }*/
 }

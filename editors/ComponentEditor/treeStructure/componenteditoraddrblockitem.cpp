@@ -293,7 +293,7 @@ void ComponentEditorAddrBlockItem::updateGraphics()
 {
 	if (graphItem_)
     {
-		graphItem_->refresh();
+		graphItem_->updateDisplay();
 	}
 }
 

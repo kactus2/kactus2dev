@@ -75,6 +75,14 @@ qreal VisualizerItem::itemTotalWidth() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VisualizerItem::isPresent()
+//-----------------------------------------------------------------------------
+bool VisualizerItem::isPresent() const
+{
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: VisualizerItem::repositionLabels()
 //-----------------------------------------------------------------------------
 void VisualizerItem::repositionLabels()
