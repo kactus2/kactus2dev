@@ -83,6 +83,14 @@ void MemoryVisualizationItem::removeChild(MemoryVisualizationItem* childItem)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryVisualizationItem::getChildCount()
+//-----------------------------------------------------------------------------
+int MemoryVisualizationItem::getChildCount() const
+{
+    return childItems_.count();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::setWidth()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::setWidth(qreal width)

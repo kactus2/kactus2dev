@@ -84,6 +84,9 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFor
     connect(&localMemMapEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(&localMemMapEditor_, SIGNAL(addressingChanged()),
+        this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+
     connect(&generalEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)),
         &localMemMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
 
@@ -96,14 +99,6 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFor
     setupLayout();
 
 	refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceEditor::~AddressSpaceEditor()
-//-----------------------------------------------------------------------------
-AddressSpaceEditor::~AddressSpaceEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------

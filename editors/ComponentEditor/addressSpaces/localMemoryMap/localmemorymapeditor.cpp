@@ -145,14 +145,6 @@ handler_(handler)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LocalMemoryMapEditor::~LocalMemoryMapEditor()
-//-----------------------------------------------------------------------------
-LocalMemoryMapEditor::~LocalMemoryMapEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LocalMemoryMapEditor::refresh()
 //-----------------------------------------------------------------------------
 void LocalMemoryMapEditor::refresh()
@@ -181,6 +173,6 @@ void LocalMemoryMapEditor::onCheckStateChanged()
     }
     else
     {
-        addressSpace_->setLocalMemoryMap(QSharedPointer<MemoryMapBase>(0));
+        addressSpace_->setLocalMemoryMap(QSharedPointer<MemoryMapBase>(nullptr));
     }
 }

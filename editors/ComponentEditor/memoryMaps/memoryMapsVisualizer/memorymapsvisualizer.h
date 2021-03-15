@@ -75,6 +75,11 @@ public:
 	*/
 	virtual QSize sizeHint() const;
 
+public slots:
+
+    //! Handler for events requiring a redo of the layout.
+    void redoLayout();
+
 protected:
 
     //! Handler for events when the widget is shown.

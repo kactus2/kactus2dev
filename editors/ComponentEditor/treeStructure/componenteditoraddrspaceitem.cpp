@@ -52,7 +52,7 @@ spaceValidator_(addressSpaceValidator)
     {
         graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, addrSpace->getLocalMemoryMap(), expressionParser_);
         localMemMapVisualizer_->addMemoryMapItem(graphItem_);
-        graphItem_->refresh();
+        graphItem_->updateDisplay();
 
         if (addrSpace->getLocalMemoryMap())
         {
@@ -125,9 +125,7 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
-        
-        connect(editor_, SIGNAL(addressingChanged()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
-
+        connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
 		
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)),	this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
@@ -162,7 +160,7 @@ void ComponentEditorAddrSpaceItem::createChild(int index)
     {
         graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, addrSpace_->getLocalMemoryMap(), expressionParser_);
         localMemMapVisualizer_->addMemoryMapItem(graphItem_);
-        graphItem_->refresh();
+        graphItem_->updateDisplay();
     }
 
     QSharedPointer<MemoryBlockBase> block = addrSpace_->getLocalMemoryMap()->getMemoryBlocks()->at(index);
@@ -180,11 +178,14 @@ void ComponentEditorAddrSpaceItem::createChild(int index)
 
 		if (localMemMapVisualizer_)
         {
-			addressBlockItem->setVisualizer(localMemMapVisualizer_);
+            addressBlockItem->setVisualizer(localMemMapVisualizer_);
+            graphItem_->addChild(static_cast<MemoryVisualizationItem*>(addressBlockItem->getGraphicsItem()));
+            
+            onAddressingChanged();
 		}
 		childItems_.insert(index, addressBlockItem);
 
-        connect(addressBlockItem.data(), SIGNAL(addressingChanged()), this, SLOT(onChildAddressingChanged()));
+        connect(addressBlockItem.data(), SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()));
 	}
 }
 
@@ -201,7 +202,7 @@ QGraphicsItem* ComponentEditorAddrSpaceItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpaceItem::updateGraphics()
 {
-	graphItem_->refresh();
+	graphItem_->updateDisplay();
 }
 
 //-----------------------------------------------------------------------------
@@ -236,6 +237,15 @@ ItemVisualizer* ComponentEditorAddrSpaceItem::visualizer()
 void ComponentEditorAddrSpaceItem::onGraphicsChanged()
 {
 	addrSpaceVisualizer_->refresh();
+
+    if (graphItem_ != nullptr)
+    {
+        graphItem_->updateDisplay();
+        for (auto child: childItems_)
+        {
+            child->updateGraphics();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

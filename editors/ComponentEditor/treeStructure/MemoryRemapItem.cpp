@@ -63,12 +63,8 @@ MemoryRemapItem::~MemoryRemapItem()
 {
     if (visualizer_)
     {
-        QSharedPointer<MemoryRemap> transformedMemoryRemap = memoryRemap_.dynamicCast<MemoryRemap>();
-        if (transformedMemoryRemap)
-        {
-            delete visualizer_;
-            visualizer_ = nullptr;
-        }
+        delete visualizer_;
+        visualizer_ = nullptr;
     }
 }
 
@@ -121,6 +117,8 @@ ItemEditor* MemoryRemapItem::editor()
         
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAddressingChanged(int)),
+            this, SLOT(onChildAddressingChanged(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -193,18 +191,9 @@ void MemoryRemapItem::createChild( int index )
 //-----------------------------------------------------------------------------
 void MemoryRemapItem::removeChild(int index)
 {
-    if (visualizer_)
-    {
-        auto childItem = static_cast<MemoryVisualizationItem*>(childItems_.at(index)->getGraphicsItem());
-        Q_ASSERT(childItem);
-
-        graphItem_->removeChild(childItem);
-        childItem->setParent(nullptr);
-
-        onAddressingChanged();
-    }
-
     ComponentEditorItem::removeChild(index);
+
+    onAddressingChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -289,7 +278,27 @@ void MemoryRemapItem::onAddressingChanged()
 {
     if (graphItem_ != nullptr)
     {
+        graphItem_->updateDisplay();
         graphItem_->redoChildLayout();
+
+        emit addressingChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemapItem::onChildAddressingChanged()
+//-----------------------------------------------------------------------------
+void MemoryRemapItem::onChildAddressingChanged(int index)
+{
+    if (graphItem_ != nullptr)
+    {
+        auto childBlock = childItems_.at(index).dynamicCast<ComponentEditorAddrBlockItem>();
+
+        if (childBlock)
+        {
+            childBlock->updateGraphics();
+            childBlock->onAddressingChanged();
+        }
     }
 }
 

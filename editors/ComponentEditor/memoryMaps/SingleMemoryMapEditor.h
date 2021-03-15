@@ -115,6 +115,8 @@ signals:
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
+    void childAddressingChanged(int);
+
 private:
 
 	//! No copying

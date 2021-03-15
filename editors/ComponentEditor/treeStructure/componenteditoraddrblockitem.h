@@ -141,8 +141,10 @@ public:
 
 public slots:
 
+    //! Handle the change in item's addressing data.
     void onAddressingChanged();
 
+    //! Handle the change in child item's addressing data.
     void onChildAddressingChanged(int index);
 
 protected slots:
@@ -161,6 +163,7 @@ signals:
      */
     void changeInAddressUnitBits(int newAddressUnitBits);
 
+    //! Signals a change in the item's address data.
     void addressingChanged();
 
 private:	

@@ -208,6 +208,11 @@ void ComponentEditorAddrBlockItem::onAddressingChanged()
     {
         graphItem_->redoChildLayout();
 
+        for (auto child : childItems_)
+        {
+            child->updateGraphics();
+        }
+
         emit addressingChanged();
     }
 }
@@ -219,15 +224,13 @@ void ComponentEditorAddrBlockItem::onChildAddressingChanged(int index)
 {
     if (graphItem_ != nullptr)
     {
-        childItems_.at(index)->updateGraphics();
-
         auto childRegister = childItems_.at(index).dynamicCast<ComponentEditorRegisterItem>();
+
         if (childRegister)
         {
-            childRegister->onChildAddressingChanged();
+            childRegister->updateGraphics();
+            childRegister->onAddressingChanged();
         }
-        
-        graphItem_->redoChildLayout();
     }
 }
 

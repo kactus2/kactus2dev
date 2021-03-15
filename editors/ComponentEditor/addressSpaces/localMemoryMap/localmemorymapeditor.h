@@ -57,7 +57,7 @@ public:
 		QWidget *parent);
 	
 	//! The destructor.
-	virtual ~LocalMemoryMapEditor();
+	virtual ~LocalMemoryMapEditor() = default;
 
 	//! Reload the information from the model to the editor.
 	void refresh();
@@ -99,6 +99,8 @@ signals:
      *      @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
+
+    void addressingChanged();
 
 public slots:
 

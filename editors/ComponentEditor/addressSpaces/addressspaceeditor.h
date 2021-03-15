@@ -61,7 +61,7 @@ public:
 		QWidget* parent = 0);
 	
 	//! The destructor.
-	virtual ~AddressSpaceEditor();
+	virtual ~AddressSpaceEditor() = default;
 
 	/*!
      *  Reload the information from the model to the editor.
@@ -81,6 +81,8 @@ signals:
      *  Inform the address block items of a change in address unit bits.
      */
     void newAddressUnitBitsForAddressSpaceChildItems();
+
+    void addressingChanged();
 
 protected:
 

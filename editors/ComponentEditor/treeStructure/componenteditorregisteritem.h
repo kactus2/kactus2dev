@@ -100,6 +100,10 @@ public:
 	 */
 	virtual void createChild(int index) override final;
 
+    /*! Remove a child from the item.
+     *
+     *      @param [in] index The index to remove the child from.
+     */
     virtual void removeChild(int index) override final;
 
 	/*! Get pointer to the visualizer of this item.
@@ -120,33 +124,34 @@ public:
 	 */
 	virtual QGraphicsItem* getGraphicsItem() override final;
 
+    //! Update the graphics item of the register.
+    virtual void updateGraphics() override final;
 
 	//! Remove the graphics item of the register.
 	virtual void removeGraphicsItem() override final;
 
 signals:
 
+    //! Signals a change in the item's address data.
     void addressingChanged();
 
 public slots:
 
+    //! Handle the change in item's addressing data.
     void onAddressingChanged();
 
+    //! Handle the change in child item's addressing data.
     void onChildAddressingChanged();
 
 protected slots:
-
-    //! Update the graphics item of the register.
-    virtual void updateGraphics();
 
     /*!
      *  Handle the change in graphics.
      */
     virtual void onGraphicsChanged();
 
+    //! Handle the change in child item's graphics.
     void onChildGraphicsChanged(int index);
-
-
    
 private:
 	

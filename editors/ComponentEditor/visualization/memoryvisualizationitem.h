@@ -101,6 +101,8 @@ public:
 	 */
 	virtual void removeChild(MemoryVisualizationItem* childItem);
 
+    int getChildCount() const;
+
     /*!
      *  Set the width for the item.
 	 *

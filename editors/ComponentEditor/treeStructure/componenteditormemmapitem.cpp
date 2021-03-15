@@ -46,22 +46,18 @@ memoryMapValidator_(memoryMapValidator)
         this));
     defaultRemapItem->setLocked(locked_);
 
+    MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
+    defaultRemapItem->setVisualizer(memoryRemapVisualizer);
+
     connect(defaultRemapItem.data(), SIGNAL(addressUnitBitsChanged()),
         this, SLOT(changeAdressUnitBitsOnAddressBlocks()), Qt::UniqueConnection);
 
     childItems_.append(defaultRemapItem);
 
-    for (QSharedPointer<MemoryRemap> memoryRemap : *memoryMap_->getMemoryRemaps())
+    const int childCount = memoryMap_->getMemoryRemaps()->count();
+    for (int i = 0; i < childCount; ++i)
     {
-        QSharedPointer<MemoryRemapItem> memoryRemapItem(new MemoryRemapItem(memoryRemap, memoryMap_, model,
-            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_,
-            memoryMapValidator_, this));
-        memoryRemapItem->setLocked(locked_);
-
-        MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
-        memoryRemapItem->setVisualizer(memoryRemapVisualizer);
-
-        childItems_.append(memoryRemapItem);
+        ComponentEditorMemMapItem::createChild(i);
     }
 
 	Q_ASSERT(memoryMap_);
@@ -137,6 +133,9 @@ void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer 
     if(memoryRemapItem)
     {
         memoryRemapItem->setVisualizer(visualizer);
+
+        connect(memoryRemapItem.data(), SIGNAL(addressingChanged()),
+            visualizer, SLOT(redoLayout()), Qt::UniqueConnection);
     }
 }
 

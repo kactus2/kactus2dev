@@ -211,6 +211,8 @@ signals:
      */
     void graphicsChanged();
 
+    void childAddressingChanged(int);
+
 	//! Emitted when a new memory map item is added to the given index.
 	void itemAdded(int index);
 

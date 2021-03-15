@@ -66,6 +66,12 @@ public:
      */
     virtual ~MemoryRemapItem();
 
+    //! No copying
+    MemoryRemapItem(const MemoryRemapItem& other) = delete;
+
+    //! No assignment
+    MemoryRemapItem& operator=(const MemoryRemapItem& other) = delete;
+
 	/*!
 	 *  Get the tool tip for this item.
 	 *
@@ -134,12 +140,13 @@ public:
 	 */
 	virtual void removeGraphicsItem();
 
-
-
 public slots:
 
-
+    //! Handle the change in item's addressing data.
     void onAddressingChanged();
+
+    //! Handle the change in child item's addressing data.
+    void onChildAddressingChanged(int index);
 
     /*!
      *  Change the address unit bits for the address blocks.
@@ -160,12 +167,10 @@ signals:
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
-private:
-	//! No copying
-    MemoryRemapItem(const MemoryRemapItem& other);
+    //! Signals a change in the item's address data.
+    void addressingChanged();
 
-	//! No assignment
-    MemoryRemapItem& operator=(const MemoryRemapItem& other);
+private:
 
 	//! The memory remap being edited.
     QSharedPointer<MemoryMapBase> memoryRemap_;
@@ -187,6 +192,7 @@ private:
 
     //! The used memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
+    
 };
 
 #endif // MEMORYREMAPITEM_H

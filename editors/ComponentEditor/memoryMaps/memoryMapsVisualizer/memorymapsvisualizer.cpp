@@ -82,6 +82,14 @@ QSize MemoryMapsVisualizer::sizeHint() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::redoLayout()
+//-----------------------------------------------------------------------------
+void MemoryMapsVisualizer::redoLayout()
+{
+    scene_->rePosition();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryMapsVisualizer::showEvent()
 //-----------------------------------------------------------------------------
 void MemoryMapsVisualizer::showEvent(QShowEvent* event)
@@ -99,7 +107,8 @@ void MemoryMapsVisualizer::showEvent(QShowEvent* event)
             memoryMap->updateDisplay();
         }
     }
-    scene_->rePosition();
+    
+    redoLayout();
 
     QApplication::restoreOverrideCursor();
 }

@@ -77,6 +77,8 @@ model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expres
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(model_, SIGNAL(childAddressingChanged(int)), 
+        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 

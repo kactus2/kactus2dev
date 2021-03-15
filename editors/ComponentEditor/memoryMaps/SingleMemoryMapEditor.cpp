@@ -70,7 +70,8 @@ ItemEditor(component, libHandler, parent),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     connect(memoryMapEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
     connect(memoryMapEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
-
+    connect(memoryMapEditor_, SIGNAL(childAddressingChanged(int)), 
+        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SLOT(refreshSlaveBinding()), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 

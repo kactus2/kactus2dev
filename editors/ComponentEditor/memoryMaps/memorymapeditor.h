@@ -80,6 +80,8 @@ signals:
      */
     void graphicsChanged();
 
+    void childAddressingChanged(int);
+
     /*!
      *  Emits an error message for the user.
      *
