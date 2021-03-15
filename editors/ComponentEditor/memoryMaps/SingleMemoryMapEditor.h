@@ -117,6 +117,8 @@ signals:
 
     void childAddressingChanged(int);
 
+    void childGraphicsChanged(int);
+
 private:
 
 	//! No copying

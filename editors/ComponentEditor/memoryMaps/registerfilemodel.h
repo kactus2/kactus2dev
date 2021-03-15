@@ -214,7 +214,7 @@ signals:
     /*!
      *  Informs of a need to redraw the visualizer.
      */
-    void graphicsChanged();
+    void graphicsChanged(int index);
 
     //! Prints an error message to the user.
     void errorMessage(const QString& msg) const;

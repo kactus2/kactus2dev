@@ -117,6 +117,7 @@ ItemEditor* MemoryRemapItem::editor()
         
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);        
         connect(editor_, SIGNAL(childAddressingChanged(int)),
             this, SLOT(onChildAddressingChanged(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -269,6 +270,14 @@ void MemoryRemapItem::removeGraphicsItem()
         delete graphItem_;
         graphItem_ = nullptr;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemapItem::onChildGraphicsChanged()
+//-----------------------------------------------------------------------------
+void MemoryRemapItem::onChildGraphicsChanged(int index)
+{
+    childItems_.at(index)->updateGraphics();
 }
 
 //-----------------------------------------------------------------------------

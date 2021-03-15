@@ -91,6 +91,7 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAddressingChanged(int)), 
             this, SLOT(onChildAddressingChanged(int)), Qt::UniqueConnection);
@@ -200,6 +201,14 @@ void ComponentEditorAddrBlockItem::onGraphicsChanged()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrBlockItem::onGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrBlockItem::onChildGraphicsChanged(int index)
+{
+    childItems_.at(index)->updateGraphics();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrBlockItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrBlockItem::onAddressingChanged()
@@ -230,6 +239,15 @@ void ComponentEditorAddrBlockItem::onChildAddressingChanged(int index)
         {
             childRegister->updateGraphics();
             childRegister->onAddressingChanged();
+            return;
+        }
+
+        auto childRegisterFile = childItems_.at(index).dynamicCast<ComponentEditorRegisterFileItem>();
+
+        if (childRegisterFile)
+        {
+            childRegisterFile->updateGraphics();
+            childRegisterFile->onAddressingChanged();
         }
     }
 }

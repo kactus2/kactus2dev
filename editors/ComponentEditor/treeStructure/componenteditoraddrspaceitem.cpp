@@ -125,6 +125,7 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
 		
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -241,10 +242,17 @@ void ComponentEditorAddrSpaceItem::onGraphicsChanged()
     if (graphItem_ != nullptr)
     {
         graphItem_->updateDisplay();
-        for (auto child: childItems_)
-        {
-            child->updateGraphics();
-        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::onChildGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::onChildGraphicsChanged(int index)
+{
+    if (graphItem_ != nullptr)
+    {
+        childItems_.at(index)->updateGraphics();
     }
 }
 
@@ -256,8 +264,6 @@ void ComponentEditorAddrSpaceItem::onAddressingChanged()
     if (graphItem_ != nullptr)
     {
         graphItem_->redoChildLayout();
-
-        emit addressingChanged();
     }
 }
 

@@ -85,7 +85,7 @@ signals:
     /*!
      *  Informs of a need to redraw the visualizer.
      */
-    void graphicsChanged();
+    void graphicsChanged(int);
 
     /*!
      *  Sends an error message forward.

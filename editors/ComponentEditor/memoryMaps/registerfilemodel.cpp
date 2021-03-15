@@ -363,7 +363,7 @@ bool RegisterFileModel::setData(QModelIndex const& index, QVariant const& value,
                 index.column() == RegisterFileColumns::DIMENSION ||
                 index.column() == RegisterFileColumns::IS_PRESENT)
             {
-                emit graphicsChanged();
+                emit graphicsChanged(registerData_->indexOf(regFile));
 
                 if (index.column() != RegisterFileColumns::NAME)
                 {
@@ -514,6 +514,7 @@ void RegisterFileModel::onAddItem(QModelIndex const& index)
 	beginInsertRows(QModelIndex(), row, row);
     QSharedPointer<RegisterFile> regItem(new RegisterFile());    
     regItem->setAddressOffset(offset);
+    regItem->setRange(QString::number(1));
     items_.insert(row, regItem);
     registerData_->insert(dataIndex, regItem);
     endInsertRows();

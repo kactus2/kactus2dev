@@ -402,7 +402,7 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
                 index.column() == AddressBlockColumns::REGISTER_DIMENSION ||
                 index.column() == AddressBlockColumns::IS_PRESENT)
             {
-                emit graphicsChanged();
+                emit graphicsChanged(registerData_->indexOf(reg));
                 if (index.column() != AddressBlockColumns::NAME)
                 {
                     emit childAddressingChanged(registerData_->indexOf(reg));

@@ -92,6 +92,8 @@ signals:
 
     void childAddressingChanged(int index);
 
+    void childGraphicsChanged(int index);    
+
 protected:
 
     /*!

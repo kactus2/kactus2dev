@@ -355,11 +355,12 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(registersEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(registersEditor_, SIGNAL(childAddressingChanged(int)), this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+    connect(registersEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
+    connect(registersEditor_, SIGNAL(childAddressingChanged(int)), this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);    
 
-    connect(registerFilesEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    
+    connect(registerFilesEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
+    connect(registerFilesEditor_, SIGNAL(childAddressingChanged(int)), this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
     

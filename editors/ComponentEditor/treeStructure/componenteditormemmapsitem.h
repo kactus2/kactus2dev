@@ -52,7 +52,7 @@ public:
 		ComponentEditorItem* parent);
 
 	//! The destructor.
-	virtual ~ComponentEditorMemMapsItem();
+	virtual ~ComponentEditorMemMapsItem() = default;
 
 	/*!
      *  Get the font to be used for text of this item.

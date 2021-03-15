@@ -76,7 +76,8 @@ ItemEditor(component, libHandler, parent),
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(memoryMapEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(memoryMapEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
+    
 
     connect(addressUnitBitsEditor_, SIGNAL(editingFinished()),
         this, SLOT(updateAddressUnitBits()), Qt::UniqueConnection);

@@ -119,6 +119,10 @@ public:
     */
     virtual ItemVisualizer* visualizer() override final;
 
+    /*!
+    *  Update the graphics item of the memory map.
+    */
+    virtual void updateGraphics() override final;
 
     void setVisualizer(MemoryMapsVisualizer* visualizer);
 
@@ -126,19 +130,22 @@ signals:
 
     void addressingChanged();
 
-protected slots:
 
-    /*!
-    *  Update the graphics item of the memory map.
-    */
-    virtual void updateGraphics() override final;
-
-    //!  Handler for editor's contentChanged signal.
-    virtual void onGraphicsChanged() override final;
+ public slots:
 
     void onAddressingChanged();
 
     void onChildAddressingChanged(int index);
+
+
+protected slots:
+
+
+    //!  Handler for editor's contentChanged signal.
+    virtual void onGraphicsChanged() override final;
+
+    void onChildGraphicsChanged(int index);
+
 private:
 
     //! The register file being edited.

@@ -58,14 +58,6 @@ ComponentEditorItem(model, libHandler, component, parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditormemmapsitem::~ComponentEditorMemMapsItem()
-//-----------------------------------------------------------------------------
-ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: componenteditormemmapsitem::getFont()
 //-----------------------------------------------------------------------------
 QFont ComponentEditorMemMapsItem::getFont() const

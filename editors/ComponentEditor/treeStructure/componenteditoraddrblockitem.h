@@ -154,6 +154,8 @@ protected slots:
      */
     virtual void onGraphicsChanged();
 
+    void onChildGraphicsChanged(int index);    
+
 signals:
     
     /*!
@@ -184,7 +186,8 @@ private:
     unsigned int addressUnitBits_;
 
     //! The used address block validator.
-    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
+    QSharedPointer<AddressBlockValidator> addressBlockValidator_;    
+    
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

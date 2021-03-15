@@ -142,6 +142,8 @@ public:
 
 public slots:
 
+    void onChildGraphicsChanged(int index);
+
     //! Handle the change in item's addressing data.
     void onAddressingChanged();
 
@@ -167,8 +169,10 @@ signals:
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
+
     //! Signals a change in the item's address data.
     void addressingChanged();
+
 
 private:
 
@@ -192,7 +196,7 @@ private:
 
     //! The used memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
-    
+        
 };
 
 #endif // MEMORYREMAPITEM_H

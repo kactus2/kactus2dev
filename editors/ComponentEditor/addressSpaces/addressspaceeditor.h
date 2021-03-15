@@ -84,6 +84,8 @@ signals:
 
     void addressingChanged();
 
+    void childGraphicsChanged(int index);
+
 protected:
 
 	//! Handler for widget's show event.

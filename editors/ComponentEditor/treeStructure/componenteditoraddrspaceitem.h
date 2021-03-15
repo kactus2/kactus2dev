@@ -135,6 +135,8 @@ protected slots:
 	 */
 	virtual void onGraphicsChanged();
 
+    void onChildGraphicsChanged(int index);
+
     void onAddressingChanged();
 
     void onChildAddressingChanged(int index);
