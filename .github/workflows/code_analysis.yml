@@ -12,7 +12,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
     - name: Setup sonar-scanner
-      uses: Warchant/setup-sonar-scanner@v1
+      uses: Warchant/setup-sonar-scanner@v3
       with:
         # Sonar-scanner version
         version: 4.2.0.1873
@@ -37,8 +37,9 @@ jobs:
     - name: Run tests
       run : make -C tests check 
     - name: Run sonar-scanner
-      run: sonar-scanner -Dsonar.cfamily.threads=2 -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=$SONARQUBE_LOGIN -Dsonar.language=c++ -Dsonar.cxx.suffixes.sources=.cxx,.cpp,.cc,.c,.inl -Dsonar.sources=. -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,tests/**/*,**/?eneratedFiles/**/*
-      env:
-        SONARQUBE_LOGIN: ${{ secrets.SONAR_LOGIN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        echo 'SONARQUBE_LOGIN=${{ secrets.SONAR_LOGIN }}' >> $GITHUB_ENV
+        echo 'GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}' >> $GITHUB_ENV
+        sonar-scanner -Dsonar.cfamily.threads=2 -Dsonar.projectKey=kactus2 -Dsonar.organization="epekkar-github" -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=${{env.SONARQUBE_LOGIN}}} -Dsonar.language=c++ -Dsonar.cxx.suffixes.sources=.cxx,.cpp,.cc,.c,.inl -Dsonar.sources=. -Dsonar.cfamily.build-wrapper-output=bw-output -Dsonar.exclusions=**/qrc_*,tests/**/*,**/?eneratedFiles/**/*
+
     
