@@ -58,7 +58,11 @@ public:
 		ComponentEditorItem* parent);
 
 	//! The destructor.
-	virtual ~ComponentEditorMemMapItem();
+	virtual ~ComponentEditorMemMapItem() = default;
+
+    //! No copying. No assignment.
+    ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other) = delete;
+    ComponentEditorMemMapItem& operator=(const ComponentEditorMemMapItem& other) = delete;
 
 	/*!
      *  Get the tool tip for the item.
@@ -150,18 +154,9 @@ public slots:
     void onMemoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
 
 private:
-	//! No copying. No assignment.
-	ComponentEditorMemMapItem(const ComponentEditorMemMapItem& other);
-	ComponentEditorMemMapItem& operator=(const ComponentEditorMemMapItem& other);
 
 	//! The memory map being edited.
 	QSharedPointer<MemoryMap> memoryMap_;
-
-	//! The visualizer to display the memory maps
-	MemoryMapsVisualizer* visualizer_;
-
-	//! The graph item which visualizes this memory map.
-	MemoryMapGraphItem* graphItem_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

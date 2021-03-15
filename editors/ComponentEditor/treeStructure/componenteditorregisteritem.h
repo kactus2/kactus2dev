@@ -98,43 +98,61 @@ public:
 	 * 
 	 *      @param [in] index The index to add the child into.
 	 */
-	virtual void createChild(int index);
+	virtual void createChild(int index) override final;
+
+    /*! Remove a child from the item.
+     *
+     *      @param [in] index The index to remove the child from.
+     */
+    virtual void removeChild(int index) override final;
 
 	/*! Get pointer to the visualizer of this item.
 	 * 
 	 *      @return Pointer to the visualizer to use for this item.
 	 */
-	virtual ItemVisualizer* visualizer();
+	virtual ItemVisualizer* visualizer() override final;
 
 	/*! Set the visualizer for this item.
 	 *
 	 *      @param [in] visualizer Pointer to the visualizer.
 	 */
-	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
+    void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*! Get the visualizer graphics item for the register.
 	 *
 	 *      @return QGraphicsItem* Pointer to the graphics item.
 	 */
-	virtual QGraphicsItem* getGraphicsItem();
-
-
-	//! Remove the graphics item of the register.
-	virtual void removeGraphicsItem();
-
-protected slots:
-
-	//! Handler for editor's contentChanged signal.
-	virtual void onEditorChanged();
+	virtual QGraphicsItem* getGraphicsItem() override final;
 
     //! Update the graphics item of the register.
-    virtual void updateGraphics();
+    virtual void updateGraphics() override final;
+
+	//! Remove the graphics item of the register.
+	virtual void removeGraphicsItem() override final;
+
+signals:
+
+    //! Signals a change in the item's address data.
+    void addressingChanged();
+
+public slots:
+
+    //! Handle the change in item's addressing data.
+    void onAddressingChanged();
+
+    //! Handle the change in child item's addressing data.
+    void onChildAddressingChanged();
+
+protected slots:
 
     /*!
      *  Handle the change in graphics.
      */
     virtual void onGraphicsChanged();
 
+    //! Handle the change in child item's graphics.
+    void onChildGraphicsChanged(int index);
+   
 private:
 	
 
@@ -146,10 +164,10 @@ private:
 	QSharedPointer<Register> reg_;
 
 	//! The visualizer of memory maps.
-	MemoryMapsVisualizer* visualizer_;
+	MemoryMapsVisualizer* visualizer_ = nullptr;
 
 	//! The graph item that visualizes the register and possible dimensions.
-	RegisterGraphItem* registerItem_;
+	RegisterGraphItem* registerItem_ = nullptr;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

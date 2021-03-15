@@ -66,6 +66,12 @@ public:
      */
     virtual ~MemoryRemapItem();
 
+    //! No copying
+    MemoryRemapItem(const MemoryRemapItem& other) = delete;
+
+    //! No assignment
+    MemoryRemapItem& operator=(const MemoryRemapItem& other) = delete;
+
 	/*!
 	 *  Get the tool tip for this item.
 	 *
@@ -99,7 +105,9 @@ public:
 	 *
 	 *      @param [in] index   The index of the new child.
 	 */
-	virtual void createChild(int index);
+	virtual void createChild(int index) override final;
+
+    virtual void removeChild(int index) override final;
 
 	/*!
 	 *  Get The visualizer of this item.
@@ -134,6 +142,14 @@ public:
 
 public slots:
 
+    void onChildGraphicsChanged(int index);
+
+    //! Handle the change in item's addressing data.
+    void onAddressingChanged();
+
+    //! Handle the change in child item's addressing data.
+    void onChildAddressingChanged(int index);
+
     /*!
      *  Change the address unit bits for the address blocks.
      */
@@ -153,12 +169,12 @@ signals:
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
-private:
-	//! No copying
-    MemoryRemapItem(const MemoryRemapItem& other);
 
-	//! No assignment
-    MemoryRemapItem& operator=(const MemoryRemapItem& other);
+    //! Signals a change in the item's address data.
+    void addressingChanged();
+
+
+private:
 
 	//! The memory remap being edited.
     QSharedPointer<MemoryMapBase> memoryRemap_;
@@ -170,16 +186,17 @@ private:
     QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks_;
 
 	//! The visualizer to display the memory maps
-	MemoryMapsVisualizer* visualizer_;
+	MemoryMapsVisualizer* visualizer_ = nullptr;
 
 	//! The graph item which visualizes this memory map.
-	MemoryMapGraphItem* graphItem_;
+	MemoryMapGraphItem* graphItem_ = nullptr;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The used memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
+        
 };
 
 #endif // MEMORYREMAPITEM_H

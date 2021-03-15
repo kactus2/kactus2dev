@@ -29,25 +29,16 @@ field_(field)
 	Q_ASSERT(field_);
 
     setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
+	
+	setDefaultBrush(QBrush(KactusColors::FIELD_COLOR));
 
-	QBrush brush(KactusColors::FIELD_COLOR);
-	setDefaultBrush(brush);
-
-	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
+    setLayoutType(VisualizerItem::LABELS_TOP);
+    setClipText(true);
 
 	setShowExpandableItem(false);
 	setExpansionRectVisible(false);
 
     updateDisplay();
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGraphItem::refresh()
-//-----------------------------------------------------------------------------
-void FieldGraphItem::refresh()
-{
-    updateDisplay();
-    ExpandableItem::reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,9 +50,6 @@ void FieldGraphItem::updateDisplay()
 
     quint64 leftBound = getLastAddress();
     quint64 rightBound = getOffset();
-
-    setLeftTopCorner(QString::number(leftBound));
-    setRightTopCorner(QString::number(rightBound));
 
     setDisplayOffset(leftBound);
     setDisplayLastAddress(rightBound);
@@ -106,13 +94,7 @@ void FieldGraphItem::setWidth(qreal width)
 quint64 FieldGraphItem::getLastAddress() const
 {
     const int MSB = getOffset() + getBitWidth();
-
-    if (MSB == 0)
-    {
-        return 0;
-    }
-
-    return MSB -1;
+    return qMax(0, MSB - 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -120,8 +102,9 @@ quint64 FieldGraphItem::getLastAddress() const
 //-----------------------------------------------------------------------------
 void FieldGraphItem::setDisplayOffset(quint64 const& address)
 {
-    firstFreeAddress_ = address;
-    setLeftTopCorner(QString::number(firstFreeAddress_));
+    // Fields show decimal number offsets.
+    firstAddress_ = address;
+    VisualizerItem::setTopLabelText(QString::number(firstAddress_));
 }
 
 //-----------------------------------------------------------------------------
@@ -129,8 +112,9 @@ void FieldGraphItem::setDisplayOffset(quint64 const& address)
 //-----------------------------------------------------------------------------
 void FieldGraphItem::setDisplayLastAddress(quint64 const& address)
 {
-    lastFreeAddress_ = address;
-    setRightTopCorner(QString::number(lastFreeAddress_));
+    // Fields show decimal number offsets.
+    lastAddress_ = address;
+    VisualizerItem::setBottomLabelText(QString::number(lastAddress_));
 }
 
 //-----------------------------------------------------------------------------
@@ -155,4 +139,12 @@ void FieldGraphItem::setConflicted(bool conflicted)
 bool FieldGraphItem::isPresent() const
 {
     return field_->getIsPresent().isEmpty() || parseExpression(field_->getIsPresent()) == 1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphItem::redoChildLayout()
+//-----------------------------------------------------------------------------
+void FieldGraphItem::redoChildLayout()
+{
+    // Do nothing.
 }

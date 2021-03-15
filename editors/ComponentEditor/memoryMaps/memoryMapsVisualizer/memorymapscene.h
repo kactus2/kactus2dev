@@ -15,10 +15,10 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 
 #include <QGraphicsScene>
-#include <QList>
+#include <QVector>
 #include <QSharedPointer>
 
-class VisualizerItem;
+class MemoryMapGraphItem;
 
 //-----------------------------------------------------------------------------
 //! The graphics scene that contains the memory map graphics items.
@@ -29,9 +29,6 @@ class MemoryMapScene : public QGraphicsScene
 
 public:
 
-    //! Scrolling sensitivity. Bigger value results in smaller steps.
-    static const int WHEEL_SENSITIVITY = 6;
-
 	/*!
      *  The constructor.
 	 *
@@ -40,21 +37,27 @@ public:
 	explicit MemoryMapScene(QObject *parent);
 	
 	//! The destructor.
-	virtual ~MemoryMapScene();
+	virtual ~MemoryMapScene() = default;
+
+    //! No copying.
+    MemoryMapScene(const MemoryMapScene& other) = delete;
+
+    //! No assignment.
+    MemoryMapScene& operator=(const MemoryMapScene& other) = delete;
 
 	/*!
      *  Add a new memory map graph item to the scene.
 	 *
 	 *      @param [in] memGraphItem    Pointer to the item.
 	 */
-	void addMemGraphItem(VisualizerItem* memGraphItem);
+	void addMemGraphItem(MemoryMapGraphItem* memGraphItem);
 
 	/*!
      *  Remove a memory map graph item from the scene.
 	 *
 	 *      @param [in] memGraphItem    Pointer to the item to remove.
 	 */
-	void removeMemGraphItem(VisualizerItem* memGraphItem);
+	void removeMemGraphItem(MemoryMapGraphItem* memGraphItem);
 
 	/*!
      *  Set the scene width.
@@ -63,7 +66,7 @@ public:
 	 */
     void setWidth(int width);
 
-    public slots:
+public slots:
 
     /*!
      *  Reposition the memory map graphs items in the scene.
@@ -73,18 +76,12 @@ public:
 protected:
     
     //! Resizes memory map when user turns the mouse wheel.
-    void wheelEvent(QGraphicsSceneWheelEvent * wheelEvent);
+    virtual void wheelEvent(QGraphicsSceneWheelEvent * wheelEvent) override final;
 
-private:
-	
-	//! No copying.
-	MemoryMapScene(const MemoryMapScene& other);
-
-	//! No assignment.
-	MemoryMapScene& operator=(const MemoryMapScene& other);
+private:	
 
 	//! Contains the graph items for memory maps.
-	QList<VisualizerItem*> memGraphItems_;
+	QVector<MemoryMapGraphItem*> memGraphItems_;
 
     //! Width of top (memory map) items.
     int width_;

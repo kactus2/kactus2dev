@@ -41,8 +41,7 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
     ComponentEditorItem* parent) :
     ComponentEditorItem(model, libHandler, component, parent),
     registerFile_(registerFile),
-    visualizer_(nullptr),
-    registerFileItem_(nullptr),
+    
     expressionParser_(expressionParser),
     registerFileValidator_(registerFileValidator)
 {
@@ -51,26 +50,10 @@ ComponentEditorRegisterFileItem::ComponentEditorRegisterFileItem(QSharedPointer<
     setExpressionFormatter(expressionFormatter);
     setObjectName(tr("ComponentEditorRegFileItem"));
 
-    for (QSharedPointer<RegisterBase> regModel : *registerFile->getRegisterData())
+    const int registerCount = registerFile_->getRegisterData()->count();
+    for (int i = 0; i < registerCount; ++i)
     {
-        QSharedPointer<Register> reg = regModel.dynamicCast<Register>();
-        if (reg)
-        {
-            QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model,
-                libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
-                expressionParser_, registerFileValidator_->getRegisterValidator(), this));
-            childItems_.append(regItem);
-            continue;
-        }
-
-        QSharedPointer<RegisterFile> regfile = regModel.dynamicCast<RegisterFile>();
-        if(regfile)
-        {
-            QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(
-                regfile, model, libHandler, component, parameterFinder_, expressionFormatter_, referenceCounter_,
-                  expressionParser_, registerFileValidator_, this));
-            childItems_.append(regFileItem);
-        }
+        createChild(i);
     }
 }
 
@@ -113,10 +96,6 @@ void ComponentEditorRegisterFileItem::createChild( int index )
             expressionParser_, registerFileValidator_->getRegisterValidator(), this));
         regItem->setLocked(locked_);
 
-        if (visualizer_)
-        {
-            regItem->setVisualizer(visualizer_);
-        }
 
         if (reg->getFields()->isEmpty())
         {
@@ -125,11 +104,15 @@ void ComponentEditorRegisterFileItem::createChild( int index )
 
             regItem->createChild(0);
         }
+        
+        if (visualizer_)
+        {
+            regItem->setVisualizer(visualizer_);
+        }
 
-        onGraphicsChanged();
-
+        connect(regItem.data(), SIGNAL(addressingChanged()),
+            this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
         childItems_.insert(index, regItem);
-        return;
     }
 
     QSharedPointer<RegisterFile> regFile = regmodel.dynamicCast<RegisterFile>();
@@ -139,16 +122,42 @@ void ComponentEditorRegisterFileItem::createChild( int index )
             libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
             expressionParser_, registerFileValidator_, this));
         regFileItem->setLocked(locked_);
-
+     
         if (visualizer_)
         {
             regFileItem->setVisualizer(visualizer_);
         }
-        onGraphicsChanged();
 
+        connect(regFileItem.data(), SIGNAL(addressingChanged()),
+            this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
         childItems_.insert(index, regFileItem);
-        return;
     }
+
+    if (visualizer_)
+    {
+        auto childItem = static_cast<MemoryVisualizationItem*>(childItems_.at(index)->getGraphicsItem());
+        Q_ASSERT(childItem);
+
+        registerFileItem_->addChild(childItem);
+        onAddressingChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorregisteritem::removeChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterFileItem::removeChild(int index)
+{
+    if (visualizer_)
+    {
+        auto childItem = static_cast<MemoryVisualizationItem*>(childItems_.at(index)->getGraphicsItem());
+        Q_ASSERT(childItem);
+
+        registerFileItem_->removeChild(childItem);
+        onAddressingChanged();
+    }
+
+    ComponentEditorItem::removeChild(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -163,6 +172,10 @@ ItemEditor* ComponentEditorRegisterFileItem::editor()
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAddressingChanged(int)),
+            this, SLOT(onChildAddressingChanged(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -188,30 +201,33 @@ void ComponentEditorRegisterFileItem::setVisualizer( MemoryMapsVisualizer* visua
 {
     visualizer_ = visualizer;
 
-    MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+    auto parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
     Q_ASSERT(parentItem);
 
     registerFileItem_ = new RegisterFileGraphItem(registerFile_, expressionParser_, parentItem);    
-    parentItem->addChild(registerFileItem_);    
 
     connect(registerFileItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 
     // update the visualizers for field items
-    for (QSharedPointer<ComponentEditorItem> item : childItems_)
+    for (QSharedPointer<ComponentEditorItem> child : childItems_)
     {
-        QSharedPointer<ComponentEditorRegisterItem> regItem = item.dynamicCast<ComponentEditorRegisterItem>();
+        auto regItem = child.dynamicCast<ComponentEditorRegisterItem>();
+        auto regFileItem = child.dynamicCast<ComponentEditorRegisterFileItem>();
+
         if (regItem)
         {
-          regItem->setVisualizer(visualizer_);
-          continue;
+            regItem->setVisualizer(visualizer_);
+        }
+        else if (regFileItem)
+        {
+            regFileItem->setVisualizer(visualizer_);
         }
 
-        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem = item.dynamicCast<ComponentEditorRegisterFileItem>();
-        if (regFileItem)
-        {
-          regFileItem->setVisualizer(visualizer_);
-        }
+        auto childGraphicItem = static_cast<MemoryVisualizationItem*>(child->getGraphicsItem());
+        registerFileItem_->addChild(childGraphicItem);
     }
+
+    registerFileItem_->redoChildLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -227,10 +243,7 @@ QGraphicsItem* ComponentEditorRegisterFileItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterFileItem::updateGraphics()
 {
-    if (registerFileItem_ != nullptr)
-    {
-        registerFileItem_->refresh();
-    }
+    onGraphicsChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -238,28 +251,76 @@ void ComponentEditorRegisterFileItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterFileItem::onGraphicsChanged()
 {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    ComponentEditorItem::onGraphicsChanged();
-
-    parent()->updateGraphics();//addressBlock
-    parent()->parent()->updateGraphics(); //Memory Map
-    QApplication::restoreOverrideCursor();
+    if (registerFileItem_ != nullptr)
+    {
+        registerFileItem_->updateDisplay();
+    }
 }
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterFileItem::onChildGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterFileItem::onChildGraphicsChanged(int index)
+{
+    childItems_.at(index)->updateGraphics();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterFileItem::onAddressingChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterFileItem::onAddressingChanged()
+{
+    if (registerFileItem_ != nullptr)
+    {
+        registerFileItem_->redoChildLayout();
+
+        emit addressingChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterFileItem::onChildAddressingChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterFileItem::onChildAddressingChanged(int index)
+{
+    if (registerFileItem_ != nullptr)
+    {
+        childItems_.at(index)->updateGraphics();
+
+        auto childRegister = childItems_.at(index).dynamicCast<ComponentEditorRegisterItem>();
+        auto childRegisterFile = childItems_.at(index).dynamicCast<ComponentEditorRegisterFileItem>(); 
+
+        if (childRegister)
+        {
+            childRegister->onChildAddressingChanged();
+        }
+        else if (childRegisterFile)
+        {
+            childRegisterFile->registerFileItem_->redoChildLayout();
+        }
+    }
+
+    onAddressingChanged();
+}
+
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorRegisterFileItem::removeGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterFileItem::removeGraphicsItem()
 {
-    // get the graphics item for the address block.
-    MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-    Q_ASSERT(parentItem);
+    if (registerFileItem_)
+    {
+        // get the graphics item for the address block.
+        auto parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+        Q_ASSERT(parentItem);
 
-    parentItem->removeChild(registerFileItem_);
-    registerFileItem_->setParent(0);
+        //sparentItem->removeChild(registerFileItem_);
+        registerFileItem_->setParent(nullptr);
 
-    disconnect(registerFileItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+        disconnect(registerFileItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
-    delete registerFileItem_;
-    registerFileItem_ = nullptr;
+        delete registerFileItem_;
+        registerFileItem_ = nullptr;
+    }
 }

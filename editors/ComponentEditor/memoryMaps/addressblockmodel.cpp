@@ -402,7 +402,11 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
                 index.column() == AddressBlockColumns::REGISTER_DIMENSION ||
                 index.column() == AddressBlockColumns::IS_PRESENT)
             {
-                emit graphicsChanged();
+                emit graphicsChanged(registerData_->indexOf(reg));
+                if (index.column() != AddressBlockColumns::NAME)
+                {
+                    emit childAddressingChanged(registerData_->indexOf(reg));
+                }
             }
 
             emit dataChanged(index, index);
@@ -550,6 +554,7 @@ void AddressBlockModel::onAddItem(QModelIndex const& index)
 
     QSharedPointer<Register> regItem(new Register());    
     regItem->setAddressOffset(offset);
+    regItem->setSize(QString::number(addressUnitBits_));
     items_.insert(row, regItem);
     registerData_->insert(dataIndex, regItem);
     endInsertRows();

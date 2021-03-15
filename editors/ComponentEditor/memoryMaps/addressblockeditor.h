@@ -85,7 +85,7 @@ signals:
     /*!
      *  Informs of a need to redraw the visualizer.
      */
-    void graphicsChanged();
+    void graphicsChanged(int);
 
     /*!
      *  Sends an error message forward.
@@ -128,6 +128,8 @@ signals:
      *      @param [in] index   The index of the removed item.
      */
     void childRemoved(int index);
+
+    void childAddressingChanged(int index);
 
 private:
 	

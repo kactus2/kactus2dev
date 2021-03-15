@@ -48,15 +48,13 @@ public:
     //! No assignment.
     LocalMemoryMapGraphItem& operator=(const LocalMemoryMapGraphItem& other) = delete;
 
-    //! Refresh the item and sub-items.
-    virtual void refresh() override final;
-
     /*!
      *  Get number of bits the addressable unit contains.
      *
      *      @return The size of least addressable unit.
      */
     virtual unsigned int getAddressUnitSize() const override final;
+ 
 
 private:
     

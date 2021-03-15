@@ -38,7 +38,7 @@ ComponentEditorMemMapsItem::ComponentEditorMemMapsItem(ComponentEditorTreeModel*
     ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
     memoryMaps_(component->getMemoryMaps()),
-    visualizer_(new MemoryMapsVisualizer()),
+    visualizer_(nullptr),
     expressionParser_(expressionParser),
     memoryMapValidator_()
 {
@@ -50,31 +50,10 @@ ComponentEditorItem(model, libHandler, component, parent),
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
-	foreach (QSharedPointer<MemoryMap> memoryMap, *memoryMaps_)
+    const int childCount = memoryMaps_->count();
+	for (int i = 0; i < childCount; ++i)
     {
-		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMap, model,
-            libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
-            memoryMapValidator_, this));
-		memoryMapItem->setVisualizer(visualizer_);
-		childItems_.append(memoryMapItem);
-
-        connect(this, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)),
-            memoryMapItem.data(), SLOT(onMemoryRemapAdded(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
-
-        connect(this, SIGNAL(memoryRemapRemoved(int ,QSharedPointer<MemoryMap>)),
-            memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditormemmapsitem::~ComponentEditorMemMapsItem()
-//-----------------------------------------------------------------------------
-ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem()
-{
-	if (visualizer_)
-    {
-		delete visualizer_;
-		visualizer_ = NULL;
+        ComponentEditorMemMapsItem::createChild(i);
 	}
 }
 
@@ -152,11 +131,6 @@ void ComponentEditorMemMapsItem::createChild( int index )
 
     connect(this, SIGNAL(memoryRemapRemoved(int ,QSharedPointer<MemoryMap>)),
         memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
-
-	if (visualizer_)
-    {
-		memoryMapItem->setVisualizer(visualizer_);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -164,7 +138,12 @@ void ComponentEditorMemMapsItem::createChild( int index )
 //-----------------------------------------------------------------------------
 ItemVisualizer* ComponentEditorMemMapsItem::visualizer()
 {
-	return visualizer_;
+	if (childItems_.isEmpty() == false)
+	{
+        return childItems_.at(0)->visualizer();
+	}
+
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

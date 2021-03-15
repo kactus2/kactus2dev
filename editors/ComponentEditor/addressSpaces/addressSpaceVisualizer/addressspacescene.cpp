@@ -117,8 +117,8 @@ void AddressSpaceScene::refresh()
 //-----------------------------------------------------------------------------
 void AddressSpaceScene::rePosition() 
 {
-    updateMaps(segmentItems_, exceedingSegments_, AddressSpaceGapItem::ALIGN_RIGHT);
-    updateMaps(addrBlockItems_, exceedingAddrBlocks_, AddressSpaceGapItem::ALIGN_LEFT);
+    updateMaps(segmentItems_, exceedingSegments_, VisualizerItem::LABELS_RIGHT);
+    updateMaps(addrBlockItems_, exceedingAddrBlocks_, VisualizerItem::LABELS_LEFT);
 
 	// remember which segment and address block are being operated on
 	QMultiMap<quint64, AddressSpaceVisualizationItem*>::iterator segIterator = segmentItems_.begin();
@@ -447,7 +447,7 @@ void AddressSpaceScene::rePosition()
 //-----------------------------------------------------------------------------
 void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationItem*>& itemMap, 
     QMultiMap<quint64, AddressSpaceVisualizationItem*> const& exceedingItemMap, 
-    AddressSpaceGapItem::AddressPosition const align) 
+    VisualizerItem::LabelLayout const align)
 {
     quint64 addressSpaceEnd = addressSpaceLastAddress();
 
@@ -590,7 +590,7 @@ void AddressSpaceScene::rePositionExceeding(qreal const yStart)
 //-----------------------------------------------------------------------------
 void AddressSpaceScene::resolveConflicts(AddressSpaceVisualizationItem* currentItem, 
     AddressSpaceVisualizationItem*& topItem, AddressSpaceVisualizationItem*& prevConflict,
-    AddressSpaceGapItem::AddressPosition const align,
+    VisualizerItem::LabelLayout const align,
     QMultiMap<quint64, AddressSpaceVisualizationItem*>& map)
 {
     Q_ASSERT(currentItem);

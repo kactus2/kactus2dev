@@ -43,13 +43,6 @@ memGraphItems_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapsVisualizer::~MemoryMapsVisualizer()
-//-----------------------------------------------------------------------------
-MemoryMapsVisualizer::~MemoryMapsVisualizer() 
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapsVisualizer::addMemoryMapItem()
 //-----------------------------------------------------------------------------
 void MemoryMapsVisualizer::addMemoryMapItem( MemoryMapGraphItem* memMapItem ) 
@@ -89,6 +82,14 @@ QSize MemoryMapsVisualizer::sizeHint() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryMapsVisualizer::redoLayout()
+//-----------------------------------------------------------------------------
+void MemoryMapsVisualizer::redoLayout()
+{
+    scene_->rePosition();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryMapsVisualizer::showEvent()
 //-----------------------------------------------------------------------------
 void MemoryMapsVisualizer::showEvent(QShowEvent* event)
@@ -103,10 +104,11 @@ void MemoryMapsVisualizer::showEvent(QShowEvent* event)
     {
         if (memoryMap->isPresent())
         {
-            memoryMap->recursiveRefresh();
+            memoryMap->updateDisplay();
         }
     }
-    scene_->rePosition();
+    
+    redoLayout();
 
     QApplication::restoreOverrideCursor();
 }

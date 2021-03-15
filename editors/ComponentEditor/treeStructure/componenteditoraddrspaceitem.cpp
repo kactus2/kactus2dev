@@ -37,7 +37,6 @@ ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<Addres
     QSharedPointer<AddressSpaceValidator> addressSpaceValidator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
-graphItem_(0),
 localMemMapVisualizer_(new MemoryMapsVisualizer()),
 addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, expressionParser)),
 expressionParser_(expressionParser),
@@ -53,11 +52,11 @@ spaceValidator_(addressSpaceValidator)
     {
         graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, addrSpace->getLocalMemoryMap(), expressionParser_);
         localMemMapVisualizer_->addMemoryMapItem(graphItem_);
-        graphItem_->refresh();
+        graphItem_->updateDisplay();
 
         if (addrSpace->getLocalMemoryMap())
         {
-            foreach (QSharedPointer<MemoryBlockBase> block, *addrSpace->getLocalMemoryMap()->getMemoryBlocks())
+            for (QSharedPointer<MemoryBlockBase> block : *addrSpace->getLocalMemoryMap()->getMemoryBlocks())
             {
                 // if the item is for address block then create child for it
                 QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
@@ -126,7 +125,10 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+		
+        connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)),	this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -159,7 +161,7 @@ void ComponentEditorAddrSpaceItem::createChild(int index)
     {
         graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, addrSpace_->getLocalMemoryMap(), expressionParser_);
         localMemMapVisualizer_->addMemoryMapItem(graphItem_);
-        graphItem_->refresh();
+        graphItem_->updateDisplay();
     }
 
     QSharedPointer<MemoryBlockBase> block = addrSpace_->getLocalMemoryMap()->getMemoryBlocks()->at(index);
@@ -177,9 +179,14 @@ void ComponentEditorAddrSpaceItem::createChild(int index)
 
 		if (localMemMapVisualizer_)
         {
-			addressBlockItem->setVisualizer(localMemMapVisualizer_);
+            addressBlockItem->setVisualizer(localMemMapVisualizer_);
+            graphItem_->addChild(static_cast<MemoryVisualizationItem*>(addressBlockItem->getGraphicsItem()));
+            
+            onAddressingChanged();
 		}
 		childItems_.insert(index, addressBlockItem);
+
+        connect(addressBlockItem.data(), SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()));
 	}
 }
 
@@ -196,7 +203,7 @@ QGraphicsItem* ComponentEditorAddrSpaceItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpaceItem::updateGraphics()
 {
-	graphItem_->refresh();
+	graphItem_->updateDisplay();
 }
 
 //-----------------------------------------------------------------------------
@@ -231,6 +238,52 @@ ItemVisualizer* ComponentEditorAddrSpaceItem::visualizer()
 void ComponentEditorAddrSpaceItem::onGraphicsChanged()
 {
 	addrSpaceVisualizer_->refresh();
+
+    if (graphItem_ != nullptr)
+    {
+        graphItem_->updateDisplay();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::onChildGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::onChildGraphicsChanged(int index)
+{
+    if (graphItem_ != nullptr)
+    {
+        childItems_.at(index)->updateGraphics();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::onAddressingChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::onAddressingChanged()
+{
+    if (graphItem_ != nullptr)
+    {
+        graphItem_->redoChildLayout();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::onChildAddressingChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::onChildAddressingChanged(int index)
+{
+    if (graphItem_ != nullptr)
+    {
+        childItems_.at(index)->updateGraphics();
+
+        auto childBlock = childItems_.at(index).dynamicCast<ComponentEditorAddrBlockItem>();
+        if (childBlock)
+        {
+            childBlock->onAddressingChanged();
+        }
+
+        graphItem_->redoChildLayout();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -240,7 +293,7 @@ void ComponentEditorAddrSpaceItem::changeAdressUnitBitsOnAddressBlocks()
 {
     QString addressUnitBits = addrSpace_->getAddressUnitBits();
 
-    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    for (QSharedPointer<ComponentEditorItem> childItem : childItems_)
     {
         QSharedPointer<ComponentEditorAddrBlockItem> castChildItem = 
             qobject_cast<QSharedPointer<ComponentEditorAddrBlockItem> >(childItem);
@@ -249,8 +302,6 @@ void ComponentEditorAddrSpaceItem::changeAdressUnitBitsOnAddressBlocks()
         castChildItem->addressUnitBitsChanged(newAddressUnitBits);
     }
 
-    if (editor_)
-    {
-        emit assignNewAddressUnitBits(addressUnitBits);
-    }
+
+    emit assignNewAddressUnitBits(addressUnitBits);
 }

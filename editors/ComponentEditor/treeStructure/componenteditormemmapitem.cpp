@@ -32,8 +32,6 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
     QSharedPointer<MemoryMapValidator> memoryMapValidator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
-visualizer_(NULL),
-graphItem_(NULL),
 expressionParser_(expressionParser),
 memoryMapValidator_(memoryMapValidator)
 {
@@ -48,33 +46,21 @@ memoryMapValidator_(memoryMapValidator)
         this));
     defaultRemapItem->setLocked(locked_);
 
+    MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
+    defaultRemapItem->setVisualizer(memoryRemapVisualizer);
+
     connect(defaultRemapItem.data(), SIGNAL(addressUnitBitsChanged()),
         this, SLOT(changeAdressUnitBitsOnAddressBlocks()), Qt::UniqueConnection);
 
     childItems_.append(defaultRemapItem);
 
-    foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap_->getMemoryRemaps())
+    const int childCount = memoryMap_->getMemoryRemaps()->count();
+    for (int i = 0; i < childCount; ++i)
     {
-        QSharedPointer<MemoryRemapItem> memoryRemapItem(new MemoryRemapItem(memoryRemap, memoryMap_, model,
-            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_,
-            memoryMapValidator_, this));
-        memoryRemapItem->setLocked(locked_);
-
-        MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
-        memoryRemapItem->setVisualizer(memoryRemapVisualizer);
-
-        childItems_.append(memoryRemapItem);
+        ComponentEditorMemMapItem::createChild(i);
     }
 
 	Q_ASSERT(memoryMap_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditormemmapitem::~ComponentEditorMemMapItem()
-//-----------------------------------------------------------------------------
-ComponentEditorMemMapItem::~ComponentEditorMemMapItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -147,6 +133,9 @@ void ComponentEditorMemMapItem::setVisualizer( MemoryMapsVisualizer* visualizer 
     if(memoryRemapItem)
     {
         memoryRemapItem->setVisualizer(visualizer);
+
+        connect(memoryRemapItem.data(), SIGNAL(addressingChanged()),
+            visualizer, SLOT(redoLayout()), Qt::UniqueConnection);
     }
 }
 
@@ -189,7 +178,8 @@ void ComponentEditorMemMapItem::changeAdressUnitBitsOnAddressBlocks()
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::onMemoryRemapAdded()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap)
+void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex,
+    QSharedPointer<MemoryMap> parentMemoryMap)
 {
     if (parentMemoryMap == memoryMap_)
     {
@@ -200,7 +190,8 @@ void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QShared
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::onMemoryRemapRemoved()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap)
+void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex,
+    QSharedPointer<MemoryMap> parentMemoryMap)
 {
     if (parentMemoryMap == memoryMap_)
     {

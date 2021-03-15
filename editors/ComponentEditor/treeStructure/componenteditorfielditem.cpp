@@ -25,7 +25,7 @@
 #include <IPXACTmodels/Component/Field.h>
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::ComponentEditorFieldItem()
+// Function: ComponentEditorFieldItem::ComponentEditorFieldItem()
 //-----------------------------------------------------------------------------
 ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg, QSharedPointer<Field> field,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
@@ -35,8 +35,6 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
-visualizer_(NULL),
-graphItem_(NULL),
 expressionParser_(expressionParser),
 fieldValidator_(fieldValidator)
 {
@@ -50,15 +48,7 @@ fieldValidator_(fieldValidator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::~ComponentEditorFieldItem()
-//-----------------------------------------------------------------------------
-ComponentEditorFieldItem::~ComponentEditorFieldItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::getTooltip()
+// Function: ComponentEditorFieldItem::getTooltip()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFieldItem::getTooltip() const
 {
@@ -66,7 +56,7 @@ QString ComponentEditorFieldItem::getTooltip() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::text()
+// Function: ComponentEditorFieldItem::text()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFieldItem::text() const
 {
@@ -74,7 +64,7 @@ QString ComponentEditorFieldItem::text() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::isValid()
+// Function: ComponentEditorFieldItem::isValid()
 //-----------------------------------------------------------------------------
 bool ComponentEditorFieldItem::isValid() const 
 {
@@ -82,7 +72,7 @@ bool ComponentEditorFieldItem::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::editor()
+// Function: ComponentEditorFieldItem::editor()
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorFieldItem::editor()
 {
@@ -93,7 +83,8 @@ ItemEditor* ComponentEditorFieldItem::editor()
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(addressingChanged()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
         connectItemEditorToReferenceCounter();
@@ -102,34 +93,7 @@ ItemEditor* ComponentEditorFieldItem::editor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::onEditorChanged()
-//-----------------------------------------------------------------------------
-void ComponentEditorFieldItem::onEditorChanged()
-{
-	// on field also the grand parent must be updated
-	if (parent() && parent()->parent())
-    {
-		emit contentChanged(parent()->parent());
-
-		// on field also the grand grand parent must be updated
-		if (parent()->parent()->parent())
-        {
-			emit contentChanged(parent()->parent()->parent());
-
-			// on field also the grand grand grand parent must be updated
-			if (parent()->parent()->parent()->parent())
-            {
-				emit contentChanged(parent()->parent()->parent()->parent());
-			}
-		}
-	}
-
-	// call the base class to update this and parent
-	ComponentEditorItem::onEditorChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::visualizer()
+// Function: ComponentEditorFieldItem::visualizer()
 //-----------------------------------------------------------------------------
 ItemVisualizer* ComponentEditorFieldItem::visualizer()
 {
@@ -137,27 +101,19 @@ ItemVisualizer* ComponentEditorFieldItem::visualizer()
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::setVisualizer()
+// Function: ComponentEditorFieldItem::setVisualizer()
 //-----------------------------------------------------------------------------
 void ComponentEditorFieldItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 {
 	visualizer_ = visualizer;
 
-	// get the graphics item for the memory map
-	MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-	Q_ASSERT(parentItem);
-
-	// create the graph item for the address block
-	graphItem_ = new FieldGraphItem(field_, expressionParser_, parentItem);
-
-	// register the addr block graph item for the parent
-	parentItem->addChild(graphItem_);
+	graphItem_ = new FieldGraphItem(field_, expressionParser_, nullptr);
 
 	connect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::getGraphicsItem()
+// Function: ComponentEditorFieldItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem()
 {
@@ -165,37 +121,43 @@ QGraphicsItem* ComponentEditorFieldItem::getGraphicsItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::updateGraphics()
-//-----------------------------------------------------------------------------
-void ComponentEditorFieldItem::updateGraphics()
-{
-	if (graphItem_)
-    {
-		graphItem_->refresh();
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorfielditem::removeGraphicsItem()
+// Function: ComponentEditorFieldItem::removeGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorFieldItem::removeGraphicsItem()
 {
 	if (graphItem_)
     {
-		// get the graphics item for the memory map
-		MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-		Q_ASSERT(parentItem);
-
-		// unregister addr block graph item from the memory map graph item
-		parentItem->removeChild(graphItem_);
-
-		// take the child from the parent
-		graphItem_->setParent(NULL);
-
 		disconnect(graphItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
 		// delete the graph item
 		delete graphItem_;
 		graphItem_ = NULL;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFieldItem::updateGraphics()
+//-----------------------------------------------------------------------------
+void ComponentEditorFieldItem::updateGraphics()
+{
+    onGraphicsChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFieldItem::onEditorChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorFieldItem::onEditorChanged()
+{
+    emit contentChanged(this);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFieldItem::onGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorFieldItem::onGraphicsChanged()
+{
+    if (graphItem_)
+    {
+        graphItem_->updateDisplay();
+    }
 }

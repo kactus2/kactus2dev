@@ -72,6 +72,9 @@ public:
 	 */
 	virtual void refresh();
 
+signals:
+    void addressingChanged();
+
 protected:
 
     /*!

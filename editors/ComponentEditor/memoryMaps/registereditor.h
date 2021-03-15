@@ -54,7 +54,7 @@ public:
 		QWidget* parent = 0);
 
 	//! The destructor.
-	virtual ~RegisterEditor();
+	virtual ~RegisterEditor() = default;
 
 	/*!
      *  Reload the information from the model to the editor.
@@ -71,7 +71,9 @@ signals:
     /*!
      *  Informs of a need to redraw the visualization.
      */
-    void graphicsChanged();
+    void graphicsChanged(int index);
+
+    void addressingChanged(int);
 
     /*!
      *  Sends an error message forward.

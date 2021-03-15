@@ -46,11 +46,11 @@ public:
     RegisterGraphItem(const RegisterGraphItem& other) = delete;
     RegisterGraphItem& operator=(const RegisterGraphItem& other) = delete;
 
-	//! Refresh the item, refresh and re-layout the sub-items and refresh parent item.
-    virtual void refresh() override final;
-
     //! Updates the labels and tooltip for the item.
-   virtual  void updateDisplay() override final;
+    virtual  void updateDisplay() override final;
+
+    //! Add child item.
+    virtual void addChild(MemoryVisualizationItem* childItem) override final;
 
 	//! Remove the item.
     virtual void removeChild(MemoryVisualizationItem* childItem ) override final;
@@ -97,15 +97,24 @@ public:
      */
     virtual bool isPresent() const override final;
 
+
 protected:
 
-    //! Update the child items in the map. Field items are organized according to last address.
-    virtual void updateChildMap() override final;
-    
     /*!
      *  Repositions the child items and fills the empty gaps between them.
      */
     virtual void repositionChildren() override final;
+
+    //! Removes current gaps between field items and re-sorts fields by offset.
+    virtual void removeGapsAndSortChildren() override final;
+
+    /*!
+     * Fills the gaps between fields with gap items.
+     */
+    virtual void fillGapsBetweenChildren() override final;
+
+    //! Mark all invalid fields outside register boundaries.
+    virtual void markConflictingChildren() override final;
 
 private:
 		
@@ -117,41 +126,20 @@ private:
     quint64 getSizeInAUB() const;
 
     /*!
-     *  Finds the width for the given child item.
-     *
-     *      @param [in] child   The child whose width to find.
-     *
-     *      @return The width for the child.
-     */
-    qreal findWidthFor(MemoryVisualizationItem* child) const;
-    
-    /*!
-     *  Finds the position for the given child item.
-     *
-     *      @param [in] child   The child whose position within the register item to find.
-     *
-     *      @return The position.
-     */
-    QPointF findPositionFor(MemoryVisualizationItem* child) const;
-
-    /*!
      *  Gets the MSB of the register.
-     *
-     *      @param [in] registerSize   The size of the register.
      *
      *      @return The MSB of the register.
      */
-    unsigned int getRegisterMSB(unsigned int registerSize) const;
+    unsigned int getRegisterMSB() const;
 
     /*!
-     *  Checks if there is empty memory space between the beginning of the register item and its first child.
+     * Finds the highest bit reserved by the register i.e. MSB or highest bit found in fields.
      *
-     *      @param [in] current   The currently iterated child.
-     *
-     *      @return True, if there is empty space, otherwise false.
+     *     @return The highest bit index in the register.
      */
-    bool emptySpaceBeforeLeftmostChild(MemoryVisualizationItem* current, unsigned int registerMSB) const;
-        
+    unsigned int findHighestReservedBit();
+
+
     /*!
      *  Checks if there is empty memory space between the given child and the last known used bit index.
      *
@@ -160,8 +148,18 @@ private:
      *
      *      @return True, if there is empty space, otherwise false.
      */
-    bool emptySpaceBeforeChild(MemoryVisualizationItem* current, quint64 lastBitIndexInUse) const;
-    
+    bool emptySpaceBeforeChild(MemoryVisualizationItem const* current, quint64 lastBitIndexInUse) const;
+
+    /*!
+     *  Creates a new child for representing a free memory slot.
+     *
+     *      @param [in] startAddress    The offset of the free memory slot.
+     *      @param [in] lastAddress     The last address of the free memory slot.
+     */
+    QMap<quint64, MemoryVisualizationItem*>::iterator addMemoryGap(quint64 startAddress, quint64 endAddress);
+
+
+
     /*!
      *  Checks if the two consecutive children overlap.
      *
@@ -170,24 +168,8 @@ private:
      *
      *      @return True, if the children overlap, otherwise false.
      */
-    bool childrenOverlap(MemoryVisualizationItem* current, MemoryVisualizationItem* previous);
-        
-    /*!
-     *  Creates a new child for representing a free memory slot.
-     *
-     *      @param [in] startAddress    The offset of the free memory slot.
-     *      @param [in] lastAddress     The last address of the free memory slot.
-     */
-    void createMemoryGap(quint64 startAddress, quint64 endAddress);
+    bool childrenOverlap(MemoryVisualizationItem const* current, MemoryVisualizationItem const* previous);
 
-    /* Sorting function for fields with same last address.
-     *
-     *      @param [in] s1  The left field in comparison s1 < s2.
-     *      @param [in] s2  The right field in comparison s1 < s2.
-     *
-     *      @return True, if s1 precedes s2, otherwise false.
-     */
-    static bool compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
 
     //-----------------------------------------------------------------------------
     // Data.

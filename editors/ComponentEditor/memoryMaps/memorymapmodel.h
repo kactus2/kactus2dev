@@ -59,7 +59,7 @@ public:
 		QObject *parent);
 	
 	//! The destructor.
-	virtual ~MemoryMapModel();
+	virtual ~MemoryMapModel() = default;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -209,7 +209,9 @@ signals:
     /*!
      *  Informs of a need to redraw the visualization.
      */
-    void graphicsChanged();
+    void graphicsChanged(int index);
+
+    void childAddressingChanged(int);
 
 	//! Emitted when a new memory map item is added to the given index.
 	void itemAdded(int index);

@@ -214,7 +214,7 @@ signals:
     /*!
      *  Informs of a need to redraw the visualizer.
      */
-    void graphicsChanged();
+    void graphicsChanged(int index);
 
     //! Prints an error message to the user.
     void errorMessage(const QString& msg) const;
@@ -224,6 +224,8 @@ signals:
 
     //! Emitted when a register item is removed from the given index.
     void itemRemoved(int index);
+
+    void childAddressingChanged(int index);
 
 private:
 

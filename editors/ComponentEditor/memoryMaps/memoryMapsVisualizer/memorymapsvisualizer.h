@@ -40,10 +40,16 @@ public:
 	 *      @param [in] parent    Pointer to the owner of the visualizer widget.
 	 *
 	*/
-	MemoryMapsVisualizer(QWidget *parent = 0);
+	explicit MemoryMapsVisualizer(QWidget *parent = 0);
 	
 	//! The destructor
-	virtual ~MemoryMapsVisualizer();
+	virtual ~MemoryMapsVisualizer() = default;
+
+    //! No copying
+    MemoryMapsVisualizer(const MemoryMapsVisualizer& other) = delete;
+
+    //! No assignment
+    MemoryMapsVisualizer& operator=(const MemoryMapsVisualizer& other) = delete;
 
 	/*! Add a new memory map graphics item to the scene.
 	 *
@@ -69,6 +75,11 @@ public:
 	*/
 	virtual QSize sizeHint() const;
 
+public slots:
+
+    //! Handler for events requiring a redo of the layout.
+    void redoLayout();
+
 protected:
 
     //! Handler for events when the widget is shown.
@@ -76,11 +87,6 @@ protected:
 
 private:
 	
-	//! No copying
-	MemoryMapsVisualizer(const MemoryMapsVisualizer& other);
-
-	//! No assignment
-	MemoryMapsVisualizer& operator=(const MemoryMapsVisualizer& other);
 
 	//! The view to display the items.
 	MemoryMapView* view_;

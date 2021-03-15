@@ -27,19 +27,11 @@ RegisterFileGraphItem::RegisterFileGraphItem(QSharedPointer<RegisterFile> regFil
     MemoryVisualizationItem(expressionParser, parent),
     regFile_(regFile)
 {
-    Q_ASSERT(regFile_);
-    QBrush brush(KactusColors::REGISTER_FILE_COLOR);
-    setDefaultBrush(brush);
-    updateDisplay();
-}
+    Q_ASSERT(regFile_);    
 
-//-----------------------------------------------------------------------------
-// Function: RegisterFileGraphItem::refresh()
-//-----------------------------------------------------------------------------
-void RegisterFileGraphItem::refresh()
-{
+    setDefaultBrush(QBrush(KactusColors::REGISTER_FILE_COLOR));
+
     updateDisplay();
-    reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +67,7 @@ void RegisterFileGraphItem::updateDisplay()
 quint64 RegisterFileGraphItem::getOffset() const
 {    
     // the address block's offset
-    MemoryVisualizationItem* parent = static_cast<MemoryVisualizationItem*>(parentItem());
+    auto parent = static_cast<MemoryVisualizationItem*>(parentItem());
     Q_ASSERT(parent);
     quint64 parentOffset = parent->getOffset();
     
@@ -101,6 +93,7 @@ quint64 RegisterFileGraphItem::getLastAddress() const
     {
         return 0;
     }
+
     return lastAddr - 1;
 }
 
@@ -109,7 +102,7 @@ quint64 RegisterFileGraphItem::getLastAddress() const
 //-----------------------------------------------------------------------------
 int RegisterFileGraphItem::getBitWidth() const
 {
-    MemoryVisualizationItem* parent = static_cast<MemoryVisualizationItem*>(parentItem());
+    auto parent = static_cast<MemoryVisualizationItem*>(parentItem());
     return parent->getBitWidth();
 }
 
@@ -118,7 +111,7 @@ int RegisterFileGraphItem::getBitWidth() const
 //-----------------------------------------------------------------------------
 unsigned int RegisterFileGraphItem::getAddressUnitSize() const
 {
-    MemoryVisualizationItem* parent = static_cast<MemoryVisualizationItem*>(parentItem());
+    auto parent = static_cast<MemoryVisualizationItem*>(parentItem());
     Q_ASSERT(parent);
     return parent->getAddressUnitSize();
 }

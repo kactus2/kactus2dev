@@ -37,8 +37,6 @@ ComponentEditorRegisterItem::ComponentEditorRegisterItem(QSharedPointer<Register
     QSharedPointer<RegisterValidator> registerValidator, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
-visualizer_(nullptr),
-registerItem_(nullptr),
 expressionParser_(expressionParser),
 registerValidator_(registerValidator)
 {
@@ -48,18 +46,12 @@ registerValidator_(registerValidator)
 
 	setObjectName(tr("ComponentEditorRegisterItem"));
 
-	for (QSharedPointer<Field> field : *reg_->getFields())
-    {
-		if (field)
-        {
-			QSharedPointer<ComponentEditorFieldItem> fieldItem(new ComponentEditorFieldItem(
-				reg, field, model, libHandler, component, parameterFinder, referenceCounter, expressionParser_,
-                expressionFormatter, registerValidator_->getFieldValidator(), this));
-			childItems_.append(fieldItem);
+    const int fieldCount = reg_->getFields()->count();
 
-            connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
-		}
-	}
+	for (int i = 0; i < fieldCount; ++i)
+    {
+        createChild(i);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -98,6 +90,11 @@ ItemEditor* ComponentEditorRegisterItem::editor()
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(addressingChanged()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAddressingChanged(int)), this, SLOT(onChildAddressingChanged()), Qt::UniqueConnection);
+        
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -122,33 +119,36 @@ void ComponentEditorRegisterItem::createChild( int index )
 	if (visualizer_)
     {
 		fieldItem->setVisualizer(visualizer_);
+
+        auto childItem = static_cast<MemoryVisualizationItem*>(fieldItem->getGraphicsItem());
+        Q_ASSERT(childItem);
+
+        registerItem_->addChild(childItem);
+        onChildAddressingChanged();
+
+        connect(fieldItem.data(), SIGNAL(addressingChanged()), this, SLOT(onChildAddressingChanged()));
 	}
-
-
-    connect(fieldItem.data(), SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
 
 	childItems_.insert(index, fieldItem);
 }
 
 //-----------------------------------------------------------------------------
-// Function: componenteditorregisteritem::onEditorChanged()
+// Function: componenteditorregisteritem::removeChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorRegisterItem::onEditorChanged()
+void ComponentEditorRegisterItem::removeChild(int index)
 {
-	// on register also the grand parent must be updated
-	if (parent() && parent()->parent())
+    auto fieldItem = childItems_.at(index).dynamicCast<ComponentEditorFieldItem>();
+
+    if (visualizer_)
     {
-		emit contentChanged(parent()->parent());
+        auto childItem = static_cast<MemoryVisualizationItem*>(fieldItem->getGraphicsItem());
+        Q_ASSERT(childItem);
 
-		// on register also the grand grand parent must be updated
-		if (parent()->parent()->parent())
-        {
-			emit contentChanged(parent()->parent()->parent());
-		}
-	}
+        registerItem_->removeChild(childItem);
+        onChildAddressingChanged();
+    }
 
-	// call the base class to update this and parent
-	ComponentEditorItem::onEditorChanged();
+    ComponentEditorItem::removeChild(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -165,22 +165,29 @@ ItemVisualizer* ComponentEditorRegisterItem::visualizer()
 void ComponentEditorRegisterItem::setVisualizer(MemoryMapsVisualizer* visualizer)
 {
 	visualizer_ = visualizer;
-    connect(visualizer_, SIGNAL(displayed()), this, SLOT(updateGraphics()), Qt::UniqueConnection);
 
-    MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+    auto parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
     Q_ASSERT(parentItem);
 
     registerItem_ = new RegisterGraphItem(reg_, expressionParser_, parentItem);
-    parentItem->addChild(registerItem_);
     
     connect(registerItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()), Qt::UniqueConnection);
 
 	// update the visualizers for field items
-	for (QSharedPointer<ComponentEditorItem> item : childItems_)
+	for (auto& item : childItems_)
     {
-		QSharedPointer<ComponentEditorFieldItem> fieldItem = item.staticCast<ComponentEditorFieldItem>();
+		auto fieldItem = item.staticCast<ComponentEditorFieldItem>();
 		fieldItem->setVisualizer(visualizer_);
+
+        auto childItem = static_cast<MemoryVisualizationItem*>(fieldItem->getGraphicsItem());
+        Q_ASSERT(childItem);
+
+        registerItem_->addChild(childItem);
+
+        connect(item.data(), SIGNAL(addressingChanged()), this, SLOT(onChildAddressingChanged()));
 	}
+
+    registerItem_->redoChildLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -196,10 +203,7 @@ QGraphicsItem* ComponentEditorRegisterItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::updateGraphics()
 {
-	if (registerItem_ != nullptr)
-    {
-        registerItem_->refresh();
-	}
+    onGraphicsChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -207,12 +211,42 @@ void ComponentEditorRegisterItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::onGraphicsChanged()
 {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    ComponentEditorItem::onGraphicsChanged();
+    if (registerItem_ != nullptr)
+    {
+        registerItem_->updateDisplay();
+    }
+}
 
-    parent()->updateGraphics();
-    parent()->parent()->updateGraphics();
-    QApplication::restoreOverrideCursor();
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::onChildGraphicsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::onChildGraphicsChanged(int index)
+{
+    childItems_.at(index)->updateGraphics();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::onAddressingChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::onAddressingChanged()
+{
+    if (registerItem_ != nullptr)
+    {
+        registerItem_->redoChildLayout();
+
+        emit addressingChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterItem::onChildAddressingChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterItem::onChildAddressingChanged()
+{
+    if (registerItem_ != nullptr)
+    {
+        registerItem_->redoChildLayout();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -220,15 +254,17 @@ void ComponentEditorRegisterItem::onGraphicsChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorRegisterItem::removeGraphicsItem()
 {
-    // get the graphics item for the address block.
-    MemoryVisualizationItem* parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
-    Q_ASSERT(parentItem);
+    if (registerItem_)
+    {
+        // get the graphics item for the address block.
+        auto parentItem = static_cast<MemoryVisualizationItem*>(parent()->getGraphicsItem());
+        Q_ASSERT(parentItem);
 
-    parentItem->removeChild(registerItem_);
-    registerItem_->setParent(0);
+        registerItem_->setParent(nullptr);
 
-    disconnect(registerItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
+        disconnect(registerItem_, SIGNAL(selectEditor()), this, SLOT(onSelectRequest()));
 
-    delete registerItem_;
-    registerItem_ = 0;
+        delete registerItem_;
+        registerItem_ = nullptr;
+    }
 }

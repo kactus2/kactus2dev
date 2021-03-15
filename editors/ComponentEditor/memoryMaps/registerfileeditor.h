@@ -62,7 +62,7 @@ public:
     RegisterFileEditor& operator=(const RegisterFileEditor& other) = delete;
 
     //! Refresh the editor content.
-    virtual void refresh();
+    void refresh();
 
 signals:
     /*!
@@ -73,7 +73,7 @@ signals:
     /*!
      *  Informs of a need to redraw the visualizer.
      */
-    void graphicsChanged();
+    void graphicsChanged(int index);
 
     /*!
      *  Sends an error message forward.
@@ -118,6 +118,8 @@ signals:
     void childRemoved(int index);
 
     void addressUnitBitsChanged(int);
+
+    void childAddressingChanged(int index);
 
 private:
 

@@ -47,10 +47,6 @@ public:
     RegisterFileGraphItem(const RegisterFileGraphItem& other) = delete;
     RegisterFileGraphItem& operator=(const RegisterFileGraphItem& other) = delete;
 
-
-    //! Refresh the item and the parent item.
-    virtual void refresh() override final;
-
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override final;
 
@@ -91,7 +87,7 @@ public:
 
 private:
 
-    //! Pointer to the register being visualized.
+    //! The register file being visualized.
     QSharedPointer<RegisterFile> regFile_;
 
 };

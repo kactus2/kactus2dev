@@ -55,7 +55,7 @@ public:
 		QObject *parent);
 	
 	//! The destructor.
-	virtual ~RegisterTableModel();
+	virtual ~RegisterTableModel() = default;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -198,7 +198,9 @@ signals:
     /*!
      *  Informs of a need to redraw the visualization.
      */
-    void graphicsChanged();
+    void graphicsChanged(int index);
+
+    void addressingChanged(int index);
 
 	//! Emitted when a new field is added to the given index.
 	void fieldAdded(int index);

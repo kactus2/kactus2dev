@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGapItem()
 //-----------------------------------------------------------------------------
-AddressSpaceGapItem::AddressSpaceGapItem(AddressSpaceGapItem::AddressPosition addrPos,
+AddressSpaceGapItem::AddressSpaceGapItem(VisualizerItem::LabelLayout addrPos,
                                          QString const& addressSpaceWidth,
                                          QSharedPointer<ExpressionParser> expressionParser,
 										 QGraphicsItem* parent):
@@ -28,14 +28,8 @@ end_(0),
 addrPosition_(addrPos) 
 {
     setDefaultBrush(QBrush(Qt::white));
-    if (addrPos == AddressSpaceGapItem::ALIGN_LEFT)
-    {
-        setNamePosition(VisualizerItem::NAME_LEFT_ALIGN, VisualizerItem::NAME_MIDDLE);
-    }
-    else //if (addrPos == AddressSpaceGapItem::ALIGN_RIGHT)
-    {
-        setNamePosition(VisualizerItem::NAME_RIGHT_ALIGN, VisualizerItem::NAME_MIDDLE);
-    }
+
+    setLayoutType(addrPos);
 	setName("...");
     setToolTip("This memory block is unassigned.");
 }
@@ -47,14 +41,14 @@ void AddressSpaceGapItem::refresh()
 {
     if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT)
     {
-        setLeftTopCorner(start_);
+        setTopLabelText(start_);
         if (end_ != start_)
         {
-            setLeftBottomCorner(end_);
+            setBottomLabelText(end_);
         }
         else
         {
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
     }
 
@@ -67,14 +61,14 @@ void AddressSpaceGapItem::refresh()
         }
         else
         {
-            VisualizerItem::setRightBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
     }
 
     setOverlappingTop(start_);
     setOverlappingBottom(end_);
 
-    VisualizerItem::reorganizeChildren();
+    repositionLabels();
 }
 
 //-----------------------------------------------------------------------------
@@ -126,15 +120,6 @@ void AddressSpaceGapItem::setEndAddress( quint64 address, bool contains /*= true
 }
 
 //-----------------------------------------------------------------------------
-// Function: setAddressAlign()
-//-----------------------------------------------------------------------------
-void AddressSpaceGapItem::setAddressAlign(AddressSpaceGapItem::AddressPosition pos )
-{
-	addrPosition_ = pos;
-	refresh();
-}
-
-//-----------------------------------------------------------------------------
 // Function: setOverlappingTop()
 //-----------------------------------------------------------------------------
 void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
@@ -143,15 +128,15 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
 
     if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT)
     {
-        setLeftTopCorner(firstFreeAddress_);
+        setTopLabelText(firstFreeAddress_);
 
         if (firstFreeAddress_ == lastFreeAddress_)
         {
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
         else
         {
-            setLeftBottomCorner(lastFreeAddress_);
+            setBottomLabelText(lastFreeAddress_);
         }
     }
 
@@ -161,7 +146,7 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
 
         if (firstFreeAddress_ == lastFreeAddress_)
         {        
-            VisualizerItem::setRightBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
         else
         {
@@ -181,11 +166,11 @@ void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
     {
         if (firstFreeAddress_ == lastFreeAddress_)
         {
-            VisualizerItem::setLeftBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
         else
         {
-            setLeftBottomCorner(lastFreeAddress_);
+            setBottomLabelText(lastFreeAddress_);
         }
     }
 
@@ -193,7 +178,7 @@ void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
     {  
         if (firstFreeAddress_ == lastFreeAddress_)
         {
-            VisualizerItem::setRightBottomCorner("");
+            VisualizerItem::setBottomLabelText("");
         }
         else
         {

@@ -14,25 +14,14 @@
 //-----------------------------------------------------------------------------
 // Function: FieldGapItem()
 //-----------------------------------------------------------------------------
-FieldGapItem::FieldGapItem(QSharedPointer<ExpressionParser> parser, QGraphicsItem* parent):
-MemoryGapItem(parser, parent)
-{
-	// fields show name in the middle
-	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
-
-	// fields can never be expanded
-	setExpansionRectVisible(false);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGapItem()
-//-----------------------------------------------------------------------------
 FieldGapItem::FieldGapItem(QString const& name, QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem* parent):
 MemoryGapItem(expressionParser, parent)
 {
     // fields show name in the middle
-    setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
+    setLayoutType(LABELS_TOP);
+    setClipText(true);
+
     setName(name);
 
     // fields can never be expanded
@@ -40,26 +29,16 @@ MemoryGapItem(expressionParser, parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~FieldGapItem()
+// Function: updateDisplay()
 //-----------------------------------------------------------------------------
-FieldGapItem::~FieldGapItem()
+void FieldGapItem::updateDisplay()
 {
+	QString startStr = QString::number(firstAddress_);
+    VisualizerItem::setBottomLabelText(startStr);
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: refresh()
-//-----------------------------------------------------------------------------
-void FieldGapItem::refresh()
-{
-	QString startStr = QString::number(start_);
-	VisualizerItem::setRightTopCorner(startStr);
-
-	QString endStr = QString::number(end_);
-	setLeftTopCorner(endStr);
+	QString endStr = QString::number(lastAddress_);
+    VisualizerItem::setTopLabelText(endStr);
     setToolTip("<b>" + name() + "</b> [" + endStr + ".." + startStr + "]");
-
-	VisualizerItem::reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +46,7 @@ void FieldGapItem::refresh()
 //-----------------------------------------------------------------------------
 int FieldGapItem::getBitWidth() const
 {
-	return end_ - start_ + 1;
+	return lastAddress_ - firstAddress_ + 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -79,42 +58,9 @@ qreal FieldGapItem::itemTotalWidth() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: setStartAddress()
+// Function: FieldGapItem::setConflicted()
 //-----------------------------------------------------------------------------
-void FieldGapItem::setStartAddress(quint64 address)
+void FieldGapItem::setConflicted(bool /*conflicted*/)
 {
-    start_ = address;
- 
-    setDisplayLastAddress(start_);
-	refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: setEndAddress()
-//-----------------------------------------------------------------------------
-void FieldGapItem::setEndAddress(quint64 address)
-{
-    end_ = address;
-
-    setDisplayOffset(end_);
-	refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGapItem::setDisplayOffset()
-//-----------------------------------------------------------------------------
-void FieldGapItem::setDisplayOffset(quint64 const& address)
-{
-    firstFreeAddress_ = address;
-    setLeftTopCorner(QString::number(firstFreeAddress_));
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: FieldGapItem::setDisplayLastAddress()
-//-----------------------------------------------------------------------------
-void FieldGapItem::setDisplayLastAddress(quint64 const& address)
-{
-    lastFreeAddress_ = address;
-    setRightTopCorner(QString::number(lastFreeAddress_));
+    // Do nothing.
 }

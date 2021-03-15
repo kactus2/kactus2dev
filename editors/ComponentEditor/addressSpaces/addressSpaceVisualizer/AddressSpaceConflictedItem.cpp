@@ -14,26 +14,23 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceConflictedItem()
 //-----------------------------------------------------------------------------
-AddressSpaceConflictedItem::AddressSpaceConflictedItem(AddressSpaceConflictedItem::AddressPosition addrPos,
+AddressSpaceConflictedItem::AddressSpaceConflictedItem(VisualizerItem::LabelLayout addrPos,
                                                        QString const& addressSpaceWidth,
                                                        QSharedPointer<ExpressionParser> expressionParser,
                                                        QGraphicsItem* parent):
 AddressSpaceGapItem(addrPos, addressSpaceWidth, expressionParser, parent)
 {
-    //QBrush brush(KactusColors::DRAFT_COMPONENT);
-    //setDefaultBrush(QBrush());
     setConflicted(true);
     setName("Conflicted");
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~refresh()
+// Function: AddressSpaceConflictedItem::refresh()
 //-----------------------------------------------------------------------------
 void AddressSpaceConflictedItem::refresh()
 {
     AddressSpaceGapItem::refresh();
 
-    // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Two or more memory blocks are mapped to these addresses.<br>First address: </b>" + 
         addr2Str(getOffset(), getBitWidth()) + "<br>" +
         "<b>Last address: </b>" + addr2Str(getLastAddress(),getBitWidth()));

@@ -63,7 +63,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~SingleMemoryMapEditor();
+    virtual ~SingleMemoryMapEditor() = default;
 
 	/*!
 	 *  Reload the information from the model to the editor.
@@ -114,6 +114,10 @@ signals:
      *      @param [in] newAddressUnitBits  The new address unit bits.
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
+
+    void childAddressingChanged(int);
+
+    void childGraphicsChanged(int);
 
 private:
 
