@@ -34,5 +34,5 @@ jobs:
       run: |
         echo 'QTDIR=d:/a/kactus2dev/Qt/5.12.7/msvc2017_64' >> $GITHUB_ENV
         msbuild -m:4 -p:Configuration=Release -p:Platform=x64 -p:PlatformToolset=v142 Kactus2_Solution_vs2017.sln      
-      env:
+
         
