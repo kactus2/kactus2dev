@@ -285,7 +285,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/PortWireTypeDelegate.h \
     ./editors/ComponentEditor/ports/PortsEditorConstructor.h \
     ./editors/ComponentEditor/ports/PortsFilter.h \
-    ./editors/ComponentEditor/ports/interfaces/PortsInterface.h \
     ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeView.h \
     ./editors/ComponentEditor/ports/WirePortsEditorConstructor.h \
@@ -299,6 +298,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
     ./editors/ComponentEditor/ports/PortsView.h \
+    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.h \
+    ./editors/ComponentEditor/ports/interfaces/PortsInterface.h \
     ./editors/ComponentEditor/parameters/AbstractParameterInterface.h \
     ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
@@ -361,6 +362,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.h \
     ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.h \
     ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.h \
+    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h \
     ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
@@ -663,6 +665,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
+    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h \
     ./editors/common/BusInterfaceUtilities.h \
     ./editors/common/ColumnTypes.h \
     ./editors/common/DefaultRouting.h \
@@ -864,8 +867,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h \
-    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.h
+    ./editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1119,6 +1121,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.cpp \
     ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.cpp \
+    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.cpp \
     ./editors/ComponentEditor/channels/channelsdelegate.cpp \
     ./editors/ComponentEditor/channels/channelseditor.cpp \
     ./editors/ComponentEditor/channels/channelsmodel.cpp \
@@ -1172,7 +1175,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/portsdelegate.cpp \
     ./editors/ComponentEditor/ports/portseditor.cpp \
     ./editors/ComponentEditor/ports/PortsFilter.cpp \
-    ./editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
     ./editors/ComponentEditor/ports/portsmodel.cpp \
     ./editors/ComponentEditor/ports/PortsView.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
@@ -1190,6 +1192,8 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/WirePortsEditorConstructor.cpp \
     ./editors/ComponentEditor/ports/WirePortsFilter.cpp \
     ./editors/ComponentEditor/ports/WirePortsModel.cpp \
+    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp \
+    ./editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
@@ -1427,6 +1431,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.cpp \
+    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.cpp \
     ./editors/CatalogEditor/CatalogEditor.cpp \
     ./editors/CatalogEditor/CatalogFileDelegate.cpp \
     ./editors/CatalogEditor/CatalogFileFilter.cpp \
@@ -1618,6 +1623,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.cpp \
-    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp
+    ./editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.cpp
 RESOURCES += kactus.qrc

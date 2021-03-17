@@ -17,8 +17,6 @@
 #include <QComboBox>
 #include <QSharedPointer>
 
-class BusInterface;
-
 //-----------------------------------------------------------------------------
 //! The editor to select an interface mode for bus interface within a component.
 //-----------------------------------------------------------------------------
@@ -28,32 +26,26 @@ class InterfaceModeSelector : public QComboBox
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
-	 *      @param [in] parent The owner of this editor,
-	 *      @param [in] busif The bus interface that sets the selected interface at start.
-	 *      @param [in] showMonitor If this is true then also "monitor" option is shown.
-	 *
-	*/
-	InterfaceModeSelector(QWidget *parent, QSharedPointer<BusInterface> busif = QSharedPointer<BusInterface>(),
-		bool showMonitor = true);
+	 *      @param [in] mode            The interface mode that is selected at start.
+	 *      @param [in] parent          The owner of the editor.
+	 *      @param [in] showMonitor     If this is true then also "monitor" option is shown.
+     */
+    InterfaceModeSelector(QWidget* parent, General::InterfaceMode mode = General::INTERFACE_MODE_COUNT,
+        bool showMonitor = true);
 
-	/*! The constructor
-	 *
-	 *      @param [in] mode The interface mode that is selected at start.
-	 *      @param [in] parent The owner of the editor.
-	 *      @param [in] showMonitor If this is true then also "monitor" option is shown.
-	 *
-	*/
-	InterfaceModeSelector(General::InterfaceMode mode, 	QWidget* parent, bool showMonitor = true);
-
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~InterfaceModeSelector();
 
-	/*! Get the currently selected mode.
+	/*!
+     *  Get the currently selected mode.
 	 *
 	 *      @return The selected interface mode.
-	*/
+     */
 	General::InterfaceMode selected() const;
 
 public slots:

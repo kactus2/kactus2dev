@@ -19,6 +19,7 @@
 class IndirectInterface;
 class IndirectInterfaceValidator;
 class ExpressionParser;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for single bus interface in the component editor's navigation tree.
@@ -41,6 +42,7 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression parser.
      *      @param [in] validator               The validator for bus interfaces.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
 	 *      @param [in] parent                  The owner of this item.
 	 *      @param [in] parentWnd               The parent window.
 	 */
@@ -53,7 +55,8 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<IndirectInterfaceValidator> validator,
-		ComponentEditorItem* parent,
+        BusInterfaceInterface* busInterface,
+        ComponentEditorItem* parent,
         QWidget* parentWnd);
 
 	//! The destructor
@@ -101,6 +104,9 @@ private:
 
     //! The validator for indirect interfaces.
     QSharedPointer<IndirectInterfaceValidator> validator_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // SingleIndirectInterfaceItem_H

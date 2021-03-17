@@ -13,6 +13,8 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h>
@@ -39,30 +41,31 @@
 // Function: BusInterfacePortMapTab::BusInterfacePortMapTab()
 //-----------------------------------------------------------------------------
 BusInterfacePortMapTab::BusInterfacePortMapTab(LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busif, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> finder, PortMapInterface* portMapInterface, QWidget* parent):
+    BusInterfaceInterface* busInterface, std::string const& busName,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> finder,
+    PortMapInterface* portMapInterface, QWidget* parent):
 QWidget(parent),
-busif_(busif),
+busInterface_(busInterface),
+busName_(busName),
 component_(component),
 libHandler_(libHandler),
 physicalPortView_(this),
 physicalPortModel_(portMapInterface->getPhysicalPortInterface(), this),
-physicalPortSorter_(component_, portMapInterface->getPhysicalPortInterface(), this),
+physicalPortSorter_(0, portMapInterface->getPhysicalPortInterface(),
+    busInterface->getAbstractionTypeInterface(), this),
 nameFilterEditor_(new QLineEdit(this)),
 typeFilter_(this),
 directionFilter_(this),
 hideConnectedPortsBox_(this),
 physicalPrefixEditor_(new QLineEdit(this)),
 portMapsModel_(component, libHandler, finder, portMapInterface, this),
-portMapsSorter_(busif_, this),
+portMapsSorter_(this),
 portMapsView_(this),
 portMapsDelegate_(0),
 autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
 removeAllMappingsButton_(QIcon(":/icons/common/graphics/cross.png"), "Remove all", this),
 autoConnector_(component, expressionParser, portMapInterface, libHandler, this),
-abstractionSelector_(new QComboBox(this)),
-abstractions_(),
-portMapInterface_(portMapInterface)
+abstractionSelector_(new QComboBox(this))
 {
     hideConnectedPortsBox_.setCheckState(Qt::Checked);
 
@@ -108,13 +111,6 @@ portMapInterface_(portMapInterface)
     addItemsToDirectionFilter();
 
     connectItems();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfacePortMapTab::~BusInterfacePortMapTab()
-//-----------------------------------------------------------------------------
-BusInterfacePortMapTab::~BusInterfacePortMapTab()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -169,6 +165,8 @@ void BusInterfacePortMapTab::refresh()
 {
     setupAbstraction();
 
+    busInterface_->setupSubInterfaces(busName_);
+
     physicalPortModel_.refresh();
     portMapsModel_.refresh();
 
@@ -183,29 +181,31 @@ void BusInterfacePortMapTab::setAbstractionDefinitions()
     QString currentAbstraction = abstractionSelector_->currentText();
 
     abstractionSelector_->clear();
-    abstractions_.clear();
 
-    if (!busif_->getAbstractionTypes()->isEmpty())
+    busInterface_->setupSubInterfaces(busName_);
+
+    AbstractionTypeInterface* abstractionInterface = busInterface_->getAbstractionTypeInterface();
+    int abstractionCount = abstractionInterface->itemCount();
+    if (abstractionCount > 0)
     {
         int currentIndex = 0;
-        for (int i = 0; i < busif_->getAbstractionTypes()->size(); ++i)
+        for (int i = 0; i < abstractionCount; ++i)
         {
-            QSharedPointer<AbstractionType> abstraction = busif_->getAbstractionTypes()->at(i);
-            abstractions_.append(abstraction);
-
-            if (abstraction->getAbstractionRef())
+            if (abstractionInterface->hasAbstractionReference(i))
             {
-                abstractionSelector_->addItem(abstraction->getAbstractionRef()->toString());
+                QString abstractionReference =
+                    QString::fromStdString(abstractionInterface->getIndexedAbstraction(i));
 
-                if (!currentAbstraction.isEmpty() &&
-                    abstraction->getAbstractionRef()->toString() == currentAbstraction)
+                abstractionSelector_->addItem(abstractionReference);
+
+                if (!currentAbstraction.isEmpty() && abstractionReference == currentAbstraction)
                 {
                     currentIndex = i;
                 }
             }
         }
 
-        if (!abstractions_.isEmpty())
+        if (abstractionCount > 0)
         {
             abstractionSelector_->setCurrentIndex(currentIndex);
         }
@@ -227,37 +227,36 @@ void BusInterfacePortMapTab::onAbstractionChanged()
 //-----------------------------------------------------------------------------
 void BusInterfacePortMapTab::setupAbstraction()
 {
-    QSharedPointer<AbstractionType> currentAbstraction;
-
     int currentAbstractionIndex = abstractionSelector_->currentIndex();
-    if (currentAbstractionIndex >= 0)
-    {
-        currentAbstraction = abstractions_.at(abstractionSelector_->currentIndex());
-    }
-
-    setAbsType(currentAbstraction);
+    setAbsType(currentAbstractionIndex);
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfacePortMapTab::setAbsType()
 //-----------------------------------------------------------------------------
-void BusInterfacePortMapTab::setAbsType(QSharedPointer<AbstractionType> abstraction)
+void BusInterfacePortMapTab::setAbsType(int const& abstractionIndex)
 {
-    General::InterfaceMode busMode = busif_->getInterfaceMode();
-    if (busMode == General::MONITOR && busif_->getMonitor())
-    {
-        busMode = busif_->getMonitor()->interfaceMode_;
-    }
+    AbstractionTypeInterface* abstractionInterface = busInterface_->getAbstractionTypeInterface();
+    General::InterfaceMode busMode = busInterface_->getMode(busName_);
+    QString systemGroup = QString::fromStdString(busInterface_->getSystemGroup(busName_));
 
-    QString systemGroup = busif_->getSystem();
+    if (busMode == General::MONITOR)
+    {
+        General::InterfaceMode monitorMode = busInterface_->getMonitorMode(busName_);
+        if (monitorMode != General::INTERFACE_MODE_COUNT)
+        {
+            busMode = monitorMode;
+            systemGroup = QString::fromStdString(busInterface_->getMonitorGroup(busName_));
+        }
+    }
 
     VLNV definitionVLNV;
-    if (abstraction && abstraction->getAbstractionRef())
+    if (abstractionInterface->hasAbstractionReference(abstractionIndex))
     {
-        definitionVLNV = *abstraction->getAbstractionRef().data();
+        definitionVLNV = *abstractionInterface->getAbstractionReference(abstractionIndex).data();
     }
 
-    physicalPortSorter_.setNewAbstractionType(abstraction);
+    physicalPortSorter_.setNewAbstractionType(abstractionIndex);
 
     QSharedPointer<Document const> absDefDocument = libHandler_->getModelReadOnly(definitionVLNV);
     if (absDefDocument && libHandler_->getDocumentType(definitionVLNV) == VLNV::ABSTRACTIONDEFINITION)
@@ -265,8 +264,8 @@ void BusInterfacePortMapTab::setAbsType(QSharedPointer<AbstractionType> abstract
         QSharedPointer<AbstractionDefinition const> abstractionDefinition =
             absDefDocument.dynamicCast<AbstractionDefinition const>();
 
-        portMapInterface_->setPortMaps(
-            abstractionDefinition, abstraction, busMode, systemGroup.toStdString(), component_);
+        abstractionInterface->setupPortMapInterface(
+            abstractionDefinition, abstractionIndex, busMode, systemGroup.toStdString(), component_);
 
         portMapsDelegate_->updateLogicalPortNames(definitionVLNV, busMode, systemGroup);
         autoConnector_.setAbstractionDefinition(definitionVLNV, busMode, systemGroup);
@@ -467,4 +466,12 @@ void BusInterfacePortMapTab::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     emit helpUrlRequested("componenteditor/portmaps.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacePortMapTab::changeBusName()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::changeBusName(std::string const& newName)
+{
+    busName_ = newName;
 }

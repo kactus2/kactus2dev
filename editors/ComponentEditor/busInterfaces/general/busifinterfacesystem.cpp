@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 7.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifinterfacesystem.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busifinterfacesystem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 7.4.2011
+//
+// Description:
+// Editor to edit system or mirrored system details of a bus interface.
+//-----------------------------------------------------------------------------
 
 #include "busifinterfacesystem.h"
 
@@ -11,11 +15,11 @@
 
 #include <library/LibraryInterface.h>
 
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
-
 #include <IPXACTmodels/Component/BusInterface.h>
 
-#include <IPXACTmodels/common/VLNV.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 #include <QFormLayout>
 #include <QStringList>
@@ -23,24 +27,13 @@
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceSystem::BusIfInterfaceSystem()
 //-----------------------------------------------------------------------------
-BusIfInterfaceSystem::BusIfInterfaceSystem(General::InterfaceMode mode, 
-    LibraryInterface* libHandler,
-    QSharedPointer<BusInterface> busif,
-    QSharedPointer<Component> component,
-    QWidget *parent):
-BusIfInterfaceModeEditor(busif, component, tr("System"), parent),
-    mode_(mode),
-    monitor_(busif->getMonitor()),
-    libHandler_(libHandler), 
-    groupEditor_(this)
+BusIfInterfaceSystem::BusIfInterfaceSystem(BusInterfaceInterface* busInterface, std::string const& busName,
+    LibraryInterface* libHandler, QWidget *parent):
+BusIfInterfaceModeEditor(busInterface, busName, tr("System"), parent),
+libHandler_(libHandler),
+groupEditor_(this)
 {
-    Q_ASSERT(mode == General::SYSTEM || mode == General::MIRROREDSYSTEM);
-
-    if (mode == General::SYSTEM)
-    {
-        setTitle(tr("System"));
-    }
-    else if(mode == General::MIRROREDSYSTEM) 
+    if(busInterface->getMode(busName) == General::MIRROREDSYSTEM) 
     {
         setTitle(tr("Mirrored system"));
     }
@@ -52,13 +45,6 @@ BusIfInterfaceModeEditor(busif, component, tr("System"), parent),
 
     QFormLayout* groupLayout = new QFormLayout(this);
     groupLayout->addRow(tr("System group:"), &groupEditor_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSystem::~BusIfInterfaceSystem()
-//-----------------------------------------------------------------------------
-BusIfInterfaceSystem::~BusIfInterfaceSystem()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -85,16 +71,21 @@ void BusIfInterfaceSystem::refresh()
 	// remove previous items in the combo box
 	groupEditor_.clear();
 
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
 	// the selected bus definition defines the groups that can be used
-	VLNV busDefVLNV = busif_->getBusType();
-	
+    VLNV busDefVLNV = busInterface->getBusType(busName);
+
 	// if there is no bus definition specified there is nothing to select
-	if (!busDefVLNV.isValid()) {
+	if (!busDefVLNV.isValid())
+    {
 		return;
 	}
 
 	// if the bus definition does not exist then it can't be read to find the groups
-	if (!libHandler_->contains(busDefVLNV)) {
+	if (!libHandler_->contains(busDefVLNV))
+    {
 		emit errorMessage(tr("The selected bus type does not exist in library."));
 		return;
 	}
@@ -103,7 +94,8 @@ void BusIfInterfaceSystem::refresh()
 	Q_ASSERT(libComp);
 
 	// if the library component with given vlnv was not a bus definition
-	if (libHandler_->getDocumentType(busDefVLNV) != VLNV::BUSDEFINITION) {
+	if (libHandler_->getDocumentType(busDefVLNV) != VLNV::BUSDEFINITION)
+    {
 		emit errorMessage(tr("Bus type VLNV was wrong type"));
 		return;
 	}
@@ -119,7 +111,7 @@ void BusIfInterfaceSystem::refresh()
 
     if (oldText.isEmpty())
     {
-         index = groupEditor_.findText(busif_->getSystem());
+        index = groupEditor_.findText(QString::fromStdString(busInterface->getSystemGroup(busName)));
     }
     else
     {
@@ -138,7 +130,7 @@ void BusIfInterfaceSystem::refresh()
 //-----------------------------------------------------------------------------
 General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const
 {
-	return mode_;
+    return getBusInterface()->getMode(getBusName());
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +138,7 @@ General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSystem::onGroupChange(QString const&)
 {
-	busif_->setSystem(groupEditor_.currentText());
+    getBusInterface()->setSystemGroup(getBusName(), groupEditor_.currentText().toStdString());
 	emit contentChanged();
 }
 
@@ -155,5 +147,5 @@ void BusIfInterfaceSystem::onGroupChange(QString const&)
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSystem::saveModeSpecific()
 {
-	busif_->setSystem(groupEditor_.currentText());
+    getBusInterface()->setSystemGroup(getBusName(), groupEditor_.currentText().toStdString());
 }

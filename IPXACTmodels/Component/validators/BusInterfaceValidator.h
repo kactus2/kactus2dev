@@ -198,6 +198,15 @@ public:
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context) const;
 
+    /*!
+     *  Check if the selected transparent bridges are valid.
+     *
+     *      @param [in] bridges     The selected transparent bridges.
+     *
+     *      @return True, if the bridges are valid, otherwise false.
+     */
+    bool slaveInterfaceHasValidBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const;
+
 private:
 
 	// Disable copying.
@@ -234,15 +243,6 @@ private:
      */
     bool slaveInterfaceHasValidMemoryMapRef(QSharedPointer<BusInterface> busInterface,
         QSharedPointer<SlaveInterface> slave) const;
-
-    /*!
-     *  Check if the slave interface has valid bridges.
-     *
-     *      @param [in] slave   The selected slave interface.
-     *
-     *      @return True, if the bridges are valid, otherwise false.
-     */
-    bool slaveInterfaceHasValidBridges(QSharedPointer<SlaveInterface> slave) const;
 
     /*!
      *  Check if a slave interface bridge have a valid master interface reference.

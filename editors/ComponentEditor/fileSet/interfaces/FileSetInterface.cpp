@@ -383,3 +383,19 @@ const
 
     return expressionList;
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileSetInterface::fileSetExists()
+//-----------------------------------------------------------------------------
+bool FileSetInterface::fileSetExists(std::string const& fileSetName) const
+{
+    QString fileSetNameQ = QString::fromStdString(fileSetName);
+    foreach(QSharedPointer<FileSet> fileSet, *fileSets_)
+    {
+        if (fileSet->name() == fileSetNameQ)
+        {
+            return true;
+        }
+    }
+    return false;
+}

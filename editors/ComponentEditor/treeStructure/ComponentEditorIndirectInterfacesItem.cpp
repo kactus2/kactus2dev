@@ -25,13 +25,14 @@ ComponentEditorIndirectInterfacesItem::ComponentEditorIndirectInterfacesItem(Com
     LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    ComponentEditorItem* parent, QWidget* parentWnd):
+    BusInterfaceInterface* busInterface, ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 indirectInterfaces_(component->getIndirectInterfaces()),
 expressionParser_(expressionParser),
 validator_(new IndirectInterfaceValidator(component, expressionParser,
     QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())))),
-parentWnd_(parentWnd)
+parentWnd_(parentWnd),
+busInterface_(busInterface)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -41,7 +42,7 @@ parentWnd_(parentWnd)
     {
 		QSharedPointer<SingleIndirectInterfaceItem> interfaceItem(new SingleIndirectInterfaceItem(
             indirectInterface, model, libHandler, component, referenceCounter_, parameterFinder_,
-            expressionFormatter_, expressionParser_, validator_, this, parentWnd));
+            expressionFormatter_, expressionParser_, validator_, busInterface_, this, parentWnd));
 
         connect(interfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
             this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
@@ -103,7 +104,7 @@ void ComponentEditorIndirectInterfacesItem::createChild(int index)
 {
 	QSharedPointer<SingleIndirectInterfaceItem> interfaceItem(new SingleIndirectInterfaceItem(
         indirectInterfaces_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
-        expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
+        expressionFormatter_, expressionParser_, validator_, busInterface_, this, parentWnd_));
 	interfaceItem->setLocked(locked_);
 
     connect(interfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),

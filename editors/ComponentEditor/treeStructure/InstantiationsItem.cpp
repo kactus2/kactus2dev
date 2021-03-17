@@ -20,6 +20,8 @@
 #include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
 #include <editors/ComponentEditor/instantiations/InstantiationsEditor.h>
 #include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
 #include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
@@ -27,6 +29,8 @@
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/Component/validators/FileValidator.h>
+#include <IPXACTmodels/Component/validators/FileSetValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: InstantiationsItem::InstantiationsItem()
@@ -180,6 +184,15 @@ void InstantiationsItem::constructInterfaces()
 
     FileBuilderInterface* fileBuilderInterface = new FileBuilderInterface(cimpParser, moduleFormatter);
 
+    QSharedPointer<FileValidator> fileValidator(new FileValidator(expressionParser_));
+    FileInterface* fileInterface = new FileInterface(fileValidator, expressionParser_, moduleFormatter);
+
+    QSharedPointer<FileSetValidator> fileSetValidator(new FileSetValidator(fileValidator, expressionParser_));
+    FileSetInterface* fileSetInterface = new FileSetInterface(
+        fileSetValidator, expressionParser_, moduleFormatter, fileInterface, fileBuilderInterface);
+
+    fileSetInterface->setFileSets(component_->getFileSets());
+
     componentInstantiationInterface_ = new ComponentInstantiationInterface(validator_, cimpParser,
-        moduleFormatter, parameterInterface, moduleParameterInterface, fileBuilderInterface);
+        moduleFormatter, parameterInterface, moduleParameterInterface, fileBuilderInterface, fileSetInterface);
 }

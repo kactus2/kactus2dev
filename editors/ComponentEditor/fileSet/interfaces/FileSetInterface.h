@@ -225,6 +225,15 @@ public:
      */
     std::vector<std::string> getExpressionsInSelectedFileSets(std::vector<std::string> fileSetNames) const;
 
+    /*!
+     *  Check if the selected file set exists.
+     *
+     *      @param [in] fileSetName     Name of the selected file set.
+     *
+     *      @return True, if the file set exists, false otherwise.
+     */
+    bool fileSetExists(std::string const& fileSetName) const;
+
 private:
 
     /*!

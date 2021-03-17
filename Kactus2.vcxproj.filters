@@ -1001,6 +1001,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\ports\interfaces">
       <UniqueIdentifier>{c019f53b-f0e5-47cc-87f6-5fe5337f7d4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\interfaces">
+      <UniqueIdentifier>{7bab447a-2cbb-4a6e-a314-033d9ea4202e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\interfaces">
+      <UniqueIdentifier>{7acb1b4e-e559-4636-9cb6-f47adc52b0d0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4954,6 +4960,15 @@
     <ClCompile Include="editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports\interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\TransparentBridgeInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\AbstractionTypeInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7582,6 +7597,15 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
       <Filter>Header Files\editors\ComponentEditor\ports\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\TransparentBridgeInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\AbstractionTypeInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

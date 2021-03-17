@@ -16,20 +16,24 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h>
+
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: BridgesEditor::BridgesEditor()
 //-----------------------------------------------------------------------------
-BridgesEditor::BridgesEditor(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
-    QSharedPointer<Component> component,
-    QWidget* parent):
+BridgesEditor::BridgesEditor(BusInterfaceInterface* busInterface,
+    QSharedPointer<QList<QSharedPointer<TransparentBridge>>> bridges, QWidget* parent) :
 QGroupBox(tr("Transparent bridge(s)"), parent),
-    view_(this),
-    proxy_(this),
-    model_(bridges, this)
+view_(this),
+proxy_(this),
+model_(busInterface->getBridgeInterface(), this),
+bridgeInterface_(busInterface->getBridgeInterface()),
+bridges_(bridges)
 {
-    view_.setItemDelegate(new BridgesDelegate(component, this));
+    view_.setItemDelegate(new BridgesDelegate(busInterface, this));
 
     // items can not be dragged
     view_.setItemsDraggable(false);
@@ -59,9 +63,21 @@ BridgesEditor::~BridgesEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: bridgeseditor::setupBridges()
+//-----------------------------------------------------------------------------
+void BridgesEditor::setupBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > newBridges)
+{
+    bridges_ = newBridges;
+
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
 // Function: BridgesEditor::refresh()
 //-----------------------------------------------------------------------------
-void BridgesEditor::refresh(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > transparentBridges)
+void BridgesEditor::refresh()
 {
-    model_.refresh(transparentBridges);
+    bridgeInterface_->setBridges(bridges_);
+
+    model_.refresh();
 }

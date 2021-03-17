@@ -30,13 +30,14 @@ namespace
 ComponentInstantiationInterface::ComponentInstantiationInterface(QSharedPointer<InstantiationsValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
     ParametersInterface* parameterInterface, ModuleParameterInterface* moduleParameterInterface,
-    FileBuilderInterface* fileBuilderInterface):
+    FileBuilderInterface* fileBuilderInterface, FileSetInterface* fileSetInterface):
 ParameterizableInterface(expressionParser, expressionFormatter),
 instantiations_(),
 validator_(validator),
 parameterInterface_(parameterInterface),
 moduleParameterInterface_(moduleParameterInterface),
-fileBuilderInterface_(fileBuilderInterface)
+fileBuilderInterface_(fileBuilderInterface),
+fileSetInterface_(fileSetInterface)
 {
 
 }
@@ -358,6 +359,14 @@ ModuleParameterInterface* ComponentInstantiationInterface::getModuleParameterInt
 FileBuilderInterface* ComponentInstantiationInterface::getFileBuilderInterface() const
 {
     return fileBuilderInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiationInterface::getFileSetInterface()
+//-----------------------------------------------------------------------------
+FileSetInterface* ComponentInstantiationInterface::getFileSetInterface() const
+{
+    return fileSetInterface_;
 }
 
 //-----------------------------------------------------------------------------

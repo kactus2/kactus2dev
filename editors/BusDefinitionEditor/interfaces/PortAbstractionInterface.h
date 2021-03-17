@@ -130,7 +130,7 @@ public:
      *
      *      @return True, if the name is valid, false otherwise.
      */
-    bool itemHasValidName(std::string const& itemName) const override final;
+    virtual bool itemHasValidName(std::string const& itemName) const override final;
 
     /*!
      *  Get the description of the selected port abstraction.

@@ -13,9 +13,11 @@
 #include "BusInterfaceWizard.h"
 
 #include <IPXACTmodels/Component/Component.h>
-
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
+
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
 
 #include <library/LibraryInterface.h>
 
@@ -29,15 +31,15 @@
 BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh, bool absDefEditable,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<BusInterfaceValidator> busValidator,
+    QSharedPointer<ExpressionParser> expressionParser, BusInterfaceInterface* busInterface,
     BusInterfaceWizard* parent):
 QWizardPage(parent),
 component_(component),
 busIf_(busIf),
 handler_(lh),
 generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, expressionParser,
-    busValidator, this, parent)),
-abstractionValidator_(busValidator->getAbstractionValidator())
+    busInterface, busIf->name().toStdString(), this, parent)),
+busInterface_(busInterface)
 {
     setTitle(tr("Bus interface general options"));
     setSubTitle(tr("Setup the general options for the bus interface."));
@@ -107,14 +109,18 @@ bool BusInterfaceWizardGeneralOptionsPage::mandatoryFieldsAreFilledIn() const
 //-----------------------------------------------------------------------------
 bool BusInterfaceWizardGeneralOptionsPage::abstractionReferenceIsFound() const
 {
-    if (busIf_->getAbstractionTypes() && !busIf_->getAbstractionTypes()->isEmpty())
+    AbstractionTypeInterface* abstractionInterface = busInterface_->getAbstractionTypeInterface();
+    abstractionInterface->setAbstractionTypes(busIf_->getAbstractionTypes());
+
+    if (abstractionInterface->itemCount() > 0)
     {
-        foreach (QSharedPointer<AbstractionType> abstraction, *busIf_->getAbstractionTypes())
+        for (int i = 0; i < abstractionInterface->itemCount(); ++i)
         {
-            if (!abstraction->getAbstractionRef() || 
-                (abstraction->getAbstractionRef() &&
-                (!handler_->contains(*abstraction->getAbstractionRef().data()) ||
-                !abstractionValidator_->hasValidViewReferences(abstraction, busIf_->getAbstractionTypes()))))
+            bool abstractionHasReference = abstractionInterface->hasAbstractionReference(i);
+            bool referenceExists = handler_->contains(*abstractionInterface->getAbstractionReference(i).data());
+            bool viewReferencesAreValid = abstractionInterface->hasValidViewReferences(i);
+
+            if (!abstractionHasReference || (abstractionHasReference && (!referenceExists || !viewReferencesAreValid)))
             {
                 return false;
             }

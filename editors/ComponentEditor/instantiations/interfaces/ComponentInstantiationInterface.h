@@ -20,6 +20,7 @@ class ComponentInstantiation;
 class FileBuilderInterface;
 class ParametersInterface;
 class ModuleParameterInterface;
+class FileSetInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing component instantiations.
@@ -38,13 +39,15 @@ public:
      *      @param [in] parameterInterface          Interface for accessing parameters.
      *      @param [in] moduleParameterInterface    Interface for accessing module parameters
      *      @param [in] fileBuilderInterface        Interface for accessing file builders.
+     *      @param [in] fileSetInterface            Interface for accessing file sets.
      */
     ComponentInstantiationInterface(QSharedPointer<InstantiationsValidator> validator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         ParametersInterface* parameterInterface,
         ModuleParameterInterface* moduleParameterInterface,
-        FileBuilderInterface* fileBuilderInterface);
+        FileBuilderInterface* fileBuilderInterface,
+        FileSetInterface* fileSetInterface);
 
 	/*!
      *  The destructor.
@@ -213,6 +216,13 @@ public:
      */
     FileBuilderInterface* getFileBuilderInterface() const;
     
+    /*!
+     *  Get the file set interface.
+     *
+     *      @return Interface for accessing file sets.
+     */
+    FileSetInterface* getFileSetInterface() const;
+
     /*!
      *  Get the language of the selected component instantiation.
      *
@@ -394,6 +404,9 @@ private:
 
     //! Interface for accessing file builders.
     FileBuilderInterface* fileBuilderInterface_;
+
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
 };
 
 #endif // COMPONENTINSTANTIATIONINTERFACE_H

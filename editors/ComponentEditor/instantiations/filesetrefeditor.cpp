@@ -22,11 +22,11 @@
 //-----------------------------------------------------------------------------
 // Function: filesetrefeditor::FileSetRefEditor()
 //-----------------------------------------------------------------------------
-FileSetRefEditor::FileSetRefEditor(QSharedPointer<Component> component, const QString title, QWidget* parent):
+FileSetRefEditor::FileSetRefEditor(FileSetInterface* fileSetInterface, const QString title, QWidget *parent):
 ListManager(title, parent),
-component_(component)
+fileSetInterface_(fileSetInterface)
 {
-	Q_ASSERT(component_);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ void FileSetRefEditor::initialize( QStringList const& items)
 	}
 
 	// create new model and view
-	model_ = new FileSetRefModel(this, component_, items);
+    model_ = new FileSetRefModel(this, fileSetInterface_, items);
 
 	view_ = new EditableListView(this);
 
@@ -85,5 +85,5 @@ void FileSetRefEditor::initialize( QStringList const& items)
 	topLayout->addWidget(view_);
 
 	view_->setModel(model_);
-	view_->setItemDelegate(new FileSetRefEditorDelegate(this, component_));
+    view_->setItemDelegate(new FileSetRefEditorDelegate(this, fileSetInterface_));
 }

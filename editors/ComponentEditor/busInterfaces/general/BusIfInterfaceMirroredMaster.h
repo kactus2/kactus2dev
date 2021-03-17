@@ -14,8 +14,7 @@
 
 #include "busifinterfacemodeeditor.h"
 
-class Component;
-class BusInterface;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit master or mirrored master settings of a bus interface.
@@ -28,13 +27,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] busInterface    The containing bus interface.
-     *      @param [in] component       Component containing the bus interface.
+     *      @param [in] busInterface    Interface for accessing bus interfaces.
      *      @param [in] parent          Parent widget of this editor.
      */
-    BusIfInterfaceMirroredMaster(QSharedPointer<BusInterface> busInterface, QSharedPointer<Component> component,
-        QWidget* parent);
-	
+    BusIfInterfaceMirroredMaster(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
+
 	/*!
      *  The destructor.
      */

@@ -58,7 +58,7 @@ bool IndirectInterfaceValidator::validate(QSharedPointer<IndirectInterface> indi
         hasValidDataReference(indirectInterface) &&
         hasEitherMemoryMapReferenceOrTransparentBridge(indirectInterface) &&
         hasValidMemoryMapReference(indirectInterface) &&
-        hasValidTransparentBridges(indirectInterface) &&
+        hasValidTransparentBridges(indirectInterface->getTransparentBridges()) &&
         hasValidBitsInLau(indirectInterface) &&
         hasValidEndianness(indirectInterface) &&
         hasValidParameters(indirectInterface);
@@ -119,10 +119,16 @@ bool IndirectInterfaceValidator::hasValidMemoryMapReference(QSharedPointer<Indir
 //-----------------------------------------------------------------------------
 // Function: IndirectInterfaceValidator::hasValidTransparentBridges()
 //-----------------------------------------------------------------------------
-bool IndirectInterfaceValidator::hasValidTransparentBridges(QSharedPointer<IndirectInterface> indirectInterface) const
+bool IndirectInterfaceValidator::hasValidTransparentBridges(
+    QSharedPointer<QList<QSharedPointer<TransparentBridge>>> bridges) const
 {
+    if (!bridges)
+    {
+        return true;
+    }
+
     int foundInterfaces = 0;
-    for (QSharedPointer<TransparentBridge> const& bridge : *indirectInterface->getTransparentBridges())
+    for (QSharedPointer<TransparentBridge> const& bridge : *bridges)
     {
         for (QSharedPointer<BusInterface> const& busInterface : *component_->getBusInterfaces())
         {
@@ -135,7 +141,7 @@ bool IndirectInterfaceValidator::hasValidTransparentBridges(QSharedPointer<Indir
         }
     }
 
-    return indirectInterface->getTransparentBridges()->count() == foundInterfaces;
+    return bridges->count() == foundInterfaces;
 }
 
 //-----------------------------------------------------------------------------

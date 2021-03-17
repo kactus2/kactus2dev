@@ -15,25 +15,25 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: interfacemodestack::InterfaceModeStack()
 //-----------------------------------------------------------------------------
-InterfaceModeStack::InterfaceModeStack(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
-    QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
+InterfaceModeStack::InterfaceModeStack(BusInterfaceInterface* busInterface, std::string const& busName,
+    QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+    LibraryInterface* handler, QSharedPointer<ExpressionParser> expressionParser, QWidget* parent):
 QStackedWidget(parent),
-    busif_(busif),
-    mode_(busif->getInterfaceMode()),
-    master_(General::MASTER, busif_, component, parameterFinder, expressionParser, this),
-    slave_(busif, component, this),
-    system_(General::SYSTEM, handler, busif, component, this),
-    mirroredMaster_(busif, component, this),
-    mirroredSlave_(busif, component, parameterFinder, expressionParser, this),
-    mirroredSystem_(General::MIRROREDSYSTEM, handler, busif, component, this),
-    monitor_(busif, component, handler, this)
+busInterface_(busInterface),
+busName_(busName),
+master_(General::MASTER, busInterface_, busName_, component, parameterFinder, expressionParser, this),
+slave_(busInterface_, busName_, this),
+system_(busInterface_, busName_, handler, this),
+mirroredMaster_(busInterface_, busName_, this),
+mirroredSlave_(busInterface_, busName_, parameterFinder, expressionParser, this),
+mirroredSystem_(busInterface_, busName_, handler, this),
+monitor_(busInterface_, busName_, handler, this)
 {
-    Q_ASSERT(busif_);
     Q_ASSERT(component);
     Q_ASSERT(parent);
 
@@ -73,34 +73,24 @@ QStackedWidget(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: interfacemodestack::~InterfaceModeStack()
-//-----------------------------------------------------------------------------
-InterfaceModeStack::~InterfaceModeStack()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: interfacemodestack::setMode()
 //-----------------------------------------------------------------------------
 void InterfaceModeStack::setMode( General::InterfaceMode mode )
 {
-    if (mode_ == General::MIRROREDSLAVE)
+    General::InterfaceMode currentMode = busInterface_->getMode(busName_);
+    if (currentMode == General::MIRROREDSLAVE)
     {
         mirroredSlave_.removeReferencesFromExpressions();
     }
-    else if (mode_ == General::MASTER)
+    else if (currentMode == General::MASTER)
     {
         master_.removeReferencesFromExpressions();
     }
 
-	// update the current mode
-	mode_ = mode;
+    std::string newMode = General::interfaceMode2Str(mode).toStdString();
 
-	// update the mode also for bus interface
-	busif_->setInterfaceMode(mode);
+    busInterface_->setMode(busName_, newMode);
 
-	// refresh the editor
 	refresh();
 
 	emit contentChanged();
@@ -111,46 +101,45 @@ void InterfaceModeStack::setMode( General::InterfaceMode mode )
 //-----------------------------------------------------------------------------
 void InterfaceModeStack::refresh()
 {
-	mode_ = busif_->getInterfaceMode();
+    General::InterfaceMode currentMode = busInterface_->getMode(busName_);
 
 	// select the correct editor
-	setCurrentIndex(mode_);
+	setCurrentIndex(currentMode);
 
-    if (mode_ == General::MASTER)
+    if (currentMode == General::MASTER)
     {
         master_.refresh();
         master_.saveModeSpecific();
     }
-    else if (mode_ == General::SLAVE)
+    else if (currentMode == General::SLAVE)
     {
         slave_.refresh();
         slave_.saveModeSpecific();
-
     }
-    else if (mode_ == General::SYSTEM)
+    else if (currentMode == General::SYSTEM)
     {
         system_.refresh();
         system_.saveModeSpecific();
 
     }
-    else if (mode_ == General::MIRROREDMASTER)
+    else if (currentMode == General::MIRROREDMASTER)
     {
         mirroredMaster_.refresh();
         mirroredMaster_.saveModeSpecific();
     }
-    else if (mode_ == General::MIRROREDSLAVE)
+    else if (currentMode == General::MIRROREDSLAVE)
     {
         mirroredSlave_.refresh();
         mirroredSlave_.saveModeSpecific();
 
     }
-    else if (mode_ == General::MIRROREDSYSTEM)
+    else if (currentMode == General::MIRROREDSYSTEM)
     {
         mirroredSystem_.refresh();
         mirroredSystem_.saveModeSpecific();
 
     }
-    else if (mode_ == General::MONITOR)
+    else if (currentMode == General::MONITOR)
     {
         monitor_.refresh();
         monitor_.saveModeSpecific();
@@ -161,5 +150,19 @@ void InterfaceModeStack::refresh()
         master_.refresh();
         master_.saveModeSpecific();
     }
+}
 
+//-----------------------------------------------------------------------------
+// Function: interfacemodestack::nameChanged()
+//-----------------------------------------------------------------------------
+void InterfaceModeStack::nameChanged(std::string const& newName)
+{
+    busName_ = newName;
+    master_.changeName(newName);
+    slave_.changeName(newName);
+    system_.changeName(newName);
+    mirroredMaster_.changeName(newName);
+    mirroredSlave_.changeName(newName);
+    mirroredSystem_.changeName(newName);
+    monitor_.changeName(newName);
 }

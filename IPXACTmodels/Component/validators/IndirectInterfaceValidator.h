@@ -24,6 +24,7 @@ class Field;
 class IndirectInterface;
 class ExpressionParser;
 class ParameterValidator;
+class TransparentBridge;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:indirectInterface.
@@ -99,14 +100,14 @@ public:
     bool hasValidMemoryMapReference(QSharedPointer<IndirectInterface> testInterface) const;
    
     /*!
-     *  Check if the transparent bridge references are valid.
+     *  Check if the selected transparent bridge references are valid.
      *
-     *      @param [in] indirectInterface   The indirect interface to check.
+     *      @param [in] bridges     The selected transparent bridges.
      *
      *      @return True, if the references are valid, otherwise false.
      */
-    bool hasValidTransparentBridges(QSharedPointer<IndirectInterface> indirectInterface) const;
-       
+    bool hasValidTransparentBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const;
+
     /*!
      *  Check if the bits in lau definition is valid.
      *

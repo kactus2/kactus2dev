@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 7.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifinterfacemslave.h
- */
+//-----------------------------------------------------------------------------
+// File: busIfInterfaceMSlave.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 7.4.2011
+//
+// Description:
+// Editor to edit mirrored slave details of a bus interface.
+//-----------------------------------------------------------------------------
 
 #ifndef BUSIFINTERFACEMSLAVE_H
 #define BUSIFINTERFACEMSLAVE_H
@@ -20,9 +24,11 @@ class Component;
 class ExpressionEditor;
 class ExpressionParser;
 class MirroredSlaveInterface;
-/*! Editor to edit mirrored slave details of a bus interface.
- *
- */
+class BusInterfaceInterface;
+
+//-----------------------------------------------------------------------------
+//! Editor to edit mirrored slave details of a bus interface.
+//-----------------------------------------------------------------------------
 class BusIfInterfaceMSlave : public BusIfInterfaceModeEditor
 {
 	Q_OBJECT
@@ -32,39 +38,46 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] busif               The bus interface being edited.
-	 *      @param [in] component           The component being edited.
+	 *      @param [in] busInterface        Interface for accessing bus interfaces.
+     *      @param [in] busName             Name of the edited bus interface.
 	 *      @param [in] parameterFinder     The parameter finder.
      *      @param [in] expressionParser    The expression parser.
 	 *      @param [in] parent              The owner of this editor.
 	 */
-	BusIfInterfaceMSlave(QSharedPointer<BusInterface> busif,
-		QSharedPointer<Component> component,
+    BusIfInterfaceMSlave(BusInterfaceInterface* busInterface,
+        std::string const& busName,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
-		QWidget *parent);
-	
-	//! The destructor
-	virtual ~BusIfInterfaceMSlave();
+        QWidget *parent);
 
-	/*! Check for the validity of the edited item.
-	*
-	*      @return True if item is valid.
-	*/
+	/*!
+     *  The destructor.
+     */
+    virtual ~BusIfInterfaceMSlave() = default;
+
+	/*!
+     *  Check for the validity of the edited item.
+     *
+     *      @return True if item is valid.
+     */
 	virtual bool isValid() const;
 
-	/*! Restore the changes made in the editor back to ones in the model.
-	*
-	*/
+	/*!
+     *  Restore the changes made in the editor back to ones in the model.
+     *
+     */
 	virtual void refresh();
 
-	/*! Get the interface mode of the editor
+	/*!
+     *  Get the interface mode of the editor.
 	 * 
 	 *      @return General::InterfaceMode Specifies the interface mode.
-	*/
+     */
 	virtual General::InterfaceMode getInterfaceMode() const;
 
-	//! Save the interface mode-specific details to the bus interface.
+	/*!
+     *  Save the interface mode-specific details to the bus interface.
+     */
 	virtual void saveModeSpecific();
 
     /*!
@@ -102,21 +115,13 @@ signals:
 
 private:
 	
-	//! No copying
+    //! No copying. No assignment.
 	BusIfInterfaceMSlave(const BusIfInterfaceMSlave& other);
-
-	//! No assignment
 	BusIfInterfaceMSlave& operator=(const BusIfInterfaceMSlave& other);
 
-    /*!
-     *  Calculates a given expression.
-     *
-     *      @param [in] expression  The expression to be formatted.
-     */
-    QString formattedValueFor(QString const& expression) const;
-
-	//! The mirrored slave interface mode being edited.
-	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
+    //-----------------------------------------------------------------------------
+    //! Data.
+    //-----------------------------------------------------------------------------
 
     //! Editor for the mirrored slave remap address.
     ExpressionEditor* remapEditor_;

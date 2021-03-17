@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Function: SystemViewEditor::SystemViewEditor()
 //-----------------------------------------------------------------------------
-SystemViewEditor::SystemViewEditor(QSharedPointer<Component> component, 
+SystemViewEditor::SystemViewEditor(FileSetInterface* fileSetInterface, QSharedPointer<Component> component,
     QSharedPointer<SystemView> systemView, LibraryInterface* libHandler, QWidget* parent):
 ItemEditor(component, libHandler, parent), 
     view_(systemView.data()),
@@ -50,8 +50,8 @@ ItemEditor(component, libHandler, parent),
 	hierRefEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
 	hierRefEditor_->setTitle(tr("Hierarchy reference"));
 
-	fileSetRefEditor_ = new FileSetRefEditor(component, tr("File set references"), this);
-	fileSetRefEditor_->initialize();
+    fileSetRefEditor_ = new FileSetRefEditor(fileSetInterface, tr("File set references"), this);
+    fileSetRefEditor_->initialize();
 
 	HWViewRefEditor_ = new ViewSelector(ViewSelector::BOTH_HW_VIEWS, component, this);	
 

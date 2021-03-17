@@ -11,8 +11,10 @@
 
 #include "PortListSortProxyModel.h"
 
-#include <editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h>
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -24,17 +26,17 @@
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel()
 //-----------------------------------------------------------------------------
-PortListSortProxyModel::PortListSortProxyModel(QSharedPointer<Component> component, PortsInterface* portInterface,
-    QObject *parent):
+PortListSortProxyModel::PortListSortProxyModel(int const& abstractionIndex, PortsInterface* portInterface,
+    AbstractionTypeInterface* abstractionInterface, QObject *parent):
 QSortFilterProxyModel(parent),
-component_(component),
 filterDirection_(DirectionFilter::ANY),
 hideConnected_(true),
 connectedPorts_(),
 filterPorts_(),
-abstraction_(),
 visibleType_(PortTypes::WIRETYPE),
-portInterface_(portInterface)
+portInterface_(portInterface),
+abstractionIndex_(abstractionIndex),
+abstractionInterface_(abstractionInterface)
 {
     onConnectionsReset();
 }
@@ -146,7 +148,7 @@ void PortListSortProxyModel::onConnectionsReset()
 {
     connectedPorts_.clear();
 
-    addConnectedPortsFromAbstraction(abstraction_);
+    addConnectedPortsFromAbstraction();
 
 /*
     foreach (QSharedPointer<BusInterface> busIf, *component_->getBusInterfaces())
@@ -169,19 +171,23 @@ void PortListSortProxyModel::onConnectionsReset()
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel::addConnectedPortsFromAbstraction()
 //-----------------------------------------------------------------------------
-void PortListSortProxyModel::addConnectedPortsFromAbstraction(QSharedPointer<AbstractionType> abstraction)
+void PortListSortProxyModel::addConnectedPortsFromAbstraction()
 {
-    if (abstraction && abstraction->getPortMaps() && !abstraction->getPortMaps()->isEmpty())
+    QStringList physicalPorts;
+    std::vector<std::string> portMapPhysicalPorts =
+        abstractionInterface_->getPhysicalPortsFromPortMaps(abstractionIndex_);
+    for (auto portName : portMapPhysicalPorts)
     {
-        foreach (QSharedPointer<PortMap> portMap, *abstraction->getPortMaps())
+        physicalPorts.append(QString::fromStdString(portName));
+    }
+
+    if (!physicalPorts.isEmpty())
+    {
+        for (auto portName : physicalPorts)
         {
-            if (portMap->getPhysicalPort())
+            if (!connectedPorts_.contains(portName))
             {
-                QString physicalName = portMap->getPhysicalPort()->name_;
-                if (!connectedPorts_.contains(physicalName))
-                {
-                    connectedPorts_.append(physicalName);
-                }
+                connectedPorts_.append(portName);
             }
         }
     }
@@ -284,7 +290,7 @@ void PortListSortProxyModel::onPortDisconnected(QString const& portName)
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel::setNewAbstractionType()
 //-----------------------------------------------------------------------------
-void PortListSortProxyModel::setNewAbstractionType(QSharedPointer<AbstractionType> newAbstraction)
+void PortListSortProxyModel::setNewAbstractionType(int const& newAbstractionIndex)
 {
-    abstraction_ = newAbstraction;
+    abstractionIndex_ = newAbstractionIndex;
 }

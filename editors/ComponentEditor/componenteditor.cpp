@@ -59,6 +59,42 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
+
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
+#include <IPXACTmodels/Component/validators/PortValidator.h>
+
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h>
+
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+
+#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
+
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+
+#include <IPXACTmodels/Component/validators/FileValidator.h>
+#include <IPXACTmodels/Component/validators/FileSetValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
+#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+
+
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -618,12 +654,16 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
     if (component->getImplementation() != KactusAttribute::SW)
     {
-        root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(
-            new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, root)));
+        root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(new ComponentEditorSystemViewsItem(
+            &navigationModel_, libHandler_, component, parameterFinder_, expressionParser_, expressionFormatter_,
+            root)));
     }
 
     if (component->getImplementation() == KactusAttribute::HW)
     {
+        BusInterfaceInterface* busInterface =
+            createBusInterface(parameterFinder_, expressionFormatter_, expressionParser_);
+
         QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
             expressionParser_, root));
@@ -635,8 +675,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
 
         QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem (new ComponentEditorBusInterfacesItem(
-            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, root, parentWidget()));
+            busInterface, &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
+            expressionFormatter_, expressionParser_, root, parentWidget()));
 
         root->addChildItem(busInterfaceItem);
 
@@ -647,7 +687,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
         QSharedPointer<ComponentEditorIndirectInterfacesItem> indirectInterfacesItem(
             QSharedPointer<ComponentEditorIndirectInterfacesItem>(new ComponentEditorIndirectInterfacesItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, root, parentWidget())));
+            expressionParser_, busInterface, root, parentWidget())));
 
         root->addChildItem(indirectInterfacesItem);
 
@@ -802,7 +842,157 @@ void ComponentEditor::openItemEditor(QVector<QString> itemIdentifierChain)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::getComponent()
+//-----------------------------------------------------------------------------
 QSharedPointer<Component> ComponentEditor::getComponent() const
 {
     return component_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::createBusInterface()
+//-----------------------------------------------------------------------------
+BusInterfaceInterface* ComponentEditor::createBusInterface(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser)
+    const
+{
+
+    QSharedPointer<PortMapValidator> portMapValidator(
+        new PortMapValidator(expressionParser, component_->getPorts(), libHandler_));
+
+    FileSetInterface* fileSetInterface =
+        createFileSetInterface(parameterFinder, expressionFormatter, expressionParser);
+    fileSetInterface->setFileSets(component_->getFileSets());
+
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser,
+        component_->getChoices()));
+
+    MemoryMapInterface* mapInterface =
+        createMapInterface(parameterFinder, expressionFormatter, expressionParser, parameterValidator);
+
+    AbstractionTypeInterface* abstractionInterface =
+        creaetAbstractionTypeInterface(parameterFinder, expressionFormatter, expressionParser, portMapValidator);
+
+    TransparentBridgeInterface* bridgeInterface = createBridgeInterface(expressionFormatter, expressionParser);
+
+    QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser,
+        component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
+        component_->getMemoryMaps(), component_->getBusInterfaces(), component_->getFileSets(),
+        component_->getRemapStates(), portMapValidator, parameterValidator, libHandler_));
+
+    BusInterfaceInterface* busInterface(new BusInterfaceInterface(busValidator, expressionParser,
+        expressionFormatter, fileSetInterface, mapInterface, abstractionInterface, bridgeInterface));
+
+    busInterface->setBusInterfaces(component_);
+    return busInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::createFileSetInterface()
+//-----------------------------------------------------------------------------
+FileSetInterface* ComponentEditor::createFileSetInterface(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser) const
+{
+    QSharedPointer<FileValidator> fileValidator(new FileValidator(expressionParser));
+    QSharedPointer<FileSetValidator> fileSetValidator(new FileSetValidator(fileValidator, expressionParser));
+
+    FileInterface* fileInterface(new FileInterface(fileValidator, expressionParser, expressionFormatter));
+    FileBuilderInterface* fileBuilderInterface(new FileBuilderInterface(expressionParser, expressionFormatter));
+
+    FileSetInterface* fileSetInterface(new FileSetInterface(
+        fileSetValidator, expressionParser, expressionFormatter, fileInterface, fileBuilderInterface));
+
+    fileSetInterface->setFileSets(component_->getFileSets());
+
+    return fileSetInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::createMapInterface()
+//-----------------------------------------------------------------------------
+MemoryMapInterface* ComponentEditor::createMapInterface(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterValidator> parameterValidator) const
+{
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(expressionParser));
+    QSharedPointer<FieldValidator> fieldValidator(
+        new FieldValidator(expressionParser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator(
+        new RegisterValidator(expressionParser, fieldValidator, parameterValidator));
+    QSharedPointer<RegisterFileValidator> registerFileValidator(
+        new RegisterFileValidator(expressionParser, registerValidator, parameterValidator));
+
+    QSharedPointer<AddressBlockValidator> blockValidator(
+        new AddressBlockValidator(expressionParser, registerValidator, registerFileValidator, parameterValidator));
+    QSharedPointer<MemoryMapValidator> memoryMapValidator(
+        new MemoryMapValidator(expressionParser, blockValidator, component_->getRemapStates()));
+
+    memoryMapValidator->componentChange(component_->getRemapStates(), component_->getResetTypes());
+
+    ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser, expressionFormatter));
+    FieldInterface* fieldInterface(
+        new FieldInterface(fieldValidator, expressionParser, expressionFormatter, resetInterface));
+    RegisterInterface* registerInterface(
+        new RegisterInterface(registerValidator, expressionParser, expressionFormatter, fieldInterface));
+    AddressBlockInterface* blockInterface(
+        new AddressBlockInterface(blockValidator, expressionParser, expressionFormatter, registerInterface));
+
+    MemoryMapInterface* mapInterface =
+        new MemoryMapInterface(memoryMapValidator, expressionParser, expressionFormatter, blockInterface);
+
+    mapInterface->setMemoryMaps(component_);
+
+    return mapInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::creaetAbstractionTypeInterface()
+//-----------------------------------------------------------------------------
+AbstractionTypeInterface* ComponentEditor::creaetAbstractionTypeInterface(
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<PortMapValidator> portMapValidator) const
+{
+    PortMapInterface* portMapInterface = createPortMapInterface(parameterFinder, expressionFormatter,
+        expressionParser, portMapValidator);
+
+    QSharedPointer<AbstractionTypeValidator> validator(
+        new AbstractionTypeValidator(expressionParser, component_->getViews(), portMapValidator, libHandler_));
+
+    AbstractionTypeInterface* abstractionInterface(new AbstractionTypeInterface(portMapInterface, validator));
+    return abstractionInterface;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::createPortMapInterface()
+//-----------------------------------------------------------------------------
+PortMapInterface* ComponentEditor::createPortMapInterface(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<PortMapValidator> portMapValidator) const
+{
+    QSharedPointer<PortValidator> portValidator(new PortValidator(expressionParser, component_->getViews()));
+
+    PortsInterface* physicalPortInterface(new PortsInterface(portValidator, expressionParser, expressionFormatter));
+    physicalPortInterface->setPorts(component_);
+
+    PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface());
+    PortMapInterface* portMapInterface(new PortMapInterface(
+        portMapValidator, expressionParser, expressionFormatter, physicalPortInterface, logicalPortInterface));
+
+    return portMapInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::createBridgeInterface()
+//-----------------------------------------------------------------------------
+TransparentBridgeInterface* ComponentEditor::createBridgeInterface(
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser) const
+{
+    TransparentBridgeInterface* bridgeInterface(
+        new TransparentBridgeInterface(expressionParser, expressionFormatter));
+    return bridgeInterface;
 }
