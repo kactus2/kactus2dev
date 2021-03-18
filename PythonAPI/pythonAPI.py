@@ -301,8 +301,8 @@ class PythonAPI(object):
     def listComponentVLNVs(self):
         return _pythonAPI.PythonAPI_listComponentVLNVs(self)
 
-    def openComponent(self, componentVLNV):
-        return _pythonAPI.PythonAPI_openComponent(self, componentVLNV)
+    def openComponent(self, vlnvString):
+        return _pythonAPI.PythonAPI_openComponent(self, vlnvString)
 
     def closeOpenComponent(self):
         return _pythonAPI.PythonAPI_closeOpenComponent(self)

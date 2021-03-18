@@ -8226,6 +8226,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs__SWIG_0(PyObject *SWIGUNUSEDPARM(
   int res1 = 0 ;
   void *argp2 = 0 ;
   int res2 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
@@ -8241,8 +8242,8 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs__SWIG_0(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_listVLNVs" "', argument " "2"" of type '" "QString const &""'"); 
   }
   arg2 = reinterpret_cast< QString * >(argp2);
-  ((PythonAPI const *)arg1)->listVLNVs((QString const &)*arg2);
-  resultobj = SWIG_Py_Void();
+  result = ((PythonAPI const *)arg1)->listVLNVs((QString const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
   return NULL;
@@ -8254,6 +8255,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs__SWIG_1(PyObject *SWIGUNUSEDPARM(
   PythonAPI *arg1 = (PythonAPI *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > result;
   
   if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
@@ -8261,8 +8263,8 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs__SWIG_1(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_listVLNVs" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  ((PythonAPI const *)arg1)->listVLNVs();
-  resultobj = SWIG_Py_Void();
+  result = ((PythonAPI const *)arg1)->listVLNVs();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
   return NULL;
@@ -8315,6 +8317,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listComponentVLNVs(PyObject *SWIGUNUSEDPARM
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
+  std::vector< std::string,std::allocator< std::string > > result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
@@ -8323,8 +8326,8 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listComponentVLNVs(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_listComponentVLNVs" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  ((PythonAPI const *)arg1)->listComponentVLNVs();
-  resultobj = SWIG_Py_Void();
+  result = ((PythonAPI const *)arg1)->listComponentVLNVs();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
   return NULL;
@@ -8334,11 +8337,10 @@ fail:
 SWIGINTERN PyObject *_wrap_PythonAPI_openComponent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
-  QString *arg2 = 0 ;
+  std::string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   bool result;
   
@@ -8348,18 +8350,23 @@ SWIGINTERN PyObject *_wrap_PythonAPI_openComponent(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_openComponent" "', argument " "1"" of type '" "PythonAPI *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_openComponent" "', argument " "2"" of type '" "QString const &""'"); 
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_openComponent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_openComponent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_openComponent" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  arg2 = reinterpret_cast< QString * >(argp2);
-  result = (bool)(arg1)->openComponent((QString const &)*arg2);
+  result = (bool)(arg1)->openComponent((std::string const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -8392,7 +8399,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getComponentName(PyObject *SWIGUNUSEDPARM(s
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  QString result;
+  std::string result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
@@ -8402,7 +8409,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getComponentName(PyObject *SWIGUNUSEDPARM(s
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   result = (arg1)->getComponentName();
-  resultobj = SWIG_NewPointerObj((new QString(static_cast< const QString& >(result))), SWIGTYPE_p_QString, SWIG_POINTER_OWN |  0 );
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
   return NULL;
@@ -8415,7 +8422,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getComponentDescription(PyObject *SWIGUNUSE
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  QString result;
+  std::string result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
@@ -8425,7 +8432,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getComponentDescription(PyObject *SWIGUNUSE
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   result = (arg1)->getComponentDescription();
-  resultobj = SWIG_NewPointerObj((new QString(static_cast< const QString& >(result))), SWIGTYPE_p_QString, SWIG_POINTER_OWN |  0 );
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
   return NULL;

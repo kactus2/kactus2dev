@@ -78,13 +78,14 @@ mapValidator_()
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::setupLibrary()
 //-----------------------------------------------------------------------------
-void PythonAPI::setupLibrary(QString const& settingsFile)
+void PythonAPI::setupLibrary(std::string const& settingsFileString)
 {
     QCoreApplication::setOrganizationDomain(QStringLiteral("tut.fi"));
     QCoreApplication::setOrganizationName(QStringLiteral("TUT"));
     QCoreApplication::setApplicationName(QStringLiteral("Kactus2"));
     QCoreApplication::setApplicationVersion(VersionHelper::createVersionString());
 
+    QString settingsFile = QString::fromStdString(settingsFileString);
     messager_->showMessage(settingsFile);
 
     QSettings::setDefaultFormat(QSettings::IniFormat);
@@ -112,43 +113,42 @@ int PythonAPI::getFileCount() const
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::listVLNVs()
 //-----------------------------------------------------------------------------
-void PythonAPI::listVLNVs(QString const& vendor /* = QString("") */) const
+std::vector<std::string> PythonAPI::listVLNVs(std::string const& vendor /* = QString("") */) const
 {
-    int vlnvCount = 0;
+    std::vector<std::string> vlnvStrings;
 
     for (auto itemVLNV : library_->getAllVLNVs())
     {
-        messager_->showMessage(itemVLNV.toString());
-        vlnvCount++;
+        vlnvStrings.push_back(itemVLNV.toString().toStdString());
     }
 
-    messager_->showMessage(QString("VLNVs found: %1").arg(QString::number(vlnvCount)));
+    return vlnvStrings;
 }
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::listComponentVLNVs()
 //-----------------------------------------------------------------------------
-void PythonAPI::listComponentVLNVs() const
+std::vector<std::string> PythonAPI::listComponentVLNVs() const
 {
-    int vlnvCount = 0;
+    std::vector<std::string> componentVLNVs;
 
     for (auto itemVLNV : library_->getAllVLNVs())
     {
         if (itemVLNV.getType() == VLNV::COMPONENT)
         {
-            messager_->showMessage(itemVLNV.toString());
-            vlnvCount++;
+            componentVLNVs.push_back(itemVLNV.toString().toStdString());
         }
     }
 
-    messager_->showMessage(QString("Components found: %1").arg(QString::number(vlnvCount)));
+    return componentVLNVs;
 }
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::openComponent()
 //-----------------------------------------------------------------------------
-bool PythonAPI::openComponent(QString const& componentVLNV)
+bool PythonAPI::openComponent(std::string const& vlnvString)
 {
+    QString componentVLNV = QString::fromStdString(vlnvString);
     QStringList vlnvArray = componentVLNV.split(':');
     if (vlnvArray.size() != 4)
     {
@@ -202,17 +202,31 @@ void PythonAPI::closeOpenComponent()
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getComponentName()
 //-----------------------------------------------------------------------------
-QString PythonAPI::getComponentName()
+std::string PythonAPI::getComponentName()
 {
-    return activeComponent_->getVlnv().getName();
+    if (activeComponent_)
+    {
+        return activeComponent_->getVlnv().getName().toStdString();
+    }
+    else
+    {
+        return std::string("");
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getComponentDescription()
 //-----------------------------------------------------------------------------
-QString PythonAPI::getComponentDescription()
+std::string PythonAPI::getComponentDescription()
 {
-    return activeComponent_->getDescription();
+    if (activeComponent_)
+    {
+        return activeComponent_->getDescription().toStdString();
+    }
+    else
+    {
+        return std::string("");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -220,15 +234,18 @@ QString PythonAPI::getComponentDescription()
 //-----------------------------------------------------------------------------
 void PythonAPI::saveComponent()
 {
-    messager_->showMessage(QString("Saving component %1 ...").arg(activeComponent_->getVlnv().toString()));
+    if (activeComponent_)
+    {
+        messager_->showMessage(QString("Saving component %1 ...").arg(activeComponent_->getVlnv().toString()));
 
-    if (library_->writeModelToFile(activeComponent_))
-    {
-        messager_->showMessage(QString("Save complete"));
-    }
-    else
-    {
-        messager_->showError(QString("Could not save component %1").arg(activeComponent_->getVlnv().toString()));
+        if (library_->writeModelToFile(activeComponent_))
+        {
+            messager_->showMessage(QString("Save complete"));
+        }
+        else
+        {
+            messager_->showError(QString("Could not save component %1").arg(activeComponent_->getVlnv().toString()));
+        }
     }
 }
 
