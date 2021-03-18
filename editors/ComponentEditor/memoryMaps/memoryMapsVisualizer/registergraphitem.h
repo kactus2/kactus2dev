@@ -158,19 +158,6 @@ private:
      */
     QMap<quint64, MemoryVisualizationItem*>::iterator addMemoryGap(quint64 startAddress, quint64 endAddress);
 
-
-
-    /*!
-     *  Checks if the two consecutive children overlap.
-     *
-     *      @param [in] current     The currently iterated child.
-     *      @param [in] previous    The previously iterated child.
-     *
-     *      @return True, if the children overlap, otherwise false.
-     */
-    bool childrenOverlap(MemoryVisualizationItem const* current, MemoryVisualizationItem const* previous);
-
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

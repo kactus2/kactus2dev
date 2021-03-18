@@ -311,29 +311,38 @@ void MemoryVisualizationItem::fillGapsBetweenChildren()
 // Function: MemoryVisualizationItem::markConflictingChildren()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::markConflictingChildren()
-{
-    MemoryVisualizationItem* previous = 0;
-
+{    
     const auto offset = getOffset();
     const auto lastAddress = getLastAddress();
 
-    for (MemoryVisualizationItem* current : childItems_)
+    quint64 highestAddressInUse = offset;
+
+    for (auto child = childItems_.begin(); child != childItems_.end(); ++child)
     {
+        MemoryVisualizationItem* current = child.value();
+
         if (current->isPresent())
         {
             quint64 currentOffset = childItems_.key(current);
 
-            bool overlaps = childrenOverlap(current, previous);
+            bool overlaps = currentOffset > offset && currentOffset <= highestAddressInUse;
             bool isOutsideBounds = currentOffset < offset || current->getLastAddress() > lastAddress;
 
             current->setConflicted(overlaps || isOutsideBounds);
 
             if (overlaps)
             {
-                previous->setConflicted(true);
+                // Walk backwards and mark any overlapping items conflicted.
+                for (auto previous = child - 1; previous != childItems_.begin() - 1; --previous)
+                {
+                    if ((*previous)->getLastAddress() >= currentOffset)
+                    {
+                        (*previous)->setConflicted(true);
+                    }
+                }
             }
 
-            previous = current;
+            highestAddressInUse = qMax(current->getLastAddress(), highestAddressInUse);
         }
     }
 }
@@ -430,15 +439,6 @@ bool MemoryVisualizationItem::emptySpaceBeforeChild(MemoryVisualizationItem cons
     quint64 lastAddressInUse) const
 {    
     return current->getOffset() > lastAddressInUse + 1;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::childrenOverlap()
-//-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::childrenOverlap(MemoryVisualizationItem const* current,
-    MemoryVisualizationItem const* previous) const
-{
-    return previous != nullptr && previous->getLastAddress() >= current->getOffset();
 }
 
 //-----------------------------------------------------------------------------

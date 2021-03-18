@@ -26,6 +26,8 @@ jobs:
     - uses: actions/checkout@v1
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
+      with:
+        vs-version: '[15.9,15.10)'
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:

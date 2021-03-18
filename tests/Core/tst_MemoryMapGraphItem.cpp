@@ -119,7 +119,9 @@ void tst_MemoryMapGraphItem::testMemoryMapWithAddressBlock()
 
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(addressBlockItem);
-    memoryMapItem->refresh();
+    
+    memoryMapItem->updateDisplay();
+    memoryMapItem->redoChildLayout();
 
     QCOMPARE(memoryMapItem->name(), QString("testMap"));
     QCOMPARE(memoryMapItem->getOffset(), quint64(8));
@@ -163,7 +165,9 @@ void tst_MemoryMapGraphItem::testMemoryMapWithConsecutiveAddressBlocks()
     AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, noParser, memoryMapItem);
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
-    memoryMapItem->refresh();
+
+    memoryMapItem->updateDisplay();
+    memoryMapItem->redoChildLayout();
 
     QCOMPARE(memoryMapItem->getOffset(), quint64(0));
     QCOMPARE(memoryMapItem->getLastAddress(), quint64(1));
@@ -208,8 +212,7 @@ void tst_MemoryMapGraphItem::testGapBetweenTwoAddressBlocks()
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
-    firstBlockItem->refresh();
-    secondBlockItem->refresh();
+    memoryMapItem->redoChildLayout();   
 
     expandItem(memoryMapItem);
 
@@ -267,8 +270,8 @@ void tst_MemoryMapGraphItem::testPartiallyOverlappingAddressBlocks()
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
-    firstBlockItem->refresh();
-    secondBlockItem->refresh();
+    memoryMapItem->updateDisplay();
+    memoryMapItem->redoChildLayout();
 
     expandItem(memoryMapItem);
 
@@ -276,21 +279,12 @@ void tst_MemoryMapGraphItem::testPartiallyOverlappingAddressBlocks()
     QCOMPARE(firstBlockItem->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(firstBlockItem->pos().y(), qreal(VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(firstBlockItem->getDisplayOffset(), quint64(0));
-    QCOMPARE(firstBlockItem->getDisplayLastAddress(), quint64(0));
-
-    MemoryGapItem* overlappingItem = findMemoryGaps(memoryMapItem).first();
-    QVERIFY(overlappingItem->isVisible());
-    QVERIFY(overlappingItem->isConflicted());
-    QCOMPARE(overlappingItem->name(), QString("conflicted"));
-    QCOMPARE(overlappingItem->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(overlappingItem->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(overlappingItem->getDisplayOffset(), quint64(1));
-    QCOMPARE(overlappingItem->getDisplayLastAddress(), quint64(1));
+    QCOMPARE(firstBlockItem->getDisplayLastAddress(), quint64(1));
 
     QVERIFY(secondBlockItem->isVisible());
     QCOMPARE(secondBlockItem->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(secondBlockItem->pos().y(), qreal(3*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(secondBlockItem->getDisplayOffset(), quint64(2));
+    QCOMPARE(secondBlockItem->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
+    QCOMPARE(secondBlockItem->getDisplayOffset(), quint64(1));
     QCOMPARE(secondBlockItem->getDisplayLastAddress(), quint64(2));
 
     delete memoryMapItem;
@@ -321,8 +315,7 @@ void tst_MemoryMapGraphItem::testFullyOverlappingAddressBlocks()
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
-    firstBlockItem->refresh();
-    secondBlockItem->refresh();
+    memoryMapItem->redoChildLayout();
 
     expandItem(memoryMapItem);
 
@@ -371,9 +364,7 @@ void tst_MemoryMapGraphItem::testMultipleBlocksOverlapping()
     memoryMapItem->addChild(firstOverlap);
     memoryMapItem->addChild(secondOverlap);
 
-    largeAddressBlock->refresh();
-    firstOverlap->refresh();
-    secondOverlap->refresh();
+    memoryMapItem->redoChildLayout();
 
     expandItem(memoryMapItem);
 
@@ -388,7 +379,7 @@ void tst_MemoryMapGraphItem::testMultipleBlocksOverlapping()
     QCOMPARE(largeAddressBlock->getDisplayLastAddress(), quint64(3));
 
     QVERIFY(firstOverlap->isVisible());  
-    QVERIFY(largeAddressBlock->isConflicted());
+    QVERIFY(firstOverlap->isConflicted());
     QCOMPARE(firstOverlap->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(firstOverlap->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(firstOverlap->getDisplayOffset(), quint64(1));
@@ -434,43 +425,27 @@ void tst_MemoryMapGraphItem::testTwoBlocksCompletelyOverlappingThird()
     memoryMapItem->addChild(lastBlockItem);
     memoryMapItem->addChild(overlappedItem);
 
-    firstBlockItem->refresh();
-    lastBlockItem->refresh();
-    overlappedItem->refresh();
+    memoryMapItem->updateDisplay(); 
+    memoryMapItem->redoChildLayout();
 
     expandItem(memoryMapItem);
 
     QList<MemoryGapItem*> conflictedAreas = findMemoryGaps(memoryMapItem);
-    QCOMPARE(conflictedAreas.count(), 2);
+    QCOMPARE(conflictedAreas.count(), 0);
 
     QVERIFY(firstBlockItem->isConflicted());
     QCOMPARE(firstBlockItem->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(firstBlockItem->pos().y(), qreal(VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(firstBlockItem->getDisplayOffset(), quint64(0));
-    QCOMPARE(firstBlockItem->getDisplayLastAddress(), quint64(0));
+    QCOMPARE(firstBlockItem->getDisplayLastAddress(), quint64(1));
 
-    MemoryGapItem* firstConflict = conflictedAreas.first();
-    QVERIFY(firstConflict->isConflicted());
-    QCOMPARE(firstConflict->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(firstConflict->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(firstConflict->getDisplayOffset(), quint64(1));
-    QCOMPARE(firstConflict->getDisplayLastAddress(), quint64(1));
-
-    QVERIFY(overlappedItem->isConflicted());
-    QVERIFY(overlappedItem->isCompletelyOverlapped());
+    QVERIFY(overlappedItem->isConflicted());    
     QCOMPARE(overlappedItem->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(overlappedItem->pos().y(), qreal(3*VisualizerItem::DEFAULT_HEIGHT));
-
-    MemoryGapItem* secondConflict = conflictedAreas.last();
-    QVERIFY(secondConflict->isConflicted());
-    QCOMPARE(secondConflict->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(secondConflict->pos().y(), qreal(4*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(secondConflict->getDisplayOffset(), quint64(2));
-    QCOMPARE(secondConflict->getDisplayLastAddress(), quint64(2));
+    QCOMPARE(overlappedItem->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
  
     QCOMPARE(lastBlockItem->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(lastBlockItem->pos().y(), qreal(5*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(lastBlockItem->getDisplayOffset(), quint64(3));
+    QCOMPARE(lastBlockItem->pos().y(), qreal(3*VisualizerItem::DEFAULT_HEIGHT));
+    QCOMPARE(lastBlockItem->getDisplayOffset(), quint64(2));
     QCOMPARE(lastBlockItem->getDisplayLastAddress(), quint64(3));
 
     delete memoryMapItem;
@@ -506,14 +481,12 @@ void tst_MemoryMapGraphItem::testTwoOverlappingBlocksInsideThrid()
     memoryMapItem->addChild(firstOverlap);
     memoryMapItem->addChild(secondOverlap);
 
-    containerBlock->refresh();
-    firstOverlap->refresh();
-    secondOverlap->refresh();
+    memoryMapItem->redoChildLayout();
 
     expandItem(memoryMapItem);
 
     QList<MemoryGapItem*> conflictedAreas = findMemoryGaps(memoryMapItem);
-    QCOMPARE(conflictedAreas.count(), 1);
+    QCOMPARE(conflictedAreas.count(), 0);
 
     QVERIFY(containerBlock->isConflicted());
     QCOMPARE(containerBlock->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
@@ -525,16 +498,9 @@ void tst_MemoryMapGraphItem::testTwoOverlappingBlocksInsideThrid()
     QCOMPARE(firstOverlap->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(firstOverlap->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
 
-    MemoryGapItem* overlappingArea = conflictedAreas.first();
-    QVERIFY(overlappingArea->isConflicted());
-    QCOMPARE(overlappingArea->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(overlappingArea->pos().y(), qreal(3*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(overlappingArea->getDisplayOffset(), quint64(2));
-    QCOMPARE(overlappingArea->getDisplayLastAddress(), quint64(2));
-
     QVERIFY(secondOverlap->isConflicted());    
     QCOMPARE(secondOverlap->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(secondOverlap->pos().y(), qreal(4*VisualizerItem::DEFAULT_HEIGHT));
+    QCOMPARE(secondOverlap->pos().y(), qreal(3*VisualizerItem::DEFAULT_HEIGHT));
 
     delete memoryMapItem;
 }
@@ -574,38 +540,29 @@ void tst_MemoryMapGraphItem::testIdenticalBlocksOverlappingThird()
     memoryMapItem->addChild(firstTwin);
     memoryMapItem->addChild(secondTwin);
 
-    unique->refresh();
-    firstTwin->refresh();
-    secondTwin->refresh();
+    memoryMapItem->redoChildLayout();
 
     expandItem(memoryMapItem);
 
     QList<MemoryGapItem*> conflictedAreas = findMemoryGaps(memoryMapItem);
-    QCOMPARE(conflictedAreas.count(), 1);
+    QCOMPARE(conflictedAreas.count(), 0);
 
     QVERIFY(unique->isConflicted());
     QCOMPARE(unique->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(unique->pos().y(), qreal(VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(unique->getDisplayOffset(), quint64(0));
-    QCOMPARE(unique->getDisplayLastAddress(), quint64(0));
-
-    MemoryGapItem* overlappingArea = conflictedAreas.first();
-    QVERIFY(overlappingArea->isConflicted());
-    QCOMPARE(overlappingArea->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(overlappingArea->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(overlappingArea->getDisplayOffset(), quint64(1));
-    QCOMPARE(overlappingArea->getDisplayLastAddress(), quint64(1));
+    QCOMPARE(unique->getDisplayLastAddress(), quint64(1));
 
     QVERIFY(firstTwin->isConflicted());
     QCOMPARE(firstTwin->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(firstTwin->pos().y(), qreal(4*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(firstTwin->getDisplayOffset(), quint64(2));
+    QCOMPARE(firstTwin->pos().y(), qreal(3*VisualizerItem::DEFAULT_HEIGHT));
+    QCOMPARE(firstTwin->getDisplayOffset(), quint64(1));
     QCOMPARE(firstTwin->getDisplayLastAddress(), quint64(2));
 
     QVERIFY(secondTwin->isConflicted());    
     QCOMPARE(secondTwin->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
-    QCOMPARE(secondTwin->pos().y(), qreal(3*VisualizerItem::DEFAULT_HEIGHT));
-    QCOMPARE(secondTwin->getDisplayOffset(), quint64(2));
+    QCOMPARE(secondTwin->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
+    QCOMPARE(secondTwin->getDisplayOffset(), quint64(1));
     QCOMPARE(secondTwin->getDisplayLastAddress(), quint64(2));
 
     delete memoryMapItem;
@@ -640,9 +597,7 @@ void tst_MemoryMapGraphItem::testConsecutiveBlocksInsideThird()
     memoryMapItem->addChild(firstInsider);
     memoryMapItem->addChild(secondInsider);
 
-    container->refresh();
-    firstInsider->refresh();
-    secondInsider->refresh();
+    memoryMapItem->redoChildLayout();
 
     expandItem(memoryMapItem);
 
@@ -690,7 +645,8 @@ void tst_MemoryMapGraphItem::testExpressions()
 
     AddressBlockGraphItem* parametrizedItem = new AddressBlockGraphItem(parametrizedBlock, expressionParser, memoryMapItem);
     memoryMapItem->addChild(parametrizedItem);
-    memoryMapItem->refresh();
+    
+    memoryMapItem->updateDisplay();    
 
     QCOMPARE(memoryMapItem->getDisplayOffset(), quint64(2));
     QCOMPARE(memoryMapItem->getDisplayLastAddress(), quint64(5));
@@ -703,7 +659,7 @@ MemoryMapGraphItem* tst_MemoryMapGraphItem::createMemoryBlockBase(QSharedPointer
 {
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
     MemoryMapGraphItem* memoryMapItem = new MemoryMapGraphItem(memoryMap, memoryMap, expressionParser, 0);
-    memoryMapItem->refresh();
+    memoryMapItem->updateDisplay();
 
     return memoryMapItem;
 }

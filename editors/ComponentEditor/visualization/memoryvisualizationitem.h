@@ -267,16 +267,6 @@ private:
     bool emptySpaceBeforeChild(MemoryVisualizationItem const* current, quint64 lastAddressInUse) const;
 
     /*!
-     *  Checks if the two consecutive children overlap.
-     *
-     *      @param [in] current     The currently iterated child.
-     *      @param [in] previous    The previously iterated child.
-     *
-     *      @return True, if the children overlap, otherwise false.
-     */
-    bool childrenOverlap(MemoryVisualizationItem const* current, MemoryVisualizationItem const* previous) const;
-
-    /*!
      *  Creates a new child for representing a free memory slot.
      *
      *      @param [in] offset          The offset of the free memory slot.

@@ -104,8 +104,7 @@ void tst_RegisterGraphItem::testConstructor()
     testRegister->setAddressOffset(0);
     testRegister->setSize("1");
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, noParser, addressBlockItem);
-    registerItem->refresh();
+    RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, noParser, addressBlockItem);    
 
     QCOMPARE(registerItem->name(), QString("testRegister"));
     QCOMPARE(registerItem->getOffset(), quint64(0));
@@ -126,8 +125,7 @@ void tst_RegisterGraphItem::testRegisterWithField()
 {    
     RegisterGraphItem* registerItem = createRegisterItem();
     FieldGraphItem* fieldItem = createFieldItem("testField", 0, 8, registerItem);
-    registerItem->refresh();
-    fieldItem->refresh();
+    registerItem->redoChildLayout();
 
     QCOMPARE(registerItem->getOffset(), quint64(0));
     QCOMPARE(registerItem->getLastAddress(), quint64(0));
@@ -161,6 +159,8 @@ void tst_RegisterGraphItem::testRegisterWithConsecutiveFields()
     FieldGraphItem* firstField = createFieldItem("first", 0, 4, registerItem);
     FieldGraphItem* secondField = createFieldItem("second", 4, 4, registerItem);
 
+    registerItem->redoChildLayout();
+
     expandItem(registerItem);
 
     QVERIFY(firstField->isVisible());
@@ -192,6 +192,8 @@ void tst_RegisterGraphItem::testFieldInSecondAddress()
     RegisterGraphItem* registerItem = createRegisterItem();
 
     FieldGraphItem* fieldItem = createFieldItem("", 0, 7, registerItem);
+
+    registerItem->redoChildLayout();
 
     expandItem(registerItem);
 
@@ -227,6 +229,8 @@ void tst_RegisterGraphItem::testEmptyAfterLastField()
     RegisterGraphItem* registerItem = createRegisterItem();
     FieldGraphItem* fieldItem = createFieldItem("", 1, 7, registerItem);
 
+    registerItem->redoChildLayout();
+
     expandItem(registerItem);
 
     QList<MemoryGapItem*> gaps = findMemoryGaps(registerItem);
@@ -259,6 +263,8 @@ void tst_RegisterGraphItem::testFieldOutsideRegisterIsNotValid()
     RegisterGraphItem* registerItem = createRegisterItem();
     FieldGraphItem* fieldItem = createFieldItem("", 15, 1, registerItem);
 
+    registerItem->redoChildLayout();
+
     expandItem(registerItem);
 
     QList<MemoryGapItem*> gaps = findMemoryGaps(registerItem);
@@ -269,10 +275,10 @@ void tst_RegisterGraphItem::testFieldOutsideRegisterIsNotValid()
     MemoryGapItem* placeholderForFields = gaps.first();
     QVERIFY(!placeholderForFields->isConflicted());
     QCOMPARE(placeholderForFields->name(), QString("Reserved"));
-    QCOMPARE(placeholderForFields->pos().x(), qreal(0));
-    QCOMPARE(placeholderForFields->getDisplayOffset(), quint64(7));
-    QCOMPARE(placeholderForFields->getDisplayLastAddress(), quint64(0));
-    QCOMPARE(placeholderForFields->boundingRect().width(), registerItem->boundingRect().width());
+    QCOMPARE(placeholderForFields->pos().x(), registerItem->boundingRect().width() / 16);
+    QCOMPARE(placeholderForFields->getDisplayOffset(), quint64(0));
+    QCOMPARE(placeholderForFields->getDisplayLastAddress(), quint64(14));
+    QCOMPARE(placeholderForFields->boundingRect().width(), 15*registerItem->boundingRect().width()/16);
 
     delete registerItem->parent();
 }
@@ -285,6 +291,8 @@ void tst_RegisterGraphItem::testFieldEndingOutsideRegisterIsNotValid()
     RegisterGraphItem* registerItem = createRegisterItem();
     FieldGraphItem* fieldItem = createFieldItem("", 7, 8, registerItem);
 
+    registerItem->redoChildLayout();
+
     expandItem(registerItem);
 
     QList<MemoryGapItem*> gaps = findMemoryGaps(registerItem);
@@ -294,15 +302,15 @@ void tst_RegisterGraphItem::testFieldEndingOutsideRegisterIsNotValid()
     QCOMPARE(fieldItem->pos().x(), qreal(0));
     QCOMPARE(fieldItem->getDisplayOffset(), quint64(14));
     QCOMPARE(fieldItem->getDisplayLastAddress(), quint64(7));
-    QCOMPARE(fieldItem->boundingRect().width(), registerItem->boundingRect().width()/8);
+    QCOMPARE(fieldItem->boundingRect().width(), 8*registerItem->boundingRect().width()/15);
 
     MemoryGapItem* placeholderForFields = gaps.first();
     QVERIFY(!placeholderForFields->isConflicted());
     QCOMPARE(placeholderForFields->name(), QString("Reserved"));
-    QCOMPARE(placeholderForFields->pos().x(), registerItem->boundingRect().width()/8);
-    QCOMPARE(placeholderForFields->getDisplayOffset(), quint64(6));
-    QCOMPARE(placeholderForFields->getDisplayLastAddress(), quint64(0));
-    QCOMPARE(placeholderForFields->boundingRect().width(), 7*registerItem->boundingRect().width()/8);
+    QCOMPARE(placeholderForFields->pos().x(), 8*registerItem->boundingRect().width()/15);
+    QCOMPARE(placeholderForFields->getDisplayOffset(), quint64(0));
+    QCOMPARE(placeholderForFields->getDisplayLastAddress(), quint64(6));
+    QCOMPARE(placeholderForFields->boundingRect().width(), 7*registerItem->boundingRect().width()/15);
 
     delete registerItem->parent();
 }
@@ -316,6 +324,8 @@ void tst_RegisterGraphItem::testEmptyBetweenTwoFields()
 
     FieldGraphItem* msbItem = createFieldItem("msb", 6, 2, registerItem);
     FieldGraphItem* lsbItem = createFieldItem("lsb", 0, 3, registerItem);
+
+    registerItem->redoChildLayout();
 
     expandItem(registerItem);
 
@@ -334,8 +344,8 @@ void tst_RegisterGraphItem::testEmptyBetweenTwoFields()
     QVERIFY(!emptySpace->isConflicted());
     QCOMPARE(emptySpace->name(), QString("Reserved"));
     QCOMPARE(emptySpace->pos().x(), 2*registerItem->boundingRect().width()/8);
-    QCOMPARE(emptySpace->getDisplayOffset(), quint64(5));
-    QCOMPARE(emptySpace->getDisplayLastAddress(), quint64(3));
+    QCOMPARE(emptySpace->getDisplayOffset(), quint64(3));
+    QCOMPARE(emptySpace->getDisplayLastAddress(), quint64(5));
     QCOMPARE(emptySpace->boundingRect().width(), 3*registerItem->boundingRect().width()/8);
 
     QVERIFY(lsbItem->isVisible());
@@ -357,6 +367,8 @@ void tst_RegisterGraphItem::testPartiallyOverlappingFields()
     RegisterGraphItem* registerItem = createRegisterItem();
     FieldGraphItem* msbItem = createFieldItem("msb", 4, 4, registerItem);
     FieldGraphItem* lsbItem = createFieldItem("lsb", 0, 5, registerItem);
+
+    registerItem->redoChildLayout();
 
     expandItem(registerItem);
 
@@ -387,6 +399,8 @@ void tst_RegisterGraphItem::testFullyOverlappingFields()
     RegisterGraphItem* registerItem = createRegisterItem();
     FieldGraphItem* firstItem = createFieldItem("first", 0, 4, registerItem);
     FieldGraphItem* secondItem = createFieldItem("second", 0, 4, registerItem);
+
+    registerItem->redoChildLayout();
 
     expandItem(registerItem);
 
@@ -419,6 +433,8 @@ void tst_RegisterGraphItem::testMultipleFieldsOverlapping()
     FieldGraphItem* firstOverlap = createFieldItem("firstOverlap", 6, 2, registerItem);
     FieldGraphItem* secondOverlap = createFieldItem("secondOverlap", 0, 2, registerItem);
 
+    registerItem->redoChildLayout();
+
     expandItem(registerItem);
 
     QList<MemoryGapItem*> conflictedAreas = findMemoryGaps(registerItem);
@@ -432,13 +448,11 @@ void tst_RegisterGraphItem::testMultipleFieldsOverlapping()
     QCOMPARE(largeItem->boundingRect().width(), registerItem->boundingRect().width());
 
     QVERIFY(firstOverlap->isVisible());  
-    QVERIFY(firstOverlap->isConflicted());
-    QVERIFY(!firstOverlap->isCompletelyOverlapped());
+    QVERIFY(firstOverlap->isConflicted());    
     QCOMPARE(firstOverlap->boundingRect().width(), 2*registerItem->boundingRect().width()/8);
 
     QVERIFY(secondOverlap->isVisible());
-    QVERIFY(secondOverlap->isConflicted());
-    QVERIFY(!secondOverlap->isCompletelyOverlapped());
+    QVERIFY(secondOverlap->isConflicted());    
     QCOMPARE(secondOverlap->boundingRect().width(), 2*registerItem->boundingRect().width()/8);
 
     delete registerItem->parent();
@@ -454,6 +468,8 @@ void tst_RegisterGraphItem::testTwoFieldsCompletelyOverlappingThird()
     FieldGraphItem* msbItem = createFieldItem("msb", 4, 4, registerItem);
     FieldGraphItem* overlappedItem = createFieldItem("overlapped", 2, 4, registerItem);
     FieldGraphItem* lsbItem = createFieldItem("lsb", 0, 4, registerItem);
+
+    registerItem->redoChildLayout();
 
     expandItem(registerItem);
 
@@ -491,6 +507,8 @@ void tst_RegisterGraphItem::testZeroWidthFields()
     FieldGraphItem* msbItem = createFieldItem("msb", 0, 0, registerItem);
     FieldGraphItem* lsbItem = createFieldItem("lsb", 0, 0, registerItem);
 
+    registerItem->redoChildLayout();
+
     expandItem(registerItem);
 
     QList<MemoryGapItem*> emptySpaces = findMemoryGaps(registerItem);
@@ -502,9 +520,9 @@ void tst_RegisterGraphItem::testZeroWidthFields()
     MemoryGapItem* placeholder = emptySpaces.first();
     QVERIFY(!placeholder->isConflicted());
     QCOMPARE(placeholder->pos().x(), qreal(0));
-    QCOMPARE(placeholder->getDisplayOffset(), quint64(7));
-    QCOMPARE(placeholder->getDisplayLastAddress(), quint64(0));
-    QCOMPARE(placeholder->boundingRect().width(), registerItem->boundingRect().width());
+    QCOMPARE(placeholder->getDisplayOffset(), quint64(1));
+    QCOMPARE(placeholder->getDisplayLastAddress(), quint64(7));
+    QCOMPARE(placeholder->boundingRect().width(), 7*registerItem->boundingRect().width()/8);
 
     QVERIFY(lsbItem->isConflicted());
     QCOMPARE(lsbItem->boundingRect().width(), qreal(1));
@@ -599,8 +617,7 @@ void tst_RegisterGraphItem::testExpressions()
 
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 
-    RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, expressionParser, addressBlockItem);
-    registerItem->refresh();
+    RegisterGraphItem* registerItem = new RegisterGraphItem(testRegister, expressionParser, addressBlockItem);    
 
     QCOMPARE(registerItem->name(), QString("testRegister[1:0]"));
     QCOMPARE(registerItem->getDisplayOffset(), quint64(2));
@@ -630,6 +647,7 @@ void tst_RegisterGraphItem::testNonPresentField()
 
     FieldGraphItem* presentItem = createFieldItem("visibleField", 1, 3, registerItem);
 
+    registerItem->redoChildLayout();
     expandItem(registerItem);
     
     QCOMPARE(nonPresentItem->isVisible(), false);
@@ -640,8 +658,8 @@ void tst_RegisterGraphItem::testNonPresentField()
 
     QCOMPARE(reservedSpaces.size(), 2);
     MemoryGapItem* reservedMSBs = reservedSpaces.first();
-    QCOMPARE(reservedMSBs->getDisplayOffset(), quint64(7));
-    QCOMPARE(reservedMSBs->getDisplayLastAddress(), quint64(4));
+    QCOMPARE(reservedMSBs->getDisplayOffset(), quint64(4));
+    QCOMPARE(reservedMSBs->getDisplayLastAddress(), quint64(7));
 
     MemoryGapItem* reservedLSB = reservedSpaces.last();
     QCOMPARE(reservedLSB->getDisplayOffset(), quint64(0));

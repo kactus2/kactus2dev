@@ -281,7 +281,7 @@ void RegisterGraphItem::fillGapsBetweenChildren()
     // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB). 
     for (auto i = childItems_.end() - 1; i != childItems_.begin() - 1; --i)
     {
-        MemoryVisualizationItem* current = i.value();
+        MemoryVisualizationItem const* current = i.value();
         if (current->isPresent())
         {
             if (emptySpaceBeforeChild(current, lowestBitHandled))
@@ -289,7 +289,7 @@ void RegisterGraphItem::fillGapsBetweenChildren()
                 i = addMemoryGap(current->getLastAddress() + 1, lowestBitHandled - 1);
             }
 
-            lowestBitHandled = current->getOffset();
+            lowestBitHandled = qMin(current->getOffset(), lowestBitHandled);
         }
     }
 
@@ -329,33 +329,31 @@ QMap<quint64, MemoryVisualizationItem*>::iterator RegisterGraphItem::addMemoryGa
 void RegisterGraphItem::markConflictingChildren()
 {
     unsigned int registerMSB = getRegisterMSB();
+    quint64 lowestBitHandled = registerMSB + 1;
 
-    // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB). 
-    MemoryVisualizationItem* previous = nullptr;
-    for (auto i = childItems_.cend() - 1; i != childItems_.cbegin() - 1; --i)
+    // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB).     
+    for (auto child = childItems_.end() - 1; child != childItems_.begin() - 1; --child)
     {
-        MemoryVisualizationItem* current = i.value();
+        MemoryVisualizationItem* current = child.value();
         if (current->isPresent())
         {
-            bool overlaps = childrenOverlap(current, previous);
+            bool overlaps = current->getLastAddress() >= lowestBitHandled;
             bool isOutsideRegister = current->getOffset() > registerMSB || current->getLastAddress() > registerMSB;
 
             current->setConflicted(overlaps || isOutsideRegister);
             if (overlaps)
             {
-                previous->setConflicted(true);
+                // Walk in the opposite direction and mark any overlapping items conflicted.
+                for (auto previous = child + 1; previous != childItems_.end(); ++previous)
+                {
+                    if ((*previous)->getOffset() <= current->getLastAddress())
+                    {
+                        (*previous)->setConflicted(true);
+                    }
+                }
             }
 
-            previous = current;
+            lowestBitHandled = qMin(current->getOffset(), lowestBitHandled);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphItem::childrenOverlap()
-//-----------------------------------------------------------------------------
-bool RegisterGraphItem::childrenOverlap(MemoryVisualizationItem const* current,
-    MemoryVisualizationItem const* previous)
-{
-    return previous != nullptr && current->getLastAddress() >= previous->getOffset();
 }
