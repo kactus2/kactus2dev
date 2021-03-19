@@ -26,15 +26,13 @@ jobs:
     - uses: actions/checkout@v1
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
-      with:
-        vs-version: '[15.9,15.10)'
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         version: 5.12.7
+    - name: Setup environment for MSBuild
+      run: echo "QTDIR=${{env.Qt5_Dir}}" >> $GITHUB_ENV
     - name: Build sources
       run: |
-        echo 'QTDIR=d:/a/kactus2dev/Qt/5.12.7/msvc2017_64' >> $GITHUB_ENV
-        msbuild -m:4 -p:Configuration=Release -p:Platform=x64 -p:PlatformToolset=v141 Kactus2_Solution_vs2017.sln      
-
-        
+        echo $env:QTDIR
+        msbuild -m:4 -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln      
