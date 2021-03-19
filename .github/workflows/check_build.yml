@@ -30,9 +30,7 @@ jobs:
       uses: jurplel/install-qt-action@v2
       with:
         version: 5.12.7
-    - name: Setup environment for MSBuild
-      run: echo "QTDIR=${{env.Qt5_Dir}}" >> $GITHUB_ENV
     - name: Build sources
       run: |
-        echo $env:QTDIR
+        $Env:QTDIR = $Env:Qt5_Dir
         msbuild -m:4 -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln      
