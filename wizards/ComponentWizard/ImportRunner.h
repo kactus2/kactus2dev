@@ -48,7 +48,7 @@ public:
         QObject* parent);
 
 	//! The destructor.
-	~ImportRunner();
+	virtual ~ImportRunner() = default;
   
     /*!
      *  Sets the expression parser to be used by all importers.
@@ -199,14 +199,6 @@ private:
      */
     QList<ImportPlugin*> importPluginsForFileTypes(QStringList const& filetypes) const;
     
-    /*!
-     *  Adds highlighting to a given import plugin if possible.
-     *
-     *      @param [in] parser          The plugin to add highlighting to.   
-     *      @param [in] highlighter     The highligter to add to the plugin.   
-     */
-    void addHighlightIfPossible(ImportPlugin* parser, Highlighter* highlighter) const;
-   
     /*!
      *  Get the selected component declaration.
      *

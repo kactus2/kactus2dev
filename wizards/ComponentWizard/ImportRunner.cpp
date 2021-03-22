@@ -52,15 +52,6 @@ componentsInFile_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ImportRunner::~ImportRunner()
-//-----------------------------------------------------------------------------
-ImportRunner::~ImportRunner()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-
 // Function: ImportRunner::gatherComponentsFromFile()
 //-----------------------------------------------------------------------------
 QStringList ImportRunner::constructComponentDataFromFile(QString const& filePath, QString const& componentXMLPath,
@@ -73,7 +64,7 @@ QStringList ImportRunner::constructComponentDataFromFile(QString const& filePath
 
     QStringList availableComponentNames;
 
-    foreach(ImportPlugin* parser, importPluginsForFileTypes(filetypes))
+    for (ImportPlugin const* parser : importPluginsForFileTypes(filetypes))
     {
         QStringList possibleComponents = parser->getFileComponents(fileContent);
         for (auto component : possibleComponents)
@@ -108,7 +99,7 @@ QSharedPointer<Component> ImportRunner::run(QString const& componentName, QStrin
     importIncludes(filePath, componentXmlPath, importComponent);
 
     QStringList filetypes = filetypesOf(filePath, *importComponent->getFileSets().data());
-   // importFile(filePath, componentXmlPath, importPluginsForFileTypes(filetypes), importComponent);
+   
     importFile(componentName, filePath, componentXmlPath, importPluginsForFileTypes(filetypes), importComponent);
 
     QApplication::restoreOverrideCursor();
@@ -123,7 +114,7 @@ QStringList ImportRunner::importFileTypes() const
 {
     QStringList fileTypes;
 
-    foreach(ImportPlugin* parser, ImportPlugins_)
+    for (ImportPlugin const* parser : ImportPlugins_)
     {
         fileTypes.append(parser->getSupportedFileTypes());
     }
@@ -137,14 +128,13 @@ QStringList ImportRunner::importFileTypes() const
 //-----------------------------------------------------------------------------
 void ImportRunner::loadPlugins(PluginManager const& pluginManager)
 {
-    foreach(IPlugin* plugin, pluginManager.getActivePlugins())
+    for (IPlugin* plugin : pluginManager.getActivePlugins())
     {
         ImportPlugin* importPlugin = dynamic_cast<ImportPlugin*>(plugin);
         ISourceAnalyzerPlugin* analyzerPlugin = dynamic_cast<ISourceAnalyzerPlugin*>(plugin);
         if (importPlugin)
         {            
             ImportPlugins_.append(importPlugin);
-
             addExpressionParserIfPossible(importPlugin);
         }
 
@@ -186,6 +176,7 @@ void ImportRunner::scrollSourceDisplayToFirstHighlight(QPlainTextEdit* sourceDis
 
     while (cursor.movePosition(QTextCursor::NextBlock) && cursor.charFormat() == initialFormat)
     {
+        // Loop until first formatted block is found.
     }
 
     if (!cursor.atEnd())
@@ -210,7 +201,7 @@ void ImportRunner::importIncludes(QString const& filePath, QString const& compon
     QString componentPath = QFileInfo(componentXmlPath).absolutePath() + "/";
     QStringList filetypes = filetypesOf(filePath, *importComponent->getFileSets().data());
 
-    foreach(ISourceAnalyzerPlugin* analyzer, analyzerPluginsForFileTypes(filetypes))
+    for (ISourceAnalyzerPlugin* analyzer : analyzerPluginsForFileTypes(filetypes))
     {
         analyzer->beginAnalysis(importComponent.data(), componentPath);
         dependencies.append(analyzer->getFileDependencies(importComponent.data(), componentPath, 
@@ -220,9 +211,9 @@ void ImportRunner::importIncludes(QString const& filePath, QString const& compon
 
     QList<ImportPlugin*> importPlugins = includeImportPluginsForFileTypes(filetypes);
     QString basePath = QFileInfo(General::getAbsolutePath(componentXmlPath, filePath)).absolutePath() + "/";
-    foreach(FileDependencyDesc dependency, dependencies)
-    {
-        //importFile(dependency.filename, basePath, importPlugins, importComponent);
+
+    for (FileDependencyDesc const& dependency : dependencies)
+    {        
         importFile(QString(""), dependency.filename, basePath, importPlugins, importComponent);
     }
 }
@@ -237,13 +228,13 @@ QStringList ImportRunner::filetypesOf(QString const& fileName, QList<QSharedPoin
 
     QRegularExpression filePattern("(?:^|[\\\\/])" + fileName + "$");
 
-    foreach (QSharedPointer<FileSet> fileSet, fileSets)
+    for (auto const& fileSet : fileSets)
     {
-        foreach(QSharedPointer<File> file, *fileSet->getFiles())
+        for (auto const& file : *fileSet->getFiles())
         {
             if (filePattern.match(file->name()).hasMatch())
             {
-                fileTypes.append(*file->getFileTypes().data());
+                fileTypes.append(*file->getFileTypes());
             }
         }
     }
@@ -252,9 +243,7 @@ QStringList ImportRunner::filetypesOf(QString const& fileName, QList<QSharedPoin
 
     if (fileTypes.isEmpty() && !fileName.isEmpty())
     {
-        QFileInfo fileData(fileName);
-        QString fileSuffix = fileData.suffix();
-
+        QString fileSuffix = QFileInfo(fileName).suffix();
         fileTypes.append(FileHandler::getFileTypeForSuffix(fileSuffixTable_, fileSuffix));
     }
 
@@ -267,10 +256,10 @@ QStringList ImportRunner::filetypesOf(QString const& fileName, QList<QSharedPoin
 QList<ISourceAnalyzerPlugin*> ImportRunner::analyzerPluginsForFileTypes(QStringList filetypes) const
 {
     QList<ISourceAnalyzerPlugin*> analysersForFiletype;
-    foreach(ISourceAnalyzerPlugin* analyzer, analyzerPlugins_)
+    for (ISourceAnalyzerPlugin* analyzer : analyzerPlugins_)
     {
         QStringList supportedTypes = analyzer->getSupportedFileTypes();
-        foreach(QString filetype, filetypes)
+        for (QString const& filetype : filetypes)
         {
             if (supportedTypes.contains(filetype) && !analysersForFiletype.contains(analyzer))
             {
@@ -285,7 +274,6 @@ QList<ISourceAnalyzerPlugin*> ImportRunner::analyzerPluginsForFileTypes(QStringL
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::importFile()
 //-----------------------------------------------------------------------------
-
 void ImportRunner::importFile(QString const& componentName, QString const& filePath,
     QString const& absoluteBasePath, QList<ImportPlugin *> importPluginsForFile,
     QSharedPointer<Component> importComponent)
@@ -298,8 +286,6 @@ void ImportRunner::importFile(QString const& componentName, QString const& fileP
     }
 
     QString const& fileContent = readInputFile(filePath, absoluteBasePath);
-
-
 
     QPlainTextEdit* sourceDisplayer = nullptr;
     Highlighter* highlighter = nullptr;
@@ -314,14 +300,21 @@ void ImportRunner::importFile(QString const& componentName, QString const& fileP
     }
 
     QStringList compatibilityWarnings;
-    foreach(ImportPlugin* parser, importPluginsForFile)
+    for (ImportPlugin* parser : importPluginsForFile)
     {
         compatibilityWarnings.append(parser->getCompatibilityWarnings());
-
-        addHighlightIfPossible(parser, highlighter);
-
-        parser->import(fileContent, componentDeclaration, importComponent);
-        addHighlightIfPossible(parser, 0);
+        
+        HighlightSource* highlightSource = dynamic_cast<HighlightSource*>(parser);
+        if (highlightSource)
+        {
+            highlightSource->setHighlighter(highlighter);
+            parser->import(fileContent, componentDeclaration, importComponent);
+            highlightSource->setHighlighter(nullptr);
+        }
+        else
+        {
+            parser->import(fileContent, componentDeclaration, importComponent);
+        }
     }
     compatibilityWarnings.removeAll("");
     emit noticeMessage(compatibilityWarnings.join("\n"));
@@ -331,7 +324,6 @@ void ImportRunner::importFile(QString const& componentName, QString const& fileP
     {
         displayTabs_->setCurrentIndex(displayTabs_->indexOf(sourceDisplayer));
         scrollSourceDisplayToFirstHighlight(sourceDisplayer);
-
 
         delete highlighter;
     }
@@ -353,7 +345,7 @@ QString ImportRunner::getComponentFromFile(QString const& componentName) const
         }
     }
 
-    return QString("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -386,12 +378,9 @@ QString ImportRunner::readInputFile(QString const& relativePath, QString const& 
     QString fileContent = "";
 
     QString absoluteFilePath = General::getAbsolutePath(basePath, relativePath);
-
-
     QFile importedFile(absoluteFilePath);
     if (QFileInfo(absoluteFilePath).exists() && importedFile.open(QIODevice::ReadOnly))
     {
-
         QTextStream stream(&importedFile);
         fileContent = stream.readAll();
         fileContent.replace("\r\n", "\n");
@@ -412,40 +401,12 @@ QString ImportRunner::readInputFile(QString const& relativePath, QString const& 
 QList<ImportPlugin*> ImportRunner::importPluginsForFileTypes(QStringList const& filetypes) const
 {
     QList<ImportPlugin*> compatiblePlugins;
-    foreach(ImportPlugin* importer, ImportPlugins_)
+    for (ImportPlugin* importer : ImportPlugins_)
     {
-
         if (dynamic_cast<IncludeImportPlugin*>(importer) == 0)
         {
-
             QStringList parserAcceptedFiletypes = importer->getSupportedFileTypes();
-            foreach(QString filetype, filetypes)
-
-                if (parserAcceptedFiletypes.contains(filetype) && !compatiblePlugins.contains(importer))
-                {
-                    compatiblePlugins.prepend(importer);
-                }
-            }
-        }
-    
-
-    return compatiblePlugins;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ImportRunner::includeImportPluginsForFileTypes()
-//-----------------------------------------------------------------------------
-QList<ImportPlugin*> ImportRunner::includeImportPluginsForFileTypes(QStringList const& filetypes) const
-{
-
-    QList<ImportPlugin*> compatiblePlugins;
-    foreach(ImportPlugin* importer, ImportPlugins_)
-    {
-
-        if (dynamic_cast<IncludeImportPlugin*>(importer) != 0)
-        {
-            QStringList parserAcceptedFiletypes = importer->getSupportedFileTypes();
-            foreach(QString filetype, filetypes)
+            for (QString const& filetype : filetypes)
             {
                 if (parserAcceptedFiletypes.contains(filetype) && !compatiblePlugins.contains(importer))
                 {
@@ -459,13 +420,25 @@ QList<ImportPlugin*> ImportRunner::includeImportPluginsForFileTypes(QStringList 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ImportRunner::addHighlightIfPossible()
+// Function: ImportRunner::includeImportPluginsForFileTypes()
 //-----------------------------------------------------------------------------
-void ImportRunner::addHighlightIfPossible(ImportPlugin* parser, Highlighter* highlighter) const
+QList<ImportPlugin*> ImportRunner::includeImportPluginsForFileTypes(QStringList const& filetypes) const
 {
-    HighlightSource* highlightSource = dynamic_cast<HighlightSource*>(parser);
-    if (highlightSource)
+    QList<ImportPlugin*> compatiblePlugins;
+    for (ImportPlugin* importer : ImportPlugins_)
     {
-        highlightSource->setHighlighter(highlighter);
+        if (dynamic_cast<IncludeImportPlugin*>(importer) != 0)
+        {
+            QStringList parserAcceptedFiletypes = importer->getSupportedFileTypes();
+            for (QString const& filetype : filetypes)
+            {
+                if (parserAcceptedFiletypes.contains(filetype) && !compatiblePlugins.contains(importer))
+                {
+                    compatiblePlugins.prepend(importer);
+                }
+            }
+        }
     }
+
+    return compatiblePlugins;
 }
