@@ -282,3 +282,19 @@ int TransparentBridgeInterface::getAllReferencesToIdInItem(const std::string& it
 
     return totalReferencesToParameter;
 }
+
+//-----------------------------------------------------------------------------
+// Function: TransparentBridgeInterface::getAllExpressions()
+//-----------------------------------------------------------------------------
+std::vector<std::string> TransparentBridgeInterface::getAllExpressions(std::string const& masterReference) const
+{
+    std::vector<std::string> expressions;
+
+    QString isPresentExpression = QString::fromStdString(getIsPresentExpression(masterReference));
+    if (!isPresentExpression.isEmpty())
+    {
+        expressions.push_back(isPresentExpression.toStdString());
+    }
+
+    return expressions;
+}

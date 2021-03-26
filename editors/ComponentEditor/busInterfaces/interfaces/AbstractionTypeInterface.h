@@ -88,6 +88,20 @@ public:
     QSharedPointer<ConfigurableVLNVReference> getAbstractionReference(int const& typeIndex) const;
 
     /*!
+     *  Get the abstraction reference string.
+     *
+     *      @return Abstraction reference if only a single abstraction type exists, otherwise [multiple].
+     */
+    std::string getAbstractionReferenceString() const;
+
+    /*!
+     *  Get the list of abstraction references.
+     *
+     *      @return String list of the abstraction references.
+     */
+    std::vector<std::string> getAbstractionReferences() const;
+
+    /*!
      *  Check if the selected abstraction type has an abstraction reference.
      *
      *      @param [in] typeIndex   Index of the selected abstraction type.
@@ -192,6 +206,17 @@ public:
      *      @param [in] typeIndex   Index of the selected abstraction type.
      */
     void addAbstraction(int const& typeIndex);
+
+    /*!
+     *  Add the selected abstraction type.
+     *
+     *      @param [in] newVendor   Vendor of the new abstraction reference.
+     *      @param [in] newLibrary  Library of the new abstraction reference.
+     *      @param [in] newName     Name of the new abstraction reference.
+     *      @param [in] newVersion  Version of the new abstraction reference.
+     */
+    void addAbstractionType(std::string const& newVendor, std::string const& newLibrary,
+        std::string const& newName, std::string const& newVersion) const;
 
     /*!
      *  Remove the selected abstraction type.

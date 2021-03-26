@@ -24,15 +24,12 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfacesEditor::BusInterfacesEditor()
 //-----------------------------------------------------------------------------
-BusInterfacesEditor::BusInterfacesEditor(LibraryInterface* handler,
-    QSharedPointer<Component> component,
-    QSharedPointer<BusInterfaceValidator> validator,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QWidget* parent):
+BusInterfacesEditor::BusInterfacesEditor(LibraryInterface* handler, QSharedPointer<Component> component,
+    BusInterfaceInterface* busInterface, QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
 ItemEditor(component, handler, parent),
-    view_(this),
-    proxy_(this),
-    model_(handler, component, validator, parameterFinder, this)
+view_(this),
+proxy_(this),
+model_(handler, parameterFinder, busInterface, this)
 {
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Bus interfaces"), this);
 
@@ -72,13 +69,6 @@ ItemEditor(component, handler, parent),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(&model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfacesEditor::~BusInterfacesEditor()
-//-----------------------------------------------------------------------------
-BusInterfacesEditor::~BusInterfacesEditor()
-{
 }
 
 //-----------------------------------------------------------------------------

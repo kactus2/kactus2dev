@@ -29,6 +29,7 @@ class ParameterValidator;
 class ParameterFinder;
 class ExpressionFormatter;
 class IPXactSystemVerilogParser;
+class ParametersInterface;
 
 //-----------------------------------------------------------------------------
 //! PortmapDialog class.
@@ -61,97 +62,6 @@ private:
     // Disable copying.
     PortmapDialog(PortmapDialog const& rhs);
     PortmapDialog& operator=(PortmapDialog const& rhs);
-
-    /*!
-     *  Create the interface for accessing bus interfaces.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] component               The containing component.
-     *      @param [in] library                 Interface for accessing the library.
-     *
-     *      @return Interface for accessing bus interfaces.
-     */
-    BusInterfaceInterface* createBusInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<IPXactSystemVerilogParser> expressionParser, QSharedPointer<Component> component,
-        LibraryInterface* library) const;
-
-    /*!
-     *  Create the interface for accessing file sets.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] component               The containing component.
-     *
-     *      @return Interface for accessing file sets.
-     */
-    FileSetInterface* createFileSetInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<IPXactSystemVerilogParser> expressionParser, QSharedPointer<Component> component) const;
-
-    /*!
-     *  Create the interface for accessing memory maps.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] parameterValidator      Validator for parameters.
-     *      @param [in] component               The containing component.
-     *
-     *      @return Interface for accessing memory maps.
-     */
-    MemoryMapInterface* createMapInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<IPXactSystemVerilogParser> expressionParser,
-        QSharedPointer<ParameterValidator> parameterValidator, QSharedPointer<Component> component) const;
-
-    /*!
-     *  Create the interface for accessing abstraction types.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] portMapValidator        Validator for port maps.
-     *      @param [in] component               The containing component.
-     *      @param [in] library                 Interface for accessing the library.
-     *
-     *      @return Interface for accessing abstraction types.
-     */
-    AbstractionTypeInterface* creaetAbstractionTypeInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<IPXactSystemVerilogParser> expressionParser,
-        QSharedPointer<PortMapValidator> portMapValidator, QSharedPointer<Component> component,
-        LibraryInterface* library) const;
-
-    /*!
-     *  Create the interface for accessing port maps.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] portMapValidator        Validator for port maps.
-     *      @param [in] component               The containing component.
-     *
-     *      @return Interface for accessing port maps.
-     */
-    PortMapInterface* createPortMapInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<IPXactSystemVerilogParser> expressionParser,
-        QSharedPointer<PortMapValidator> portMapValidator, QSharedPointer<Component> component) const;
-
-    /*!
-     *  Create the interface for accessing transparent bridges.
-     *
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *
-     *      @return Interface for accessing transparent bridges.
-     */
-    TransparentBridgeInterface* createBridgeInterface(QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<IPXactSystemVerilogParser> expressionParser) const;
 
     //-----------------------------------------------------------------------------
     // Data.

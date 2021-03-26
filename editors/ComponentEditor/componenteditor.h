@@ -44,6 +44,7 @@ class AbstractionTypeInterface;
 class PortMapInterface;
 class TransparentBridgeInterface;
 class PortMapValidator;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! The editor to edit/packet IP-Xact components.
@@ -239,88 +240,6 @@ private:
      *      @param [in] component   The component containing the file.
      */
     void changeFileName(QString const& from, QString const& to, QSharedPointer<Component> component) const;
-
-    /*!
-     *  Create the interface for accessing bus interfaces.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *
-     *      @return Interface for accessing bus interfaces.
-     */
-    BusInterfaceInterface* createBusInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser) const;
-
-    /*!
-     *  Create the interface for accessing file sets.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *
-     *      @return Interface for accessing file sets.
-     */
-    FileSetInterface* createFileSetInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser) const;
-
-    /*!
-     *  Create the interface for accessing memory maps.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] parameterValidator      Validator for parameters.
-     *
-     *      @return Interface for accessing memory maps.
-     */
-    MemoryMapInterface* createMapInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterValidator> parameterValidator) const;
-
-    /*!
-     *  Create the interface for accessing abstraction types.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] portMapValidator        Validator for port maps.
-     *
-     *      @return Interface for accessing abstraction types.
-     */
-    AbstractionTypeInterface* creaetAbstractionTypeInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<PortMapValidator> portMapValidator) const;
-
-    /*!
-     *  Create the interface for accessing port maps.
-     *
-     *      @param [in] parameterFinder         The parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] portMapValidator        Validator for port maps.
-     *
-     *      @return Interface for accessing port maps.
-     */
-    PortMapInterface* createPortMapInterface(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<PortMapValidator> portMapValidator) const;
-
-    /*!
-     *  Create the interface for accessing transparent bridges.
-     *
-     *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] expressionParser        Parser for expressions.
-     *
-     *      @return Interface for accessing transparent bridges.
-     */
-    TransparentBridgeInterface* createBridgeInterface(QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser) const;
 
 	//-----------------------------------------------------------------------------
     // Data.

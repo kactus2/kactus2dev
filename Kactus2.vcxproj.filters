@@ -4969,6 +4969,9 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\AbstractionTypeInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterfaceFactory.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7605,6 +7608,9 @@
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\AbstractionTypeInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterfaceFactory.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
     </ClInclude>
   </ItemGroup>

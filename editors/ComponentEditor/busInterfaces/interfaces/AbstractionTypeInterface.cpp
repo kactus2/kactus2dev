@@ -104,6 +104,40 @@ const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionTypeInterface::getAbstractionReferenceString()
+//-----------------------------------------------------------------------------
+std::string AbstractionTypeInterface::getAbstractionReferenceString() const
+{
+    std::string referenceString = "";
+    int count = itemCount();
+    if (count == 1)
+    {
+        referenceString = abstractions_->first()->getAbstractionRef()->toString().toStdString();
+    }
+    else if (count > 1)
+    {
+        referenceString = "[multiple]";
+    }
+
+    return referenceString;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypeInterface::getAbstractionReferences()
+//-----------------------------------------------------------------------------
+std::vector<std::string> AbstractionTypeInterface::getAbstractionReferences() const
+{
+    std::vector<std::string> references;
+
+    for (auto abstractionType : *abstractions_)
+    {
+        references.push_back(abstractionType->getAbstractionRef()->toString().toStdString());
+    }
+
+    return references;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionTypeInterface::hasAbstractionReference()
 //-----------------------------------------------------------------------------
 bool AbstractionTypeInterface::hasAbstractionReference(int const& typeIndex) const
@@ -312,6 +346,26 @@ void AbstractionTypeInterface::addAbstraction(int const& typeIndex)
     QSharedPointer<AbstractionType> newAbstraction(new AbstractionType());
 
     abstractions_->insert(typeIndex, newAbstraction);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypeInterface::addAbstractionType()
+//-----------------------------------------------------------------------------
+void AbstractionTypeInterface::addAbstractionType(std::string const& newVendor, std::string const& newLibrary,
+    std::string const& newName, std::string const& newVersion) const
+{
+    QSharedPointer<ConfigurableVLNVReference> abstractionReference(new ConfigurableVLNVReference());
+    abstractionReference->setType(VLNV::ABSTRACTIONDEFINITION);
+    abstractionReference->setVendor(QString::fromStdString(newVendor));
+    abstractionReference->setLibrary(QString::fromStdString(newLibrary));
+    abstractionReference->setName(QString::fromStdString(newName));
+    abstractionReference->setVersion(QString::fromStdString(newVersion));
+    abstractionReference->setType(VLNV::ABSTRACTIONDEFINITION);
+
+    QSharedPointer<AbstractionType> newAbstractionType(new AbstractionType());
+    newAbstractionType->setAbstractionRef(abstractionReference);
+
+    abstractions_->append(newAbstractionType);
 }
 
 //-----------------------------------------------------------------------------

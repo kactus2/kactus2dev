@@ -165,6 +165,15 @@ public:
      */
     virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const;
 
+    /*!
+     *  Get all the expressions from the selected transparent bridge.
+     *
+     *      @param [in] masterReference     Master reference of the selected transparent bridge.
+     *
+     *      @return List of expressions in the selected transparent bridge.
+     */
+    std::vector<std::string> getAllExpressions(std::string const& masterReference) const;
+
     //! No copying. No assignment.
     TransparentBridgeInterface(const TransparentBridgeInterface& other) = delete;
     TransparentBridgeInterface& operator=(const TransparentBridgeInterface& other) = delete;

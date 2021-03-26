@@ -20,6 +20,9 @@
 
 #include <editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h>
 #include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
 
 namespace
 {
@@ -33,7 +36,8 @@ namespace
 BusInterfaceInterface::BusInterfaceInterface(QSharedPointer<BusInterfaceValidator> busValidator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
     FileSetInterface* fileSetInterface, MemoryMapInterface* mapInterface,
-    AbstractionTypeInterface* abstractionTypeInterface, TransparentBridgeInterface* bridgeInterface):
+    AbstractionTypeInterface* abstractionTypeInterface, TransparentBridgeInterface* bridgeInterface,
+    ParametersInterface* parameterInterface):
 ParameterizableInterface(expressionParser, expressionFormatter),
 NameGroupInterface(),
 busInterfaces_(0),
@@ -41,7 +45,8 @@ busValidator_(busValidator),
 bridgeInterface_(bridgeInterface),
 fileSetInterface_(fileSetInterface),
 mapInterface_(mapInterface),
-abstractionTypeInterface_(abstractionTypeInterface)
+abstractionTypeInterface_(abstractionTypeInterface),
+parameterInterface_(parameterInterface)
 {
 
 }
@@ -52,6 +57,9 @@ abstractionTypeInterface_(abstractionTypeInterface)
 void BusInterfaceInterface::setBusInterfaces(QSharedPointer<Component> newComponent)
 {
     busInterfaces_ = newComponent->getBusInterfaces();
+
+    fileSetInterface_->setFileSets(newComponent->getFileSets());
+    mapInterface_->setMemoryMaps(newComponent);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,16 +68,20 @@ void BusInterfaceInterface::setBusInterfaces(QSharedPointer<Component> newCompon
 void BusInterfaceInterface::setupSubInterfaces(std::string const& busName)
 {
     QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
-    if (selectedBus && selectedBus->getInterfaceMode() == General::SLAVE)
+    if (selectedBus)
     {
-        bridgeInterface_->setBridges(selectedBus->getSlave()->getBridges());
-    }
-    else
-    {
-        bridgeInterface_->setBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > >());
-    }
+        if (selectedBus->getInterfaceMode() == General::SLAVE)
+        {
+            bridgeInterface_->setBridges(selectedBus->getSlave()->getBridges());
+        }
+        else
+        {
+            bridgeInterface_->setBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > >());
+        }
 
-    abstractionTypeInterface_->setAbstractionTypes(selectedBus->getAbstractionTypes());
+        abstractionTypeInterface_->setAbstractionTypes(selectedBus->getAbstractionTypes());
+        parameterInterface_->setParameters(selectedBus->getParameters());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -377,8 +389,40 @@ bool BusInterfaceInterface::validateBusInterface(std::string const& busName) con
 bool BusInterfaceInterface::itemHasValidName(std::string const& itemName) const
 {
     QSharedPointer<BusInterface> selectedBus = getBusInterface(itemName);
+    if (selectedBus)
+    {
+        return busValidator_->hasValidName(selectedBus);
+    }
 
-    return busValidator_->hasValidName(selectedBus);
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::hasValidBusType()
+//-----------------------------------------------------------------------------
+bool BusInterfaceInterface::hasValidBusType(std::string const& busName) const
+{
+    QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
+    if (selectedBus)
+    {
+        return busValidator_->hasValidBusType(selectedBus);
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::hasValidAbstractionTypes()
+//-----------------------------------------------------------------------------
+bool BusInterfaceInterface::hasValidAbstractionTypes(std::string const& busName) const
+{
+    QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
+    if (selectedBus)
+    {
+        return busValidator_->hasValidAbstractionTypes(selectedBus);
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -609,11 +653,48 @@ bool BusInterfaceInterface::setBitSteering(std::string const& busName, std::stri
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::addBusInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::addBusInterface(int const& newBusIndex, std::string const& busName)
+{
+    QSharedPointer<BusInterface> newBus(new BusInterface());
+    newBus->setName(getUniqueName(busName, DEFAULT_NAME.toStdString()));
+
+    busInterfaces_->insert(newBusIndex, newBus);
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusInterfaceInterface::removeBusInterface()
 //-----------------------------------------------------------------------------
-bool BusInterfaceInterface::removeBusInterface(std::string const& /*busName*/)
+bool BusInterfaceInterface::removeBusInterface(std::string const& busName)
 {
-    return true;
+    QSharedPointer<BusInterface> removedItem = getBusInterface(busName);
+    if (!removedItem)
+    {
+        return false;
+    }
+
+    return busInterfaces_->removeOne(removedItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::swapBusInterfaces()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::swapBusInterfaces(int const& firstIndex, int const& secondIndex)
+{
+    if (firstIndex < 0 || firstIndex >= itemCount())
+    {
+        return;
+    }
+    if (secondIndex < 0 || secondIndex >= itemCount())
+    {
+        QSharedPointer<BusInterface> selectedBus = busInterfaces_->takeAt(firstIndex);
+        busInterfaces_->append(selectedBus);
+    }
+    else
+    {
+        busInterfaces_->swap(firstIndex, secondIndex);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -806,7 +887,28 @@ bool BusInterfaceInterface::setFileSetReferences(std::string const& busName,
 ConfigurableVLNVReference BusInterfaceInterface::getBusType(std::string const& busName) const
 {
     QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
-    return selectedBus->getBusType();
+    if(selectedBus)
+    {
+        return selectedBus->getBusType();
+    }
+    else
+    {
+        return ConfigurableVLNVReference();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::getBusTypeString()
+//-----------------------------------------------------------------------------
+std::string BusInterfaceInterface::getBusTypeString(std::string const& busName) const
+{
+    QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
+    if (selectedBus)
+    {
+        return selectedBus->getBusType().toString().toStdString();
+    }
+
+    return "";
 }
 
 //-----------------------------------------------------------------------------
@@ -821,6 +923,100 @@ bool BusInterfaceInterface::setBustype(std::string const& busName, ConfigurableV
     }
 
     selectedBus->setBusType(newVLNV);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::setBustype()
+//-----------------------------------------------------------------------------
+bool BusInterfaceInterface::setBustype(std::string const& busName, std::string const& newVendor,
+    std::string const& newLibrary, std::string const& newName, std::string const& newVersion) const
+{
+    QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
+    if (!selectedBus)
+    {
+        return false;
+    }
+
+    ConfigurableVLNVReference newAbstractionReference;
+    newAbstractionReference.setVendor(QString::fromStdString(newVendor));
+    newAbstractionReference.setLibrary(QString::fromStdString(newLibrary));
+    newAbstractionReference.setName(QString::fromStdString(newName));
+    newAbstractionReference.setVersion(QString::fromStdString(newVersion));
+
+    newAbstractionReference.setType(VLNV::BUSDEFINITION);
+
+    selectedBus->setBusType(newAbstractionReference);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::getAbstractionReferenceString()
+//-----------------------------------------------------------------------------
+std::string BusInterfaceInterface::getAbstractionReferenceString(std::string const& busName) const
+{
+    QSharedPointer<BusInterface> busInterface = getBusInterface(busName);
+    if (busInterface)
+    {
+        abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes());
+        return abstractionTypeInterface_->getAbstractionReferenceString();
+    }
+
+    return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::getAbstractionReferences()
+//-----------------------------------------------------------------------------
+std::vector<std::string> BusInterfaceInterface::getAbstractionReferences(std::string const& busName) const
+{
+    std::vector<std::string> references;
+
+    QSharedPointer<BusInterface> busInterface = getBusInterface(busName);
+    if (busInterface)
+    {
+        abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes());
+        references = abstractionTypeInterface_->getAbstractionReferences();
+    }
+
+    return references;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::addAbstractionType()
+//-----------------------------------------------------------------------------
+bool BusInterfaceInterface::addAbstractionType(std::string const& busName, std::string const& newVendor,
+    std::string const& newLibrary, std::string const& newName, std::string const& newVersion) const
+{
+    QSharedPointer<BusInterface> busInterface = getBusInterface(busName);
+    if (!busInterface)
+    {
+        return false;
+    }
+
+    abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes());
+    abstractionTypeInterface_->addAbstractionType(newVendor, newLibrary, newName, newVersion);
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::removeAbstractionTypes()
+//-----------------------------------------------------------------------------
+bool BusInterfaceInterface::removeAbstractionTypes(std::string const& busName)
+{
+    QSharedPointer<BusInterface> busInterface = getBusInterface(busName);
+    if (!busInterface)
+    {
+        return false;
+    }
+
+    abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes());
+    for (int i = abstractionTypeInterface_->itemCount(); i >= 0; i--)
+    {
+        abstractionTypeInterface_->removeAbstraction(i);
+    }
+
     return true;
 }
 
@@ -1079,32 +1275,99 @@ int BusInterfaceInterface::getAllReferencesToIdInItem(const std::string& itemNam
 {
     int totalReferencesToParameter = 0;
 
-    QString idString = QString::fromStdString(valueID);
-
-    QSharedPointer<MasterInterface> master = getMasterInterface(itemName);
-    if (master)
+    QSharedPointer<BusInterface> selectedBus = getBusInterface(itemName);
+    if (selectedBus)
     {
-        totalReferencesToParameter += QString::fromStdString(getBaseAddressExpression(itemName)).count(idString);
-    }
+        QString idString = QString::fromStdString(valueID);
 
-
-    QSharedPointer<SlaveInterface> slave = getSlaveInterface(itemName);
-    if (slave)
-    {
-        totalReferencesToParameter += QString::fromStdString(getRangeExpression(itemName)).count(idString);
-        totalReferencesToParameter += QString::fromStdString(getRemapAddressExpression(itemName)).count(idString);
-
-        QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges = slave->getBridges();
-        if (bridges)
+        QSharedPointer<MasterInterface> master = getMasterInterface(itemName);
+        if (master)
         {
-            bridgeInterface_->setBridges(bridges);
-            for (auto bridge : *bridges)
+            totalReferencesToParameter += QString::fromStdString(getBaseAddressExpression(itemName)).count(idString);
+        }
+
+
+        QSharedPointer<SlaveInterface> slave = getSlaveInterface(itemName);
+        if (slave)
+        {
+            totalReferencesToParameter += QString::fromStdString(getRangeExpression(itemName)).count(idString);
+            totalReferencesToParameter += QString::fromStdString(getRemapAddressExpression(itemName)).count(idString);
+
+            QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges = slave->getBridges();
+            if (bridges)
             {
-                totalReferencesToParameter +=
-                    bridgeInterface_->getAllReferencesToIdInItem(bridge->getMasterRef().toStdString(), valueID);
+                bridgeInterface_->setBridges(bridges);
+                for (auto bridge : *bridges)
+                {
+                    totalReferencesToParameter +=
+                        bridgeInterface_->getAllReferencesToIdInItem(bridge->getMasterRef().toStdString(), valueID);
+                }
             }
+        }
+
+        parameterInterface_->setParameters(selectedBus->getParameters());
+        for (auto parameterName : parameterInterface_->getItemNames())
+        {
+            totalReferencesToParameter += parameterInterface_->getAllReferencesToIdInItem(parameterName, valueID);
         }
     }
 
     return totalReferencesToParameter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::getAllExpressions()
+//-----------------------------------------------------------------------------
+std::vector<std::string> BusInterfaceInterface::getAllExpressions(std::string const& busName) const
+{
+    std::vector<std::string> expressionList;
+
+    QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
+    if (selectedBus)
+    {
+        QString baseAddress = QString::fromStdString(getBaseAddressExpression(busName));
+
+        if (!baseAddress.isEmpty())
+        {
+            expressionList.push_back(baseAddress.toStdString());
+        }
+
+        QSharedPointer<SlaveInterface> slave = getSlaveInterface(busName);
+        if (slave)
+        {
+            QString range = QString::fromStdString(getRangeExpression(busName));
+            QString remapAddress = QString::fromStdString(getRemapAddressExpression(busName));
+            if (!range.isEmpty())
+            {
+                expressionList.push_back(range.toStdString());
+            }
+            if (!remapAddress.isEmpty())
+            {
+                expressionList.push_back(remapAddress.toStdString());
+            }
+
+            QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges = slave->getBridges();
+            if (bridges)
+            {
+                bridgeInterface_->setBridges(bridges);
+                for (auto bridge : *bridges)
+                {
+                    for (auto bridgeExpression :
+                        bridgeInterface_->getAllExpressions(bridge->getMasterRef().toStdString()))
+                    {
+                        expressionList.push_back(bridgeExpression);
+                    }
+                }
+            }
+        }
+
+        parameterInterface_->setParameters(selectedBus->getParameters());
+        for (auto expression :
+            parameterInterface_->getExpressionsInSelectedItems(parameterInterface_->getItemNames()))
+        {
+            expressionList.push_back(expression);
+        }
+    }
+
+    return expressionList;
 }

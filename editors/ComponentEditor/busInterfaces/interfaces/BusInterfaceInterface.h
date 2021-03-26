@@ -31,6 +31,7 @@ class TransparentBridgeInterface;
 class FileSetInterface;
 class MemoryMapInterface;
 class AbstractionTypeInterface;
+class ParametersInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing bus interfaces.
@@ -49,6 +50,7 @@ public:
      *      @param [in] mapInterface                Interface for accessing memory maps.
      *      @param [in] abstractionTypeInterface    Interface for accessing abstraction types.
      *      @param [in] bridgeInterface             Interface for accessing bridges.
+     *      @param [in] parameterInterface          Interface for accessing parameters.
      */
     BusInterfaceInterface(QSharedPointer<BusInterfaceValidator> busValidator,
         QSharedPointer<ExpressionParser> expressionParser,
@@ -56,7 +58,8 @@ public:
         FileSetInterface* fileSetInterface,
         MemoryMapInterface* mapInterface,
         AbstractionTypeInterface* abstractionTypeInterface,
-        TransparentBridgeInterface* bridgeInterface);
+        TransparentBridgeInterface* bridgeInterface,
+        ParametersInterface* parameterInterface);
 
     /*!
      *  The destructor.
@@ -162,6 +165,24 @@ public:
      *      @return True, if the name is valid, false otherwise.
      */
     virtual bool itemHasValidName(std::string const& itemName) const override final;
+
+    /*!
+     *  Check if the selected bus interface has a valid bus type.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return True, if the bus type is valid, false otherwise.
+     */
+    bool hasValidBusType(std::string const& busName) const;
+
+    /*!
+     *  Check if the selected bus interface has valid abstraction types.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return True, if the abstraction types is valid, false otherwise.
+     */
+    bool hasValidAbstractionTypes(std::string const& busName) const;
 
     /*!
      *  Get the interface mode of the selected bus interface.
@@ -391,6 +412,15 @@ public:
     ConfigurableVLNVReference getBusType(std::string const& busName) const;
 
     /*!
+     *  Get the bus type of the selected bus interface as a string.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return Bus type of the selected bus interface in string format.
+     */
+    std::string getBusTypeString(std::string const& busName) const;
+
+    /*!
      *  Set the bus type of the selected bus interface.
      *
      *      @param [in] busName     Name of the selected bus interface.
@@ -399,6 +429,61 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool setBustype(std::string const& busName, ConfigurableVLNVReference const& newVLNV);
+
+    /*!
+     *  Set the bus type for the selected bus interface.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *      @param [in] newVendor   Vendor of the new bus type.
+     *      @param [in] newLibrary  Library of the new bus type.
+     *      @param [in] newName     Name of the new bus type.
+     *      @param [in] newVersion  Version of the new bus type.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setBustype(std::string const& busName, std::string const& newVendor, std::string const& newLibrary,
+        std::string const& newName, std::string const& newVersion) const;
+
+    /*!
+     *  Get the abstraction reference string of the selected bus interface.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return Abstraction reference if only a single abstraction type exists, otherwise [multiple].
+     */
+    std::string getAbstractionReferenceString(std::string const& busName) const;
+
+    /*!
+     *  Get the list of abstraction references of the selected bus interface.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return String list of the abstraction references.
+     */
+    std::vector<std::string> getAbstractionReferences(std::string const& busName) const;
+
+    /*!
+     *  Add a new abstraction type to the selected bus interface.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *      @param [in] newVendor   Vendor of the new abstraction type.
+     *      @param [in] newLibrary  Library of the new abstraction type.
+     *      @param [in] newName     Name of the new abstraction  type.
+     *      @param [in] newVersion  Version of the new abstraction type.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool addAbstractionType(std::string const& busName, std::string const& newVendor,
+        std::string const& newLibrary, std::string const& newName, std::string const& newVersion) const;
+
+    /*!
+     *  Remove all the abstraction types from the selected bus interface.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return True, if successfull, false otherwise.
+     */
+    bool removeAbstractionTypes(std::string const& busName);
 
     /*!
      *  Get the calculated range value of the selected bus interface.
@@ -524,6 +609,22 @@ public:
     bool setMonitorGroup(std::string const& busName, std::string const& newGroup);
 
     /*!
+     *  Add a new bus interface.
+     *
+     *      @param [in] newBusIndex     Index of the new bus interface.
+     *      @param [in] busName         Name of the new bus interface.
+     */
+    void addBusInterface(int const& newBusIndex, std::string const& busName = "");
+
+    /*!
+     *  Swap the selected bus interfaces.
+     *
+     *      @param [in] firstIndex      Index of the first bus interface.
+     *      @param [in] secondIndex     Index of the second bus interface.
+     */
+    void swapBusInterfaces(int const& firstIndex, int const& secondIndex);
+
+    /*!
      *  Remove the selected bus interface.
      *
      *      @param [in] busName     Name of the selected bus interface.
@@ -586,15 +687,24 @@ public:
     QSharedPointer<QList<QSharedPointer<TransparentBridge> > > createBridges(std::string const& busName);
 
     /*!
-     *  
+     *  Get all the references made to the selected parameter in the selected bus interface.
      *
-     *      @param [in] itemName
-     *      @param [in] valueID
+     *      @param [in] itemName    Name of the selected bus interface.
+     *      @param [in] valueID     ID of the target parameter.
      *
-     *      @return 
+     *      @return Number of references made to the given parameter in the selected bus interface.
      */
     virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const
         override;
+
+    /*!
+     *  Get all the expressions in the selected bus interface.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return List of the expressions in the selected bus interface.
+     */
+    std::vector<std::string> getAllExpressions(std::string const& busName) const;
 
     //! No copying. No assignment.
     BusInterfaceInterface(const BusInterfaceInterface& other) = delete;
@@ -702,8 +812,11 @@ private:
     //! Interface for accessing memory maps.
     MemoryMapInterface* mapInterface_;
 
-    //! Interface for accsessing abstraction types
+    //! Interface for accessing abstraction types
     AbstractionTypeInterface* abstractionTypeInterface_;
+
+    //! Interface for accessing parameters.
+    ParametersInterface* parameterInterface_;
 };
 
 #endif // BUSINTERFACEINTERFACE_H

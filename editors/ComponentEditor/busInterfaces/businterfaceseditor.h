@@ -25,6 +25,7 @@ class BusInterfaceValidator;
 class Component;
 class LibraryInterface;
 class ParameterFinder;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor to add/remove/edit the bus interfaces of a component.
@@ -52,23 +53,31 @@ public:
 	 *
 	 *      @param [in] handler             The instance that manages the library.
 	 *      @param [in] component           The component being edited.
+     *      @param [in] busInterface        Interface for accessing bus interfaces.
 	 *      @param [in] parameterFinder     The parameter finder.
 	 *      @param [in] parent              The owner of this editor.
 	 */
-	BusInterfacesEditor(LibraryInterface* handler, QSharedPointer<Component> component,
-        QSharedPointer<BusInterfaceValidator> validator,
-        QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
+	BusInterfacesEditor(LibraryInterface* handler,
+        QSharedPointer<Component> component,
+        BusInterfaceInterface* busInterface,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QWidget* parent = 0);
 	
-	//! The destructor
-	virtual ~BusInterfacesEditor();
+	/*!
+     *  The destructor.
+     */
+	virtual ~BusInterfacesEditor() = default;
 
-	/*! Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+     */
 	virtual void refresh();
 
 protected:
 
-	//! Handler for widget's show event
+	/*!
+     *  Handler for widget's show event.
+     */
 	virtual void showEvent(QShowEvent* event);
 
 private:
@@ -76,6 +85,10 @@ private:
 	//! No copying
 	BusInterfacesEditor(const BusInterfacesEditor& other);
 	BusInterfacesEditor& operator=(const BusInterfacesEditor& other);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! The view that displays the summary of the bus interfaces.
 	EditableTableView view_;
