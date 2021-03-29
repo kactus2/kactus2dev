@@ -60,7 +60,7 @@ void SegmentGraphItem::refresh()
 //-----------------------------------------------------------------------------
 quint64 SegmentGraphItem::getOffset() const
 {
-	return getExpressionParser()->parseExpression(segment_->getAddressOffset()).toUInt();
+	return getExpressionParser()->parseExpression(segment_->getAddressOffset()).toULongLong();
 }
 
 //-----------------------------------------------------------------------------
@@ -69,7 +69,7 @@ quint64 SegmentGraphItem::getOffset() const
 quint64 SegmentGraphItem::getLastAddress() const
 {
     quint64 base = getOffset();
-    quint64 range = getExpressionParser()->parseExpression(segment_->getRange()).toUInt();
+    quint64 range = getExpressionParser()->parseExpression(segment_->getRange()).toULongLong();
 
     quint64 lastAddr = base + range;
 

@@ -200,9 +200,9 @@ void MemoryVisualizationItem::redoChildLayout()
 //-----------------------------------------------------------------------------
 // Function: memoryvisualizationitem::parseExpression()
 //-----------------------------------------------------------------------------
-int MemoryVisualizationItem::parseExpression(QString const& expression) const
+quint64 MemoryVisualizationItem::parseExpression(QString const& expression) const
 {
-    return expressionParser_->parseExpression(expression).toUInt();
+    return expressionParser_->parseExpression(expression).toULongLong();
 }
 
 //-----------------------------------------------------------------------------
