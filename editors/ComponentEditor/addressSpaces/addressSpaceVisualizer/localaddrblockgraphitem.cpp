@@ -61,7 +61,7 @@ void LocalAddrBlockGraphItem::refresh()
 //-----------------------------------------------------------------------------
 quint64 LocalAddrBlockGraphItem::getOffset() const
 {
-	return getExpressionParser()->parseExpression(addrBlock_->getBaseAddress()).toUInt();
+	return getExpressionParser()->parseExpression(addrBlock_->getBaseAddress()).toULongLong();
 }
 
 //-----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ quint64 LocalAddrBlockGraphItem::getOffset() const
 quint64 LocalAddrBlockGraphItem::getLastAddress() const 
 {
     quint64 base = getOffset();
-    quint64 range = getExpressionParser()->parseExpression(addrBlock_->getRange()).toUInt();
+    quint64 range = getExpressionParser()->parseExpression(addrBlock_->getRange()).toULongLong();
 
     quint64 lastAddr = base + range;
 

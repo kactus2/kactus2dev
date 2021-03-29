@@ -45,7 +45,7 @@ public:
 		QObject *parent);
 	
 	//! The destructor.
-	virtual ~AddressSpaceScene();
+	virtual ~AddressSpaceScene() = default;
 
 	/*!
      *  Refresh the address space visualization.

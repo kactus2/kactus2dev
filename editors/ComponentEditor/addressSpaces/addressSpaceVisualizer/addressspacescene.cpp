@@ -43,14 +43,6 @@ expressionParser_(expressionParser)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~AddressSpaceScene()
-//-----------------------------------------------------------------------------
-AddressSpaceScene::~AddressSpaceScene() 
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: refresh()
 //-----------------------------------------------------------------------------
 void AddressSpaceScene::refresh() 
@@ -65,7 +57,7 @@ void AddressSpaceScene::refresh()
     quint64 addressSpaceEnd = addressSpaceLastAddress();
 
     QSharedPointer<QList<QSharedPointer<Segment> > > segments = addrSpace_->getSegments();
-    foreach(QSharedPointer<Segment> current, *segments)
+    for (QSharedPointer<Segment> current : *segments)
     {
         if (current->getIsPresent().isEmpty() || 
             expressionParser_->parseExpression(current->getIsPresent()).toInt() == 1)
@@ -87,11 +79,12 @@ void AddressSpaceScene::refresh()
     QSharedPointer<MemoryMapBase> localMap = addrSpace_->getLocalMemoryMap();
     if (!localMap.isNull() && !localMap->getMemoryBlocks().isNull())
     {
-        foreach (QSharedPointer<MemoryBlockBase> block, *localMap->getMemoryBlocks())
+        for (QSharedPointer<MemoryBlockBase> block : *localMap->getMemoryBlocks())
         {
             QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
             if (addrBlock && 
-                (addrBlock->getIsPresent().isEmpty() || expressionParser_->parseExpression(addrBlock->getIsPresent()).toInt() == 1))
+                (addrBlock->getIsPresent().isEmpty() || 
+                    expressionParser_->parseExpression(addrBlock->getIsPresent()).toInt() == 1))
             {
                 LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrBlock, 
                     addrSpace_->getWidth(), expressionParser_);
@@ -125,8 +118,8 @@ void AddressSpaceScene::rePosition()
 	QMultiMap<quint64, AddressSpaceVisualizationItem*>::iterator blockIterator = addrBlockItems_.begin();
 	
 	// the previous segment and address block
-	AddressSpaceVisualizationItem* prevSeg = NULL;
-	AddressSpaceVisualizationItem* prevBlock = NULL;
+	AddressSpaceVisualizationItem* prevSeg = nullptr;
+	AddressSpaceVisualizationItem* prevBlock = nullptr;
 
     // Y-coordinates for items.
 	qreal segCoord = 0;
@@ -452,7 +445,7 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
     quint64 addressSpaceEnd = addressSpaceLastAddress();
 
     // Conflict all items outside address space.
-    foreach (AddressSpaceVisualizationItem* exceedingItem, exceedingItemMap)
+    for (AddressSpaceVisualizationItem* exceedingItem : exceedingItemMap)
     {
         exceedingItem->setConflicted(true);
         exceedingItem->refresh();
@@ -462,7 +455,7 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
     QMultiMap<quint64, AddressSpaceVisualizationItem*> newMap;
 
     // go through all items and update the segment offsets and remove gaps
-    foreach (AddressSpaceVisualizationItem* item, itemMap)
+    for (AddressSpaceVisualizationItem* item : itemMap)
     {
         // if the item is gap item then remove it
         AddressSpaceGapItem* gap = dynamic_cast<AddressSpaceGapItem*>(item);
@@ -470,7 +463,7 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
         {
             removeItem(gap);
 			delete gap;
-			gap = NULL;
+			gap = nullptr;
             continue;
         }
 
@@ -485,21 +478,21 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
     }
 
     // The top-most item.
-    AddressSpaceVisualizationItem* topItem = NULL;
+    AddressSpaceVisualizationItem* topItem = nullptr;
 
     // Previous conflict block.
-    AddressSpaceVisualizationItem* prevConflict = NULL;
+    AddressSpaceVisualizationItem* prevConflict = nullptr;
 
     // Last processed address.    
     quint64 lastAddress = 0;
 
     // add gaps where a segment is not defined.
-    foreach (AddressSpaceVisualizationItem* item, newMap) 
+    for (AddressSpaceVisualizationItem* item : newMap) 
     {
         // if there is a gap between the last item and this item or first item
         // begins at address 1.
         if (item->getOffset() > lastAddress + 1 || 
-            (topItem == NULL && item->getOffset() == lastAddress + 1))
+            (topItem == nullptr && item->getOffset() == lastAddress + 1))
         {
             // create the gap item.
             AddressSpaceGapItem* gap = new AddressSpaceGapItem(align, addrSpace_->getWidth(), expressionParser_);
@@ -538,7 +531,7 @@ void AddressSpaceScene::updateMaps(QMultiMap<quint64, AddressSpaceVisualizationI
 
 	    // set the first address of the gap.
 		// if there were no address items then the end gap is also first gap.
-		if (lastAddress == 0 && topItem == NULL)
+		if (lastAddress == 0 && topItem == nullptr)
         {
 			gap->setStartAddress(lastAddress, true);
 		}
@@ -568,7 +561,7 @@ void AddressSpaceScene::rePositionExceeding(qreal const yStart)
 {
     // Add segments outside address space to the end.
     qreal yCoordinate = yStart + MARGIN;
-    foreach(AddressSpaceVisualizationItem* seg, exceedingSegments_)
+    for (AddressSpaceVisualizationItem* seg : exceedingSegments_)
     {
         seg->setHeight(AddressSpaceVisualizationItem::SEGMENT_HEIGHT);
         seg->setPos(0, yCoordinate);
@@ -660,7 +653,7 @@ void AddressSpaceScene::resolveConflicts(AddressSpaceVisualizationItem* currentI
 quint64 AddressSpaceScene::addressSpaceLastAddress() const
 {
     QString rangeExpression = addrSpace_->getRange();
-    quint64 range = expressionParser_->parseExpression(rangeExpression).toUInt();
+    quint64 range = expressionParser_->parseExpression(rangeExpression).toULongLong();
     if (rangeExpression.isEmpty() || range <= 0)
     {
         return 0;

@@ -175,7 +175,7 @@ protected:
      *
      *      @param [in] expression  The expression to be parsed.
      */
-    int parseExpression(QString const& expression) const;
+    quint64 parseExpression(QString const& expression) const;
 
     /*!
      *  Get the used expression parser.

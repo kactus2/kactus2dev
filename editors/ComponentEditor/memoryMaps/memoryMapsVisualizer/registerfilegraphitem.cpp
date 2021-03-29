@@ -85,7 +85,7 @@ quint64 RegisterFileGraphItem::getLastAddress() const
 {
     quint64 base = getOffset();
     quint64 range = parseExpression(regFile_->getRange());
-    int dimension = qMax(1, parseExpression(regFile_->getDimension()));
+    int dimension = qMax(quint64(1), parseExpression(regFile_->getDimension()));
 
     quint64 lastAddr = base + range * dimension;
 
