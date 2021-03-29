@@ -228,12 +228,12 @@ class PythonAPI(object):
         _pythonAPI.PythonAPI_swiginit(self, _pythonAPI.new_PythonAPI())
     __swig_destroy__ = _pythonAPI.delete_PythonAPI
     getVersion = _swig_new_instance_method(_pythonAPI.PythonAPI_getVersion)
-    listPlugins = _swig_new_instance_method(_pythonAPI.PythonAPI_listPlugins)
     getLibraryPaths = _swig_new_instance_method(_pythonAPI.PythonAPI_getLibraryPaths)
     setLibraryPaths = _swig_new_instance_method(_pythonAPI.PythonAPI_setLibraryPaths)
     getDefaultLibraryPath = _swig_new_instance_method(_pythonAPI.PythonAPI_getDefaultLibraryPath)
     setDefaultLibraryPath = _swig_new_instance_method(_pythonAPI.PythonAPI_setDefaultLibraryPath)
     importFile = _swig_new_instance_method(_pythonAPI.PythonAPI_importFile)
+    generate = _swig_new_instance_method(_pythonAPI.PythonAPI_generate)
     getFileCount = _swig_new_instance_method(_pythonAPI.PythonAPI_getFileCount)
     listVLNVs = _swig_new_instance_method(_pythonAPI.PythonAPI_listVLNVs)
     listComponentVLNVs = _swig_new_instance_method(_pythonAPI.PythonAPI_listComponentVLNVs)

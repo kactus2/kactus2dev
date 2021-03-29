@@ -107,12 +107,32 @@ public:
     virtual QString getCompatibilityWarnings() const override final;
 
     /*!
+     *  Get component declarations from the selected input file.
+     *
+     *      @param [in] input   The selected input file.
+     *
+     *      @return List of component declarations found in the selected input.
+     */
+    virtual QStringList getFileComponents(QString const& input) const override final;
+
+    /*!
+     *  Get the name of the selected component declaration.
+     *
+     *      @param [in] componentDeclaration    The selected component declaration.
+     *
+     *      @return Name of the selected component declaration.
+     */
+    virtual QString getComponentName(QString const& componentDeclaration) const override final;
+
+    /*!
      *   Parses a verilog input, sets up an rtl view and creates model parameters and ports.
      *
-     *      @param [in] input               The input text to parse.
-     *      @param [in] targetComponent     The component to apply all imported changes to.
+     *      @param [in] input                   The input text to parse.
+     *      @param [in] componentDeclaration    Declaration of the selected component.
+     *      @param [in] targetComponent         The component to apply all imported changes to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent) override final;
+    virtual void import(QString const& input, QString const& componentDeclaration,
+        QSharedPointer<Component> targetComponent) override final;
 
     /*!
      *  Sets the given visualizer to be used by the import.
@@ -147,19 +167,20 @@ private:
     /*!
      *  Highlights the module section in the input.
      *
-     *      @param [in] fileContent   The input file content to highlight entity in.
+     *      @param [in] input               The input file content to highlight entity in.
+     *      @param [in] moduleDeclaration   Selected module declaration from the file.
      */
-    void highlightModule(QString const& input);
+    void highlightModule(QString const& input, QString const& moduleDeclaration);
 
     /*!
      *  Parses the model name from the input and sets it in the rtl view.
      *
-     *      @param [in] input                               The input text to parse the model name from.
+     *      @param [in] moduleDeclaration                   The selected module declaration.
      *      @param [in/out] targetComponentInstantiation    The component instance to set the name in.
      */
-    void importModelName(QString const& input, 
+    void importModelName(QString const& moduleDeclaration,
         QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
-   
+
     /*!
      *  Finds a flat (rtl) view from the target component or creates one, if none are found.
      *

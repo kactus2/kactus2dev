@@ -19,6 +19,7 @@
 
 #include <QWizardPage>
 #include <QSharedPointer>
+#include <QVariant>
 
 class Component;
 class LibraryInterface;
@@ -31,7 +32,7 @@ class Kactus2Group;
 //-----------------------------------------------------------------------------
 class ComponentWizardImportPage : public QWizardPage
 {
-    Q_OBJECT
+    Q_OBJECT        
 public:
 
     /*!

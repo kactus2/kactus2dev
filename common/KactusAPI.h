@@ -15,6 +15,8 @@
 
 #include <common/ui/MessageMediator.h>
 
+class IPlugin;
+class IGeneratorPlugin;
 
 #ifndef KACTUSAPI_H
 #define KACTUSAPI_H
@@ -100,6 +102,25 @@ public:
      */
     static int importFile(QString const& filePath, VLNV const& targetVLNV, bool overwrite);
 
+    /*!
+     * Run a generation plugin for a component.
+     *
+     *     @param [in] plugin           The plugin to run.
+     *     @param [in] componentVLNV    The component to run the generation for.
+     *     @param [in] viewName         The component view to run the generation for.
+     *     @param [in] outputDirectory  The target directory for generated output files.
+     *     @param [in] parentWidget     The parent widget for dialogs if GUI is used.
+     */
+     static void runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV, QString const& viewName,
+        QString const& outputDirectory, QWidget* parentWidget = nullptr);
+
+    /*!
+     * Get the list of available plugins.     
+     *
+     *     @return The list of available plugins.
+     */
+     static QList<IPlugin*> getPlugins();
+
 private:
 
     // All members are defined static to enforce coherent state of the API regardless of instances.
@@ -109,6 +130,7 @@ private:
 
     //! The active message channel for output and errors.
     static MessageMediator* messageChannel_;
+
 };
 
 

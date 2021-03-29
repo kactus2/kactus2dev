@@ -61,7 +61,7 @@ public:
         QObject* parent);
 	
 	//! The destructor.
-	virtual ~VhdlGenerator2();
+	virtual ~VhdlGenerator2() = default;
 
 	/*!
      *  Get pointer to the instance that manages the library.

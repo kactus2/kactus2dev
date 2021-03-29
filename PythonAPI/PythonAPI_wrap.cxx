@@ -8017,29 +8017,6 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PythonAPI_listPlugins(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  PythonAPI *arg1 = (PythonAPI *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject *swig_obj[1] ;
-  std::vector< std::string,std::allocator< std::string > > result;
-  
-  if (!args) SWIG_fail;
-  swig_obj[0] = args;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_listPlugins" "', argument " "1"" of type '" "PythonAPI const *""'"); 
-  }
-  arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  result = ((PythonAPI const *)arg1)->listPlugins();
-  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_PythonAPI_getLibraryPaths(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
@@ -8052,10 +8029,10 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getLibraryPaths(PyObject *SWIGUNUSEDPARM(se
   swig_obj[0] = args;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getLibraryPaths" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getLibraryPaths" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  result = (arg1)->getLibraryPaths();
+  result = ((PythonAPI const *)arg1)->getLibraryPaths();
   resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
@@ -8106,10 +8083,10 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getDefaultLibraryPath(PyObject *SWIGUNUSEDP
   swig_obj[0] = args;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getDefaultLibraryPath" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getDefaultLibraryPath" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  result = (arg1)->getDefaultLibraryPath();
+  result = ((PythonAPI const *)arg1)->getDefaultLibraryPath();
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
@@ -8129,7 +8106,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_setDefaultLibraryPath(PyObject *SWIGUNUSEDP
   if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setDefaultLibraryPath", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setDefaultLibraryPath" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setDefaultLibraryPath" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   {
@@ -8143,7 +8120,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_setDefaultLibraryPath(PyObject *SWIGUNUSEDP
     }
     arg2 = ptr;
   }
-  (arg1)->setDefaultLibraryPath((std::string const &)*arg2);
+  ((PythonAPI const *)arg1)->setDefaultLibraryPath((std::string const &)*arg2);
   resultobj = SWIG_Py_Void();
   if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
@@ -8156,28 +8133,32 @@ fail:
 SWIGINTERN PyObject *_wrap_PythonAPI_importFile__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
-  std::string arg2 ;
+  std::string *arg2 = 0 ;
   std::string arg3 ;
   bool arg4 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
   bool val4 ;
   int ecode4 = 0 ;
+  int result;
   
   if ((nobjs < 4) || (nobjs > 4)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_importFile" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_importFile" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   {
     std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "PythonAPI_importFile" "', argument " "2"" of type '" "std::string""'"); 
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_importFile" "', argument " "2"" of type '" "std::string const &""'"); 
     }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_importFile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
   }
   {
     std::string *ptr = (std::string *)0;
@@ -8193,10 +8174,12 @@ SWIGINTERN PyObject *_wrap_PythonAPI_importFile__SWIG_0(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "PythonAPI_importFile" "', argument " "4"" of type '" "bool""'");
   } 
   arg4 = static_cast< bool >(val4);
-  (arg1)->importFile(arg2,arg3,arg4);
-  resultobj = SWIG_Py_Void();
+  result = (int)((PythonAPI const *)arg1)->importFile((std::string const &)*arg2,arg3,arg4);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -8204,25 +8187,29 @@ fail:
 SWIGINTERN PyObject *_wrap_PythonAPI_importFile__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
-  std::string arg2 ;
+  std::string *arg2 = 0 ;
   std::string arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int result;
   
   if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_importFile" "', argument " "1"" of type '" "PythonAPI *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_importFile" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   {
     std::string *ptr = (std::string *)0;
-    int res = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res) || !ptr) {
-      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "PythonAPI_importFile" "', argument " "2"" of type '" "std::string""'"); 
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_importFile" "', argument " "2"" of type '" "std::string const &""'"); 
     }
-    arg2 = *ptr;
-    if (SWIG_IsNewObj(res)) delete ptr;
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_importFile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
   }
   {
     std::string *ptr = (std::string *)0;
@@ -8233,10 +8220,12 @@ SWIGINTERN PyObject *_wrap_PythonAPI_importFile__SWIG_1(PyObject *SWIGUNUSEDPARM
     arg3 = *ptr;
     if (SWIG_IsNewObj(res)) delete ptr;
   }
-  (arg1)->importFile(arg2,arg3);
-  resultobj = SWIG_Py_Void();
+  result = (int)((PythonAPI const *)arg1)->importFile((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -8263,9 +8252,90 @@ SWIGINTERN PyObject *_wrap_PythonAPI_importFile(PyObject *self, PyObject *args) 
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PythonAPI_importFile'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    PythonAPI::importFile(std::string,std::string,bool)\n"
-    "    PythonAPI::importFile(std::string,std::string)\n");
+    "    PythonAPI::importFile(std::string const &,std::string,bool) const\n"
+    "    PythonAPI::importFile(std::string const &,std::string) const\n");
   return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_generate(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  std::string *arg5 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int res4 = SWIG_OLDOBJ ;
+  int res5 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[5] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_generate", 5, 5, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_generate" "', argument " "1"" of type '" "PythonAPI const *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_generate" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_generate" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_generate" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_generate" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PythonAPI_generate" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_generate" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res5 = SWIG_AsPtr_std_string(swig_obj[4], &ptr);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "PythonAPI_generate" "', argument " "5"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_generate" "', argument " "5"" of type '" "std::string const &""'"); 
+    }
+    arg5 = ptr;
+  }
+  ((PythonAPI const *)arg1)->generate((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return NULL;
 }
 
 
@@ -26311,7 +26381,6 @@ static PyMethodDef SwigMethods[] = {
 	 { "new_PythonAPI", _wrap_new_PythonAPI, METH_NOARGS, "new_PythonAPI() -> PythonAPI"},
 	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, "delete_PythonAPI(PythonAPI self)"},
 	 { "PythonAPI_getVersion", _wrap_PythonAPI_getVersion, METH_O, "PythonAPI_getVersion(PythonAPI self) -> std::string"},
-	 { "PythonAPI_listPlugins", _wrap_PythonAPI_listPlugins, METH_O, "PythonAPI_listPlugins(PythonAPI self) -> stringVector"},
 	 { "PythonAPI_getLibraryPaths", _wrap_PythonAPI_getLibraryPaths, METH_O, "PythonAPI_getLibraryPaths(PythonAPI self) -> stringVector"},
 	 { "PythonAPI_setLibraryPaths", _wrap_PythonAPI_setLibraryPaths, METH_VARARGS, "\n"
 		"PythonAPI_setLibraryPaths(PythonAPI self, stringVector paths)\n"
@@ -26331,13 +26400,24 @@ static PyMethodDef SwigMethods[] = {
 		"\n"
 		""},
 	 { "PythonAPI_importFile", _wrap_PythonAPI_importFile, METH_VARARGS, "\n"
-		"PythonAPI_importFile(PythonAPI self, std::string path, std::string vlnv, bool overwrite=False)\n"
+		"PythonAPI_importFile(PythonAPI self, std::string const & path, std::string vlnv, bool overwrite=False) -> int\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"path: std::string\n"
+		"path: std::string const &\n"
 		"vlnv: std::string\n"
 		"overwrite: bool\n"
+		"\n"
+		""},
+	 { "PythonAPI_generate", _wrap_PythonAPI_generate, METH_VARARGS, "\n"
+		"PythonAPI_generate(PythonAPI self, std::string const & format, std::string const & vlnv, std::string const & viewName, std::string const & outputDirectory)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"format: std::string const &\n"
+		"vlnv: std::string const &\n"
+		"viewName: std::string const &\n"
+		"outputDirectory: std::string const &\n"
 		"\n"
 		""},
 	 { "PythonAPI_getFileCount", _wrap_PythonAPI_getFileCount, METH_O, "PythonAPI_getFileCount(PythonAPI self) -> int"},
@@ -29479,7 +29559,6 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 	 { "new_PythonAPI", _wrap_new_PythonAPI, METH_NOARGS, "new_PythonAPI() -> PythonAPI"},
 	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, "delete_PythonAPI(PythonAPI self)"},
 	 { "PythonAPI_getVersion", _wrap_PythonAPI_getVersion, METH_O, "getVersion(PythonAPI self) -> std::string"},
-	 { "PythonAPI_listPlugins", _wrap_PythonAPI_listPlugins, METH_O, "listPlugins(PythonAPI self) -> stringVector"},
 	 { "PythonAPI_getLibraryPaths", _wrap_PythonAPI_getLibraryPaths, METH_O, "getLibraryPaths(PythonAPI self) -> stringVector"},
 	 { "PythonAPI_setLibraryPaths", _wrap_PythonAPI_setLibraryPaths, METH_VARARGS, "\n"
 		"setLibraryPaths(PythonAPI self, stringVector paths)\n"
@@ -29499,13 +29578,24 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 		"\n"
 		""},
 	 { "PythonAPI_importFile", _wrap_PythonAPI_importFile, METH_VARARGS, "\n"
-		"importFile(PythonAPI self, std::string path, std::string vlnv, bool overwrite=False)\n"
+		"importFile(PythonAPI self, std::string const & path, std::string vlnv, bool overwrite=False) -> int\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"path: std::string\n"
+		"path: std::string const &\n"
 		"vlnv: std::string\n"
 		"overwrite: bool\n"
+		"\n"
+		""},
+	 { "PythonAPI_generate", _wrap_PythonAPI_generate, METH_VARARGS, "\n"
+		"generate(PythonAPI self, std::string const & format, std::string const & vlnv, std::string const & viewName, std::string const & outputDirectory)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"format: std::string const &\n"
+		"vlnv: std::string const &\n"
+		"viewName: std::string const &\n"
+		"outputDirectory: std::string const &\n"
 		"\n"
 		""},
 	 { "PythonAPI_getFileCount", _wrap_PythonAPI_getFileCount, METH_O, "getFileCount(PythonAPI self) -> int"},

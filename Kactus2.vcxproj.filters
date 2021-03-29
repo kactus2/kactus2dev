@@ -7244,9 +7244,6 @@
     <ClInclude Include="mainwindow\CommandLineParser.h">
       <Filter>Header Files\mainwindow</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\CommandLineSupport.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="common\ui\GraphicalMessageMediator.h">
       <Filter>Header Files\common\ui</Filter>
     </ClInclude>
@@ -7669,6 +7666,9 @@
     </ClInclude>
     <ClInclude Include="editors\common\FileHandler\FileHandler.h">
       <Filter>Header Files\editors\common\FileHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\APISupport.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

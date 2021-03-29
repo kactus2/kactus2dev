@@ -42,7 +42,13 @@ public:
 	/*!
 	 *  The destructor.
 	*/
-	virtual ~PluginUtilityAdapter();
+    virtual ~PluginUtilityAdapter() = default;
+
+    // Disable copying.
+    PluginUtilityAdapter(PluginUtilityAdapter const& rhs) =delete;
+
+    // Disable assignment.
+    PluginUtilityAdapter& operator=(PluginUtilityAdapter const& rhs) = delete;
 
     //! Returns the library interface.
     virtual LibraryInterface* getLibraryInterface();
@@ -72,11 +78,6 @@ public:
     virtual void printInfo(QString const& message);
 
 private:
-    // Disable copying.
-    PluginUtilityAdapter(PluginUtilityAdapter const& rhs);
-
-    // Disable assignment.
-    PluginUtilityAdapter& operator=(PluginUtilityAdapter const& rhs);
 
 	//-----------------------------------------------------------------------------
 	// Data.

@@ -39,13 +39,6 @@ VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGeneratorPlugin::()
-//-----------------------------------------------------------------------------
-VerilogGeneratorPlugin::~VerilogGeneratorPlugin()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getName()
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getName() const
@@ -58,7 +51,7 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    return "2.2";
+    return "2.3";
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +67,7 @@ QString VerilogGeneratorPlugin::getDescription() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------
@@ -207,72 +200,45 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGeneratorPlugin::getCommand()
+// Function: VerilogGeneratorPlugin::getOutputFormat()
 //-----------------------------------------------------------------------------
-QString VerilogGeneratorPlugin::getCommand() const
+QString VerilogGeneratorPlugin::getOutputFormat() const
 {
-    return QStringLiteral("generate_verilog");
+    return QStringLiteral("Verilog");
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGeneratorPlugin::run()
+// Function: VerilogGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void VerilogGeneratorPlugin::process(QStringList const& arguments, IPluginUtility* utility)
+void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
+    QSharedPointer<Component> component,
+    QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration,
+    QString const& viewName,
+    QString const& outputDirectory)
 {
-    HDLCommandLineParser parser(getCommand());
-    HDLCommandLineParser::ParseResults parseResult = parser.parseArguments(arguments);
-
-    if (parseResult.cancelRun)
-    {
-        utility->printInfo(parseResult.message);
-        return;
-    }
-
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
-    QSharedPointer<Component> component = 
-        utility->getLibraryInterface()->getModel(parseResult.vlnv).dynamicCast<Component>();
-    if (!component)
-    {
-        utility->printError(tr("Invalid component given as a parameter."));
-        return;
-    }
-
-    utility->printInfo(tr("Running generation for %1 and view '%2'.").arg(parseResult.vlnv.toString(), 
-        parseResult.viewName));
+    utility->printInfo(tr("Running generation for %1 and view '%2'.").arg(component->getVlnv().toString(),
+        viewName));
 
     QDir targetDirectory;
-    if (!targetDirectory.mkpath(parseResult.path))
+    if (!targetDirectory.mkpath(outputDirectory))
     {
-        utility->printError(tr("Could not create target directory: %1").arg(parseResult.path));
+        utility->printError(tr("Could not create target directory: %1").arg(outputDirectory));
         return;
     }
 
-    utility->printInfo(tr("Target directory: %1").arg(parseResult.path));
+    utility->printInfo(tr("Target directory: %1").arg(outputDirectory));
 
-    settings_.lastViewName_ = parseResult.viewName;    
-
-    VLNV configurationVLNV = component->getHierRef(parseResult.viewName);
-    VLNV designVLNV;
-
-    if (configurationVLNV.getType() == VLNV::DESIGNCONFIGURATION)
-    {
-        designVLNV = utility->getLibraryInterface()->getModelReadOnly(
-            configurationVLNV).dynamicCast<const DesignConfiguration>()->getDesignRef();
-    }
-    else if (configurationVLNV.getType() == VLNV::DESIGN)
-    {
-        designVLNV = configurationVLNV;
-        configurationVLNV.clear();
-    }
+    settings_.lastViewName_ = viewName;    
 
     MessagePasser messages;
 
     GenerationTuple input;
     input.component = component;
-    input.design = utility->getLibraryInterface()->getModel(designVLNV).dynamicCast<Design>();
-    input.designConfiguration = utility->getLibraryInterface()->getModel(
-        configurationVLNV).dynamicCast<DesignConfiguration>();
+    input.design = design;
+    input.designConfiguration = designConfiguration;
     input.messages = &messages;
 
     VerilogWriterFactory factory(utility->getLibraryInterface(), &messages, &settings_,
@@ -280,7 +246,7 @@ void VerilogGeneratorPlugin::process(QStringList const& arguments, IPluginUtilit
 
     // Use configuration to drive the generation.
     GenerationControl configuration(utility->getLibraryInterface(), &factory, input, &settings_);
-    configuration.getOutputControl()->setOutputPath(parseResult.path);
+    configuration.getOutputControl()->setOutputPath(outputDirectory);
     configuration.getViewSelection()->setSaveToFileset(false);
 
     configuration.parseDocuments();

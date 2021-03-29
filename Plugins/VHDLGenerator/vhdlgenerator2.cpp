@@ -93,14 +93,6 @@ topComponentParser_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: vhdlgenerator2::~VhdlGenerator2()
-//-----------------------------------------------------------------------------
-VhdlGenerator2::~VhdlGenerator2()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: vhdlgenerator2::handler()
 //-----------------------------------------------------------------------------
 LibraryInterface* VhdlGenerator2::handler() const
@@ -883,7 +875,10 @@ void VhdlGenerator2::connectPorts(const QString& connectionName, const QString& 
     const QList<VhdlGenerator2::PortConnection>& ports)
 {
 	// at least 2 ports must be found
-	Q_ASSERT(ports.size() > 1);
+    if (ports.size() < 2)
+    {
+        return;
+    }
 
 	// the type of the signal
 	QString type = ports.first().instance_->portType(ports.first().portName_);

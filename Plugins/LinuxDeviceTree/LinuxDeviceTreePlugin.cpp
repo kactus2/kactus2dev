@@ -164,6 +164,54 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 }
 
 //-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::runGenerator()
+//-----------------------------------------------------------------------------
+void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, 
+    QString const& viewName, QString const& outputDirectory)
+{
+    utility_ = utility;
+    utility_->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+
+    if (!component)
+    {
+        utility_->printError(tr("Invalid component given as a parameter."));
+        return;
+    }
+
+    utility_->printInfo(tr("Running generation for %1 and view '%2'.").arg(component->getVlnv().toString(),
+        viewName));
+
+    QDir targetDirectory;
+    if (!targetDirectory.mkpath(outputDirectory))
+    {
+        utility_->printError(tr("Could not create target directory: %1").arg(outputDirectory));
+        return;
+    }
+
+    utility_->printInfo(tr("Target directory: %1").arg(outputDirectory));
+
+    QString generatorPath = createFileNamePath(outputDirectory, component->getVlnv().getName());
+    generateDeviceTree(component, viewName, generatorPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::getOutputFormat()
+//-----------------------------------------------------------------------------
+QString LinuxDeviceTreePlugin::getOutputFormat() const
+{
+    return QStringLiteral("dts");
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreePlugin::getProgramRequirements()
+//-----------------------------------------------------------------------------
+QList<IPlugin::ExternalProgramRequirement> LinuxDeviceTreePlugin::getProgramRequirements()
+{
+    return QList<IPlugin::ExternalProgramRequirement>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreePlugin::createFileNamePath()
 //-----------------------------------------------------------------------------
 QString LinuxDeviceTreePlugin::createFileNamePath(QString const& suggestedPath, QString const& componentName) const
@@ -190,14 +238,6 @@ void LinuxDeviceTreePlugin::generateDeviceTree(QSharedPointer<Component> compone
     generator.generate(component, activeView, filePath);
 
     utility_->printInfo("Generation successful.");
-}
-
-//-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreePlugin::getProgramRequirements()
-//-----------------------------------------------------------------------------
-QList<IPlugin::ExternalProgramRequirement> LinuxDeviceTreePlugin::getProgramRequirements()
-{
-    return QList<IPlugin::ExternalProgramRequirement>();
 }
 
 //-----------------------------------------------------------------------------
@@ -242,53 +282,4 @@ QSharedPointer<FileSet> LinuxDeviceTreePlugin::getFileSet(QSharedPointer<Compone
     component->getFileSets()->append(newFileSet);
 
     return newFileSet;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreePlugin::getCommand()
-//-----------------------------------------------------------------------------
-QString LinuxDeviceTreePlugin::getCommand() const
-{
-    return QStringLiteral("generate_linuxDeviceTree");
-}
-
-//-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreePlugin::process()
-//-----------------------------------------------------------------------------
-void LinuxDeviceTreePlugin::process(QStringList const& arguments, IPluginUtility* utility)
-{
-    HDLCommandLineParser commandLineParser(getCommand());
-    HDLCommandLineParser::ParseResults parseResults = commandLineParser.parseArguments(arguments);
-
-    if (parseResults.cancelRun)
-    {
-        utility->printInfo(parseResults.message);
-        return;
-    }
-
-    utility_ = utility;
-    utility_->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
-
-    QSharedPointer<Component> component =
-        utility_->getLibraryInterface()->getModel(parseResults.vlnv).dynamicCast<Component>();
-    if (!component)
-    {
-        utility_->printError(tr("Invalid component given as a parameter."));
-        return;
-    }
-
-    utility_->printInfo(tr("Running generation for %1 and view '%2'.").arg(parseResults.vlnv.toString(),
-        parseResults.viewName));
-
-    QDir targetDirectory;
-    if (!targetDirectory.mkpath(parseResults.path))
-    {
-        utility_->printError(tr("Could not create target directory: %1").arg(parseResults.path));
-        return;
-    }
-
-    utility_->printInfo(tr("Target directory: %1").arg(parseResults.path));
-
-    QString generatorPath = createFileNamePath(parseResults.path, component->getVlnv().getName());
-    generateDeviceTree(component, parseResults.viewName, generatorPath);
 }

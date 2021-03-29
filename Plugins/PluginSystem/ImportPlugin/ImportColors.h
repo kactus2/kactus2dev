@@ -24,6 +24,8 @@ namespace ImportColors
     QColor const PARAMETER = KactusColors::MEMORY_BLOCK;
 
     QColor const VIEWNAME = QColor("Moccasin");
+
+    QColor const INSTANCECOLOR = QColor(201, 82, 251);
 }
 
 #endif // IMPORTCOLORS_H

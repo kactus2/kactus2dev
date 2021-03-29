@@ -16,6 +16,8 @@
 #include <common/KactusAPI.h>
 
 #include <Plugins/PluginSystem/IPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/APISupport.h>
 
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
@@ -135,6 +137,45 @@ int PythonAPI::importFile(std::string const& path, std::string vlnv, bool overwr
     VLNV targetVLNV(VLNV::COMPONENT, QString::fromStdString(vlnv));
 
     return KactusAPI::importFile(QString::fromStdString(path), targetVLNV, overwrite);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::generate()
+//-----------------------------------------------------------------------------
+void PythonAPI::generate(std::string const& format, std::string const& vlnv, std::string const& viewName, std::string const& outputDirectory) const
+{
+    VLNV componentVLNV(VLNV::COMPONENT, QString::fromStdString(vlnv));
+
+    QString fileFormat = QString::fromStdString(format).toLower();
+
+    QStringList availableFormats;
+
+    IGeneratorPlugin* generator = nullptr;
+    for (auto plugin : KactusAPI::getPlugins())
+    {
+        APISupport* runnable = dynamic_cast<APISupport*>(plugin);
+        if (runnable != 0)
+        {
+            if (runnable->getOutputFormat().toLower() == fileFormat)
+            {
+                generator = dynamic_cast<IGeneratorPlugin*>(plugin);
+            }
+
+            availableFormats.append(runnable->getOutputFormat());
+        }
+    }
+    
+    if (generator != nullptr)
+    {
+        KactusAPI::runGenerator(generator, componentVLNV, QString::fromStdString(viewName),
+            QString::fromStdString(outputDirectory), nullptr);
+    }
+    else
+    {
+        availableFormats.sort(Qt::CaseInsensitive);
+        messager_->showError(QStringLiteral("No generator found for format %1. Available options are: %2").arg(
+            fileFormat, availableFormats.join(',')));
+    }
 }
 
 //-----------------------------------------------------------------------------

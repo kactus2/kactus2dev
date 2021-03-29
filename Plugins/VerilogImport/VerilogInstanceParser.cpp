@@ -45,9 +45,10 @@ void VerilogInstanceParser::setHighlighter(Highlighter* highlighter)
 //-----------------------------------------------------------------------------
 // Function: VerilogInstanceParser::import()
 //-----------------------------------------------------------------------------
-void VerilogInstanceParser::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogInstanceParser::import(QString const& input, QString const& componentDeclaration,
+    QSharedPointer<Component> targetComponent)
 {
-    QVector<QRegularExpressionMatch> instanceDeclarations = findInstances(input);
+    QVector<QRegularExpressionMatch> instanceDeclarations = findInstances(input, componentDeclaration);
 
     if (!instanceDeclarations.isEmpty())
     {
@@ -102,18 +103,22 @@ void VerilogInstanceParser::import(QString const& input, QSharedPointer<Componen
 //-----------------------------------------------------------------------------
 // Function: VerilogInstanceParser::findInstances()
 //-----------------------------------------------------------------------------
-QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString const &input)
+QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString const& input,
+    QString const& componentDeclaration)
 {
     QVector<QRegularExpressionMatch> instances;
-    QString inspect = VerilogSyntax::cullStrayComments(input);
-    
-    QRegularExpression commentExpression(VerilogSyntax::COMMENT);
-    inspect.remove(commentExpression);
+    QString inspect = componentDeclaration;
+
+    QRegularExpression multilineComment(VerilogSyntax::MULTILINE_COMMENT);
+    QRegularExpression strayComment(VerilogSyntax::COMMENT);
+    inspect = inspect.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment).remove(strayComment);
 
     QString expressionString =
         "\\b([a-zA-Z_][\\w$]*)(\\s+#(?:(?:.|\\n)(?!(?:[)]\\s*[a-zA-Z_]|;)))*(?:.|\\n)\\))?\\s+([a-zA-Z_][\\w$]*)\\s*(\\((?:(?:.|\\n)(?!\\);))*\\s*\\)+;)";
     QRegularExpression instanceExpression(expressionString);
     QRegularExpressionMatchIterator instanceMatchIterator = instanceExpression.globalMatch(inspect);
+
+    QRegularExpressionMatchIterator multilineCommentIterator = multilineComment.globalMatch(input);
 
     while (instanceMatchIterator.hasNext())
     {
@@ -123,10 +128,70 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
         if (instanceMatch.captured(1).compare(QStringLiteral("module"), Qt::CaseInsensitive) != 0)
         {
             instances.append(instanceMatch);
+            highlightInstance(input, componentDeclaration, instanceMatch, multilineCommentIterator);
         }
     }
 
     return instances;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogInstanceParser::highlightInstance()
+//-----------------------------------------------------------------------------
+void VerilogInstanceParser::highlightInstance(QString const& input, QString const& moduleDeclaration,
+    QRegularExpressionMatch const& instanceMatch, QRegularExpressionMatchIterator const& multilineCommentIterator)
+{
+    QString instanceModuleName = instanceMatch.captured(1);
+    QString instanceName = instanceMatch.captured(3);
+
+    QRegularExpression inputInstanceExpression("\\b(" + instanceModuleName +
+        "\\s+(?:[^;])*?" +
+        instanceName + ")\\s*(\\((?:(?:.|\\n)(?!\\);))*\\s*\\)+;)", QRegularExpression::DotMatchesEverythingOption);
+
+    QRegularExpressionMatchIterator instanceIntroductionIterator = inputInstanceExpression.globalMatch(input);
+    while (instanceIntroductionIterator.hasNext())
+    {
+        QRegularExpressionMatch instanceIntroductionMatch = instanceIntroductionIterator.next();
+        if (!matchIsWithinComments(instanceIntroductionMatch, multilineCommentIterator))
+        {
+            QString matchedIntroduction = instanceIntroductionMatch.captured(1);
+            int instanceModuleBeginIndex =
+                instanceIntroductionMatch.capturedStart() + matchedIntroduction.indexOf(instanceModuleName);
+            int instanceModuleEndIndex = instanceModuleBeginIndex + instanceModuleName.length();
+
+            int instanceNameBeginIndex =
+                instanceIntroductionMatch.capturedStart() + matchedIntroduction.lastIndexOf(instanceName);
+            int instanceNameEndIndex = instanceNameBeginIndex + instanceName.length();
+
+            highlighter_->applyHighlight(
+                instanceModuleBeginIndex, instanceModuleEndIndex, ImportColors::INSTANCECOLOR);
+            highlighter_->applyHighlight(
+                instanceNameBeginIndex, instanceNameEndIndex, ImportColors::INSTANCECOLOR);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogInstanceParser::matchIsWithinComments()
+//-----------------------------------------------------------------------------
+bool VerilogInstanceParser::matchIsWithinComments(QRegularExpressionMatch const& expressionMatch,
+    QRegularExpressionMatchIterator commentMatchIterator) const
+{
+    int expressionStart = expressionMatch.capturedStart();
+
+    while (commentMatchIterator.hasNext())
+    {
+        QRegularExpressionMatch commentMatch = commentMatchIterator.next();
+        int commentStart = commentMatch.capturedStart();
+        int commentEnd = commentMatch.capturedEnd();
+
+        if (expressionStart > commentStart && expressionStart < commentEnd)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

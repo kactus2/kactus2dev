@@ -290,7 +290,7 @@ void ImportRunner::importFile(QString const& componentName, QString const& fileP
     QPlainTextEdit* sourceDisplayer = nullptr;
     Highlighter* highlighter = nullptr;
 
-    if (displayTabs_ = nullptr)
+    if (displayTabs_ != nullptr)
     {
         sourceDisplayer = createSourceDisplayForFile(filePath);
         sourceDisplayer->setPlainText(fileContent);

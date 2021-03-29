@@ -15,7 +15,15 @@
 #include <common/ui/ConsoleMediator.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
+
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
+#include <Plugins/PluginSystem/IPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <Plugins/PluginSystem/APISupport.h>
 
 #include <wizards/ComponentWizard/ImportRunner.h>
 
@@ -45,7 +53,6 @@ KactusAPI::KactusAPI(LibraryInterface* library, MessageMediator* messageChannel)
 LibraryInterface* KactusAPI::getLibrary()
 {
     Q_ASSERT(library_ != nullptr);
-
     return library_;
 }
 
@@ -184,4 +191,59 @@ int KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool 
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: KactusAPI::runGenerator()
+//-----------------------------------------------------------------------------
+void KactusAPI::runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV, QString const& viewName,
+    QString const& outputDirectory, QWidget* parentWidget)
+{    
+    QSharedPointer<Component> component = library_->getModel<Component>(componentVLNV);
+    if (component == nullptr)
+    {
+        return;
+    }
+
+    VLNV designVLNV; 
+    QSharedPointer<Design> design;
+    
+    VLNV configVLNV = component->getHierRef(viewName);
+    QSharedPointer<DesignConfiguration> designConfiguration;    
+
+    if (configVLNV.getType() == VLNV::DESIGNCONFIGURATION)
+    {        
+        designConfiguration = library_->getModel<DesignConfiguration>(configVLNV);
+        designVLNV = designConfiguration->getDesignRef();
+    }
+    else if (configVLNV.getType() == VLNV::DESIGN)
+    {
+        designVLNV = configVLNV;
+        configVLNV.clear();
+    }
+
+    if (designVLNV.isEmpty() == false)
+    {
+        design = library_->getModel<Design>(designVLNV);
+    }
+
+    PluginUtilityAdapter adapter(library_, messageChannel_, VersionHelper::createVersionString(), parentWidget);
+
+    APISupport* cliRunnable = dynamic_cast<APISupport*>(plugin);
+    if (parentWidget == nullptr && cliRunnable)
+    {
+        cliRunnable->runGenerator(&adapter, component, design, designConfiguration, viewName, outputDirectory);
+    }
+    else if (plugin != nullptr)
+    {
+        plugin->runGenerator(&adapter, component, design, designConfiguration);
+    }    
+}
+
+//-----------------------------------------------------------------------------
+// Function: KactusAPI::getPlugins()
+//-----------------------------------------------------------------------------
+QList<IPlugin*> KactusAPI::getPlugins()
+{    
+    return PluginManager::getInstance().getAllPlugins();
 }

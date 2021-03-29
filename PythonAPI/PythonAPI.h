@@ -108,6 +108,17 @@ public:
     int importFile(std::string const& path, std::string vlnv, bool overwrite = false) const;
 
     /*!
+     * Run a file generation for a component.
+     *
+     *     @param [in] format           The requested output format.
+     *     @param [in] vlnv             The component VLNV to run the generation for.
+     *     @param [in] viewName         The component view to run the generation for.
+     *     @param [in] outputDirectory  The output directory for the generation results.
+     */
+     void generate(std::string const& format, std::string const& vlnv, std::string const& viewName,
+        std::string const& outputDirectory) const;
+
+    /*!
      *  Get the number of files in the library.
      *
      *      @return The number of files in the library.

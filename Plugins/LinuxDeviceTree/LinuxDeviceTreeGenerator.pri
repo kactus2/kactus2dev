@@ -22,8 +22,7 @@ HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/common/ComponentInstanceParameterFinder.h \
     ../../editors/ComponentEditor/common/ParameterCache.h \
     ./LinuxDeviceTreeDialog.h \
-    ./LinuxDeviceTreePlugin.h \
-    ../common/HDLParser/HDLCommandLineParser.h
+    ./LinuxDeviceTreePlugin.h
 SOURCES += ../../editors/common/ComponentInstanceParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
@@ -43,6 +42,5 @@ SOURCES += ../../editors/common/ComponentInstanceParameterFinder.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ./LinuxDeviceTreeDialog.cpp \
     ./LinuxDeviceTreeGenerator.cpp \
-    ./LinuxDeviceTreePlugin.cpp \
-    ../common/HDLParser/HDLCommandLineParser.cpp
+    ./LinuxDeviceTreePlugin.cpp
 RESOURCES += LinuxDeviceTree.qrc

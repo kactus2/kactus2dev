@@ -18,7 +18,7 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/CommandLineSupport.h>
+#include <Plugins/PluginSystem/APISupport.h>
 
 class FileSet;
 
@@ -28,7 +28,7 @@ class FileSet;
 //! Generator plugin for Linux Device Tree.
 //-----------------------------------------------------------------------------
 class LINUXDEVICETREEGENERATOR_EXPORT LinuxDeviceTreePlugin : public QObject, public IGeneratorPlugin,
-    public CommandLineSupport
+    public APISupport
 {
     Q_OBJECT
         Q_PLUGIN_METADATA(IID "kactus2.plugins.LinuxDeviceTreePlugin" FILE "LinuxDeviceTreePlugin.json")
@@ -119,25 +119,18 @@ public:
     virtual void runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
         QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration);
 
+    virtual void runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
+        QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration,
+        QString const& viewName, QString const& outputDirectory) override final;
+
+    virtual QString getOutputFormat() const override final;
+
+
      /*!
       * Returns the external program requirements of the plugin.
       */
      virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
-     /*!
-      * Gets the command required to run the plugin.
-      *
-      *      @return The command to run the plugin.
-      */
-     virtual QString getCommand() const;
-
-     /*!
-      *  Executes the plugin with the given arguments.
-      *
-      *      @param [in] arguments   The arguments for the execution.
-      *      @param [in] utility     Utilities for enabling plugin execution.
-      */
-     virtual void process(QStringList const& arguments, IPluginUtility* utility);
 
 public slots:
 
