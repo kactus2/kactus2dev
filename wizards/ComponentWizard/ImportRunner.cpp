@@ -86,10 +86,9 @@ QStringList ImportRunner::constructComponentDataFromFile(QString const& filePath
 QSharedPointer<Component> ImportRunner::run(QString const& componentName, QString const& filePath,
     QString const& componentXmlPath, QSharedPointer<const Component> targetComponent)
 {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-
     if (displayTabs_ != nullptr)
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
         displayTabs_->clear();
     }
 
@@ -102,7 +101,10 @@ QSharedPointer<Component> ImportRunner::run(QString const& componentName, QStrin
    
     importFile(componentName, filePath, componentXmlPath, importPluginsForFileTypes(filetypes), importComponent);
 
-    QApplication::restoreOverrideCursor();
+    if (displayTabs_ != nullptr)
+    {
+        QApplication::restoreOverrideCursor();
+    }
 
     return importComponent;
 }
