@@ -32,7 +32,8 @@ class ParameterFinder;
 //-----------------------------------------------------------------------------
 //! Editor to edit master or mirrored master settings of a bus interface.
 //-----------------------------------------------------------------------------
-class BusIfInterfaceMaster : public BusIfInterfaceModeEditor {
+class BusIfInterfaceMaster : public BusIfInterfaceModeEditor
+{
 	Q_OBJECT
 
 public:
@@ -41,19 +42,21 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] mode                The mode of the bus interface (master / mirrored master).
-	 *      @param [in] busif               The bus interface being edited.
+	 *      @param [in] busInterface        Interface for accessing bud interfaces.
+     *      @param [in] busName             Name of the edited bus interface.
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] parameterFinder     The parameter finder.
 	 *      @param [in] expressionParser    The expression parser.
 	 *      @param [in] parent              The owner of this editor.
 	 */
-	BusIfInterfaceMaster(General::InterfaceMode mode, 
-		QSharedPointer<BusInterface> busif,
-		QSharedPointer<Component> component,
+    BusIfInterfaceMaster(General::InterfaceMode mode,
+        BusInterfaceInterface* busInterface,
+        std::string const& busName,
+        QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
-		QWidget *parent);
-	
+        QWidget *parent);
+
 	//! The destructor
 	virtual ~BusIfInterfaceMaster();
 
@@ -114,24 +117,13 @@ private slots:
 
 private:
 
-	//! No copying
+    //! No copying. No assignment.
 	BusIfInterfaceMaster(const BusIfInterfaceMaster& other);
-
-	//! No assignment
 	BusIfInterfaceMaster& operator=(const BusIfInterfaceMaster& other);
 
-    /*!
-     *  Formats a given expression.
-     *
-     *      @param [in] expression  The given expression.
-     */
-    QString formattedValueFor(QString const& expression) const;
-
-	//! The master element being edited.
-	QSharedPointer<MasterInterface> master_;
-	
-	//! Specifies if the edited mode is master or mirrored master
-	General::InterfaceMode mode_;
+    //-----------------------------------------------------------------------------
+    //! Data.
+    //-----------------------------------------------------------------------------
 
 	//! Combo box to select an address space within component
 	ReferenceSelector addressSpaceReferenceSelector_;
@@ -139,11 +131,11 @@ private:
     //! Editor for the base address of an address space.
     ExpressionEditor* baseAddressEditor_;
 
-    //! The expression parser.
-    QSharedPointer<ExpressionParser> expressionParser_;
-
     //! The parameter finder.
     QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! The containing component.
+    QSharedPointer<Component> component_;
 };
 
 #endif // BUSIFINTERFACEMASTER_H

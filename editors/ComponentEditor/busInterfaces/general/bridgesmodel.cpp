@@ -14,13 +14,14 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: BridgesModel::BridgesModel()
 //-----------------------------------------------------------------------------
-BridgesModel::BridgesModel(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
-    QObject *parent):
+BridgesModel::BridgesModel(TransparentBridgeInterface* bridgeInterface, QObject *parent):
 QAbstractTableModel(parent),
-    bridges_(bridges)
+bridgeInterface_(bridgeInterface)
 {
 
 }
@@ -42,7 +43,7 @@ int BridgesModel::rowCount(QModelIndex const& parent) const
 		return 0;
 	}
 
-	return bridges_->size();
+    return bridgeInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -96,17 +97,18 @@ QVariant BridgesModel::headerData(int section, Qt::Orientation orientation, int 
 //-----------------------------------------------------------------------------
 QVariant BridgesModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= bridges_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= bridgeInterface_->itemCount())
     {
 		return QVariant();
 	}
 	
+    QString masterReference = QString::fromStdString(bridgeInterface_->getIndexedMasterReference(index.row()));
 
     if (role == Qt::DisplayRole) 
     {
         if (index.column() == BridgeColumns::MASTER_COLUMN)
         {
-            return bridges_->at(index.row())->getMasterRef();
+            return masterReference;
         }
         else
         {
@@ -116,7 +118,7 @@ QVariant BridgesModel::data(QModelIndex const& index, int role) const
 	
 	else if (role == Qt::ForegroundRole)
     {
-		if (bridges_->at(index.row())->getMasterRef().isEmpty())
+        if (masterReference.isEmpty())
         {
 			return KactusColors::ERROR;
 		}
@@ -148,7 +150,7 @@ QVariant BridgesModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool BridgesModel::setData(QModelIndex const& index, const QVariant& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= bridges_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= bridgeInterface_->itemCount())
     {
 		return false;
     }
@@ -157,7 +159,8 @@ bool BridgesModel::setData(QModelIndex const& index, const QVariant& value, int 
     {
         if (index.column() == BridgeColumns::MASTER_COLUMN)
         {
-            bridges_->at(index.row())->setMasterRef(value.toString());
+            std::string currentMaster = bridgeInterface_->getIndexedMasterReference(index.row());
+            bridgeInterface_->setMasterReference(currentMaster, value.toString().toStdString());
         }
         else
         {
@@ -179,7 +182,7 @@ bool BridgesModel::setData(QModelIndex const& index, const QVariant& value, int 
 //-----------------------------------------------------------------------------
 void BridgesModel::onAddItem(QModelIndex const& index)
 {
-	int row = bridges_->size();
+    int row = bridgeInterface_->itemCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -188,7 +191,9 @@ void BridgesModel::onAddItem(QModelIndex const& index)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	bridges_->insert(row, QSharedPointer<TransparentBridge>(new TransparentBridge()));
+
+    bridgeInterface_->addBridge(row);
+
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -201,14 +206,17 @@ void BridgesModel::onAddItem(QModelIndex const& index)
 void BridgesModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= bridges_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= bridgeInterface_->itemCount())
     {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	bridges_->removeAt(index.row());
+
+    std::string masterReference = bridgeInterface_->getIndexedMasterReference(index.row());
+    bridgeInterface_->removeTransparentBridge(masterReference);
+
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -218,10 +226,8 @@ void BridgesModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: BridgesModel::refresh()
 //-----------------------------------------------------------------------------
-void BridgesModel::refresh(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges)
+void BridgesModel::refresh()
 {
-	Q_ASSERT(bridges);
 	beginResetModel();
-	bridges_ = bridges;
 	endResetModel();
 }

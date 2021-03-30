@@ -20,19 +20,13 @@
 #include "BusInterfaceWizardPortMapPage.h"
 #include "BusInterfaceWizardConclusionPage.h"
 
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
-#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
-#include <IPXACTmodels/Component/validators/PortMapValidator.h>
-#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
@@ -63,25 +57,12 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
         namingPolicy = BusInterfaceWizardBusDefinitionEditorPage::DESCRIPTION;
     }
 
-    QSharedPointer<BusInterfaceValidator> busValidator =
-        createBusInterfaceValidator(component, expressionParser, parameterValidator, handler);
-
-    QSharedPointer<PortValidator> portValidator(new PortValidator(expressionParser, component->getViews()));
-    QSharedPointer<PortMapValidator> portMapValidator =
-        busValidator->getAbstractionValidator()->getPortMapValidator();
-
-    PortsInterface* physicalPortInterface(
-        new PortsInterface(portValidator, expressionParser, expressionFormatter));
-    physicalPortInterface->setPorts(component);
-
-    PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface());
-
-    PortMapInterface* portMapInterface(new PortMapInterface(
-        portMapValidator, expressionParser, expressionFormatter, physicalPortInterface, logicalPortInterface));
+    BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
+        parameterFinder, expressionFormatter, expressionParser, component, handler);
 
     BusInterfaceWizardGeneralOptionsPage* optionsPage =
         new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, !absDefVLNV.isValid(), parameterFinder,
-        expressionFormatter, expressionParser, busValidator, this);
+            expressionFormatter, expressionParser, busInterface, this);
 
     connect(optionsPage, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -93,7 +74,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(component, busIf, handler, portNames, 
         this, absDefVLNV, expressionParser, namingPolicy));
     setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
-        expressionParser, parameterFinder, busValidator, portMapInterface, this));
+        expressionParser, parameterFinder, busInterface, this));
     setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 
@@ -103,21 +84,4 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
 BusInterfaceWizard::~BusInterfaceWizard()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizard::createBusInterfaceValidator()
-//-----------------------------------------------------------------------------
-QSharedPointer<BusInterfaceValidator> BusInterfaceWizard::createBusInterfaceValidator(
-    QSharedPointer<Component> component, QSharedPointer<ExpressionParser> parser,
-    QSharedPointer<ParameterValidator> parameterValidator, LibraryInterface* handler)
-{
-    QSharedPointer<PortMapValidator> portMapValidator(new PortMapValidator(parser, component->getPorts(), handler));
-
-    QSharedPointer<BusInterfaceValidator> validator = QSharedPointer<BusInterfaceValidator>(
-        new BusInterfaceValidator(parser, component->getChoices(), component->getViews(), component->getPorts(),
-        component->getAddressSpaces(), component->getMemoryMaps(), component->getBusInterfaces(),
-        component->getFileSets(), component->getRemapStates(), portMapValidator, parameterValidator, handler));
-
-    return validator;
 }

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusIfInterfaceMirroredMaster.h
+// File: BusIfInterfaceMirroredMaster.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -11,9 +11,6 @@
 
 #include "BusIfInterfaceMirroredMaster.h"
 
-#include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/Component.h>
-
 #include <QLabel>
 #include <QString>
 #include <QVBoxLayout>
@@ -21,9 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceMirroredMaster::BusIfInterfaceMirroredMaster()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMirroredMaster::BusIfInterfaceMirroredMaster(QSharedPointer<BusInterface> busInterface,
-    QSharedPointer<Component> component, QWidget* parent):
-BusIfInterfaceModeEditor(busInterface, component, tr("Mirrored Master"), parent)
+BusIfInterfaceMirroredMaster::BusIfInterfaceMirroredMaster(BusInterfaceInterface* busInterface,
+    std::string const& busName, QWidget* parent):
+BusIfInterfaceModeEditor(busInterface, busName, tr("Mirrored Master"), parent)
 {
     QLabel* textLabel = new QLabel(tr("No mode specific options."));
 

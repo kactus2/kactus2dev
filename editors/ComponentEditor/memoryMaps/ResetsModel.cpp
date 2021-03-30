@@ -166,15 +166,13 @@ QVariant ResetsModel::data(const QModelIndex& index, int role) const
 //-----------------------------------------------------------------------------
 QVariant ResetsModel::formattedExpressionForIndex(QModelIndex const& index) const
 {
-    std::string resetType = resetInterface_->getResetTypeReference(index.row());
-
     if (index.column() == ResetColumns::RESETVALUE_COLUMN)
     {
-        return QString::fromStdString(resetInterface_->getResetValueFormattedExpression(resetType));
+        return QString::fromStdString(resetInterface_->getResetValueFormattedExpression(index.row()));
     }
     else if (index.column() == ResetColumns::RESETMASK_COLUMN)
     {
-        return QString::fromStdString(resetInterface_->getResetMaskFormattedExpression(resetType));
+        return QString::fromStdString(resetInterface_->getResetMaskFormattedExpression(index.row()));
     }
 
     return QVariant();
@@ -185,14 +183,13 @@ QVariant ResetsModel::formattedExpressionForIndex(QModelIndex const& index) cons
 //-----------------------------------------------------------------------------
 QVariant ResetsModel::expressionForIndex(QModelIndex const& index) const
 {
-    std::string resetType = resetInterface_->getResetTypeReference(index.row());
     if (index.column() == ResetColumns::RESETVALUE_COLUMN)
     {
-        return QString::fromStdString(resetInterface_->getResetValueExpression(resetType));
+        return QString::fromStdString(resetInterface_->getResetValueExpression(index.row()));
     }
     else if (index.column() == ResetColumns::RESETMASK_COLUMN)
     {
-        return QString::fromStdString(resetInterface_->getResetMaskExpression(resetType));
+        return QString::fromStdString(resetInterface_->getResetMaskExpression(index.row()));
     }
 
     return QVariant();
@@ -203,19 +200,18 @@ QVariant ResetsModel::expressionForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant ResetsModel::valueForIndex(QModelIndex const& index) const
 {
-    std::string resetType = resetInterface_->getResetTypeReference(index.row());
-
     if (index.column() == ResetColumns::RESETTYPEREFERENCE_COLUMN)
     {
+        std::string resetType = resetInterface_->getResetTypeReference(index.row());
         return QString::fromStdString(resetType);
     }
     else if (index.column() == ResetColumns::RESETVALUE_COLUMN)
     {
-        return QString::fromStdString(resetInterface_->getResetValue(resetType));
+        return QString::fromStdString(resetInterface_->getResetValue(index.row()));
     }
     else if (index.column() == ResetColumns::RESETMASK_COLUMN)
     {
-        return QString::fromStdString(resetInterface_->getResetMaskValue(resetType));
+        return QString::fromStdString(resetInterface_->getResetMaskValue(index.row()));
     }
     else
     {
@@ -235,32 +231,32 @@ bool ResetsModel::setData(QModelIndex const& index, QVariant const& value, int r
 
     if (role == Qt::EditRole)
     {
-        std::string resetType = resetInterface_->getResetTypeReference(index.row());
+        int indexRow = index.row();
         std::string newValue = value.toString().toStdString();
 
         if (index.column() == ResetColumns::RESETTYPEREFERENCE_COLUMN)
         {
-            resetInterface_->setResetTypeReference(resetType, newValue);
+            resetInterface_->setResetTypeReference(indexRow, newValue);
         }
         else if (index.column() == ResetColumns::RESETVALUE_COLUMN)
         {
             if (!value.isValid())
             {
                 removeReferencesFromSingleExpression(
-                    QString::fromStdString(resetInterface_->getResetValueExpression(resetType)));
+                    QString::fromStdString(resetInterface_->getResetValueExpression(indexRow)));
             }
 
-            resetInterface_->setResetValue(resetType, newValue);
+            resetInterface_->setResetValue(indexRow, newValue);
         }
         else if (index.column() == ResetColumns::RESETMASK_COLUMN)
         {
             if (!value.isValid())
             {
                 removeReferencesFromSingleExpression(
-                    QString::fromStdString(resetInterface_->getResetMaskExpression(resetType)));
+                    QString::fromStdString(resetInterface_->getResetMaskExpression(indexRow)));
             }
 
-            resetInterface_->setResetMask(resetType, newValue);
+            resetInterface_->setResetMask(indexRow, newValue);
         }
         else
         {
@@ -312,19 +308,17 @@ QVariant ResetsModel::expressionOrValueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool ResetsModel::validateIndex(QModelIndex const& index) const
 {
-    std::string resetType = resetInterface_->getResetTypeReference(index.row());
-
     if (index.column() == ResetColumns::RESETTYPEREFERENCE_COLUMN)
     {
-        return resetInterface_->hasValidResetType(resetType);
+        return resetInterface_->hasValidResetType(index.row());
     }
     else if (index.column() == ResetColumns::RESETVALUE_COLUMN)
     {
-        return resetInterface_->hasValidResetValue(resetType);
+        return resetInterface_->hasValidResetValue(index.row());
     }
     else if (index.column() == ResetColumns::RESETMASK_COLUMN)
     {
-        return resetInterface_->hasValidResetMask(resetType);
+        return resetInterface_->hasValidResetMask(index.row());
     }
 
     return true;
@@ -375,7 +369,7 @@ void ResetsModel::onRemoveItem(const QModelIndex& index)
     beginRemoveRows(QModelIndex(), index.row(), index.row());
 
     removeReferencesInItemOnRow(index.row());
-    resetInterface_->removeReset(resetInterface_->getResetTypeReference(index.row()));
+    resetInterface_->removeReset(index.row());
     endRemoveRows();
 
     emit contentChanged();

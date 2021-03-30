@@ -13,10 +13,10 @@
 #include "PortMappingColumns.h"
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
-
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
 
@@ -25,12 +25,9 @@
 //-----------------------------------------------------------------------------
 // Function: PhysicalPortMappingTableModel::PhysicalPortMappingTableModel()
 //-----------------------------------------------------------------------------
-PhysicalPortMappingTableModel::PhysicalPortMappingTableModel(QSharedPointer<Component> component,
-    QSharedPointer<ExpressionParser> componentParser, QObject *parent):
+PhysicalPortMappingTableModel::PhysicalPortMappingTableModel(PortsInterface* portInterface, QObject *parent):
 PortMappingTableModel(parent),
-    component_(component),
-    ports_(),
-    expressionParser_(componentParser)
+portInterface_(portInterface)
 {
     refresh();
 }
@@ -49,17 +46,6 @@ PhysicalPortMappingTableModel::~PhysicalPortMappingTableModel()
 void PhysicalPortMappingTableModel::refresh()
 {
     beginResetModel();
-
-    ports_.clear();
-
-    foreach (QSharedPointer<Port> port, *component_->getPorts())
-    {
-        if (!ports_.contains(port))
-        {
-            ports_.append(port);
-        }
-    }
-
     endResetModel();
 }
 
@@ -74,7 +60,7 @@ int PhysicalPortMappingTableModel::rowCount(const QModelIndex& parent) const
     }
     else
     {
-        return ports_.size();
+        return portInterface_->itemCount();
     }
 }
 
@@ -83,27 +69,27 @@ int PhysicalPortMappingTableModel::rowCount(const QModelIndex& parent) const
 //-----------------------------------------------------------------------------
 QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= ports_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= portInterface_->itemCount())
     {
         return QVariant();
     }
 
-    QSharedPointer<Port> selectedPort = ports_.at(index.row());
-    QSharedPointer<Transactional> portTransactional = selectedPort->getTransactional();
+    std::string portName = portInterface_->getIndexedItemName(index.row());
 
     if (role == Qt::DisplayRole)
     {
         if (index.column() == PortMappingColumns::NAME)
         {
-            return selectedPort->name();
+            return QString::fromStdString(portName);
         }
         else if (index.column() == PortMappingColumns::DIRECTION)
         {
-            return DirectionTypes::direction2Str(selectedPort->getDirection());
+            QString portDirection = QString::fromStdString(portInterface_->getDirection(portName));
+            return portDirection;
         }
-        else if (index.column() == PortMappingColumns::INITIATIVE && portTransactional)
+        else if (index.column() == PortMappingColumns::INITIATIVE && portInterface_->portIsTransactional(portName))
         {
-            QString transactionalInitiative = portTransactional->getInitiative();
+            QString transactionalInitiative = QString::fromStdString(portInterface_->getInitiative(portName));
             if (transactionalInitiative == TransactionalTypes::INITIATIVE_BOTH)
             {
                 transactionalInitiative = TransactionalTypes::INITIATIVE_REQUIRES_PROVIDES;
@@ -113,7 +99,7 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
         }
         else if (index.column() == PortMappingColumns::LEFT_BOUND)
         {
-            QString leftExpression = expressionParser_->parseExpression(selectedPort->getLeftBound());
+            QString leftExpression = QString::fromStdString(portInterface_->getLeftBoundValue(portName));
             if (leftExpression.compare(QLatin1String("x")) == 0)
             {
                 return QString();
@@ -123,7 +109,7 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
         }
         else if (index.column() == PortMappingColumns::RIGHT_BOUND)
         {
-            QString rightExpression = expressionParser_->parseExpression(selectedPort->getRightBound());
+            QString rightExpression = QString::fromStdString(portInterface_->getRightBoundValue(portName));
             if (rightExpression.compare(QLatin1String("x")) == 0)
             {
                 return QString();
@@ -133,102 +119,21 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
         }
         else if (index.column() == PortMappingColumns::SIZE)
         {
-            if (portTransactional)
+            if (portInterface_->portIsTransactional(portName))
             {
-                return expressionParser_->parseExpression(portTransactional->getBusWidth());
+                return QString::fromStdString(portInterface_->getBusWidthValue(portName));
             }
             else
             {
-                return getPortSize(selectedPort);
+                return QString::fromStdString(portInterface_->getWidth(portName));
             }
         }
     }
-    else if (role == Qt::DecorationRole)
+    else if (role == Qt::DecorationRole && (index.column() == PortMappingColumns::DIRECTION ||
+        index.column() == PortMappingColumns::INITIATIVE))
     {
-        if (index.column() == PortMappingColumns::DIRECTION)
-        {
-            DirectionTypes::Direction direction = selectedPort->getDirection();
-            if(direction == DirectionTypes::IN)
-            {
-                return QIcon(":icons/common/graphics/input.png");
-            }
-            else if (direction == DirectionTypes::OUT)
-            {
-                return QIcon(":icons/common/graphics/output.png");
-            }
-            else if (direction == DirectionTypes::INOUT)
-            {
-                return QIcon(":icons/common/graphics/inout.png");
-            }
-            else if (direction == DirectionTypes::DIRECTION_PHANTOM)
-            {
-                return QIcon(":icons/common/graphics/phantom.png");
-            }
-            else
-            {
-                return QIcon(":icons/common/graphics/cross.png");
-            }
-        }
-        else if (index.column() == PortMappingColumns::INITIATIVE && portTransactional)
-        {
-            if (portTransactional->getInitiative().compare(
-                TransactionalTypes::INITIATIVE_PROVIDES, Qt::CaseInsensitive) == 0)
-            {
-                return QIcon(":icons/common/graphics/provides.png");
-            }
-            else if (portTransactional->getInitiative().compare(
-                TransactionalTypes::INITIATIVE_REQUIRES, Qt::CaseInsensitive) == 0)
-            {
-                return QIcon(":icons/common/graphics/requires.png");
-            }
-            else if (portTransactional->getInitiative().compare(
-                TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
-            {
-                return QIcon(":icons/common/graphics/requires_provides.png");
-            }
-            else if (portTransactional->getInitiative().compare(
-                TransactionalTypes::INITIATIVE_PHANTOM, Qt::CaseInsensitive) == 0)
-            {
-                return QIcon(":icons/common/graphics/phantom.png");
-            }
-        }
+        return QIcon(QString::fromStdString(portInterface_->getIconPathForPort(portName)));
     }
     
     return QVariant();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PhysicalPortMappingTableModel::getPortSize()
-//-----------------------------------------------------------------------------
-QVariant PhysicalPortMappingTableModel::getPortSize(QSharedPointer<Port> selectedPort) const
-{
-    int portLeftBound = expressionParser_->parseExpression(selectedPort->getLeftBound()).toInt();
-    int portRightBound = expressionParser_->parseExpression(selectedPort->getRightBound()).toInt();
-
-    int portSize = abs(portLeftBound - portRightBound) + 1;
-    return portSize;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PhysicalPortMappingTableModel::addPort()
-//-----------------------------------------------------------------------------
-void PhysicalPortMappingTableModel::addPort(QString const& portName)
-{
-    foreach (QSharedPointer<Port> port, ports_)
-    {
-        if (port->name().compare(portName) == 0)
-        {
-            return;
-        }
-    }
-
-    QSharedPointer<Port> newPort = component_->getPort(portName);
-    if (newPort)
-    {
-        beginResetModel();
-
-        ports_.append(newPort);
-
-        endResetModel();
-    }
 }

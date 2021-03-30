@@ -18,6 +18,18 @@ class BusInterface;
 class Component;
 class LibraryInterface;
 class BusInterfacePortMapTab;
+class BusInterfaceInterface;
+class FileSetInterface;
+class PortMapInterface;
+class MemoryMapInterface;
+class AbstractionTypeInterface;
+class TransparentBridgeInterface;
+class PortMapValidator;
+class ParameterValidator;
+class ParameterFinder;
+class ExpressionFormatter;
+class IPXactSystemVerilogParser;
+class ParametersInterface;
 
 //-----------------------------------------------------------------------------
 //! PortmapDialog class.

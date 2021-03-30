@@ -1,27 +1,30 @@
-/* 
- *  	Created on: 26.6.2012
- *      Author: Antti Kamppi
- * 		filename: interfaceselector.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: interfaceSelector.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 26.06.2012
+//
+// Description:
+// 
+//-----------------------------------------------------------------------------
 
 #include "interfaceselector.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: InterfaceSelector::InterfaceSelector()
 //-----------------------------------------------------------------------------
-InterfaceSelector::InterfaceSelector(QSharedPointer<Component> component,
-    QWidget *parent,
+InterfaceSelector::InterfaceSelector(BusInterfaceInterface* busInterface, QWidget* parent,
     General::InterfaceMode mode):
 QComboBox(parent),
-    mode_(mode),
-component_(component)
+mode_(mode),
+busInterface_(busInterface)
 {
-	Q_ASSERT(component_);
-
 	setEditable(false);
 
 	connect(this, SIGNAL(currentIndexChanged(int)),	this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
@@ -60,19 +63,22 @@ void InterfaceSelector::refresh()
 	if (mode_ != General::INTERFACE_MODE_COUNT)
     {
 		// check that each name matches the mode
-		foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
-        {			
+        for (auto busName : busInterface_->getItemNames())
+        {
 			// if theres a match then add the name to the list
-			if (busInterface->getInterfaceMode() == mode_)
+            if (busInterface_->getMode(busName) == mode_)
             {
-				list.append(busInterface->name());
+                list.append(QString::fromStdString(busName));
 			}
 		}
 	}
 	// if mode is unspecified then add all
 	else
     {
-		list = component_->getBusInterfaceNames();
+        for (auto busName : busInterface_->getItemNames())
+        {
+            list.append(QString::fromStdString(busName));
+        }
 	}
 
 	addItems(list);

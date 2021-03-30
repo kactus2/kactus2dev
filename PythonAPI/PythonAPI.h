@@ -13,8 +13,6 @@
 
 #include "pythonapi_global.h"
 
-#include <QString>
-
 #include <common/KactusAPI.h>
 
 #include <string>
@@ -68,12 +66,14 @@ public:
      */
     std::string getVersion() const;
 
+    std::vector<std::string> getLibraryPaths() const;
+
     /*!
      * Gets the paths where IP-XACT files are stored.
      *
      *     @return The paths where IP-XACT files are stored.
      */
-    std::vector<std::string> getLibraryPaths() const;
+    void setupLibrary(std::string const& settingsFileString);
 
     /*!
      * Set the paths where IP-XACT files are stored.
@@ -129,13 +129,18 @@ public:
      *  List all the VLNVs in the library.
      *
      *      @param[in] vendor   The desired vendor.
+     *
+     *      @return List of VLNVs in Vendor:Library:Name:Version format.
      */
-    void listVLNVs(QString const& vendor = QString("")) const;
+
+    std::vector<std::string> listVLNVs(std::string const& vendor = std::string()) const;
 
     /*!
      *  List all the component VLNVs in the library.
+     *
+     *     @return List of component VLNVs in Vendor:Library:Name:Version format.
      */
-    void listComponentVLNVs() const;
+    std::vector<std::string> listComponentVLNVs() const;
 
     /*!
      *  Set the selected component as active component.
@@ -144,7 +149,8 @@ public:
      *
      *      @return True, if the component exists, false otherwise.
      */
-    bool openComponent(QString const& componentVLNV);
+
+    bool openComponent(std::string const& vlnvString);
 
     /*!
      *  Remove the active component.
@@ -154,12 +160,14 @@ public:
     /*!
      *  Get the name of the active component.
      */
-    QString getComponentName();
+
+    std::string getComponentName();
 
     /*!
      *  Get the description of the active component.
      */
-    QString getComponentDescription();
+
+    std::string getComponentDescription();
 
     /*!
      *  Save the component to the library.

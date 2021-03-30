@@ -14,10 +14,10 @@
 #include <common/KactusColors.h>
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesConstants.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/AbstractionType.h>
-
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 
 #include <QFont>
@@ -26,10 +26,9 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::AbstractionTypesModel()
 //-----------------------------------------------------------------------------
-AbstractionTypesModel::AbstractionTypesModel(QSharedPointer<AbstractionTypeValidator> validator, QObject* parent):
+AbstractionTypesModel::AbstractionTypesModel(AbstractionTypeInterface* abstractionInterface, QObject* parent):
 QAbstractTableModel(parent),
-abstractions_(new QList<QSharedPointer<AbstractionType> > ()),
-validator_(validator)
+abstractionInterface_(abstractionInterface)
 {
 
 }
@@ -52,7 +51,7 @@ int AbstractionTypesModel::rowCount(const QModelIndex& parent) const
         return 0;
     }
 
-    return abstractions_->count();
+    return abstractionInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -88,58 +87,56 @@ QVariant AbstractionTypesModel::headerData(int section, Qt::Orientation orientat
 //-----------------------------------------------------------------------------
 QVariant AbstractionTypesModel::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= abstractions_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= abstractionInterface_->itemCount())
     {
 		return QVariant();
 	}
 
-    QSharedPointer<AbstractionType> indexedAbstraction = abstractions_->at(index.row());
+    bool rowHasAbstraction = abstractionInterface_->hasAbstractionReference(index.row());
 
-    if (indexedAbstraction)
+    if (role == AbstractionTypesConstants::ABSTRACTIONVLNVROLE && rowHasAbstraction)
     {
-        if (role == AbstractionTypesConstants::ABSTRACTIONVLNVROLE && indexedAbstraction->getAbstractionRef())
+        VLNV abstractionVLNV = *abstractionInterface_->getAbstractionReference(index.row()).data();
+        return QVariant::fromValue(abstractionVLNV);
+    }
+    else if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::ToolTipRole)
+    {
+        if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
         {
-            VLNV abstractionVLNV = *indexedAbstraction->getAbstractionRef().data();
-            return QVariant::fromValue(abstractionVLNV);
-        }
-        else if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::ToolTipRole)
-        {
-            if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
+            QString abstractionString("");
+            if (rowHasAbstraction)
             {
-                QString abstractionString("");
-                if (indexedAbstraction->getAbstractionRef())
-                {
-                    abstractionString = indexedAbstraction->getAbstractionRef()->toString();
-                }
+                abstractionString =
+                    QString::fromStdString(abstractionInterface_->getIndexedAbstraction(index.row()));
+            }
 
-                return abstractionString;
-            }
-            else if (index.column() == AbstractionTypesConstants::VIEWREFERENCES)
-            {
-                return indexedAbstraction->getViewReferences()->join(AbstractionTypesConstants::VIEW_SEPARATOR);
-            }
+            return abstractionString;
         }
-        else if (Qt::ForegroundRole == role)
+        else if (index.column() == AbstractionTypesConstants::VIEWREFERENCES)
         {
-            return blackForValidRedForInvalid(index, indexedAbstraction);
+            return QString::fromStdString(abstractionInterface_->getCombinedViews(index.row()));
         }
-        else if (role == Qt::BackgroundRole)
+    }
+    else if (Qt::ForegroundRole == role)
+    {
+        return blackForValidRedForInvalid(index);
+    }
+    else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
         {
-            if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
-            {
-                return KactusColors::MANDATORY_FIELD;
-            }
-            else
-            {
-                return KactusColors::REGULAR_FIELD;
-            }
+            return KactusColors::MANDATORY_FIELD;
         }
-        else if (!index.parent().isValid() && role == Qt::FontRole)
+        else
         {
-            QFont font;
-            font.setBold(true);
-            return font;
+            return KactusColors::REGULAR_FIELD;
         }
+    }
+    else if (!index.parent().isValid() && role == Qt::FontRole)
+    {
+        QFont font;
+        font.setBold(true);
+        return font;
     }
     
     return QVariant();
@@ -159,27 +156,30 @@ bool AbstractionTypesModel::setData(QModelIndex const& index, QVariant const& va
         return true;
     }
 
-    QSharedPointer<AbstractionType> indexedAbstraction = abstractions_->at(index.row());
-
 	if (role == Qt::EditRole)
     {
         if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION && value.canConvert<VLNV> ())
         {
             VLNV newAbstractionReference = value.value<VLNV>();
 
-            if (!indexedAbstraction->getAbstractionRef())
-            {
-                QSharedPointer<ConfigurableVLNVReference> abstractionReference(new ConfigurableVLNVReference());
-                indexedAbstraction->setAbstractionRef(abstractionReference);
-            }
+            std::string referenceVendor = newAbstractionReference.getVendor().toStdString();
+            std::string referenceLibrary = newAbstractionReference.getLibrary().toStdString();
+            std::string referenceName = newAbstractionReference.getName().toStdString();
+            std::string referenceVersion = newAbstractionReference.getVersion().toStdString();
 
-            indexedAbstraction->getAbstractionRef()->setVLNV(newAbstractionReference);
+            abstractionInterface_->setAbstraction(
+                index.row(), referenceVendor, referenceLibrary, referenceName, referenceVersion);
         }
 
         else if (index.column() == AbstractionTypesConstants::VIEWREFERENCES)
         {
-            QSharedPointer<QStringList> newViews(new QStringList(value.toStringList()));
-            indexedAbstraction->setViewReferences(newViews);
+            std::vector<std::string> newViews;
+            for (auto view : value.toStringList())
+            {
+                newViews.push_back(view.toStdString());
+            }
+
+            abstractionInterface_->setViewReferences(index.row(), newViews);
         }
 
         emit dataChanged(index, index);
@@ -190,11 +190,25 @@ bool AbstractionTypesModel::setData(QModelIndex const& index, QVariant const& va
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionTypesModel::setVLNVForAbstraction()
+//-----------------------------------------------------------------------------
+void AbstractionTypesModel::setVLNVForAbstraction(int const& abstractionIndex, VLNV const& newVLNV)
+{
+    std::string referenceVendor = newVLNV.getVendor().toStdString();
+    std::string referenceLibrary = newVLNV.getLibrary().toStdString();
+    std::string referenceName = newVLNV.getName().toStdString();
+    std::string referenceVersion = newVLNV.getVersion().toStdString();
+
+    abstractionInterface_->setAbstraction(
+        abstractionIndex, referenceVendor, referenceLibrary, referenceName, referenceVersion);
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::onAddItem()
 //-----------------------------------------------------------------------------
 void AbstractionTypesModel::onAddItem(QModelIndex const& index)
 {
-    int row = abstractions_->size();
+    int row = abstractionInterface_->itemCount();
 
     if (index.isValid())
     {
@@ -202,7 +216,9 @@ void AbstractionTypesModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
-    abstractions_->insert(row, QSharedPointer<AbstractionType>(new AbstractionType()));
+
+    abstractionInterface_->addAbstraction(row);
+
     endInsertRows();
 
     emit contentChanged();
@@ -213,13 +229,15 @@ void AbstractionTypesModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void AbstractionTypesModel::onRemoveItem(QModelIndex const& index)
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= abstractions_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= abstractionInterface_->itemCount())
     {
         return;
     }
 
     beginRemoveRows(QModelIndex(), index.row(), index.row());
-    abstractions_->removeAt(index.row());
+
+    abstractionInterface_->removeAbstraction(index.row());
+
     endRemoveRows();
 
     emit contentChanged();
@@ -228,12 +246,9 @@ void AbstractionTypesModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::onChangeSelectedBusInterface()
 //-----------------------------------------------------------------------------
-void AbstractionTypesModel::onChangeSelectedBusInterface(QSharedPointer<BusInterface> newBus)
+void AbstractionTypesModel::onChangeSelectedBusInterface()
 {
     beginResetModel();
-
-    abstractions_ = newBus->getAbstractionTypes();
-
     endResetModel();
 }
 
@@ -304,7 +319,8 @@ bool AbstractionTypesModel::dropMimeData(QMimeData const* data, Qt::DropAction a
     {
         onAddItem(QModelIndex());
 
-        abstractionIndex = index(abstractions_->count() - 1, AbstractionTypesConstants::ABSTRACTIONDEFINITION);
+        abstractionIndex =
+            index(abstractionInterface_->itemCount() - 1, AbstractionTypesConstants::ABSTRACTIONDEFINITION);
     }
 
     if (abstractionIndex.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
@@ -322,24 +338,24 @@ bool AbstractionTypesModel::dropMimeData(QMimeData const* data, Qt::DropAction a
 void AbstractionTypesModel::addNewAbstractionTypeWithVLNV(VLNV const& newAbstractionVLNV)
 {
     onAddItem(QModelIndex());
-    QSharedPointer<AbstractionType> newAbstraction = abstractions_->last();
 
-    if (!newAbstraction->getAbstractionRef())
-    {
-        QSharedPointer<ConfigurableVLNVReference> newReference(new ConfigurableVLNVReference());
-        newAbstraction->setAbstractionRef(newReference);
-    }
+    int newAbstractionIndex = abstractionInterface_->itemCount() - 1;
 
-    newAbstraction->getAbstractionRef()->setVLNV(newAbstractionVLNV);
+    std::string referenceVendor = newAbstractionVLNV.getVendor().toStdString();
+    std::string referenceLibrary = newAbstractionVLNV.getLibrary().toStdString();
+    std::string referenceName = newAbstractionVLNV.getName().toStdString();
+    std::string referenceVersion = newAbstractionVLNV.getVersion().toStdString();
+
+    abstractionInterface_->setAbstraction(
+        newAbstractionIndex, referenceVendor, referenceLibrary, referenceName, referenceVersion);
 }
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::blackForValidRedForInvalid()
 //-----------------------------------------------------------------------------
-QVariant AbstractionTypesModel::blackForValidRedForInvalid(QModelIndex const& index,
-    QSharedPointer<AbstractionType> abstraction) const
+QVariant AbstractionTypesModel::blackForValidRedForInvalid(QModelIndex const& index) const
 {
-    if (validateIndex(index, abstraction))
+    if (validateIndex(index))
     {
         return KactusColors::REGULAR_TEXT;
     }
@@ -352,16 +368,15 @@ QVariant AbstractionTypesModel::blackForValidRedForInvalid(QModelIndex const& in
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::validateIndex()
 //-----------------------------------------------------------------------------
-bool AbstractionTypesModel::validateIndex(QModelIndex const& index, QSharedPointer<AbstractionType> abstraction)
-    const
+bool AbstractionTypesModel::validateIndex(QModelIndex const& index) const
 {
     if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
     {
-        return validator_->hasValidAbstractionReference(abstraction);
+        return abstractionInterface_->hasValidAbstractionReference(index.row());
     }
     else if (index.column() == AbstractionTypesConstants::VIEWREFERENCES)
     {
-        return validator_->hasValidViewReferences(abstraction, abstractions_);
+        return abstractionInterface_->hasValidViewReferences(index.row());
     }
 
     return true;

@@ -13,8 +13,10 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
+
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
 
 #include <QHBoxLayout>
 
@@ -24,18 +26,17 @@
 BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busif, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<BusInterfaceValidator> busInterfaceValidator, PortMapInterface* portMapInterface,
+    QSharedPointer<BusInterfaceValidator> busInterfaceValidator, BusInterfaceInterface* busInterface,
     QWidget* parent, QWidget* parentWnd):
 ParameterItemEditor(component, libHandler, parent),
-busif_(busif),
 tabs_(this), 
-generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser,
-    busInterfaceValidator, &tabs_, parentWnd),
-portmapsEditor_(libHandler, component, busif, expressionParser, parameterFinder, portMapInterface, &tabs_)
+generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, busInterface,
+    busif->name().toStdString(), &tabs_, parentWnd),
+portmapsEditor_(libHandler, component, busInterface, busif->name().toStdString(), expressionParser,
+    parameterFinder, busInterface->getAbstractionTypeInterface()->getPortMapInterface(), &tabs_)
 {
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);
-	Q_ASSERT(busif_);
 
 	QHBoxLayout* layout = new QHBoxLayout(this);
 	layout->addWidget(&tabs_);
@@ -64,6 +65,9 @@ portmapsEditor_(libHandler, component, busif, expressionParser, parameterFinder,
 		this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 	connect(&generalEditor_, SIGNAL(helpUrlRequested(QString const&)),
 		this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+
+    connect(&generalEditor_, SIGNAL(nameChanged(std::string const&)),
+        &portmapsEditor_, SLOT(changeBusName(std::string const&)), Qt::UniqueConnection);
 
     connect(&generalEditor_, SIGNAL(increaseReferences(QString)), this,
         SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

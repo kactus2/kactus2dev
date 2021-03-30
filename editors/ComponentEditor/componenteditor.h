@@ -32,9 +32,19 @@ class LibraryInterface;
 class PluginManager;
 class Component;
 class ExpressionParser;
+class ParameterFinder;
+class ExpressionFormatter;
 class ParameterReferenceTreeWindow;
 class ComponentParameterReferenceTree;
 class ComponentAndInstantiationsParameterFinder;
+class BusInterfaceInterface;
+class FileSetInterface;
+class MemoryMapInterface;
+class AbstractionTypeInterface;
+class PortMapInterface;
+class TransparentBridgeInterface;
+class PortMapValidator;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! The editor to edit/packet IP-Xact components.

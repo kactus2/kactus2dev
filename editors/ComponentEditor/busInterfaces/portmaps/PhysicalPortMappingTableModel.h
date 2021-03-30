@@ -20,6 +20,7 @@
 class Component;
 class Port;
 class ExpressionParser;
+class PortsInterface;
 
 //-----------------------------------------------------------------------------
 //! Model to display the physical ports of a component in port mapping.
@@ -33,13 +34,11 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component           The component that's ports are displayed.
-     *      @param [in] componentParser     The used expression parser.
-	 *      @param [in] parent              The owner of this model.
+	 *      @param [in] portInterface   Interface for accessing ports.
+	 *      @param [in] parent          The owner of this model.
 	 */
-	PhysicalPortMappingTableModel(QSharedPointer<Component> component,
-        QSharedPointer<ExpressionParser> componentParser, QObject *parent);
-	
+    PhysicalPortMappingTableModel(PortsInterface* portInterface, QObject *parent);
+
 	/*!
      *  The destructor.
      */
@@ -70,40 +69,18 @@ public:
 	 */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
-public slots:
-
-    /*!
-     *  Add a new port to the list of ports.
-     *
-     *      @param [in] portName    The name of the port to be added.
-     */
-    void addPort(QString const& portName);
-
 private:
 
 	//! No copying.
 	PhysicalPortMappingTableModel(const PhysicalPortMappingTableModel& other);
 	PhysicalPortMappingTableModel& operator=(const PhysicalPortMappingTableModel& other);
 	
-    /*!
-     *  Get the size of the selected port.
-     *
-     *      @param [in] selectedPort    The selected port.
-     */
-    QVariant getPortSize(QSharedPointer<Port> selectedPort) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The component being edited.
-	QSharedPointer<Component> component_;
-
-    //! The list of available ports.
-    QList<QSharedPointer<Port> > ports_;
-
-    //! The used expression parser.
-    QSharedPointer<ExpressionParser> expressionParser_;
+    //! Interface for accessing ports.
+    PortsInterface* portInterface_;
 };
 
 #endif // PHYSICALPORTMAPPINGTABLEMODEL_H

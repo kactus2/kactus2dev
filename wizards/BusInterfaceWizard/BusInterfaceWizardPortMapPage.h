@@ -27,6 +27,7 @@ class ExpressionParser;
 class ParameterFinder;
 class ExpressionFormatter;
 class PortMapInterface;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Port map page for the bus interface wizard.
@@ -46,8 +47,7 @@ public:
      *      @param [in] physicalPorts       The physical ports selected for mapping.
      *      @param [in] expressionParser    The used expression parser.
      *      @param [in] parameterFinder     The used parameter finder.
-     *      @param [in] validator           The validator for bus interface.
-     *      @param [in] portMapValidator    Validator for port maps.
+     *      @param [in] busInterface        Interface for accessing bus interfaces.
      *      @param [in] parent              The parent wizard.
      */
     BusInterfaceWizardPortMapPage(QSharedPointer<Component> component,
@@ -56,8 +56,7 @@ public:
         QStringList physicalPorts,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<BusInterfaceValidator> validator,
-        PortMapInterface* portMapInterface,
+        BusInterfaceInterface* busInterface,
         BusInterfaceWizard* parent);
 
     /*!
@@ -113,8 +112,8 @@ private:
     //! The widget for editing port maps.
     BusInterfacePortMapTab portMapTab_;
 
-    //! The bus interface validator.
-    QSharedPointer<BusInterfaceValidator> validator_;
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // BUSINTERFACEWIZARDPORTMAPPAGE_H

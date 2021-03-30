@@ -30,7 +30,7 @@ class BusInterface;
 class Component;
 class LibraryInterface;
 class AbstractionTypesEditor;
-class BusInterfaceValidator;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Container for editor on the general tab of a bus interface editor.
@@ -50,15 +50,22 @@ public:
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
      *      @param [in] expressionParser        Pointer to the expression parser.
-     *      @param [in] busValidator            Validator for bus interfaces.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
+     *      @param [in] busName                 Name of the edited bus interface.
 	 *      @param [in] parent                  Pointer to the owner of this editor.
 	 *      @param [in] parentWnd               Pointer to the parent window.
 	 */
-	BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<BusInterface> busif,
-		QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<BusInterfaceValidator> busValidator, QWidget* parent, QWidget* parentWnd);
-	
+    BusIfGeneralTab(LibraryInterface* libHandler,
+        QSharedPointer<BusInterface> busif,
+        QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
+        BusInterfaceInterface* busInterface,
+        std::string busName,
+        QWidget* parent,
+        QWidget* parentWnd);
+
 	/*!
      *  The destructor.
      */
@@ -136,6 +143,20 @@ signals:
     void recalculateReferencesToParameters(QVector<QString> const& parameterList,
         AbstractParameterInterface* parameterInterface);
 
+    /*!
+     *  Inform of the name change in the edited bus interface.
+     *
+     *      @param [in] newName     New name of the bus interface.
+     */
+    void nameChanged(std::string const& newName);
+
+public slots:
+
+    /*!
+     *  Handle the change in name of the edited bus interface.
+     */
+    void onNameChanged();
+
 protected:
 
 	/*!
@@ -184,8 +205,8 @@ private:
     //! Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the bus interface being edited.
-	QSharedPointer<BusInterface> busif_;
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 
 	//! Contains the name, display name and description of bus interface.
 	NameGroupEditor nameEditor_;

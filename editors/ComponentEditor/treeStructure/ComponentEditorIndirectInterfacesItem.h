@@ -17,6 +17,7 @@
 class IndirectInterface;
 class IndirectInterfaceValidator;
 class ExpressionParser;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! The Bus interfaces-item in the component editor's navigation tree.
@@ -37,23 +38,23 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression parser.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
 	 *      @param [in] parent                  The owner of this item.
 	 *      @param [in] parentWnd               The parent window.
 	 */
-	ComponentEditorIndirectInterfacesItem(ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
+    ComponentEditorIndirectInterfacesItem(ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
-		ComponentEditorItem* parent,
+        BusInterfaceInterface* busInterface,
+        ComponentEditorItem* parent,
         QWidget* parentWnd);
 
-    //! No copying
+    //! No copying. No assignment.
     ComponentEditorIndirectInterfacesItem(const ComponentEditorIndirectInterfacesItem& other) = delete;
-
-    //! No assignment
     ComponentEditorIndirectInterfacesItem& operator=(const ComponentEditorIndirectInterfacesItem& other) = delete;
 
 	//! The destructor
@@ -108,6 +109,9 @@ private:
 
     //! The parent window.
     QWidget* parentWnd_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // COMPONENTEDITOR_INDIRECT_INTERFACES_ITEM_H

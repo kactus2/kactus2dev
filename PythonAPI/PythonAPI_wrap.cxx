@@ -8040,6 +8040,42 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_PythonAPI_setupLibrary(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setupLibrary", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setupLibrary" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setupLibrary" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setupLibrary" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->setupLibrary((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_PythonAPI_setLibraryPaths(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
@@ -8365,11 +8401,11 @@ fail:
 SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
-  QString *arg2 = 0 ;
+  std::string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::vector< std::string,std::allocator< std::string > > result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
@@ -8377,18 +8413,23 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs__SWIG_0(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_listVLNVs" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_listVLNVs" "', argument " "2"" of type '" "QString const &""'"); 
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_listVLNVs" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_listVLNVs" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_listVLNVs" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  arg2 = reinterpret_cast< QString * >(argp2);
-  ((PythonAPI const *)arg1)->listVLNVs((QString const &)*arg2);
-  resultobj = SWIG_Py_Void();
+  result = ((PythonAPI const *)arg1)->listVLNVs((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -8398,6 +8439,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs__SWIG_1(PyObject *SWIGUNUSEDPARM(
   PythonAPI *arg1 = (PythonAPI *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > result;
   
   if ((nobjs < 1) || (nobjs > 1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
@@ -8405,8 +8447,8 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs__SWIG_1(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_listVLNVs" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  ((PythonAPI const *)arg1)->listVLNVs();
-  resultobj = SWIG_Py_Void();
+  result = ((PythonAPI const *)arg1)->listVLNVs();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
   return NULL;
@@ -8435,7 +8477,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listVLNVs(PyObject *self, PyObject *args) {
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'PythonAPI_listVLNVs'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    PythonAPI::listVLNVs(QString const &) const\n"
+    "    PythonAPI::listVLNVs(std::string const &) const\n"
     "    PythonAPI::listVLNVs() const\n");
   return 0;
 }
@@ -8447,6 +8489,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listComponentVLNVs(PyObject *SWIGUNUSEDPARM
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
+  std::vector< std::string,std::allocator< std::string > > result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
@@ -8455,8 +8498,8 @@ SWIGINTERN PyObject *_wrap_PythonAPI_listComponentVLNVs(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_listComponentVLNVs" "', argument " "1"" of type '" "PythonAPI const *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  ((PythonAPI const *)arg1)->listComponentVLNVs();
-  resultobj = SWIG_Py_Void();
+  result = ((PythonAPI const *)arg1)->listComponentVLNVs();
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
   return resultobj;
 fail:
   return NULL;
@@ -8466,11 +8509,10 @@ fail:
 SWIGINTERN PyObject *_wrap_PythonAPI_openComponent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
-  QString *arg2 = 0 ;
+  std::string *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  void *argp2 = 0 ;
-  int res2 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
   PyObject *swig_obj[2] ;
   bool result;
   
@@ -8480,18 +8522,23 @@ SWIGINTERN PyObject *_wrap_PythonAPI_openComponent(PyObject *SWIGUNUSEDPARM(self
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_openComponent" "', argument " "1"" of type '" "PythonAPI *""'"); 
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QString,  0  | 0);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_openComponent" "', argument " "2"" of type '" "QString const &""'"); 
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_openComponent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_openComponent" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
   }
-  if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_openComponent" "', argument " "2"" of type '" "QString const &""'"); 
-  }
-  arg2 = reinterpret_cast< QString * >(argp2);
-  result = (bool)(arg1)->openComponent((QString const &)*arg2);
+  result = (bool)(arg1)->openComponent((std::string const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -8524,7 +8571,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getComponentName(PyObject *SWIGUNUSEDPARM(s
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  QString result;
+  std::string result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
@@ -8534,7 +8581,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getComponentName(PyObject *SWIGUNUSEDPARM(s
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   result = (arg1)->getComponentName();
-  resultobj = SWIG_NewPointerObj((new QString(static_cast< const QString& >(result))), SWIGTYPE_p_QString, SWIG_POINTER_OWN |  0 );
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
   return NULL;
@@ -8547,7 +8594,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getComponentDescription(PyObject *SWIGUNUSE
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  QString result;
+  std::string result;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
@@ -8557,7 +8604,7 @@ SWIGINTERN PyObject *_wrap_PythonAPI_getComponentDescription(PyObject *SWIGUNUSE
   }
   arg1 = reinterpret_cast< PythonAPI * >(argp1);
   result = (arg1)->getComponentDescription();
-  resultobj = SWIG_NewPointerObj((new QString(static_cast< const QString& >(result))), SWIGTYPE_p_QString, SWIG_POINTER_OWN |  0 );
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
   return resultobj;
 fail:
   return NULL;
@@ -25236,11 +25283,13 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_setResetTypeReference(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   std::string *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   int res3 = SWIG_OLDOBJ ;
   PyObject *swig_obj[3] ;
   bool result;
@@ -25251,17 +25300,12 @@ SWIGINTERN PyObject *_wrap_ResetInterface_setResetTypeReference(PyObject *SWIGUN
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_setResetTypeReference" "', argument " "1"" of type '" "ResetInterface *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_setResetTypeReference" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_setResetTypeReference" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_setResetTypeReference" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
   {
     std::string *ptr = (std::string *)0;
     res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
@@ -25273,13 +25317,11 @@ SWIGINTERN PyObject *_wrap_ResetInterface_setResetTypeReference(PyObject *SWIGUN
     }
     arg3 = ptr;
   }
-  result = (bool)(arg1)->setResetTypeReference((std::string const &)*arg2,(std::string const &)*arg3);
+  result = (bool)(arg1)->setResetTypeReference((int const &)*arg2,(std::string const &)*arg3);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
@@ -25288,11 +25330,13 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   int *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   int temp3 ;
   int val3 ;
   int ecode3 = 0 ;
@@ -25304,29 +25348,22 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetValue__SWIG_0(PyObject *SWIGUN
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getResetValue" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getResetValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getResetValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getResetValue" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ResetInterface_getResetValue" "', argument " "3"" of type '" "int""'");
   } 
   temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = ((ResetInterface const *)arg1)->getResetValue((std::string const &)*arg2,(int const &)*arg3);
+  result = ((ResetInterface const *)arg1)->getResetValue((int const &)*arg2,(int const &)*arg3);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25334,10 +25371,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   std::string result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
@@ -25346,23 +25385,16 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetValue__SWIG_1(PyObject *SWIGUN
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getResetValue" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getResetValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getResetValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ResetInterface const *)arg1)->getResetValue((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getResetValue" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((ResetInterface const *)arg1)->getResetValue((int const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25389,8 +25421,8 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetValue(PyObject *self, PyObject
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ResetInterface_getResetValue'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    ResetInterface::getResetValue(std::string const &,int const &) const\n"
-    "    ResetInterface::getResetValue(std::string const &) const\n");
+    "    ResetInterface::getResetValue(int const &,int const &) const\n"
+    "    ResetInterface::getResetValue(int const &) const\n");
   return 0;
 }
 
@@ -25398,10 +25430,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetValueFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   std::string result;
   
@@ -25411,23 +25445,16 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetValueFormattedExpression(PyObj
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getResetValueFormattedExpression" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getResetValueFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getResetValueFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ResetInterface const *)arg1)->getResetValueFormattedExpression((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getResetValueFormattedExpression" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((ResetInterface const *)arg1)->getResetValueFormattedExpression((int const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25435,10 +25462,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetValueExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   std::string result;
   
@@ -25448,23 +25477,16 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetValueExpression(PyObject *SWIG
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getResetValueExpression" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getResetValueExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getResetValueExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ResetInterface const *)arg1)->getResetValueExpression((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getResetValueExpression" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((ResetInterface const *)arg1)->getResetValueExpression((int const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25472,11 +25494,13 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_setResetValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   std::string *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   int res3 = SWIG_OLDOBJ ;
   PyObject *swig_obj[3] ;
   bool result;
@@ -25487,17 +25511,12 @@ SWIGINTERN PyObject *_wrap_ResetInterface_setResetValue(PyObject *SWIGUNUSEDPARM
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_setResetValue" "', argument " "1"" of type '" "ResetInterface *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_setResetValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_setResetValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_setResetValue" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
   {
     std::string *ptr = (std::string *)0;
     res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
@@ -25509,13 +25528,11 @@ SWIGINTERN PyObject *_wrap_ResetInterface_setResetValue(PyObject *SWIGUNUSEDPARM
     }
     arg3 = ptr;
   }
-  result = (bool)(arg1)->setResetValue((std::string const &)*arg2,(std::string const &)*arg3);
+  result = (bool)(arg1)->setResetValue((int const &)*arg2,(std::string const &)*arg3);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
@@ -25524,11 +25541,13 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   int *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   int temp3 ;
   int val3 ;
   int ecode3 = 0 ;
@@ -25540,29 +25559,22 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskValue__SWIG_0(PyObject *SW
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getResetMaskValue" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getResetMaskValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getResetMaskValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getResetMaskValue" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
   ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "ResetInterface_getResetMaskValue" "', argument " "3"" of type '" "int""'");
   } 
   temp3 = static_cast< int >(val3);
   arg3 = &temp3;
-  result = ((ResetInterface const *)arg1)->getResetMaskValue((std::string const &)*arg2,(int const &)*arg3);
+  result = ((ResetInterface const *)arg1)->getResetMaskValue((int const &)*arg2,(int const &)*arg3);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25570,10 +25582,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   std::string result;
   
   if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
@@ -25582,23 +25596,16 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskValue__SWIG_1(PyObject *SW
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getResetMaskValue" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getResetMaskValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getResetMaskValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ResetInterface const *)arg1)->getResetMaskValue((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getResetMaskValue" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((ResetInterface const *)arg1)->getResetMaskValue((int const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25625,8 +25632,8 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskValue(PyObject *self, PyOb
 fail:
   SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ResetInterface_getResetMaskValue'.\n"
     "  Possible C/C++ prototypes are:\n"
-    "    ResetInterface::getResetMaskValue(std::string const &,int const &) const\n"
-    "    ResetInterface::getResetMaskValue(std::string const &) const\n");
+    "    ResetInterface::getResetMaskValue(int const &,int const &) const\n"
+    "    ResetInterface::getResetMaskValue(int const &) const\n");
   return 0;
 }
 
@@ -25634,10 +25641,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   std::string result;
   
@@ -25647,23 +25656,16 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskFormattedExpression(PyObje
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getResetMaskFormattedExpression" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getResetMaskFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getResetMaskFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ResetInterface const *)arg1)->getResetMaskFormattedExpression((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getResetMaskFormattedExpression" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((ResetInterface const *)arg1)->getResetMaskFormattedExpression((int const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25671,10 +25673,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   std::string result;
   
@@ -25684,23 +25688,16 @@ SWIGINTERN PyObject *_wrap_ResetInterface_getResetMaskExpression(PyObject *SWIGU
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getResetMaskExpression" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_getResetMaskExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getResetMaskExpression" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = ((ResetInterface const *)arg1)->getResetMaskExpression((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getResetMaskExpression" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = ((ResetInterface const *)arg1)->getResetMaskExpression((int const &)*arg2);
   resultobj = SWIG_From_std_string(static_cast< std::string >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25708,11 +25705,13 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_setResetMask(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   std::string *arg3 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   int res3 = SWIG_OLDOBJ ;
   PyObject *swig_obj[3] ;
   bool result;
@@ -25723,17 +25722,12 @@ SWIGINTERN PyObject *_wrap_ResetInterface_setResetMask(PyObject *SWIGUNUSEDPARM(
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_setResetMask" "', argument " "1"" of type '" "ResetInterface *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_setResetMask" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_setResetMask" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_setResetMask" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
   {
     std::string *ptr = (std::string *)0;
     res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
@@ -25745,13 +25739,11 @@ SWIGINTERN PyObject *_wrap_ResetInterface_setResetMask(PyObject *SWIGUNUSEDPARM(
     }
     arg3 = ptr;
   }
-  result = (bool)(arg1)->setResetMask((std::string const &)*arg2,(std::string const &)*arg3);
+  result = (bool)(arg1)->setResetMask((int const &)*arg2,(std::string const &)*arg3);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
@@ -25760,10 +25752,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_hasValidResetType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   bool result;
   
@@ -25773,23 +25767,16 @@ SWIGINTERN PyObject *_wrap_ResetInterface_hasValidResetType(PyObject *SWIGUNUSED
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_hasValidResetType" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_hasValidResetType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_hasValidResetType" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ResetInterface const *)arg1)->hasValidResetType((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_hasValidResetType" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = (bool)((ResetInterface const *)arg1)->hasValidResetType((int const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25797,10 +25784,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_hasValidResetValue(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   bool result;
   
@@ -25810,23 +25799,16 @@ SWIGINTERN PyObject *_wrap_ResetInterface_hasValidResetValue(PyObject *SWIGUNUSE
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_hasValidResetValue" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_hasValidResetValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_hasValidResetValue" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ResetInterface const *)arg1)->hasValidResetValue((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_hasValidResetValue" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = (bool)((ResetInterface const *)arg1)->hasValidResetValue((int const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -25834,10 +25816,12 @@ fail:
 SWIGINTERN PyObject *_wrap_ResetInterface_hasValidResetMask(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   bool result;
   
@@ -25847,73 +25831,21 @@ SWIGINTERN PyObject *_wrap_ResetInterface_hasValidResetMask(PyObject *SWIGUNUSED
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_hasValidResetMask" "', argument " "1"" of type '" "ResetInterface const *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_hasValidResetMask" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_hasValidResetMask" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)((ResetInterface const *)arg1)->hasValidResetMask((std::string const &)*arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return resultobj;
-fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_ResetInterface_addReset__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
-  PyObject *resultobj = 0;
-  ResetInterface *arg1 = (ResetInterface *) 0 ;
-  int *arg2 = 0 ;
-  std::string *arg3 = 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int temp2 ;
-  int val2 ;
-  int ecode2 = 0 ;
-  int res3 = SWIG_OLDOBJ ;
-  
-  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ResetInterface, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_addReset" "', argument " "1"" of type '" "ResetInterface *""'"); 
-  }
-  arg1 = reinterpret_cast< ResetInterface * >(argp1);
   ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
   if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_addReset" "', argument " "2"" of type '" "int""'");
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_hasValidResetMask" "', argument " "2"" of type '" "int""'");
   } 
   temp2 = static_cast< int >(val2);
   arg2 = &temp2;
-  {
-    std::string *ptr = (std::string *)0;
-    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ResetInterface_addReset" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_addReset" "', argument " "3"" of type '" "std::string const &""'"); 
-    }
-    arg3 = ptr;
-  }
-  (arg1)->addReset((int const &)*arg2,(std::string const &)*arg3);
-  resultobj = SWIG_Py_Void();
-  if (SWIG_IsNewObj(res3)) delete arg3;
+  result = (bool)((ResetInterface const *)arg1)->hasValidResetMask((int const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_ResetInterface_addReset__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+SWIGINTERN PyObject *_wrap_ResetInterface_addReset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
   int *arg2 = 0 ;
@@ -25922,8 +25854,9 @@ SWIGINTERN PyObject *_wrap_ResetInterface_addReset__SWIG_1(PyObject *SWIGUNUSEDP
   int temp2 ;
   int val2 ;
   int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
   
-  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  if (!SWIG_Python_UnpackTuple(args, "ResetInterface_addReset", 2, 2, swig_obj)) SWIG_fail;
   res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ResetInterface, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_addReset" "', argument " "1"" of type '" "ResetInterface *""'"); 
@@ -25943,41 +25876,15 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_ResetInterface_addReset(PyObject *self, PyObject *args) {
-  Py_ssize_t argc;
-  PyObject *argv[4] = {
-    0
-  };
-  
-  if (!(argc = SWIG_Python_UnpackTuple(args, "ResetInterface_addReset", 0, 3, argv))) SWIG_fail;
-  --argc;
-  if (argc == 2) {
-    PyObject *retobj = _wrap_ResetInterface_addReset__SWIG_1(self, argc, argv);
-    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
-    SWIG_fail;
-  }
-  if (argc == 3) {
-    PyObject *retobj = _wrap_ResetInterface_addReset__SWIG_0(self, argc, argv);
-    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
-    SWIG_fail;
-  }
-  
-fail:
-  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'ResetInterface_addReset'.\n"
-    "  Possible C/C++ prototypes are:\n"
-    "    ResetInterface::addReset(int const &,std::string const &)\n"
-    "    ResetInterface::addReset(int const &)\n");
-  return 0;
-}
-
-
 SWIGINTERN PyObject *_wrap_ResetInterface_removeReset(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   ResetInterface *arg1 = (ResetInterface *) 0 ;
-  std::string *arg2 = 0 ;
+  int *arg2 = 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
-  int res2 = SWIG_OLDOBJ ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
   PyObject *swig_obj[2] ;
   bool result;
   
@@ -25987,23 +25894,63 @@ SWIGINTERN PyObject *_wrap_ResetInterface_removeReset(PyObject *SWIGUNUSEDPARM(s
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_removeReset" "', argument " "1"" of type '" "ResetInterface *""'"); 
   }
   arg1 = reinterpret_cast< ResetInterface * >(argp1);
-  {
-    std::string *ptr = (std::string *)0;
-    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
-    if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "ResetInterface_removeReset" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    if (!ptr) {
-      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_removeReset" "', argument " "2"" of type '" "std::string const &""'"); 
-    }
-    arg2 = ptr;
-  }
-  result = (bool)(arg1)->removeReset((std::string const &)*arg2);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_removeReset" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = (bool)(arg1)->removeReset((int const &)*arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (SWIG_IsNewObj(res2)) delete arg2;
   return resultobj;
 fail:
-  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_ResetInterface_getAllReferencesToIdInIndex(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  ResetInterface *arg1 = (ResetInterface *) 0 ;
+  int *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  int result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "ResetInterface_getAllReferencesToIdInIndex", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_ResetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "ResetInterface_getAllReferencesToIdInIndex" "', argument " "1"" of type '" "ResetInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< ResetInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "ResetInterface_getAllReferencesToIdInIndex" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "ResetInterface_getAllReferencesToIdInIndex" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "ResetInterface_getAllReferencesToIdInIndex" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (int)((ResetInterface const *)arg1)->getAllReferencesToIdInIndex((int const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
   return NULL;
 }
 
@@ -26382,6 +26329,14 @@ static PyMethodDef SwigMethods[] = {
 	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, "delete_PythonAPI(PythonAPI self)"},
 	 { "PythonAPI_getVersion", _wrap_PythonAPI_getVersion, METH_O, "PythonAPI_getVersion(PythonAPI self) -> std::string"},
 	 { "PythonAPI_getLibraryPaths", _wrap_PythonAPI_getLibraryPaths, METH_O, "PythonAPI_getLibraryPaths(PythonAPI self) -> stringVector"},
+	 { "PythonAPI_setupLibrary", _wrap_PythonAPI_setupLibrary, METH_VARARGS, "\n"
+		"PythonAPI_setupLibrary(PythonAPI self, std::string const & settingsFileString)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"settingsFileString: std::string const &\n"
+		"\n"
+		""},
 	 { "PythonAPI_setLibraryPaths", _wrap_PythonAPI_setLibraryPaths, METH_VARARGS, "\n"
 		"PythonAPI_setLibraryPaths(PythonAPI self, stringVector paths)\n"
 		"\n"
@@ -26422,25 +26377,25 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { "PythonAPI_getFileCount", _wrap_PythonAPI_getFileCount, METH_O, "PythonAPI_getFileCount(PythonAPI self) -> int"},
 	 { "PythonAPI_listVLNVs", _wrap_PythonAPI_listVLNVs, METH_VARARGS, "\n"
-		"PythonAPI_listVLNVs(PythonAPI self, QString vendor=QString(\"\"))\n"
+		"PythonAPI_listVLNVs(PythonAPI self, std::string const & vendor=std::string()) -> stringVector\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"vendor: QString const &\n"
+		"vendor: std::string const &\n"
 		"\n"
 		""},
-	 { "PythonAPI_listComponentVLNVs", _wrap_PythonAPI_listComponentVLNVs, METH_O, "PythonAPI_listComponentVLNVs(PythonAPI self)"},
+	 { "PythonAPI_listComponentVLNVs", _wrap_PythonAPI_listComponentVLNVs, METH_O, "PythonAPI_listComponentVLNVs(PythonAPI self) -> stringVector"},
 	 { "PythonAPI_openComponent", _wrap_PythonAPI_openComponent, METH_VARARGS, "\n"
-		"PythonAPI_openComponent(PythonAPI self, QString componentVLNV) -> bool\n"
+		"PythonAPI_openComponent(PythonAPI self, std::string const & vlnvString) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"componentVLNV: QString const &\n"
+		"vlnvString: std::string const &\n"
 		"\n"
 		""},
 	 { "PythonAPI_closeOpenComponent", _wrap_PythonAPI_closeOpenComponent, METH_O, "PythonAPI_closeOpenComponent(PythonAPI self)"},
-	 { "PythonAPI_getComponentName", _wrap_PythonAPI_getComponentName, METH_O, "PythonAPI_getComponentName(PythonAPI self) -> QString"},
-	 { "PythonAPI_getComponentDescription", _wrap_PythonAPI_getComponentDescription, METH_O, "PythonAPI_getComponentDescription(PythonAPI self) -> QString"},
+	 { "PythonAPI_getComponentName", _wrap_PythonAPI_getComponentName, METH_O, "PythonAPI_getComponentName(PythonAPI self) -> std::string"},
+	 { "PythonAPI_getComponentDescription", _wrap_PythonAPI_getComponentDescription, METH_O, "PythonAPI_getComponentDescription(PythonAPI self) -> std::string"},
 	 { "PythonAPI_saveComponent", _wrap_PythonAPI_saveComponent, METH_O, "PythonAPI_saveComponent(PythonAPI self)"},
 	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, "PythonAPI_getPortsInterface(PythonAPI self) -> PortsInterface"},
 	 { "PythonAPI_getComponentParameterInterface", _wrap_PythonAPI_getComponentParameterInterface, METH_O, "PythonAPI_getComponentParameterInterface(PythonAPI self) -> ParametersInterface"},
@@ -29075,121 +29030,129 @@ static PyMethodDef SwigMethods[] = {
 		"\n"
 		""},
 	 { "ResetInterface_setResetTypeReference", _wrap_ResetInterface_setResetTypeReference, METH_VARARGS, "\n"
-		"ResetInterface_setResetTypeReference(ResetInterface self, std::string const & currentResetType, std::string const & newResetType) -> bool\n"
+		"ResetInterface_setResetTypeReference(ResetInterface self, int const & resetIndex, std::string const & newResetType) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"currentResetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"newResetType: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetValue", _wrap_ResetInterface_getResetValue, METH_VARARGS, "\n"
-		"ResetInterface_getResetValue(ResetInterface self, std::string const & resetType, int const & baseNumber=0) -> std::string\n"
+		"ResetInterface_getResetValue(ResetInterface self, int const & resetIndex, int const & baseNumber=0) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"baseNumber: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetValueFormattedExpression", _wrap_ResetInterface_getResetValueFormattedExpression, METH_VARARGS, "\n"
-		"ResetInterface_getResetValueFormattedExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"ResetInterface_getResetValueFormattedExpression(ResetInterface self, int const & resetIndex) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetValueExpression", _wrap_ResetInterface_getResetValueExpression, METH_VARARGS, "\n"
-		"ResetInterface_getResetValueExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"ResetInterface_getResetValueExpression(ResetInterface self, int const & resetIndex) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_setResetValue", _wrap_ResetInterface_setResetValue, METH_VARARGS, "\n"
-		"ResetInterface_setResetValue(ResetInterface self, std::string const & resetType, std::string const & newResetValue) -> bool\n"
+		"ResetInterface_setResetValue(ResetInterface self, int const & resetIndex, std::string const & newResetValue) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"newResetValue: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetMaskValue", _wrap_ResetInterface_getResetMaskValue, METH_VARARGS, "\n"
-		"ResetInterface_getResetMaskValue(ResetInterface self, std::string const & resetType, int const & baseNumber=0) -> std::string\n"
+		"ResetInterface_getResetMaskValue(ResetInterface self, int const & resetIndex, int const & baseNumber=0) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"baseNumber: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetMaskFormattedExpression", _wrap_ResetInterface_getResetMaskFormattedExpression, METH_VARARGS, "\n"
-		"ResetInterface_getResetMaskFormattedExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"ResetInterface_getResetMaskFormattedExpression(ResetInterface self, int const & resetIndex) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetMaskExpression", _wrap_ResetInterface_getResetMaskExpression, METH_VARARGS, "\n"
-		"ResetInterface_getResetMaskExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"ResetInterface_getResetMaskExpression(ResetInterface self, int const & resetIndex) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_setResetMask", _wrap_ResetInterface_setResetMask, METH_VARARGS, "\n"
-		"ResetInterface_setResetMask(ResetInterface self, std::string const & resetType, std::string const & newResetMask) -> bool\n"
+		"ResetInterface_setResetMask(ResetInterface self, int const & resetIndex, std::string const & newResetMask) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"newResetMask: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_hasValidResetType", _wrap_ResetInterface_hasValidResetType, METH_VARARGS, "\n"
-		"ResetInterface_hasValidResetType(ResetInterface self, std::string const & resetType) -> bool\n"
+		"ResetInterface_hasValidResetType(ResetInterface self, int const & resetIndex) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_hasValidResetValue", _wrap_ResetInterface_hasValidResetValue, METH_VARARGS, "\n"
-		"ResetInterface_hasValidResetValue(ResetInterface self, std::string const & resetType) -> bool\n"
+		"ResetInterface_hasValidResetValue(ResetInterface self, int const & resetIndex) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_hasValidResetMask", _wrap_ResetInterface_hasValidResetMask, METH_VARARGS, "\n"
-		"ResetInterface_hasValidResetMask(ResetInterface self, std::string const & resetType) -> bool\n"
+		"ResetInterface_hasValidResetMask(ResetInterface self, int const & resetIndex) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_addReset", _wrap_ResetInterface_addReset, METH_VARARGS, "\n"
-		"ResetInterface_addReset(ResetInterface self, int const & row, std::string const & newResetName=std::string(\"\"))\n"
+		"ResetInterface_addReset(ResetInterface self, int const & row)\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
 		"row: int const &\n"
-		"newResetName: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_removeReset", _wrap_ResetInterface_removeReset, METH_VARARGS, "\n"
-		"ResetInterface_removeReset(ResetInterface self, std::string const & resetName) -> bool\n"
+		"ResetInterface_removeReset(ResetInterface self, int const & resetIndex) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetName: std::string const &\n"
+		"resetIndex: int const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getAllReferencesToIdInIndex", _wrap_ResetInterface_getAllReferencesToIdInIndex, METH_VARARGS, "\n"
+		"ResetInterface_getAllReferencesToIdInIndex(ResetInterface self, int const & itemIndex, std::string const & valueID) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemIndex: int const &\n"
+		"valueID: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_swigregister", ResetInterface_swigregister, METH_O, NULL},
@@ -29560,6 +29523,14 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 	 { "delete_PythonAPI", _wrap_delete_PythonAPI, METH_O, "delete_PythonAPI(PythonAPI self)"},
 	 { "PythonAPI_getVersion", _wrap_PythonAPI_getVersion, METH_O, "getVersion(PythonAPI self) -> std::string"},
 	 { "PythonAPI_getLibraryPaths", _wrap_PythonAPI_getLibraryPaths, METH_O, "getLibraryPaths(PythonAPI self) -> stringVector"},
+	 { "PythonAPI_setupLibrary", _wrap_PythonAPI_setupLibrary, METH_VARARGS, "\n"
+		"setupLibrary(PythonAPI self, std::string const & settingsFileString)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"settingsFileString: std::string const &\n"
+		"\n"
+		""},
 	 { "PythonAPI_setLibraryPaths", _wrap_PythonAPI_setLibraryPaths, METH_VARARGS, "\n"
 		"setLibraryPaths(PythonAPI self, stringVector paths)\n"
 		"\n"
@@ -29600,25 +29571,25 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 		""},
 	 { "PythonAPI_getFileCount", _wrap_PythonAPI_getFileCount, METH_O, "getFileCount(PythonAPI self) -> int"},
 	 { "PythonAPI_listVLNVs", _wrap_PythonAPI_listVLNVs, METH_VARARGS, "\n"
-		"listVLNVs(PythonAPI self, QString vendor=QString(\"\"))\n"
+		"listVLNVs(PythonAPI self, std::string const & vendor=std::string()) -> stringVector\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"vendor: QString const &\n"
+		"vendor: std::string const &\n"
 		"\n"
 		""},
-	 { "PythonAPI_listComponentVLNVs", _wrap_PythonAPI_listComponentVLNVs, METH_O, "listComponentVLNVs(PythonAPI self)"},
+	 { "PythonAPI_listComponentVLNVs", _wrap_PythonAPI_listComponentVLNVs, METH_O, "listComponentVLNVs(PythonAPI self) -> stringVector"},
 	 { "PythonAPI_openComponent", _wrap_PythonAPI_openComponent, METH_VARARGS, "\n"
-		"openComponent(PythonAPI self, QString componentVLNV) -> bool\n"
+		"openComponent(PythonAPI self, std::string const & vlnvString) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"componentVLNV: QString const &\n"
+		"vlnvString: std::string const &\n"
 		"\n"
 		""},
 	 { "PythonAPI_closeOpenComponent", _wrap_PythonAPI_closeOpenComponent, METH_O, "closeOpenComponent(PythonAPI self)"},
-	 { "PythonAPI_getComponentName", _wrap_PythonAPI_getComponentName, METH_O, "getComponentName(PythonAPI self) -> QString"},
-	 { "PythonAPI_getComponentDescription", _wrap_PythonAPI_getComponentDescription, METH_O, "getComponentDescription(PythonAPI self) -> QString"},
+	 { "PythonAPI_getComponentName", _wrap_PythonAPI_getComponentName, METH_O, "getComponentName(PythonAPI self) -> std::string"},
+	 { "PythonAPI_getComponentDescription", _wrap_PythonAPI_getComponentDescription, METH_O, "getComponentDescription(PythonAPI self) -> std::string"},
 	 { "PythonAPI_saveComponent", _wrap_PythonAPI_saveComponent, METH_O, "saveComponent(PythonAPI self)"},
 	 { "PythonAPI_getPortsInterface", _wrap_PythonAPI_getPortsInterface, METH_O, "getPortsInterface(PythonAPI self) -> PortsInterface"},
 	 { "PythonAPI_getComponentParameterInterface", _wrap_PythonAPI_getComponentParameterInterface, METH_O, "getComponentParameterInterface(PythonAPI self) -> ParametersInterface"},
@@ -32253,121 +32224,129 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 		"\n"
 		""},
 	 { "ResetInterface_setResetTypeReference", _wrap_ResetInterface_setResetTypeReference, METH_VARARGS, "\n"
-		"setResetTypeReference(ResetInterface self, std::string const & currentResetType, std::string const & newResetType) -> bool\n"
+		"setResetTypeReference(ResetInterface self, int const & resetIndex, std::string const & newResetType) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"currentResetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"newResetType: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetValue", _wrap_ResetInterface_getResetValue, METH_VARARGS, "\n"
-		"getResetValue(ResetInterface self, std::string const & resetType, int const & baseNumber=0) -> std::string\n"
+		"getResetValue(ResetInterface self, int const & resetIndex, int const & baseNumber=0) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"baseNumber: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetValueFormattedExpression", _wrap_ResetInterface_getResetValueFormattedExpression, METH_VARARGS, "\n"
-		"getResetValueFormattedExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"getResetValueFormattedExpression(ResetInterface self, int const & resetIndex) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetValueExpression", _wrap_ResetInterface_getResetValueExpression, METH_VARARGS, "\n"
-		"getResetValueExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"getResetValueExpression(ResetInterface self, int const & resetIndex) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_setResetValue", _wrap_ResetInterface_setResetValue, METH_VARARGS, "\n"
-		"setResetValue(ResetInterface self, std::string const & resetType, std::string const & newResetValue) -> bool\n"
+		"setResetValue(ResetInterface self, int const & resetIndex, std::string const & newResetValue) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"newResetValue: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetMaskValue", _wrap_ResetInterface_getResetMaskValue, METH_VARARGS, "\n"
-		"getResetMaskValue(ResetInterface self, std::string const & resetType, int const & baseNumber=0) -> std::string\n"
+		"getResetMaskValue(ResetInterface self, int const & resetIndex, int const & baseNumber=0) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"baseNumber: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetMaskFormattedExpression", _wrap_ResetInterface_getResetMaskFormattedExpression, METH_VARARGS, "\n"
-		"getResetMaskFormattedExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"getResetMaskFormattedExpression(ResetInterface self, int const & resetIndex) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_getResetMaskExpression", _wrap_ResetInterface_getResetMaskExpression, METH_VARARGS, "\n"
-		"getResetMaskExpression(ResetInterface self, std::string const & resetType) -> std::string\n"
+		"getResetMaskExpression(ResetInterface self, int const & resetIndex) -> std::string\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_setResetMask", _wrap_ResetInterface_setResetMask, METH_VARARGS, "\n"
-		"setResetMask(ResetInterface self, std::string const & resetType, std::string const & newResetMask) -> bool\n"
+		"setResetMask(ResetInterface self, int const & resetIndex, std::string const & newResetMask) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"newResetMask: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_hasValidResetType", _wrap_ResetInterface_hasValidResetType, METH_VARARGS, "\n"
-		"hasValidResetType(ResetInterface self, std::string const & resetType) -> bool\n"
+		"hasValidResetType(ResetInterface self, int const & resetIndex) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_hasValidResetValue", _wrap_ResetInterface_hasValidResetValue, METH_VARARGS, "\n"
-		"hasValidResetValue(ResetInterface self, std::string const & resetType) -> bool\n"
+		"hasValidResetValue(ResetInterface self, int const & resetIndex) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_hasValidResetMask", _wrap_ResetInterface_hasValidResetMask, METH_VARARGS, "\n"
-		"hasValidResetMask(ResetInterface self, std::string const & resetType) -> bool\n"
+		"hasValidResetMask(ResetInterface self, int const & resetIndex) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetType: std::string const &\n"
+		"resetIndex: int const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_addReset", _wrap_ResetInterface_addReset, METH_VARARGS, "\n"
-		"addReset(ResetInterface self, int const & row, std::string const & newResetName=std::string(\"\"))\n"
+		"addReset(ResetInterface self, int const & row)\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
 		"row: int const &\n"
-		"newResetName: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_removeReset", _wrap_ResetInterface_removeReset, METH_VARARGS, "\n"
-		"removeReset(ResetInterface self, std::string const & resetName) -> bool\n"
+		"removeReset(ResetInterface self, int const & resetIndex) -> bool\n"
 		"\n"
 		"Parameters\n"
 		"----------\n"
-		"resetName: std::string const &\n"
+		"resetIndex: int const &\n"
+		"\n"
+		""},
+	 { "ResetInterface_getAllReferencesToIdInIndex", _wrap_ResetInterface_getAllReferencesToIdInIndex, METH_VARARGS, "\n"
+		"getAllReferencesToIdInIndex(ResetInterface self, int const & itemIndex, std::string const & valueID) -> int\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemIndex: int const &\n"
+		"valueID: std::string const &\n"
 		"\n"
 		""},
 	 { "ResetInterface_swigregister", ResetInterface_swigregister, METH_O, NULL},

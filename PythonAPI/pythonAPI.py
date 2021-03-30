@@ -229,6 +229,7 @@ class PythonAPI(object):
     __swig_destroy__ = _pythonAPI.delete_PythonAPI
     getVersion = _swig_new_instance_method(_pythonAPI.PythonAPI_getVersion)
     getLibraryPaths = _swig_new_instance_method(_pythonAPI.PythonAPI_getLibraryPaths)
+    setupLibrary = _swig_new_instance_method(_pythonAPI.PythonAPI_setupLibrary)
     setLibraryPaths = _swig_new_instance_method(_pythonAPI.PythonAPI_setLibraryPaths)
     getDefaultLibraryPath = _swig_new_instance_method(_pythonAPI.PythonAPI_getDefaultLibraryPath)
     setDefaultLibraryPath = _swig_new_instance_method(_pythonAPI.PythonAPI_setDefaultLibraryPath)
@@ -802,6 +803,7 @@ class ResetInterface(ParameterizableInterface, CommonInterface):
     hasValidResetMask = _swig_new_instance_method(_pythonAPI.ResetInterface_hasValidResetMask)
     addReset = _swig_new_instance_method(_pythonAPI.ResetInterface_addReset)
     removeReset = _swig_new_instance_method(_pythonAPI.ResetInterface_removeReset)
+    getAllReferencesToIdInIndex = _swig_new_instance_method(_pythonAPI.ResetInterface_getAllReferencesToIdInIndex)
 
 # Register ResetInterface in _pythonAPI:
 _pythonAPI.ResetInterface_swigregister(ResetInterface)

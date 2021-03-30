@@ -14,12 +14,12 @@
 #include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesEditor.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-
-#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 #include <QHBoxLayout>
 #include <QScrollArea>
@@ -30,20 +30,20 @@
 BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<BusInterface> busif,
     QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<BusInterfaceValidator> busValidator, QWidget* parent, QWidget* parentWnd):
+    BusInterfaceInterface* busInterface, std::string busName, QWidget* parent, QWidget* parentWnd):
 QWidget(parent),
-busif_(busif),
+busInterface_(busInterface),
 nameEditor_(busif, this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
-abstractionEditor_(new AbstractionTypesEditor(component, libHandler, busValidator->getAbstractionValidator(),
+abstractionEditor_(new AbstractionTypesEditor(component, libHandler, busInterface_->getAbstractionTypeInterface(),
     parentWnd, this)),
-modeStack_(busif, component, parameterFinder, libHandler, expressionParser, this),
-details_(busif, this),
+modeStack_(busInterface_, busName, component, parameterFinder, libHandler, expressionParser, this),
+details_(busInterface_, busName, this),
 parameters_(busif->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
 libHandler_(libHandler)
 {
 	Q_ASSERT_X(libHandler, "BusIfGeneralTab constructor", "Null LibraryInterface-pointer given as parameter");
-	Q_ASSERT(busif_);
+    Q_ASSERT(busInterface_);
 
     connect(&parameters_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -64,6 +64,8 @@ libHandler_(libHandler)
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onNameChanged()), Qt::UniqueConnection);
+
 	connect(&busType_, SIGNAL(vlnvEdited()), this, SLOT(onBusTypeChanged()), Qt::UniqueConnection);
 	connect(&details_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onModeChanged(General::InterfaceMode)), Qt::UniqueConnection);
@@ -88,14 +90,29 @@ BusIfGeneralTab::~BusIfGeneralTab()
 }
 
 //-----------------------------------------------------------------------------
+// Function: busifgeneraltab::onNameChanged()
+//-----------------------------------------------------------------------------
+void BusIfGeneralTab::onNameChanged()
+{
+    std::string newName = nameEditor_.name().toStdString();
+    details_.changeName(newName);
+    modeStack_.nameChanged(newName);
+
+    emit nameChanged(newName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusIfGeneralTab::refresh()
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::refresh()
 {
-	nameEditor_.refresh();
-	busType_.setVLNV(busif_->getBusType());
+    onNameChanged();
+    std::string currentName = nameEditor_.name().toStdString();
 
-    abstractionEditor_->setBusForModel(busif_);
+	nameEditor_.refresh();
+    busType_.setVLNV(busInterface_->getBusType(currentName));
+
+    busInterface_->setupSubInterfaces(currentName);
 
 	modeStack_.refresh();
 	details_.refresh();
@@ -115,7 +132,9 @@ VLNV BusIfGeneralTab::getBusType() const
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::onBusTypeChanged()
 {
-	busif_->setBusType(busType_.getVLNV());
+    busInterface_->setBustype(nameEditor_.name().toStdString(), busType_.getVLNV());
+
+    modeStack_.refresh();
 
 	emit contentChanged();
 }
@@ -152,7 +171,8 @@ void BusIfGeneralTab::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::onSetBusType(VLNV const& busDefVLNV)
 {
-	busif_->setBusType(busDefVLNV);
+    busInterface_->setBustype(nameEditor_.name().toStdString(), busType_.getVLNV());
+
 	busType_.setVLNV(busDefVLNV);
 	emit contentChanged();
 }
@@ -162,7 +182,7 @@ void BusIfGeneralTab::onSetBusType(VLNV const& busDefVLNV)
 //-----------------------------------------------------------------------------
 void BusIfGeneralTab::onSetAbsType(VLNV const& absDefVLNV)
 {
-    if (busif_->getAbstractionTypes()->isEmpty())
+    if (busInterface_->getAbstractionTypeInterface()->itemCount() == 0)
     {
         abstractionEditor_->addNewAbstraction(absDefVLNV);
     }

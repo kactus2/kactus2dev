@@ -42,6 +42,8 @@ class PortMapValidator;
 class PortMapAutoConnector;
 class AbstractionType;
 class PortMapInterface;
+class BusInterfaceInterface;
+class AbstractionTypeInterface;
 
 //-----------------------------------------------------------------------------
 //! Tab for editing and viewing bus interface port maps.
@@ -57,7 +59,8 @@ public:
 	 *
 	 *      @param [in] libHandler          The instance that manages the library.
 	 *      @param [in] component           The component being edited.
-	 *      @param [in] busif               The bus interface being edited.
+     *      @param [in] busInterface        Interface for accessing bus interfaces.
+     *      @param [in] busName             Name of the edited bus interface.
      *      @param [in] expressionParser    The used expression parser.
      *      @param [in] finder              The used parameter finder.
      *      @param [in] portMapInterface    Interface for accessing port maps.
@@ -65,7 +68,8 @@ public:
 	 */
     BusInterfacePortMapTab(LibraryInterface* libHandler,
         QSharedPointer<Component> component,
-        QSharedPointer<BusInterface> busif,
+        BusInterfaceInterface* busInterface,
+        std::string const& busName,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> finder,
         PortMapInterface* portMapInterface,
@@ -74,7 +78,7 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~BusInterfacePortMapTab();
+    virtual ~BusInterfacePortMapTab() = default;
 
 	/*!
      *  Restore the changes made in the editor back to ones in the model.
@@ -84,9 +88,9 @@ public:
 	/*!
      *  Set the abstraction type that defines the logical signals to use.
 	 *
-     *      @param [in] abstraction     The selected abstraction type.
+     *      @param [in] abstractionIndex    Index of the selected abstraction type.
 	 */
-    virtual void setAbsType(QSharedPointer<AbstractionType> abstraction);
+    virtual void setAbsType(int const& abstractionIndex);
 
     /*!
      *  Sets a subset of component ports to be visible in the physical port list.
@@ -99,6 +103,15 @@ public:
      *  Setup the available abstraction definitions.
      */
     void setAbstractionDefinitions();
+
+public slots:
+
+    /*!
+     *  Handle the change in the name of the edited bus interface.
+     *
+     *      @param [in] newName     New name of the edited bus interface.
+     */
+    void changeBusName(std::string const& newName);
 
 signals:
 
@@ -201,8 +214,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The bus interface being edited.
-	QSharedPointer<BusInterface> busif_;
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
+
+    //! Name of the edited bus interface.
+    std::string busName_;
 
 	//! The component being edited.
 	QSharedPointer<Component> component_;
@@ -257,12 +273,6 @@ private:
 
     //! Selects the active abstraction type.
     QComboBox* abstractionSelector_;
-
-    //! List of the available abstraction types.
-    QList<QSharedPointer<AbstractionType> > abstractions_;
-
-    //! Interface for accessing port maps.
-    PortMapInterface* portMapInterface_;
 };
 
 #endif // BUSINTERFACEPORTMAPTAB_H

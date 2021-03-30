@@ -76,88 +76,88 @@ public:
     /*!
      *  Set the reset type reference for the selected reset.
      *
-     *      @param [in] currentResetType    Index of the selected reset.
-     *      @param [in] newResetType        The new reset type reference.
+     *      @param [in] resetIndex      Index of the selected reset.
+     *      @param [in] newResetType    The new reset type reference.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setResetTypeReference(std::string const& currentResetType, std::string const& newResetType);
-    
+    bool setResetTypeReference(int const& resetIndex, std::string const& newResetType);
+
     /*!
      *  Get the calculated reset value of the selected reset type.
      *
-     *      @param [in] resetType   The selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *      @param [in] baseNumber  Base for displaying the value.
      *
      *      @return Calculated reset value of the selected port.
      */
-    std::string getResetValue(std::string const& resetType, int const& baseNumber = 0) const;
+    std::string getResetValue(int const& resetIndex, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted reset value expression of the selected reset type.
      *
-     *      @param [in] resetType   The selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *
      *      @return Formatted reset value expression of the selected reset.
      */
-    std::string getResetValueFormattedExpression(std::string const& resetType) const;
+    std::string getResetValueFormattedExpression(int const& resetIndex) const;
 
     /*!
      *  Get the reset value expression of the selected reset type.
      *
-     *      @param [in] resetType   The selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *
      *      @return Reset value expression of the selected reset.
      */
-    std::string getResetValueExpression(std::string const& resetType) const;
+    std::string getResetValueExpression(int const& resetIndex) const;
 
     /*!
      *  Set a new reset value for the selected reset type.
      *
-     *      @param [in] resetType       The selected reset.
+     *      @param [in] resetIndex      Index of the selected reset.
      *      @param [in] newResetValue   New reset value.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setResetValue(std::string const& resetType, std::string const& newResetValue);
+    bool setResetValue(int const& resetIndex, std::string const& newResetValue);
 
     /*!
      *  Get the calculated reset mask value of the selected reset type.
      *
-     *      @param [in] resetType   The selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *      @param [in] baseNumber  Base for displaying the value.
      *
      *      @return Calculated reset mask value of the selected port.
      */
-    std::string getResetMaskValue(std::string const& resetType, int const& baseNumber = 0) const;
+    std::string getResetMaskValue(int const& resetIndex, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted reset mask expression of the selected reset type.
      *
-     *      @param [in] resetType   The selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *
      *      @return Formatted reset mask expression of the selected reset.
      */
-    std::string getResetMaskFormattedExpression(std::string const& resetType) const;
+    std::string getResetMaskFormattedExpression(int const& resetIndex) const;
 
     /*!
      *  Get the reset mask expression of the selected reset type.
      *
-     *      @param [in] resetType   The selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *
      *      @return Reset mask expression of the selected reset.
      */
-    std::string getResetMaskExpression(std::string const& resetType) const;
+    std::string getResetMaskExpression(int const& resetIndex) const;
 
     /*!
      *  Set a new reset mask for the selected reset type.
      *
-     *      @param [in] resetType       The selected reset.
+     *      @param [in] resetIndex      Index of the selected reset.
      *      @param [in] newResetMask    New reset mask.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setResetMask(std::string const& resetType, std::string const& newResetMask);
+    bool setResetMask(int const& resetIndex, std::string const& newResetMask);
 
     /*!
      *  Validates the contained items.
@@ -169,37 +169,36 @@ public:
     /*!
      *  Check if the reset type reference of the selected reset is valid.
      *
-     *      @param [in] resetType   Reset type reference of the selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *
      *      @return True, if the selected reset type reference is valid, false otherwise.
      */
-    bool hasValidResetType(std::string const& resetType) const;
+    bool hasValidResetType(int const& resetIndex) const;
 
     /*!
      *  Check if the reset value of the selected reset is valid.
      *
-     *      @param [in] resetType   Reset type reference of the selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *
      *      @return True, if the selected reset value is valid, false otherwise.
      */
-    bool hasValidResetValue(std::string const& resetType) const;
+    bool hasValidResetValue(int const& resetIndex) const;
 
     /*!
      *  Check if the reset mask of the selected reset is valid.
      *
-     *      @param [in] resetType   Reset type reference of the selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *
      *      @return True, if the selected reset mask is valid, false otherwise.
      */
-    bool hasValidResetMask(std::string const& resetType) const;
-    
+    bool hasValidResetMask(int const& resetIndex) const;
+
     /*!
      *  Add a new reset.
      *
      *      @param [in] row             Row of the new reset.
-     *      @param [in] newResetName    Name of the new reset.
      */
-    void addReset(int const& row, std::string const& newResetName = std::string(""));
+    void addReset(int const& row);
 
     /*!
      *  Remove the selected reset.
@@ -208,21 +207,39 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool removeReset(std::string const& resetName);
+    bool removeReset(int const& resetIndex);
 
+    /*!
+     *  Get all the references made to the selected ID in the selected reset.
+     *
+     *      @param [in] itemName    The reset type reference of the selected reset.
+     *      @param [in] valueID     The selected ID.
+     *
+     *      @return Number of references made to the selected ID in the selected reset.
+     */
     virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const
         override final;
+
+    /*!
+     *  Get all the references made to the selected ID in the selected reset.
+     *
+     *      @param [in] itemIndex   Index of the selected reset.
+     *      @param [in] valueID     The selected ID.
+     *
+     *      @return Number of references made to the selected ID in the selected reset.
+     */
+    int getAllReferencesToIdInIndex(int const& itemIndex, std::string const& valueID) const;
 
 private:
 
     /*!
      *  Get the selected reset.
      *
-     *      @param [in] resetName   Name of the selected reset.
+     *      @param [in] resetIndex  Index of the selected reset.
      *
      *      @return The selected reset.
      */
-    QSharedPointer<FieldReset> getReset(std::string const& resetType) const;
+    QSharedPointer<FieldReset> getReset(int const& resetIndex) const;
 
     //-----------------------------------------------------------------------------
     // Data.

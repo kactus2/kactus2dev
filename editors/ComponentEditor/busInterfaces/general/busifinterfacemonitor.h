@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 7.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifinterfacemonitor.h
- */
+//-----------------------------------------------------------------------------
+// File: busIfInterfaceMonitor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 7.4.2011
+//
+// Description:
+// Editor the edit a monitor settings of a bus interface.
+//-----------------------------------------------------------------------------
 
 #ifndef BUSIFINTERFACEMONITOR_H
 #define BUSIFINTERFACEMONITOR_H
@@ -13,82 +17,96 @@
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-
 #include <IPXACTmodels/Component/BusInterface.h>
 
 #include <QSharedPointer>
 #include <QComboBox>
 
-
 class Component;
 class BusIfGeneralTab;
 class LibraryInterface;
+class BusInterfaceInterface;
 
-/*! Editor the edit a monitor settings of a bus interface.
- *
- */
-class BusIfInterfaceMonitor : public BusIfInterfaceModeEditor {
+//-----------------------------------------------------------------------------
+//! Editor the edit a monitor settings of a bus interface.
+//-----------------------------------------------------------------------------
+class BusIfInterfaceMonitor : public BusIfInterfaceModeEditor
+{
 	Q_OBJECT
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
-	 *      @param [in] busif       The bus interface being edited.
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] libHandler  The library handler instance.
-	 *      @param [in] parent      The owner of this editor.
+	 *      @param [in] busInterface    Interface for accessing bus interfaces.
+     *      @param [in] busName         Name of the edited bus interface.
+	 *      @param [in] libHandler      The library handler instance.
+	 *      @param [in] parent          The owner of this editor.
 	 *
-	*/
-	BusIfInterfaceMonitor(QSharedPointer<BusInterface> busif, 
-		QSharedPointer<Component> component,
-		LibraryInterface* libHandler,
-		QWidget *parent);
-	
-	//! The destructor
-	virtual ~BusIfInterfaceMonitor();
+     */
+    BusIfInterfaceMonitor(BusInterfaceInterface* busInterface,
+        std::string const& busName,
+        LibraryInterface* libHandler,
+        QWidget *parent);
 
-	/*! Check for the validity of the edited item.
-	*
-	*      @return True if item is valid.
-	*/
+	/*!
+     *  The destructor.
+     */
+	virtual ~BusIfInterfaceMonitor() = default;
+
+	/*!
+     *  Check for the validity of the edited item.
+     *
+     *      @return True if item is valid.
+     */
 	virtual bool isValid() const;
 
-	/*! Restore the changes made in the editor back to ones in the model.
-	*
-	*/
+	/*!
+     *  Restore the changes made in the editor back to ones in the model.
+     */
 	virtual void refresh();
 
-	/*! Get the interface mode of the editor
-	 * 
-	 *      @return General::InterfaceMode Specifies the interface mode.
-	*/
+	/*!
+     *  Get the interface mode of the editor.
+	 *
+     *      @return General::InterfaceMode Specifies the interface mode.
+     */
 	virtual General::InterfaceMode getInterfaceMode() const;
 
-	//! Save the interface mode-specific details to the bus interface.
+	/*!
+     *  Save the interface mode-specific details to the bus interface.
+     */
 	virtual void saveModeSpecific();
 
 private slots:
 
-	//! When user changes the interface mode of the monitor.
+	/*!
+     *  Handles the monitor interface mode change.
+     *
+     *      @param [in] mode    New interface mode.
+     */
 	void onInterfaceModeChange(General::InterfaceMode mode);
 
-	//! Handler for system group changes.
+	/*!
+     *  Handler for monitor system group changes.
+     *
+     *      @param [in] groupName   New system group.
+     */
 	void onSystemGroupChange(QString const& groupName);
 
 private:
 	
-	//! No copying
+    //! No copying. No assignment.
 	BusIfInterfaceMonitor(const BusIfInterfaceMonitor& other);
-
-	//! No assignment
 	BusIfInterfaceMonitor& operator=(const BusIfInterfaceMonitor& other);
+
+    //-----------------------------------------------------------------------------
+    //! Data.
+    //-----------------------------------------------------------------------------
 
 	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
-
-	//! The monitor element being edited.
-	QSharedPointer<BusInterface::MonitorInterface> monitor_;
 
 	//! Combo box to select the interface type for monitor.
 	InterfaceModeSelector interfaceMode_;

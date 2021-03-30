@@ -12,7 +12,8 @@
 #include "busifgeneraldetails.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/Component/BusInterface.h>
+
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 #include <common/KactusColors.h>
 
@@ -25,17 +26,17 @@
 //-----------------------------------------------------------------------------
 // Function: BusIfGeneralDetails::BusIfGeneralDetails()
 //-----------------------------------------------------------------------------
-BusIfGeneralDetails::BusIfGeneralDetails(QSharedPointer<BusInterface> busif, QWidget* parent ):
+BusIfGeneralDetails::BusIfGeneralDetails(BusInterfaceInterface* busInterface, std::string const& busName,
+    QWidget* parent):
 QGroupBox(tr("General") ,parent),
-    busif_(busif),
-    modeSelector_(this, busif),
-    connectionRequired_(this),
-    bitsInLauEditor_(this),
-    endiannessSelector_(this),
-    bitSteeringSelector_(this)
+busInterface_(busInterface),
+busName_(busName),
+modeSelector_(this, busInterface_->getMode(busName)),
+connectionRequired_(this),
+bitsInLauEditor_(this),
+endiannessSelector_(this),
+bitSteeringSelector_(this)
 {
-	Q_ASSERT(busif_);
-
     endiannessSelector_.addItem(QString("little"));
 	endiannessSelector_.addItem(QString("big"));
     endiannessSelector_.addItem(QString(""));
@@ -76,7 +77,7 @@ void BusIfGeneralDetails::changeBitSteeringColour()
 
     QColor colour = KactusColors::REGULAR_TEXT;
 
-    General::InterfaceMode interfaceMode = busif_->getInterfaceMode();
+    General::InterfaceMode interfaceMode = busInterface_->getMode(busName_);
     if (!bitSteeringSelector_.currentText().isEmpty() &&
         (interfaceMode == General::MIRROREDMASTER || interfaceMode == General::SYSTEM ||
         interfaceMode == General::MIRROREDSYSTEM))
@@ -101,17 +102,18 @@ bool BusIfGeneralDetails::isValid() const
 //-----------------------------------------------------------------------------
 void BusIfGeneralDetails::refresh()
 {
-    modeSelector_.setMode(busif_->getInterfaceMode());
+    modeSelector_.setMode(busInterface_->getMode(busName_));
 
-	connectionRequired_.setChecked(busif_->getConnectionRequired() == QLatin1String("true"));
+    QString connectionRequirement = QString::fromStdString(busInterface_->connectionIsRequired(busName_));
+    connectionRequired_.setChecked(connectionRequirement == QLatin1String("true"));
 
-	bitsInLauEditor_.setText(busif_->getBitsInLau());
+    bitsInLauEditor_.setText(QString::fromStdString(busInterface_->getBitsInLau(busName_)));
 
-    endiannessSelector_.setCurrentIndex(busif_->getEndianness());
+    endiannessSelector_.setCurrentIndex(busInterface_->getEndianness(busName_));
 
     disconnect(&bitSteeringSelector_, SIGNAL(currentIndexChanged(int)),	this, SLOT(onBitSteeringChanged()));
 
-    bitSteeringSelector_.setCurrentIndex(busif_->getBitSteering());
+    bitSteeringSelector_.setCurrentIndex(busInterface_->getBitSteering(busName_));
 
     changeBitSteeringColour();
 
@@ -124,7 +126,7 @@ void BusIfGeneralDetails::refresh()
 //-----------------------------------------------------------------------------
 void BusIfGeneralDetails::onAddressableUnitChanged()
 {
-	busif_->setBitsInLau(bitsInLauEditor_.text());
+    busInterface_->setBitsInLau(busName_, bitsInLauEditor_.text().toStdString());
 	emit contentChanged();
 }
 
@@ -133,19 +135,7 @@ void BusIfGeneralDetails::onAddressableUnitChanged()
 //-----------------------------------------------------------------------------
 void BusIfGeneralDetails::onEndiannessChanged()
 {
-    if (endiannessSelector_.currentText() == QLatin1String("little"))
-    {
-        busif_->setEndianness(BusInterface::LITTLE);
-    }
-    else if (endiannessSelector_.currentText() == QLatin1String("big"))
-    {
-        busif_->setEndianness(BusInterface::BIG);
-    }
-    else
-    {
-        busif_->setEndianness(BusInterface::ENDIANNESS_UNSPECIFIED);
-    }
-
+    busInterface_->setEndianness(busName_, endiannessSelector_.currentText().toStdString());
 	emit contentChanged();
 }
 
@@ -158,20 +148,7 @@ void BusIfGeneralDetails::onBitSteeringChanged()
 
     changeBitSteeringColour();
 
-	// if bit steering is enabled
-    if (bitSteeringSelector_.currentText() == QLatin1String("on"))
-    {
-        busif_->setBitSteering(BusInterface::BITSTEERING_ON);
-    }
-    // if it was disabled
-    else if (bitSteeringSelector_.currentText() == QLatin1String("off"))
-    {
-        busif_->setBitSteering(BusInterface::BITSTEERING_OFF);
-    }
-    else
-    {
-		busif_->setBitSteering(BusInterface::BITSTEERING_UNSPECIFIED);
-	}
+    busInterface_->setBitSteering(busName_, bitSteeringSelector_.currentText().toStdString());
 
 	connect(&bitSteeringSelector_, SIGNAL(currentIndexChanged(int)),
         this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
@@ -184,7 +161,7 @@ void BusIfGeneralDetails::onBitSteeringChanged()
 //-----------------------------------------------------------------------------
 void BusIfGeneralDetails::onConnectionRequiredChanged()
 {
-	busif_->setConnectionRequired(connectionRequired_.isChecked());
+    busInterface_->setConnectionIsRequired(busName_, connectionRequired_.isChecked());
 	emit contentChanged();
 }
 
@@ -199,4 +176,12 @@ void BusIfGeneralDetails::setupLayout()
     modeLayout->addRow(tr("Endianness:"), &endiannessSelector_);
     modeLayout->addRow(tr("Bit steering:"), &bitSteeringSelector_);
     modeLayout->addRow(tr("Connection required:"), &connectionRequired_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifgeneraldetails::changeName()
+//-----------------------------------------------------------------------------
+void BusIfGeneralDetails::changeName(std::string const& newName)
+{
+    busName_ = newName;
 }

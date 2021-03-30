@@ -48,17 +48,11 @@ void ResetInterface::setResets(QSharedPointer<Field> containingField)
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::getReset()
 //-----------------------------------------------------------------------------
-QSharedPointer<FieldReset> ResetInterface::getReset(string const& resetType) const
+QSharedPointer<FieldReset> ResetInterface::getReset(int const& resetIndex) const
 {
-    if (resets_)
+    if (resetIndex >= 0 && resetIndex < resets_->size())
     {
-        for (auto fieldReset : *resets_)
-        {
-            if (fieldReset->getResetTypeReference().toStdString() == resetType)
-            {
-                return fieldReset;
-            }
-        }
+        return resets_->at(resetIndex);
     }
 
     return QSharedPointer<FieldReset>();
@@ -108,26 +102,24 @@ string ResetInterface::getResetTypeReference(int const& itemIndex) const
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::setResetTypeReference()
 //-----------------------------------------------------------------------------
-bool ResetInterface::setResetTypeReference(string const& currentResetType, string const& newResetType)
+bool ResetInterface::setResetTypeReference(int const& resetIndex, std::string const& newResetType)
 {
-    QSharedPointer<FieldReset> editedReset = getReset(currentResetType);
+    QSharedPointer<FieldReset> editedReset = getReset(resetIndex);
     if (!editedReset)
     {
         return false;
     }
 
-    QString uniqueNewName = getUniqueName(newResetType, DEFAULT_TYPE);
-
-    editedReset->setResetTypeReference(uniqueNewName);
+    editedReset->setResetTypeReference(QString::fromStdString(newResetType));
     return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::getResetValue()
 //-----------------------------------------------------------------------------
-string ResetInterface::getResetValue(string const& resetType, int const& baseNumber) const
+std::string ResetInterface::getResetValue(int const& resetIndex, int const& baseNumber) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return parseExpressionToBaseNumber(reset->getResetValue(), baseNumber).toStdString();
@@ -139,9 +131,9 @@ string ResetInterface::getResetValue(string const& resetType, int const& baseNum
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::getResetValueFormattedExpression()
 //-----------------------------------------------------------------------------
-string ResetInterface::getResetValueFormattedExpression(string const& resetType) const
+std::string ResetInterface::getResetValueFormattedExpression(int const& resetIndex) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return formattedValueFor(reset->getResetValue()).toStdString();
@@ -153,9 +145,9 @@ string ResetInterface::getResetValueFormattedExpression(string const& resetType)
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::getResetValueExpression()
 //-----------------------------------------------------------------------------
-string ResetInterface::getResetValueExpression(string const& resetType) const
+std::string ResetInterface::getResetValueExpression(int const& resetIndex) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return reset->getResetValue().toStdString();
@@ -167,9 +159,9 @@ string ResetInterface::getResetValueExpression(string const& resetType) const
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::setResetValue()
 //-----------------------------------------------------------------------------
-bool ResetInterface::setResetValue(string const& resetType, string const& newResetValue)
+bool ResetInterface::setResetValue(int const& resetIndex, std::string const& newResetValue)
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (!reset)
     {
         return false;
@@ -182,9 +174,9 @@ bool ResetInterface::setResetValue(string const& resetType, string const& newRes
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::getResetMaskValue()
 //-----------------------------------------------------------------------------
-string ResetInterface::getResetMaskValue(string const& resetType, int const& baseNumber) const
+std::string ResetInterface::getResetMaskValue(int const& resetIndex, int const& baseNumber /* = 0 */) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return parseExpressionToBaseNumber(reset->getResetMask(), baseNumber).toStdString();
@@ -196,9 +188,9 @@ string ResetInterface::getResetMaskValue(string const& resetType, int const& bas
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::getResetMaskFormattedExpression()
 //-----------------------------------------------------------------------------
-string ResetInterface::getResetMaskFormattedExpression(string const& resetType) const
+std::string ResetInterface::getResetMaskFormattedExpression(int const& resetIndex) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return formattedValueFor(reset->getResetMask()).toStdString();
@@ -210,9 +202,9 @@ string ResetInterface::getResetMaskFormattedExpression(string const& resetType) 
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::getResetMaskExpression()
 //-----------------------------------------------------------------------------
-string ResetInterface::getResetMaskExpression(string const& resetType) const
+std::string ResetInterface::getResetMaskExpression(int const& resetIndex) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return reset->getResetMask().toStdString();
@@ -224,15 +216,15 @@ string ResetInterface::getResetMaskExpression(string const& resetType) const
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::setResetMask()
 //-----------------------------------------------------------------------------
-bool ResetInterface::setResetMask(string const& resetType, string const& newResetValue)
+bool ResetInterface::setResetMask(int const& resetIndex, std::string const& newResetMask)
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (!reset)
     {
         return false;
     }
 
-    reset->setResetMask(QString::fromStdString(newResetValue));
+    reset->setResetMask(QString::fromStdString(newResetMask));
     return true;
 }
 
@@ -247,9 +239,9 @@ bool ResetInterface::validateItems() const
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::hasValidResetType()
 //-----------------------------------------------------------------------------
-bool ResetInterface::hasValidResetType(string const& resetType) const
+bool ResetInterface::hasValidResetType(int const& resetIndex) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return validator_->hasValidResetTypeReference(reset);
@@ -261,9 +253,9 @@ bool ResetInterface::hasValidResetType(string const& resetType) const
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::hasValidResetValue()
 //-----------------------------------------------------------------------------
-bool ResetInterface::hasValidResetValue(string const& resetType) const
+bool ResetInterface::hasValidResetValue(int const& resetIndex) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return validator_->hasValidResetValue(reset);
@@ -275,9 +267,9 @@ bool ResetInterface::hasValidResetValue(string const& resetType) const
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::hasValidResetMask()
 //-----------------------------------------------------------------------------
-bool ResetInterface::hasValidResetMask(std::string const& resetType) const
+bool ResetInterface::hasValidResetMask(int const& resetIndex) const
 {
-    QSharedPointer<FieldReset> reset = getReset(resetType);
+    QSharedPointer<FieldReset> reset = getReset(resetIndex);
     if (reset)
     {
         return validator_->hasValidResetMask(reset);
@@ -289,22 +281,18 @@ bool ResetInterface::hasValidResetMask(std::string const& resetType) const
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::addReset()
 //-----------------------------------------------------------------------------
-void ResetInterface::addReset(int const& row, std::string const& newResetName)
+void ResetInterface::addReset(int const& row)
 {
-    QString resetName = getUniqueName(newResetName, DEFAULT_TYPE);
-
     QSharedPointer<FieldReset> newReset(new FieldReset());
-    newReset->setResetTypeReference(resetName);
-
     resets_->insert(row, newReset);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ResetInterface::removeReset()
 //-----------------------------------------------------------------------------
-bool ResetInterface::removeReset(std::string const& resetName)
+bool ResetInterface::removeReset(int const& resetIndex)
 {
-    QSharedPointer<FieldReset> removedReset = getReset(resetName);
+    QSharedPointer<FieldReset> removedReset = getReset(resetIndex);
     if (!removedReset)
     {
         return false;
@@ -318,14 +306,33 @@ bool ResetInterface::removeReset(std::string const& resetName)
 //-----------------------------------------------------------------------------
 int ResetInterface::getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const
 {
-    QSharedPointer<FieldReset> reset = getReset(itemName);
+    for (int i = 0; i < itemCount(); ++i)
+    {
+        if (getResetTypeReference(i) == itemName)
+        {
+            return getAllReferencesToIdInIndex(i, valueID);
+        }
+    }
 
-    QString idString = QString::fromStdString(valueID);
+    return 0;
+}
 
-    int referencesInResetValue = reset->getResetValue().count(idString);
-    int referencesInResetMask = reset->getResetMask().count(idString);
+//-----------------------------------------------------------------------------
+// Function: ResetInterface::getAllReferencesToIdInIndex()
+//-----------------------------------------------------------------------------
+int ResetInterface::getAllReferencesToIdInIndex(int const& itemIndex, std::string const& valueID) const
+{
+    int totalReferencesToParameter = 0;
+    QSharedPointer<FieldReset> reset = getReset(itemIndex);
+    if (reset)
+    {
+        QString idString = QString::fromStdString(valueID);
 
-    int totalReferencesToParameter = referencesInResetValue + referencesInResetMask;
+        int referencesInResetValue = reset->getResetValue().count(idString);
+        int referencesInResetMask = reset->getResetMask().count(idString);
+
+        totalReferencesToParameter = referencesInResetValue + referencesInResetMask;
+    }
 
     return totalReferencesToParameter;
 }

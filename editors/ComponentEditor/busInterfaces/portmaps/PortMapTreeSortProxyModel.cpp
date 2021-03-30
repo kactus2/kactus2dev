@@ -22,9 +22,8 @@
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeSortProxyModel::PortMapTreeSortProxyModel()
 //-----------------------------------------------------------------------------
-PortMapTreeSortProxyModel::PortMapTreeSortProxyModel(QSharedPointer<BusInterface> busInterface, QObject *parent):
-EditableTreeSortFilter(parent),
-containingBus_(busInterface)
+PortMapTreeSortProxyModel::PortMapTreeSortProxyModel(QObject *parent):
+EditableTreeSortFilter(parent)
 {
 
 }

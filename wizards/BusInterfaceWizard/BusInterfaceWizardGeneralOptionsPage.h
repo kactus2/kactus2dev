@@ -25,8 +25,8 @@ class BusInterfaceWizard;
 class Component;
 class LibraryInterface;
 class ExpressionParser;
-
 class AbstractionTypeValidator;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! General options page for the interface wizard.
@@ -47,12 +47,18 @@ public:
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] busValidator            Validator for bus interfaces.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
      *      @param [in] parent                  The parent wizard.
      */
-    BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh, bool absDefEditable, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<BusInterfaceValidator> busValidator, BusInterfaceWizard* parent);
+    BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
+        QSharedPointer<BusInterface> busIf,
+        LibraryInterface* lh,
+        bool absDefEditable,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
+        BusInterfaceInterface* busInterface,
+        BusInterfaceWizard* parent);
 
     /*!
      *  Destructor.
@@ -132,7 +138,8 @@ private:
     //! Editor for bus interface general options.
     BusIfGeneralTab* generalTab_;
 
-    QSharedPointer<AbstractionTypeValidator> abstractionValidator_;
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // BUSINTERFACEWIZARDGENERALOPTIONSPAGE_H

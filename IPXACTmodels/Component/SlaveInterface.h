@@ -91,7 +91,7 @@ public:
 
 private:
 
-	//! The referenced memory map name.	 
+	//! The referenced memory map name.
 	QString memoryMapRef_;
 
 	//! The bridges to master interfaces.

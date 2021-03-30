@@ -27,19 +27,17 @@
 //-----------------------------------------------------------------------------
 // Function: componenteditorbusinterfacesitem::ComponentEditorBusInterfacesItem()
 //-----------------------------------------------------------------------------
-ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(BusInterfaceInterface* busInterface,
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
 parentWnd_(parentWnd),
 expressionParser_(expressionParser),
 validator_(),
-portMapInterface_()
+busInterface_(busInterface)
 {
     createBusInterfaceValidator();
 
@@ -47,13 +45,11 @@ portMapInterface_()
     setExpressionFormatter(expressionFormatter);
     setReferenceCounter(referenceCounter);
 
-    createPortMapInterface();
-
 	foreach (QSharedPointer<BusInterface> busif, *busifs_)
     {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
             busif, model, libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, validator_, portMapInterface_, this, parentWnd));
+            expressionParser_, validator_, busInterface_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
             this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
@@ -104,7 +100,7 @@ ItemEditor* ComponentEditorBusInterfacesItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new BusInterfacesEditor(libHandler_, component_, validator_, parameterFinder_);
+		editor_ = new BusInterfacesEditor(libHandler_, component_, busInterface_, parameterFinder_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -132,7 +128,7 @@ void ComponentEditorBusInterfacesItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
         busifs_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
-        expressionFormatter_, expressionParser_, validator_, portMapInterface_, this, parentWnd_));
+        expressionFormatter_, expressionParser_, validator_, busInterface_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
@@ -158,22 +154,4 @@ QSharedPointer<ComponentEditorItem> ComponentEditorBusInterfacesItem::getBusInte
 
 	// if child was not found
 	return QSharedPointer<ComponentEditorItem>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorbusinterfacesitem::createPortMapInterface()
-//-----------------------------------------------------------------------------
-void ComponentEditorBusInterfacesItem::createPortMapInterface()
-{
-    QSharedPointer<PortValidator> portValidator(new PortValidator(expressionParser_, component_->getViews()));
-    QSharedPointer<PortMapValidator> portMapValidator =
-        validator_->getAbstractionValidator()->getPortMapValidator();
-
-    PortsInterface* physicalPortInterface(new PortsInterface(portValidator, expressionParser_, expressionFormatter_));
-    physicalPortInterface->setPorts(component_);
-
-    PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface());
-
-    portMapInterface_ = new PortMapInterface(
-        portMapValidator, expressionParser_, expressionFormatter_, physicalPortInterface, logicalPortInterface);
 }

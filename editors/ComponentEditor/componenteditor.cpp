@@ -59,6 +59,9 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
+
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -618,12 +621,16 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
     if (component->getImplementation() != KactusAttribute::SW)
     {
-        root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(
-            new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, root)));
+        root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(new ComponentEditorSystemViewsItem(
+            &navigationModel_, libHandler_, component, parameterFinder_, expressionParser_, expressionFormatter_,
+            root)));
     }
 
     if (component->getImplementation() == KactusAttribute::HW)
     {
+        BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
+            parameterFinder_, expressionFormatter_, expressionParser_, component, libHandler_);
+
         QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
             expressionParser_, root));
@@ -635,8 +642,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
 
         QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem (new ComponentEditorBusInterfacesItem(
-            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, root, parentWidget()));
+            busInterface, &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
+            expressionFormatter_, expressionParser_, root, parentWidget()));
 
         root->addChildItem(busInterfaceItem);
 
@@ -647,7 +654,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
         QSharedPointer<ComponentEditorIndirectInterfacesItem> indirectInterfacesItem(
             QSharedPointer<ComponentEditorIndirectInterfacesItem>(new ComponentEditorIndirectInterfacesItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, root, parentWidget())));
+            expressionParser_, busInterface, root, parentWidget())));
 
         root->addChildItem(indirectInterfacesItem);
 
@@ -802,6 +809,9 @@ void ComponentEditor::openItemEditor(QVector<QString> itemIdentifierChain)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::getComponent()
+//-----------------------------------------------------------------------------
 QSharedPointer<Component> ComponentEditor::getComponent() const
 {
     return component_;

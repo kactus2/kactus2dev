@@ -16,9 +16,12 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
-
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
+
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 #include <library/LibraryInterface.h>
 
@@ -32,13 +35,13 @@
 BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh, QStringList physicalPorts,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<BusInterfaceValidator> validator, PortMapInterface* portMapInterface,
-    BusInterfaceWizard* parent):
+    BusInterfaceInterface* busInterface, BusInterfaceWizard* parent):
 QWizardPage(parent),
 busIf_(busIf),
 handler_(lh),
-portMapTab_(handler_, component, busIf_, expressionParser, parameterFinder, portMapInterface, this),
-validator_(validator)
+portMapTab_(handler_, component, busInterface, busIf_->name().toStdString(), expressionParser, parameterFinder,
+    busInterface->getAbstractionTypeInterface()->getPortMapInterface(), this),
+busInterface_(busInterface)
 {
     setTitle(tr("Port Maps"));
     setSubTitle(tr("Create port maps for interface %1.").arg(busIf->name()));
@@ -83,7 +86,7 @@ void BusInterfaceWizardPortMapPage::initializePage()
 //-----------------------------------------------------------------------------
 bool BusInterfaceWizardPortMapPage::isComplete() const
 {
-    return validator_->validate(busIf_);
+    return busInterface_->validateBusInterface(busIf_->name().toStdString());
 }
 
 //-----------------------------------------------------------------------------

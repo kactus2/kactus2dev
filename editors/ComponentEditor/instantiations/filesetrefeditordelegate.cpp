@@ -13,17 +13,19 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+
 #include <QComboBox>
 #include <QLineEdit>
 
 //-----------------------------------------------------------------------------
 // Function: filesetrefeditordelegate::FileSetRefEditorDelegate()
 //-----------------------------------------------------------------------------
-FileSetRefEditorDelegate::FileSetRefEditorDelegate( QObject *parent, QSharedPointer<Component> component ):
-ComboDelegate(parent), 
-component_(component)
+FileSetRefEditorDelegate::FileSetRefEditorDelegate(QObject *parent, FileSetInterface* fileSetInterface):
+ComboDelegate(parent),
+fileSetInterface_(fileSetInterface)
 {
-	Q_ASSERT(component_);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -40,11 +42,15 @@ FileSetRefEditorDelegate::~FileSetRefEditorDelegate()
 QWidget* FileSetRefEditorDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option,
     const QModelIndex& index) const
 {
-	Q_ASSERT(component_);
 	QComboBox* combo = qobject_cast<QComboBox*>(ComboDelegate::createEditor(parent, option, index));
 	Q_ASSERT(combo);
 
-	QStringList filesetNames = component_->getFileSetNames();
-	combo->addItems(filesetNames);
+    QStringList filesetNames;
+    for (auto setName : fileSetInterface_->getItemNames())
+    {
+        filesetNames.append(QString::fromStdString(setName));
+    }
+
+    combo->addItems(filesetNames);
 	return combo;
 }

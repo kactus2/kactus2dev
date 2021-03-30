@@ -42,7 +42,7 @@
 SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor(QSharedPointer<IndirectInterface> indirectInterface,
     QSharedPointer<IndirectInterfaceValidator> validator, QSharedPointer<Component> component,
     LibraryInterface* library, QSharedPointer<ParameterFinder> finder,
-    QSharedPointer<ExpressionFormatter> formatter, QWidget* parent):
+    QSharedPointer<ExpressionFormatter> formatter, BusInterfaceInterface* busInterface, QWidget* parent):
 ParameterItemEditor(component, library, parent),
 indirectInterface_(indirectInterface),
 validator_(validator),
@@ -54,7 +54,7 @@ bitsInLauEditor_(new QLineEdit(this)),
 endiannessSelector_(new QComboBox(this)),
 memoryMapBox_(new QGroupBox(tr("Indirect memory map"), this)),
 memoryMapSelector_(new ReferenceSelector(this)),
-transparentBridgesEditor_(new BridgesEditor(indirectInterface->getTransparentBridges(), component, this)),
+transparentBridgesEditor_(new BridgesEditor(busInterface, indirectInterface->getTransparentBridges(), this)),
 parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), component->getChoices(), finder,
     formatter, this))
 {
@@ -131,6 +131,7 @@ void SingleIndirectInterfaceEditor::refresh()
     memoryMapSelector_->selectItem(indirectInterface_->getMemoryMapRef());
 
     transparentBridgesEditor_->setChecked(!indirectInterface_->getTransparentBridges()->isEmpty());
+    transparentBridgesEditor_->refresh();
 }
 
 //-----------------------------------------------------------------------------

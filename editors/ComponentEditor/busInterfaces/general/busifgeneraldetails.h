@@ -20,7 +20,7 @@
 #include <QComboBox>
 #include <QSharedPointer>
 
-class BusInterface;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the bus interface details.
@@ -31,15 +31,18 @@ class BusIfGeneralDetails : public QGroupBox
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
-	 *      @param [in] busif   The bus interface being edited.
-	 *      @param [in] parent  The owner of this editor.
-	 *
-	*/
-	BusIfGeneralDetails(QSharedPointer<BusInterface> busif, QWidget* parent);
-	
-	//! The destructor
+	 *      @param [in] busInterface    Interface for accessing bus interfaces.
+     *      @param [in] busName         Name of the bus interface being edited.
+	 *      @param [in] parent          The owner of this editor.
+     */
+    BusIfGeneralDetails(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
+
+	/*!
+     *  The destructor
+     */
 	virtual ~BusIfGeneralDetails();
 
 	/*! Check for the validity of the edited item.
@@ -52,6 +55,13 @@ public:
 	*
 	*/
 	virtual void refresh();
+
+    /*!
+     *  Change the name of the bus interface being edited.
+     *
+     *      @param [in] newName     The new bus interface name.
+     */
+    void changeName(std::string const& newName);
 
 signals:
 
@@ -97,8 +107,11 @@ private:
     //! Sets the editor layout.
     void setupLayout();
 
-	//! The bus interface being edited.
-	QSharedPointer<BusInterface> busif_;
+	//! Interface for accesssing bus  interfaces.
+    BusInterfaceInterface* busInterface_;
+
+    //! Name of the edited bus interface.
+    std::string busName_;
 
     //! The selector to select the interface mode.
     InterfaceModeSelector modeSelector_;

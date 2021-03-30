@@ -360,6 +360,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.h \
     ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.h \
     ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.h \
+    ./editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h \
+    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h \
+    ./editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h \
     ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
@@ -865,6 +868,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/WriteChannel.h \
     ./PythonAPI/ChannelRelay.h \
@@ -1127,6 +1131,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.cpp \
     ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.cpp \
+    ./editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.cpp \
+    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.cpp \
+    ./editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.cpp \
     ./editors/ComponentEditor/channels/channelsdelegate.cpp \
     ./editors/ComponentEditor/channels/channelseditor.cpp \
     ./editors/ComponentEditor/channels/channelsmodel.cpp \
@@ -1629,6 +1636,7 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
+    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.cpp
     ./PythonAPI/ChannelRelay.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \

@@ -17,6 +17,8 @@
 #include <QSharedPointer>
 
 class Component;
+class FileSetInterface;
+
 //-----------------------------------------------------------------------------
 //! Delegate that manages the editors to select a file set in a component.
 //-----------------------------------------------------------------------------
@@ -29,11 +31,11 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent      The pointer to the owner of this delegate.
-	 *      @param [in] component   The component that's file sets are being selected.
+	 *      @param [in] parent              The pointer to the owner of this delegate.
+	 *      @param [in] fileSetInterface    Interface for accessing file sets.
 	 */
-	FileSetRefEditorDelegate(QObject *parent, QSharedPointer<Component> component);
-	
+    FileSetRefEditorDelegate(QObject *parent, FileSetInterface* fileSetInterface);
+
 	//! The destructor.
 	virtual ~FileSetRefEditorDelegate();
 
@@ -51,14 +53,12 @@ public:
 
 private:
 
-	//! No copying.
+    //! No copying. No assignment.
 	FileSetRefEditorDelegate(const FileSetRefEditorDelegate& other);
-
-	//! No assignment.
 	FileSetRefEditorDelegate& operator=(const FileSetRefEditorDelegate& other);
 
-	//! Pointer to the component that's file set are being selected.
-	QSharedPointer<Component> component_;
+	//! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
 };
 
 #endif // FILESETREFEDITORDELEGATE_H
