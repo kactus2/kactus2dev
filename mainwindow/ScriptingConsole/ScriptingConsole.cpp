@@ -49,11 +49,18 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     historyAction->setCheckable(true);
     historyAction->setEnabled(enabled);
 
-    connect(historyAction, SIGNAL(toggled(bool)), historyListing_, SLOT(setVisible(bool)), Qt::UniqueConnection);
+    connect(historyAction, SIGNAL(toggled(bool)), historyListing_, 
+        SLOT(setVisible(bool)), Qt::UniqueConnection);
 
-    QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/edit.png"), QString(), this, SLOT(onSaveAction()));
+    QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), 
+        this, SLOT(onSaveAction()));
     saveAction->setToolTip(QStringLiteral("Save script"));
     saveAction->setEnabled(enabled);
+
+    QAction* runAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-open.png"), QString(),
+        this, SLOT(onRunAction()));
+    runAction->setToolTip(QStringLiteral("Run script from file"));
+    runAction->setEnabled(enabled);
 
     connect(history_, SIGNAL(commandAdded(QString const&)),
         this, SLOT(onCommandInput(QString const&)), Qt::UniqueConnection);
@@ -93,6 +100,18 @@ void ScriptingConsole::onSaveAction()
         {
             output << historyListing_->item(i)->text() << "\n";
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptingConsole::onRunAction()
+//-----------------------------------------------------------------------------
+void ScriptingConsole::onRunAction()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select file to run"), QString(), tr("Python File (*.py)"));
+    if (fileName.isEmpty() == false)
+    {
+        interpreter_->runFile(fileName);
     }
 }
 

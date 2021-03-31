@@ -44,10 +44,16 @@ public:
 
 private slots:
 
+    //! Handler for save button clicks.
     void onSaveAction();
 
+    //! Handler for run button clicks.
+    void onRunAction();
+
+    //! Handler for registering user input commands.
     void onCommandInput(QString const& command);
 
+    //! Handler for history button clicks.
     void onHistoryItemClicked(QListWidgetItem* item);
 
 

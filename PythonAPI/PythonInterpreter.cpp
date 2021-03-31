@@ -30,7 +30,6 @@ PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* 
     errorChannel_(errorChannel),
     globalContext_(nullptr),
     localContext_(nullptr)
-
 {
    
 }
@@ -53,7 +52,6 @@ bool PythonInterpreter::initialize()
     PyImport_AppendInittab("OutputForwarder", &PyInit_OutputForwarder);
 
     Py_InitializeEx(0); //<! Disable signals.
-
     
     if (Py_IsInitialized() == false)
     {        
@@ -85,6 +83,29 @@ bool PythonInterpreter::initialize()
 void PythonInterpreter::write(QString const& command)
 {
     execute(command.toStdString());
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonInterpreter::runFile()
+//-----------------------------------------------------------------------------
+void PythonInterpreter::runFile(QString const& filePath)
+{
+    Q_ASSERT_X(Py_IsInitialized(), "Python interpreter", "Trying to execute file without initializing.");
+
+    QFile scriptFile(filePath);
+    if (scriptFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        int fd = scriptFile.handle();
+        FILE* f = fdopen(dup(fd), "rb"); // !!! use dup()
+
+        PyRun_SimpleFile(f, scriptFile.fileName().toLocal8Bit());
+
+        fclose(f);
+
+        scriptFile.close();
+
+        printPrompt();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -195,16 +216,16 @@ bool PythonInterpreter::setOutputChannels()
 
     if (dict == NULL) {
         PyErr_Print();
-        errorChannel_->write(QStringLiteral("Fails to get the dictionary.\n"));
-        return 1;
+        errorChannel_->write(QStringLiteral("Fails to get the output dictionary.\n"));
+        return false;
     }
 
     PyObject* python_class = PyDict_GetItemString(dict, "OutputForwarder");
 
     if (python_class == NULL) {
         PyErr_Print();
-        errorChannel_->write(QStringLiteral("Fails to get the Python class.\n"));
-        return 1;
+        errorChannel_->write(QStringLiteral("Fails to get the output Python class.\n"));
+        return false;
     }
 
     PyObject* outCatcher = nullptr;
@@ -218,8 +239,7 @@ bool PythonInterpreter::setOutputChannels()
     }
     else
     {
-        outputChannel_->write(QStringLiteral("Cannot instantiate the Python class"));
-
+        outputChannel_->write(QStringLiteral("Cannot instantiate the Python class for output"));
         return false;
     }
 
@@ -298,4 +318,3 @@ void PythonInterpreter::printPrompt() const
         outputChannel_->write(">>> ");
     }
 }
-
