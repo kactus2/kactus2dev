@@ -16,6 +16,7 @@
 #include <Python.h>
 
 #include <QObject>
+#include <QFile>
 
 #include <string>
 
@@ -56,6 +57,13 @@ public:
      *     @param [in] command  The command to execute.
      */
      virtual void write(QString const& command) override final;
+
+     /*!
+      * Run a script from a given file.
+      *
+      *     @param [in] filePath  Path to the file to run.
+      */
+      void runFile(QString const& filePath);
 
     /*!
      * Execute the given line in the interpreter.
