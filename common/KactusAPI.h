@@ -62,6 +62,13 @@ public:
     static QString getVersion();
 
     /*!
+     *  Get the version number.
+     *
+     *      @return The current version number.
+     */
+    static QString getVersionFileString();
+
+    /*!
      * Gets the paths where IP-XACT files are stored.
      *
      *     @return The paths where IP-XACT files are stored.

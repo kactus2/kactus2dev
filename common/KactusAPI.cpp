@@ -73,6 +73,14 @@ QString KactusAPI::getVersion()
 }
 
 //-----------------------------------------------------------------------------
+// Function: KactusAPI::getVersionFileString()
+//-----------------------------------------------------------------------------
+QString KactusAPI::getVersionFileString()
+{
+    return VersionHelper::versionFileStr();
+}
+
+//-----------------------------------------------------------------------------
 // Function: KactusAPI::getLibraryPaths()
 //-----------------------------------------------------------------------------
 QStringList KactusAPI::getLibraryPaths()

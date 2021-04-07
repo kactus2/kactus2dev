@@ -233,6 +233,75 @@ std::vector<std::string> PythonAPI::listComponentVLNVs() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonAPI::vlnvExistsInLibrary()
+//-----------------------------------------------------------------------------
+bool PythonAPI::vlnvExistsInLibrary(std::string const& vendor, std::string const& library, std::string const& name,
+    std::string const& version)
+{
+    if (vendor.empty() || library.empty() || name.empty() || version.empty())
+    {
+        messager_->showError("Error in given VLNV.");
+        return false;
+    }
+
+    VLNV selectedVLNV;
+    selectedVLNV.setVendor(QString::fromStdString(vendor));
+    selectedVLNV.setLibrary(QString::fromStdString(library));
+    selectedVLNV.setName(QString::fromStdString(name));
+    selectedVLNV.setVersion(QString::fromStdString(version));
+
+    return library_->contains(selectedVLNV);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::createComponent()
+//-----------------------------------------------------------------------------
+bool PythonAPI::createComponent(std::string const& vendor, std::string const& library, std::string const& name,
+    std::string const& version)
+{
+    if (vendor.empty() || library.empty() || name.empty() || version.empty())
+    {
+        messager_->showError("Error in given VLNV.");
+        return false;
+    }
+
+    VLNV newComponentVLNV;
+    newComponentVLNV.setVendor(QString::fromStdString(vendor));
+    newComponentVLNV.setLibrary(QString::fromStdString(library));
+    newComponentVLNV.setName(QString::fromStdString(name));
+    newComponentVLNV.setVersion(QString::fromStdString(version));
+    newComponentVLNV.setType(VLNV::COMPONENT);
+
+    if (library_->contains(newComponentVLNV))
+    {
+        return false;
+    }
+
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(newComponentVLNV));
+
+    component->setHierarchy(KactusAttribute::FLAT);
+    component->setFirmness(KactusAttribute::MUTABLE);
+    component->setImplementation(KactusAttribute::HW);
+    component->setVersion(KactusAPI::getVersionFileString());
+
+    QString directory = KactusAPI::getDefaultLibraryPath();
+    QString vlnvDir = "/" + newComponentVLNV.getVendor() + "/" + newComponentVLNV.getLibrary() + "/" +
+        newComponentVLNV.getName() + "/" + newComponentVLNV.getVersion();
+
+    directory += vlnvDir;
+
+    if (!library_->writeModelToFile(directory, component))
+    {
+        messager_->showError("Error saving file to disk.");
+        return false;
+    }
+
+    openComponent(newComponentVLNV.toString().toStdString());
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonAPI::openComponent()
 //-----------------------------------------------------------------------------
 bool PythonAPI::openComponent(std::string const& vlnvString)

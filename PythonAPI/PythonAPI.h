@@ -143,13 +143,38 @@ public:
     std::vector<std::string> listComponentVLNVs() const;
 
     /*!
+     *  Check if the selected VLNV exists in the library.
+     *
+     *      @param [in] vendor      Vendor of the selected VLNV.
+     *      @param [in] library     Library of the selected VLNV.
+     *      @param [in] name        Name of the selected VLNV.
+     *      @param [in] version     Version of the selected VLNV.
+     *
+     *      @return True, if the VLNV exists in the library, false otherwise.
+     */
+    bool vlnvExistsInLibrary(std::string const& vendor, std::string const& library, std::string const& name,
+        std::string const& version);
+
+    /*!
+     *  Create a new component with the selected VLNV.
+     *
+     *      @param [in] vendor      Vendor of the selected VLNV.
+     *      @param [in] library     Library of the selected VLNV.
+     *      @param [in] name        Name of the selected VLNV.
+     *      @param [in] version     Version of the selected VLNV.
+     *
+     *      @return True, if the component was created successfully, false otherwise.
+     */
+    bool createComponent(std::string const& vendor, std::string const& library, std::string const& name,
+        std::string const& version);
+
+    /*!
      *  Set the selected component as active component.
      *
      *      @param [in] componentVLNV   VLNV of the selected component.
      *
      *      @return True, if the component exists, false otherwise.
      */
-
     bool openComponent(std::string const& vlnvString);
 
     /*!
