@@ -517,15 +517,10 @@ bool PortsInterface::setLeftBound(string const& portName, string const& newLeftB
     QSharedPointer<Port> editedPort = getPort(portName);
     if (editedPort && portIsWire(portName))
     {
-        QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
-        if (wireVector)
-        {
-            wireVector->setLeft(QString::fromStdString(newLeftBound));
-
-            setTypeNameAndDefinition(editedPort);
-
-            return true;
-        }
+        editedPort->setLeftBound(QString::fromStdString(newLeftBound));
+        setTypeNameAndDefinition(editedPort);
+        
+        return true;
     }
 
     return false;
@@ -593,15 +588,10 @@ bool PortsInterface::setRightBound(string const& portName, string const& newRigh
     QSharedPointer<Port> editedPort = getPort(portName);
     if (editedPort && portIsWire(portName))
     {
-        QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
-        if (wireVector)
-        {
-            wireVector->setRight(QString::fromStdString(newRightBound));
+        editedPort->setRightBound(QString::fromStdString(newRightBound));
+        setTypeNameAndDefinition(editedPort);
 
-            setTypeNameAndDefinition(editedPort);
-
-            return true;
-        }
+        return true;
     }
 
     return false;

@@ -354,13 +354,17 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
 //-----------------------------------------------------------------------------
 void PythonAPI::closeOpenComponent()
 {
+    if (activeComponent_)
+    {
+        messager_->showMessage(QString("Component %1 is closed").arg(activeComponent_->getVlnv().toString()));
+    }
+
     activeComponent_ = QSharedPointer<Component>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getComponentName()
 //-----------------------------------------------------------------------------
-
 std::string PythonAPI::getComponentName()
 {
     if (activeComponent_)

@@ -20,6 +20,12 @@ def createReset(resetInterface, resetIndex, resetType, resetValue, resetMask):
 	resetInterface.setResetValue(resetIndex, resetValue)
 	resetInterface.setResetMask(resetIndex, resetMask)
 
+def createPort(portInterface, portName, direction, leftBound, rightBound):
+	portInterface.addWirePort(portName)
+	portInterface.setDirection(portName, direction)
+	portInterface.setLeftBound(portName, leftBound)
+	portInterface.setRightBound(portName, rightBound)
+
 def constructComponent(api, vendor, library, name, version):
 	
 	if (api.vlnvExistsInLibrary(vendor, library, name, version)):
@@ -89,6 +95,12 @@ def constructComponent(api, vendor, library, name, version):
 	api.setResetsForInterface(mapName, blockName, registerName2, fieldName3)
 	createReset(resetInterface, 0, "", "1'b1", "1'b1")
 	
+	# Create ports
+	portInterface = api.getPortsInterface()
+	createPort(portInterface, "inPort", "in", "31", "0")
+	createPort(portInterface, "outPort", "out", "7", "0")
+	createPort(portInterface, "inOutPort", "inout", "31", "0")
+
 	return True
 
 print ("\n", end='')
