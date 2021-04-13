@@ -2666,53 +2666,61 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 #define SWIGTYPE_p_CommonInterface swig_types[3]
 #define SWIGTYPE_p_DirectionTypes__Direction swig_types[4]
 #define SWIGTYPE_p_FieldInterface swig_types[5]
-#define SWIGTYPE_p_General__ModifiedWrite swig_types[6]
-#define SWIGTYPE_p_General__ReadAction swig_types[7]
-#define SWIGTYPE_p_General__TestConstraint swig_types[8]
-#define SWIGTYPE_p_General__Usage swig_types[9]
-#define SWIGTYPE_p_MasterPortInterface swig_types[10]
-#define SWIGTYPE_p_MemoryMap swig_types[11]
-#define SWIGTYPE_p_MemoryMapInterface swig_types[12]
-#define SWIGTYPE_p_MemoryRemap swig_types[13]
-#define SWIGTYPE_p_NameGroup swig_types[14]
-#define SWIGTYPE_p_NameGroupInterface swig_types[15]
-#define SWIGTYPE_p_ParameterizableInterface swig_types[16]
-#define SWIGTYPE_p_ParametersInterface swig_types[17]
-#define SWIGTYPE_p_PortsInterface swig_types[18]
-#define SWIGTYPE_p_PythonAPI swig_types[19]
-#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[20]
-#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[21]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[22]
-#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[23]
-#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[24]
-#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[25]
-#define SWIGTYPE_p_QSharedPointerT_MemoryMapValidator_t swig_types[26]
-#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[27]
-#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[28]
-#define SWIGTYPE_p_QSharedPointerT_Port_t swig_types[29]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[30]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[31]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[32]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[33]
-#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[34]
-#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[35]
-#define SWIGTYPE_p_QString swig_types[36]
-#define SWIGTYPE_p_RegisterInterface swig_types[37]
-#define SWIGTYPE_p_ResetInterface swig_types[38]
-#define SWIGTYPE_p_allocator_type swig_types[39]
-#define SWIGTYPE_p_char swig_types[40]
-#define SWIGTYPE_p_difference_type swig_types[41]
-#define SWIGTYPE_p_p_PyObject swig_types[42]
-#define SWIGTYPE_p_size_type swig_types[43]
-#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[44]
-#define SWIGTYPE_p_std__invalid_argument swig_types[45]
-#define SWIGTYPE_p_std__string swig_types[46]
-#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[47]
-#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[48]
-#define SWIGTYPE_p_swig__SwigPyIterator swig_types[49]
-#define SWIGTYPE_p_value_type swig_types[50]
-static swig_type_info *swig_types[52];
-static swig_module_info swig_module = {swig_types, 51, 0, 0, 0, 0};
+#define SWIGTYPE_p_FileBuilderInterface swig_types[6]
+#define SWIGTYPE_p_FileInterface swig_types[7]
+#define SWIGTYPE_p_FileSetInterface swig_types[8]
+#define SWIGTYPE_p_General__ModifiedWrite swig_types[9]
+#define SWIGTYPE_p_General__ReadAction swig_types[10]
+#define SWIGTYPE_p_General__TestConstraint swig_types[11]
+#define SWIGTYPE_p_General__Usage swig_types[12]
+#define SWIGTYPE_p_MasterPortInterface swig_types[13]
+#define SWIGTYPE_p_MemoryMap swig_types[14]
+#define SWIGTYPE_p_MemoryMapInterface swig_types[15]
+#define SWIGTYPE_p_MemoryRemap swig_types[16]
+#define SWIGTYPE_p_NameGroup swig_types[17]
+#define SWIGTYPE_p_NameGroupInterface swig_types[18]
+#define SWIGTYPE_p_ParameterizableInterface swig_types[19]
+#define SWIGTYPE_p_ParametersInterface swig_types[20]
+#define SWIGTYPE_p_PortsInterface swig_types[21]
+#define SWIGTYPE_p_PythonAPI swig_types[22]
+#define SWIGTYPE_p_QSharedPointerT_AddressBlockValidator_t swig_types[23]
+#define SWIGTYPE_p_QSharedPointerT_Component_t swig_types[24]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t swig_types[25]
+#define SWIGTYPE_p_QSharedPointerT_ExpressionParser_t swig_types[26]
+#define SWIGTYPE_p_QSharedPointerT_FieldValidator_t swig_types[27]
+#define SWIGTYPE_p_QSharedPointerT_Field_t swig_types[28]
+#define SWIGTYPE_p_QSharedPointerT_FileSetValidator_t swig_types[29]
+#define SWIGTYPE_p_QSharedPointerT_FileValidator_t swig_types[30]
+#define SWIGTYPE_p_QSharedPointerT_MemoryMapValidator_t swig_types[31]
+#define SWIGTYPE_p_QSharedPointerT_ParameterValidator_t swig_types[32]
+#define SWIGTYPE_p_QSharedPointerT_PortValidator_t swig_types[33]
+#define SWIGTYPE_p_QSharedPointerT_Port_t swig_types[34]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t swig_types[35]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t swig_types[36]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_FileBuilder_t_t_t swig_types[37]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_FileSet_t_t_t swig_types[38]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_File_t_t_t swig_types[39]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t swig_types[40]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t swig_types[41]
+#define SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t swig_types[42]
+#define SWIGTYPE_p_QSharedPointerT_RegisterValidator_t swig_types[43]
+#define SWIGTYPE_p_QString swig_types[44]
+#define SWIGTYPE_p_RegisterInterface swig_types[45]
+#define SWIGTYPE_p_ResetInterface swig_types[46]
+#define SWIGTYPE_p_allocator_type swig_types[47]
+#define SWIGTYPE_p_char swig_types[48]
+#define SWIGTYPE_p_difference_type swig_types[49]
+#define SWIGTYPE_p_p_PyObject swig_types[50]
+#define SWIGTYPE_p_size_type swig_types[51]
+#define SWIGTYPE_p_std__allocatorT_std__string_t swig_types[52]
+#define SWIGTYPE_p_std__invalid_argument swig_types[53]
+#define SWIGTYPE_p_std__string swig_types[54]
+#define SWIGTYPE_p_std__vectorT_int_std__allocatorT_int_t_t swig_types[55]
+#define SWIGTYPE_p_std__vectorT_std__string_std__allocatorT_std__string_t_t swig_types[56]
+#define SWIGTYPE_p_swig__SwigPyIterator swig_types[57]
+#define SWIGTYPE_p_value_type swig_types[58]
+static swig_type_info *swig_types[60];
+static swig_module_info swig_module = {swig_types, 59, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3542,6 +3550,9 @@ SWIGINTERNINLINE PyObject*
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h"
+#include "..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h"
+#include "..\editors\ComponentEditor\fileSet\interfaces\FileInterface.h"
+#include "..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h"
 
 
 namespace swig {
@@ -8628,6 +8639,111 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_PythonAPI_getVLNVDirectory(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  std::string *arg4 = 0 ;
+  std::string *arg5 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  int res4 = SWIG_OLDOBJ ;
+  int res5 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[5] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_getVLNVDirectory", 5, 5, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getVLNVDirectory" "', argument " "1"" of type '" "PythonAPI const *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_getVLNVDirectory" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getVLNVDirectory" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "PythonAPI_getVLNVDirectory" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getVLNVDirectory" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res4 = SWIG_AsPtr_std_string(swig_obj[3], &ptr);
+    if (!SWIG_IsOK(res4)) {
+      SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "PythonAPI_getVLNVDirectory" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getVLNVDirectory" "', argument " "4"" of type '" "std::string const &""'"); 
+    }
+    arg4 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res5 = SWIG_AsPtr_std_string(swig_obj[4], &ptr);
+    if (!SWIG_IsOK(res5)) {
+      SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "PythonAPI_getVLNVDirectory" "', argument " "5"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_getVLNVDirectory" "', argument " "5"" of type '" "std::string const &""'"); 
+    }
+    arg5 = ptr;
+  }
+  result = ((PythonAPI const *)arg1)->getVLNVDirectory((std::string const &)*arg2,(std::string const &)*arg3,(std::string const &)*arg4,(std::string const &)*arg5);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  if (SWIG_IsNewObj(res4)) delete arg4;
+  if (SWIG_IsNewObj(res5)) delete arg5;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_getFirstViewName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  std::string result;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getFirstViewName" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  result = (arg1)->getFirstViewName();
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_PythonAPI_openComponent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   PythonAPI *arg1 = (PythonAPI *) 0 ;
@@ -9054,6 +9170,101 @@ fail:
   if (SWIG_IsNewObj(res3)) delete arg3;
   if (SWIG_IsNewObj(res4)) delete arg4;
   if (SWIG_IsNewObj(res5)) delete arg5;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_getFileSetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  FileSetInterface *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_getFileSetInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  result = (FileSetInterface *)(arg1)->getFileSetInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_setFilesForInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setFilesForInterface", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setFilesForInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setFilesForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setFilesForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->setFilesForInterface((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PythonAPI_setFileBuildersForInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PythonAPI *arg1 = (PythonAPI *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "PythonAPI_setFileBuildersForInterface", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_PythonAPI, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PythonAPI_setFileBuildersForInterface" "', argument " "1"" of type '" "PythonAPI *""'"); 
+  }
+  arg1 = reinterpret_cast< PythonAPI * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "PythonAPI_setFileBuildersForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "PythonAPI_setFileBuildersForInterface" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->setFileBuildersForInterface((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
   return NULL;
 }
 
@@ -26088,6 +26299,3348 @@ SWIGINTERN PyObject *ResetInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyO
   return SWIG_Python_InitShadowInstance(args);
 }
 
+SWIGINTERN PyObject *_wrap_new_FileSetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< FileSetValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  FileInterface *arg4 = (FileInterface *) 0 ;
+  FileBuilderInterface *arg5 = (FileBuilderInterface *) 0 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  void *argp4 = 0 ;
+  int res4 = 0 ;
+  void *argp5 = 0 ;
+  int res5 = 0 ;
+  PyObject *swig_obj[5] ;
+  FileSetInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "new_FileSetInterface", 5, 5, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_FileSetValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileSetInterface" "', argument " "1"" of type '" "QSharedPointer< FileSetValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileSetInterface" "', argument " "1"" of type '" "QSharedPointer< FileSetValidator >""'");
+    } else {
+      QSharedPointer< FileSetValidator > * temp = reinterpret_cast< QSharedPointer< FileSetValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_FileSetInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileSetInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_FileSetInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileSetInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  res4 = SWIG_ConvertPtr(swig_obj[3], &argp4,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res4)) {
+    SWIG_exception_fail(SWIG_ArgError(res4), "in method '" "new_FileSetInterface" "', argument " "4"" of type '" "FileInterface *""'"); 
+  }
+  arg4 = reinterpret_cast< FileInterface * >(argp4);
+  res5 = SWIG_ConvertPtr(swig_obj[4], &argp5,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res5)) {
+    SWIG_exception_fail(SWIG_ArgError(res5), "in method '" "new_FileSetInterface" "', argument " "5"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg5 = reinterpret_cast< FileBuilderInterface * >(argp5);
+  result = (FileSetInterface *)new FileSetInterface(arg1,arg2,arg3,arg4,arg5);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FileSetInterface, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_FileSetInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_FileSetInterface" "', argument " "1"" of type '" "FileSetInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_setFileSets(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< QList< QSharedPointer< FileSet > > > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileSetInterface_setFileSets", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_setFileSets" "', argument " "1"" of type '" "FileSetInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_FileSet_t_t_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileSetInterface_setFileSets" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< FileSet > > >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_setFileSets" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< FileSet > > >""'");
+    } else {
+      QSharedPointer< QList< QSharedPointer< FileSet > > > * temp = reinterpret_cast< QSharedPointer< QList< QSharedPointer< FileSet > > > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setFileSets(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_getGroups(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileSetInterface_getGroups", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_getGroups" "', argument " "1"" of type '" "FileSetInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileSetInterface_getGroups" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_getGroups" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileSetInterface const *)arg1)->getGroups((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_setGroups(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileSetInterface_setGroups", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_setGroups" "', argument " "1"" of type '" "FileSetInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileSetInterface_setGroups" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_setGroups" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    res3 = swig::asptr(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileSetInterface_setGroups" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_setGroups" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setGroups((std::string const &)*arg2,(std::vector< std::string,std::allocator< std::string > > const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_getDependencies(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileSetInterface_getDependencies", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_getDependencies" "', argument " "1"" of type '" "FileSetInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileSetInterface_getDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_getDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileSetInterface const *)arg1)->getDependencies((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_setDependencies(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileSetInterface_setDependencies", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_setDependencies" "', argument " "1"" of type '" "FileSetInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileSetInterface_setDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_setDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    res3 = swig::asptr(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileSetInterface_setDependencies" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_setDependencies" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setDependencies((std::string const &)*arg2,(std::vector< std::string,std::allocator< std::string > > const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_addFileSet__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  int *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_addFileSet" "', argument " "1"" of type '" "FileSetInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FileSetInterface_addFileSet" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileSetInterface_addFileSet" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_addFileSet" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  (arg1)->addFileSet((int const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_addFileSet__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_addFileSet" "', argument " "1"" of type '" "FileSetInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FileSetInterface_addFileSet" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  (arg1)->addFileSet((int const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_addFileSet(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "FileSetInterface_addFileSet", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    PyObject *retobj = _wrap_FileSetInterface_addFileSet__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  if (argc == 3) {
+    PyObject *retobj = _wrap_FileSetInterface_addFileSet__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'FileSetInterface_addFileSet'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    FileSetInterface::addFileSet(int const &,std::string const &)\n"
+    "    FileSetInterface::addFileSet(int const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_removeFileSet(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileSetInterface_removeFileSet", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_removeFileSet" "', argument " "1"" of type '" "FileSetInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileSetInterface_removeFileSet" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_removeFileSet" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)(arg1)->removeFileSet((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_getFileInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  FileInterface *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_getFileInterface" "', argument " "1"" of type '" "FileSetInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  result = (FileInterface *)((FileSetInterface const *)arg1)->getFileInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FileInterface, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_getFileBuilderInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  FileBuilderInterface *result = 0 ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_getFileBuilderInterface" "', argument " "1"" of type '" "FileSetInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  result = (FileBuilderInterface *)((FileSetInterface const *)arg1)->getFileBuilderInterface();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_getExpressionsInSelectedFileSets(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileSetInterface_getExpressionsInSelectedFileSets", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_getExpressionsInSelectedFileSets" "', argument " "1"" of type '" "FileSetInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileSetInterface_getExpressionsInSelectedFileSets" "', argument " "2"" of type '" "std::vector< std::string,std::allocator< std::string > >""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = ((FileSetInterface const *)arg1)->getExpressionsInSelectedFileSets(arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileSetInterface_fileSetExists(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileSetInterface *arg1 = (FileSetInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileSetInterface_fileSetExists", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileSetInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileSetInterface_fileSetExists" "', argument " "1"" of type '" "FileSetInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileSetInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileSetInterface_fileSetExists" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileSetInterface_fileSetExists" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((FileSetInterface const *)arg1)->fileSetExists((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *FileSetInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_FileSetInterface, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *FileSetInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  return SWIG_Python_InitShadowInstance(args);
+}
+
+SWIGINTERN PyObject *_wrap_new_FileInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< FileValidator > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg2 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg3 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  void *argp3 ;
+  int res3 = 0 ;
+  PyObject *swig_obj[3] ;
+  FileInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "new_FileInterface", 3, 3, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_FileValidator_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileInterface" "', argument " "1"" of type '" "QSharedPointer< FileValidator >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileInterface" "', argument " "1"" of type '" "QSharedPointer< FileValidator >""'");
+    } else {
+      QSharedPointer< FileValidator > * temp = reinterpret_cast< QSharedPointer< FileValidator > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_FileInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  {
+    res3 = SWIG_ConvertPtr(swig_obj[2], &argp3, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "new_FileInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp3) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileInterface" "', argument " "3"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp3);
+      arg3 = *temp;
+      if (SWIG_IsNewObj(res3)) delete temp;
+    }
+  }
+  result = (FileInterface *)new FileInterface(arg1,arg2,arg3);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FileInterface, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_FileInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_FileInterface" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setFiles(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< QList< QSharedPointer< File > > > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setFiles", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setFiles" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_File_t_t_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setFiles" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< File > > >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setFiles" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< File > > >""'");
+    } else {
+      QSharedPointer< QList< QSharedPointer< File > > > * temp = reinterpret_cast< QSharedPointer< QList< QSharedPointer< File > > > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setFiles(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getExpressionsInSelectedFiles(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getExpressionsInSelectedFiles", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getExpressionsInSelectedFiles" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_getExpressionsInSelectedFiles" "', argument " "2"" of type '" "std::vector< std::string,std::allocator< std::string > >""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = ((FileInterface const *)arg1)->getExpressionsInSelectedFiles(arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addFile__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  int *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addFile" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FileInterface_addFile" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileInterface_addFile" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addFile" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  (arg1)->addFile((int const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addFile__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addFile" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FileInterface_addFile" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  (arg1)->addFile((int const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addFile(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "FileInterface_addFile", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    PyObject *retobj = _wrap_FileInterface_addFile__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  if (argc == 3) {
+    PyObject *retobj = _wrap_FileInterface_addFile__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'FileInterface_addFile'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    FileInterface::addFile(int const &,std::string const &)\n"
+    "    FileInterface::addFile(int const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_removeFile(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_removeFile", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_removeFile" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_removeFile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_removeFile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)(arg1)->removeFile((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_swapFiles(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  int *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_swapFiles", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_swapFiles" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FileInterface_swapFiles" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FileInterface_swapFiles" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  (arg1)->swapFiles((int const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getLogicalName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getLogicalName", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getLogicalName" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getLogicalName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getLogicalName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getLogicalName((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setLogicalName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setLogicalName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setLogicalName" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setLogicalName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setLogicalName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_setLogicalName" "', argument " "3"" of type '" "std::string""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->setLogicalName((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_isLogicalNameDefault(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_isLogicalNameDefault", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_isLogicalNameDefault" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_isLogicalNameDefault" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_isLogicalNameDefault" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((FileInterface const *)arg1)->isLogicalNameDefault((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setLogicalNameDefault(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setLogicalNameDefault", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setLogicalNameDefault" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setLogicalNameDefault" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setLogicalNameDefault" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FileInterface_setLogicalNameDefault" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (bool)(arg1)->setLogicalNameDefault((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_isStructural(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_isStructural", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_isStructural" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_isStructural" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_isStructural" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((FileInterface const *)arg1)->isStructural((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setStructural(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setStructural", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setStructural" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setStructural" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setStructural" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FileInterface_setStructural" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (bool)(arg1)->setStructural((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_isIncludeFile(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_isIncludeFile", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_isIncludeFile" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_isIncludeFile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_isIncludeFile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((FileInterface const *)arg1)->isIncludeFile((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setIncludeFile(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setIncludeFile", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setIncludeFile" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setIncludeFile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setIncludeFile" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FileInterface_setIncludeFile" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (bool)(arg1)->setIncludeFile((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_hasExternalDeclarations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_hasExternalDeclarations", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_hasExternalDeclarations" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_hasExternalDeclarations" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_hasExternalDeclarations" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)((FileInterface const *)arg1)->hasExternalDeclarations((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setExternalDeclarations(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  bool arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  bool val3 ;
+  int ecode3 = 0 ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setExternalDeclarations", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setExternalDeclarations" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setExternalDeclarations" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setExternalDeclarations" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_bool(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FileInterface_setExternalDeclarations" "', argument " "3"" of type '" "bool""'");
+  } 
+  arg3 = static_cast< bool >(val3);
+  result = (bool)(arg1)->setExternalDeclarations((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_clearFileTypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_clearFileTypes", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_clearFileTypes" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_clearFileTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_clearFileTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->clearFileTypes((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setFileTypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setFileTypes", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setFileTypes" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setFileTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setFileTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_setFileTypes" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->setFileTypes((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addFileType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_addFileType", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addFileType" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_addFileType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addFileType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_addFileType" "', argument " "3"" of type '" "std::string const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->addFileType((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addMultipleFileTypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_addMultipleFileTypes", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addMultipleFileTypes" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_addMultipleFileTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addMultipleFileTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_addMultipleFileTypes" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->addMultipleFileTypes((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getDependencies(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getDependencies", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getDependencies" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getDependencies((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_clearDependencies(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_clearDependencies", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_clearDependencies" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_clearDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_clearDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->clearDependencies((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addDependency(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_addDependency", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addDependency" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_addDependency" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addDependency" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_addDependency" "', argument " "3"" of type '" "std::string const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->addDependency((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addMultipleDependencies(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_addMultipleDependencies", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addMultipleDependencies" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_addMultipleDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addMultipleDependencies" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_addMultipleDependencies" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->addMultipleDependencies((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getExportedNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getExportedNames", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getExportedNames" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getExportedNames" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getExportedNames" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getExportedNames((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_clearExportedNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_clearExportedNames", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_clearExportedNames" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_clearExportedNames" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_clearExportedNames" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->clearExportedNames((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addExportedName(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_addExportedName", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addExportedName" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_addExportedName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addExportedName" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_addExportedName" "', argument " "3"" of type '" "std::string const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->addExportedName((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addMultipleExportedNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_addMultipleExportedNames", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addMultipleExportedNames" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_addMultipleExportedNames" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addMultipleExportedNames" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_addMultipleExportedNames" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->addMultipleExportedNames((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getImageTypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getImageTypes", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getImageTypes" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getImageTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getImageTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getImageTypes((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_clearImageTypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_clearImageTypes", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_clearImageTypes" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_clearImageTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_clearImageTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  (arg1)->clearImageTypes((std::string const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addImageType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_addImageType", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addImageType" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_addImageType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addImageType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    int res = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_addImageType" "', argument " "3"" of type '" "std::string const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->addImageType((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_addMultipleImageTypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_addMultipleImageTypes", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_addMultipleImageTypes" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_addMultipleImageTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_addMultipleImageTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileInterface_addMultipleImageTypes" "', argument " "3"" of type '" "std::vector< std::string,std::allocator< std::string > > const""'"); 
+    }
+    arg3 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = (bool)(arg1)->addMultipleImageTypes((std::string const &)*arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getFileTypes(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getFileTypes", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getFileTypes" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getFileTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getFileTypes" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getFileTypes((std::string const &)*arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getBuildCommandText(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getBuildCommandText", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getBuildCommandText" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getBuildCommandText" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getBuildCommandText" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getBuildCommandText((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setBuildCommand(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setBuildCommand", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setBuildCommand" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setBuildCommand" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setBuildCommand" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileInterface_setBuildCommand" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setBuildCommand" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setBuildCommand((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getBuildCommandFlags(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getBuildCommandFlags", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getBuildCommandFlags" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getBuildCommandFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getBuildCommandFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getBuildCommandFlags((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setBuildCommandFlags(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setBuildCommandFlags", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setBuildCommandFlags" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setBuildCommandFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setBuildCommandFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileInterface_setBuildCommandFlags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setBuildCommandFlags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setBuildCommandFlags((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getBuildCommandReplaceDefaultFlagsValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsValue" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((FileInterface const *)arg1)->getBuildCommandReplaceDefaultFlagsValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getBuildCommandReplaceDefaultFlagsValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsValue" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getBuildCommandReplaceDefaultFlagsValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getBuildCommandReplaceDefaultFlagsValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "FileInterface_getBuildCommandReplaceDefaultFlagsValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    PyObject *retobj = _wrap_FileInterface_getBuildCommandReplaceDefaultFlagsValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  if (argc == 3) {
+    PyObject *retobj = _wrap_FileInterface_getBuildCommandReplaceDefaultFlagsValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'FileInterface_getBuildCommandReplaceDefaultFlagsValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    FileInterface::getBuildCommandReplaceDefaultFlagsValue(std::string const &,int const &) const\n"
+    "    FileInterface::getBuildCommandReplaceDefaultFlagsValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getBuildCommandReplaceDefaultFlagsFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getBuildCommandReplaceDefaultFlagsExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getBuildCommandReplaceDefaultFlagsExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsExpression" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getBuildCommandReplaceDefaultFlagsExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getBuildCommandReplaceDefaultFlagsExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setbuildCommandReplaceDefaultFlags(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setbuildCommandReplaceDefaultFlags", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setbuildCommandReplaceDefaultFlags" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setbuildCommandReplaceDefaultFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setbuildCommandReplaceDefaultFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileInterface_setbuildCommandReplaceDefaultFlags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setbuildCommandReplaceDefaultFlags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setbuildCommandReplaceDefaultFlags((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_getBuildCommandTarget(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_getBuildCommandTarget", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_getBuildCommandTarget" "', argument " "1"" of type '" "FileInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_getBuildCommandTarget" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_getBuildCommandTarget" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileInterface const *)arg1)->getBuildCommandTarget((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileInterface_setBuildCommandTarget(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileInterface *arg1 = (FileInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileInterface_setBuildCommandTarget", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileInterface_setBuildCommandTarget" "', argument " "1"" of type '" "FileInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileInterface_setBuildCommandTarget" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setBuildCommandTarget" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileInterface_setBuildCommandTarget" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileInterface_setBuildCommandTarget" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setBuildCommandTarget((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *FileInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_FileInterface, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *FileInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  return SWIG_Python_InitShadowInstance(args);
+}
+
+SWIGINTERN PyObject *_wrap_new_FileBuilderInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SwigValueWrapper< QSharedPointer< ExpressionParser > > arg1 ;
+  SwigValueWrapper< QSharedPointer< ExpressionFormatter > > arg2 ;
+  void *argp1 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  FileBuilderInterface *result = 0 ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "new_FileBuilderInterface", 2, 2, swig_obj)) SWIG_fail;
+  {
+    res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_QSharedPointerT_ExpressionParser_t,  0  | 0);
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_FileBuilderInterface" "', argument " "1"" of type '" "QSharedPointer< ExpressionParser >""'"); 
+    }  
+    if (!argp1) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileBuilderInterface" "', argument " "1"" of type '" "QSharedPointer< ExpressionParser >""'");
+    } else {
+      QSharedPointer< ExpressionParser > * temp = reinterpret_cast< QSharedPointer< ExpressionParser > * >(argp1);
+      arg1 = *temp;
+      if (SWIG_IsNewObj(res1)) delete temp;
+    }
+  }
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_ExpressionFormatter_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "new_FileBuilderInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "new_FileBuilderInterface" "', argument " "2"" of type '" "QSharedPointer< ExpressionFormatter >""'");
+    } else {
+      QSharedPointer< ExpressionFormatter > * temp = reinterpret_cast< QSharedPointer< ExpressionFormatter > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  result = (FileBuilderInterface *)new FileBuilderInterface(arg1,arg2);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_FileBuilderInterface, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_FileBuilderInterface(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[1] ;
+  
+  if (!args) SWIG_fail;
+  swig_obj[0] = args;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_FileBuilderInterface" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_setFileBuilders(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  SwigValueWrapper< QSharedPointer< QList< QSharedPointer< FileBuilder > > > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_setFileBuilders", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_setFileBuilders" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_QSharedPointerT_QListT_QSharedPointerT_FileBuilder_t_t_t,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_setFileBuilders" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< FileBuilder > > >""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setFileBuilders" "', argument " "2"" of type '" "QSharedPointer< QList< QSharedPointer< FileBuilder > > >""'");
+    } else {
+      QSharedPointer< QList< QSharedPointer< FileBuilder > > > * temp = reinterpret_cast< QSharedPointer< QList< QSharedPointer< FileBuilder > > > * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  (arg1)->setFileBuilders(arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getExpressionsInSelectedFileBuilders(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::vector< std::string,std::allocator< std::string > > arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::vector< std::string,std::allocator< std::string > > result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_getExpressionsInSelectedFileBuilders", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_getExpressionsInSelectedFileBuilders" "', argument " "1"" of type '" "FileBuilderInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::vector< std::string,std::allocator< std::string > > *ptr = (std::vector< std::string,std::allocator< std::string > > *)0;
+    int res = swig::asptr(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res) || !ptr) {
+      SWIG_exception_fail(SWIG_ArgError((ptr ? res : SWIG_TypeError)), "in method '" "FileBuilderInterface_getExpressionsInSelectedFileBuilders" "', argument " "2"" of type '" "std::vector< std::string,std::allocator< std::string > >""'"); 
+    }
+    arg2 = *ptr;
+    if (SWIG_IsNewObj(res)) delete ptr;
+  }
+  result = ((FileBuilderInterface const *)arg1)->getExpressionsInSelectedFileBuilders(arg2);
+  resultobj = swig::from(static_cast< std::vector< std::string,std::allocator< std::string > > >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_addFileBuilder__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  int *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int res3 = SWIG_OLDOBJ ;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_addFileBuilder" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FileBuilderInterface_addFileBuilder" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileBuilderInterface_addFileBuilder" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_addFileBuilder" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  (arg1)->addFileBuilder((int const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_Py_Void();
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_addFileBuilder__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_addFileBuilder" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FileBuilderInterface_addFileBuilder" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  (arg1)->addFileBuilder((int const &)*arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_addFileBuilder(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "FileBuilderInterface_addFileBuilder", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    PyObject *retobj = _wrap_FileBuilderInterface_addFileBuilder__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  if (argc == 3) {
+    PyObject *retobj = _wrap_FileBuilderInterface_addFileBuilder__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'FileBuilderInterface_addFileBuilder'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    FileBuilderInterface::addFileBuilder(int const &,std::string const &)\n"
+    "    FileBuilderInterface::addFileBuilder(int const &)\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_removeFileBuilder(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_removeFileBuilder", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_removeFileBuilder" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_removeFileBuilder" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_removeFileBuilder" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = (bool)(arg1)->removeFileBuilder((std::string const &)*arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getIndexedFileType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  int *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int temp2 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_getIndexedFileType", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_getIndexedFileType" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  ecode2 = SWIG_AsVal_int(swig_obj[1], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FileBuilderInterface_getIndexedFileType" "', argument " "2"" of type '" "int""'");
+  } 
+  temp2 = static_cast< int >(val2);
+  arg2 = &temp2;
+  result = (arg1)->getIndexedFileType((int const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_setFileType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_setFileType", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_setFileType" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_setFileType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setFileType" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileBuilderInterface_setFileType" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setFileType" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setFileType((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getCommand(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_getCommand", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_getCommand" "', argument " "1"" of type '" "FileBuilderInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_getCommand" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_getCommand" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileBuilderInterface const *)arg1)->getCommand((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_setCommand(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_setCommand", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_setCommand" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_setCommand" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setCommand" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileBuilderInterface_setCommand" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setCommand" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setCommand((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getFlags(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_getFlags", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_getFlags" "', argument " "1"" of type '" "FileBuilderInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_getFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_getFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileBuilderInterface const *)arg1)->getFlags((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_setFlags(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_setFlags", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_setFlags" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_setFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileBuilderInterface_setFlags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setFlags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setFlags((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getReplaceDefaultFlagsValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  int *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int temp3 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  std::string result;
+  
+  if ((nobjs < 3) || (nobjs > 3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsValue" "', argument " "1"" of type '" "FileBuilderInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_getReplaceDefaultFlagsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  ecode3 = SWIG_AsVal_int(swig_obj[2], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsValue" "', argument " "3"" of type '" "int""'");
+  } 
+  temp3 = static_cast< int >(val3);
+  arg3 = &temp3;
+  result = ((FileBuilderInterface const *)arg1)->getReplaceDefaultFlagsValue((std::string const &)*arg2,(int const &)*arg3);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getReplaceDefaultFlagsValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), Py_ssize_t nobjs, PyObject **swig_obj) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  std::string result;
+  
+  if ((nobjs < 2) || (nobjs > 2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsValue" "', argument " "1"" of type '" "FileBuilderInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_getReplaceDefaultFlagsValue" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileBuilderInterface const *)arg1)->getReplaceDefaultFlagsValue((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getReplaceDefaultFlagsValue(PyObject *self, PyObject *args) {
+  Py_ssize_t argc;
+  PyObject *argv[4] = {
+    0
+  };
+  
+  if (!(argc = SWIG_Python_UnpackTuple(args, "FileBuilderInterface_getReplaceDefaultFlagsValue", 0, 3, argv))) SWIG_fail;
+  --argc;
+  if (argc == 2) {
+    PyObject *retobj = _wrap_FileBuilderInterface_getReplaceDefaultFlagsValue__SWIG_1(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  if (argc == 3) {
+    PyObject *retobj = _wrap_FileBuilderInterface_getReplaceDefaultFlagsValue__SWIG_0(self, argc, argv);
+    if (!SWIG_Python_TypeErrorOccurred(retobj)) return retobj;
+    SWIG_fail;
+  }
+  
+fail:
+  SWIG_Python_RaiseOrModifyTypeError("Wrong number or type of arguments for overloaded function 'FileBuilderInterface_getReplaceDefaultFlagsValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    FileBuilderInterface::getReplaceDefaultFlagsValue(std::string const &,int const &) const\n"
+    "    FileBuilderInterface::getReplaceDefaultFlagsValue(std::string const &) const\n");
+  return 0;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression" "', argument " "1"" of type '" "FileBuilderInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileBuilderInterface const *)arg1)->getReplaceDefaultFlagsFormattedExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_getReplaceDefaultFlagsExpression(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[2] ;
+  std::string result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_getReplaceDefaultFlagsExpression", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsExpression" "', argument " "1"" of type '" "FileBuilderInterface const *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_getReplaceDefaultFlagsExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_getReplaceDefaultFlagsExpression" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  result = ((FileBuilderInterface const *)arg1)->getReplaceDefaultFlagsExpression((std::string const &)*arg2);
+  resultobj = SWIG_From_std_string(static_cast< std::string >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_FileBuilderInterface_setReplaceDefaultFlags(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  FileBuilderInterface *arg1 = (FileBuilderInterface *) 0 ;
+  std::string *arg2 = 0 ;
+  std::string *arg3 = 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 = SWIG_OLDOBJ ;
+  int res3 = SWIG_OLDOBJ ;
+  PyObject *swig_obj[3] ;
+  bool result;
+  
+  if (!SWIG_Python_UnpackTuple(args, "FileBuilderInterface_setReplaceDefaultFlags", 3, 3, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1,SWIGTYPE_p_FileBuilderInterface, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "FileBuilderInterface_setReplaceDefaultFlags" "', argument " "1"" of type '" "FileBuilderInterface *""'"); 
+  }
+  arg1 = reinterpret_cast< FileBuilderInterface * >(argp1);
+  {
+    std::string *ptr = (std::string *)0;
+    res2 = SWIG_AsPtr_std_string(swig_obj[1], &ptr);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "FileBuilderInterface_setReplaceDefaultFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setReplaceDefaultFlags" "', argument " "2"" of type '" "std::string const &""'"); 
+    }
+    arg2 = ptr;
+  }
+  {
+    std::string *ptr = (std::string *)0;
+    res3 = SWIG_AsPtr_std_string(swig_obj[2], &ptr);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "FileBuilderInterface_setReplaceDefaultFlags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    if (!ptr) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "FileBuilderInterface_setReplaceDefaultFlags" "', argument " "3"" of type '" "std::string const &""'"); 
+    }
+    arg3 = ptr;
+  }
+  result = (bool)(arg1)->setReplaceDefaultFlags((std::string const &)*arg2,(std::string const &)*arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return resultobj;
+fail:
+  if (SWIG_IsNewObj(res2)) delete arg2;
+  if (SWIG_IsNewObj(res3)) delete arg3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *FileBuilderInterface_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!SWIG_Python_UnpackTuple(args, "swigregister", 1, 1, &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_FileBuilderInterface, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *FileBuilderInterface_swiginit(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  return SWIG_Python_InitShadowInstance(args);
+}
+
 static PyMethodDef SwigMethods[] = {
 	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
 	 { "SWIG_PyStaticMethod_New", SWIG_PyStaticMethod_New, METH_O, NULL},
@@ -26529,6 +30082,18 @@ static PyMethodDef SwigMethods[] = {
 		"version: std::string const &\n"
 		"\n"
 		""},
+	 { "PythonAPI_getVLNVDirectory", _wrap_PythonAPI_getVLNVDirectory, METH_VARARGS, "\n"
+		"PythonAPI_getVLNVDirectory(PythonAPI self, std::string const & vendor, std::string const & library, std::string const & name, std::string const & version) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"vendor: std::string const &\n"
+		"library: std::string const &\n"
+		"name: std::string const &\n"
+		"version: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_getFirstViewName", _wrap_PythonAPI_getFirstViewName, METH_O, "PythonAPI_getFirstViewName(PythonAPI self) -> std::string"},
 	 { "PythonAPI_openComponent", _wrap_PythonAPI_openComponent, METH_VARARGS, "\n"
 		"PythonAPI_openComponent(PythonAPI self, std::string const & vlnvString) -> bool\n"
 		"\n"
@@ -26580,6 +30145,23 @@ static PyMethodDef SwigMethods[] = {
 		"blockName: std::string const &\n"
 		"registerName: std::string const &\n"
 		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_getFileSetInterface", _wrap_PythonAPI_getFileSetInterface, METH_O, "PythonAPI_getFileSetInterface(PythonAPI self) -> FileSetInterface"},
+	 { "PythonAPI_setFilesForInterface", _wrap_PythonAPI_setFilesForInterface, METH_VARARGS, "\n"
+		"PythonAPI_setFilesForInterface(PythonAPI self, std::string const & setName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"setName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_setFileBuildersForInterface", _wrap_PythonAPI_setFileBuildersForInterface, METH_VARARGS, "\n"
+		"PythonAPI_setFileBuildersForInterface(PythonAPI self, std::string const & setName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"setName: std::string const &\n"
 		"\n"
 		""},
 	 { "PythonAPI_swigregister", PythonAPI_swigregister, METH_O, NULL},
@@ -29301,6 +32883,598 @@ static PyMethodDef SwigMethods[] = {
 		""},
 	 { "ResetInterface_swigregister", ResetInterface_swigregister, METH_O, NULL},
 	 { "ResetInterface_swiginit", ResetInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_FileSetInterface", _wrap_new_FileSetInterface, METH_VARARGS, "\n"
+		"new_FileSetInterface(QSharedPointer< FileSetValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, FileInterface fileInterface, FileBuilderInterface fileBuilderInterface) -> FileSetInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< FileSetValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"fileInterface: FileInterface *\n"
+		"fileBuilderInterface: FileBuilderInterface *\n"
+		"\n"
+		""},
+	 { "delete_FileSetInterface", _wrap_delete_FileSetInterface, METH_O, "delete_FileSetInterface(FileSetInterface self)"},
+	 { "FileSetInterface_setFileSets", _wrap_FileSetInterface_setFileSets, METH_VARARGS, "\n"
+		"FileSetInterface_setFileSets(FileSetInterface self, QSharedPointer< QList< QSharedPointer< FileSet > > > newFileSets)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newFileSets: QSharedPointer< QList< QSharedPointer< FileSet > > >\n"
+		"\n"
+		""},
+	 { "FileSetInterface_getGroups", _wrap_FileSetInterface_getGroups, METH_VARARGS, "\n"
+		"FileSetInterface_getGroups(FileSetInterface self, std::string const & fileSetName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_setGroups", _wrap_FileSetInterface_setGroups, METH_VARARGS, "\n"
+		"FileSetInterface_setGroups(FileSetInterface self, std::string const & fileSetName, stringVector newGroups) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"newGroups: std::vector< std::string,std::allocator< std::string > > const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_getDependencies", _wrap_FileSetInterface_getDependencies, METH_VARARGS, "\n"
+		"FileSetInterface_getDependencies(FileSetInterface self, std::string const & fileSetName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_setDependencies", _wrap_FileSetInterface_setDependencies, METH_VARARGS, "\n"
+		"FileSetInterface_setDependencies(FileSetInterface self, std::string const & fileSetName, stringVector newDependencies) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"newDependencies: std::vector< std::string,std::allocator< std::string > > const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_addFileSet", _wrap_FileSetInterface_addFileSet, METH_VARARGS, "\n"
+		"FileSetInterface_addFileSet(FileSetInterface self, int const & row, std::string const & newFileSetName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newFileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_removeFileSet", _wrap_FileSetInterface_removeFileSet, METH_VARARGS, "\n"
+		"FileSetInterface_removeFileSet(FileSetInterface self, std::string const & fileSetName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_getFileInterface", _wrap_FileSetInterface_getFileInterface, METH_O, "FileSetInterface_getFileInterface(FileSetInterface self) -> FileInterface"},
+	 { "FileSetInterface_getFileBuilderInterface", _wrap_FileSetInterface_getFileBuilderInterface, METH_O, "FileSetInterface_getFileBuilderInterface(FileSetInterface self) -> FileBuilderInterface"},
+	 { "FileSetInterface_getExpressionsInSelectedFileSets", _wrap_FileSetInterface_getExpressionsInSelectedFileSets, METH_VARARGS, "\n"
+		"FileSetInterface_getExpressionsInSelectedFileSets(FileSetInterface self, stringVector fileSetNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "FileSetInterface_fileSetExists", _wrap_FileSetInterface_fileSetExists, METH_VARARGS, "\n"
+		"FileSetInterface_fileSetExists(FileSetInterface self, std::string const & fileSetName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_swigregister", FileSetInterface_swigregister, METH_O, NULL},
+	 { "FileSetInterface_swiginit", FileSetInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_FileInterface", _wrap_new_FileInterface, METH_VARARGS, "\n"
+		"new_FileInterface(QSharedPointer< FileValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> FileInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< FileValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_FileInterface", _wrap_delete_FileInterface, METH_O, "delete_FileInterface(FileInterface self)"},
+	 { "FileInterface_setFiles", _wrap_FileInterface_setFiles, METH_VARARGS, "\n"
+		"FileInterface_setFiles(FileInterface self, QSharedPointer< QList< QSharedPointer< File > > > newFiles)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newFiles: QSharedPointer< QList< QSharedPointer< File > > >\n"
+		"\n"
+		""},
+	 { "FileInterface_getExpressionsInSelectedFiles", _wrap_FileInterface_getExpressionsInSelectedFiles, METH_VARARGS, "\n"
+		"FileInterface_getExpressionsInSelectedFiles(FileInterface self, stringVector fileNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "FileInterface_addFile", _wrap_FileInterface_addFile, METH_VARARGS, "\n"
+		"FileInterface_addFile(FileInterface self, int const & row, std::string const & newFileName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newFileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_removeFile", _wrap_FileInterface_removeFile, METH_VARARGS, "\n"
+		"FileInterface_removeFile(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_swapFiles", _wrap_FileInterface_swapFiles, METH_VARARGS, "\n"
+		"FileInterface_swapFiles(FileInterface self, int const & firstIndex, int const & secondIndex)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"firstIndex: int const &\n"
+		"secondIndex: int const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getLogicalName", _wrap_FileInterface_getLogicalName, METH_VARARGS, "\n"
+		"FileInterface_getLogicalName(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setLogicalName", _wrap_FileInterface_setLogicalName, METH_VARARGS, "\n"
+		"FileInterface_setLogicalName(FileInterface self, std::string const & fileName, std::string newLogicalName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newLogicalName: std::string\n"
+		"\n"
+		""},
+	 { "FileInterface_isLogicalNameDefault", _wrap_FileInterface_isLogicalNameDefault, METH_VARARGS, "\n"
+		"FileInterface_isLogicalNameDefault(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setLogicalNameDefault", _wrap_FileInterface_setLogicalNameDefault, METH_VARARGS, "\n"
+		"FileInterface_setLogicalNameDefault(FileInterface self, std::string const & fileName, bool newLogicalDefault) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newLogicalDefault: bool\n"
+		"\n"
+		""},
+	 { "FileInterface_isStructural", _wrap_FileInterface_isStructural, METH_VARARGS, "\n"
+		"FileInterface_isStructural(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setStructural", _wrap_FileInterface_setStructural, METH_VARARGS, "\n"
+		"FileInterface_setStructural(FileInterface self, std::string const & fileName, bool structuralStatus) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"structuralStatus: bool\n"
+		"\n"
+		""},
+	 { "FileInterface_isIncludeFile", _wrap_FileInterface_isIncludeFile, METH_VARARGS, "\n"
+		"FileInterface_isIncludeFile(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setIncludeFile", _wrap_FileInterface_setIncludeFile, METH_VARARGS, "\n"
+		"FileInterface_setIncludeFile(FileInterface self, std::string const & fileName, bool includeFileStatus) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"includeFileStatus: bool\n"
+		"\n"
+		""},
+	 { "FileInterface_hasExternalDeclarations", _wrap_FileInterface_hasExternalDeclarations, METH_VARARGS, "\n"
+		"FileInterface_hasExternalDeclarations(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setExternalDeclarations", _wrap_FileInterface_setExternalDeclarations, METH_VARARGS, "\n"
+		"FileInterface_setExternalDeclarations(FileInterface self, std::string const & fileName, bool externalDeclarationsStatus) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"externalDeclarationsStatus: bool\n"
+		"\n"
+		""},
+	 { "FileInterface_clearFileTypes", _wrap_FileInterface_clearFileTypes, METH_VARARGS, "\n"
+		"FileInterface_clearFileTypes(FileInterface self, std::string const & fileName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setFileTypes", _wrap_FileInterface_setFileTypes, METH_VARARGS, "\n"
+		"FileInterface_setFileTypes(FileInterface self, std::string const & fileName, stringVector newFileTypes) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newFileTypes: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_addFileType", _wrap_FileInterface_addFileType, METH_VARARGS, "\n"
+		"FileInterface_addFileType(FileInterface self, std::string const & fileName, std::string const newFileType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newFileType: std::string const\n"
+		"\n"
+		""},
+	 { "FileInterface_addMultipleFileTypes", _wrap_FileInterface_addMultipleFileTypes, METH_VARARGS, "\n"
+		"FileInterface_addMultipleFileTypes(FileInterface self, std::string const & fileName, stringVector newFileTypes) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newFileTypes: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_getDependencies", _wrap_FileInterface_getDependencies, METH_VARARGS, "\n"
+		"FileInterface_getDependencies(FileInterface self, std::string const & fileName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_clearDependencies", _wrap_FileInterface_clearDependencies, METH_VARARGS, "\n"
+		"FileInterface_clearDependencies(FileInterface self, std::string const & fileName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_addDependency", _wrap_FileInterface_addDependency, METH_VARARGS, "\n"
+		"FileInterface_addDependency(FileInterface self, std::string const & fileName, std::string const newDependency) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newDependency: std::string const\n"
+		"\n"
+		""},
+	 { "FileInterface_addMultipleDependencies", _wrap_FileInterface_addMultipleDependencies, METH_VARARGS, "\n"
+		"FileInterface_addMultipleDependencies(FileInterface self, std::string const & fileName, stringVector newDependencies) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newDependencies: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_getExportedNames", _wrap_FileInterface_getExportedNames, METH_VARARGS, "\n"
+		"FileInterface_getExportedNames(FileInterface self, std::string const & fileName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_clearExportedNames", _wrap_FileInterface_clearExportedNames, METH_VARARGS, "\n"
+		"FileInterface_clearExportedNames(FileInterface self, std::string const & fileName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_addExportedName", _wrap_FileInterface_addExportedName, METH_VARARGS, "\n"
+		"FileInterface_addExportedName(FileInterface self, std::string const & fileName, std::string const newExportedName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newExportedName: std::string const\n"
+		"\n"
+		""},
+	 { "FileInterface_addMultipleExportedNames", _wrap_FileInterface_addMultipleExportedNames, METH_VARARGS, "\n"
+		"FileInterface_addMultipleExportedNames(FileInterface self, std::string const & fileName, stringVector newExportedNames) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newExportedNames: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_getImageTypes", _wrap_FileInterface_getImageTypes, METH_VARARGS, "\n"
+		"FileInterface_getImageTypes(FileInterface self, std::string const & fileName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_clearImageTypes", _wrap_FileInterface_clearImageTypes, METH_VARARGS, "\n"
+		"FileInterface_clearImageTypes(FileInterface self, std::string const & fileName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_addImageType", _wrap_FileInterface_addImageType, METH_VARARGS, "\n"
+		"FileInterface_addImageType(FileInterface self, std::string const & fileName, std::string const newImageType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newImageType: std::string const\n"
+		"\n"
+		""},
+	 { "FileInterface_addMultipleImageTypes", _wrap_FileInterface_addMultipleImageTypes, METH_VARARGS, "\n"
+		"FileInterface_addMultipleImageTypes(FileInterface self, std::string const & fileName, stringVector newImageTypes) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newImageTypes: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_getFileTypes", _wrap_FileInterface_getFileTypes, METH_VARARGS, "\n"
+		"FileInterface_getFileTypes(FileInterface self, std::string const & fileName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandText", _wrap_FileInterface_getBuildCommandText, METH_VARARGS, "\n"
+		"FileInterface_getBuildCommandText(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setBuildCommand", _wrap_FileInterface_setBuildCommand, METH_VARARGS, "\n"
+		"FileInterface_setBuildCommand(FileInterface self, std::string const & fileName, std::string const & newBuildCommand) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newBuildCommand: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandFlags", _wrap_FileInterface_getBuildCommandFlags, METH_VARARGS, "\n"
+		"FileInterface_getBuildCommandFlags(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setBuildCommandFlags", _wrap_FileInterface_setBuildCommandFlags, METH_VARARGS, "\n"
+		"FileInterface_setBuildCommandFlags(FileInterface self, std::string const & fileName, std::string const & newFlags) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newFlags: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandReplaceDefaultFlagsValue", _wrap_FileInterface_getBuildCommandReplaceDefaultFlagsValue, METH_VARARGS, "\n"
+		"FileInterface_getBuildCommandReplaceDefaultFlagsValue(FileInterface self, std::string const & fileName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression", _wrap_FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression, METH_VARARGS, "\n"
+		"FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandReplaceDefaultFlagsExpression", _wrap_FileInterface_getBuildCommandReplaceDefaultFlagsExpression, METH_VARARGS, "\n"
+		"FileInterface_getBuildCommandReplaceDefaultFlagsExpression(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setbuildCommandReplaceDefaultFlags", _wrap_FileInterface_setbuildCommandReplaceDefaultFlags, METH_VARARGS, "\n"
+		"FileInterface_setbuildCommandReplaceDefaultFlags(FileInterface self, std::string const & fileName, std::string const & newReplaceDefaultFlags) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newReplaceDefaultFlags: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandTarget", _wrap_FileInterface_getBuildCommandTarget, METH_VARARGS, "\n"
+		"FileInterface_getBuildCommandTarget(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setBuildCommandTarget", _wrap_FileInterface_setBuildCommandTarget, METH_VARARGS, "\n"
+		"FileInterface_setBuildCommandTarget(FileInterface self, std::string const & fileName, std::string const & newTarget) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newTarget: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_swigregister", FileInterface_swigregister, METH_O, NULL},
+	 { "FileInterface_swiginit", FileInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_FileBuilderInterface", _wrap_new_FileBuilderInterface, METH_VARARGS, "\n"
+		"new_FileBuilderInterface(QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> FileBuilderInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_FileBuilderInterface", _wrap_delete_FileBuilderInterface, METH_O, "delete_FileBuilderInterface(FileBuilderInterface self)"},
+	 { "FileBuilderInterface_setFileBuilders", _wrap_FileBuilderInterface_setFileBuilders, METH_VARARGS, "\n"
+		"FileBuilderInterface_setFileBuilders(FileBuilderInterface self, QSharedPointer< QList< QSharedPointer< FileBuilder > > > newFileBuilders)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newFileBuilders: QSharedPointer< QList< QSharedPointer< FileBuilder > > >\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getExpressionsInSelectedFileBuilders", _wrap_FileBuilderInterface_getExpressionsInSelectedFileBuilders, METH_VARARGS, "\n"
+		"FileBuilderInterface_getExpressionsInSelectedFileBuilders(FileBuilderInterface self, stringVector fileBuilderNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileBuilderNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_addFileBuilder", _wrap_FileBuilderInterface_addFileBuilder, METH_VARARGS, "\n"
+		"FileBuilderInterface_addFileBuilder(FileBuilderInterface self, int const & row, std::string const & newFileBuilderName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newFileBuilderName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_removeFileBuilder", _wrap_FileBuilderInterface_removeFileBuilder, METH_VARARGS, "\n"
+		"FileBuilderInterface_removeFileBuilder(FileBuilderInterface self, std::string const & fileBuilderName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileBuilderName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getIndexedFileType", _wrap_FileBuilderInterface_getIndexedFileType, METH_VARARGS, "\n"
+		"FileBuilderInterface_getIndexedFileType(FileBuilderInterface self, int const & itemIndex) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemIndex: int const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_setFileType", _wrap_FileBuilderInterface_setFileType, METH_VARARGS, "\n"
+		"FileBuilderInterface_setFileType(FileBuilderInterface self, std::string const & currentFileType, std::string const & newFileType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"currentFileType: std::string const &\n"
+		"newFileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getCommand", _wrap_FileBuilderInterface_getCommand, METH_VARARGS, "\n"
+		"FileBuilderInterface_getCommand(FileBuilderInterface self, std::string const & fileType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_setCommand", _wrap_FileBuilderInterface_setCommand, METH_VARARGS, "\n"
+		"FileBuilderInterface_setCommand(FileBuilderInterface self, std::string const & fileType, std::string const & newCommand) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"newCommand: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getFlags", _wrap_FileBuilderInterface_getFlags, METH_VARARGS, "\n"
+		"FileBuilderInterface_getFlags(FileBuilderInterface self, std::string const & fileType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_setFlags", _wrap_FileBuilderInterface_setFlags, METH_VARARGS, "\n"
+		"FileBuilderInterface_setFlags(FileBuilderInterface self, std::string const & fileType, std::string const & newFlags) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"newFlags: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getReplaceDefaultFlagsValue", _wrap_FileBuilderInterface_getReplaceDefaultFlagsValue, METH_VARARGS, "\n"
+		"FileBuilderInterface_getReplaceDefaultFlagsValue(FileBuilderInterface self, std::string const & fileType, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression", _wrap_FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression, METH_VARARGS, "\n"
+		"FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression(FileBuilderInterface self, std::string const & fileType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getReplaceDefaultFlagsExpression", _wrap_FileBuilderInterface_getReplaceDefaultFlagsExpression, METH_VARARGS, "\n"
+		"FileBuilderInterface_getReplaceDefaultFlagsExpression(FileBuilderInterface self, std::string const & fileType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_setReplaceDefaultFlags", _wrap_FileBuilderInterface_setReplaceDefaultFlags, METH_VARARGS, "\n"
+		"FileBuilderInterface_setReplaceDefaultFlags(FileBuilderInterface self, std::string const & filetype, std::string const & newReplaceDefaultFlags) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"filetype: std::string const &\n"
+		"newReplaceDefaultFlags: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_swigregister", FileBuilderInterface_swigregister, METH_O, NULL},
+	 { "FileBuilderInterface_swiginit", FileBuilderInterface_swiginit, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -29745,6 +33919,18 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 		"version: std::string const &\n"
 		"\n"
 		""},
+	 { "PythonAPI_getVLNVDirectory", _wrap_PythonAPI_getVLNVDirectory, METH_VARARGS, "\n"
+		"getVLNVDirectory(PythonAPI self, std::string const & vendor, std::string const & library, std::string const & name, std::string const & version) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"vendor: std::string const &\n"
+		"library: std::string const &\n"
+		"name: std::string const &\n"
+		"version: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_getFirstViewName", _wrap_PythonAPI_getFirstViewName, METH_O, "getFirstViewName(PythonAPI self) -> std::string"},
 	 { "PythonAPI_openComponent", _wrap_PythonAPI_openComponent, METH_VARARGS, "\n"
 		"openComponent(PythonAPI self, std::string const & vlnvString) -> bool\n"
 		"\n"
@@ -29796,6 +33982,23 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 		"blockName: std::string const &\n"
 		"registerName: std::string const &\n"
 		"fieldName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_getFileSetInterface", _wrap_PythonAPI_getFileSetInterface, METH_O, "getFileSetInterface(PythonAPI self) -> FileSetInterface"},
+	 { "PythonAPI_setFilesForInterface", _wrap_PythonAPI_setFilesForInterface, METH_VARARGS, "\n"
+		"setFilesForInterface(PythonAPI self, std::string const & setName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"setName: std::string const &\n"
+		"\n"
+		""},
+	 { "PythonAPI_setFileBuildersForInterface", _wrap_PythonAPI_setFileBuildersForInterface, METH_VARARGS, "\n"
+		"setFileBuildersForInterface(PythonAPI self, std::string const & setName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"setName: std::string const &\n"
 		"\n"
 		""},
 	 { "PythonAPI_swigregister", PythonAPI_swigregister, METH_O, NULL},
@@ -32517,6 +36720,598 @@ static PyMethodDef SwigMethods_proxydocs[] = {
 		""},
 	 { "ResetInterface_swigregister", ResetInterface_swigregister, METH_O, NULL},
 	 { "ResetInterface_swiginit", ResetInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_FileSetInterface", _wrap_new_FileSetInterface, METH_VARARGS, "\n"
+		"new_FileSetInterface(QSharedPointer< FileSetValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, FileInterface fileInterface, FileBuilderInterface fileBuilderInterface) -> FileSetInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< FileSetValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"fileInterface: FileInterface *\n"
+		"fileBuilderInterface: FileBuilderInterface *\n"
+		"\n"
+		""},
+	 { "delete_FileSetInterface", _wrap_delete_FileSetInterface, METH_O, "delete_FileSetInterface(FileSetInterface self)"},
+	 { "FileSetInterface_setFileSets", _wrap_FileSetInterface_setFileSets, METH_VARARGS, "\n"
+		"setFileSets(FileSetInterface self, QSharedPointer< QList< QSharedPointer< FileSet > > > newFileSets)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newFileSets: QSharedPointer< QList< QSharedPointer< FileSet > > >\n"
+		"\n"
+		""},
+	 { "FileSetInterface_getGroups", _wrap_FileSetInterface_getGroups, METH_VARARGS, "\n"
+		"getGroups(FileSetInterface self, std::string const & fileSetName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_setGroups", _wrap_FileSetInterface_setGroups, METH_VARARGS, "\n"
+		"setGroups(FileSetInterface self, std::string const & fileSetName, stringVector newGroups) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"newGroups: std::vector< std::string,std::allocator< std::string > > const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_getDependencies", _wrap_FileSetInterface_getDependencies, METH_VARARGS, "\n"
+		"getDependencies(FileSetInterface self, std::string const & fileSetName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_setDependencies", _wrap_FileSetInterface_setDependencies, METH_VARARGS, "\n"
+		"setDependencies(FileSetInterface self, std::string const & fileSetName, stringVector newDependencies) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"newDependencies: std::vector< std::string,std::allocator< std::string > > const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_addFileSet", _wrap_FileSetInterface_addFileSet, METH_VARARGS, "\n"
+		"addFileSet(FileSetInterface self, int const & row, std::string const & newFileSetName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newFileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_removeFileSet", _wrap_FileSetInterface_removeFileSet, METH_VARARGS, "\n"
+		"removeFileSet(FileSetInterface self, std::string const & fileSetName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_getFileInterface", _wrap_FileSetInterface_getFileInterface, METH_O, "getFileInterface(FileSetInterface self) -> FileInterface"},
+	 { "FileSetInterface_getFileBuilderInterface", _wrap_FileSetInterface_getFileBuilderInterface, METH_O, "getFileBuilderInterface(FileSetInterface self) -> FileBuilderInterface"},
+	 { "FileSetInterface_getExpressionsInSelectedFileSets", _wrap_FileSetInterface_getExpressionsInSelectedFileSets, METH_VARARGS, "\n"
+		"getExpressionsInSelectedFileSets(FileSetInterface self, stringVector fileSetNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "FileSetInterface_fileSetExists", _wrap_FileSetInterface_fileSetExists, METH_VARARGS, "\n"
+		"fileSetExists(FileSetInterface self, std::string const & fileSetName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileSetName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileSetInterface_swigregister", FileSetInterface_swigregister, METH_O, NULL},
+	 { "FileSetInterface_swiginit", FileSetInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_FileInterface", _wrap_new_FileInterface, METH_VARARGS, "\n"
+		"new_FileInterface(QSharedPointer< FileValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> FileInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"validator: QSharedPointer< FileValidator >\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_FileInterface", _wrap_delete_FileInterface, METH_O, "delete_FileInterface(FileInterface self)"},
+	 { "FileInterface_setFiles", _wrap_FileInterface_setFiles, METH_VARARGS, "\n"
+		"setFiles(FileInterface self, QSharedPointer< QList< QSharedPointer< File > > > newFiles)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newFiles: QSharedPointer< QList< QSharedPointer< File > > >\n"
+		"\n"
+		""},
+	 { "FileInterface_getExpressionsInSelectedFiles", _wrap_FileInterface_getExpressionsInSelectedFiles, METH_VARARGS, "\n"
+		"getExpressionsInSelectedFiles(FileInterface self, stringVector fileNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "FileInterface_addFile", _wrap_FileInterface_addFile, METH_VARARGS, "\n"
+		"addFile(FileInterface self, int const & row, std::string const & newFileName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newFileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_removeFile", _wrap_FileInterface_removeFile, METH_VARARGS, "\n"
+		"removeFile(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_swapFiles", _wrap_FileInterface_swapFiles, METH_VARARGS, "\n"
+		"swapFiles(FileInterface self, int const & firstIndex, int const & secondIndex)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"firstIndex: int const &\n"
+		"secondIndex: int const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getLogicalName", _wrap_FileInterface_getLogicalName, METH_VARARGS, "\n"
+		"getLogicalName(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setLogicalName", _wrap_FileInterface_setLogicalName, METH_VARARGS, "\n"
+		"setLogicalName(FileInterface self, std::string const & fileName, std::string newLogicalName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newLogicalName: std::string\n"
+		"\n"
+		""},
+	 { "FileInterface_isLogicalNameDefault", _wrap_FileInterface_isLogicalNameDefault, METH_VARARGS, "\n"
+		"isLogicalNameDefault(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setLogicalNameDefault", _wrap_FileInterface_setLogicalNameDefault, METH_VARARGS, "\n"
+		"setLogicalNameDefault(FileInterface self, std::string const & fileName, bool newLogicalDefault) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newLogicalDefault: bool\n"
+		"\n"
+		""},
+	 { "FileInterface_isStructural", _wrap_FileInterface_isStructural, METH_VARARGS, "\n"
+		"isStructural(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setStructural", _wrap_FileInterface_setStructural, METH_VARARGS, "\n"
+		"setStructural(FileInterface self, std::string const & fileName, bool structuralStatus) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"structuralStatus: bool\n"
+		"\n"
+		""},
+	 { "FileInterface_isIncludeFile", _wrap_FileInterface_isIncludeFile, METH_VARARGS, "\n"
+		"isIncludeFile(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setIncludeFile", _wrap_FileInterface_setIncludeFile, METH_VARARGS, "\n"
+		"setIncludeFile(FileInterface self, std::string const & fileName, bool includeFileStatus) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"includeFileStatus: bool\n"
+		"\n"
+		""},
+	 { "FileInterface_hasExternalDeclarations", _wrap_FileInterface_hasExternalDeclarations, METH_VARARGS, "\n"
+		"hasExternalDeclarations(FileInterface self, std::string const & fileName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setExternalDeclarations", _wrap_FileInterface_setExternalDeclarations, METH_VARARGS, "\n"
+		"setExternalDeclarations(FileInterface self, std::string const & fileName, bool externalDeclarationsStatus) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"externalDeclarationsStatus: bool\n"
+		"\n"
+		""},
+	 { "FileInterface_clearFileTypes", _wrap_FileInterface_clearFileTypes, METH_VARARGS, "\n"
+		"clearFileTypes(FileInterface self, std::string const & fileName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setFileTypes", _wrap_FileInterface_setFileTypes, METH_VARARGS, "\n"
+		"setFileTypes(FileInterface self, std::string const & fileName, stringVector newFileTypes) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newFileTypes: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_addFileType", _wrap_FileInterface_addFileType, METH_VARARGS, "\n"
+		"addFileType(FileInterface self, std::string const & fileName, std::string const newFileType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newFileType: std::string const\n"
+		"\n"
+		""},
+	 { "FileInterface_addMultipleFileTypes", _wrap_FileInterface_addMultipleFileTypes, METH_VARARGS, "\n"
+		"addMultipleFileTypes(FileInterface self, std::string const & fileName, stringVector newFileTypes) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newFileTypes: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_getDependencies", _wrap_FileInterface_getDependencies, METH_VARARGS, "\n"
+		"getDependencies(FileInterface self, std::string const & fileName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_clearDependencies", _wrap_FileInterface_clearDependencies, METH_VARARGS, "\n"
+		"clearDependencies(FileInterface self, std::string const & fileName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_addDependency", _wrap_FileInterface_addDependency, METH_VARARGS, "\n"
+		"addDependency(FileInterface self, std::string const & fileName, std::string const newDependency) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newDependency: std::string const\n"
+		"\n"
+		""},
+	 { "FileInterface_addMultipleDependencies", _wrap_FileInterface_addMultipleDependencies, METH_VARARGS, "\n"
+		"addMultipleDependencies(FileInterface self, std::string const & fileName, stringVector newDependencies) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newDependencies: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_getExportedNames", _wrap_FileInterface_getExportedNames, METH_VARARGS, "\n"
+		"getExportedNames(FileInterface self, std::string const & fileName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_clearExportedNames", _wrap_FileInterface_clearExportedNames, METH_VARARGS, "\n"
+		"clearExportedNames(FileInterface self, std::string const & fileName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_addExportedName", _wrap_FileInterface_addExportedName, METH_VARARGS, "\n"
+		"addExportedName(FileInterface self, std::string const & fileName, std::string const newExportedName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newExportedName: std::string const\n"
+		"\n"
+		""},
+	 { "FileInterface_addMultipleExportedNames", _wrap_FileInterface_addMultipleExportedNames, METH_VARARGS, "\n"
+		"addMultipleExportedNames(FileInterface self, std::string const & fileName, stringVector newExportedNames) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newExportedNames: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_getImageTypes", _wrap_FileInterface_getImageTypes, METH_VARARGS, "\n"
+		"getImageTypes(FileInterface self, std::string const & fileName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_clearImageTypes", _wrap_FileInterface_clearImageTypes, METH_VARARGS, "\n"
+		"clearImageTypes(FileInterface self, std::string const & fileName)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_addImageType", _wrap_FileInterface_addImageType, METH_VARARGS, "\n"
+		"addImageType(FileInterface self, std::string const & fileName, std::string const newImageType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newImageType: std::string const\n"
+		"\n"
+		""},
+	 { "FileInterface_addMultipleImageTypes", _wrap_FileInterface_addMultipleImageTypes, METH_VARARGS, "\n"
+		"addMultipleImageTypes(FileInterface self, std::string const & fileName, stringVector newImageTypes) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newImageTypes: std::vector< std::string,std::allocator< std::string > > const\n"
+		"\n"
+		""},
+	 { "FileInterface_getFileTypes", _wrap_FileInterface_getFileTypes, METH_VARARGS, "\n"
+		"getFileTypes(FileInterface self, std::string const & fileName) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandText", _wrap_FileInterface_getBuildCommandText, METH_VARARGS, "\n"
+		"getBuildCommandText(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setBuildCommand", _wrap_FileInterface_setBuildCommand, METH_VARARGS, "\n"
+		"setBuildCommand(FileInterface self, std::string const & fileName, std::string const & newBuildCommand) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newBuildCommand: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandFlags", _wrap_FileInterface_getBuildCommandFlags, METH_VARARGS, "\n"
+		"getBuildCommandFlags(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setBuildCommandFlags", _wrap_FileInterface_setBuildCommandFlags, METH_VARARGS, "\n"
+		"setBuildCommandFlags(FileInterface self, std::string const & fileName, std::string const & newFlags) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newFlags: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandReplaceDefaultFlagsValue", _wrap_FileInterface_getBuildCommandReplaceDefaultFlagsValue, METH_VARARGS, "\n"
+		"getBuildCommandReplaceDefaultFlagsValue(FileInterface self, std::string const & fileName, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression", _wrap_FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression, METH_VARARGS, "\n"
+		"getBuildCommandReplaceDefaultFlagsFormattedExpression(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandReplaceDefaultFlagsExpression", _wrap_FileInterface_getBuildCommandReplaceDefaultFlagsExpression, METH_VARARGS, "\n"
+		"getBuildCommandReplaceDefaultFlagsExpression(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setbuildCommandReplaceDefaultFlags", _wrap_FileInterface_setbuildCommandReplaceDefaultFlags, METH_VARARGS, "\n"
+		"setbuildCommandReplaceDefaultFlags(FileInterface self, std::string const & fileName, std::string const & newReplaceDefaultFlags) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newReplaceDefaultFlags: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_getBuildCommandTarget", _wrap_FileInterface_getBuildCommandTarget, METH_VARARGS, "\n"
+		"getBuildCommandTarget(FileInterface self, std::string const & fileName) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_setBuildCommandTarget", _wrap_FileInterface_setBuildCommandTarget, METH_VARARGS, "\n"
+		"setBuildCommandTarget(FileInterface self, std::string const & fileName, std::string const & newTarget) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileName: std::string const &\n"
+		"newTarget: std::string const &\n"
+		"\n"
+		""},
+	 { "FileInterface_swigregister", FileInterface_swigregister, METH_O, NULL},
+	 { "FileInterface_swiginit", FileInterface_swiginit, METH_VARARGS, NULL},
+	 { "new_FileBuilderInterface", _wrap_new_FileBuilderInterface, METH_VARARGS, "\n"
+		"new_FileBuilderInterface(QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> FileBuilderInterface\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"expressionParser: QSharedPointer< ExpressionParser >\n"
+		"expressionFormatter: QSharedPointer< ExpressionFormatter >\n"
+		"\n"
+		""},
+	 { "delete_FileBuilderInterface", _wrap_delete_FileBuilderInterface, METH_O, "delete_FileBuilderInterface(FileBuilderInterface self)"},
+	 { "FileBuilderInterface_setFileBuilders", _wrap_FileBuilderInterface_setFileBuilders, METH_VARARGS, "\n"
+		"setFileBuilders(FileBuilderInterface self, QSharedPointer< QList< QSharedPointer< FileBuilder > > > newFileBuilders)\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"newFileBuilders: QSharedPointer< QList< QSharedPointer< FileBuilder > > >\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getExpressionsInSelectedFileBuilders", _wrap_FileBuilderInterface_getExpressionsInSelectedFileBuilders, METH_VARARGS, "\n"
+		"getExpressionsInSelectedFileBuilders(FileBuilderInterface self, stringVector fileBuilderNames) -> stringVector\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileBuilderNames: std::vector< std::string,std::allocator< std::string > >\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_addFileBuilder", _wrap_FileBuilderInterface_addFileBuilder, METH_VARARGS, "\n"
+		"addFileBuilder(FileBuilderInterface self, int const & row, std::string const & newFileBuilderName=std::string(\"\"))\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"row: int const &\n"
+		"newFileBuilderName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_removeFileBuilder", _wrap_FileBuilderInterface_removeFileBuilder, METH_VARARGS, "\n"
+		"removeFileBuilder(FileBuilderInterface self, std::string const & fileBuilderName) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileBuilderName: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getIndexedFileType", _wrap_FileBuilderInterface_getIndexedFileType, METH_VARARGS, "\n"
+		"getIndexedFileType(FileBuilderInterface self, int const & itemIndex) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"itemIndex: int const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_setFileType", _wrap_FileBuilderInterface_setFileType, METH_VARARGS, "\n"
+		"setFileType(FileBuilderInterface self, std::string const & currentFileType, std::string const & newFileType) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"currentFileType: std::string const &\n"
+		"newFileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getCommand", _wrap_FileBuilderInterface_getCommand, METH_VARARGS, "\n"
+		"getCommand(FileBuilderInterface self, std::string const & fileType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_setCommand", _wrap_FileBuilderInterface_setCommand, METH_VARARGS, "\n"
+		"setCommand(FileBuilderInterface self, std::string const & fileType, std::string const & newCommand) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"newCommand: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getFlags", _wrap_FileBuilderInterface_getFlags, METH_VARARGS, "\n"
+		"getFlags(FileBuilderInterface self, std::string const & fileType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_setFlags", _wrap_FileBuilderInterface_setFlags, METH_VARARGS, "\n"
+		"setFlags(FileBuilderInterface self, std::string const & fileType, std::string const & newFlags) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"newFlags: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getReplaceDefaultFlagsValue", _wrap_FileBuilderInterface_getReplaceDefaultFlagsValue, METH_VARARGS, "\n"
+		"getReplaceDefaultFlagsValue(FileBuilderInterface self, std::string const & fileType, int const & baseNumber=0) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"baseNumber: int const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression", _wrap_FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression, METH_VARARGS, "\n"
+		"getReplaceDefaultFlagsFormattedExpression(FileBuilderInterface self, std::string const & fileType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_getReplaceDefaultFlagsExpression", _wrap_FileBuilderInterface_getReplaceDefaultFlagsExpression, METH_VARARGS, "\n"
+		"getReplaceDefaultFlagsExpression(FileBuilderInterface self, std::string const & fileType) -> std::string\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"fileType: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_setReplaceDefaultFlags", _wrap_FileBuilderInterface_setReplaceDefaultFlags, METH_VARARGS, "\n"
+		"setReplaceDefaultFlags(FileBuilderInterface self, std::string const & filetype, std::string const & newReplaceDefaultFlags) -> bool\n"
+		"\n"
+		"Parameters\n"
+		"----------\n"
+		"filetype: std::string const &\n"
+		"newReplaceDefaultFlags: std::string const &\n"
+		"\n"
+		""},
+	 { "FileBuilderInterface_swigregister", FileBuilderInterface_swigregister, METH_O, NULL},
+	 { "FileBuilderInterface_swiginit", FileBuilderInterface_swiginit, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -32553,6 +37348,15 @@ static void *_p_FieldInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(
 static void *_p_ResetInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((CommonInterface *)  ((ResetInterface *) x));
 }
+static void *_p_FileSetInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((CommonInterface *) (NameGroupInterface *) ((FileSetInterface *) x));
+}
+static void *_p_FileInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((CommonInterface *) (NameGroupInterface *) ((FileInterface *) x));
+}
+static void *_p_FileBuilderInterfaceTo_p_CommonInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((CommonInterface *)  ((FileBuilderInterface *) x));
+}
 static void *_p_MasterPortInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((NameGroupInterface *)  ((MasterPortInterface *) x));
 }
@@ -32576,6 +37380,12 @@ static void *_p_RegisterInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSE
 }
 static void *_p_FieldInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((NameGroupInterface *)  ((FieldInterface *) x));
+}
+static void *_p_FileSetInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((FileSetInterface *) x));
+}
+static void *_p_FileInterfaceTo_p_NameGroupInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((NameGroupInterface *)  ((FileInterface *) x));
 }
 static void *_p_PortsInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((PortsInterface *) x));
@@ -32601,6 +37411,15 @@ static void *_p_FieldInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUN
 static void *_p_ResetInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((ParameterizableInterface *)  ((ResetInterface *) x));
 }
+static void *_p_FileSetInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ParameterizableInterface *)  ((FileSetInterface *) x));
+}
+static void *_p_FileInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ParameterizableInterface *)  ((FileInterface *) x));
+}
+static void *_p_FileBuilderInterfaceTo_p_ParameterizableInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((ParameterizableInterface *)  ((FileBuilderInterface *) x));
+}
 static void *_p_PortsInterfaceTo_p_MasterPortInterface(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((MasterPortInterface *)  ((PortsInterface *) x));
 }
@@ -32613,6 +37432,9 @@ static swig_type_info _swigt__p_AddressBlockInterface = {"_p_AddressBlockInterfa
 static swig_type_info _swigt__p_CommonInterface = {"_p_CommonInterface", "CommonInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_DirectionTypes__Direction = {"_p_DirectionTypes__Direction", "DirectionTypes::Direction *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_FieldInterface = {"_p_FieldInterface", "FieldInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_FileBuilderInterface = {"_p_FileBuilderInterface", "FileBuilderInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_FileInterface = {"_p_FileInterface", "FileInterface *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_FileSetInterface = {"_p_FileSetInterface", "FileSetInterface *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_General__ModifiedWrite = {"_p_General__ModifiedWrite", "General::ModifiedWrite *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_General__ReadAction = {"_p_General__ReadAction", "General::ReadAction *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_General__TestConstraint = {"_p_General__TestConstraint", "General::TestConstraint *", 0, 0, (void*)0, 0};
@@ -32633,12 +37455,17 @@ static swig_type_info _swigt__p_QSharedPointerT_ExpressionFormatter_t = {"_p_QSh
 static swig_type_info _swigt__p_QSharedPointerT_ExpressionParser_t = {"_p_QSharedPointerT_ExpressionParser_t", "QSharedPointer< ExpressionParser > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_FieldValidator_t = {"_p_QSharedPointerT_FieldValidator_t", "QSharedPointer< FieldValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_Field_t = {"_p_QSharedPointerT_Field_t", "QSharedPointer< Field > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_FileSetValidator_t = {"_p_QSharedPointerT_FileSetValidator_t", "QSharedPointer< FileSetValidator > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_FileValidator_t = {"_p_QSharedPointerT_FileValidator_t", "QSharedPointer< FileValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_MemoryMapValidator_t = {"_p_QSharedPointerT_MemoryMapValidator_t", "QSharedPointer< MemoryMapValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_ParameterValidator_t = {"_p_QSharedPointerT_ParameterValidator_t", "QSharedPointer< ParameterValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_PortValidator_t = {"_p_QSharedPointerT_PortValidator_t", "QSharedPointer< PortValidator > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_Port_t = {"_p_QSharedPointerT_Port_t", "QSharedPointer< Port > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t", "QSharedPointer< QList< QSharedPointer< Choice > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t", "QSharedPointer< QList< QSharedPointer< Field > > > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_FileBuilder_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_FileBuilder_t_t_t", "QSharedPointer< QList< QSharedPointer< FileBuilder > > > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_FileSet_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_FileSet_t_t_t", "QSharedPointer< QList< QSharedPointer< FileSet > > > *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_File_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_File_t_t_t", "QSharedPointer< QList< QSharedPointer< File > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t", "QSharedPointer< QList< QSharedPointer< MemoryBlockBase > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t", "QSharedPointer< QList< QSharedPointer< Parameter > > > *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t = {"_p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t", "QSharedPointer< QList< QSharedPointer< RegisterBase > > > *", 0, 0, (void*)0, 0};
@@ -32666,6 +37493,9 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_CommonInterface,
   &_swigt__p_DirectionTypes__Direction,
   &_swigt__p_FieldInterface,
+  &_swigt__p_FileBuilderInterface,
+  &_swigt__p_FileInterface,
+  &_swigt__p_FileSetInterface,
   &_swigt__p_General__ModifiedWrite,
   &_swigt__p_General__ReadAction,
   &_swigt__p_General__TestConstraint,
@@ -32686,12 +37516,17 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_QSharedPointerT_ExpressionParser_t,
   &_swigt__p_QSharedPointerT_FieldValidator_t,
   &_swigt__p_QSharedPointerT_Field_t,
+  &_swigt__p_QSharedPointerT_FileSetValidator_t,
+  &_swigt__p_QSharedPointerT_FileValidator_t,
   &_swigt__p_QSharedPointerT_MemoryMapValidator_t,
   &_swigt__p_QSharedPointerT_ParameterValidator_t,
   &_swigt__p_QSharedPointerT_PortValidator_t,
   &_swigt__p_QSharedPointerT_Port_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t,
+  &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_FileBuilder_t_t_t,
+  &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_FileSet_t_t_t,
+  &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_File_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t,
   &_swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t,
@@ -32716,9 +37551,12 @@ static swig_type_info *swig_type_initial[] = {
 static swig_cast_info _swigc__p_AbstractParameterInterface[] = {  {&_swigt__p_AbstractParameterInterface, 0, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_AbstractParameterInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AccessTypes__Access[] = {  {&_swigt__p_AccessTypes__Access, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_AddressBlockInterface[] = {  {&_swigt__p_AddressBlockInterface, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_CommonInterface, 0, 0, 0},  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MasterPortInterface, _p_MasterPortInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_CommonInterface[] = {  {&_swigt__p_NameGroupInterface, _p_NameGroupInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MasterPortInterface, _p_MasterPortInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FileSetInterface, _p_FileSetInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FileInterface, _p_FileInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_FileBuilderInterface, _p_FileBuilderInterfaceTo_p_CommonInterface, 0, 0},  {&_swigt__p_CommonInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_DirectionTypes__Direction[] = {  {&_swigt__p_DirectionTypes__Direction, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_FieldInterface[] = {  {&_swigt__p_FieldInterface, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_FileBuilderInterface[] = {  {&_swigt__p_FileBuilderInterface, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_FileInterface[] = {  {&_swigt__p_FileInterface, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_FileSetInterface[] = {  {&_swigt__p_FileSetInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_General__ModifiedWrite[] = {  {&_swigt__p_General__ModifiedWrite, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_General__ReadAction[] = {  {&_swigt__p_General__ReadAction, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_General__TestConstraint[] = {  {&_swigt__p_General__TestConstraint, 0, 0, 0},{0, 0, 0, 0}};
@@ -32728,8 +37566,8 @@ static swig_cast_info _swigc__p_MemoryMap[] = {  {&_swigt__p_MemoryMap, 0, 0, 0}
 static swig_cast_info _swigc__p_MemoryMapInterface[] = {  {&_swigt__p_MemoryMapInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MemoryRemap[] = {  {&_swigt__p_MemoryRemap, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_NameGroup[] = {  {&_swigt__p_NameGroup, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_NameGroupInterface[] = {  {&_swigt__p_NameGroupInterface, 0, 0, 0},  {&_swigt__p_MasterPortInterface, _p_MasterPortInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_NameGroupInterface, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_NameGroupInterface[] = {  {&_swigt__p_NameGroupInterface, 0, 0, 0},  {&_swigt__p_MasterPortInterface, _p_MasterPortInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FileSetInterface, _p_FileSetInterfaceTo_p_NameGroupInterface, 0, 0},  {&_swigt__p_FileInterface, _p_FileInterfaceTo_p_NameGroupInterface, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_ParameterizableInterface[] = {  {&_swigt__p_ParameterizableInterface, 0, 0, 0},  {&_swigt__p_PortsInterface, _p_PortsInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AbstractParameterInterface, _p_AbstractParameterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ParametersInterface, _p_ParametersInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_MemoryMapInterface, _p_MemoryMapInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_AddressBlockInterface, _p_AddressBlockInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_RegisterInterface, _p_RegisterInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FieldInterface, _p_FieldInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_ResetInterface, _p_ResetInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FileSetInterface, _p_FileSetInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FileInterface, _p_FileInterfaceTo_p_ParameterizableInterface, 0, 0},  {&_swigt__p_FileBuilderInterface, _p_FileBuilderInterfaceTo_p_ParameterizableInterface, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ParametersInterface[] = {  {&_swigt__p_ParametersInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PortsInterface[] = {  {&_swigt__p_PortsInterface, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PythonAPI[] = {  {&_swigt__p_PythonAPI, 0, 0, 0},{0, 0, 0, 0}};
@@ -32739,12 +37577,17 @@ static swig_cast_info _swigc__p_QSharedPointerT_ExpressionFormatter_t[] = {  {&_
 static swig_cast_info _swigc__p_QSharedPointerT_ExpressionParser_t[] = {  {&_swigt__p_QSharedPointerT_ExpressionParser_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_FieldValidator_t[] = {  {&_swigt__p_QSharedPointerT_FieldValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_Field_t[] = {  {&_swigt__p_QSharedPointerT_Field_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_FileSetValidator_t[] = {  {&_swigt__p_QSharedPointerT_FileSetValidator_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_FileValidator_t[] = {  {&_swigt__p_QSharedPointerT_FileValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_MemoryMapValidator_t[] = {  {&_swigt__p_QSharedPointerT_MemoryMapValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_ParameterValidator_t[] = {  {&_swigt__p_QSharedPointerT_ParameterValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_PortValidator_t[] = {  {&_swigt__p_QSharedPointerT_PortValidator_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_Port_t[] = {  {&_swigt__p_QSharedPointerT_Port_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_FileBuilder_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_FileBuilder_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_FileSet_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_FileSet_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_File_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_File_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t[] = {  {&_swigt__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -32772,6 +37615,9 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_CommonInterface,
   _swigc__p_DirectionTypes__Direction,
   _swigc__p_FieldInterface,
+  _swigc__p_FileBuilderInterface,
+  _swigc__p_FileInterface,
+  _swigc__p_FileSetInterface,
   _swigc__p_General__ModifiedWrite,
   _swigc__p_General__ReadAction,
   _swigc__p_General__TestConstraint,
@@ -32792,12 +37638,17 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_QSharedPointerT_ExpressionParser_t,
   _swigc__p_QSharedPointerT_FieldValidator_t,
   _swigc__p_QSharedPointerT_Field_t,
+  _swigc__p_QSharedPointerT_FileSetValidator_t,
+  _swigc__p_QSharedPointerT_FileValidator_t,
   _swigc__p_QSharedPointerT_MemoryMapValidator_t,
   _swigc__p_QSharedPointerT_ParameterValidator_t,
   _swigc__p_QSharedPointerT_PortValidator_t,
   _swigc__p_QSharedPointerT_Port_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Choice_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Field_t_t_t,
+  _swigc__p_QSharedPointerT_QListT_QSharedPointerT_FileBuilder_t_t_t,
+  _swigc__p_QSharedPointerT_QListT_QSharedPointerT_FileSet_t_t_t,
+  _swigc__p_QSharedPointerT_QListT_QSharedPointerT_File_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_MemoryBlockBase_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_Parameter_t_t_t,
   _swigc__p_QSharedPointerT_QListT_QSharedPointerT_RegisterBase_t_t_t,

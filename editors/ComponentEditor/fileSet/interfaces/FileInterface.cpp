@@ -170,7 +170,13 @@ bool FileInterface::validateItems() const
 //-----------------------------------------------------------------------------
 bool FileInterface::itemHasValidName(std::string const& itemName) const
 {
-    return validator_->hasValidName(getFile(itemName)->name());
+    QSharedPointer<File> file = getFile(itemName);
+    if (file)
+    {
+        return validator_->hasValidName(file->name());
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

@@ -26,6 +26,9 @@
 #include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
 
 #include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -49,6 +52,8 @@
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+#include <IPXACTmodels/Component/validators/FileSetValidator.h>
+#include <IPXACTmodels/Component/validators/FileValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::PythonAPI()
@@ -60,6 +65,7 @@ activeComponent_(),
 portsInterface_(),
 componentParameterInterface_(),
 mapInterface_(),
+fileSetInterface_(),
 parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Component>())),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
@@ -73,6 +79,7 @@ mapValidator_()
 
     constructMemoryValidators();
     constructMemoryInterface();
+    constructFileSetInterface();
 }
 
 //-----------------------------------------------------------------------------
@@ -155,7 +162,8 @@ int PythonAPI::importFile(std::string const& path, std::string vlnv, bool overwr
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::generate()
 //-----------------------------------------------------------------------------
-void PythonAPI::generate(std::string const& format, std::string const& vlnv, std::string const& viewName, std::string const& outputDirectory) const
+void PythonAPI::generate(std::string const& format, std::string const& vlnv, std::string const& viewName,
+    std::string const& outputDirectory) const
 {
     VLNV componentVLNV(VLNV::COMPONENT, QString::fromStdString(vlnv));
 
@@ -302,6 +310,44 @@ bool PythonAPI::createComponent(std::string const& vendor, std::string const& li
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonAPI::getVLNVDirectory()
+//-----------------------------------------------------------------------------
+std::string PythonAPI::getVLNVDirectory(std::string const& vendor, std::string const& library,
+    std::string const& name, std::string const& version) const
+{
+    VLNV documentVLNV;
+    documentVLNV.setVendor(QString::fromStdString(vendor));
+    documentVLNV.setLibrary(QString::fromStdString(library));
+    documentVLNV.setName(QString::fromStdString(name));
+    documentVLNV.setVersion(QString::fromStdString(version));
+
+    return KactusAPI::getDocumentFilePath(documentVLNV).toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getFirstViewName()
+//-----------------------------------------------------------------------------
+std::string PythonAPI::getFirstViewName()
+{
+    if (activeComponent_)
+    {
+        QStringList componentNames = activeComponent_->getViewNames();
+        if (!componentNames.isEmpty())
+        {
+            return componentNames.first().toStdString();
+        }
+        else
+        {
+            QSharedPointer<View> newView(new View("mockView"));
+            activeComponent_->getViews()->append(newView);
+            return newView->name().toStdString();
+        }
+    }
+
+    return std::string("");
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonAPI::openComponent()
 //-----------------------------------------------------------------------------
 bool PythonAPI::openComponent(std::string const& vlnvString)
@@ -331,6 +377,8 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
 
             mapValidator_->componentChange(component->getRemapStates(), component->getResetTypes());
             mapInterface_->setMemoryMaps(component);
+
+            fileSetInterface_->setFileSets(component->getFileSets());
 
             activeComponent_ = component;
             messager_->showMessage(QString("Component %1 is open").arg(componentVLNV));
@@ -687,6 +735,83 @@ QSharedPointer<Field> PythonAPI::getField(QSharedPointer<Register> containingReg
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonAPI::constructFileSetInterface()
+//-----------------------------------------------------------------------------
+void PythonAPI::constructFileSetInterface()
+{
+    QSharedPointer<FileValidator> newFileValidator(new FileValidator(expressionParser_));
+    QSharedPointer<FileSetValidator> newFileSetValidator(
+        new FileSetValidator(newFileValidator, expressionParser_));
+
+    FileInterface* fileInterface = new FileInterface(newFileValidator, expressionParser_, expressionFormatter_);
+
+    FileBuilderInterface* fileBuilderInterface = new FileBuilderInterface(expressionParser_, expressionFormatter_);
+
+    fileSetInterface_ = new FileSetInterface(
+        newFileSetValidator, expressionParser_, expressionFormatter_, fileInterface, fileBuilderInterface);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getFileSetInterface()
+//-----------------------------------------------------------------------------
+FileSetInterface* PythonAPI::getFileSetInterface()
+{
+    return fileSetInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setFilesForInterface()
+//-----------------------------------------------------------------------------
+void PythonAPI::setFilesForInterface(std::string const& setName)
+{
+    FileInterface* fileInterface = fileSetInterface_->getFileInterface();
+
+    QString fileSetNameQT = QString::fromStdString(setName);
+    QSharedPointer<FileSet> containingFileSet = getFileSet(fileSetNameQT);
+    if (!containingFileSet)
+    {
+        sendFileSetNotFoundError(fileSetNameQT);
+        return;
+    }
+
+    fileInterface->setFiles(containingFileSet->getFiles());
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getFileSet()
+//-----------------------------------------------------------------------------
+QSharedPointer<FileSet> PythonAPI::getFileSet(QString const& setName) const
+{
+    for (auto fileSet : *activeComponent_->getFileSets())
+    {
+        if (fileSet->name() == setName)
+        {
+            return fileSet;
+        }
+    }
+
+    return QSharedPointer<FileSet>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::setFileBuildersForInterface()
+//-----------------------------------------------------------------------------
+void PythonAPI::setFileBuildersForInterface(std::string const& setName)
+{
+    FileBuilderInterface* builderInterface = fileSetInterface_->getFileBuilderInterface();
+
+    QString fileSetNameQT = QString::fromStdString(setName);
+    QSharedPointer<FileSet> containingFileSet = getFileSet(fileSetNameQT);
+    if (!containingFileSet)
+    {
+        sendFileSetNotFoundError(fileSetNameQT);
+        return;
+    }
+
+    builderInterface->setFileBuilders(containingFileSet->getDefaultFileBuilders());
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonAPI::sendMemoryMapNotFoundError()
 //-----------------------------------------------------------------------------
 void PythonAPI::sendMemoryMapNotFoundError(QString const& mapName) const
@@ -724,4 +849,13 @@ void PythonAPI::sendFieldNotFoundError(QString const& mapName, QString const& bl
     messager_->showError(
         QString("Could not find field %1 within register %2 in address block %3 in memory map %4 in component %5").
         arg(fieldName, registerName, blockName, mapName, activeComponent_->getVlnv().toString()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::sendFileSetNotFoundError()
+//-----------------------------------------------------------------------------
+void PythonAPI::sendFileSetNotFoundError(QString const& setName) const
+{
+    messager_->showError(QString("Could not find file set %1 within component %2").
+        arg(setName, activeComponent_->getVlnv().toString()));
 }

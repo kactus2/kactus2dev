@@ -147,6 +147,15 @@
     <ClCompile Include="PythonAPI_wrap.cxx">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PythonAPI.h">
@@ -225,6 +234,15 @@
       <Filter>Header Files\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileInterface.h">
       <Filter>Header Files\interfaces</Filter>
     </ClInclude>
   </ItemGroup>

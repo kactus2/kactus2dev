@@ -27,6 +27,8 @@
 
 #include <wizards/ComponentWizard/ImportRunner.h>
 
+#include <QFileInfo>
+
 LibraryInterface* KactusAPI::library_ = nullptr;
 MessageMediator* KactusAPI::messageChannel_ = new ConsoleMediator();
 
@@ -254,4 +256,12 @@ void KactusAPI::runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV
 QList<IPlugin*> KactusAPI::getPlugins()
 {    
     return PluginManager::getInstance().getAllPlugins();
+}
+
+//-----------------------------------------------------------------------------
+// Function: KactusAPI::getDocumentFilePath()
+//-----------------------------------------------------------------------------
+QString KactusAPI::getDocumentFilePath(VLNV const& vlnv)
+{
+    return QFileInfo(library_->getPath(vlnv)).absolutePath();
 }

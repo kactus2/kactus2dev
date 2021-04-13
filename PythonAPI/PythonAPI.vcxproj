@@ -99,6 +99,9 @@
     <ClCompile Include="..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileInterface.cpp" />
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.cpp" />
@@ -126,6 +129,9 @@
     <ClInclude Include="..\editors\ComponentEditor\common\interfaces\CommonInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\interfaces\NameGroupInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h" />
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h" />
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileInterface.h" />
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h" />

@@ -240,6 +240,8 @@ class PythonAPI(object):
     listComponentVLNVs = _swig_new_instance_method(_pythonAPI.PythonAPI_listComponentVLNVs)
     vlnvExistsInLibrary = _swig_new_instance_method(_pythonAPI.PythonAPI_vlnvExistsInLibrary)
     createComponent = _swig_new_instance_method(_pythonAPI.PythonAPI_createComponent)
+    getVLNVDirectory = _swig_new_instance_method(_pythonAPI.PythonAPI_getVLNVDirectory)
+    getFirstViewName = _swig_new_instance_method(_pythonAPI.PythonAPI_getFirstViewName)
     openComponent = _swig_new_instance_method(_pythonAPI.PythonAPI_openComponent)
     closeOpenComponent = _swig_new_instance_method(_pythonAPI.PythonAPI_closeOpenComponent)
     getComponentName = _swig_new_instance_method(_pythonAPI.PythonAPI_getComponentName)
@@ -252,6 +254,9 @@ class PythonAPI(object):
     setRegistersForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setRegistersForInterface)
     setFieldsForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setFieldsForInterface)
     setResetsForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setResetsForInterface)
+    getFileSetInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_getFileSetInterface)
+    setFilesForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setFilesForInterface)
+    setFileBuildersForInterface = _swig_new_instance_method(_pythonAPI.PythonAPI_setFileBuildersForInterface)
 
 # Register PythonAPI in _pythonAPI:
 _pythonAPI.PythonAPI_swigregister(PythonAPI)
@@ -809,6 +814,143 @@ class ResetInterface(ParameterizableInterface, CommonInterface):
 
 # Register ResetInterface in _pythonAPI:
 _pythonAPI.ResetInterface_swigregister(ResetInterface)
+
+class FileSetInterface(ParameterizableInterface, NameGroupInterface):
+    r"""Proxy of C++ FileSetInterface class."""
+
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self, validator, expressionParser, expressionFormatter, fileInterface, fileBuilderInterface):
+        r"""
+        __init__(FileSetInterface self, QSharedPointer< FileSetValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter, FileInterface fileInterface, FileBuilderInterface fileBuilderInterface) -> FileSetInterface
+
+        Parameters
+        ----------
+        validator: QSharedPointer< FileSetValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+        fileInterface: FileInterface *
+        fileBuilderInterface: FileBuilderInterface *
+
+        """
+        _pythonAPI.FileSetInterface_swiginit(self, _pythonAPI.new_FileSetInterface(validator, expressionParser, expressionFormatter, fileInterface, fileBuilderInterface))
+    __swig_destroy__ = _pythonAPI.delete_FileSetInterface
+    setFileSets = _swig_new_instance_method(_pythonAPI.FileSetInterface_setFileSets)
+    getGroups = _swig_new_instance_method(_pythonAPI.FileSetInterface_getGroups)
+    setGroups = _swig_new_instance_method(_pythonAPI.FileSetInterface_setGroups)
+    getDependencies = _swig_new_instance_method(_pythonAPI.FileSetInterface_getDependencies)
+    setDependencies = _swig_new_instance_method(_pythonAPI.FileSetInterface_setDependencies)
+    addFileSet = _swig_new_instance_method(_pythonAPI.FileSetInterface_addFileSet)
+    removeFileSet = _swig_new_instance_method(_pythonAPI.FileSetInterface_removeFileSet)
+    getFileInterface = _swig_new_instance_method(_pythonAPI.FileSetInterface_getFileInterface)
+    getFileBuilderInterface = _swig_new_instance_method(_pythonAPI.FileSetInterface_getFileBuilderInterface)
+    getExpressionsInSelectedFileSets = _swig_new_instance_method(_pythonAPI.FileSetInterface_getExpressionsInSelectedFileSets)
+    fileSetExists = _swig_new_instance_method(_pythonAPI.FileSetInterface_fileSetExists)
+
+# Register FileSetInterface in _pythonAPI:
+_pythonAPI.FileSetInterface_swigregister(FileSetInterface)
+
+class FileInterface(ParameterizableInterface, NameGroupInterface):
+    r"""Proxy of C++ FileInterface class."""
+
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self, validator, expressionParser, expressionFormatter):
+        r"""
+        __init__(FileInterface self, QSharedPointer< FileValidator > validator, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> FileInterface
+
+        Parameters
+        ----------
+        validator: QSharedPointer< FileValidator >
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+
+        """
+        _pythonAPI.FileInterface_swiginit(self, _pythonAPI.new_FileInterface(validator, expressionParser, expressionFormatter))
+    __swig_destroy__ = _pythonAPI.delete_FileInterface
+    setFiles = _swig_new_instance_method(_pythonAPI.FileInterface_setFiles)
+    getExpressionsInSelectedFiles = _swig_new_instance_method(_pythonAPI.FileInterface_getExpressionsInSelectedFiles)
+    addFile = _swig_new_instance_method(_pythonAPI.FileInterface_addFile)
+    removeFile = _swig_new_instance_method(_pythonAPI.FileInterface_removeFile)
+    swapFiles = _swig_new_instance_method(_pythonAPI.FileInterface_swapFiles)
+    getLogicalName = _swig_new_instance_method(_pythonAPI.FileInterface_getLogicalName)
+    setLogicalName = _swig_new_instance_method(_pythonAPI.FileInterface_setLogicalName)
+    isLogicalNameDefault = _swig_new_instance_method(_pythonAPI.FileInterface_isLogicalNameDefault)
+    setLogicalNameDefault = _swig_new_instance_method(_pythonAPI.FileInterface_setLogicalNameDefault)
+    isStructural = _swig_new_instance_method(_pythonAPI.FileInterface_isStructural)
+    setStructural = _swig_new_instance_method(_pythonAPI.FileInterface_setStructural)
+    isIncludeFile = _swig_new_instance_method(_pythonAPI.FileInterface_isIncludeFile)
+    setIncludeFile = _swig_new_instance_method(_pythonAPI.FileInterface_setIncludeFile)
+    hasExternalDeclarations = _swig_new_instance_method(_pythonAPI.FileInterface_hasExternalDeclarations)
+    setExternalDeclarations = _swig_new_instance_method(_pythonAPI.FileInterface_setExternalDeclarations)
+    clearFileTypes = _swig_new_instance_method(_pythonAPI.FileInterface_clearFileTypes)
+    setFileTypes = _swig_new_instance_method(_pythonAPI.FileInterface_setFileTypes)
+    addFileType = _swig_new_instance_method(_pythonAPI.FileInterface_addFileType)
+    addMultipleFileTypes = _swig_new_instance_method(_pythonAPI.FileInterface_addMultipleFileTypes)
+    getDependencies = _swig_new_instance_method(_pythonAPI.FileInterface_getDependencies)
+    clearDependencies = _swig_new_instance_method(_pythonAPI.FileInterface_clearDependencies)
+    addDependency = _swig_new_instance_method(_pythonAPI.FileInterface_addDependency)
+    addMultipleDependencies = _swig_new_instance_method(_pythonAPI.FileInterface_addMultipleDependencies)
+    getExportedNames = _swig_new_instance_method(_pythonAPI.FileInterface_getExportedNames)
+    clearExportedNames = _swig_new_instance_method(_pythonAPI.FileInterface_clearExportedNames)
+    addExportedName = _swig_new_instance_method(_pythonAPI.FileInterface_addExportedName)
+    addMultipleExportedNames = _swig_new_instance_method(_pythonAPI.FileInterface_addMultipleExportedNames)
+    getImageTypes = _swig_new_instance_method(_pythonAPI.FileInterface_getImageTypes)
+    clearImageTypes = _swig_new_instance_method(_pythonAPI.FileInterface_clearImageTypes)
+    addImageType = _swig_new_instance_method(_pythonAPI.FileInterface_addImageType)
+    addMultipleImageTypes = _swig_new_instance_method(_pythonAPI.FileInterface_addMultipleImageTypes)
+    getFileTypes = _swig_new_instance_method(_pythonAPI.FileInterface_getFileTypes)
+    getBuildCommandText = _swig_new_instance_method(_pythonAPI.FileInterface_getBuildCommandText)
+    setBuildCommand = _swig_new_instance_method(_pythonAPI.FileInterface_setBuildCommand)
+    getBuildCommandFlags = _swig_new_instance_method(_pythonAPI.FileInterface_getBuildCommandFlags)
+    setBuildCommandFlags = _swig_new_instance_method(_pythonAPI.FileInterface_setBuildCommandFlags)
+    getBuildCommandReplaceDefaultFlagsValue = _swig_new_instance_method(_pythonAPI.FileInterface_getBuildCommandReplaceDefaultFlagsValue)
+    getBuildCommandReplaceDefaultFlagsFormattedExpression = _swig_new_instance_method(_pythonAPI.FileInterface_getBuildCommandReplaceDefaultFlagsFormattedExpression)
+    getBuildCommandReplaceDefaultFlagsExpression = _swig_new_instance_method(_pythonAPI.FileInterface_getBuildCommandReplaceDefaultFlagsExpression)
+    setbuildCommandReplaceDefaultFlags = _swig_new_instance_method(_pythonAPI.FileInterface_setbuildCommandReplaceDefaultFlags)
+    getBuildCommandTarget = _swig_new_instance_method(_pythonAPI.FileInterface_getBuildCommandTarget)
+    setBuildCommandTarget = _swig_new_instance_method(_pythonAPI.FileInterface_setBuildCommandTarget)
+
+# Register FileInterface in _pythonAPI:
+_pythonAPI.FileInterface_swigregister(FileInterface)
+
+class FileBuilderInterface(ParameterizableInterface, CommonInterface):
+    r"""Proxy of C++ FileBuilderInterface class."""
+
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def __init__(self, expressionParser, expressionFormatter):
+        r"""
+        __init__(FileBuilderInterface self, QSharedPointer< ExpressionParser > expressionParser, QSharedPointer< ExpressionFormatter > expressionFormatter) -> FileBuilderInterface
+
+        Parameters
+        ----------
+        expressionParser: QSharedPointer< ExpressionParser >
+        expressionFormatter: QSharedPointer< ExpressionFormatter >
+
+        """
+        _pythonAPI.FileBuilderInterface_swiginit(self, _pythonAPI.new_FileBuilderInterface(expressionParser, expressionFormatter))
+    __swig_destroy__ = _pythonAPI.delete_FileBuilderInterface
+    setFileBuilders = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_setFileBuilders)
+    getExpressionsInSelectedFileBuilders = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_getExpressionsInSelectedFileBuilders)
+    addFileBuilder = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_addFileBuilder)
+    removeFileBuilder = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_removeFileBuilder)
+    getIndexedFileType = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_getIndexedFileType)
+    setFileType = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_setFileType)
+    getCommand = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_getCommand)
+    setCommand = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_setCommand)
+    getFlags = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_getFlags)
+    setFlags = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_setFlags)
+    getReplaceDefaultFlagsValue = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_getReplaceDefaultFlagsValue)
+    getReplaceDefaultFlagsFormattedExpression = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_getReplaceDefaultFlagsFormattedExpression)
+    getReplaceDefaultFlagsExpression = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_getReplaceDefaultFlagsExpression)
+    setReplaceDefaultFlags = _swig_new_instance_method(_pythonAPI.FileBuilderInterface_setReplaceDefaultFlags)
+
+# Register FileBuilderInterface in _pythonAPI:
+_pythonAPI.FileBuilderInterface_swigregister(FileBuilderInterface)
 
 
 

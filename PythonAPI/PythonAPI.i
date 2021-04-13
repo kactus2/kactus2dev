@@ -23,6 +23,9 @@
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
 #include "..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h"
+#include "..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h"
+#include "..\editors\ComponentEditor\fileSet\interfaces\FileInterface.h"
+#include "..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h"
 %}
 
 
@@ -48,3 +51,6 @@ namespace std {
 %include "..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h"
 %include "..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h"
 %include "..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h"
+%include "..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h"
+%include "..\editors\ComponentEditor\fileSet\interfaces\FileInterface.h"
+%include "..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h"

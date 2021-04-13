@@ -73,7 +73,7 @@ public:
      *
      *     @return The paths where IP-XACT files are stored.
      */
-     static QStringList getLibraryPaths();
+    static QStringList getLibraryPaths();
 
     /*!
      * Set the paths where IP-XACT files are stored.
@@ -81,7 +81,7 @@ public:
      *     @param [in] activeLocations  The locations that are currently available to store the files.
      *     @param [in] allLocations     All the locations available, but not all need to be active.
      */
-     static void setLibraryPaths(QStringList const&activeLocations,
+    static void setLibraryPaths(QStringList const&activeLocations,
         QStringList const& allLocations = QStringList() );
 
     /*!
@@ -127,6 +127,15 @@ public:
      *     @return The list of available plugins.
      */
      static QList<IPlugin*> getPlugins();
+
+     /*!
+      *  Get the file path of the selected VLNV document.
+      *
+      *      @param [in] vlnv   VLNV of the selected document.
+      *
+      *      @return File path of the selected VLNV document.
+      */
+     static QString getDocumentFilePath(VLNV const& vlnv);
 
 private:
 

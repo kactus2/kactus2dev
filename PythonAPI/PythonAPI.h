@@ -28,10 +28,12 @@ class Register;
 class RegisterBase;
 class AddressBlock;
 class MemoryMap;
+class FileSet;
 
 class PortsInterface;
 class ParametersInterface;
 class MemoryMapInterface;
+class FileSetInterface;
 
 class ComponentParameterFinder;
 class ExpressionParser;
@@ -40,7 +42,6 @@ class ExpressionFormatter;
 
 class ParameterValidator;
 class MemoryMapValidator;
-
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data using Python.
@@ -169,6 +170,26 @@ public:
         std::string const& version);
 
     /*!
+     *  Get the directory path of the selected VLNV document.
+     *
+     *      @param [in] vendor      Vendor of the selected VLNV.
+     *      @param [in] library     Library of the selected VLNV.
+     *      @param [in] name        Name of the selected VLNV.
+     *      @param [in] version     Version of the selected VLNV.
+     *
+     *      @return Path of the selected VLNV document.
+     */
+    std::string getVLNVDirectory(std::string const& vendor, std::string const& library, std::string const& name,
+        std::string const& version) const;
+
+    /*!
+     *  Get the name of the first view contained within the active component.
+     *
+     *      @return Name of the first view contained within the active component.
+     */
+    std::string getFirstViewName();
+
+    /*!
      *  Set the selected component as active component.
      *
      *      @param [in] componentVLNV   VLNV of the selected component.
@@ -256,6 +277,27 @@ public:
     void setResetsForInterface(std::string const& mapName, std::string const& blockName,
         std::string const& registerName, std::string const& fieldName);
 
+    /*!
+     *  Get the interface for accessing file sets.
+     *
+     *      @return Interface for accessing file sets.
+     */
+    FileSetInterface* getFileSetInterface();
+
+    /*!
+     *  Set the available files for the file interface.
+     *
+     *      @param [in] setName     Name of the file set containing the available files.
+     */
+    void setFilesForInterface(std::string const& setName);
+
+    /*!
+     *  Set the available file builderss for the file interface.
+     *
+     *      @param [in] setName     Name of the file set containing the available file builders.
+     */
+    void setFileBuildersForInterface(std::string const& setName);
+
 private:
 
     /*!
@@ -267,6 +309,11 @@ private:
      *  Construct interfaces for memory items.
      */
     void constructMemoryInterface();
+
+    /*!
+     *  Construct the interfaces for file sets.
+     */
+    void constructFileSetInterface();
 
     /*!
      *  Get the selected memory map.
@@ -310,6 +357,15 @@ private:
     QSharedPointer<Field> getField(QSharedPointer<Register> containingRegister, QString const& fieldName) const;
 
     /*!
+     *  Get the selected file set.
+     *
+     *      @param [in] setName     Name of the selected file set.
+     *
+     *      @return The selected file set.
+     */
+    QSharedPointer<FileSet> getFileSet(QString const& setName) const;
+
+    /*!
      *  Send an error text for a non-existing memory map.
      *
      *      @param [in] mapName     Name of the memory map.
@@ -345,6 +401,13 @@ private:
     void sendFieldNotFoundError(QString const& mapName, QString const& blockName, QString const& registerName,
         QString const& fieldName) const;
 
+    /*!
+     *  Send an error text for a non-existing file set.
+     *
+     *      @param [in] setName     Name of the file set.
+     */
+    void sendFileSetNotFoundError(QString const& setName) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -366,6 +429,9 @@ private:
 
     //! Interface for accessing memory maps.
     MemoryMapInterface* mapInterface_;
+
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
 
     //! Component parameter finder.
     QSharedPointer<ComponentParameterFinder> parameterFinder_;
