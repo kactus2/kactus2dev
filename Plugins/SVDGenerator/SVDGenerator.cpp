@@ -142,7 +142,7 @@ void SVDGenerator::writeDevice(QXmlStreamWriter& writer, QSharedPointer<Componen
     writer.writeTextElement(QLatin1String("vendor"), topVLNV.getVendor());
     writer.writeTextElement(QLatin1String("name"), topVLNV.getName());
     writer.writeTextElement(QLatin1String("version"), topVLNV.getVersion());
-    writeDescription(writer, topComponent->getDescription());
+    writeOptionalElement(writer, "description", topComponent->getDescription());
 }
 
 //-----------------------------------------------------------------------------
@@ -226,7 +226,7 @@ void SVDGenerator::writeMapPeripheral(QXmlStreamWriter& writer, QSharedPointer<c
 
     writer.writeTextElement("name", memoryMap->name());
     writer.writeTextElement("version", component->getVlnv().getVersion());
-    writeDescription(writer, memoryMap->description());
+    writeOptionalElement(writer, "description", memoryMap->description());
     writer.writeTextElement("baseAddress", mapBaseAddressInHexa);
     writeAddressBlocks(writer, component, mapItem);
 
@@ -317,7 +317,7 @@ void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 con
         blockUsage = General::REGISTER;
     }
 
-    writer.writeTextElement("usage", General::usage2Str(blockUsage));
+    writeOptionalElement(writer, "usage", General::usage2Str(blockUsage));
 
     writer.writeEndElement(); //! addressBlock
 
@@ -350,14 +350,14 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
         writer.writeStartElement("register");
 
         writer.writeTextElement("name", registerItem->getName());
-        writeDescription(writer, realRegister->description());
+        writeOptionalElement(writer, "description", realRegister->description());
 
         QString addressOffsetInHexa = valueToHexa(registerItem->getAddress().toULongLong());
         QString sizeString = registerItem->getSize();
 
         writer.writeTextElement("addressOffset", addressOffsetInHexa);
         writer.writeTextElement("size", sizeString);
-        writer.writeTextElement("access", AccessTypes::access2Str(realRegister->getAccess()));
+        writeOptionalElement(writer, "access", AccessTypes::access2Str(realRegister->getAccess()));
 
         writeFields(writer, realRegister, registerItem);
 
@@ -382,6 +382,8 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
 
     writer.writeStartElement("fields");
 
+    quint64 registerOffset = registerItem->getAddress().toULongLong();
+
     for (auto fieldItem : fieldItems)
     {
         QSharedPointer<Field> actualField = getField(containingRegister, fieldItem);
@@ -390,7 +392,7 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
             writer.writeStartElement("field");
 
             writer.writeTextElement("name", fieldItem->getName());
-            writeDescription(writer, actualField->description());
+            writeOptionalElement(writer, "description", actualField->description());
 
             int aub = fieldItem->getAUB().toInt();
 
@@ -398,7 +400,7 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
             quint64 fieldOffset = fieldItem->getOffset().toInt();
             quint64 fieldWidth = fieldItem->getWidth().toInt();
 
-            fieldOffset = fieldAddress * aub + fieldOffset;
+            fieldOffset = (fieldAddress - registerOffset) * aub + fieldOffset;
             QString fieldStart = QString::number(fieldOffset);
             QString fieldEnd = "";
             if (fieldWidth > 0)
@@ -408,7 +410,7 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
             }
 
             writer.writeTextElement("bitRange", "[" + fieldStart + ":" + fieldEnd + "]");
-            writer.writeTextElement("access", AccessTypes::access2Str(actualField->getAccess()));
+            writeOptionalElement(writer, "access", AccessTypes::access2Str(actualField->getAccess()));
 
             writeEnumeratedValues(writer, actualField, fieldItem);
 
@@ -443,9 +445,9 @@ void SVDGenerator::writeEnumeratedValues(QXmlStreamWriter& writer, QSharedPointe
             writer.writeStartElement("enumeratedValue");
 
             writer.writeTextElement("name", enumeratedItem->getName());
-            writeDescription(writer, actualEnumeration->description());
+            writeOptionalElement(writer, "description", actualEnumeration->description());
             writer.writeTextElement("value", enumeratedItem->getValue());
-            writer.writeTextElement("usage", EnumeratedValue::usage2Str(actualEnumeration->getUsage()));
+            writeOptionalElement(writer, "usage", EnumeratedValue::usage2Str(actualEnumeration->getUsage()));
 
             writer.writeEndElement(); //! enumeratedValue
         }
@@ -491,7 +493,7 @@ void SVDGenerator::writeBlockPeripherals(QXmlStreamWriter& writer,
 
         writer.writeTextElement("name", block->name());
         writer.writeTextElement("version", containingComponent->getVlnv().getVersion());
-        writeDescription(writer, block->description());
+        writeOptionalElement(writer, "description", block->description());
 
         quint64 addressOffset = blockItem->getAddress().toULongLong() + mapBaseAddress;
         QString addressOffsetInHexa = valueToHexa(addressOffset);
@@ -505,13 +507,14 @@ void SVDGenerator::writeBlockPeripherals(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDGenerator::writeDescription()
+// Function: SVDGenerator::writeOptionalElement()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writeDescription(QXmlStreamWriter& writer, QString const& description)
+void SVDGenerator::writeOptionalElement(QXmlStreamWriter& writer, QString const& elementName,
+    QString const& elementValue)
 {
-    if (!description.isEmpty())
+    if (!elementValue.isEmpty())
     {
-        writer.writeTextElement("description", description);
+        writer.writeTextElement(elementName, elementValue);
     }
 }
 

@@ -284,12 +284,13 @@ private:
     QString valueToHexa(quint64 const& value) const;
 
     /*!
-     *  Write the text element of a description.
+     *  Write an optional the text element.
      *
      *      @param [in] writer          The xml stream writer.
-     *      @param [in] description     The selected description.
+     *      @param [in] elementName     Name of the element.
+     *      @param [in] elementValue    Value of the element.
      */
-    void writeDescription(QXmlStreamWriter& writer, QString const& description);
+    void writeOptionalElement(QXmlStreamWriter& writer, QString const& elementName, QString const& elementValue);
 
     //-----------------------------------------------------------------------------
     // Data.
