@@ -49,6 +49,7 @@ namespace MemoryDesignerConstants
     const QString ADDRESSBLOCK_TYPE = QLatin1String("addressBlock");
     const QString REGISTER_TYPE = QLatin1String("register");
     const QString FIELD_TYPE = QLatin1String("field");
+    const QString ENUMERATED_VALUE_TYPE = QLatin1String("enumeratedValue");
     const QString ADDRESSSPACE_TYPE = QLatin1String("addressSpace");
     const QString ADDRESSSEGMENT_TYPE = QLatin1String("segment");
 

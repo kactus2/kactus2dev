@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{0dde34ad-54aa-4fc2-bbd2-8d5415f77af4}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{c8453e3e-ca63-45c5-a10f-423715481c0d}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Header Files\GenerationControl">
+      <UniqueIdentifier>{7009044a-86f3-4af6-bf37-2718bcc8c9d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GenerationControl">
+      <UniqueIdentifier>{09c2593e-84c8-4829-84ba-ea995a46f97c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsing">
+      <UniqueIdentifier>{21a3e362-fae7-4c11-b06a-78360a46a713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parsing">
+      <UniqueIdentifier>{d457893a-3fc6-4705-ad26-2411ca02bfb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editors">
+      <UniqueIdentifier>{8b7c8b51-97ee-4e83-bc23-6cbc7648e9dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editors\ComponentEditor">
+      <UniqueIdentifier>{9e814157-9ba8-43dc-b231-86275c97a5c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editors\ComponentEditor\Common">
+      <UniqueIdentifier>{e09feb1a-3b8a-47dd-b8a7-a395fc83c1e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Editors">
+      <UniqueIdentifier>{ad685249-6c92-4ba6-a283-2dbb9b4844a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Editors\ComponentEditor">
+      <UniqueIdentifier>{7687627c-d9ca-4a21-b1c1-e92f30dafcdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Editors\ComponentEditor\Common">
+      <UniqueIdentifier>{9a7988fb-b9f4-4b8f-bbb6-850a98fd5724}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXACTModels">
+      <UniqueIdentifier>{5f2340a1-6cb0-46cc-93bf-67124d1c2f7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IPXACTModels\utilities">
+      <UniqueIdentifier>{51de001f-37b7-4952-addf-629c03824504}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXACTModels">
+      <UniqueIdentifier>{2971665b-6a04-407d-8318-6758c45d6da4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IPXACTModels\utilities">
+      <UniqueIdentifier>{bf39ed15-309f-4b4c-8595-d1afb6ed401c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editors\common">
+      <UniqueIdentifier>{68aaaf76-0814-4ed2-8b27-cbaeab308908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Editors\common">
+      <UniqueIdentifier>{4d97aad4-338a-442f-9067-0ea95c866587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editors\MemoryDesigner">
+      <UniqueIdentifier>{5132b76e-10a7-494f-b1c3-ed8b39447b19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Editors\MemoryDesigner">
+      <UniqueIdentifier>{c437154d-7686-4acf-b25f-b9ccbd0c3ed4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SVDGeneratorPlugin.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SVDGeneratorPlugin.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_SVDGenerator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SVDGeneratorPlugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SVDGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ParameterCache.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ParameterCache.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
+      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaDesign.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaInstance.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
+      <Filter>Source Files\IPXACTModels\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\common\ComponentInstanceParameterFinder.cpp">
+      <Filter>Source Files\Editors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
+      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
+      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
+      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
+      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ParameterCache.cpp">
+      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
+      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUSelectionDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CPUSelectionDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CPUSelectionDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectivityGraphUtilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ConnectivityGraphUtilities.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ConnectivityGraphUtilities.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
+      <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="SVDGeneratorPlugin.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SVDGenerator.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\editors\common\ComponentInstanceParameterFinder.h">
+      <Filter>Header Files\Editors\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
+      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CPUSelectionDialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ConnectivityGraphUtilities.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="SVDGenerator.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SVDGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaComponent.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h">
+      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaDesign.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaInstance.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">
+      <Filter>Header Files\IPXACTModels\utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
+      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
+      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
+      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
+      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
+      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
+      <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -24,6 +24,8 @@ class ComponentInstance;
 class Design;
 class DesignConfiguration;
 class Field;
+class EnumeratedValue;
+
 class Interconnection;
 class AddressSpace;
 class MemoryMap;
@@ -182,6 +184,18 @@ private:
      */
     QSharedPointer<MemoryItem> createField(QSharedPointer<const Field> field, QString const& registerIdentifier,
         int regAddress, int addressableUnitBits) const;
+
+    /*!
+     *  Creates a representation for an enumerated value within a field.
+     *
+     *      @param [in] enumeratedValue     The enumerated value to transform into the graph.
+     *      @param [in] fieldIdentifier     Identifier for the containing field.
+     *      @param [in] addressUnitBits     The number of address unit bits in the memory map.
+     *
+     *      @return Representation of the enumerated value.
+     */
+    QSharedPointer<MemoryItem> createEnumeratedValueItem(QSharedPointer<const EnumeratedValue> enumeratedValue,
+        QString const& fieldIdentifier, int const& addressUnitBits) const;
 
     /*!
      *  Creates graph vertices from the bus interfaces of the given component.

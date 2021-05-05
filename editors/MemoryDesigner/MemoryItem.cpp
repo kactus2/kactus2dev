@@ -25,7 +25,8 @@ width_(),
 size_(),
 offset_(),
 childItems_(),
-usage_(General::USAGE_COUNT)
+usage_(General::USAGE_COUNT),
+value_()
 {
 
 }
@@ -212,4 +213,20 @@ void MemoryItem::setUsage(General::Usage const& newUsage)
 General::Usage MemoryItem::getUsage() const
 {
     return usage_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setValue()
+//-----------------------------------------------------------------------------
+void MemoryItem::setValue(QString const& newValue)
+{
+    value_ = newValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getValue()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getValue() const
+{
+    return value_;
 }

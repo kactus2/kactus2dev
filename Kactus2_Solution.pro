@@ -24,7 +24,8 @@ SUBDIRS = \
     VerilogSourceAnalyzer \
     QuartusProjectGenerator \
     MemoryViewGenerator \
-    LinuxDeviceTreeGenerator
+    LinuxDeviceTreeGenerator \
+	SVDGenerator
 
 CONFIG(test) {
     SUBDIRS += test_all
@@ -89,6 +90,9 @@ MemoryViewGenerator.depends = IPXACTmodels
 
 LinuxDeviceTreeGenerator.file = Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.pro
 LinuxDeviceTreeGenerator.depends = IPXACTmodels
+
+SVDGenerator.subdir = Plugins/SVDGenerator
+SVDGenerator.depends = IPXACTmodels
 
 test_all.subdir = tests
 test_all.depends = IPXACTmodels

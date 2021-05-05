@@ -192,6 +192,20 @@ public:
      */
     General::Usage getUsage() const;
 
+    /*!
+     *  Set the value for the memory item.
+     *
+     *      @param [in] newValue    The new value.
+     */
+    void setValue(QString const& newValue);
+
+    /*!
+     *  Get the value of the memory item.
+     *
+     *      @return The value.
+     */
+    QString getValue() const;
+
 private:
 
 	// Disable copying.
@@ -227,6 +241,8 @@ private:
 
     //! The offset of the memory.
     QString offset_;
+
+    QString value_;
 
     //! The usage value of the memory item.
     General::Usage usage_;
