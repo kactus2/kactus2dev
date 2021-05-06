@@ -77,6 +77,11 @@ public:
         QVector<ConnectivityGraphUtilities::interfaceRoutes> const& cpuRoutes, bool peripheralsAreBlocks,
         bool peripheralsAreMaps);
 
+    /*!
+     *  Get the generated files.
+     *
+     *      @return The generated files.
+     */
     QVector<QString> getGeneratedFiles();
 
 private:

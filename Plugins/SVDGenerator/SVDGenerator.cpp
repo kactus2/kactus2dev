@@ -352,7 +352,7 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
         writer.writeTextElement("name", registerItem->getName());
         writeOptionalElement(writer, "description", realRegister->description());
 
-        QString addressOffsetInHexa = valueToHexa(registerItem->getAddress().toULongLong());
+        QString addressOffsetInHexa = valueToHexa(registerItem->getOffset().toULongLong());
         QString sizeString = registerItem->getSize();
 
         writer.writeTextElement("addressOffset", addressOffsetInHexa);
@@ -409,7 +409,7 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
                 fieldEnd = QString::number(fieldEndNumber);
             }
 
-            writer.writeTextElement("bitRange", "[" + fieldStart + ":" + fieldEnd + "]");
+            writer.writeTextElement("bitRange", "[" + fieldEnd + ":" + fieldStart + "]");
             writeOptionalElement(writer, "access", AccessTypes::access2Str(actualField->getAccess()));
 
             writeEnumeratedValues(writer, actualField, fieldItem);

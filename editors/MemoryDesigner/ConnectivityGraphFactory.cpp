@@ -342,7 +342,8 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
 void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> reg, int baseAddress, 
     int addressableUnitBits, QString const& blockIdentifier, QSharedPointer<MemoryItem> blockItem) const
 {
-    int registerAddress = baseAddress + expressionParser_->parseExpression(reg->getAddressOffset()).toInt();    
+    quint64 registerOffset = expressionParser_->parseExpression(reg->getAddressOffset()).toInt();
+    quint64 registerAddress = baseAddress + registerOffset;
     int registerSize =  expressionParser_->parseExpression(reg->getSize()).toInt();
     int registerDimension = expressionParser_->parseExpression(reg->getDimension()).toInt();
 
@@ -359,6 +360,7 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
         regItem->setDisplayName(reg->displayName());
         regItem->setAUB(QString::number(addressableUnitBits));
         regItem->setAddress(QString::number(registerAddress));
+        regItem->setOffset(QString::number(registerOffset));
         regItem->setSize(expressionParser_->parseExpression(reg->getSize()));
 
         foreach (QSharedPointer<Field> field, *reg->getFields())
