@@ -73,7 +73,7 @@ void SVDGenerator::generate(QSharedPointer<Component> topComponent, QString cons
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::getGeneratedFiles()
 //-----------------------------------------------------------------------------
-QVector<QString> SVDGenerator::getGeneratedFiles()
+QStringList SVDGenerator::getGeneratedFiles()
 {
     return generatedFiles_;
 }
@@ -102,7 +102,7 @@ void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString con
         }
         cpuNames.append(interfaceCPU->name());
 
-        svdFilePath += ".xml";
+        svdFilePath += ".svd";
 
         QFile outputFile(svdFilePath);
         if (!outputFile.open(QIODevice::WriteOnly))
@@ -136,7 +136,7 @@ void SVDGenerator::writeDevice(QXmlStreamWriter& writer, QSharedPointer<Componen
 
     writer.writeAttribute(QLatin1String("schemaVersion"), QLatin1String("1.1"));
     writer.writeAttribute(QLatin1String("xmlns:xs"), QLatin1String("http://www.w3.org/2001/XMLSchema-instance"));
-    writer.writeAttribute(QLatin1String("xs: noNamespaceSchemaLocation"), QLatin1String("CMSIS-SVD.xsd"));
+    writer.writeAttribute(QLatin1String("xs:noNamespaceSchemaLocation"), QLatin1String("CMSIS-SVD.xsd"));
 
     VLNV topVLNV = topComponent->getVlnv();
     writer.writeTextElement(QLatin1String("vendor"), topVLNV.getVendor());
@@ -259,23 +259,36 @@ QSharedPointer<MemoryMap> SVDGenerator::getMemoryMap(QSharedPointer<MemoryItem> 
 void SVDGenerator::writeAddressBlocks(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
     QSharedPointer<MemoryItem> mapItem)
 {
-    QVector<QSharedPointer<MemoryItem>> blockItems =
-        getSubMemoryItems(mapItem, MemoryDesignerConstants::ADDRESSBLOCK_TYPE);
-    if (!blockItems.isEmpty())
+    for (auto blockItem : getAddressBlockItems(mapItem))
     {
-        for (auto blockItem : blockItems)
+        QSharedPointer<AddressBlock> containingBlock =
+            getAddressBlock(containingComponent, mapItem, blockItem);
+        if (!containingBlock)
         {
-            QSharedPointer<AddressBlock> containingBlock =
-                getAddressBlock(containingComponent, mapItem, blockItem);
-            if (!containingBlock)
-            {
-                continue;
-            }
+            continue;
+        }
 
-            writeSingleAddressBlock(
-                writer, blockItem->getAddress().toULongLong(), containingBlock, blockItem);
+        writeSingleAddressBlock(
+            writer, blockItem->getAddress().toULongLong(), containingBlock, blockItem);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::getAddressBlockItems()
+//-----------------------------------------------------------------------------
+QVector<QSharedPointer<MemoryItem> > SVDGenerator::getAddressBlockItems(QSharedPointer<MemoryItem> mapItem) const
+{
+    QVector<QSharedPointer<MemoryItem> > blockItems;
+
+    for (auto subItem : getSubMemoryItems(mapItem, MemoryDesignerConstants::ADDRESSBLOCK_TYPE))
+    {
+        if (subItem->getUsage() != General::MEMORY)
+        {
+            blockItems.append(subItem);
         }
     }
+
+    return blockItems;
 }
 
 //-----------------------------------------------------------------------------
@@ -311,13 +324,18 @@ void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 con
     writer.writeTextElement("offset", addressOffsetInHexa);
     writer.writeTextElement("size", rangeInHexa);
 
+    QString usageString = "buffer";
     General::Usage blockUsage = blockItem->getUsage();
-    if (blockUsage == General::USAGE_COUNT)
+    if (blockUsage == General::REGISTER || blockUsage == General::USAGE_COUNT)
     {
-        blockUsage = General::REGISTER;
+        usageString = "registers";
+    }
+    if (blockUsage == General::RESERVED)
+    {
+        usageString = "reserved";
     }
 
-    writeOptionalElement(writer, "usage", General::usage2Str(blockUsage));
+    writer.writeTextElement("usage", usageString);
 
     writer.writeEndElement(); //! addressBlock
 
@@ -479,9 +497,7 @@ void SVDGenerator::writeBlockPeripherals(QXmlStreamWriter& writer,
     QSharedPointer<const Component> containingComponent, QSharedPointer<MemoryItem> mapItem,
     quint64 mapBaseAddress)
 {
-    QVector<QSharedPointer<MemoryItem> > blockItems =
-        getSubMemoryItems(mapItem, MemoryDesignerConstants::ADDRESSBLOCK_TYPE);
-    for (auto blockItem : blockItems)
+    for (auto blockItem : getAddressBlockItems(mapItem))
     {
         QSharedPointer<AddressBlock> block = getAddressBlock(containingComponent, mapItem, blockItem);
         if (!block)

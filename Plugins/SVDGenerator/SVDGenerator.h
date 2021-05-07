@@ -82,7 +82,7 @@ public:
      *
      *      @return The generated files.
      */
-    QVector<QString> getGeneratedFiles();
+    QStringList getGeneratedFiles();
 
 private:
 
@@ -159,6 +159,15 @@ private:
      */
     void writeAddressBlocks(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
         QSharedPointer<MemoryItem> mapItem);
+
+    /*!
+     *  Get the available address block items of the selected memory map item.
+     *
+     *      @param [in] mapItem     The selected memory map item.
+     *
+     *      @return Address blocks with usage other than memory of the selected memory map item.
+     */
+    QVector<QSharedPointer<MemoryItem> > getAddressBlockItems(QSharedPointer<MemoryItem> mapItem) const;
 
     /*!
      *  Get a list of the selected sub items of the selected memory item.
@@ -307,7 +316,8 @@ private:
     //! Factory for creating connectivity graphs.
     ConnectivityGraphFactory graphFactory_;
 
-    QVector<QString> generatedFiles_;
+    //! Paths to the generated files.
+    QStringList generatedFiles_;
 };
 
 #endif // SVDGENERATOR_H

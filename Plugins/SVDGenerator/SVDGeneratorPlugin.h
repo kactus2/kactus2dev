@@ -128,15 +128,15 @@ private:
     //-----------------------------------------------------------------------------
 
     /*!
-     *  Saves the generated file to top component fileset.
+     *  Saves the generated file to the selected file set of the top component.
      *
-     *      @param [in] targetFile      The generated file path.
-     *      @param [in] component       The top level component.
      *      @param [in] utility         The plugin utility interface.
-     *
-     *      @return <Description>.
+     *      @param [in] svdFiles        The generated file paths.
+     *      @param [in] component       The top level component.
+     *      @param [in] fileSetName     Name of the target file set.
      */
-//     void saveToFileset(QString const& targetFile, QSharedPointer<Component> component, IPluginUtility* utility);
+    void saveToFileset(IPluginUtility* utility, QStringList const& svdFiles, QSharedPointer<Component> component,
+        QString const& fileSetName);
 };
 
 #endif // SVDGENERATORPLUGIN_H

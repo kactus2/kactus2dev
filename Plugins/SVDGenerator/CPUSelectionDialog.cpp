@@ -33,9 +33,11 @@
 // Function: CPUSelectionDialog::CPUSelectionDialog()
 //-----------------------------------------------------------------------------
 CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
-    QSharedPointer<QList<QSharedPointer<View>>> views, QWidget *parent):
+    QStringList const& viewNames, QStringList const& fileSetNames, QWidget *parent):
 QDialog(parent),
 viewSelection_(new QComboBox(this)),
+fileSetSelection_(new QComboBox(this)),
+fileSetBox_(new QGroupBox("Add files to file set")),
 cpuSelection_(),
 cpuLayout_(),
 library_(library),
@@ -44,17 +46,14 @@ graphFactory_(library),
 blockPeripherals_(),
 mapPeripherals_()
 {
-    if (!views->isEmpty())
-    {
-        QStringList viewNames;
-        for (auto view : *views)
-        {
-            viewNames.append(view->name());
-        }
+    viewSelection_->addItems(viewNames);
+    viewSelection_->setCurrentIndex(0);
 
-        viewSelection_->addItems(viewNames);
-        viewSelection_->setCurrentIndex(0);
-    }
+    fileSetSelection_->addItem("");
+    fileSetSelection_->addItems(fileSetNames);
+    fileSetSelection_->setEditable(true);
+
+    fileSetBox_->setCheckable(true);
 
     setupLayout();
 
@@ -93,20 +92,29 @@ void CPUSelectionDialog::setupLayout()
     viewLayout->addWidget(viewLabel);
     viewLayout->addWidget(viewSelection_, 1);
 
-    QLabel* peripheralLabel(new QLabel("Create peripherals from:"));
     blockPeripherals_ = new QCheckBox("Address blocks", this);
     mapPeripherals_ = new QCheckBox("Memory maps", this);
     blockPeripherals_->setChecked(true);
     mapPeripherals_->setChecked(false);
 
     QVBoxLayout* peripheralLayout(new QVBoxLayout());
-    peripheralLayout->addWidget(peripheralLabel);
     peripheralLayout->addWidget(blockPeripherals_);
     peripheralLayout->addWidget(mapPeripherals_);
-    peripheralLayout->addStretch(1);
+
+    QGroupBox* peripheralBox(new QGroupBox("Create peripherals from:"));
+    peripheralBox->setLayout(peripheralLayout);
+
+    QVBoxLayout* filesetLayout(new QVBoxLayout());
+    filesetLayout->addWidget(fileSetSelection_);
+
+    fileSetBox_->setLayout(filesetLayout);
+
+    QVBoxLayout* leftLayout(new QVBoxLayout());
+    leftLayout->addWidget(peripheralBox);
+    leftLayout->addWidget(fileSetBox_);
 
     QHBoxLayout* middleLayout(new QHBoxLayout());
-    middleLayout->addLayout(peripheralLayout);
+    middleLayout->addLayout(leftLayout);
     middleLayout->addWidget(cpuGroup);
 
     masterLayout->addLayout(viewLayout);
@@ -177,6 +185,8 @@ void CPUSelectionDialog::setupCPUSelection()
             }
         }
     }
+
+    cpuLayout_->addStretch(1);
 }
 
 //-----------------------------------------------------------------------------
@@ -264,4 +274,20 @@ bool CPUSelectionDialog::peripheralsAreBlocks() const
 bool CPUSelectionDialog::peripheralsAreMaps() const
 {
     return mapPeripherals_->isChecked();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::saveToFileSet()
+//-----------------------------------------------------------------------------
+bool CPUSelectionDialog::saveToFileSet() const
+{
+    return fileSetBox_->isChecked();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::getTargetFileSet()
+//-----------------------------------------------------------------------------
+QString CPUSelectionDialog::getTargetFileSet() const
+{
+    return fileSetSelection_->currentText();
 }

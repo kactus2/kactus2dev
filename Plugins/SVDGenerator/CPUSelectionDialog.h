@@ -43,11 +43,12 @@ public:
      *
 	 *      @param [in] topComponent    Top component of the selected design.
 	 *      @param [in] library         Interface for accessing the library.
-	 *      @param [in] views           Available views of the design.
+	 *      @param [in] viewsNames      Names of the available views.
+     *      @param [in] fileSetNames    Names of the available file sets.
 	 *      @param [in] parent          Parent widget.
 	 */
 	CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
-        QSharedPointer<QList<QSharedPointer<View> > > views, QWidget *parent);
+        QStringList const& viewNames, QStringList const& fileSetNames, QWidget *parent);
 
 	/*!
      *  The destructor.
@@ -74,6 +75,20 @@ public:
      *      @return True, if the peripherals are memory maps, false otherwise.
      */
     bool peripheralsAreMaps() const;
+
+    /*!
+     *  Check if the files should be saved to a file set.
+     *
+     *      @return True, if the files should be saved to a file set, false otherwise.
+     */
+    bool saveToFileSet() const;
+
+    /*!
+     *  Get the name of the file set to save the files to.
+     *
+     *      @return Name of the target file set.
+     */
+    QString getTargetFileSet() const;
 
 private slots:
 
@@ -146,9 +161,15 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! Widget for selecting view-component instantiation-file set -tuple.
+    
+    //! Widget for selecting view.
     QComboBox* viewSelection_;
+
+    //! Widget for selecting target file set.
+    QComboBox* fileSetSelection_;
+
+    //! Group box for containing the file set widget.
+    QGroupBox* fileSetBox_;
 
     //! Containers for the selected CPUs.
     QVector<QSharedPointer<CPUCheckInterface>> cpuSelection_;

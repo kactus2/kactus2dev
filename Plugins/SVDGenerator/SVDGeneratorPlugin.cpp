@@ -133,10 +133,8 @@ bool SVDGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> c
 //-----------------------------------------------------------------------------
 // Function: SVDGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility,
-    QSharedPointer<Component> component,
-    QSharedPointer<Design> design,
-    QSharedPointer<DesignConfiguration> designConfiguration)
+void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration)
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
@@ -148,14 +146,14 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility,
     controlTuple.designConfiguration = designConfiguration;
 
     QSharedPointer<QList<QSharedPointer<View> > > views = GenerationControl::findPossibleViews(controlTuple);
-    QString activeView;
-    if (!views->isEmpty())
+    QStringList viewNames;
+    for (auto view : *views)
     {
-        activeView = views->first()->name();
+        viewNames.append(view->name());
     }
 
-    CPUSelectionDialog selectionDialog(
-        component, utility->getLibraryInterface(), views, utility->getParentWidget());
+    CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames,
+        component->getFileSetNames(), utility->getParentWidget());
     if (selectionDialog.exec() == QDialog::Accepted)
     {
         QVector<ConnectivityGraphUtilities::interfaceRoutes> cpuRoutes = selectionDialog.getSelectedCPUs();
@@ -167,7 +165,15 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility,
             SVDGenerator generator(utility->getLibraryInterface());
             generator.generate(component, xmlFilePath, cpuRoutes, blocksArePeripherals, mapsArePeripherals);
 
-            QVector<QString> generatedFiles = generator.getGeneratedFiles();
+            if (selectionDialog.saveToFileSet())
+            {
+                QString fileSetName = selectionDialog.getTargetFileSet();
+                if (!fileSetName.isEmpty())
+                {
+                    QStringList generatedFiles = generator.getGeneratedFiles();
+                    saveToFileset(utility, generatedFiles, component, fileSetName);
+                }
+            }
 
             utility->printInfo(tr("Generation complete."));
         }
@@ -185,45 +191,48 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility,
 //-----------------------------------------------------------------------------
 // Function: SVDGeneratorPlugin::saveToFileset()
 //-----------------------------------------------------------------------------
-/*
-void SVDGeneratorPlugin::saveToFileset(QString const& targetFile, QSharedPointer<Component> component,
-    IPluginUtility* utility)
+void SVDGeneratorPlugin::saveToFileset(IPluginUtility* utility, QStringList const& svdFiles,
+    QSharedPointer<Component> component, QString const& fileSetName)
 {
+    if (svdFiles.isEmpty())
+    {
+        return;
+    }
+
     QString xmlFilePath = utility->getLibraryInterface()->getDirectoryPath(component->getVlnv());
-
-    QSharedPointer<Component> topComponent = component.dynamicCast<Component>();
-
-    QString filesetName = "systemViewDescriptions";
-    QSharedPointer<FileSet> targetFileset = topComponent->getFileSet(filesetName);
+    QSharedPointer<FileSet> targetFileset = component->getFileSet(fileSetName);
     if (!targetFileset)
     {
-        targetFileset = QSharedPointer<FileSet>(new FileSet(filesetName));
-        topComponent->getFileSets()->append(targetFileset);
+        targetFileset = QSharedPointer<FileSet>(new FileSet(fileSetName));
+        component->getFileSets()->append(targetFileset);
     }
 
-    QString relativeFilePath = General::getRelativePath(xmlFilePath, targetFile);
-
-    QSharedPointer<File> file;
-    foreach(QSharedPointer<File> filesetFile, *targetFileset->getFiles())
+    for (auto fileName : svdFiles)
     {
-        if (filesetFile->name().compare(relativeFilePath) == 0)
+        QString relativeFilePath = General::getRelativePath(xmlFilePath, fileName);
+
+        QSharedPointer<File> file;
+        foreach(QSharedPointer<File> filesetFile, *targetFileset->getFiles())
         {
-            file = filesetFile;
+            if (filesetFile->name().compare(relativeFilePath) == 0)
+            {
+                file = filesetFile;
+            }
         }
+
+        if (!file)
+        {
+            file = QSharedPointer<File>(new File(relativeFilePath));
+            file->getFileTypes()->append(QStringLiteral("svd"));
+
+            targetFileset->addFile(file);
+            utility->printInfo(tr("Added file %1 to top component file set %2.").arg(fileName, fileSetName));
+        }
+
+        file->setDescription(tr("Generated on %1 by Kactus2 %2 plugin version %3.").arg(
+            QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss"), getName(), getVersion()));
     }
 
-    if (!file)
-    {
-        file = QSharedPointer<File>(new File(relativeFilePath));
-        file->getFileTypes()->append(QStringLiteral("unknown"));
-
-        targetFileset->addFile(file);
-        utility->printInfo(tr("Added file %1 to top component file set %2.").arg(targetFile, filesetName));
-    }
-
-    file->setDescription(tr("Generated on %1 by Kactus2 %2 plugin version %3.").arg(
-        QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss"), getName(), getVersion()));
 
     utility->getLibraryInterface()->writeModelToFile(component);
 }
-*/
