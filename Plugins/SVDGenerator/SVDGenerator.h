@@ -74,8 +74,8 @@ public:
      *      @param [in] peripheralsAreMaps      Flag for constructing peripherals as memory maps.
      */
     void generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-        QVector<ConnectivityGraphUtilities::interfaceRoutes> const& cpuRoutes, bool peripheralsAreBlocks,
-        bool peripheralsAreMaps);
+        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> > const& cpuRoutes,
+        bool peripheralsAreBlocks, bool peripheralsAreMaps);
 
     /*!
      *  Get the generated files.
@@ -98,11 +98,21 @@ private:
      *      @param [in] cpuRoute                The selected CPU route container.
      *      @param [in] peripheralsAreBlocks    Flag for constructing peripherals as address blocks.
      *      @param [in] peripheralsAreMaps      Flag for constructing peripherals as memory maps.
-     *      @param [in] cpuNames                Names of the CPUs generated into SVD files.
+     *      @param [in] fileNames               Names of the generated SVD files.
      */
     void writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-        ConnectivityGraphUtilities::interfaceRoutes const& cpuRoute, bool peripheralsAreBlocks,
-        bool peripheralsAreMaps, QStringList& cpuNames);
+        QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuRoute, bool peripheralsAreBlocks,
+        bool peripheralsAreMaps, QStringList& fileNames);
+
+    /*!
+     *  Get the number of files containing the selected name.
+     *
+     *      @param [in] fileNames   List of the generated files.
+     *      @param [in] fileName    The selected file name.
+     *
+     *      @return Number of files containing the same name.
+     */
+    int getFileNumberExtension(QStringList const& fileNames, QString const& fileName) const;
 
     /*!
      *  Write the device information.
@@ -115,9 +125,21 @@ private:
     /*!
      *  Write the selected CPU.
      *
-     *      @param [in] currentCPU  The selected CPU.
+     *      @param [in] writer          The xml stream writer.
+     *      @param [in] currentCPU      The selected CPU.
+     *      @param [in] cpuContianer    The CPU data container.
      */
-    void writeCPU(QSharedPointer<Cpu> currentCPU);
+    void writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU,
+        QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuContainer);
+
+    /*!
+     *  Write a boolean flag.
+     *
+     *      @param [in] writer          The xml stream writer.
+     *      @param [in] elementName     Name of the selected boolean flag.
+     *      @param [in] state           The flag state.
+     */
+    void writeBoolean(QXmlStreamWriter& writer, QString const& elementName, bool state);
 
     /*!
      *  Write the address space of the selected CPU.
@@ -136,7 +158,7 @@ private:
      *      @param [in] peripheralsAreMaps      Flag for constructing peripherals as memory maps.
      */
     void writePeripherals(QXmlStreamWriter& writer,
-        ConnectivityGraphUtilities::interfaceRoutes const& routeCollection, bool peripheralsAreBlocks,
+        QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> routeCollection, bool peripheralsAreBlocks,
         bool peripheralsAreMaps);
 
     /*!

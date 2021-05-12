@@ -28,6 +28,7 @@
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QFormLayout>
 
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::CPUSelectionDialog()
@@ -44,7 +45,14 @@ library_(library),
 component_(topComponent),
 graphFactory_(library),
 blockPeripherals_(),
-mapPeripherals_()
+mapPeripherals_(),
+cpuDetailSelector_(new QComboBox(this)),
+revisionEditor_(new QLineEdit(this)),
+endianEditor_(new QComboBox(this)),
+nvicPrioBitsEditor_(new QLineEdit(this)),
+mpuPresentCheckBox_(new QCheckBox("MPU presence", this)),
+fpuPresentCheckBox_(new QCheckBox("FPU presence", this)),
+vendorSystickConfigCheckBox_(new QCheckBox("Vendor-specific System Tick Timer", this))
 {
     viewSelection_->addItems(viewNames);
     viewSelection_->setCurrentIndex(0);
@@ -55,9 +63,27 @@ mapPeripherals_()
 
     fileSetBox_->setCheckable(true);
 
+    endianEditor_->addItem("little");
+    endianEditor_->addItem("big");
+    endianEditor_->addItem("selectable");
+    endianEditor_->addItem("other");
+
     setupLayout();
 
     connect(viewSelection_, SIGNAL(currentIndexChanged(int)), this, SLOT(onViewChanged()), Qt::UniqueConnection);
+    connect(cpuDetailSelector_, SIGNAL(currentTextChanged(const QString&)),
+        this, SLOT(loadCPUDetails(QString const&)), Qt::UniqueConnection);
+    connect(revisionEditor_, SIGNAL(editingFinished()), this, SLOT(onRevisionChanged()), Qt::UniqueConnection);
+    connect(endianEditor_, SIGNAL(currentTextChanged(const QString)),
+        this, SLOT(onEndianChanged(QString const&)), Qt::UniqueConnection);
+    connect(mpuPresentCheckBox_, SIGNAL(clicked(bool)),
+        this, SLOT(onMpuPresenceChanged(bool)), Qt::UniqueConnection);
+    connect(fpuPresentCheckBox_, SIGNAL(clicked(bool)),
+        this, SLOT(onFpuPresenceChanged(bool)), Qt::UniqueConnection);
+    connect(nvicPrioBitsEditor_, SIGNAL(editingFinished()),
+        this, SLOT(onNvicPrioBitsChanged()), Qt::UniqueConnection);
+    connect(vendorSystickConfigCheckBox_, SIGNAL(clicked(bool)),
+        this, SLOT(onVendorSystickConfigChanged(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,8 +99,6 @@ void CPUSelectionDialog::onViewChanged()
 //-----------------------------------------------------------------------------
 void CPUSelectionDialog::setupLayout()
 {
-    QVBoxLayout* masterLayout(new QVBoxLayout(this));
-
     cpuLayout_ = new QVBoxLayout();
 
     QGroupBox* cpuGroup(new QGroupBox("Selected CPUs:"));
@@ -117,17 +141,35 @@ void CPUSelectionDialog::setupLayout()
     middleLayout->addLayout(leftLayout);
     middleLayout->addWidget(cpuGroup);
 
-    masterLayout->addLayout(viewLayout);
-    masterLayout->addLayout(middleLayout);
-    masterLayout->addWidget(dialogButtons);
-
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 
     connect(blockPeripherals_, SIGNAL(clicked(bool)), this, SLOT(onBlockPeripherals(bool)), Qt::UniqueConnection);
     connect(mapPeripherals_, SIGNAL(clicked(bool)), this, SLOT(onMapPeripherals(bool)), Qt::UniqueConnection);
 
-    void onMapPeripherals();
+    QVBoxLayout* leftTopLayout(new QVBoxLayout());
+    leftTopLayout->addLayout(viewLayout);
+    leftTopLayout->addLayout(middleLayout);
+
+    QFormLayout* cpuDetailsLayout(new QFormLayout());
+    cpuDetailsLayout->addRow(cpuDetailSelector_);
+    cpuDetailsLayout->addRow("Revision:", revisionEditor_);
+    cpuDetailsLayout->addRow("NVIC bits:", nvicPrioBitsEditor_);
+    cpuDetailsLayout->addRow("Endian:", endianEditor_);
+    cpuDetailsLayout->addRow(mpuPresentCheckBox_);
+    cpuDetailsLayout->addRow(fpuPresentCheckBox_);
+    cpuDetailsLayout->addRow(vendorSystickConfigCheckBox_);
+
+    QGroupBox* cpuDetailsBox(new QGroupBox("CPU details"));
+    cpuDetailsBox->setLayout(cpuDetailsLayout);
+
+    QHBoxLayout* topLayout(new QHBoxLayout());
+    topLayout->addLayout(leftTopLayout, 1);
+    topLayout->addWidget(cpuDetailsBox);
+
+    QVBoxLayout* masterLayout(new QVBoxLayout(this));
+    masterLayout->addLayout(topLayout);
+    masterLayout->addWidget(dialogButtons);
 
     setupCPUSelection();
 }
@@ -143,6 +185,7 @@ void CPUSelectionDialog::setupCPUSelection()
     }
 
     cpuSelection_.clear();
+    cpuDetailSelector_->clear();
 
     QString activeView = viewSelection_->currentText();
 
@@ -156,8 +199,9 @@ void CPUSelectionDialog::setupCPUSelection()
         QSharedPointer<const ConnectivityInterface> master = masterRoute.first();
         if (checkBoxExistsForInterface(master))
         {
-            QSharedPointer<CPUCheckInterface> checkInterface = getMatchingCheckInterface(master);
-            checkInterface->cpuRoutes_.append(masterRoute);
+            QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> checkInterface =
+                getMatchingCheckInterface(master);
+            checkInterface->routes_.append(masterRoute);
         }
         else
         {
@@ -174,16 +218,33 @@ void CPUSelectionDialog::setupCPUSelection()
                     QCheckBox* checkBox = new QCheckBox(checkBoxText, this);
                     checkBox->setChecked(true);
 
-                    QSharedPointer<CPUCheckInterface> checkInterface(new CPUCheckInterface());
+                    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> checkInterface(
+                        new ConnectivityGraphUtilities::cpuCheckInterface());
+                    checkInterface->cpuID_ = checkBoxText;
                     checkInterface->cpuInterface_ = master;
                     checkInterface->cpuCheck_ = checkBox;
-                    checkInterface->cpuRoutes_.append(masterRoute);
+                    checkInterface->routes_.append(masterRoute);
+
+                    checkInterface->revision_ = "";
+                    checkInterface->endian_ = "other";
+                    checkInterface->mpuPresent_ = false;
+                    checkInterface->fpuPresent_ = false;
+                    checkInterface->nvicPrioBits_ = "";
+                    checkInterface->vendorSystickConfig_ = false; 
 
                     cpuSelection_.append(checkInterface);
                     cpuLayout_->addWidget(checkBox);
+
+                    cpuDetailSelector_->addItem(checkBoxText);
                 }
             }
         }
+    }
+
+    if (cpuDetailSelector_->count() > 0)
+    {
+        cpuDetailSelector_->setCurrentIndex(0);
+        loadCPUDetails(cpuDetailSelector_->currentText());
     }
 
     cpuLayout_->addStretch(1);
@@ -208,7 +269,7 @@ bool CPUSelectionDialog::checkBoxExistsForInterface(QSharedPointer<const Connect
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::getMatchingCheckInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<CPUSelectionDialog::CPUCheckInterface> CPUSelectionDialog::getMatchingCheckInterface(
+QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> CPUSelectionDialog::getMatchingCheckInterface(
     QSharedPointer<const ConnectivityInterface> master)
 {
     for (auto checkInterface : cpuSelection_)
@@ -219,25 +280,21 @@ QSharedPointer<CPUSelectionDialog::CPUCheckInterface> CPUSelectionDialog::getMat
         }
     }
 
-    return QSharedPointer<CPUCheckInterface>();
+    return QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::getSelectedCPUs()
 //-----------------------------------------------------------------------------
-QVector<ConnectivityGraphUtilities::interfaceRoutes> CPUSelectionDialog::getSelectedCPUs()
+QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> > CPUSelectionDialog::getSelectedCPUs()
 {
-    QVector<ConnectivityGraphUtilities::interfaceRoutes> interfaceRoutes;
+    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> > interfaceRoutes;
 
     for (auto cpuCheck : cpuSelection_)
     {
         if (cpuCheck->cpuCheck_->isChecked())
         {
-            ConnectivityGraphUtilities::interfaceRoutes newInterfaceContainer;
-            newInterfaceContainer.masterInterface_ = cpuCheck->cpuInterface_;
-            newInterfaceContainer.routes_ = cpuCheck->cpuRoutes_;
-
-            interfaceRoutes.append(newInterfaceContainer);
+            interfaceRoutes.append(cpuCheck);
         }
     }
 
@@ -290,4 +347,142 @@ bool CPUSelectionDialog::saveToFileSet() const
 QString CPUSelectionDialog::getTargetFileSet() const
 {
     return fileSetSelection_->currentText();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::loadCPUDetails()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::loadCPUDetails(QString const& selectedCPU)
+{
+    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuCheck = getCheckCpuByID(selectedCPU);
+    if (!cpuCheck)
+    {
+        return;
+    }
+
+    blockCpuDetailEditors(true);
+
+    revisionEditor_->setText(cpuCheck->revision_);
+
+    endianEditor_->setCurrentText(cpuCheck->endian_);
+    mpuPresentCheckBox_->setChecked(cpuCheck->mpuPresent_);
+    fpuPresentCheckBox_->setChecked(cpuCheck->fpuPresent_);
+    nvicPrioBitsEditor_->setText(cpuCheck->nvicPrioBits_);
+    vendorSystickConfigCheckBox_->setChecked(cpuCheck->vendorSystickConfig_);
+
+    blockCpuDetailEditors(false);
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::getCheckCpuByID()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> CPUSelectionDialog::getCheckCpuByID(
+    QString const& cpuID) const
+{
+    for (auto cpuCheck : cpuSelection_)
+    {
+        if (cpuCheck->cpuID_.compare(cpuID) == 0)
+        {
+            return cpuCheck;
+        }
+    }
+
+    return QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::blockCpuDetailEditors()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::blockCpuDetailEditors(bool blockStatus)
+{
+    revisionEditor_->blockSignals(blockStatus);
+    endianEditor_->blockSignals(blockStatus);
+    mpuPresentCheckBox_->blockSignals(blockStatus);
+    fpuPresentCheckBox_->blockSignals(blockStatus);
+    nvicPrioBitsEditor_->blockSignals(blockStatus);
+    vendorSystickConfigCheckBox_->blockSignals(blockStatus);
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::onRevisionChanged()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::onRevisionChanged()
+{
+    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuCheck =
+        getCheckCpuByID(cpuDetailSelector_->currentText());
+
+    if (cpuCheck)
+    {
+        cpuCheck->revision_ = revisionEditor_->text();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::onEndianChanged()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::onEndianChanged(QString const& newEndian)
+{
+    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuCheck =
+        getCheckCpuByID(cpuDetailSelector_->currentText());
+
+    if (cpuCheck)
+    {
+        cpuCheck->endian_ = newEndian;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::onMpuPresenceChanged()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::onMpuPresenceChanged(bool newState)
+{
+    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuCheck =
+        getCheckCpuByID(cpuDetailSelector_->currentText());
+
+    if (cpuCheck)
+    {
+        cpuCheck->mpuPresent_ = mpuPresentCheckBox_->isChecked();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::onFpuPresenceChanged()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::onFpuPresenceChanged(bool newState)
+{
+    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuCheck =
+        getCheckCpuByID(cpuDetailSelector_->currentText());
+
+    if (cpuCheck)
+    {
+        cpuCheck->fpuPresent_ = fpuPresentCheckBox_->isChecked();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::onNvicPrioBitsChanged()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::onNvicPrioBitsChanged()
+{
+    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuCheck =
+        getCheckCpuByID(cpuDetailSelector_->currentText());
+
+    if (cpuCheck)
+    {
+        cpuCheck->nvicPrioBits_ = nvicPrioBitsEditor_->text();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::onVendorSystickConfigChanged()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::onVendorSystickConfigChanged(bool newState)
+{
+    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuCheck =
+        getCheckCpuByID(cpuDetailSelector_->currentText());
+
+    if (cpuCheck)
+    {
+        cpuCheck->vendorSystickConfig_ = vendorSystickConfigCheckBox_->isChecked();
+    }
 }

@@ -156,7 +156,8 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
         component->getFileSetNames(), utility->getParentWidget());
     if (selectionDialog.exec() == QDialog::Accepted)
     {
-        QVector<ConnectivityGraphUtilities::interfaceRoutes> cpuRoutes = selectionDialog.getSelectedCPUs();
+        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> > cpuRoutes =
+            selectionDialog.getSelectedCPUs();
         if (!cpuRoutes.isEmpty())
         {
             bool blocksArePeripherals = selectionDialog.peripheralsAreBlocks();

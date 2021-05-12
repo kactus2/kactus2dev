@@ -20,16 +20,41 @@
 
 #include <library/LibraryInterface.h>
 
+#include <QCheckBox>
+
 //-----------------------------------------------------------------------------
 //! Utility functions for connectivity graphs.
 //-----------------------------------------------------------------------------
 namespace ConnectivityGraphUtilities
 {
     //! Container for routes connected to a master interface.
-    struct interfaceRoutes 
+    struct cpuCheckInterface 
     {
-        //! The master interface.
-        QSharedPointer<const ConnectivityInterface> masterInterface_;
+        QString cpuID_;
+
+        //! Check box for the CPU.
+        QCheckBox* cpuCheck_;
+
+        //! Revision of the CPU.
+        QString revision_;
+
+        //! Endian data of the CPU.
+        QString endian_;
+
+        //! MPU presence of the CPU.
+        bool mpuPresent_;
+
+        //! FPU presence of the CPU.
+        bool fpuPresent_;
+
+        //! Number of NVIC bits of the CPU.
+        QString nvicPrioBits_;
+
+        //! Vendor-specific system tick timer of the CPU.
+        bool vendorSystickConfig_;
+
+        //! Interface containing the CPU.
+        QSharedPointer<const ConnectivityInterface> cpuInterface_;
 
         //! Routes connected to the master interface.
         QVector < QVector<QSharedPointer<const ConnectivityInterface> > > routes_;
