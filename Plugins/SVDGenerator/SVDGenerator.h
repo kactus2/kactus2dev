@@ -123,6 +123,15 @@ private:
     void writeDevice(QXmlStreamWriter& writer, QSharedPointer<Component> topComponent);
 
     /*!
+     *  Remove ' ' from the front and back of the selected name and replace the remaining with _.
+     *
+     *      @param [in] name    The selected name.
+     *
+     *      @return The formatted name.
+     */
+    QString formatName(QString const& name) const;
+
+    /*!
      *  Write the selected CPU.
      *
      *      @param [in] writer          The xml stream writer.
@@ -167,10 +176,11 @@ private:
      *      @param [in] writer                  The xml stream writer.
      *      @param [in] component               Component containing the interfaced memory map item.
      *      @param [in] mapItem                 The selected memory item.
+     *      @param [in] mapBaseAddress          Base address of the memory map.
      *      @param [in] mapBaseAddressInHexa    Base address of the memory map in hex format.
      */
     void writeMapPeripheral(QXmlStreamWriter& writer, QSharedPointer<const Component> component,
-        QSharedPointer<MemoryItem> mapItem, QString const& mapBaseAddressInHexa);
+        QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress, QString const& mapBaseAddressInHexa);
 
     /*!
      *  Write address blocks of the selected memory map item.
@@ -178,9 +188,10 @@ private:
      *      @param [in] writer                  The xml stream writer.
      *      @param [in] containingComponent     Component containing the interfaced memory map item.
      *      @param [in] mapItem                 The selected memory map item.
+     *      @param [in] mapBaseAddress          Base address of the memory map.
      */
     void writeAddressBlocks(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
-        QSharedPointer<MemoryItem> mapItem);
+        QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress);
 
     /*!
      *  Get the available address block items of the selected memory map item.
@@ -249,10 +260,9 @@ private:
      *      @param [in] writer                  The xml stream writer.
      *      @param [in] containingComponent     Component containing the address block.
      *      @param [in] mapItem                 Memory map item containing the address block.
-     *      @param [in] mapBaseAddress          Base address of the memory map.
      */
     void writeBlockPeripherals(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
-        QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress);
+        QSharedPointer<MemoryItem> mapItem);
 
     /*!
      *  Get the selected memory map.
