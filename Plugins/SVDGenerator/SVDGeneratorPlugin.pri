@@ -9,7 +9,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./SVDGenerator.h \
     ./SVDGeneratorPlugin.h \
-    ./CPUSelectionDialog.h \
+    ./ConnectivityGraphUtilities.h \
     ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
@@ -30,12 +30,16 @@ HEADERS += ./SVDGenerator.h \
     ../../editors/MemoryDesigner/ConnectivityGraphFactory.h \
     ../../editors/MemoryDesigner/ConnectivityInterface.h \
     ../../editors/MemoryDesigner/MasterSlavePathSearch.h \
+    ../../editors/MemoryDesigner/MemoryConnectionAddressCalculator.h \
+    ../../editors/MemoryDesigner/MemoryDesignerConstants.h \
     ../../editors/MemoryDesigner/MemoryItem.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
-    ./ConnectivityGraphUtilities.h \
-    ../../editors/MemoryDesigner/MemoryDesignerConstants.h \
-    ../../editors/MemoryDesigner/MemoryConnectionAddressCalculator.h
-SOURCES += ./CPUSelectionDialog.cpp \
+    ./CPUDialog/SVDCPUColumns.h \
+    ./CPUDialog/CPUSelectionDialog.h \
+    ./CPUDialog/SVDCPUEditor.h \
+    ./CPUDialog/SVDCPUModel.h \
+    ./CPUDialog/SVDCPUDelegate.h
+SOURCES += ./ConnectivityGraphUtilities.cpp \
     ./SVDGenerator.cpp \
     ./SVDGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
@@ -58,9 +62,12 @@ SOURCES += ./CPUSelectionDialog.cpp \
     ../../editors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ../../editors/MemoryDesigner/ConnectivityInterface.cpp \
     ../../editors/MemoryDesigner/MasterSlavePathSearch.cpp \
+    ../../editors/MemoryDesigner/MemoryConnectionAddressCalculator.cpp \
+    ../../editors/MemoryDesigner/MemoryDesignerConstants.cpp \
     ../../editors/MemoryDesigner/MemoryItem.cpp \
     ../../IPXACTmodels/utilities/ComponentSearch.cpp \
-    ./ConnectivityGraphUtilities.cpp \
-    ../../editors/MemoryDesigner/MemoryDesignerConstants.cpp \
-    ../../editors/MemoryDesigner/MemoryConnectionAddressCalculator.cpp
+    ./CPUDialog/CPUSelectionDialog.cpp \
+    ./CPUDialog/SVDCPUEditor.cpp \
+    ./CPUDialog/SVDCPUModel.cpp \
+    ./CPUDialog/SVDCPUDelegate.cpp
 RESOURCES += SVDGenerator.qrc

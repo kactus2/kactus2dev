@@ -22,13 +22,14 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 
-#include <ConnectivityGraphUtilities.h>
+#include <Plugins/SVDGenerator/ConnectivityGraphUtilities.h>
 
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 
 class Component;
 class LibraryInterface;
 class Cpu;
+class SVDCPUEditor;
 
 //-----------------------------------------------------------------------------
 //! Dialog for selecting CPUs from a connectivity graph.
@@ -61,7 +62,7 @@ public:
      *
      *      @return List of the CPU data and their connected paths.
      */
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> > getSelectedCPUs();
+    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > getSelectedCPUs();
 
     /*!
      *  Check if the peripherals for SVD generation are address blocks.
@@ -112,43 +113,6 @@ private slots:
      */
     void onMapPeripherals(bool mapPeripherals);
 
-    /*!
-     *  Load the data from the selected CPU.
-     *
-     *      @param [in] selectedCPU     ID of the selected CPU.
-     */
-    void loadCPUDetails(QString const& selectedCPU);
-
-    /*!
-     *  Handle the change in revision.
-     */
-    void onRevisionChanged();
-    
-    /*!
-     *  Handle the change in endian.
-     */
-    void onEndianChanged(QString const& newEndian);
-
-    /*!
-     *  Handle the change in memory protection unit presence.
-     */
-    void onMpuPresenceChanged(bool newState);
-    
-    /*!
-     *  Handle the change in hardware floating point unit presence.
-     */
-    void onFpuPresenceChanged(bool newState);
-    
-    /*!
-     *  Handle the change in nested vectored interrupt controller bits.
-     */
-    void onNvicPrioBitsChanged();
-    
-    /*!
-     *  Handle the change in vendor-specific system tick timer.
-     */
-    void onVendorSystickConfigChanged(bool newState);
-
 private:
 
     // Disable copying.
@@ -172,7 +136,7 @@ private:
      *
      *      @return True, if a check box exists, false otherwise.
      */
-    bool checkBoxExistsForInterface(QSharedPointer<const ConnectivityInterface> master);
+    bool interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master);
 
     /*!
      *  Get the CPU check box container of the selected interface.
@@ -181,24 +145,8 @@ private:
      *
      *      @return CPU check box container matching the selected interface.
      */
-    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> getMatchingCheckInterface(
+    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> getMatchingCpuContainer(
         QSharedPointer<const ConnectivityInterface> master);
-
-    /*!
-     *  Get the CPU check box container of the CPU.
-     *
-     *      @param [in] cpuID   ID of the selected CPU.
-     *
-     *      @return CPU check box container matching the selected CPU ID.
-     */
-    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> getCheckCpuByID(QString const& cpuID) const;
-
-    /*!
-     *  Set the status for signal blocking in the CPU detail editors.
-     *
-     *      @param [in] blockStatus     New status for the signal blocking.
-     */
-    void blockCpuDetailEditors(bool blockStatus);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -213,11 +161,8 @@ private:
     //! Group box for containing the file set widget.
     QGroupBox* fileSetBox_;
 
-    //! Containers for the selected CPUs.
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface>> cpuSelection_;
-
-    //! Layout containing the CPU check boxes.
-    QVBoxLayout* cpuLayout_;
+    //! Containers for data of the selected CPUs.
+    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuSelection_;
 
     //! Interface for accessing the library.
     LibraryInterface* library_;
@@ -234,26 +179,8 @@ private:
     //! Check box for creating peripherals from memory maps.
     QCheckBox* mapPeripherals_;
 
-    //! Selects the current CPU for details.
-    QComboBox* cpuDetailSelector_;
-
-    //! Editor for CPU revision.
-    QLineEdit* revisionEditor_;
-
-    //! Editor for CPU endian.
-    QComboBox* endianEditor_;
-
-    //! Check box for CPU MPU presence.
-    QCheckBox* mpuPresentCheckBox_;
-
-    //! Check box for CPU FPU presence.
-    QCheckBox* fpuPresentCheckBox_;
-
-    //! Editor for CPU number of NVIC bits.
-    QLineEdit* nvicPrioBitsEditor_;
-
-    //! Check box for CPU vendor-specific system tick timer.
-    QCheckBox* vendorSystickConfigCheckBox_;
+    //! Editor for CPU details.
+    SVDCPUEditor* cpuDetailEditor_;
 };
 
 #endif //CPUSELECTIONDIALOG_H

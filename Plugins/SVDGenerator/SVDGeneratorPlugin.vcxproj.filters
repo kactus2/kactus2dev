@@ -83,6 +83,12 @@
     <Filter Include="Header Files\Editors\MemoryDesigner">
       <UniqueIdentifier>{c437154d-7686-4acf-b25f-b9ccbd0c3ed4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CPUDialog">
+      <UniqueIdentifier>{8b557752-6098-492e-aef8-0beab3b029d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CPUDialog">
+      <UniqueIdentifier>{f9d45a70-c6c3-4863-8796-746a29d0c385}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\Debug\moc_SVDGeneratorPlugin.cpp">
@@ -178,29 +184,50 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
       <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
     </ClCompile>
-    <ClCompile Include="CPUSelectionDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_CPUSelectionDialog.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_CPUSelectionDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="ConnectivityGraphUtilities.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ConnectivityGraphUtilities.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ConnectivityGraphUtilities.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp">
       <Filter>Source Files\Editors\MemoryDesigner</Filter>
     </ClCompile>
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
       <Filter>Source Files\Editors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SVDCPUEditor.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\CPUSelectionDialog.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\SVDCPUEditor.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\SVDCPUModel.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SVDCPUModel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SVDCPUModel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SVDCPUEditor.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CPUSelectionDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\SVDCPUDelegate.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SVDCPUDelegate.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SVDCPUDelegate.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -216,11 +243,20 @@
     <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
       <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
     </CustomBuild>
-    <CustomBuild Include="CPUSelectionDialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="ConnectivityGraphUtilities.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CPUDialog\CPUSelectionDialog.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CPUDialog\SVDCPUEditor.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CPUDialog\SVDCPUModel.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CPUDialog\SVDCPUDelegate.h">
+      <Filter>Header Files\CPUDialog</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -297,6 +333,9 @@
     </ClInclude>
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
       <Filter>Header Files\Editors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\SVDCPUColumns.h">
+      <Filter>Header Files\CPUDialog</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

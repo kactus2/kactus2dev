@@ -16,8 +16,7 @@
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
-
-#include <Plugins/SVDGenerator/CPUSelectionDialog.h>
+#include <Plugins/SVDGenerator/CPUDialog/CPUSelectionDialog.h>
 
 #include <library/LibraryInterface.h>
 
@@ -156,7 +155,7 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
         component->getFileSetNames(), utility->getParentWidget());
     if (selectionDialog.exec() == QDialog::Accepted)
     {
-        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> > cpuRoutes =
+        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuRoutes =
             selectionDialog.getSelectedCPUs();
         if (!cpuRoutes.isEmpty())
         {
