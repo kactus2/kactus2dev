@@ -16,16 +16,17 @@ TARGET = tst_BusInterfacePortMapValidator
 QT += core xml gui testlib
 CONFIG += c++11 testcase console
 
-win32:CONFIG(release, debug|release) {
-    DESTDIR = ./release
+linux-g++ | linux-g++-64 | linux-g++-32 {
+ LIBS += -L../../../executable \
+     -lIPXACTmodels
+
 }
-else:win32:CONFIG(debug, debug|release) {
-    DESTDIR = ./debug
-}
-else:unix {
-    DESTDIR = ./release
+win64 | win32 {
+ LIBS += -L../../../x64/executable \
+     -lIPXACTmodelsd
 }
 
+DESTDIR = ./release
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../

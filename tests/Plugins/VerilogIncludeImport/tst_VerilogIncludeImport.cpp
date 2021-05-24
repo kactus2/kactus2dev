@@ -392,8 +392,10 @@ void tst_VerilogIncludeImport::testDefineIsHighlighted_data()
 //-----------------------------------------------------------------------------
 void tst_VerilogIncludeImport::testWithoutHighlighter()
 {
+    QString input = "`define ZERO 0\n\n";
+
     VerilogIncludeImport parser;
-    parser.import("`define ZERO 0\n\n", importComponent_);
+    parser.import(input, input, importComponent_);
 }
 
 //-----------------------------------------------------------------------------
@@ -424,7 +426,7 @@ void tst_VerilogIncludeImport::runParser(QString const& input)
     VerilogIncludeImport parser;
     parser.setHighlighter(highlighter_);
 
-    parser.import(input, importComponent_);
+    parser.import(input, input, importComponent_);
 }
 
 //-----------------------------------------------------------------------------

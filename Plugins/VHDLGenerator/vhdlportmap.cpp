@@ -9,107 +9,50 @@
 
 VhdlPortMap::VhdlPortMap():
 VhdlTypedObject("", "std_logic", "", ""),
-name_(),
-left_(-1),
-right_(-1),
-type_("std_logic") 
+left_(),
+right_()
+{
+
+}
+
+VhdlPortMap::VhdlPortMap(const QString& name, const QString& leftBound, const QString& rightBound, const QString& type) :
+    VhdlTypedObject(name, type, "", ""),
+    left_(leftBound),
+    right_(rightBound)
 {
 
 }
 
 
-VhdlPortMap::VhdlPortMap( const QString& name, unsigned int /*size = 1*/ ):
-VhdlTypedObject(name, "std_logic", "", ""),
-name_(name),
-left_(-1),
-right_(-1),
-type_("std_logic") 
-{//TODO:
-	/*if (size > 1) 
-    {
-		left_ = size -1;
-		right_ = 0;
-		type_ = "std_logic_vector";
-        setType(type_);
-	}*/
-}
-
-VhdlPortMap::VhdlPortMap( const QString& name, const QString& leftBound, const QString& rightBound, const QString& type):
-VhdlTypedObject(name, type, "", ""),
-name_(name),
-left_(leftBound),
-right_(rightBound),
-type_(type) {
-	//TODO:
-	// if type was not defined then use defaults
-	/*if (type_.isEmpty()) 
-    {
-		// if the port size is 1
-		if (left_ - right_ > 0) 
-        {
-			type_ = "std_logic";
-		}
-		// if port size if larger than 1
-		else 
-        {
-			type_ = "std_logic_vector";
-		}
-        setType(type_);
-	}*/
-}
-
-VhdlPortMap::VhdlPortMap( const VhdlPortMap& other ):
-VhdlTypedObject(other.name_, other.type_, other.defaultValue(), other.description()),
-name_(other.name_),
-left_(other.left_),
-right_(other.right_),
-type_(other.type_) 
+bool VhdlPortMap::operator==(const VhdlPortMap& other) const
 {
-
+    if (name() == other.name() && left_ == other.left_ &&	right_ == other.right_)
+    {
+        return true;
+    }
+    return false;
 }
 
-VhdlPortMap& VhdlPortMap::operator=( const VhdlPortMap& other ) 
+bool VhdlPortMap::operator!=(const VhdlPortMap& other) const
 {
-	if (this != &other) 
+    if (name() != other.name())
     {
-		name_ = other.name_;
-		left_ = other.left_;
-		right_ = other.right_;
-		type_ = other.type_;
-        setType(type_);
-	}
-	return *this;
-}
-
-bool VhdlPortMap::operator==( const VhdlPortMap& other ) const 
-{
-	if (name_ == other.name_ &&	left_ == other.left_ &&	right_ == other.right_) 
+        return true;
+    }
+    else if (left_ != other.left_)
     {
-		return true;
-	}
-	return false;
-}
-
-bool VhdlPortMap::operator!=( const VhdlPortMap& other ) const 
-{
-	if (name_ != other.name_) 
+        return true;
+    }
+    else if (right_ != other.right_)
     {
-		return true;
-	}
-	else if (left_ != other.left_) 
-    {
-		return true;
-	}
-	else if (right_ != other.right_) 
-    {
-		return true;
-	}
-	return false;
+        return true;
+    }
+    return false;
 }
 
 bool VhdlPortMap::operator<( const VhdlPortMap& other ) const 
 {
-	if (name_.compare(other.name_, Qt::CaseInsensitive) == 0) 
+	if (name().compare(other.name(), Qt::CaseInsensitive) == 0) 
     {
 		if (left_ == other.left_) 
         {
@@ -122,13 +65,13 @@ bool VhdlPortMap::operator<( const VhdlPortMap& other ) const
 	}
 	else 
     {
-		return name_.compare(other.name_, Qt::CaseInsensitive) < 0;
+		return name().compare(other.name(), Qt::CaseInsensitive) < 0;
 	}
 }
 
 bool VhdlPortMap::operator>( const VhdlPortMap& other ) const 
 {
-	if (name_.compare(other.name_, Qt::CaseInsensitive) == 0) 
+	if (name().compare(other.name(), Qt::CaseInsensitive) == 0) 
     {
 		if (left_ == other.left_) 
         {
@@ -141,60 +84,26 @@ bool VhdlPortMap::operator>( const VhdlPortMap& other ) const
 	}
 	else 
     {
-		return name_.compare(other.name_, Qt::CaseInsensitive) > 0;
+		return name().compare(other.name(), Qt::CaseInsensitive) > 0;
 	}
 }
 
-VhdlPortMap::~VhdlPortMap() 
+void VhdlPortMap::write( QTextStream& stream ) const
 {
-
+	stream << getVhdlLegalName().leftJustified(16, ' ');
 }
 
-void VhdlPortMap::write( QTextStream& stream ) const {
-	stream << toString().leftJustified(16, ' ');
-}
-
-QString VhdlPortMap::toString() const 
+QString VhdlPortMap::mappingWith(VhdlPortMap const& value) const
 {
-    QString result(getVhdlLegalName());
-	//TODO:
-	// make sure the if one bound is defined then both are
-	/*Q_ASSERT((left_ >= 0 && right_ >= 0) || (left_ < 0 && right_ < 0));
-	Q_ASSERT(left_ >= right_);
+    bool writeBounds = (left_.compare(value.left_) != 0 || right_.compare(value.right_) != 0);
 
-	// if there are no indexes specified then don't write indexing
-	if (left_ < 0) 
+    QString result(getVhdlLegalName() + " => " + value.getVhdlLegalName());
+
+    if (writeBounds && value.left_.isEmpty() == false && value.left_.compare(QLatin1String("-1")) != 0 && 
+        value.right_.isEmpty() == false && value.right_.compare(QLatin1String("-1")) != 0)
     {
-		return result;
-	}
-
-	int size = left_ - right_ + 1;
-
-	// if the type is vectored then the indexing depends on the size
-	if (type_ == QString("std_logic_vector")) 
-    {
-		// if size is one bit 
-		if (size == 1) 
-        {
-			result += QString("(%1)").arg(left_);
-		}
-		// if size is larger then 
-		else 
-        {
-			result += QString("(%1 downto %2)").arg(left_).arg(right_);
-		}
-	}
-
-	// for other vectored ports use the downto in indexing
-	else if (size > 1) 
-    {
-		result += QString("(%1 downto %2)").arg(left_).arg(right_);
-	}*/
-
-	return result;
-}
-
-QString VhdlPortMap::name() const 
-{
-	return name_;
+        result += QString("(%1 downto %2)").arg(value.left_).arg(value.right_);
+    }
+   
+    return result;
 }

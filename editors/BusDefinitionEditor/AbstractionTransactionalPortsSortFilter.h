@@ -28,17 +28,19 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] columns         Storage for the column indexes.
      *      @param [in] portInterface   Interface for accessing port abstractions.
      *      @param [in] parent          Pointer to the owner of this model.
 	 */
-    AbstractionTransactionalPortsSortFilter(AbstractionDefinitionPortsSortFilter::ColumnHandles columns,
-        PortAbstractionInterface* portInterface, QObject *parent);
+    AbstractionTransactionalPortsSortFilter(PortAbstractionInterface* portInterface, QObject *parent);
 	
 	/*!
 	 *  The destructor.
 	 */
     virtual ~AbstractionTransactionalPortsSortFilter() = default;
+
+    //! No copying. No assignment.
+    AbstractionTransactionalPortsSortFilter(const AbstractionTransactionalPortsSortFilter& other) = delete;
+    AbstractionTransactionalPortsSortFilter& operator=(const AbstractionTransactionalPortsSortFilter& other) = delete;
 
 protected:
 
@@ -62,9 +64,6 @@ protected:
     virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override final;
 
 private:
-	//! No copying. No assignment.
-    AbstractionTransactionalPortsSortFilter(const AbstractionTransactionalPortsSortFilter& other);
-	AbstractionTransactionalPortsSortFilter& operator=(const AbstractionTransactionalPortsSortFilter& other);
 
     /*!
      *  Check if the indexed row contains a protocol payload.

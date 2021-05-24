@@ -38,6 +38,11 @@ private slots:
 	void vlnvFail();
 	void busFail();
 	void extendFail();
+    void extendedBusType();
+
+    void getPortsFromExtendAbstraction();
+    void testExtendedPortsNonEditableParameters();
+
 	void paraFail();
 	void portFail();
 	void wireFail();
@@ -154,8 +159,206 @@ void tst_AbstractionDefinitionValidator::extendFail()
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, abs);
 
-	QCOMPARE(errorList.size(), 1);
+    QCOMPARE(errorList.size(), 1);
+    QCOMPARE(errorList.first(), QLatin1String("The bus definition vendor:library:bogus:version extended in "
+        "abstraction definition vendor:library:name:version is not found in the library"));
 	QVERIFY(!validator.validate(abs));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::extendedBusType()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::extendedBusType()
+{
+    VLNV extendBusVLNV(VLNV::BUSDEFINITION, "vendor", "library", "extend_test_bus_def", "version");
+    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition);
+    extendBusDef->setVlnv(extendBusVLNV);
+
+    VLNV busVLNV(VLNV::BUSDEFINITION, "vendor", "library", "test_bus_def", "version");
+    QSharedPointer<BusDefinition> busDef(new BusDefinition);
+    busDef->setVlnv(busVLNV);
+
+    VLNV extendAbsVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "bogus", "version");
+    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition());
+    extendAbs->setVlnv(extendAbsVLNV);
+    extendAbs->setBusType(extendBusVLNV);
+
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
+    abs->setBusType(busVLNV);
+    abs->getLogicalPorts()->append(port_);
+    abs->setExtends(extendAbsVLNV);
+
+    library_->addComponent(extendBusDef);
+    library_->addComponent(extendAbs);
+    library_->addComponent(busDef);
+    library_->addComponent(abs);
+    
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    QString extendError = "The bus definition vendor:library:test_bus_def:version extended in abstraction "
+        "definition vendor:library:name:version does not define extended abstraction definition bus type";
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abs);
+    QCOMPARE(errorList.size(), 1);
+    QCOMPARE(errorList.last(), extendError);
+    QVERIFY(!validator.validate(abs));
+
+    busDef->setExtends(extendBusVLNV);
+    errorList.clear();
+    validator.findErrorsIn(errorList, abs);
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abs));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::getPortsFromExtendAbstraction()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::getPortsFromExtendAbstraction()
+{
+    VLNV extendBusVLNV(VLNV::BUSDEFINITION, "vendor", "library", "extend_test_bus_def", "version");
+    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition);
+    extendBusDef->setVlnv(extendBusVLNV);
+
+    VLNV busVLNV(VLNV::BUSDEFINITION, "vendor", "library", "test_bus_def", "version");
+    QSharedPointer<BusDefinition> busDef(new BusDefinition);
+    busDef->setVlnv(busVLNV);
+    busDef->setExtends(extendBusVLNV);
+
+    VLNV extendAbsVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "bogus", "version");
+    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition());
+    extendAbs->setVlnv(extendAbsVLNV);
+    extendAbs->setBusType(extendBusVLNV);
+    extendAbs->getLogicalPorts()->append(port_);
+
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
+    abs->setBusType(busVLNV);
+    abs->setExtends(extendAbsVLNV);
+
+    for (auto logicalPort : *extendAbs->getLogicalPorts())
+    {
+        abs->getLogicalPorts()->append(logicalPort);
+    }
+
+    library_->addComponent(extendBusDef);
+    library_->addComponent(extendAbs);
+    library_->addComponent(busDef);
+    library_->addComponent(abs);
+
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abs);
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abs));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters()
+{
+    QStringList extendBusDefSystemGroups("system");
+
+    VLNV extendBusVLNV(VLNV::BUSDEFINITION, "vendor", "library", "extend_test_bus_def", "version");
+    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition);
+    extendBusDef->setVlnv(extendBusVLNV);
+    extendBusDef->setSystemGroupNames(extendBusDefSystemGroups);
+
+
+    VLNV busVLNV(VLNV::BUSDEFINITION, "vendor", "library", "test_bus_def", "version");
+    QSharedPointer<BusDefinition> busDef(new BusDefinition);
+    busDef->setVlnv(busVLNV);
+    busDef->setExtends(extendBusVLNV);
+
+    QSharedPointer<WirePort> wirePort(new WirePort());
+    wirePort->setDirection(DirectionTypes::IN);
+    wirePort->setPresence(PresenceTypes::REQUIRED);
+    wirePort->setWidth("10");
+    wirePort->setSystemGroup(extendBusDefSystemGroups.first());
+
+    QSharedPointer<WireAbstraction> extendWire(new WireAbstraction());
+    extendWire->getSystemPorts()->append(wirePort);
+    extendWire->setDefaultValue("0");
+    extendWire->setQualifier(Qualifier::Data);
+
+    QSharedPointer<PortAbstraction> extendWirePort(new PortAbstraction());
+    extendWirePort->setName("ExtendWire");
+    extendWirePort->setDescription("wireDescription");
+    extendWirePort->setWire(extendWire);
+
+    QSharedPointer<Protocol> transactionalProtocol(new Protocol());
+    transactionalProtocol->setProtocolType("protocolType");
+    transactionalProtocol->setPayloadName("payDay");
+    transactionalProtocol->setPayloadType("generic");
+    transactionalProtocol->setPayloadExtension("extend", false);
+
+    QSharedPointer<TransactionalPort> transactionalPort(new TransactionalPort());
+    transactionalPort->setPresence(PresenceTypes::REQUIRED);
+    transactionalPort->setInitiative("requires");
+    transactionalPort->setKind("tlm_port");
+    transactionalPort->setBusWidth("3");
+    transactionalPort->setSystemGroup(extendBusDefSystemGroups.first());
+    transactionalPort->setProtocol(transactionalProtocol);
+
+    QSharedPointer<TransactionalAbstraction> extendTransactional(new TransactionalAbstraction());
+    extendTransactional->setQualifier(Qualifier::Data);
+    extendTransactional->getSystemPorts()->append(transactionalPort);
+
+    QSharedPointer<PortAbstraction> extendTransactionalPort(new PortAbstraction());
+    extendTransactionalPort->setName("extendTransactional");
+    extendTransactionalPort->setDescription("transactionalDescription");
+    extendTransactionalPort->setTransactional(extendTransactional);
+
+    VLNV extendAbsVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "bogus", "version");
+    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition());
+    extendAbs->setVlnv(extendAbsVLNV);
+    extendAbs->setBusType(extendBusVLNV);
+    extendAbs->getLogicalPorts()->append(extendWirePort);
+    extendAbs->getLogicalPorts()->append(extendTransactionalPort);
+
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
+    abs->setBusType(busVLNV);
+    abs->setExtends(extendAbsVLNV);
+
+    QSharedPointer<PortAbstraction> absWirePort(new PortAbstraction(*extendWirePort.data()));
+    QSharedPointer<PortAbstraction> absTransactionalPort(new PortAbstraction(*extendTransactionalPort.data()));
+    abs->getLogicalPorts()->append(absWirePort);
+    abs->getLogicalPorts()->append(absTransactionalPort);
+
+    library_->addComponent(extendBusDef);
+    library_->addComponent(extendAbs);
+    library_->addComponent(busDef);
+    library_->addComponent(abs);
+
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abs);
+
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abs));
+
+    wirePort->setDirection(DirectionTypes::OUT);
+    extendWire->setQualifier(Qualifier::Address);
+    extendWirePort->setDescription("newExtendWireDescription");
+    transactionalPort->setInitiative("provides");
+    transactionalPort->setKind("tlm_socket");
+    transactionalPort->setBusWidth("4");
+    transactionalProtocol->setProtocolType("newProtocol");
+    transactionalProtocol->setPayloadName("newPayment");
+    transactionalProtocol->setPayloadType("specific");
+    transactionalProtocol->setPayloadExtension("extends", false);
+
+    errorList.clear();
+    validator.findErrorsIn(errorList, abs);
+    QVERIFY(validator.validate(extendAbs));
+    QVERIFY(validator.validate(abs) == false);
+
+    QCOMPARE(errorList.size(), 10);
 }
 
 //-----------------------------------------------------------------------------

@@ -471,42 +471,99 @@ void MetaDesign::wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
             }
             
             QList<QSharedPointer<MetaWire> > connectedWires;
+            QList<QSharedPointer<MetaTransactional> > connectedTransactionals;
 
             // ...and associate them with the wire.
             for (QSharedPointer<MetaPortAssignment> assignment : assignments)
             {
-                QSharedPointer<MetaWire> mWire = mIterconnect->wires_.value(pAbs->getLogicalName());
-                if (!mWire)
+                if (pAbs->hasWire())
                 {
-                    mWire = QSharedPointer<MetaWire>(new MetaWire);
-                    mWire->name_ = mIterconnect->name_ + QLatin1Char('_') + pAbs->getLogicalName();
-                    mWire->refCount = 0;
-
-                    mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
+                    associateWithWire(mIterconnect, pAbs, assignment, connectedWires, isHierarchical, mPort);
                 }
-
-                if (assignment->wire_.isNull() || connectedWires.contains(assignment->wire_))
+                else if (pAbs->hasTransactional())
                 {
-                    ++mWire->refCount;
-                    assignment->wire_ = mWire;
-                    connectedWires.append(mWire);
-                }
-                else
-                {
-                    ++assignment->wire_->refCount;
-                    connectedWires.append(assignment->wire_);
-                }
-
-                // Also assign larger bounds for wire, if applicable.
-                assignLargerBounds(mWire, assignment->logicalBounds_);
-
-                // Associate the wire with the hierarchical ports.
-                if (isHierarchical && !mWire->hierPorts_.contains(mPort))
-                {
-                    mWire->hierPorts_.append(mPort);
+                    associateWithTransactional(
+                        mIterconnect, pAbs, assignment, connectedTransactionals, isHierarchical, mPort);
                 }
             }
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::associateWithWire()
+//-----------------------------------------------------------------------------
+void MetaDesign::associateWithWire(QSharedPointer<MetaInterconnection> metaInterconnect,
+    QSharedPointer<PortAbstraction> portAbstraction, QSharedPointer<MetaPortAssignment> assignment,
+    QList<QSharedPointer<MetaWire>>& connectedWires, bool isHierarchical, QSharedPointer<MetaPort> metaPort)
+{
+    QSharedPointer<MetaWire> mWire = metaInterconnect->wires_.value(portAbstraction->getLogicalName());
+    if (!mWire)
+    {
+        mWire = QSharedPointer<MetaWire>(new MetaWire);
+        mWire->name_ = metaInterconnect->name_ + QLatin1Char('_') + portAbstraction->getLogicalName();
+        mWire->refCount = 0;
+
+        metaInterconnect->wires_.insert(portAbstraction->getLogicalName(), mWire);
+    }
+
+    if (assignment->wire_.isNull() || connectedWires.contains(assignment->wire_))
+    {
+        ++mWire->refCount;
+        assignment->wire_ = mWire;
+        connectedWires.append(mWire);
+    }
+    else
+    {
+        ++assignment->wire_->refCount;
+        connectedWires.append(assignment->wire_);
+    }
+
+    // Also assign larger bounds for wire, if applicable.
+    assignLargerBounds(mWire, assignment->logicalBounds_);
+
+    // Associate the wire with the hierarchical ports.
+    if (isHierarchical && !mWire->hierPorts_.contains(metaPort))
+    {
+        mWire->hierPorts_.append(metaPort);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::associateWithTransactional()
+//-----------------------------------------------------------------------------
+void MetaDesign::associateWithTransactional(QSharedPointer<MetaInterconnection> metaInterconnect,
+    QSharedPointer<PortAbstraction> portAbstraction, QSharedPointer<MetaPortAssignment> assignment,
+    QList<QSharedPointer<MetaTransactional>>& connectedTransactionals, bool isHierarchical,
+    QSharedPointer<MetaPort> metaPort)
+{
+    QSharedPointer<MetaTransactional> metaTransactional =
+        metaInterconnect->transactionals_.value(portAbstraction->getLogicalName());
+    if (!metaTransactional)
+    {
+        metaTransactional = QSharedPointer<MetaTransactional>(new MetaTransactional);
+        metaTransactional->name_ = metaInterconnect->name_ + QLatin1Char('_') + portAbstraction->getLogicalName();
+        metaTransactional->refCount_ = 0;
+
+        metaInterconnect->transactionals_.insert(portAbstraction->getLogicalName(), metaTransactional);
+    }
+
+    if (assignment->transactional_.isNull() || connectedTransactionals.contains(assignment->transactional_))
+    {
+        ++metaTransactional->refCount_;
+        assignment->transactional_ = metaTransactional;
+        connectedTransactionals.append(metaTransactional);
+    }
+    else
+    {
+        ++assignment->transactional_->refCount_;
+        connectedTransactionals.append(assignment->transactional_);
+    }
+
+    // Associate the wire with the hierarchical ports.
+    if (isHierarchical && !metaTransactional->hierPorts_.contains(metaPort))
+    {
+        metaTransactional->hierPorts_.append(metaPort);
     }
 }
 
@@ -534,28 +591,35 @@ void MetaDesign::parseAdHocs()
             continue;
         }
 
-        QSharedPointer<MetaWire> mWire;
-        QString wireName = connection->name();
-
-        if (foundPorts.size() > 1)
+        if (foundPorts.first()->isWire_)
         {
-            mWire = QSharedPointer<MetaWire>(new MetaWire);
-            mWire->name_ = wireName;
-            mWire->refCount = 0;
+            QSharedPointer<MetaWire> mWire;
+            QString wireName = connection->name();
 
-            // Append to the pool of detected interconnections.
-            adHocWires_->append(mWire);
+            if (foundPorts.size() > 1)
+            {
+                mWire = QSharedPointer<MetaWire>(new MetaWire);
+                mWire->name_ = wireName;
+                mWire->refCount = 0;
 
-            // The interconnection needs to know of the hierarchical interfaces connected to it.
-            mWire->hierPorts_ = foundHierPorts;
-        }
+                // Append to the pool of detected interconnections.
+                adHocWires_->append(mWire);
 
-        for (int i = 0; i < foundPorts.size(); ++i)
-        {
-            QSharedPointer<MetaPort> mPort = foundPorts[i];
-            bool isHierarchical = foundHierPorts.contains(mPort);
-            parseAdHocAssignmentForPort(mPort, connection, mWire, isHierarchical, wireName, 
-                matchingPartSelects.at(i));
+                // The interconnection needs to know of the hierarchical interfaces connected to it.
+                mWire->hierPorts_ = foundHierPorts;
+            }
+
+            for (int i = 0; i < foundPorts.size(); ++i)
+            {
+                QSharedPointer<MetaPort> mPort = foundPorts[i];
+                bool isHierarchical = foundHierPorts.contains(mPort);
+
+                if (mPort->isWire_)
+                {
+                    parseAdHocAssignmentForPort(mPort, connection, mWire, isHierarchical, wireName,
+                        matchingPartSelects.at(i));
+                }
+            }
         }
     }
 }
@@ -723,8 +787,11 @@ void MetaDesign::removeUnconnectedInterfaceAssignments()
             bool connected = false;
             for (QSharedPointer<MetaPortAssignment> assignment : mPort->upAssignments_)
             {
-                if ((assignment->wire_ && assignment->wire_->refCount >= 2) ||
-                    assignment->defaultValue_.isEmpty() == false)
+                if ((mPort->isWire_ && ((assignment->wire_ && assignment->wire_->refCount >= 2) ||
+                        assignment->defaultValue_.isEmpty() == false)) ||
+                    (mPort->isTransactional_ && ((assignment->transactional_ &&
+                        assignment->transactional_->refCount_ >= 2) ||
+                        assignment->defaultValue_.isEmpty() == false)))
                 {
                     connected = true;
                 }
@@ -744,7 +811,9 @@ void MetaDesign::removeUnconnectedInterfaceAssignments()
             bool connected = false;
             for (QSharedPointer<MetaPortAssignment> assignment : mPort->downAssignments_)
             {
-                if (assignment->wire_ && assignment->wire_->refCount >= 2)
+                if ((mPort->isWire_ && assignment->wire_ && assignment->wire_->refCount >= 2) ||
+                    (mPort->isTransactional_ && assignment->transactional_ &&
+                        assignment->transactional_->refCount_ >= 2))
                 {
                     connected = true;
                 }

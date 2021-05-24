@@ -42,7 +42,7 @@ public:
      *      @param [in] dir2            Direction of the second end point.
      *      @param [in] parent          Owner of the connection item.
      */
-    HWConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
+    explicit HWConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
          DesignDiagram* parent);
 
     /*!

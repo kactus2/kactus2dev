@@ -44,7 +44,7 @@ public:
 	/*!
      *  The destructor
      */
-	virtual ~BusIfInterfaceModeEditor();
+	virtual ~BusIfInterfaceModeEditor() = default;
 
 	/*!
      *  Check for the validity of the mode specific items.
@@ -95,12 +95,12 @@ protected:
      */
     BusInterfaceInterface* getBusInterface() const;
 
+
     /*!
      *  Get the name of the edited bus interfaces.
      */
     std::string getBusName() const;
 
-private:
 
     //! No copying. No assignment.
 	BusIfInterfaceModeEditor(const BusIfInterfaceModeEditor& other);

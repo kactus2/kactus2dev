@@ -114,55 +114,6 @@ private:
     AbstractionPortsDelegate(const AbstractionPortsDelegate& other);
     AbstractionPortsDelegate& operator=(const AbstractionPortsDelegate& other);
 
-    /*!
-     *  Get the column number of the qualifier column.
-     *
-     *      @return Column number of the qualifier column.
-     */
-    virtual int qualifierColumn() const = 0;
-
-    /*!
-     *  Get the column number of the width column.
-     *
-     *      @return Column number of the width column.
-     */
-    virtual int widthColumn() const = 0;
-
-    /*!
-     *  Get the column number of the mode column.
-     *
-     *      @return Column number of the mode column.
-     */
-    virtual int modeColum() const = 0;
-
-    /*!
-     *  Get the column number of the presence column.
-     *
-     *      @return Column number of the presence column.
-     */
-    virtual int presenceColumn() const = 0;
-
-    /*!
-     *  Get the column number of the system group column.
-     *
-     *      @return Column number of the system group column.
-     */
-    virtual int systemGroupColumn() const = 0;
-
-    /*!
-     *  Get the column number of the name column.
-     *
-     *      @return Column number of the name column.
-     */
-    virtual int nameColumn() const = 0;
-
-    /*!
-     *  Get the column number of the description column.
-     *
-     *      @return Column number of the description column.
-     */
-    virtual int descriptionColumn() const = 0;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

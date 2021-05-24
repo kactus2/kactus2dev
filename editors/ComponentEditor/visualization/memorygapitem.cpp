@@ -13,39 +13,22 @@
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
-
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryGapItem()
 //-----------------------------------------------------------------------------
 MemoryGapItem::MemoryGapItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
-MemoryVisualizationItem(expressionParser, parent),
-start_(0),
-end_(0)
+MemoryVisualizationItem(expressionParser, parent)
 {
-	setBrush(QBrush(QColor(Qt::white)));
-	ExpandableItem::setExpansionBrush(QBrush(QColor(Qt::white)));
-	setName("Reserved");
-	setLeftTopCorner("0x0");
-	setShowExpandableItem(false);
+	setDefaultBrush(QBrush(QColor(Qt::white)));
+	setExpansionBrush(QBrush(QColor(Qt::white)));
+
+    setShowExpandableItem(false);
+    setLayoutType(LABELS_LEFT);
+
+	setName("Reserved");	
     setToolTip("This memory block is reserved for future use.");
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~MemoryGapItem()
-//-----------------------------------------------------------------------------
-MemoryGapItem::~MemoryGapItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: refresh()
-//-----------------------------------------------------------------------------
-void MemoryGapItem::refresh() 
-{
-	ExpandableItem::reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -53,63 +36,49 @@ void MemoryGapItem::refresh()
 //-----------------------------------------------------------------------------
 void MemoryGapItem::updateDisplay()
 {
-
+    // Nothing to do.
 }
 
 //-----------------------------------------------------------------------------
-// Function: getOffset()
+// Function: MemoryGapItem::getOffset()
 //-----------------------------------------------------------------------------
 quint64 MemoryGapItem::getOffset() const
 {
-	return start_;
+	return firstAddress_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: getBitWidth()
+// Function: MemoryGapItem::getLastAddress()
+//-----------------------------------------------------------------------------
+quint64 MemoryGapItem::getLastAddress() const
+{
+    return lastAddress_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGapItem::getBitWidth()
 //-----------------------------------------------------------------------------
 int MemoryGapItem::getBitWidth() const
 {
-	MemoryVisualizationItem* memItem = static_cast<MemoryVisualizationItem*>(parentItem());
+	auto memItem = static_cast<MemoryVisualizationItem const*>(parentItem());
 	Q_ASSERT(memItem);
 	return memItem->getBitWidth();
 }
 
 //-----------------------------------------------------------------------------
-// Function: getAddressUnitSize()
+// Function: MemoryGapItem::getAddressUnitSize()
 //-----------------------------------------------------------------------------
 unsigned int MemoryGapItem::getAddressUnitSize() const
 {
-	MemoryVisualizationItem* memItem = static_cast<MemoryVisualizationItem*>(parentItem());
+	auto memItem = static_cast<MemoryVisualizationItem const*>(parentItem());
 	Q_ASSERT(memItem);
 	return memItem->getAddressUnitSize();
 }
 
 //-----------------------------------------------------------------------------
-// Function: setStartAddress()
+// Function: MemoryGapItem::redoChildLayout()
 //-----------------------------------------------------------------------------
-void MemoryGapItem::setStartAddress(quint64 address)
+void MemoryGapItem::redoChildLayout()
 {
-    start_ = address;
-	
-    setDisplayOffset(start_);
-	refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: setEndAddress()
-//-----------------------------------------------------------------------------
-void MemoryGapItem::setEndAddress(quint64 address)
-{
-	end_ = address;
-
-    setDisplayLastAddress(end_);
-	refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: getLastAddress()
-//-----------------------------------------------------------------------------
-quint64 MemoryGapItem::getLastAddress() const
-{
-	return end_;
+    // Do nothing. Gaps do not have child items.
 }

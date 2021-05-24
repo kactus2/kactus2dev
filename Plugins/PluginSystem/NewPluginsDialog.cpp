@@ -51,13 +51,6 @@ NewPluginsDialog::NewPluginsDialog(QWidget* parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: NewPluginsDialog::~NewPluginsDialog()
-//-----------------------------------------------------------------------------
-NewPluginsDialog::~NewPluginsDialog()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: NewPluginsDialog::selectionChanged()
 //-----------------------------------------------------------------------------
 void NewPluginsDialog::selectionChanged()

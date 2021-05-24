@@ -25,6 +25,8 @@
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/common/ComponentInstanceParameterFinder.h>
 
+#include <editors/MemoryDesigner/MemoryDesignerConstants.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
@@ -32,6 +34,7 @@
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
@@ -275,6 +278,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
     mapItem->setDisplayName(map->displayName());
     mapItem->setAUB(QString::number(addressableUnitBits));
 
+    General::Usage mapUsage = General::USAGE_COUNT;
     foreach (QSharedPointer<MemoryBlockBase> block, *map->getMemoryBlocks())
     {
         if (block->getIsPresent().isEmpty() ||
@@ -282,9 +286,16 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
         {
             QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
             QSharedPointer<MemoryItem> blockItem = createMemoryBlock(addressBlock, mapIdentifier, addressableUnitBits);
+            blockItem->setUsage(addressBlock->getUsage());
+            mapUsage = addressBlock->getUsage();
 
             mapItem->addChild(blockItem);
         }
+    }
+
+    if (map->getMemoryBlocks()->size() == 1 && mapUsage == General::MEMORY)
+    {
+        mapItem->setUsage(General::MEMORY);
     }
 
     return mapItem;
@@ -313,8 +324,12 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
             expressionParser_->parseExpression(registerBase->getIsPresent()).toInt() == 1)
         {
             QSharedPointer<Register> reg = registerBase.dynamicCast<Register>();
+            if (reg)
+            {
+                addRegisterData(reg, baseAddress, addressableUnitBits, blockIdentifier, blockItem);
+            }
 
-            addRegisterData(reg, baseAddress, addressableUnitBits, blockIdentifier, blockItem);
+            //! What about register files?
         }
     }
 
@@ -327,7 +342,8 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
 void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> reg, int baseAddress, 
     int addressableUnitBits, QString const& blockIdentifier, QSharedPointer<MemoryItem> blockItem) const
 {
-    int registerAddress = baseAddress + expressionParser_->parseExpression(reg->getAddressOffset()).toInt();    
+    quint64 registerOffset = expressionParser_->parseExpression(reg->getAddressOffset()).toInt();
+    quint64 registerAddress = baseAddress + registerOffset;
     int registerSize =  expressionParser_->parseExpression(reg->getSize()).toInt();
     int registerDimension = expressionParser_->parseExpression(reg->getDimension()).toInt();
 
@@ -344,6 +360,7 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
         regItem->setDisplayName(reg->displayName());
         regItem->setAUB(QString::number(addressableUnitBits));
         regItem->setAddress(QString::number(registerAddress));
+        regItem->setOffset(QString::number(registerOffset));
         regItem->setSize(expressionParser_->parseExpression(reg->getSize()));
 
         foreach (QSharedPointer<Field> field, *reg->getFields())
@@ -378,7 +395,31 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
     fieldItem->setAddress(QString::number(regAddress + bitOffset/addressableUnitBits));
     fieldItem->setOffset(QString::number(bitOffset % addressableUnitBits));
 
+    for (auto enumeratedValue : *field->getEnumeratedValues())
+    {
+        fieldItem->addChild(createEnumeratedValueItem(enumeratedValue, fieldIdentifier, addressableUnitBits));
+    }
+
     return fieldItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createEnumeratedValueItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::createEnumeratedValueItem(
+    QSharedPointer<const EnumeratedValue> enumeratedValue, QString const& fieldIdentifier,
+    int const& addressUnitBits) const
+{
+    QString enumName = enumeratedValue->name();
+    QString enumeratedValueIdentifier = fieldIdentifier + enumName;
+
+    QSharedPointer<MemoryItem> enumItem(new MemoryItem(enumName, MemoryDesignerConstants::ENUMERATED_VALUE_TYPE));
+    enumItem->setIdentifier(enumeratedValueIdentifier);
+    enumItem->setDisplayName(enumeratedValue->displayName());
+    enumItem->setAUB(QString::number(addressUnitBits));
+    enumItem->setValue(expressionParser_->parseExpression(enumeratedValue->getValue()));
+
+    return enumItem;
 }
 
 //-----------------------------------------------------------------------------

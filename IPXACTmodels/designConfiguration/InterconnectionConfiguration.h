@@ -38,7 +38,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~InterconnectionConfiguration();
+    ~InterconnectionConfiguration() = default;
 
     /*!
      *  Get the isPresent value.

@@ -727,14 +727,12 @@ void ComponentEditor::updateComponentFiles(QSharedPointer<Component> targetCompo
     QSharedPointer<Component> otherComponent, QString const& sourcePath, QString const& targetPath)
 {
     // can't operate on the same component
-//     if (&other == this)
     if (targetComponent == otherComponent)
     {
         return;
     }
 
     // get the files from the other component
-//     QStringList files = other.getFiles();
     QStringList files = getComponentFileNames(otherComponent);
 
     // take each file

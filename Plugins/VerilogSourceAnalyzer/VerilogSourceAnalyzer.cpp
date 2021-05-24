@@ -15,19 +15,11 @@
 
 #include <QCryptographicHash>
 #include <QDir>
-
+#include <QDebug>
 //-----------------------------------------------------------------------------
 // Function: VerilogSourceAnalyzer::VerilogSourceAnalyzer()
 //-----------------------------------------------------------------------------
-VerilogSourceAnalyzer::VerilogSourceAnalyzer() : QObject(0)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogSourceAnalyzer::~VerilogSourceAnalyzer()
-//-----------------------------------------------------------------------------
-VerilogSourceAnalyzer::~VerilogSourceAnalyzer()
+VerilogSourceAnalyzer::VerilogSourceAnalyzer() : QObject(nullptr)
 {
 
 }
@@ -45,7 +37,7 @@ QString VerilogSourceAnalyzer::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogSourceAnalyzer::getVersion() const
 {
-    return "0.1";
+    return "0.10";
 }
 
 //-----------------------------------------------------------------------------
@@ -53,7 +45,7 @@ QString VerilogSourceAnalyzer::getVersion() const
 //-----------------------------------------------------------------------------
 QString VerilogSourceAnalyzer::getDescription() const
 {
-    return "Analyzes file dependencies from Verilog files.";
+    return "Analyzes file dependencies from (System)Verilog files.";
 }
 
 //-----------------------------------------------------------------------------
@@ -61,7 +53,7 @@ QString VerilogSourceAnalyzer::getDescription() const
 //-----------------------------------------------------------------------------
 QString VerilogSourceAnalyzer::getVendor() const
 {
-    return tr("TUT");
+    return tr("tuni.fi");
 }
 
 //-----------------------------------------------------------------------------
@@ -101,9 +93,7 @@ QList<IPlugin::ExternalProgramRequirement> VerilogSourceAnalyzer::getProgramRequ
 //-----------------------------------------------------------------------------
 QStringList VerilogSourceAnalyzer::getSupportedFileTypes() const
 {
-    QStringList fileTypes;
-    fileTypes << "verilogSource" << "verilogSource-95" << "verilogSource-2001" << "systemVerilogSource";
-    return fileTypes;
+    return QStringList({"verilogSource", "verilogSource-95", "verilogSource-2001", "systemVerilogSource"});
 }
 
 //-----------------------------------------------------------------------------
@@ -112,10 +102,9 @@ QStringList VerilogSourceAnalyzer::getSupportedFileTypes() const
 QString VerilogSourceAnalyzer::calculateHash(QString const& filename)
 {
     QString content = readFileContentAndRemoveComments(filename);
-
     if (content.isEmpty())
     {
-        return content;
+        return QString();
     }
 
     QCryptographicHash hashFunction(QCryptographicHash::Sha1);
@@ -129,7 +118,7 @@ QString VerilogSourceAnalyzer::calculateHash(QString const& filename)
 //-----------------------------------------------------------------------------
 void VerilogSourceAnalyzer::beginAnalysis(Component const* /*component*/, QString const& /*componentPath*/)
 {
-    
+    // Nothing to do.
 }
 
 //-----------------------------------------------------------------------------
@@ -137,7 +126,7 @@ void VerilogSourceAnalyzer::beginAnalysis(Component const* /*component*/, QStrin
 //-----------------------------------------------------------------------------
 void VerilogSourceAnalyzer::endAnalysis(Component const* /*component*/, QString const& /*componentPath*/)
 {
-    
+	// Nothing to do.
 }
 
 //-----------------------------------------------------------------------------
@@ -146,13 +135,16 @@ void VerilogSourceAnalyzer::endAnalysis(Component const* /*component*/, QString 
 QList<FileDependencyDesc> VerilogSourceAnalyzer::getFileDependencies(Component const* component, 
     QString const& componentPath, QString const& filename)
 {
-    QList<FileDependencyDesc> dependencies;
+	QMap<QString, QString> itemsInFilesets = findItemsInFilesets(component, componentPath);
+	
+	QString sourceAbsolutePath = findAbsolutePathFor(filename, componentPath);
+	QFileInfo sourceFileInfo(sourceAbsolutePath);
 
-    QString fileAbsolutePath = findAbsolutePathFor(filename, componentPath);
-    QString fileContent = readFileContentAndRemoveComments(fileAbsolutePath);
+	QString fileContent = readFileContentAndRemoveComments(sourceAbsolutePath);
 
-    dependencies.append(getIncludeDependencies(fileContent, fileAbsolutePath, componentPath, 
-        component->getFileSets()));
+	QList<FileDependencyDesc> dependencies;
+	dependencies.append(findIncludeDependencies(fileContent, sourceFileInfo, itemsInFilesets));
+	dependencies.append(findInstantiationDependencies(fileContent, sourceFileInfo, itemsInFilesets));
 
     return dependencies;
 }
@@ -164,7 +156,7 @@ QString VerilogSourceAnalyzer::readFileContentAndRemoveComments(QString const& f
 {
     QFile targetFile(filePath);
 
-    if (!targetFile.open(QIODevice::ReadOnly))
+    if (!targetFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         return QString();
     }
@@ -173,7 +165,7 @@ QString VerilogSourceAnalyzer::readFileContentAndRemoveComments(QString const& f
     targetFile.close();
 
     fileContent.remove(VerilogSyntax::MULTILINE_COMMENT);
-    fileContent.remove(VerilogSyntax::COMMENTLINE);
+    fileContent.remove(QRegularExpression(VerilogSyntax::COMMENT));
 
     return fileContent.simplified();
 }
@@ -183,65 +175,153 @@ QString VerilogSourceAnalyzer::readFileContentAndRemoveComments(QString const& f
 //-----------------------------------------------------------------------------
 QString VerilogSourceAnalyzer::findAbsolutePathFor(QString const& filename, QString const& componentPath) const
 {
-    QString path = filename;
-    if (!QFileInfo(path).isAbsolute())
-    {
-        path = componentPath + "/" + filename;
-    }
+	QString path = filename;
+	if (!QFileInfo(path).isAbsolute())
+	{
+		path = componentPath + "/" + filename;
+	}
 
-    return path;
+	return path;
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogSourceAnalyzer::getIncludeDependencies()
+// Function: VerilogSourceAnalyzer::findItemsInFilesets()
 //-----------------------------------------------------------------------------
-QList<FileDependencyDesc> VerilogSourceAnalyzer::getIncludeDependencies(QString const& fileContent, 
-    QString const& fileAbsolutePath, QString const& xmlPath, QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) const
+QMap<QString, QString> VerilogSourceAnalyzer::findItemsInFilesets(Component const* component,
+	QString const& componentPath)
 {
-    QList<FileDependencyDesc> includes;
+	QMap<QString, QString> itemsInFilesets;
+	for (auto const& fileSet : *component->getFileSets())
+	{
+		for (auto const& file : *fileSet->getFiles())
+		{
+			if (isOfSupportedFileType(file))
+			{
+				QString path = findAbsolutePathFor(file->name(), componentPath);
+				QString content = readFileContentAndRemoveComments(file->name());
 
-    QDir absoluteFileDir = QFileInfo(fileAbsolutePath).absoluteDir();
+				itemsInFilesets.unite(findItemsInFileContent(content, path));
 
-    QRegularExpression includePattern("`include [\"<](.*?)[\">]");
-    int position = 0;
+			}
+		}
+	}
 
-    QRegularExpressionMatch match = includePattern.match(fileContent, position);
-    while (match.hasMatch())
-    {        
-        QString targetFileName = match.captured(1);
-
-        QString targetAbsolutePath = findAbsolutePathInFileSets(targetFileName, xmlPath, fileSets);
-        QString targetRelativePath = absoluteFileDir.relativeFilePath(targetAbsolutePath);
-
-        FileDependencyDesc includeDependency;
-        includeDependency.filename = targetRelativePath;
-        includeDependency.description = tr("Include reference to %1").arg(targetFileName);
-        includes.append(includeDependency);
-
-        position = match.capturedEnd();
-        match = includePattern.match(fileContent, position);
-    }
-
-    return includes;
+	return itemsInFilesets;
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogSourceAnalyzer::findAbsolutePathInFileSets()
+// Function: VerilogSourceAnalyzer::findItemsInFileContent()
 //-----------------------------------------------------------------------------
-QString VerilogSourceAnalyzer::findAbsolutePathInFileSets(QString fileName,
-    QString const& xmlPath, QSharedPointer< QList<QSharedPointer<FileSet> > > fileSets) const
+QMap<QString, QString> VerilogSourceAnalyzer::findItemsInFileContent(QString const& content,
+	QString const& filePath)
 {
-    QRegularExpression namePattern("(?:^|[/\\\\])" + fileName + "$");
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets)
-    {
-        foreach (QSharedPointer<File> file, *fileSet->getFiles())
-        {
-            if (namePattern.match(file->name()).hasMatch())
-            {
-                return QFileInfo(xmlPath + "/" + file->name()).absoluteFilePath();
-            }
-        } 
-    }	
+	QMap<QString, QString> itemsInFile;
 
-    return fileName;
+	auto modulesInFile = VerilogSyntax::MODULE_KEY_WORD.globalMatch(content);
+	bool isHeader = modulesInFile.hasNext() == false;
+	while (modulesInFile.hasNext())
+	{
+		auto match = modulesInFile.next();
+		QString moduleName = match.captured(1);
+		itemsInFile.insert(moduleName, filePath);
+	}
+
+	if (isHeader)
+	{
+		itemsInFile.insert(QFileInfo(filePath).fileName(), filePath);
+	}
+
+	return itemsInFile;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogSourceAnalyzer::isOfSupportedFileType()
+//-----------------------------------------------------------------------------
+bool VerilogSourceAnalyzer::isOfSupportedFileType(QSharedPointer<File> file)
+{
+	for (auto const& filetype : *file->getFileTypes())
+	{
+		if (getSupportedFileTypes().contains(filetype))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogSourceAnalyzer::findIncludeDependencies()
+//-----------------------------------------------------------------------------
+QList<FileDependencyDesc> VerilogSourceAnalyzer::findIncludeDependencies(QString const& fileContent,
+	QFileInfo const& sourceFileInfo, QMap<QString, QString> const& itemsInFilesets) const
+{
+	QList<FileDependencyDesc> dependencies;
+
+	const QDir sourceAbsoluteDir = sourceFileInfo.absoluteDir();
+
+	QStringList includeFiles = findDependencies(fileContent, QRegularExpression("`include [\"<](.*?)[\">]"));
+	for (auto const& includeName : includeFiles)
+	{
+		QString targetAbsolutePath = itemsInFilesets.value(includeName, includeName);
+		QString targetRelativePath = sourceAbsoluteDir.relativeFilePath(targetAbsolutePath);
+
+		FileDependencyDesc dependency;
+		dependency.description = tr("Include reference to %1").arg(includeName); 
+		dependency.filename =  targetRelativePath;
+		dependencies.append(dependency);
+	}
+
+	return dependencies;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogSourceAnalyzer::findDependencies()
+//-----------------------------------------------------------------------------
+QStringList VerilogSourceAnalyzer::findDependencies(QString const& fileContent,
+	QRegularExpression const& matchPattern) const
+{
+	QStringList dependentFiles;
+	auto matches = matchPattern.globalMatch(fileContent);
+	while (matches.hasNext())
+	{
+		auto match = matches.next();
+		QString dependencyName = match.captured(1);
+
+		if (VerilogSyntax::KEYWORDS.contains(dependencyName) == false && 
+			dependentFiles.contains(dependencyName) == false)
+		{
+			dependentFiles.append(dependencyName);
+		}
+	}
+
+	return dependentFiles;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogSourceAnalyzer::findInstantiationDependencies()
+//-----------------------------------------------------------------------------
+QList<FileDependencyDesc>  VerilogSourceAnalyzer::findInstantiationDependencies(QString const& fileContent, 
+	QFileInfo const& sourceFileInfo, QMap<QString, QString> const& itemsInFilesets) const
+{
+	QStringList instanceFiles = findDependencies(fileContent, 
+		QRegularExpression(";\\s+([a-zA-Z_][\\w$]*)(\\s+#[(].*[)])?\\s+([a-zA-Z_][\\w$]*)",
+		QRegularExpression::DotMatchesEverythingOption | QRegularExpression::InvertedGreedinessOption));
+
+	const QString sourceFileSuffix = "." + sourceFileInfo.suffix();
+	const QDir sourceAbsoluteDir = sourceFileInfo.absoluteDir();
+
+	QList<FileDependencyDesc> dependencies;
+	for (auto const& moduleName : instanceFiles)
+	{
+		QString targetAbsolutePath = itemsInFilesets.value(moduleName, moduleName + sourceFileSuffix);
+		QString targetRelativePath = sourceAbsoluteDir.relativeFilePath(targetAbsolutePath);
+
+		FileDependencyDesc dependency;
+		dependency.description = tr("Submodule instantiation of module %1").arg(moduleName); 
+		dependency.filename = targetRelativePath;		
+		dependencies.append(dependency);
+	}
+
+	return dependencies;
 }

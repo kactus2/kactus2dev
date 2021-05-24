@@ -49,9 +49,6 @@ public:
     //! No assignment.
     AddressBlockGraphItem& operator=(const AddressBlockGraphItem& other) = delete;
 
-    //! Refresh the item, re-layout the sub-items and refresh parent item.
-	virtual void refresh() override final;
-
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override final;
 
@@ -103,7 +100,7 @@ private:
 	QSharedPointer<AddressBlock> addrBlock_;
 
     //! The number of bits in an address unit.
-    int addrssableUnitBits_;
+    int addrssableUnitBits_ = 0;
 };
 
 #endif // ADDRESSBLOCKGRAPHITEM_H

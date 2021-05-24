@@ -138,9 +138,9 @@ bool OffPageConnectorItem::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::onDisonnect()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::onDisconnect(ConnectionEndpoint const* other)
+void OffPageConnectorItem::onDisconnect()
 {
-    parent_->onDisconnect(other);
+    parent_->onDisconnect();
 }
 
 //-----------------------------------------------------------------------------

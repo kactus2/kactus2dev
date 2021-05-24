@@ -51,9 +51,6 @@ public:
 
     //! No assignment.
     MemoryMapGraphItem& operator=(const MemoryMapGraphItem& other) = delete;
-
-    //! Refresh the item and re-layout the sub-items.
-	virtual void refresh() override;
         
     //! Updates the labels and tooltip for the item.
     virtual void updateDisplay() override final;
@@ -102,7 +99,17 @@ public:
      */
     virtual bool isPresent() const override final;
 
+
 protected:
+
+    /*!
+     *  Get the displayed memory remap.
+     *
+     *      @return The displayed memory remap.
+     */
+    QSharedPointer<MemoryMapBase> getMemoryMap() const;
+
+private:
 
 	//! Pointer to the memory remap that is shown
     QSharedPointer<MemoryMapBase> memoryMap_;

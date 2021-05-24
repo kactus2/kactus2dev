@@ -43,7 +43,8 @@ private slots:
     void multiLineDescribed();
     void describedParentheses();
     void evilDescription();
-    
+	void testStringValue();
+
     void otherParameterAsParameterValue();
     void testAnsiArrayValue();
     void testAnsiArrayValue_data();
@@ -405,7 +406,7 @@ void tst_VerilogParameterParser::describedParentheses()
 void tst_VerilogParameterParser::evilDescription()
 {
     QString input = "module shifter #(\n"
-        "parameter DATAWIDTH= 32 // module declaration end here :D );\n"
+        "parameter DATAWIDTH= 32 // module declaration ends here );\n"
         "parameter AUB = DATAWIDTH/4 // (oon); \n"
         ") (\n"
         "); endmodule\n";
@@ -414,9 +415,29 @@ void tst_VerilogParameterParser::evilDescription()
     QStringList declarations = parser.findDeclarations(input);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
-    verifyParameter( parameters[0], "DATAWIDTH", "32", "module declaration end here :D );");
+    verifyParameter( parameters[0], "DATAWIDTH", "32", "module declaration ends here );");
     parameters.append(parser.parseParameters(declarations[1]));
     verifyParameter( parameters[1], "AUB", "DATAWIDTH/4", "(oon);");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogParameterParser::testStringValue()
+//-----------------------------------------------------------------------------
+void tst_VerilogParameterParser::testStringValue()
+{
+	QString input = "module shifter #(\n"
+		"parameter type = \"barrel\", // \"barrel\" or \"arithmetic\"\n"
+		"parameter DATAWIDTH = 8 \n"
+		") (\n"
+		"); endmodule\n";
+
+	VerilogParameterParser parser;
+	QStringList declarations = parser.findDeclarations(input);
+
+	QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
+	verifyParameter(parameters[0], "type", "\"barrel\"", "\"barrel\" or \"arithmetic\"");
+	parameters.append(parser.parseParameters(declarations[1]));
+	verifyParameter(parameters[1], "DATAWIDTH", "8", "");
 }
 
 //-----------------------------------------------------------------------------

@@ -27,13 +27,6 @@ K2EnvVarModel::K2EnvVarModel(QSettings& settings, QObject *parent): QAbstractTab
 }
 
 //-----------------------------------------------------------------------------
-// Function: K2EnvVarModel::~K2EnvVarModel()
-//-----------------------------------------------------------------------------
-K2EnvVarModel::~K2EnvVarModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: K2EnvVarModel::apply()
 //-----------------------------------------------------------------------------
 void K2EnvVarModel::apply(QSettings& settings)
@@ -416,34 +409,6 @@ fromPlugin_(false)
 {
 }
 
-//-----------------------------------------------------------------------------
-// Function: K2EnvVarModel::EnvSetting::EnvSetting()
-//-----------------------------------------------------------------------------
-K2EnvVarModel::EnvSetting::EnvSetting( const EnvSetting& other ):
-name_(other.name_),
-    value_(other.value_),
-    fileSuffix_(other.fileSuffix_),
-    description_(other.description_),
-    fromPlugin_(other.fromPlugin_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: K2EnvVarModel::EnvSetting::operator=()
-//-----------------------------------------------------------------------------
-K2EnvVarModel::EnvSetting& K2EnvVarModel::EnvSetting::operator=( const EnvSetting& other ) 
-{
-    if (this != &other)
-    {
-        name_ = other.name_;
-        value_ = other.value_;
-        fileSuffix_ = other.fileSuffix_;
-        description_ = other.description_;
-        fromPlugin_ = other.fromPlugin_;
-    }
-    return *this;
-}
 
 //-----------------------------------------------------------------------------
 // Function: K2EnvVarModel::EnvSetting::operator<()

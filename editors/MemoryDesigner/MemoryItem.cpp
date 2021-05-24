@@ -24,7 +24,9 @@ range_(),
 width_(),
 size_(),
 offset_(),
-childItems_()
+childItems_(),
+usage_(General::USAGE_COUNT),
+value_()
 {
 
 }
@@ -195,4 +197,36 @@ void MemoryItem::addChild(QSharedPointer<MemoryItem> child)
 QVector<QSharedPointer<MemoryItem> > MemoryItem::getChildItems() const
 {
     return childItems_;         
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setUsage()
+//-----------------------------------------------------------------------------
+void MemoryItem::setUsage(General::Usage const& newUsage)
+{
+    usage_ = newUsage;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getUsage()
+//-----------------------------------------------------------------------------
+General::Usage MemoryItem::getUsage() const
+{
+    return usage_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setValue()
+//-----------------------------------------------------------------------------
+void MemoryItem::setValue(QString const& newValue)
+{
+    value_ = newValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getValue()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getValue() const
+{
+    return value_;
 }

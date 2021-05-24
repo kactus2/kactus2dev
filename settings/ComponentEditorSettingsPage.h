@@ -25,12 +25,16 @@ class ComponentEditorSettingsPage : public SettingsPage
 public:
 	ComponentEditorSettingsPage(QSettings &settings);
 	
-	~ComponentEditorSettingsPage();
+	virtual ~ComponentEditorSettingsPage() = default;
+
+    //! Disable copying.
+    ComponentEditorSettingsPage(ComponentEditorSettingsPage const& rhs) = delete;
+    ComponentEditorSettingsPage& operator=(ComponentEditorSettingsPage const& rhs) = delete;
 
 	/*!
 	 *  Applies the changes that were done to the page.
 	 */
-	void apply();
+	virtual void apply() override final;
 
 public slots:
 
@@ -70,9 +74,6 @@ public slots:
 	void onWorkspaceChanged(int workspaceIndex);
 
 private:
-	//! Disable copying.
-	ComponentEditorSettingsPage(ComponentEditorSettingsPage const& rhs);
-	ComponentEditorSettingsPage& operator=(ComponentEditorSettingsPage const& rhs);
 
 	/*!
 	 *  Apply the hardware settings.

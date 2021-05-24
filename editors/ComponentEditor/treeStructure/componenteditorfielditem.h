@@ -70,6 +70,13 @@ public:
      */
 	virtual ~ComponentEditorFieldItem() = default;
 
+    //! No copying.
+    ComponentEditorFieldItem(const ComponentEditorFieldItem& other) = delete;
+
+    //! No assignment.
+    ComponentEditorFieldItem& operator=(const ComponentEditorFieldItem& other) = delete;
+
+
 	/*!
      *  Get the tool tip for the item.
 	 * 
@@ -122,19 +129,24 @@ public:
 	/*!
      *  Update the graphics item of the field.
 	 */
-	virtual void updateGraphics();
+    virtual void updateGraphics() override final;
 
 	/*!
      *  Remove the graphics item of the field.
 	 */
 	virtual void removeGraphicsItem();
 
+
 signals:
 
     /*!
      *  Inform of the need to redraw the visualization.
      */
-    void graphicsChanged();
+    //void graphicsChanged();
+
+    //! Inform that address information has changed.
+    void addressingChanged();
+
 
     /*
      *  Informs of field name change.
@@ -151,13 +163,12 @@ protected slots:
 	 */
 	virtual void onEditorChanged();
 
-private:
-	
-	//! No copying.
-	ComponentEditorFieldItem(const ComponentEditorFieldItem& other);
+    /*!
+     *  Handle the change in graphics.
+     */
+    virtual void onGraphicsChanged() override final;
 
-	//! No assignment.
-	ComponentEditorFieldItem& operator=(const ComponentEditorFieldItem& other);
+private:
 
 	//! The register which contains this field.
 	QSharedPointer<Register> reg_;
@@ -166,10 +177,10 @@ private:
 	QSharedPointer<Field> field_;
 
 	//! The visualizer of memory maps.
-	MemoryMapsVisualizer* visualizer_;
+	MemoryMapsVisualizer* visualizer_ = nullptr;
 
 	//! The graph item that visualizes the field.
-    FieldGraphItem* graphItem_;
+    FieldGraphItem* graphItem_ = nullptr;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

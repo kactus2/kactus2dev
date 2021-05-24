@@ -19,6 +19,7 @@ class DesignConfiguration;
 class AdHocConnection;
 class MessageMediator;
 class PartSelect;
+class PortAbstraction;
 
 //-----------------------------------------------------------------------------
 // An instantiated design with all its parameters, instances, and interconnections parsed.
@@ -129,6 +130,35 @@ private:
     void wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
         QSharedPointer<MetaInterconnection> mIterconnect, bool isHierarchical);
     
+    /*!
+     *  Associate the selected meta port with wire.
+     *
+     *      @param [in] metaInterconnect    Meta interconnection containing the wire.
+     *      @param [in] portAbstraction     Connected logical port.
+     *      @param [in] assignment          Meta assignment for the port.
+     *      @param [in] connectedWires      List of already connected meta wire.
+     *      @param [in] isHierarchical      Flag for hierarchical ports.
+     *      @param [in] metaPort            The selected meta port.
+     */
+    void associateWithWire(QSharedPointer<MetaInterconnection> metaInterconnect,
+        QSharedPointer<PortAbstraction> portAbstraction, QSharedPointer<MetaPortAssignment> assignment,
+        QList<QSharedPointer<MetaWire> >& connectedWires, bool isHierarchical, QSharedPointer<MetaPort> metaPort);
+
+    /*!
+     *  Associate the selected meta port with transactional.
+     *
+     *      @param [in] metaInterconnect            Meta interconnection containing the wire.
+     *      @param [in] portAbstraction             Connected logical port.
+     *      @param [in] assignment                  Meta assignment for the port.
+     *      @param [in] connectedTransactionals     List of already connected meta transactionals.
+     *      @param [in] isHierarchical              Flag for hierarchical ports.
+     *      @param [in] metaPort                    The selected meta port.
+     */
+    void associateWithTransactional(QSharedPointer<MetaInterconnection> metaInterconnect,
+        QSharedPointer<PortAbstraction> portAbstraction, QSharedPointer<MetaPortAssignment> assignment,
+        QList<QSharedPointer<MetaTransactional> >& connectedTransactionals, bool isHierarchical,
+        QSharedPointer<MetaPort> metaPort);
+
     /*!
      *  Parses ad-hocs in the design_.
      */

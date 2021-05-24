@@ -195,14 +195,6 @@ bool AdHocItem::onConnect(ConnectionEndpoint const* )
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocItem::onDisconnect()
-//-----------------------------------------------------------------------------
-void AdHocItem::onDisconnect(ConnectionEndpoint const* )
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AdHocItem::isExclusive()
 //-----------------------------------------------------------------------------
 bool AdHocItem::isExclusive() const
@@ -241,14 +233,6 @@ ConnectionEndpoint::EndpointType AdHocItem::getType() const
 QSharedPointer<Port> AdHocItem::getPort() const
 {
     return port_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocItem::setInterfaceMode()
-//-----------------------------------------------------------------------------
-void AdHocItem::setInterfaceMode(General::InterfaceMode )
-{
-
 }
 
 //-----------------------------------------------------------------------------

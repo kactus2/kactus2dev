@@ -18,11 +18,18 @@ namespace LogicalPortColumns
         MODE,
         PRESENCE,
         DIRECTION,
+        INITIATIVE,
+        KIND,
         WIDTH,
+        BUSWIDTH,
         DEFAULT_VALUE,
         DRIVER,
         QUALIFIER,
         SYSTEM_GROUP,
+        PROTOCOLTYPE,
+        PAYLOADNAME,
+        PAYLOADTYPE,
+        PAYLOADEXTENSION,
         DESCRIPTION,
         COLUMN_COUNT
     };

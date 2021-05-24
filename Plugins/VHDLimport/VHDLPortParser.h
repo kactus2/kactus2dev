@@ -57,7 +57,7 @@ public:
      */
     virtual void import(QString const& input, QSharedPointer<Component> targetComponent,
         QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
- 
+
     /*!
      *  Sets the given highlighter to be used by the port parser.
      *

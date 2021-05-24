@@ -45,7 +45,12 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~CodeEditorSettingsPage();
+    virtual ~CodeEditorSettingsPage() = default;
+
+    // Disable copying.
+    CodeEditorSettingsPage(CodeEditorSettingsPage const& rhs) = delete;
+
+    CodeEditorSettingsPage& operator=(CodeEditorSettingsPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -54,12 +59,12 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    virtual bool validate()  override final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    virtual void apply()  override final;
 
 public slots:
     //! Requests the user to select a color.
@@ -76,10 +81,6 @@ public slots:
     void updateSample();
 
 private:
-    // Disable copying.
-    CodeEditorSettingsPage(CodeEditorSettingsPage const& rhs);    
-
-    CodeEditorSettingsPage& operator=(CodeEditorSettingsPage const& rhs);
     
     //! Sets the page layout.
     void setupLayout();

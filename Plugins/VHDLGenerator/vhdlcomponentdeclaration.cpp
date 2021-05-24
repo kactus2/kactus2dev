@@ -61,14 +61,6 @@ instantations_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: vhdlcomponentdeclaration::~VhdlComponentDeclaration()
-//-----------------------------------------------------------------------------
-VhdlComponentDeclaration::~VhdlComponentDeclaration()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: vhdlcomponentdeclaration::write()
 //-----------------------------------------------------------------------------
 void VhdlComponentDeclaration::write( QTextStream& stream ) const

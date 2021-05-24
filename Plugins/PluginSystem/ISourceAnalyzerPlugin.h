@@ -41,6 +41,11 @@ struct FileDependencyDesc
     FileDependencyDesc() : filename(), description()
     {
     }
+
+	bool operator==(const FileDependencyDesc& lhs) const
+	{
+		return lhs.filename == filename;
+	}
 };
 
 //-----------------------------------------------------------------------------

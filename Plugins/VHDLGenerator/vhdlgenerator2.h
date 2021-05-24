@@ -137,11 +137,9 @@ private:
 		QString portName_;
 
 		//! The left bound of the port to connect.
-// 		QString leftBound_;
         int leftBound_;
 
 		//! The right bound of the port to connect.
-// 		QString rightBound_;
         int rightBound_;
 
 		/*!
@@ -152,16 +150,17 @@ private:
 		 *      @param [in] left        The left bound of the port.
 		 *      @param [in] right       The right bound of the port.
 		 */
-// 		PortConnection(QSharedPointer<VhdlComponentInstance> instance, const QString& portName,
-//             QString left = "-1", QString right = "-1");
         PortConnection(QSharedPointer<VhdlComponentInstance> instance, const QString& portName,
             int left = -1, int right = -1);
 
 		//! Copy constructor.
-		PortConnection(const PortConnection& other);
+		PortConnection(const PortConnection& other) = default;
 
 		//! Assignment operator.
-		PortConnection& operator=(const PortConnection& other);
+		PortConnection& operator=(const PortConnection& other) = default;
+
+        //! The destructor.
+        ~PortConnection() = default;
 	};
 
 	/*!
@@ -204,11 +203,6 @@ private:
      *  Parse the ad hoc connections of a design.
 	 */
 	void parseAdHocConnections();
-
-	/*!
-     *  Parse the hierarchical connections of a design.
-	 */
-// 	void parseHierConnections();
 
 	/*!
      *  Connect the two interfaces together with signals.

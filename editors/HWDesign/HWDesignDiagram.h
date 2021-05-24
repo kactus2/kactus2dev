@@ -287,7 +287,7 @@ protected:
      *      @param [in] component   The component whose design to open.
      *      @param [in] viewName    The name of the view to open.
      */
-    void openDesignForComponent(ComponentItem* component, QString const& viewName);
+    virtual void openDesignForComponent(ComponentItem* component, QString const& viewName) override;
 
     //! Handler for mouse double click events.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -328,21 +328,21 @@ protected:
         QPointF position, QUndoCommand* parentCommand);
 
     //! Updates the dropAction and highlight according to underlying element.
-    virtual void updateDropAction(QGraphicsSceneDragDropEvent* event);
+    virtual void updateDropAction(QGraphicsSceneDragDropEvent* event) override;
 
     /*!
      *  Checks if open component action should be enabled.
      *
      *      @return True, if action should be enabled, otherwise false.
      */
-    virtual bool openComponentActionEnabled() const;
+    virtual bool openComponentActionEnabled() const override;
 
     /*!
      *  Check if the selected items are of a type used in the HW design.
      *
      *      @return True, if the items are used in HW design, false otherwise.
      */
-    virtual bool selectedItemIsCorrectType() const;
+    virtual bool selectedItemIsCorrectType() const override;
 
     /*!
      *  Checks if the given item is a hierarchical component.
@@ -351,21 +351,21 @@ protected:
      *
      *      @return True, if item is a hierarchical component, otherwise false.
      */
-    virtual bool isHierarchicalComponent(QGraphicsItem* item) const;
+    virtual bool isHierarchicalComponent(QGraphicsItem* item) const override;
 
     /*!
      *  Checks if copy action should be enabled.
      *
      *      @return True, if action should be enabled, otherwise false.
      */
-    virtual bool copyActionEnabled() const;
+    virtual bool copyActionEnabled() const override;
 
     /*!
      *  Checks if paste action should be enabled.
      *
      *      @return True, if action should be enabled, otherwise false.
      */
-    virtual bool pasteActionEnabled() const;
+    virtual bool pasteActionEnabled() const override;
 
     /*!
      *  Opens the given component according to the active view of the component.
@@ -381,7 +381,7 @@ protected:
     *
     *      @return The names of the hierarchical views.
     */
-    virtual QStringList hierarchicalViewsOf(ComponentItem* component) const;
+    virtual QStringList hierarchicalViewsOf(ComponentItem* component) const override;
 
     /*!
      *  Gets the graphics item type of the components in the diagram.
@@ -411,7 +411,7 @@ protected:
      *
      *      @return The created ad hoc interface item.
      */
-    virtual AdHocItem* createAdhocItem(QString const& portName);
+    virtual AdHocItem* createAdhocItem(QString const& portName) override;
 
 private:
     // Disable copying.

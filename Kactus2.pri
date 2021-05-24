@@ -221,9 +221,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Plugins/PluginSystem/ImportPlugin/ImportColors.h \
     ./Plugins/PluginSystem/ImportPlugin/Highlighter.h \
     ./Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
-    ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
+    ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./library/DocumentFileAccess.h \
@@ -649,8 +649,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/CatalogEditor/CatalogFileDelegate.h \
     ./editors/CatalogEditor/CatalogFileFilter.h \
     ./editors/CatalogEditor/CatalogFileView.h \
-    ./editors/BusDefinitionEditor/AbstractionTransactionalPortColumns.h \
+    ./editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.h \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.h \
     ./editors/BusDefinitionEditor/LogicalPortColumns.h \
     ./editors/BusDefinitionEditor/absdefgroup.h \
     ./editors/BusDefinitionEditor/busdefgroup.h \
@@ -660,10 +661,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.h \
     ./editors/BusDefinitionEditor/AbstractionPortsDelegate.h \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsModel.h \
-    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.h \
+    ./editors/BusDefinitionEditor/AbstractionPortsModel.h \
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
+    ./editors/BusDefinitionEditor/AbstractionExtendHandler.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
     ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h \
     ./editors/common/BusInterfaceUtilities.h \
@@ -1431,15 +1432,17 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
     ./editors/BusDefinitionEditor/absdefgroup.cpp \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
+    ./editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.cpp \
+    ./editors/BusDefinitionEditor/AbstractionExtendHandler.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsDelegate.cpp \
+    ./editors/BusDefinitionEditor/AbstractionPortsModel.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsView.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.cpp \
-    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsModel.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.cpp \
     ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.cpp \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsModel.cpp \
+    ./editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.cpp \

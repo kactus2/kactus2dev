@@ -40,7 +40,13 @@ public:
     K2EnvVarModel(QSettings& settings, QObject *parent);
     
     //! The destructor.
-    virtual ~K2EnvVarModel();
+    virtual ~K2EnvVarModel() = default;
+
+    //! No copying
+    K2EnvVarModel(const K2EnvVarModel& other) = delete;
+
+    //! No assignment
+    K2EnvVarModel& operator=(const K2EnvVarModel& other) = delete;
 
     /*!
      *  Save the model to settings.
@@ -55,7 +61,7 @@ public:
      *
      *      @return Number of rows the item has.
     */
-    virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
+    virtual int rowCount(QModelIndex const& parent = QModelIndex()) const override final;
 
     /*! Get the number of columns the item has to be displayed.
      *
@@ -63,7 +69,7 @@ public:
      *
      *      @return The number of columns to be displayed.
     */
-    virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
+    virtual int columnCount(QModelIndex const& parent = QModelIndex()) const override final;
 
     /*! Get the item flags that defines the possible operations for the item.
      *
@@ -71,7 +77,7 @@ public:
      *
      *      @return Flags specify the possible operations for the item.
     */
-    Qt::ItemFlags flags(QModelIndex const& index) const;
+    virtual Qt::ItemFlags flags(QModelIndex const& index) const override final;
 
     /*! Get the header data for specified header.
      *
@@ -82,7 +88,7 @@ public:
      *      @return The requested data.
     */
     virtual QVariant headerData(int section, Qt::Orientation orientation, 
-        int role = Qt::DisplayRole) const;
+        int role = Qt::DisplayRole) const override final;
 
     /*! Get the data for specified item.
      *
@@ -91,7 +97,7 @@ public:
      *
      *      @return The data for the item.
     */
-    virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
+    virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const override final;
 
     /*! Save the data to the model for specified item
      *
@@ -101,8 +107,8 @@ public:
      *
      *      @return True if saving happened successfully.
     */
-    bool setData(QModelIndex const& index, const QVariant& value, 
-        int role = Qt::EditRole);
+    virtual bool setData(QModelIndex const& index, const QVariant& value, 
+        int role = Qt::EditRole) override final;
     /*!
      *  Check that all variables have at least the name defined.
      *
@@ -127,11 +133,6 @@ public slots:
 
 private:
     
-    //! No copying
-    K2EnvVarModel(const K2EnvVarModel& other);
-
-    //! No assignment
-    K2EnvVarModel& operator=(const K2EnvVarModel& other);
 
     // Loads the model data in place.
     void loadData(QSettings& settings);
@@ -163,7 +164,7 @@ private:
          *      @param [in] fromPlugin  Defines whether the variable is requested by the plugins.
          *
         */
-        EnvSetting(QString const& name, 
+        explicit EnvSetting(QString const& name, 
             QString const& value,
             QString const& fileSuffix,
             QString const& description,
@@ -172,11 +173,14 @@ private:
         //! The default constructor.
         EnvSetting();
 
+        //! The destructor.
+        ~EnvSetting() = default;
+        
         //! Copy constructor
-        EnvSetting(const EnvSetting& other);
+        EnvSetting(const EnvSetting& other) = default;
 
         //! Assignment operator
-        EnvSetting& operator=(const EnvSetting& other);
+        EnvSetting& operator=(const EnvSetting& other) = default;
 
         //! Operator <
         bool operator<(const EnvSetting& other) const;

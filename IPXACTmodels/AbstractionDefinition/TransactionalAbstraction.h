@@ -73,6 +73,15 @@ public:
     QSharedPointer<QList<QSharedPointer<TransactionalPort> > > getSystemPorts() const;
     
     /*!
+     *  Find the selected system port.
+     *
+     *      @param [in] systemGroup     The selected interface system group.
+     *
+     *      @return The selected system port, if it exists.
+     */
+    QSharedPointer<TransactionalPort> findSystemPort(QString const& systemGroup) const;
+
+    /*!
      *  Checks if the transaction definition has a port definition for master mode.
      *
      *      @return True, if master mode is defined, otherwise false.
@@ -143,15 +152,6 @@ public:
      *      @return The width of the selected mode.
      */
     QString getWidth(General::InterfaceMode mode, QString const& systemGroup) const;
-
-    /*!
-     *  Find the selected system port.
-     *
-     *      @param [in] systemGroup     The selected interface system group.
-     *
-     *      @return The selected system port, if it exists.
-     */
-    QSharedPointer<TransactionalPort> findSystemPort(QString const& systemGroup) const;
 
 private:
 

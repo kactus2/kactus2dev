@@ -25,11 +25,24 @@ MasterSlavePathSearch::MasterSlavePathSearch(): masterPaths_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MasterSlavePathSearch::~MasterSlavePathSearch()
+// Function: MasterSlavePathSearch::findMasterSlaveRoots()
 //-----------------------------------------------------------------------------
-MasterSlavePathSearch::~MasterSlavePathSearch()
+QVector<QSharedPointer<ConnectivityInterface> > MasterSlavePathSearch::findMasterSlaveRoots(
+    QSharedPointer<const ConnectivityGraph> graph)
 {
+    QVector<QSharedPointer<ConnectivityInterface> > rootInterfaces;
+    QVector<QSharedPointer<ConnectivityInterface> > visitedInterfaces;
+    QVector<QSharedPointer<ConnectivityInterface> > possibleMasterInterfaces = findInitialMasterInterfaces(graph);
+    for (auto masterInterface : possibleMasterInterfaces)
+    {
+        findConnectedInterfaceNodes(masterInterface, QSharedPointer<const ConnectivityConnection>(),
+            visitedInterfaces, graph);
+        rootInterfaces.append(masterInterface);
+    }
 
+    //! Local memory maps?
+
+    return rootInterfaces;
 }
 
 //-----------------------------------------------------------------------------
@@ -67,15 +80,15 @@ QVector<QVector<QSharedPointer<ConnectivityInterface const> > > MasterSlavePathS
 //-----------------------------------------------------------------------------
 // Function: MasterSlavePathSearch::findInitialMasterInterfaces()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<ConnectivityInterface const> > MasterSlavePathSearch::findInitialMasterInterfaces(
+QVector<QSharedPointer<ConnectivityInterface> > MasterSlavePathSearch::findInitialMasterInterfaces(
     QSharedPointer<const ConnectivityGraph> graph) const
 {
-    QVector<QSharedPointer<ConnectivityInterface const> > masterInterfaces;
+    QVector<QSharedPointer<ConnectivityInterface> > masterInterfaces;
 
     QVector<QSharedPointer<ConnectivityInterface> > graphInterfaces = graph->getInterfaces();
     for (int i = 0; i < graphInterfaces.size(); ++i)
     {
-        QSharedPointer<ConnectivityInterface const> vertex = graphInterfaces[i];
+        QSharedPointer<ConnectivityInterface> vertex = graphInterfaces[i];
         if (vertex->getMode().compare(QStringLiteral("master")) == 0 && vertex->getConnectedMemory() &&
             !vertex->isBridged())
         {
@@ -84,6 +97,42 @@ QVector<QSharedPointer<ConnectivityInterface const> > MasterSlavePathSearch::fin
     }
 
     return masterInterfaces;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::findConnectedInterfaceNodes()
+//-----------------------------------------------------------------------------
+void MasterSlavePathSearch::findConnectedInterfaceNodes(QSharedPointer<ConnectivityInterface> startVertex,
+    QSharedPointer<ConnectivityConnection const> previousEdge,
+    QVector<QSharedPointer<ConnectivityInterface>>& visitedVertices,
+    QSharedPointer<const ConnectivityGraph> graph)
+{
+    visitedVertices.append(startVertex);
+
+    QVector<QSharedPointer<ConnectivityConnection const> > connections = graph->getConnectionsFor(startVertex);
+    if (connections.contains(previousEdge))
+    {
+        connections.remove(connections.indexOf(previousEdge));
+    }
+
+    for (auto edge : connections)
+    {
+        QSharedPointer<ConnectivityInterface> endVertex = findConnectedInterface(startVertex, edge);
+        if (endVertex)
+        {
+            if (canConnectInterfaces(startVertex, endVertex))
+            {
+                if (!startVertex->getChildInterfaceNodes().contains(endVertex))
+                {
+                    startVertex->addChildInterfaceNode(endVertex);
+                }
+                if (!visitedVertices.contains(endVertex))
+                {
+                    findConnectedInterfaceNodes(endVertex, edge, visitedVertices, graph);
+                }
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -132,12 +181,12 @@ void MasterSlavePathSearch::findPaths(QSharedPointer<ConnectivityInterface const
 //-----------------------------------------------------------------------------
 // Function: MasterSlavePathSearch::findConnectedInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityInterface const> MasterSlavePathSearch::findConnectedInterface(
+QSharedPointer<ConnectivityInterface> MasterSlavePathSearch::findConnectedInterface(
     QSharedPointer<ConnectivityInterface const> startInterface, QSharedPointer<ConnectivityConnection const> edge)
     const
 {
-    QSharedPointer<ConnectivityInterface const> firstInterface = edge->getFirstInterface();
-    QSharedPointer<ConnectivityInterface const> secondInterface = edge->getSecondInterface();
+    QSharedPointer<ConnectivityInterface> firstInterface = edge->getFirstInterface();
+    QSharedPointer<ConnectivityInterface> secondInterface = edge->getSecondInterface();
 
     if (startInterface == firstInterface)
     {
@@ -217,9 +266,6 @@ bool MasterSlavePathSearch::pathIsFullPath(
     {
         QVector<QSharedPointer<ConnectivityInterface const> > comparisonPath =
             masterPaths_.at(comparisonIndex);
-
-        QList<QSharedPointer<ConnectivityInterface const> > currentList = currentPath.toList();
-        QList<QSharedPointer<ConnectivityInterface const> > comparisonList = comparisonPath.toList();
 
         if (currentPath.last() == comparisonPath.last())
         {

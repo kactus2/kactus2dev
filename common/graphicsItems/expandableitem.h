@@ -39,11 +39,19 @@ public:
     //! No assignment
     ExpandableItem& operator=(const ExpandableItem& other) = delete;
 
-	/*! Check if the item has its children visible or not.
+	/*! Check if the item is expanded and has its children visible or not.
 	 *
 	 * \return True if children are visible.
 	*/
 	virtual bool isExpanded() const;
+
+    void resizeToContent();
+
+    /*! Get the rectangle reserved by this item and it's sub-items recursively.
+     *
+     *      @return The rectangle of this item and sub-items and their children recursively.
+    */
+    virtual QRectF itemTotalRect() const = 0;
 
 signals: 
     //! Emitted when the item is expanded or collapsed.
@@ -65,13 +73,6 @@ protected slots:
 	*/
 	void setShowExpandableItem(bool show);
 
-	/*! Set new positions for child items.
-	 * 
-	 * The implementation updates the position of the expand/collapse button and
-	 * calls base class implementation.
-	*/
-	virtual void reorganizeChildren() override;
-
 
 protected:
 
@@ -80,26 +81,33 @@ protected:
 	 * \param brush The brush to use.
 	 *
 	*/
-    virtual void setExpansionBrush(QBrush const& brush);
+    void setExpansionBrush(QBrush const& brush);
 
     /*!
      *  Sets the default coloring brush for the item.
      *
      *      @param [in] brush   The brush to set.
      */
-    virtual void setDefaultBrush(QBrush brush);
+    virtual void setDefaultBrush(QBrush brush) override final;
 
 
-    virtual void setExpansionPen(QPen const& pen);
+    void setExpansionPen(QPen const& pen);
 
 	/*! Hide/show the rectangle that contains the expand/collapse icon.
 	 *
 	 * \param visible If true then the rectangle is shown.
 	 *
 	*/
-	virtual void setExpansionRectVisible(bool visible);
+	void setExpansionRectVisible(bool visible);
 
 private:	
+
+    /*!
+     * Update the expand arrow direction based on expansion state.
+     *
+     *     @param [in] expanded     Indicates if the item is expanded or not.
+     */
+     void updateExpandArrow(bool expanded);
 
     //! Updates the item rectangle to correct size.
     void updateRectangle();

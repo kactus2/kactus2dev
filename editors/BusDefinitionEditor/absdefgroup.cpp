@@ -12,12 +12,18 @@
 #include "absdefgroup.h"
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
-#include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
+#include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 #include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+
+#include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
+#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+
+#include <library/LibraryInterface.h>
 
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>
@@ -29,47 +35,43 @@ AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterf
     QWidget *parent):
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
 vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
-extendVLNVEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
+extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 descriptionEditor_(new QPlainTextEdit(this)),
 portTabs_(this),
-wirePortsEditor_(libraryHandler, portInterface, &portTabs_),
-transactionalPortsEditor_(libraryHandler, portInterface, &portTabs_),
+wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, AbstractionPortsEditor::AbstractionType::WIRE, &portTabs_)),
+transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, AbstractionPortsEditor::AbstractionType::TRANSACTIONAL, &portTabs_)),
 abstraction_(),
+libraryHandler_(libraryHandler),
 portInterface_(portInterface)
 {
-    extendVLNVEditor_->setToolTip(QString("Extended abstraction definition is not currently supported in Kactus2"));
 
     vlnvDisplay_->setTitle(QStringLiteral("Abstraction definition"));
-    extendVLNVEditor_->setTitle(tr("Extended abstraction definition"));
+    extendEditor_->setTitle(tr("Extended abstraction definition"));
+    extendEditor_->setMandatory(false);
 
-    extendVLNVEditor_->setDisabled(true);
-    extendVLNVEditor_->setMandatory(false);
+    portTabs_.addTab(wirePortsEditor_, QStringLiteral("Wire ports"));
+    portTabs_.addTab(transactionalPortsEditor_, QStringLiteral("Transactional ports"));
 
-    portTabs_.addTab(&wirePortsEditor_, QStringLiteral("Wire ports"));
-    portTabs_.addTab(&transactionalPortsEditor_, QStringLiteral("Transactional ports"));
-
-    connect(&wirePortsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&wirePortsEditor_, SIGNAL(noticeMessage(const QString&)),
+    connect(wirePortsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(wirePortsEditor_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(&wirePortsEditor_, SIGNAL(errorMessage(const QString&)),
+    connect(wirePortsEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(&wirePortsEditor_, SIGNAL(portRenamed(const QString&, const QString&)),
-        this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
-    connect(&wirePortsEditor_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
+    connect(wirePortsEditor_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
-    connect(&transactionalPortsEditor_, SIGNAL(contentChanged()),
+    connect(transactionalPortsEditor_, SIGNAL(contentChanged()),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&transactionalPortsEditor_, SIGNAL(noticeMessage(const QString&)),
+    connect(transactionalPortsEditor_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(&transactionalPortsEditor_, SIGNAL(errorMessage(const QString&)),
+    connect(transactionalPortsEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(&transactionalPortsEditor_, SIGNAL(portRenamed(const QString&, const QString&)),
-        this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
-    connect(&transactionalPortsEditor_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
+    connect(transactionalPortsEditor_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
     connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+
+    connect(extendEditor_, SIGNAL(vlnvEdited()), this, SLOT(onExtendChanged()), Qt::UniqueConnection);
 
 	setupLayout();
 }
@@ -99,19 +101,21 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 
     portInterface_->setAbsDef(abstraction_);
 
-    wirePortsEditor_.resetPortModel();
-    transactionalPortsEditor_.resetPortModel();
+    wirePortsEditor_->resetPortModel();
+    transactionalPortsEditor_->resetPortModel();
 
     vlnvDisplay_->setVLNV(absDef->getVlnv());
 
+    extendEditor_->setVLNV(absDef->getExtends());
+
     if (abstractionContainsTransactionalPorts())
     {
-        portTabs_.setCurrentWidget(&transactionalPortsEditor_);
+        portTabs_.setCurrentWidget(transactionalPortsEditor_);
     }
 
     if (absDef->getExtends().isValid())
     {
-        extendVLNVEditor_->setVLNV(absDef->getExtends());
+        setupExtendedAbstraction();
     }
 
     if (!absDef->getDescription().isEmpty())
@@ -141,8 +145,8 @@ bool AbsDefGroup::abstractionContainsTransactionalPorts() const
 //-----------------------------------------------------------------------------
 void AbsDefGroup::setBusDef(QSharedPointer<BusDefinition> busDefinition)
 {
-    wirePortsEditor_.setBusDef(busDefinition);
-    transactionalPortsEditor_.setBusDef(busDefinition);
+    wirePortsEditor_->setBusDef(busDefinition);
+    transactionalPortsEditor_->setBusDef(busDefinition);
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +161,7 @@ void AbsDefGroup::setupLayout()
 
     QGridLayout* topLayout = new QGridLayout(this);
     topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
-    topLayout->addWidget(extendVLNVEditor_, 0, 1, 1, 1);
+    topLayout->addWidget(extendEditor_, 0, 1, 1, 1);
     topLayout->addWidget(descriptionGroup, 0, 2, 1, 1);
     topLayout->addWidget(&portTabs_, 1, 0, 1, 3);
 
@@ -176,4 +180,103 @@ void AbsDefGroup::onDescriptionChanged()
 {
     abstraction_->setDescription(descriptionEditor_->toPlainText());
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::onExtendChanged()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::onExtendChanged()
+{
+    removeSignalsFromExtendedDefinition();
+
+    abstraction_->setExtends(extendEditor_->getVLNV());
+
+    setupExtendedAbstraction();
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::setupExtendedAbstraction()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::setupExtendedAbstraction()
+{
+    QSharedPointer<const AbstractionDefinition> extendedAbstraction = getExtendedAbstraction();
+    QString extendDescription = "";
+    if (extendedAbstraction)
+    {
+        extendDescription = extendedAbstraction->getDescription();
+
+        if (extendedAbstraction->getLogicalPorts() && !extendedAbstraction->getLogicalPorts()->isEmpty())
+        {
+            extendSignals(extendedAbstraction);
+        }
+    }
+
+#if QT_VERSION > QT_VERSION_CHECK(5,3,0)
+    descriptionEditor_->setPlaceholderText(extendDescription);
+# endif
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::getExtendedAbstraction()
+//-----------------------------------------------------------------------------
+QSharedPointer<const AbstractionDefinition> AbsDefGroup::getExtendedAbstraction() const
+{
+    VLNV extendedVLNV = abstraction_->getExtends();
+    if (extendedVLNV.isValid() && extendedVLNV.getType() == VLNV::ABSTRACTIONDEFINITION)
+    {
+        QSharedPointer<const Document> extendedDocument = libraryHandler_->getModelReadOnly(extendedVLNV);
+        if (extendedDocument)
+        {
+            QSharedPointer<const AbstractionDefinition> extendAbstraction =
+                extendedDocument.dynamicCast<const AbstractionDefinition>();
+            if (extendAbstraction)
+            {
+                return extendAbstraction;
+            }
+        }
+    }
+
+    return QSharedPointer<const AbstractionDefinition>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::extendSignals()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::extendSignals(QSharedPointer<const AbstractionDefinition> extendAbstraction)
+{
+    portModel_->setExtendedPorts(BusDefinitionUtils::getExtendedLogicalSignals(extendAbstraction, libraryHandler_));
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::removeSignalsFromExtendedDefinition()
+//-----------------------------------------------------------------------------
+void AbsDefGroup::removeSignalsFromExtendedDefinition()
+{
+    if (abstraction_->getExtends() != extendEditor_->getVLNV())
+    {
+        QSharedPointer<const AbstractionDefinition> extendedAbstraction = getExtendedAbstraction();
+        if (extendedAbstraction)
+        {
+            portModel_->removeExtendedPorts(extendedAbstraction->getLogicalPorts());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: absdefgroup::portIsWithinPorts()
+//-----------------------------------------------------------------------------
+bool AbsDefGroup::portIsWithinPorts(QSharedPointer<PortAbstraction> logicalPort,
+    QList<QSharedPointer<PortAbstraction> > const& currentPorts)
+{
+    for (auto comparisonPort : currentPorts)
+    {
+        if (comparisonPort->name() == logicalPort->name())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

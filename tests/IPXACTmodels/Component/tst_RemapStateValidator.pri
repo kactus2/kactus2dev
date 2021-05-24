@@ -3,43 +3,7 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/Component/RemapState.h \
-    ../../../IPXACTmodels/Component/RemapPort.h \
-    ../../../IPXACTmodels/Component/validators/RemapStateValidator.h \
-    ../../../IPXACTmodels/Component/Port.h \
-    ../../../IPXACTmodels/Component/WireTypeDef.h \
-    ../../../IPXACTmodels/common/Extendable.h \
-    ../../../IPXACTmodels/common/Range.h \
-    ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/common/Array.h \
-    ../../../IPXACTmodels/common/DirectionTypes.h \
-    ../../../IPXACTmodels/common/TransactionalTypes.h \
-    ../../../IPXACTmodels/Component/Wire.h \
-    ../../../IPXACTmodels/Component/Transactional.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
-    ../../../IPXACTmodels/common/Protocol.h
+ 
 SOURCES += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./tst_RemapStateValidator.cpp \
-    ../../../IPXACTmodels/common/NameGroup.cpp \
-    ../../../IPXACTmodels/Component/RemapState.cpp \
-    ../../../IPXACTmodels/Component/RemapPort.cpp \
-    ../../../IPXACTmodels/Component/validators/RemapStateValidator.cpp \
-    ../../../IPXACTmodels/Component/Port.cpp \
-    ../../../IPXACTmodels/Component/WireTypeDef.cpp \
-    ../../../IPXACTmodels/common/Extendable.cpp \
-    ../../../IPXACTmodels/common/Range.cpp \
-    ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/common/DirectionTypes.cpp \
-    ../../../IPXACTmodels/common/TransactionalTypes.cpp \
-    ../../../IPXACTmodels/Component/Wire.cpp \
-    ../../../IPXACTmodels/Component/Transactional.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
-    ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
-    ../../../IPXACTmodels/common/Protocol.cpp
+    ./tst_RemapStateValidator.cpp 
+	

@@ -55,7 +55,11 @@ public:
 		QWidget *parent);
 	
 	//! The destructor.
-	virtual ~LocalMemoryMapEditor();
+	virtual ~LocalMemoryMapEditor() = default;
+
+    //! No copying. No assignment.
+    LocalMemoryMapEditor(const LocalMemoryMapEditor& other) = delete;
+    LocalMemoryMapEditor& operator=(const LocalMemoryMapEditor& other) = delete;
 
 	//! Reload the information from the model to the editor.
 	void refresh();
@@ -67,6 +71,9 @@ signals:
 
     //! Emitted when the changes should be reflected in visualization.
     void graphicsChanged();
+
+    //! Emitted when the changes should be reflected in visualization.
+    void childGraphicsChanged(int index);
 
 	//! Emitted when a new memory map item is added to the given index.
 	void itemAdded(int index);
@@ -98,6 +105,8 @@ signals:
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
+    void addressingChanged();
+
 public slots:
 
     /*!
@@ -106,10 +115,6 @@ public slots:
     void onCheckStateChanged();
 
 private:
-	
-	//! No copying. No assignment.
-	LocalMemoryMapEditor(const LocalMemoryMapEditor& other);
-	LocalMemoryMapEditor& operator=(const LocalMemoryMapEditor& other);
 
     //! The address space being edited.
     QSharedPointer<AddressSpace> addressSpace_;

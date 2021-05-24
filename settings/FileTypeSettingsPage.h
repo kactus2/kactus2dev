@@ -39,17 +39,18 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~FileTypeSettingsPage();
+    virtual ~FileTypeSettingsPage() = default;
+
+    // Disable copying.
+    FileTypeSettingsPage(FileTypeSettingsPage const& rhs) = delete;
+    FileTypeSettingsPage& operator=(FileTypeSettingsPage const& rhs) = delete;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    virtual void apply();
+    virtual void apply() override final;
 
 private:
-    // Disable copying.
-    FileTypeSettingsPage(FileTypeSettingsPage const& rhs);
-    FileTypeSettingsPage& operator=(FileTypeSettingsPage const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.

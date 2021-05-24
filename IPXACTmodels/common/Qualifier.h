@@ -47,6 +47,15 @@ public:
     Qualifier& operator=(Qualifier const& other);
 
     /*!
+     *  The not equal comparison operator.
+     *
+     *      @param [in] other   The comparison target.
+     *
+     *      @return True, if the compared qualifier is not equal, false otherwise.
+     */
+    bool operator!=(Qualifier const& other);
+
+    /*!
      *  Sets the qualifier.
      *
      *      @param [in] qualifierType   The qualifier to set.

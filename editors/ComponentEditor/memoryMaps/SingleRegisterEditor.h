@@ -69,10 +69,32 @@ public:
      */
     virtual ~SingleRegisterEditor() = default;
 
+    //! No copying
+    SingleRegisterEditor(const SingleRegisterEditor& other) = delete;
+
+    //! No assignment
+    SingleRegisterEditor& operator=(const SingleRegisterEditor& other) = delete;
+
     /*!
 	 *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
+signals:
+    void childGraphicsChanged(int);
+
+    void addressingChanged();
+
+    void childAddressingChanged(int);
+
+    /*
+     *  Informs of field name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void fieldNameChanged(QString const& oldName, QString const& newName);
+
 
 public slots:
 
@@ -88,16 +110,6 @@ public slots:
      *  Handles register name change from name editor.
      */
     void onRegisterNameChanged();
-
-signals:
-    
-    /*
-     *  Informs of field name change.
-     *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
-     */
-    void fieldNameChanged(QString const& oldName, QString const& newName);
 
 protected:
 
@@ -145,12 +157,6 @@ private slots:
     void onAccessSelected(QString const& newAccessValue);
 
 private:
-
-	//! No copying
-    SingleRegisterEditor(const SingleRegisterEditor& other);
-
-	//! No assignment
-    SingleRegisterEditor& operator=(const SingleRegisterEditor& other);
 
     /*!
      *  Setup the layout for this editor.

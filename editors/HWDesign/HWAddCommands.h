@@ -37,7 +37,6 @@ class HWConnection;
 class HWComponentItem;
 class IGraphicsItemStack;
 class Port;
-class DesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! PortAddCommand class.
@@ -237,6 +236,10 @@ public:
      */
     ~AddPhysicalPortCommand();
 
+    // Disable copying.
+    AddPhysicalPortCommand(AddPhysicalPortCommand const& rhs) = delete;
+    AddPhysicalPortCommand& operator=(AddPhysicalPortCommand const& rhs) = delete;
+
     /*!
      *  Undoes the command.
      */
@@ -248,9 +251,6 @@ public:
     virtual void redo();
 
 private:
-    // Disable copying.
-   AddPhysicalPortCommand(AddPhysicalPortCommand const& rhs);
-   AddPhysicalPortCommand& operator=(AddPhysicalPortCommand const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.

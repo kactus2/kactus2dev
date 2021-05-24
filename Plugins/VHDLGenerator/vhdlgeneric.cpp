@@ -20,11 +20,10 @@ VhdlTypedObject(generic->name(),
 		        generic->description()),
                 formatter_(formatter)
 {
-
-}
-
-VhdlGeneric::~VhdlGeneric()
-{
+    if (type().isEmpty())
+    {
+        setType(QStringLiteral("integer"));
+    }
 }
 
 void VhdlGeneric::write( QTextStream& stream ) const
@@ -37,14 +36,16 @@ void VhdlGeneric::write( QTextStream& stream ) const
     stream<< " : " << type();
 
 	// if a default value has been specified
-	if (!defaultValue().isEmpty()) {
+	if (!defaultValue().isEmpty())
+    {
 		stream << " := ";
 	
 	    // check if type is string then quotations must be used for default value
-	    bool addQuotation = type().compare(QString("string"), Qt::CaseInsensitive) == 0;
+	    bool addQuotation = type().compare(QLatin1String("string"), Qt::CaseInsensitive) == 0;
 		
 		// if default value does not start with quotation
-		if (addQuotation && !defaultValue().startsWith(QChar('"'))) {
+		if (addQuotation && !defaultValue().startsWith(QChar('"')))
+        {
 			stream << "\"";
 		}
 		
@@ -52,8 +53,9 @@ void VhdlGeneric::write( QTextStream& stream ) const
 		stream << formatter_->formatReferringExpression(defaultValue());
 
 		// if default value does not end with quotation
-		if (addQuotation && !defaultValue().endsWith(QChar('"'))) {
+		if (addQuotation && !defaultValue().endsWith(QChar('"')))
+        {
 			stream << "\"";
 		}
-	}	
+	}
 }

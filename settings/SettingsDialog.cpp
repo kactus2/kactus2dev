@@ -26,7 +26,6 @@ SettingsDialog::SettingsDialog(QWidget* parent):
 PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST, APPLY_ALL, parent),
       settings_()
 {
-    //setFixedSize(600, 440);
     setWindowTitle(tr("Settings"));
 
     addPage(QIcon(":icons/common/graphics/configuration.png"), tr("General"),
@@ -52,19 +51,4 @@ PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST, APPLY_ALL, parent),
 
     finalizePages();
     resize(sizeHint().width(), minimumHeight());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SettingsDialog()
-//-----------------------------------------------------------------------------
-SettingsDialog::~SettingsDialog()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: accept()
-//-----------------------------------------------------------------------------
-void SettingsDialog::accept()
-{
-    PropertyPageDialog::accept();
 }

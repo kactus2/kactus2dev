@@ -72,12 +72,14 @@ isMemoryRemap_(isMemoryRemap)
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     connect(memoryMapEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
     connect(memoryMapEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
-
+    connect(memoryMapEditor_, SIGNAL(childAddressingChanged(int)), 
+        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SLOT(refreshSlaveBinding()), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(memoryMapEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+    connect(memoryMapEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
+    
 
     connect(addressUnitBitsEditor_, SIGNAL(editingFinished()),
         this, SLOT(updateAddressUnitBits()), Qt::UniqueConnection);
@@ -100,14 +102,6 @@ isMemoryRemap_(isMemoryRemap)
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onNameChange()), Qt::UniqueConnection);
 
     setupLayout();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleMemoryMapEditor::~SingleMemoryMapEditor()
-//-----------------------------------------------------------------------------
-SingleMemoryMapEditor::~SingleMemoryMapEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -244,7 +238,6 @@ void SingleMemoryMapEditor::onIsPresentEdited()
     isPresentEditor_->finishEditingCurrentWord();
 
     QString newIsPresent = isPresentEditor_->getExpression();
-    //isPresentEditor_->setToolTip(formattedValueFor(newIsPresent));
 
     mapInterface_->setIsPresent(parentMapName_, newIsPresent.toStdString(), remapName_);
     isPresentEditor_->setToolTip(
@@ -258,7 +251,7 @@ void SingleMemoryMapEditor::refreshRemapStateSelector()
 {
     QStringList remapStateNames;
 
-    foreach (QSharedPointer<RemapState> remapState, *component()->getRemapStates())
+    for (QSharedPointer<RemapState> remapState : *component()->getRemapStates())
     {
         remapStateNames.append(remapState->name());
     }

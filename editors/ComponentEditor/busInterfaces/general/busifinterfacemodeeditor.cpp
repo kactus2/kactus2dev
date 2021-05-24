@@ -26,13 +26,6 @@ busName_(busName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceModeEditor::~BusIfInterfaceModeEditor()
-//-----------------------------------------------------------------------------
-BusIfInterfaceModeEditor::~BusIfInterfaceModeEditor()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: busifinterfacemodeeditor::changeName()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceModeEditor::changeName(std::string const& newName)

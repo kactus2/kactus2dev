@@ -122,6 +122,7 @@ void BusIfInterfaceMaster::refresh()
     BusInterfaceInterface* busInterface = getBusInterface();
     std::string busName = getBusName();
 
+
 	// update the selectable items
     addressSpaceReferenceSelector_.refresh(component_->getAddressSpaceNames());
     QString addrSpaceRef = QString::fromStdString(busInterface->getAddressSpaceReference(busName));

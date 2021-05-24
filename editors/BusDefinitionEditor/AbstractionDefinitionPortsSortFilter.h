@@ -25,22 +25,6 @@ class AbstractionDefinitionPortsSortFilter : public QSortFilterProxyModel
 
 public:
 
-    //! Storage for the column indexes.
-    struct ColumnHandles
-    {
-        //! Index of the name column.
-        int nameColumn_;
-
-        //! Index of the mode column.
-        int modeColumn_;
-
-        //! Index of the system group column.
-        int systemGroupColumn_;
-
-        //! Index of the description column.
-        int descriptionColumn_;
-    };
-
 	/*!
 	 *  The constructor.
 	 *
@@ -48,7 +32,7 @@ public:
      *      @param [in] portInterface   Interface for accessing port abstractions.
      *      @param [in] parent          Pointer to the owner of this model.
 	 */
-    AbstractionDefinitionPortsSortFilter(ColumnHandles columns, PortAbstractionInterface* portInterface,
+    AbstractionDefinitionPortsSortFilter(PortAbstractionInterface* portInterface,
         QObject *parent);
 
 	/*!
@@ -111,9 +95,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! Storage for the used column indexes.
-    ColumnHandles columns_;
 
     //! Interface for accessing port abstractions.
     PortAbstractionInterface* portInterface_;

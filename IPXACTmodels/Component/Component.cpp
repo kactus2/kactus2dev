@@ -69,29 +69,6 @@ resetTypes_(new QList<QSharedPointer<ResetType> > ())
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
-Component::Component() :
-Document(),
-busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),
-indirectInterfaces_(new QList<QSharedPointer<IndirectInterface> > ()),
-channels_(new QList<QSharedPointer<Channel> > ()),
-remapStates_(new QList<QSharedPointer<RemapState> >()),
-addressSpaces_(new QList<QSharedPointer<AddressSpace> > ()),
-memoryMaps_(new QList<QSharedPointer<MemoryMap> > ()),
-model_(new Model()),
-componentGenerators_(new QList<QSharedPointer<ComponentGenerator> > ()),
-choices_(new QList<QSharedPointer<Choice> >()),
-fileSets_(new QList<QSharedPointer<FileSet> > ()),
-cpus_(new QList<QSharedPointer<Cpu> > ()),
-otherClockDrivers_(new QList<QSharedPointer<OtherClockDriver> > ()),
-pendingFileDependencies_(),
-resetTypes_(new QList<QSharedPointer<ResetType> > ())
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::Component()
-//-----------------------------------------------------------------------------
 Component::Component(const Component &other):
 Document(other),
 busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),

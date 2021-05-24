@@ -30,28 +30,6 @@ portLeft_(portLeft),
 portRight_(portRight) {
 }
 
-VhdlConnectionEndPoint::VhdlConnectionEndPoint( const VhdlConnectionEndPoint& other ):
-instanceName_(other.instanceName_),
-portName_(other.portName_),
-signalLeft_(other.signalLeft_),
-signalRight_(other.signalRight_),
-portLeft_(other.portLeft_),
-portRight_(other.portRight_) {
-}
-
-VhdlConnectionEndPoint& VhdlConnectionEndPoint::operator=(
-	const VhdlConnectionEndPoint& other ) {
-
-	if (this != &other) {
-		instanceName_ = other.instanceName_;
-		portName_ = other.portName_;
-		signalLeft_ = other.signalLeft_;
-		signalRight_ = other.signalRight_;
-		portLeft_ = other.portLeft_;
-		portRight_ = other.portRight_;
-	}
-	return *this;
-}
 
 bool VhdlConnectionEndPoint::operator==( const VhdlConnectionEndPoint& other ) const {
 	if (instanceName_ == other.instanceName_ &&
@@ -112,11 +90,6 @@ bool VhdlConnectionEndPoint::operator>( const VhdlConnectionEndPoint& other ) co
 	else {
 		return instanceName_.localeAwareCompare(other.instanceName_) > 0;
 	}
-}
-
-
-
-VhdlConnectionEndPoint::~VhdlConnectionEndPoint() {
 }
 
 QString VhdlConnectionEndPoint::instanceName() const {

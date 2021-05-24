@@ -60,10 +60,10 @@ void VerilogParameterParser::setHighlighter(Highlighter* highlighter)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::import()
 //-----------------------------------------------------------------------------
-void VerilogParameterParser::import(QString const& input, QSharedPointer<Component> targetComponent,
-	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
-{    
-    QStringList declarations = findDeclarations(input);
+void VerilogParameterParser::import(QString const& componentDeclaration, QSharedPointer<Component> targetComponent,
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
+{
+    QStringList declarations = findDeclarations(componentDeclaration);
 
     QList<QSharedPointer<ModuleParameter> > parsedParameters;
     for (QString const& declaration : declarations)
@@ -99,7 +99,7 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
 //-----------------------------------------------------------------------------
 QStringList VerilogParameterParser::findDeclarations(QString const& input)
 {    
-    return findParameterDeclarations(findParameterSection(input));
+    return findParameterDeclarations(input, findParameterSection(input));
 }
 
 //-----------------------------------------------------------------------------
@@ -209,7 +209,8 @@ QString VerilogParameterParser::createTypeFromDataType(QString const& dataType)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findDeclarations()
 //-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findParameterDeclarations(QString const& inspect)
+QStringList VerilogParameterParser::findParameterDeclarations(QString const& componentDeclaration,
+    QString const& parameterArea)
 {
     // List of detected parameter declarations.
     QStringList declarations;
@@ -225,7 +226,7 @@ QStringList VerilogParameterParser::findParameterDeclarations(QString const& ins
     QRegularExpression commentBegin(QStringLiteral("//"));
     QRegularExpression lineBegin(QStringLiteral("^|\\r?\\n"));
 
-    QRegularExpressionMatchIterator iter = declarationRule.globalMatch(inspect);
+    QRegularExpressionMatchIterator iter = declarationRule.globalMatch(parameterArea);
     while (iter.hasNext())
     {        
         QRegularExpressionMatch match = iter.next();
@@ -233,12 +234,11 @@ QStringList VerilogParameterParser::findParameterDeclarations(QString const& ins
         int declarationBegin = match.capturedStart();
 
         // Check keyword parameter is not inside a comment.
-        if (inspect.lastIndexOf(lineBegin, declarationBegin) > inspect.lastIndexOf(commentBegin, declarationBegin))
+        if (parameterArea.lastIndexOf(lineBegin, declarationBegin) > parameterArea.lastIndexOf(commentBegin, declarationBegin))
         {
             if (highlighter_)
             {
-                highlighter_->applyFontColor(declaration, Qt::black); 
-                highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);                
+                highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER, componentDeclaration);
             }
 
             declarations.append(declaration);

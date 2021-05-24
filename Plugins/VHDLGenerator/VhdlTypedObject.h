@@ -39,17 +39,20 @@ public:
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~VhdlTypedObject();
+	virtual ~VhdlTypedObject() = default;
 
-	/*! \brief Write the contents of the object to the text stream.
+    //! Disable copying
+    VhdlTypedObject(const VhdlTypedObject& other) = default;
+
+	/*! Write the contents of the object to the text stream.
 	 *
 	 * This is a pure virtual function and must be implemented in all classes 
 	 * derived from this class.
 	 *
-	 * \param stream The text stream to write the object into.
+	 * @param [in] stream The text stream to write the object into.
 	 *
 	*/
-	virtual void write(QTextStream& stream) const = 0;
+	virtual void write(QTextStream& stream) const override = 0;
 
 	/*!
 	 *  Get the type of the vhdl object.
@@ -80,8 +83,6 @@ public:
 	virtual void setDefaultValue(const QString& defaultValue);
 
 private:
-	//! Disable copying
-	VhdlTypedObject(const VhdlTypedObject& other);
 
 	//! No assignment
 	VhdlTypedObject& operator=(const VhdlTypedObject& other);

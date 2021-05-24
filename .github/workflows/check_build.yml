@@ -1,0 +1,36 @@
+name: Check.Build
+
+on: [push]
+
+jobs:
+  build_linux:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+    - name: Configure build
+      run: ./configure
+    - name: Build sources
+      run: make -j4
+    - name: Install
+      run: sudo make install
+      
+  build_win64:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: 5.12.7
+    - name: Build sources
+      run: |
+        $Env:QTDIR = $Env:Qt5_Dir
+        msbuild -m:4 -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln      

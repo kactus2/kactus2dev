@@ -11,6 +11,8 @@
 
 #include "AbstractionPortsView.h"
 
+#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+
 #include <QMenu>
 
 //-----------------------------------------------------------------------------
@@ -21,12 +23,14 @@ EditableTableView(parent),
 addMasterAction_(tr("Add master signal"), this),
 addSlaveAction_(tr("Add slave signal"), this),
 addSystemAction_(tr("Add system signal"), this),
-addAllSystemsAction_(tr("Add all unconnected system signals"), this)
+addAllSystemsAction_(tr("Add all unconnected system signals"), this),
+resetExtendPortsAction_(tr("Reset extend ports"), this)
 {
     connect(&addMasterAction_, SIGNAL(triggered()), this, SIGNAL(addMaster()), Qt::UniqueConnection);
     connect(&addSlaveAction_, SIGNAL(triggered()), this, SIGNAL(addSlave()), Qt::UniqueConnection);
     connect(&addSystemAction_, SIGNAL(triggered()), this, SIGNAL(addSystem()), Qt::UniqueConnection);
     connect(&addAllSystemsAction_, SIGNAL(triggered()), this, SIGNAL(addAllSystems()), Qt::UniqueConnection);
+    connect(&resetExtendPortsAction_, SIGNAL(triggered()), this, SIGNAL(resetExtendPorts()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -54,6 +58,24 @@ void AbstractionPortsView::contextMenuEvent(QContextMenuEvent* event)
 
     QModelIndex index = indexAt(pressedPoint_);
 
+    if (index.data(AbstractionPortsModel::isExtendLockedRole).toBool())
+    {
+        removeAction_.setDisabled(true);
+    }
+    else
+    {
+        removeAction_.setEnabled(true);
+    }
+
+    if (!(index.flags() & Qt::ItemIsEditable))
+    {
+        clearAction_.setDisabled(true);
+    }
+    else
+    {
+        clearAction_.setEnabled(true);
+    }
+
     QMenu menu(this);
     if (index.isValid())
     {
@@ -63,10 +85,15 @@ void AbstractionPortsView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction(&addAllSystemsAction_);
         menu.addSeparator();
     }
+
+    menu.addAction(&resetExtendPortsAction_);
+    menu.addSeparator();
+
     menu.addAction(&addAction_);
     
     // if at least one valid item is selected
-    if (index.isValid()) {        
+    if (index.isValid())
+    {
         menu.addAction(&removeAction_);
         menu.addAction(&clearAction_);
         menu.addAction(&copyAction_);    

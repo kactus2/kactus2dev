@@ -1,52 +1,61 @@
 //-----------------------------------------------------------------------------
-// File: AbstractionWirePortsEditor.h
+// File: AbstractionPortsEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
 // Date: 04.06.2018
 //
 // Description:
-// Editor for the wire ports of an abstraction definition.
+// Editor for the ports of an abstraction definition.
 //-----------------------------------------------------------------------------
 
-#ifndef ABSTRACTIONWIREPORTSEDITOR_H
-#define ABSTRACTIONWIREPORTSEDITOR_H
+#ifndef ABSTRACTIONPORTSEDITOR_H
+#define ABSTRACTIONPORTSEDITOR_H
 
-#include <editors/BusDefinitionEditor/AbstractionWirePortsModel.h>
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h>
 #include <editors/BusDefinitionEditor/AbstractionPortsView.h>
 
 #include <QWidget>
 #include <QObject>
 
+class AbstractionPortsModel;
 class AbstractionDefinitionPortsSortFilter;
 class AbstractionDefinition;
 class BusDefinition;
 class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
-//! Editor for the wire ports of an abstraction definition.
+//! Editor for the ports of an abstraction definition.
 //-----------------------------------------------------------------------------
-class AbstractionWirePortsEditor : public QWidget
+class AbstractionPortsEditor : public QWidget
 {
     Q_OBJECT
 
 public:
 
+    enum class AbstractionType
+    {
+        WIRE,
+        TRANSACTIONAL
+    };
+
     /*!
      *  The constructor.
      *
+     *      @param [in] portsModel      Model for this editor.
      *      @param [in] libraryAccess   Interface to the library.
      *      @param [in] portInterface   Interface for accessing port abstractions.
      *      @param [in] parent          The owner of the editor.
      */
-    AbstractionWirePortsEditor(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
-        QWidget* parent);
+    AbstractionPortsEditor(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
+        AbstractionType type, QWidget* parent);
 
     /*!
      *  The destructor.
      */
-    virtual ~AbstractionWirePortsEditor() = default;
+    virtual ~AbstractionPortsEditor() = default;
 
     /*!
      *  Reset the port abstraction model.
@@ -76,14 +85,6 @@ signals:
      *  Emitted when a notification should be printed to user.
      */
     void noticeMessage(QString const& message);
-
-    /*!
-     *  Inform that a port abstraction has been renamed.
-     *
-     *      @param [in] oldName     Old name of the port abstraction.
-     *      @param [in] newName     New name for the port abstraction.
-     */
-    void portRenamed(QString const& oldName, QString const& newName);
 
     /*!
      *  Inform that a port abstraction has been removed.
@@ -117,20 +118,25 @@ private slots:
 
 private:
     //! No copying. No assignment.
-    AbstractionWirePortsEditor(const AbstractionWirePortsEditor& other);
-    AbstractionWirePortsEditor& operator=(const AbstractionWirePortsEditor& other);
+    AbstractionPortsEditor(const AbstractionPortsEditor& other);
+    AbstractionPortsEditor& operator=(const AbstractionPortsEditor& other);
 
     /*!
      *  Sets the editor layout.
      */
     void setupLayout();
 
+   
     /*!
      *  Get a list of the selected indexes.
      *
      *      @return List of the selected indexes.
      */
     QModelIndexList getSelectedIndexes();
+
+    void hideTransactionalColumns();
+
+    void hideWireColumns();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -143,10 +149,10 @@ private:
     AbstractionDefinitionPortsSortFilter* portProxy_;
 
     //! The model that contains the logical signals of Abstraction Definition.
-    AbstractionWirePortsModel portModel_;
+    AbstractionPortsModel* portModel_;
 
     //! The item delegate for portView_.
     AbstractionWirePortsDelegate portDelegate_;
 };
 
-#endif // ABSTRACTIONWIREPORTSEDITOR_H
+#endif // ABSTRACTIONPORTSEDITOR_H

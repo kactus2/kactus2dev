@@ -24,7 +24,7 @@
 MemoryMapView::MemoryMapView(QWidget *parent):
 QGraphicsView(parent)
 {
-    //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
 }
 
 //-----------------------------------------------------------------------------

@@ -34,19 +34,13 @@ public:
     /*!
      *  Destructor.
      */
-    ~SettingsDialog();
+    virtual ~SettingsDialog() = default;
 
-public slots:
-    virtual void accept();
+    // Disable copying.
+    SettingsDialog(SettingsDialog const& rhs) = delete;
+    SettingsDialog& operator=(SettingsDialog const& rhs) = delete;
 
 private:
-    // Disable copying.
-    SettingsDialog(SettingsDialog const& rhs);
-    SettingsDialog& operator=(SettingsDialog const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
 
     //! The settings store.
     QSettings settings_;

@@ -33,7 +33,6 @@ addrBlock_(block)
 
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
 	setDefaultBrush(brush);
-	setNamePosition(VisualizerItem::NAME_LEFT_ALIGN, VisualizerItem::NAME_MIDDLE);
 }
 
 //-----------------------------------------------------------------------------
@@ -54,7 +53,7 @@ void LocalAddrBlockGraphItem::refresh()
         "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth()) + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(addrBlock_->getRange()));
 
-	VisualizerItem::reorganizeChildren();
+	repositionLabels();
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +61,7 @@ void LocalAddrBlockGraphItem::refresh()
 //-----------------------------------------------------------------------------
 quint64 LocalAddrBlockGraphItem::getOffset() const
 {
-	return getExpressionParser()->parseExpression(addrBlock_->getBaseAddress()).toUInt();
+	return getExpressionParser()->parseExpression(addrBlock_->getBaseAddress()).toULongLong();
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +70,7 @@ quint64 LocalAddrBlockGraphItem::getOffset() const
 quint64 LocalAddrBlockGraphItem::getLastAddress() const 
 {
     quint64 base = getOffset();
-    quint64 range = getExpressionParser()->parseExpression(addrBlock_->getRange()).toUInt();
+    quint64 range = getExpressionParser()->parseExpression(addrBlock_->getRange()).toULongLong();
 
     quint64 lastAddr = base + range;
 

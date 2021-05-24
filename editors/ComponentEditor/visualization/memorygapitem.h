@@ -33,71 +33,47 @@ public:
 	MemoryGapItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent);
 	
 	//! The destructor.
-	virtual ~MemoryGapItem();
+	virtual ~MemoryGapItem() = default;
 
-	//! Refresh the gap item.
-	virtual void refresh();
+    //! No copying.
+    MemoryGapItem(const MemoryGapItem& other) = delete;
+
+    //! No assignment.
+    MemoryGapItem& operator=(const MemoryGapItem& other) = delete;
 
     //! Updates the labels and tooltip for the item.
-    virtual void updateDisplay();
+    virtual void updateDisplay() override;
 
 	/*!
      *  Get the offset of the item. 
 	 *
 	 *      @return int The offset of the item from the parent item's base address.
 	 */
-	virtual quint64 getOffset() const;
+	virtual quint64 getOffset() const override;
 
 	/*!
      *  Get the last address contained in the gap.
 	 *
 	 *      @return The last address.
 	 */
-	virtual quint64 getLastAddress() const;
+	virtual quint64 getLastAddress() const override;
 
 	/*!
      *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
 	 */
-	virtual int getBitWidth() const;
+	virtual int getBitWidth() const override;
 
 	/*!
      *  Get number of bits the addressable unit contains.
 	 *
 	 *      @return The size of least addressable unit.
 	 */
-	virtual unsigned int getAddressUnitSize() const;
+	virtual unsigned int getAddressUnitSize() const override;
 
-	/*!
-     *  Set start address for the gap.
-	 *
-	 *      @param [in] address     The address that limits the gap start.
-	 */
-	void setStartAddress(quint64 address);
-
-	/*!
-     *  Set end address for the gap.
-	 *
-	 *      @param [in] address     The address that limits the gap end.
-	 */
-	void setEndAddress(quint64 address);
-    
-protected:
-
-    //! The start address of the gap.
-    quint64 start_;
-
-    //! The end address of the gap.
-    quint64 end_;
-
-private:
-	
-	//! No copying.
-	MemoryGapItem(const MemoryGapItem& other);
-
-	//! No assignment.
-	MemoryGapItem& operator=(const MemoryGapItem& other);
+    //! Re-layouts the child items.
+    virtual void redoChildLayout() override final;
 };
 
 #endif // MEMORYGAPITEM_H

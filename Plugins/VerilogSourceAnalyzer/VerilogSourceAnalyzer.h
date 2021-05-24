@@ -19,6 +19,8 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 
+#include <QDir>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 //! Verilog source file analyzer for finding file dependencies.
@@ -37,7 +39,11 @@ public:
 	VerilogSourceAnalyzer();
 
 	//! The destructor.
-	~VerilogSourceAnalyzer();
+	virtual ~VerilogSourceAnalyzer() = default;
+
+	// Disable copying.
+	VerilogSourceAnalyzer(VerilogSourceAnalyzer const& rhs) = delete;
+	VerilogSourceAnalyzer& operator=(VerilogSourceAnalyzer const& rhs) = delete;
 
     /*!
      *  Returns the name of the plugin.
@@ -132,10 +138,6 @@ public:
 
 private:
 
-	// Disable copying.
-	VerilogSourceAnalyzer(VerilogSourceAnalyzer const& rhs);
-	VerilogSourceAnalyzer& operator=(VerilogSourceAnalyzer const& rhs);
-
     /*!
      *  Reads the given file and removes comments and extra whitespace in it.
      *
@@ -154,32 +156,71 @@ private:
      *      @return Absolute path to filename.
      */
     QString findAbsolutePathFor(QString const& filename, QString const& componentPath) const;
+	
+	/*!
+	 *  Finds the items (modules, include files) already available in the file sets.
+	 *
+	 *      @param [in] component       The component whose file sets to search.
+	 *      @param [in] componentPath   The path to the component xml file.
+	 *
+	 *      @return Found items in filesets where key is the item identifier and value the path to the file.
+	 */
+	QMap<QString, QString> findItemsInFilesets(Component const* component, QString const& componentPath);
 
-    /*!
-     *  Finds the dependencies of a file from include directives.
-     *
-     *      @param [in] fileContent         The file content.
-     *      @param [in] fileAbsolutePath    The absolute path to the file.
-     *      @param [in] xmlPath             The path to the containing component xml file.
-     *      @param [in] fileSets            The filesets of the containing component.
-     *
-     *      @return The file dependencies for includes.
-     */
-    QList<FileDependencyDesc> getIncludeDependencies(QString const& fileContent, 
-        QString const& fileAbsolutePath, QString const& xmlPath, 
-        QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) const;
+	/*!
+	 *  Finds the items (modules, include files) already available in the file content.
+	 *
+	 *      @param [in] content		The file content.
+	 *      @param [in] filePath	The path to the given file.
+	 *
+	 *      @return Found items in file content where key is the item identifier and value the path to the file.
+	 */
+	QMap<QString, QString> findItemsInFileContent(QString const& content, QString const& filePath);
 
-    /*!
-     *  Finds the absolute path for a given file in the file sets.
-     *
-     *      @param [in] fileName    The name of the file to find.
-     *      @param [in] xmlPath     The path to the containing component xml file.
-     *      @param [in] fileSets    The filesets of the containing component.
-     *
-     *      @return Absolute path to the file if found in the file sets, otherwise returns fileName.
-     */
-    QString findAbsolutePathInFileSets(QString fileName, QString const& xmlPath, 
-        QSharedPointer< QList<QSharedPointer<FileSet> > > fileSets) const;
+	/*!
+	 *  Check if the given file is of supported file type.
+	 *
+	 *      @param [in] file        The file to check.
+	 *
+	 *      @return True, if the file is of supported type, otherwise false.
+	 */
+	bool isOfSupportedFileType(QSharedPointer<File> file);
+
+	/*!
+    *  Finds the dependencies of a file from include directives.
+    *
+    *      @param [in] fileContent         The file content to analyze.
+	*      @param [in] sourceFileInfo      The source file (being analyzed) information.
+	*      @param [in] itemsInFilesets     The available items in file sets.
+    *
+    *      @return The file dependencies for includes.
+    */
+	QList<FileDependencyDesc> findIncludeDependencies(QString const& fileContent,
+		QFileInfo const& sourceFileInfo, 
+		QMap<QString, QString> const& itemsInFilesets) const;
+
+	/*!
+	*  Finds the dependencies of a file with given pattern.
+	*
+	*      @param [in] fileContent       The file content to analyze.
+	*      @param [in] matchPattern      The pattern for matching dependent items.
+	*
+	*      @return The identifiers for items found with the given pattern.
+	*/
+	QStringList findDependencies(QString const& fileContent, QRegularExpression const& matchPattern) const;
+
+	/*!
+	 *  Finds the dependencies of a file from module instantiations.
+	 *
+	 *      @param [in] fileContent         The file content to analyze.
+	 *      @param [in] sourceFileInfo      The source file (being analyzed) information.
+	 *      @param [in] itemsInFilesets     The available items in file sets.
+	 *
+	 *      @return The file dependencies for instantiations.
+ 	*/
+	QList<FileDependencyDesc> findInstantiationDependencies(QString const& fileContent,
+		QFileInfo const& sourceFileInfo,
+		QMap<QString, QString> const& itemsInFilesets) const;
 
 };
 

@@ -15,6 +15,8 @@
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
+#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
+
 #include <library/LibraryInterface.h>
 
 #include <QComboBox>
@@ -38,7 +40,7 @@ busDefinition_(0)
 QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     const QModelIndex& index ) const
 {
-    if (index.column() == qualifierColumn())
+    if (index.column() == LogicalPortColumns::QUALIFIER)
     {
         QComboBox* box = new QComboBox(parent);
         QStringList list = getQualifierList();
@@ -47,13 +49,13 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
-    else if (index.column() == widthColumn())
+    else if (index.column() == LogicalPortColumns::BUSWIDTH)
     {
         QLineEdit* line = new QLineEdit(parent);
         connect(line, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return line;
     }
-    else if (index.column() == modeColum())
+    else if (index.column() == LogicalPortColumns::MODE)
     {
         QComboBox* box = new QComboBox(parent);
 
@@ -63,7 +65,7 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
-    else if (index.column() == presenceColumn())
+    else if (index.column() == LogicalPortColumns::PRESENCE)
     {
         QComboBox* box = new QComboBox(parent);
 
@@ -73,7 +75,7 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
-    else if (index.column() == systemGroupColumn())
+    else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
     {
         if (busDefinition_)
         {
@@ -106,7 +108,7 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
         QString text = index.data(Qt::DisplayRole).toString();
         line->setText(text);
 
-        if (index.column() == nameColumn() && text == QLatin1String("unnamed"))
+        if (index.column() == LogicalPortColumns::NAME && text == QLatin1String("unnamed"))
         {
             line->clear();
         }
@@ -139,7 +141,9 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
 //-----------------------------------------------------------------------------
 bool AbstractionPortsDelegate::editorIsLineEditor(int indexColumn) const
 {
-    return indexColumn == nameColumn() || indexColumn == widthColumn() || indexColumn == descriptionColumn();
+    return indexColumn == LogicalPortColumns::NAME || indexColumn == LogicalPortColumns::WIDTH ||
+        indexColumn == LogicalPortColumns::BUSWIDTH || indexColumn == LogicalPortColumns::DESCRIPTION ||
+        indexColumn == LogicalPortColumns::PAYLOADNAME || indexColumn == LogicalPortColumns::PAYLOADEXTENSION;
 }
 
 //-----------------------------------------------------------------------------
@@ -147,8 +151,9 @@ bool AbstractionPortsDelegate::editorIsLineEditor(int indexColumn) const
 //-----------------------------------------------------------------------------
 bool AbstractionPortsDelegate::editorIsComboBox(int indexColumn) const
 {
-    return indexColumn == qualifierColumn() || indexColumn == modeColum() || indexColumn == presenceColumn() ||
-        indexColumn == systemGroupColumn();
+    return indexColumn == LogicalPortColumns::QUALIFIER || indexColumn == LogicalPortColumns::MODE ||
+        indexColumn == LogicalPortColumns::PRESENCE || indexColumn == LogicalPortColumns::SYSTEM_GROUP ||
+        indexColumn == LogicalPortColumns::PROTOCOLTYPE || indexColumn == LogicalPortColumns::PAYLOADTYPE;
 }
 
 //-----------------------------------------------------------------------------

@@ -67,7 +67,15 @@ public:
     SingleRegisterFileEditor& operator=(const SingleRegisterFileEditor& other) = delete;
 
     //! Refresh the editor.
-    virtual void refresh();
+    virtual void refresh() override final;
+
+signals:
+    
+    void addressingChanged();
+
+    void childAddressingChanged(int index);
+
+    void childGraphicsChanged(int index);
 
 signals:
 

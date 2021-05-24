@@ -20,13 +20,6 @@ SourceHighlightStyle::SourceHighlightStyle()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SourceHighlightStyle::~SourceHighlightStyle()
-//-----------------------------------------------------------------------------
-SourceHighlightStyle::~SourceHighlightStyle()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: SourceHighlightStyle::apply()
 //-----------------------------------------------------------------------------
 void SourceHighlightStyle::apply(LanguageHighlighter* highlighter) const

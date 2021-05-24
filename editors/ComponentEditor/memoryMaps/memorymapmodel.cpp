@@ -42,14 +42,6 @@ blockInterface_(blockInterface)
 }
 
 //-----------------------------------------------------------------------------
-// Function: memorymapmodel::~MemoryMapModel()
-//-----------------------------------------------------------------------------
-MemoryMapModel::~MemoryMapModel()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapModel::rowCount()
 //-----------------------------------------------------------------------------
 int MemoryMapModel::rowCount(QModelIndex const& parent) const
@@ -306,7 +298,12 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
             index.column() == MemoryMapColumns::RANGE_COLUMN || index.column() == MemoryMapColumns::WIDTH_COLUMN ||
             index.column() == MemoryMapColumns::IS_PRESENT)
         {
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
+        }
+
+        if (index.column() == MemoryMapColumns::BASE_COLUMN || index.column() == MemoryMapColumns::RANGE_COLUMN)
+        {
+            emit childAddressingChanged(index.row());
         }
 
         emit dataChanged(index, index);

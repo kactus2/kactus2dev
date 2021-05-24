@@ -17,6 +17,8 @@
 
 #include <common/utils.h>
 
+#include <editors/common/FileHandler/FileHandler.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
@@ -281,25 +283,7 @@ void FileDependencyEditor::resolveExtensionFileTypes()
     QSettings settings;
     ignoreExtList_ = settings.value("FileTypes/IgnoredExtensions").toString().split(';');
 
-    settings.beginGroup("FileTypes");
-
-    foreach (QString const& fileType, settings.childGroups())
-    {
-        settings.beginGroup(fileType);
-
-        QStringList fileTypeExtensions = settings.value("Extensions").toString().split(';');
-        foreach (QString const& extension, fileTypeExtensions)
-        {
-            // Add to the lookup map only if the extension is not already in use.
-            if (!fileTypeLookup_.contains(extension))
-            {
-                fileTypeLookup_.insert(extension, fileType);
-            }
-        }
-        settings.endGroup();
-    }
-
-    settings.endGroup();
+    fileTypeLookup_ = FileHandler::constructFileSuffixTable();
 }
 
 //-----------------------------------------------------------------------------

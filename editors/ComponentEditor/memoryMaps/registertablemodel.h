@@ -49,6 +49,7 @@ public:
     RegisterTableModel(FieldInterface* fieldInterface, QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder, QObject *parent);
 
+
 	/*!
      *  The destructor.
      */
@@ -195,7 +196,10 @@ signals:
     /*!
      *  Informs of a need to redraw the visualization.
      */
-    void graphicsChanged();
+    void graphicsChanged(int index);
+
+    void addressingChanged(int index);
+
 
     /*
      *  Informs of field name change.

@@ -403,7 +403,11 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
                 index.column() == AddressBlockColumns::REGISTER_DIMENSION ||
                 index.column() == AddressBlockColumns::IS_PRESENT)
             {
-                emit graphicsChanged();
+                emit graphicsChanged(index.row());
+                if (index.column() != AddressBlockColumns::NAME)
+                {
+                    emit childAddressingChanged(index.row());
+                }
             }
 
             emit dataChanged(index, index);
@@ -497,6 +501,7 @@ void AddressBlockModel::onAddItem(QModelIndex const& index)
     beginInsertRows(QModelIndex(), row, row);
 
     registerInterface_->addRegister(row, dataIndex);
+
 
     endInsertRows();
 

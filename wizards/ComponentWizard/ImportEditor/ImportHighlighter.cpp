@@ -34,9 +34,23 @@ ImportHighlighter::~ImportHighlighter()
 //-----------------------------------------------------------------------------
 // Function: VHDLHighlighter::highlight()
 //-----------------------------------------------------------------------------
-void ImportHighlighter::applyHighlight(QString const& text, QColor const& highlightColor)
+void ImportHighlighter::applyHighlight(QString const& text, QColor const& highlightColor,
+    QString const& subSection /* = "" */)
 {
-    int beginIndex = display_->toPlainText().indexOf(text);
+    QString displayText = display_->toPlainText();
+
+    int beginIndex = 0;
+    if (!subSection.isEmpty())
+    {
+        int subSectionIndex = displayText.indexOf(subSection);
+        int textIndex = subSection.indexOf(text);
+        beginIndex = subSectionIndex + textIndex;
+    }
+    else
+    {
+        beginIndex = displayText.indexOf(text);
+    }
+
     int endIndex = beginIndex + text.length();
 
     applyHighlight(beginIndex, endIndex, highlightColor);

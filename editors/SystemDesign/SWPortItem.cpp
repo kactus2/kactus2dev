@@ -358,7 +358,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::onDisconnect()
 //-----------------------------------------------------------------------------
-void SWPortItem::onDisconnect(ConnectionEndpoint const*)
+void SWPortItem::onDisconnect()
 {
     // Undefine the interface if it is temporary.
     if (!isTypeLocked() && !isConnected())
@@ -802,13 +802,13 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         if (conn->endpoint1() != this)
         {
             conn->endpoint1()->removeConnection(conn);
-            conn->endpoint1()->onDisconnect(this);
+            conn->endpoint1()->onDisconnect();
             conn->endpoint1()->addConnection(conn);
         }
         else
         {
             conn->endpoint2()->removeConnection(conn);
-            conn->endpoint2()->onDisconnect(this);
+            conn->endpoint2()->onDisconnect();
             conn->endpoint2()->addConnection(conn);
         }
     }

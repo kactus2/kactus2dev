@@ -45,7 +45,7 @@ public:
 		QObject *parent);
 	
 	//! The destructor.
-	virtual ~AddressSpaceScene();
+	virtual ~AddressSpaceScene() = default;
 
 	/*!
      *  Refresh the address space visualization.
@@ -83,7 +83,7 @@ private:
      */
 	void updateMaps(QMultiMap<quint64, AddressSpaceVisualizationItem*>& itemMap, 
         QMultiMap<quint64, AddressSpaceVisualizationItem*> const& exceedingItemMap, 
-        AddressSpaceGapItem::AddressPosition const align);
+        VisualizerItem::LabelLayout const align);
 
     /*!
      *   Positions segments and address blocks outside address space.
@@ -105,7 +105,7 @@ private:
     virtual void resolveConflicts(AddressSpaceVisualizationItem* currentItem, 
         AddressSpaceVisualizationItem*& topItem, 
         AddressSpaceVisualizationItem*& prevConflict,
-        AddressSpaceGapItem::AddressPosition const align,
+        VisualizerItem::LabelLayout const align,
         QMultiMap<quint64, AddressSpaceVisualizationItem*>& map);
 
     //-----------------------------------------------------------------------------

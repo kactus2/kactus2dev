@@ -12,11 +12,16 @@
 #include "memorymapscene.h"
 #include "memorymapgraphitem.h"
 
-#include <common/graphicsItems/graphicsexpandcollapseitem.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
 #include <QRectF>
 
 #include <QDebug>
+
+namespace
+{
+    const unsigned int ITEM_SPACING = 10;
+}
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapScene::MemoryMapScene()
@@ -30,27 +35,19 @@ width_(VisualizerItem::DEFAULT_WIDTH)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapScene::~MemoryMapScene()
-//-----------------------------------------------------------------------------
-MemoryMapScene::~MemoryMapScene()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapScene::addMemGraphItem()
 //-----------------------------------------------------------------------------
-void MemoryMapScene::addMemGraphItem( VisualizerItem* memGraphItem )
+void MemoryMapScene::addMemGraphItem( MemoryMapGraphItem* memGraphItem )
 {
 	Q_ASSERT(memGraphItem);
 
     qreal yCoordinate = 0;
 
-    bool firstItem = memGraphItems_.isEmpty();
-
-    if (!firstItem)
-    {        
-        yCoordinate = memGraphItems_.last()->pos().y() + memGraphItems_.last()->itemTotalRect().height() + 10;
+    bool isFirstItem = memGraphItems_.isEmpty();
+    if (isFirstItem == false)
+    {   
+        auto lastItem = memGraphItems_.last();
+        yCoordinate = lastItem->mapToScene(lastItem->itemTotalRect().bottomLeft()).y() + ITEM_SPACING;
     }
 
     memGraphItem->setPos(0, yCoordinate);
@@ -62,45 +59,32 @@ void MemoryMapScene::addMemGraphItem( VisualizerItem* memGraphItem )
     connect(memGraphItem, SIGNAL(expandStateChanged()), this, SLOT(rePosition()), Qt::UniqueConnection);
 
     // Update scene rect height.   
-    QRectF rect = sceneRect();
+    QRectF sceneArea = sceneRect();
 
-    if (firstItem)
+    if (isFirstItem)
     {
-        rect = itemsBoundingRect();
+        sceneArea = itemsBoundingRect();
     }
 
-    rect.setBottom(yCoordinate + memGraphItem->rect().height());
+    sceneArea.setBottom(memGraphItem->rect().bottom());
 
-    setSceneRect(rect);
+    setSceneRect(sceneArea);
     invalidate();
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapScene::removeMemGraphItem()
 //-----------------------------------------------------------------------------
-void MemoryMapScene::removeMemGraphItem( VisualizerItem* memGraphItem )
+void MemoryMapScene::removeMemGraphItem( MemoryMapGraphItem* memGraphItem )
 {
 	Q_ASSERT(memGraphItem);
-    
-    qreal yCoordinate = memGraphItem->pos().y();
-
+        
     removeItem(memGraphItem);
     memGraphItems_.removeAll(memGraphItem);
 
     disconnect(memGraphItem, SIGNAL(expandStateChanged()), this, SLOT(rePosition()));
 
-    for (VisualizerItem* memMap : memGraphItems_)
-    {   
-        memMap->setPos(0, yCoordinate);
-        yCoordinate += memMap->itemTotalRect().bottom() + 10;
-    }
-
-    // Update scene rect height.   
-    QRectF rect = sceneRect();
-    rect.setBottom(yCoordinate);
-
-    setSceneRect(rect);
-    invalidate();
+    rePosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -110,17 +94,17 @@ void MemoryMapScene::rePosition()
 {
 	qreal yCoordinate = 0;
 
-	for (VisualizerItem* memMap : memGraphItems_)
+	for (auto memMap : memGraphItems_)
     {        
 		memMap->setPos(0, yCoordinate);
-        yCoordinate += memMap->itemTotalRect().bottom() + 10;
+        yCoordinate += memMap->itemTotalRect().bottom() + ITEM_SPACING;
 	}
 
 	// Update scene rect height.   
-    QRectF rect = sceneRect();
-    rect.setBottom(yCoordinate);
+    QRectF sceneArea = sceneRect();
+    sceneArea.setBottom(yCoordinate);
 
-    setSceneRect(rect);
+    setSceneRect(sceneArea);
 	invalidate();
 }
 
@@ -130,20 +114,23 @@ void MemoryMapScene::rePosition()
 void MemoryMapScene::setWidth(int width)
 {
     int newWidth = width - MemoryVisualizationItem::CHILD_INDENTATION;
-    if (width > VisualizerItem::DEFAULT_WIDTH && width_ != newWidth)
-    {
-        width_ = width - MemoryVisualizationItem::CHILD_INDENTATION;        
-       
-        for (VisualizerItem* memMap : memGraphItems_)
-        {        
-            memMap->setWidth(width_);
-        }
 
-        // Update scene rect width.
-        QRectF rect = sceneRect();
-        rect.setWidth(width);
-        setSceneRect(rect);        
+    if (width <= VisualizerItem::DEFAULT_WIDTH || width_ == newWidth)
+    {
+        return;
     }
+
+    width_ = newWidth;
+
+    for (auto memMap : memGraphItems_)
+    {
+        memMap->setWidth(width_);
+    }
+
+    // Update scene rect width.
+    QRectF sceneArea = sceneRect();
+    sceneArea.setWidth(width);
+    setSceneRect(sceneArea);
 }
 
 //-----------------------------------------------------------------------------
@@ -153,6 +140,9 @@ void MemoryMapScene::wheelEvent(QGraphicsSceneWheelEvent * wheelEvent)
 {   
     if (wheelEvent->modifiers() & Qt::ControlModifier)
     {
+        //! Scrolling sensitivity. Bigger value results in smaller steps.
+        const int WHEEL_SENSITIVITY = 6;
+
         int width = sceneRect().width() + wheelEvent->delta() / WHEEL_SENSITIVITY;
         setWidth(width);    
         wheelEvent->accept();

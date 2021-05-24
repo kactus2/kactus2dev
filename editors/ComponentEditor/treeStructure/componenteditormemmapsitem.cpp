@@ -40,11 +40,11 @@ ComponentEditorMemMapsItem::ComponentEditorMemMapsItem(ComponentEditorTreeModel*
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-memoryMaps_(component->getMemoryMaps()),
-visualizer_(new MemoryMapsVisualizer()),
-expressionParser_(expressionParser),
-memoryMapValidator_(),
-mapInterface_()
+    memoryMaps_(component->getMemoryMaps()),
+    visualizer_(nullptr),
+    expressionParser_(expressionParser),
+    memoryMapValidator_(),
+    mapInterface_()
 {
     createMemoryMapValidator();
 
@@ -56,38 +56,10 @@ mapInterface_()
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
-	foreach (QSharedPointer<MemoryMap> memoryMap, *memoryMaps_)
+    const int childCount = memoryMaps_->count();
+	for (int i = 0; i < childCount; ++i)
     {
-		QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMap, model,
-            libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
-            memoryMapValidator_, mapInterface_, this));
-		memoryMapItem->setVisualizer(visualizer_);
-		childItems_.append(memoryMapItem);
-
-        connect(this, SIGNAL(memoryRemapAdded(int, QString const&)),
-            memoryMapItem.data(), SLOT(onMemoryRemapAdded(int, QString const&)), Qt::UniqueConnection);
-
-        connect(this, SIGNAL(memoryRemapRemoved(int, QString const&)),
-            memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
-
-        connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
-            memoryMapItem.data(), SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
-            Qt::UniqueConnection);
-        connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
-            memoryMapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
-            Qt::UniqueConnection);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditormemmapsitem::~ComponentEditorMemMapsItem()
-//-----------------------------------------------------------------------------
-ComponentEditorMemMapsItem::~ComponentEditorMemMapsItem()
-{
-	if (visualizer_)
-    {
-		delete visualizer_;
-		visualizer_ = NULL;
+        ComponentEditorMemMapsItem::createChild(i);
 	}
 }
 
@@ -179,10 +151,6 @@ void ComponentEditorMemMapsItem::createChild( int index )
         memoryMapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
         Qt::UniqueConnection);
 
-	if (visualizer_)
-    {
-		memoryMapItem->setVisualizer(visualizer_);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +158,12 @@ void ComponentEditorMemMapsItem::createChild( int index )
 //-----------------------------------------------------------------------------
 ItemVisualizer* ComponentEditorMemMapsItem::visualizer()
 {
-	return visualizer_;
+	if (childItems_.isEmpty() == false)
+	{
+        return childItems_.at(0)->visualizer();
+	}
+
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

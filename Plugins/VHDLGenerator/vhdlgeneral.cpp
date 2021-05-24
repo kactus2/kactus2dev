@@ -12,24 +12,26 @@
 #include <QChar>
 #include <QObject>
 
-QString VhdlGeneral::useDefaultType( const int leftBound, const int rightBound ) {
-	
+QString VhdlGeneral::useDefaultType( const int leftBound, const int rightBound )
+{
 	QString result("std_logic");
 
 	// if port is larger than one bit
 	int size = leftBound - rightBound + 1;
-	if (size > 1) {
+	if (size > 1)
+    {
 		result = QString("std_logic_vector");
 	}
 
 	return result;
 }
 
-QString VhdlGeneral::getDefaultVhdlTypeDef( const QString& typeName ) {
-
+QString VhdlGeneral::getDefaultVhdlTypeDef( const QString& typeName )
+{
 	// types for package numeric_std
 	if (typeName.compare(QString("signed"), Qt::CaseInsensitive) == 0 ||
-		typeName.compare(QString("unsigned"), Qt::CaseInsensitive) == 0) {
+		typeName.compare(QString("unsigned"), Qt::CaseInsensitive) == 0)
+    {
 		return QString("IEEE.numeric_std.all");
 	}
 
@@ -37,20 +39,17 @@ QString VhdlGeneral::getDefaultVhdlTypeDef( const QString& typeName ) {
 	else if (typeName.compare(QString("std_logic_vector"), Qt::CaseInsensitive) == 0 ||
 		typeName.compare(QString("std_ulogic_vector"), Qt::CaseInsensitive) == 0 ||
 		typeName.compare(QString("std_logic"), Qt::CaseInsensitive) == 0 ||
-		typeName.compare(QString("std_ulogic"), Qt::CaseInsensitive) == 0) {
-
+		typeName.compare(QString("std_ulogic"), Qt::CaseInsensitive) == 0)
+    {
 			return QString("IEEE.std_logic_1164.all");
 	}
+
 	// types for standard package or user defined types
-	else {
-		return QString();
-	}
+    return QString();
 }
 
-QString VhdlGeneral::vhdlType2String( const QString& type,
-									 int leftBound /*= -1*/,
-									 int rightBound /*= -1*/ ) {
-	
+QString VhdlGeneral::vhdlType2String( const QString& type, int leftBound, int rightBound )
+{
 	// the scalar types and types with predefined bounds
 	if (0 == type.compare(QString("std_logic"), Qt::CaseInsensitive) ||
 		0 == type.compare(QString("bit"), Qt::CaseInsensitive) ||
@@ -60,8 +59,8 @@ QString VhdlGeneral::vhdlType2String( const QString& type,
 		0 == type.compare(QString("std_ulogic"), Qt::CaseInsensitive) ||
 		0 == type.compare(QString("time"), Qt::CaseInsensitive) ||
 		0 == type.compare(QString("natural"), Qt::CaseInsensitive) ||
-		0 == type.compare(QString("positive"), Qt::CaseInsensitive)) {
-		
+		0 == type.compare(QString("positive"), Qt::CaseInsensitive))
+    {
 		// return the type as such because the bounds are not used.
 		return type;
 	}
@@ -70,8 +69,8 @@ QString VhdlGeneral::vhdlType2String( const QString& type,
 	else if (0 == type.compare(QString("bit_vector"), Qt::CaseInsensitive) ||
 		0 == type.compare(QString("std_logic_vector"), Qt::CaseInsensitive) ||
 		0 == type.compare(QString("std_ulogic_vector"), Qt::CaseInsensitive) ||
-		0 == type.compare(QString("string"), Qt::CaseInsensitive)) {
-		
+		0 == type.compare(QString("string"), Qt::CaseInsensitive))
+    {
 		QString result(type);
 		result += QString("(%1 downto %2)").arg(leftBound).arg(rightBound);
 		return result;
@@ -79,24 +78,23 @@ QString VhdlGeneral::vhdlType2String( const QString& type,
 
 	// if the type is numeric
 	else if (0 == type.compare(QString("integer"), Qt::CaseInsensitive) ||
-		0 == type.compare(QString("real"), Qt::CaseInsensitive)) {
-
+		0 == type.compare(QString("real"), Qt::CaseInsensitive))
+    {
 		QString result(type);
 		result += QString(" range %1 to %2").arg(rightBound).arg(leftBound);
 		return result;
 	}
-
 	// if user defined type then return it as such
-	else {
+	else
+    {
 		return type;
 	}
 }
 
-void VhdlGeneral::writeDescription( const QString& description, 
-								   QTextStream& stream, 
-								   const QString& indentation /*= QString("")*/) {
-
-	if (description.isEmpty()) {
+void VhdlGeneral::writeDescription( const QString& description, QTextStream& stream, const QString& indentation)
+{
+	if (description.isEmpty())
+    {
 		stream << endl;
 		return;
 	}
@@ -109,17 +107,21 @@ void VhdlGeneral::writeDescription( const QString& description,
 
 	// Split long lines.  Simple routine, does not account 
 	// indentation and the line's last word can go over 80 chars
-	for (int i = 0; i < lines.size(); ++i) {
+	for (int i = 0; i < lines.size(); ++i)
+    {
 		QStringList words = lines.at(i).split(" ");	
 		int line_len = 0; // num of chars
-		for (int w = 0; w < words.size(); ++w) {			
-			if (line_len == 0) {
+		for (int w = 0; w < words.size(); ++w)
+        {			
+			if (line_len == 0)
+            {
 				stream << indentation << "--";
 			}
 			stream << " " << words.at(w);
 			line_len += words.at(w).size() +1; //+1 = white space	
 
-			if (line_len > 70) {
+			if (line_len > 70)
+            {
 				stream << endl;
 				line_len = 0;
 			}
@@ -129,7 +131,8 @@ void VhdlGeneral::writeDescription( const QString& description,
 }
 
 
-bool VhdlGeneral::isScalarType( const QString& typeName ) {
+bool VhdlGeneral::isScalarType( const QString& typeName )
+{
 	if (typeName.compare(QString("bit"), Qt::CaseInsensitive) == 0 ||
 		typeName.compare(QString("boolean"), Qt::CaseInsensitive) == 0 ||
 		typeName.compare(QString("character"), Qt::CaseInsensitive) == 0 ||
@@ -139,39 +142,43 @@ bool VhdlGeneral::isScalarType( const QString& typeName ) {
 		typeName.compare(QString("natural"), Qt::CaseInsensitive) == 0 ||
 		typeName.compare(QString("positive"), Qt::CaseInsensitive) == 0 ||
 		typeName.compare(QString("integer"), Qt::CaseInsensitive) == 0 ||
-		typeName.compare(QString("real"), Qt::CaseInsensitive) == 0) {
+		typeName.compare(QString("real"), Qt::CaseInsensitive) == 0)
+    {
 			return true;
 	}
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-bool VhdlGeneral::checkVhdlTypeMatch( const QString& type1, const QString& type2 ) {
-
+bool VhdlGeneral::checkVhdlTypeMatch( const QString& type1, const QString& type2 )
+{
 	// if the types are the same then of course they are compatible
-	if (type1 == type2) {
+	if (type1 == type2)
+    {
 		return true;
 	}
 
 	// std_logic and std_logic_vector can be connected to each other
-	else if (type1 == "std_logic" && type2 == "std_logic_vector") {
-		return true;
-	}
-	else if (type1 == "std_logic_vector" && type2 == "std_logic") {
+	else if ((type1 == "std_logic" && type2 == "std_logic_vector") ||
+        (type1 == "std_logic_vector" && type2 == "std_logic"))
+    {
 		return true;
 	}
 
 	// other types can't be connected to each other
-	else {
+	else
+    {
 		return false;
 	}
 }
 
-QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, const QString& type ) {
-
+QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, const QString& type )
+{
 	// if there is no original default value given
-	if (originalDefaultValue.isEmpty()) {
+	if (originalDefaultValue.isEmpty())
+    {
 		return QObject::tr("No default value given");
 	}
 
@@ -182,15 +189,16 @@ QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, c
 		type == "positive" ||
 		type == "real" ||
 		type == "severity_level" ||
-		type == "time") {
+		type == "time")
+    {
 		return originalDefaultValue;
 	}
 	// the types that use ''
 	else if (type == "bit" ||
 		type == "character" ||
 		type == "std_logic" ||
-		type == "std_ulogic") {
-		
+		type == "std_ulogic")
+    {
 			// char for '
 			QChar charToAdd(39);
 
@@ -198,17 +206,18 @@ QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, c
 			QString result(originalDefaultValue.simplified());
 
 			// if theres only one character then add ' to both start and end
-			if (originalDefaultValue.size() == 1) {
+			if (originalDefaultValue.size() == 1)
+            {
 				return QString("'%1'").arg(originalDefaultValue);
 			}
-
 			// if start is missing '
-			else if (result.at(0) != charToAdd) {
+			else if (result.at(0) != charToAdd)
+            {
 				result.prepend(charToAdd);
 			}
-
 			// if end is missing '
-			if (result.at(result.size() - 1) != charToAdd) {
+			if (result.at(result.size() - 1) != charToAdd)
+            {
 				result.append(charToAdd);
 			} 
 
@@ -221,8 +230,8 @@ QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, c
 		type == "std_ulogic_vector" ||
 		type == "string" ||
 		type == "signed" ||
-		type == "unsigned") {
-
+		type == "unsigned")
+    {
 		// char for "
 		QChar charToAdd(34);
 
@@ -230,18 +239,21 @@ QString VhdlGeneral::convertDefaultValue( const QString& originalDefaultValue, c
 		QString result(originalDefaultValue.simplified());
 
 		// if the first letter is a decimal digit
-		if (result.at(0).isDigit()) {
+		if (result.at(0).isDigit())
+        {
 			result.prepend(charToAdd);
-
-			// if end is missing "
-			if (result.at(result.size() - 1) != charToAdd) {
-				result.append(charToAdd);
-			}
 		}
+
+        // if end is missing "
+        if (result.at(result.size() - 1) != charToAdd)
+        {
+            result.append(charToAdd);
+        }
 
 		return result;
 	}
-	else {
+	else
+    {
 		return originalDefaultValue;
 	}
 }

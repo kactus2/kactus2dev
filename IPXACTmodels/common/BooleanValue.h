@@ -23,7 +23,7 @@ public:
 	//! The constructor.
 	BooleanValue();
 
-    //! Copy constructor;
+    //! Copy constructor.
     BooleanValue(BooleanValue const& other);
 
 	//! The destructor.

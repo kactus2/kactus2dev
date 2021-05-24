@@ -32,7 +32,7 @@ public:
 	/*!
      *  Destructor.
      */
-	virtual ~FileTypesDelegate();
+	virtual ~FileTypesDelegate() = default;
 
 	/*!
      *  Creates a new editor for the given item.

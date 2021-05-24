@@ -62,12 +62,12 @@ private slots:
 protected:
 
     //! Handler for context menu events.
-    virtual void contextMenuEvent(QContextMenuEvent* event);
+    virtual void contextMenuEvent(QContextMenuEvent* event) override final;
 
     /*!
      *  Handler for mouse press events.
      */
-    virtual void mousePressEvent(QMouseEvent* event);
+    virtual void mousePressEvent(QMouseEvent* event) override final;
 
     /*!
      *  Handler for index change events.

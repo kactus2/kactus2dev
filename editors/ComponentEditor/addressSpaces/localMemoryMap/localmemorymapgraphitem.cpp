@@ -33,31 +33,3 @@ unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const
 {
     return parseExpression(addrSpace_->getAddressUnitBits());
 }
-
-//-----------------------------------------------------------------------------
-// Function: LocalMemoryMapGraphItem::refresh()
-//-----------------------------------------------------------------------------
-void LocalMemoryMapGraphItem::refresh()
-{
-    QString name = memoryMap_->name();
-    if (name.isEmpty())
-    {
-        name = "Local memory map";
-    }
-
-    setName(name);
-
-    quint64 offset = getOffset();
-    quint64 lastAddress = getLastAddress();
-
-    setLeftTopCorner(offset);
-    setLeftBottomCorner(lastAddress);
-
-    setToolTip("<b>Name: </b>" + name + "<br>" +
-        "<b>AUB: </b>" + QString::number(getAddressUnitSize()) + "<br>" +
-        "<b>First address: </b>" + toHexString(offset) + "<br>" +
-        "<b>Last address: </b>" + toHexString(lastAddress));
-
-	// set the positions for the children
-	MemoryVisualizationItem::reorganizeChildren();
-}

@@ -189,7 +189,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     foreach(QSharedPointer<Port> cPort, ports)
     {
-        if (cPort->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+        if (cPort->getDirection() == DirectionTypes::DIRECTION_PHANTOM || cPort->getTransactional())
         {
             ports.removeOne(cPort);
         }
@@ -199,7 +199,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
     {
         QSharedPointer<MetaPort> mPort = component_->getPorts()->value(cPort->name());
 
-        if (!mPort)
+        if (!mPort || mPort->isTransactional_)
         {
             // TODO: error
             continue;

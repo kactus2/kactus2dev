@@ -1686,30 +1686,3 @@ rightBound_(right)
 
 }
 
-//-----------------------------------------------------------------------------
-// Function: vhdlgenerator2::PortConnection::PortConnection()
-//-----------------------------------------------------------------------------
-VhdlGenerator2::PortConnection::PortConnection( const VhdlGenerator2::PortConnection& other ):
-instance_(other.instance_),
-portName_(other.portName_),
-leftBound_(other.leftBound_),
-rightBound_(other.rightBound_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: vhdlgenerator2::PortConnection::operator=()
-//-----------------------------------------------------------------------------
-VhdlGenerator2::PortConnection& VhdlGenerator2::PortConnection::operator=(
-    const VhdlGenerator2::PortConnection& other )
-{
-    if (this != &other)
-    {
-        instance_ = other.instance_;
-        portName_ = other.portName_;
-        leftBound_ = other.leftBound_;
-        rightBound_ = other.rightBound_;
-    }
-    return *this;
-}

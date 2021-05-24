@@ -160,7 +160,7 @@ protected:
 	 *
 	 *      @param [in] address The address to be shown in hexadecimal form.
 	 */
-	virtual void setLeftTopCorner(quint64 address);
+	virtual void setTopLabelText(quint64 address);
 
 	/*!
      *  Set the address to be shown on the top left corner.
@@ -174,7 +174,7 @@ protected:
 	 *
 	 *      @param [in] address The address to be shown in hexadecimal form.
 	 */
-	virtual void setLeftBottomCorner(quint64 address);
+	virtual void setBottomLabelText(quint64 address);
 
 	/*!
      *  Set the address to be shown on the top left corner.

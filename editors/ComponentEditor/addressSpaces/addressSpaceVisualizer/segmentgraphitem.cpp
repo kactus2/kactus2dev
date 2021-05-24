@@ -31,7 +31,8 @@ segment_(segment)
 
 	QBrush brush(KactusColors::ADDRESS_SEGMENT);
 	setDefaultBrush(brush);
-	setNamePosition(VisualizerItem::NAME_RIGHT_ALIGN, VisualizerItem::NAME_MIDDLE);
+	//setNamePosition(VisualizerItem::NAME_RIGHT_ALIGN, VisualizerItem::NAME_MIDDLE);
+    setLayoutType(LABELS_RIGHT);
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +52,7 @@ void SegmentGraphItem::refresh()
         "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth())  + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(segment_->getRange()));
 
-    VisualizerItem::reorganizeChildren();
+    repositionLabels(); 
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +60,7 @@ void SegmentGraphItem::refresh()
 //-----------------------------------------------------------------------------
 quint64 SegmentGraphItem::getOffset() const
 {
-	return getExpressionParser()->parseExpression(segment_->getAddressOffset()).toUInt();
+	return getExpressionParser()->parseExpression(segment_->getAddressOffset()).toULongLong();
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +69,7 @@ quint64 SegmentGraphItem::getOffset() const
 quint64 SegmentGraphItem::getLastAddress() const
 {
     quint64 base = getOffset();
-    quint64 range = getExpressionParser()->parseExpression(segment_->getRange()).toUInt();
+    quint64 range = getExpressionParser()->parseExpression(segment_->getRange()).toULongLong();
 
     quint64 lastAddr = base + range;
 
@@ -99,7 +100,7 @@ void SegmentGraphItem::setOverlappingTop(quint64 const& address)
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {
-        VisualizerItem::setRightBottomCorner("");
+        VisualizerItem::setBottomLabelText("");
     }
     else
     {
@@ -116,7 +117,7 @@ void SegmentGraphItem::setOverlappingBottom(quint64 const& address)
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {
-        VisualizerItem::setRightBottomCorner("");
+        VisualizerItem::setBottomLabelText("");
     }
     else
     {

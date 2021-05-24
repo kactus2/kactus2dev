@@ -44,7 +44,7 @@ public:
      *      @param [in] targetComponentInstantiation    The component instantiation to add the module parameters to.
      */
     void import(QString const& input, QSharedPointer<Component> targetComponent,
-		QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
+        QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
 
     /*!
      *  Sets the given highlighter to be used by the generic parser.

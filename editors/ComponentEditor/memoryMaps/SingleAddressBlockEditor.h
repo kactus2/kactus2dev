@@ -72,12 +72,19 @@ public:
 
 
 	//! The destructor
-    virtual ~SingleAddressBlockEditor();
+    virtual ~SingleAddressBlockEditor() = default;
+
+    //! No copying.
+    SingleAddressBlockEditor(const SingleAddressBlockEditor& other) = delete;
+
+    //! No assignment.
+    SingleAddressBlockEditor& operator=(const SingleAddressBlockEditor& other) = delete;
+
 
 	/*!
 	 *  Reload all the contained editors.
 	 */
-	virtual void refresh();
+	virtual void refresh() override final;
 
 public slots:
 
@@ -111,6 +118,12 @@ signals:
      */
     void registerNameChanged(QString const& oldName, QString const& newName);
 
+    void addressingChanged();
+
+    void childAddressingChanged(int index);
+
+    void childGraphicsChanged(int index);    
+
 protected:
 
     /*!
@@ -118,7 +131,7 @@ protected:
 	 *
 	 *      @param [in] event   The show event.
 	 */
-	virtual void showEvent(QShowEvent* event);
+	virtual void showEvent(QShowEvent* event) override final;
 
 private slots:
     
@@ -162,12 +175,6 @@ private slots:
     void onVolatileSelected(QString const& newVolatileValue);
 
 private:
-	
-	//! No copying.
-    SingleAddressBlockEditor(const SingleAddressBlockEditor& other);
-
-	//! No assignment.
-    SingleAddressBlockEditor& operator=(const SingleAddressBlockEditor& other);
 
     /*!
      *  Sets the layout for the editor.

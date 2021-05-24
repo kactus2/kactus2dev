@@ -76,7 +76,9 @@ signals:
     /*!
      *  Informs of a need to redraw the visualization.
      */
-    void graphicsChanged();
+    void graphicsChanged(int);
+
+    void childAddressingChanged(int);
 
     /*!
      *  Emits an error message for the user.

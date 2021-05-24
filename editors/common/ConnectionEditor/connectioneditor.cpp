@@ -582,7 +582,8 @@ void ConnectionEditor::addMap(QSharedPointer<PortMap> portMap1,
 //-----------------------------------------------------------------------------
 QTableWidgetItem* ConnectionEditor::createPortItem(QString const& portName, int left, int right, bool isValid)
 {
-    QString itemText = General::port2String(portName, left, right);
+    QString itemText = portName + QStringLiteral("[%1..%2]").arg(left).arg(right);
+
     QTableWidgetItem* portItem = new QTableWidgetItem(itemText);
 
     portItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);

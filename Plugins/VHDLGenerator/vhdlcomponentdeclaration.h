@@ -47,14 +47,14 @@ public:
         QSharedPointer<ExpressionParser> parser);
 	
 	//! The destructor.
-	virtual ~VhdlComponentDeclaration();
+	virtual ~VhdlComponentDeclaration() = default;
 
 	/*!
      *  Write the component declaration to the text stream.
 	 *
 	 *      @param [in] stream  The text stream to write into.
 	 */
-	void write(QTextStream& stream) const;
+	virtual void write(QTextStream& stream) const override final;
 
     /*!
      *  Write the generic declarations of the component to the text stream.
@@ -82,7 +82,7 @@ public:
 	 *
 	 *      @return QString contains the description for the component declaration.
 	 */
-	QString description() const;
+	virtual QString description() const override final;
 
 	/*!
      *  Get pointer to the IP-Xact model of the component declaration.

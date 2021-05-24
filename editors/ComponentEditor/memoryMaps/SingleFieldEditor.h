@@ -79,6 +79,9 @@ public:
 	 */
 	virtual void refresh();
 
+signals:
+    void addressingChanged();
+
 public slots:
 
     /*

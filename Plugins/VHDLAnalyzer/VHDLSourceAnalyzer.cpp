@@ -6,7 +6,7 @@
 // Date: 18.1.2013
 //
 // Description:
-// C/C++ source analyzer plugin.
+// VHDL source analyzer plugin.
 //-----------------------------------------------------------------------------
 
 #include "VHDLSourceAnalyzer.h"
@@ -17,21 +17,13 @@
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <QCryptographicHash>
-
+#include <QRegularExpression>
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::VHDLSourceAnalyzer()
 //-----------------------------------------------------------------------------
-VHDLSourceAnalyzer::VHDLSourceAnalyzer()
-    : fileTypes_()
+VHDLSourceAnalyzer::VHDLSourceAnalyzer(): QObject(nullptr)
 {
-    fileTypes_.append("vhdlSource");
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLSourceAnalyzer::~VHDLSourceAnalyzer()
-//-----------------------------------------------------------------------------
-VHDLSourceAnalyzer::~VHDLSourceAnalyzer()
-{
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +39,7 @@ QString VHDLSourceAnalyzer::getName() const
 //-----------------------------------------------------------------------------
 QString VHDLSourceAnalyzer::getVersion() const
 {
-    return "1.0";
+    return "1.2";
 }
 
 //-----------------------------------------------------------------------------
@@ -55,7 +47,7 @@ QString VHDLSourceAnalyzer::getVersion() const
 //-----------------------------------------------------------------------------
 QString VHDLSourceAnalyzer::getVendor() const
 {
-    return tr("TUT");
+    return tr("tuni.fi");
 }
 
 //-----------------------------------------------------------------------------
@@ -103,56 +95,47 @@ QStringList VHDLSourceAnalyzer::getSupportedFileTypes() const
 //-----------------------------------------------------------------------------
 QString VHDLSourceAnalyzer::calculateHash(QString const& filename)
 {
-    // Try to open the file
-    QFile file(filename);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text) )
-    {
-        // File could not be opened, show error
-        return 0;
-    }
-
-    QString source = getSourceData(file);
+    QString source = getSourceData(filename);
 
     // Calculate the hash
     QCryptographicHash hash(QCryptographicHash::Sha1);
     hash.addData(source.toLatin1());
 
-    QString result = hash.result().toHex();
-    return result;
+    return hash.result().toHex();
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getFileDependencies()
 //-----------------------------------------------------------------------------
-QList<FileDependencyDesc> VHDLSourceAnalyzer::getFileDependencies(Component const* /*component*/,
-                                             QString const& /*componentPath*/,
-                                             QString const& filename)
+QList<FileDependencyDesc> VHDLSourceAnalyzer::getFileDependencies(
+	Component const* /*component*/, QString const& /*componentPath*/, QString const& filename)
 {
-    QList<FileDependencyDesc> dependencies;
+	QList<FileDependencyDesc> dependencies;
 
-    // Try to open the file.
-    QFile file(filename);
+	// Read file contents into a buffer.
+	QString source = getSourceData(filename);
 
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text) )
-    {
-        // Read file contents into a buffer.
-        QString source = getSourceData(file);
+	scanEntityReferences(source, filename, dependencies);
+	scanPackageReferences(source, filename, dependencies);
 
-        scanEntityReferences(source, filename, dependencies);
-        scanPackageReferences(source, filename, dependencies);   
-    }
-
-    return dependencies;
+	return dependencies;
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getSourceData()
 //-----------------------------------------------------------------------------
-QString VHDLSourceAnalyzer::getSourceData(QFile& file)
+QString VHDLSourceAnalyzer::getSourceData(QString const& filename)
 {
+	// Try to open the file
+	QFile file(filename);
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		return QString();
+	}
+
     // Read the file data
     QString contents = file.readAll();
-    contents.replace(QRegExp("--[^\\n]*"), "");
+    contents.remove(QRegularExpression("--[^\\n]*"));
 
     return contents.simplified();
 }
@@ -178,42 +161,28 @@ void VHDLSourceAnalyzer::endAnalysis(Component const* /*component*/, QString con
 //-----------------------------------------------------------------------------
 void VHDLSourceAnalyzer::scanDefinitions(Component const* component, QString const& componentPath)
 {
-    // Get all the file sets from the component.
-    QSharedPointer< QList< QSharedPointer<FileSet> > > fileSets = component->getFileSets();
-    
     // Scan all the file sets.
-    for (int j = 0; j < fileSets->size(); ++j)
+    for (auto const& fileset : *component->getFileSets())
     {
-        QSharedPointer< QList< QSharedPointer<File> > > files = fileSets->at(j)->getFiles();
-
-        // Go through all the files in the file set.
-        for (int i = 0; i < files->size(); ++i)
+        for (auto const& file : *fileset->getFiles())
         {
-            // Skip the file if it's not a VHDL source file.
-            if (!files->at(i)->getFileTypes()->contains("vhdlSource"))
+            if (file->getFileTypes()->contains("vhdlSource"))
             {
-                continue;
+				QString filename = General::getAbsolutePath(componentPath, file->name());
+				QString source = getSourceData(filename);
+
+				scanEntities(source, filename);
+				scanPackages(source, filename);
             }
-
-            // Try to open the file.
-            QString filename = General::getAbsolutePath(componentPath, files->at(i)->name());
-            QFile file(filename);
-
-            if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-            {
-                // File could not be opened, skip
-                continue;
-            }
-
-            QString source = getSourceData(file);
-
-            scanEntities(source, filename);
-            scanPackages(source, filename);
         }
     }
 }
 
-QList<IPlugin::ExternalProgramRequirement> VHDLSourceAnalyzer::getProgramRequirements() {
+//-----------------------------------------------------------------------------
+// Function: VHDLSourceAnalyzer::getProgramRequirements()
+//-----------------------------------------------------------------------------
+QList<IPlugin::ExternalProgramRequirement> VHDLSourceAnalyzer::getProgramRequirements()
+{
 	return QList<IPlugin::ExternalProgramRequirement>();
 }
 
@@ -223,27 +192,16 @@ QList<IPlugin::ExternalProgramRequirement> VHDLSourceAnalyzer::getProgramRequire
 void VHDLSourceAnalyzer::scanEntities(QString const& source, QString const& filename)
 {
     // Look for entities.
-    static QRegExp entityBeginExp("\\bENTITY\\s+(\\w+)\\s+(?:IS)\\s*", Qt::CaseInsensitive);
-    int startIndex = entityBeginExp.indexIn(source);
-    int endIndex = 0;
+    static QRegularExpression entityBeginExp("\\bENTITY\\s+(\\w+)\\s+(?:IS)\\s*",
+		QRegularExpression::CaseInsensitiveOption);
 
-    while (startIndex != -1)
+	auto matches = entityBeginExp.globalMatch(source);
+    while (matches.hasNext())
     {
+		auto match = matches.next();
         // Register the entity name.
-        QString entityName = entityBeginExp.cap(1).toLower();
+        QString entityName = match.captured(1).toLower();
         cachedEntities_[entityName].append(filename);
-
-        // Skip down to the entity end and look for the next entity declaration.
-        QRegExp entityEndExp("\\bEND\\w+(?:ENTITY\\w+)" + entityName + "\\b", Qt::CaseInsensitive);
-        endIndex = entityEndExp.indexIn(source, startIndex + entityBeginExp.matchedLength());
-
-        if (endIndex == -1)
-        {
-            break;
-        }
-
-        endIndex += entityEndExp.matchedLength();
-        startIndex = entityBeginExp.indexIn(source, endIndex);
     }
 }
 
@@ -253,27 +211,17 @@ void VHDLSourceAnalyzer::scanEntities(QString const& source, QString const& file
 void VHDLSourceAnalyzer::scanPackages(QString const& source, QString const& filename)
 {
     // Look for packages.
-    static QRegExp packageBeginExp("\\bPACKAGE\\s+(\\w+)\\s+IS\\s*", Qt::CaseInsensitive);
-    int startIndex = packageBeginExp.indexIn(source);
-    int endIndex = 0;
+    static QRegularExpression packageBeginExp("\\bPACKAGE\\s+(\\w+)\\s+IS\\s*",
+		QRegularExpression::CaseInsensitiveOption);
+	
+	auto matches = packageBeginExp.globalMatch(source);
 
-    while (startIndex != -1)
+    while (matches.hasNext())
     {
+		auto match = matches.next();
         // Register the package name.
-        QString packageName = packageBeginExp.cap(1).toLower();
+        QString packageName = match.captured(1).toLower();
         cachedPackages_[packageName].append(filename);
-
-        // Skip down to the package end and look for the next package declaration.
-        QRegExp packageEndExp("\\bEND\\w+(?:PACKAGE\\w+)" + packageName + "\\b", Qt::CaseInsensitive);
-        endIndex = packageEndExp.indexIn(source, startIndex + packageBeginExp.matchedLength());
-
-        if (endIndex == -1)
-        {
-            break;
-        }
-
-        endIndex += packageEndExp.matchedLength();
-        startIndex = packageBeginExp.indexIn(source, endIndex);
     }
 }
 
@@ -281,97 +229,20 @@ void VHDLSourceAnalyzer::scanPackages(QString const& source, QString const& file
 // Function: VHDLSourceAnalyzer::scanEntityReferences()
 //-----------------------------------------------------------------------------
 void VHDLSourceAnalyzer::scanEntityReferences(QString const& source, QString const& filename,
-                                              QList<FileDependencyDesc>& dependencies)
+	 QList<FileDependencyDesc>& dependencies)
 {
-    // Look for architecture declarations.
-    static QRegExp archBeginExp("\\bARCHITECTURE\\s+(\\w+)\\s+OF\\s+(\\w+)\\s+IS\\b", Qt::CaseInsensitive);
-    static QRegExp beginExp("\\bBEGIN\\b", Qt::CaseInsensitive);
-    static QRegExp entityExp("\\b(\\w+)\\s+\\:\\s+(ENTITY\\s+)?(\\w+\\.)?(\\w+)\\b", Qt::CaseInsensitive);
-    static QRegExp funcStartExp("\\bFUNCTION\\s+(\\w+)\\b", Qt::CaseInsensitive);
+	static QRegularExpression entityExp(
+		"\\b(\\w+)\\s+\\:\\s+(ENTITY\\s+)?(\\w+\\.)?(\\w+)\\s+(GENERIC|PORT)\\s+MAP\\b",
+		QRegularExpression::CaseInsensitiveOption);
 
-    int archStart = 0;
-    int archEnd = 0;
-    int index = 0;
+	auto entityMatches = entityExp.globalMatch(source);
+	while (entityMatches.hasNext())
+	{
+		auto entityMatch = entityMatches.next();
 
-    while (index >= 0 && index < source.length())
-    {
-        archStart = archBeginExp.indexIn(source, index);
-
-        if (archStart == -1)
-        {
-            break;
-        }
-
-        QRegExp archEndExp("\\bEND\\s+(ARCHITECTURE\\s+)?" + archBeginExp.cap(1) + "\\b", Qt::CaseInsensitive);
-        archEnd = archEndExp.indexIn(source, archStart + archBeginExp.matchedLength());
-
-        // Skip functions that are inside this architecture declaration.
-        int endFuncIndex = archStart + archBeginExp.matchedLength();
-        int startFuncIndex = funcStartExp.indexIn(source, endFuncIndex);
-
-        while (startFuncIndex != -1 && startFuncIndex < archEnd)
-        {
-            // Skip the whole function and look for a next one.
-            QRegExp funcEndExp("\\bEND\\s+(FUNCTION\\s+)?" + funcStartExp.cap(1) + "\\b", Qt::CaseInsensitive);
-            endFuncIndex = funcEndExp.indexIn(source, startFuncIndex + funcStartExp.matchedLength());
-
-            if (endFuncIndex == -1)
-            {
-                endFuncIndex = archEnd;
-                break;
-            }
-
-            endFuncIndex += funcEndExp.matchedLength();
-            startFuncIndex = funcStartExp.indexIn(source, endFuncIndex);
-        }
-
-        // Look for the begin word. It must be before the architecture end.
-        int beginIndex = beginExp.indexIn(source, endFuncIndex);
-
-        if (beginIndex >= 0 && (archEnd == -1 || beginIndex < archEnd))
-        {
-            // Look for component instantiations.
-            int entityIndex = beginIndex + beginExp.matchedLength();
-
-            while (archEnd == -1 || entityIndex <= archEnd)
-            {
-                entityIndex = entityExp.indexIn(source, entityIndex);
-
-                if (entityIndex == -1)
-                {
-                    break;
-                }
-
-                entityIndex += entityExp.matchedLength();
-
-                QString tokenName = entityExp.cap(4).toLower();
-
-                if (tokenName == "process")
-                {
-                    QRegExp processEndExp("\\bEND\\s+PROCESS\\s+" + entityExp.cap(1) + "\\b", Qt::CaseInsensitive);
-                    entityIndex = processEndExp.indexIn(source, entityIndex);
-
-                    if (entityIndex == -1)
-                    {
-                        break;
-                    }
-
-                    entityIndex += processEndExp.matchedLength();
-                }
-                else if (tokenName != "if" && tokenName != "for")
-                {
-                    addEntityDependency(entityExp.cap(4), filename, dependencies);
-                }
-            }
-        }
-
-        if (archEnd == -1)
-        {
-            break;
-        }
-
-        index = archEnd + archEndExp.matchedLength();
-    }
+		QString entityName = entityMatch.captured(4);
+		addEntityDependency(entityName, filename, dependencies);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -380,21 +251,21 @@ void VHDLSourceAnalyzer::scanEntityReferences(QString const& source, QString con
 void VHDLSourceAnalyzer::scanPackageReferences(QString const& source, QString const& filename,
                                                QList<FileDependencyDesc>& dependencies)
 {
-    static QRegExp packageRefExp("\\bUSE\\s+(\\w+)\\.(\\w+)\\.(\\w+)\\b", Qt::CaseInsensitive);
-    int index = packageRefExp.indexIn(source);
+    static QRegularExpression packageRefExp("\\bUSE\\s+(\\w+)\\.(\\w+)\\.(\\w+)\\b",
+		QRegularExpression::CaseInsensitiveOption);
     
-    while (index != -1)
+	auto matches = packageRefExp.globalMatch(source);
+    while (matches.hasNext())
     {
-        // Discard anything in the IEEE library.
-        QString libraryName = packageRefExp.cap(1).toLower();
+		auto match = matches.next();
 
-        if (libraryName != "ieee" && libraryName != "std")
+        // Discard anything in the IEEE library.
+        QString libraryName = match.captured(1).toLower();
+        if (libraryName != QLatin1String("ieee") && libraryName != QLatin1String("std"))
         {
-            QString packageName = packageRefExp.cap(2);
+            QString packageName = match.captured(2);
             addPackageDependency(packageName, filename, dependencies);
         }
-
-        index = packageRefExp.indexIn(source, index + packageRefExp.matchedLength());
     }
 }
 
@@ -404,34 +275,30 @@ void VHDLSourceAnalyzer::scanPackageReferences(QString const& source, QString co
 void VHDLSourceAnalyzer::addEntityDependency(QString const& componentName, QString const& filename,
                                              QList<FileDependencyDesc>& dependencies)
 {
-    FileDependencyDesc dependency;
-    dependency.description = "Component instantiation for entity " + componentName;
-
+	const QString description("Component instantiation for entity %1");
+  
     QString lowCase = componentName.toLower();
 
     if (cachedEntities_.contains(lowCase))
     {
         // Add all existing entities to the return value list.
-        for (int j = 0; j < cachedEntities_[lowCase].count(); ++j)
+        for (auto const& cachedFile : cachedEntities_[lowCase])
         {
-            dependency.filename = General::getRelativePath(filename, cachedEntities_[lowCase].at(j));
+			FileDependencyDesc dependency;
+			dependency.description = description.arg(componentName);
+            dependency.filename = General::getRelativePath(filename, cachedFile);
+
+			addUniqueDependency(dependency, dependencies);
         }
     }
     else
     {
+		FileDependencyDesc dependency;
+		dependency.description = description.arg(componentName);
         dependency.filename = componentName + ".vhd";
-    }
 
-    // Discard if this is a duplicate.
-    for (int i = 0; i < dependencies.size(); ++i)
-    {
-        if (dependencies[i].filename == dependency.filename)
-        {
-            return;
-        }
+		addUniqueDependency(dependency, dependencies);
     }
-
-    dependencies.append(dependency);
 }
 
 //-----------------------------------------------------------------------------
@@ -440,32 +307,42 @@ void VHDLSourceAnalyzer::addEntityDependency(QString const& componentName, QStri
 void VHDLSourceAnalyzer::addPackageDependency(QString const& packageName, QString const& filename,
                                               QList<FileDependencyDesc> &dependencies)
 {
-    FileDependencyDesc dependency;
-    dependency.description = "Reference to a package " + packageName;
-
+	const QString description = "Reference to package %1";
+  
     QString lowCase = packageName.toLower();
-
     if (cachedPackages_.contains(lowCase))
     {
         // Add all existing entities to the return value list.
-        for (int j = 0; j < cachedPackages_[lowCase].count(); ++j)
+        for (auto const& cachedFile : cachedPackages_[lowCase])
         {
-            dependency.filename = General::getRelativePath(filename, cachedPackages_[lowCase].at(j));
+			FileDependencyDesc dependency;
+			dependency.description = description.arg(packageName);
+            dependency.filename = General::getRelativePath(filename, cachedFile);
+
+			addUniqueDependency(dependency, dependencies);
         }
     }
     else
     {
+		FileDependencyDesc dependency;
+		dependency.description = description.arg(packageName);
         dependency.filename = packageName + ".vhd";
-    }
 
-    // Discard if this is a duplicate.
-    for (int i = 0; i < dependencies.size(); ++i)
-    {
-        if (dependencies[i].filename == dependency.filename)
-        {
-            return;
-        }
+		addUniqueDependency(dependency, dependencies);
     }
+}
 
-    dependencies.append(dependency);
+//-----------------------------------------------------------------------------
+// Function: VHDLSourceAnalyzer::addUniqueDependency()
+//-----------------------------------------------------------------------------
+void VHDLSourceAnalyzer::addUniqueDependency(FileDependencyDesc const& dependency,
+	QList<FileDependencyDesc>& dependencies)
+{
+	// Discard if this is a duplicate.
+	if (dependencies.contains(dependency))
+	{
+		return;
+	}
+
+	dependencies.append(dependency);
 }

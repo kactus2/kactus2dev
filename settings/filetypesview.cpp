@@ -17,9 +17,6 @@ EditableTableView(parent) {
 	setSelectionMode(QAbstractItemView::SingleSelection);
 }
 
-FileTypesView::~FileTypesView() {
-}
-
 void FileTypesView::contextMenuEvent( QContextMenuEvent* event ) {
 	pressedPoint_ = event->pos();
 
@@ -75,27 +72,31 @@ void FileTypesView::keyPressEvent( QKeyEvent* event ) {
 
 	QModelIndex selected = currentIndex();
 
-	if (event->matches(QKeySequence::Copy)) {
+	if (event->matches(QKeySequence::Copy))
+    {
 		onCopyAction();
 	}
-	if (event->matches(QKeySequence::Paste)) {
+	if (event->matches(QKeySequence::Paste))
+    {
 		onPasteAction();
 	}
-	if (event->matches(QKeySequence::Delete)) {
-
+	if (event->matches(QKeySequence::Delete))
+    {
 		// if user had selected the file type column
-		if (selected.column() == 0) {
-
+		if (selected.column() == 0) 
+        {
 			// if the file type is one of the standard ones, it can't be cleared
 			QString selectedFileType = selected.model()->data(selected, Qt::DisplayRole).toString();
-			if (FileTypes::isIpXactFileType(selectedFileType)) {
+			if (FileTypes::isIpXactFileType(selectedFileType))
+            {
 				return;
 			}
 		}
 
 		onClearAction();
 	}
-	if (event->matches(QKeySequence::InsertLineSeparator)) {
+	if (event->matches(QKeySequence::InsertLineSeparator))
+    {
 		onAddAction();
 	}
 }

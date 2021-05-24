@@ -41,7 +41,8 @@ busDefGroup_(libHandler, this),
 absDefGroup_(libHandler, createPortAbstractionInterface(), this),
 expressionParser_(new SystemVerilogExpressionParser()),
 busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_)),
-absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
+absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_)),
+busDefinitionSaved_(false)
 {
     if (absDef_)
     {
@@ -78,14 +79,12 @@ absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressio
     setupLayout();
 
     connect(&busDefGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
     connect(&absDefGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
     connect(&absDefGroup_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(&absDefGroup_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(&absDefGroup_, SIGNAL(portRenamed(const QString&, const QString&)), 
-        this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
     connect(&absDefGroup_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), 
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 }
@@ -200,16 +199,27 @@ void BusDefinitionEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef
 //-----------------------------------------------------------------------------
 bool BusDefinitionEditor::validate(QVector<QString>& errorList)
 {    
+    // if bus definition is being edited
+    if (busDefGroup_.isEnabled())
+    {
+        QVector<QString> busDefinitionErrors;
+        busDefinitionValidator_->findErrorsIn(busDefinitionErrors, busDef_);
+
+        if (busDefinitionErrors.isEmpty())
+        {
+            libHandler_->writeModelToFile(busDef_);
+            busDefinitionSaved_ = true;
+        }
+        else
+        {
+            errorList.append(busDefinitionErrors);
+        }
+    }
+
     // if abstraction definition is being edited
     if (absDefGroup_.isEnabled())
     {
         absDefinitionValidator_->findErrorsIn(errorList, absDef_);
-    }
-
-    // if bus definition is being edited
-    if (busDefGroup_.isEnabled())
-    {
-        busDefinitionValidator_->findErrorsIn(errorList, busDef_);
     }
 
     return errorList.isEmpty();
@@ -220,17 +230,22 @@ bool BusDefinitionEditor::validate(QVector<QString>& errorList)
 //-----------------------------------------------------------------------------
 bool BusDefinitionEditor::save()
 {
-	// If abstraction definition is being edited, save it.
+    // If bus definition is being edited, save it.
+    if (busDefGroup_.isEnabled())
+    {
+        if (busDefinitionSaved_ == false)
+        {
+            libHandler_->writeModelToFile(busDef_);
+        }
+
+        busDefinitionSaved_ = false;
+    }
+    
+    // If abstraction definition is being edited, save it.
 	if (absDefGroup_.isEnabled())
     {
 		absDefGroup_.save();
 		libHandler_->writeModelToFile(absDef_);
-	}
-
-	// If bus definition is being edited, save it.
-	if (busDefGroup_.isEnabled())
-    {
-		libHandler_->writeModelToFile(busDef_);
 	}
 
 	return TabDocument::save();

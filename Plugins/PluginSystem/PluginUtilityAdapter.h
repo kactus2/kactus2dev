@@ -42,7 +42,7 @@ public:
 	/*!
 	 *  The destructor.
 	*/
-    virtual ~PluginUtilityAdapter() = default;
+	virtual ~PluginUtilityAdapter() = default;
 
     // Disable copying.
     PluginUtilityAdapter(PluginUtilityAdapter const& rhs) =delete;
@@ -51,13 +51,13 @@ public:
     PluginUtilityAdapter& operator=(PluginUtilityAdapter const& rhs) = delete;
 
     //! Returns the library interface.
-    virtual LibraryInterface* getLibraryInterface();
+    virtual LibraryInterface* getLibraryInterface() override final;
 
     //! Returns the parent widget to be used for e.g. dialogs.
-    virtual QWidget* getParentWidget();
+    virtual QWidget* getParentWidget() override final;
 
 	//! Returns the current version of the Kactus2 build.
-	virtual QString getKactusVersion() const;
+	virtual QString getKactusVersion() const override final;
  
     /*!
      *  Prints an error message to the console window.
@@ -66,7 +66,7 @@ public:
      *
      *      @remark  Requires signal errorMessage to be connected by the user.
      */
-    virtual void printError(QString const& message);
+    virtual void printError(QString const& message) override final;
 
     /*!
      *  Prints an info message to the console window.
@@ -75,7 +75,7 @@ public:
      *
      *      @remark  Requires signal infoMessage to be connected by the user.
      */
-    virtual void printInfo(QString const& message);
+    virtual void printInfo(QString const& message) override final;
 
 private:
 

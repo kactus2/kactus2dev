@@ -21,16 +21,6 @@
 #include <qmath.h>
 
 
-General::PortBounds::PortBounds(): portName_(), left_(0), right_(0)
-{
-
-}
-
-General::PortBounds::PortBounds( const QString& portName ): portName_(portName), left_(0), right_(0)
-{
-
-}
-
 General::PortBounds::PortBounds( const QString& portName, const int left, const int right ):
 portName_(portName),
 left_(left),
@@ -62,13 +52,6 @@ port2Right_(-1),
 invalidAlignment_(true)
 {
 
-}
-
-QString General::port2String(const QString& portName, int leftBound, int rightBound)
-{
-	QString str(portName);
-	str.append(QStringLiteral("[%1..%2]").arg(leftBound).arg(rightBound));
-	return str;
 }
 
 QString General::bool2Str(bool value)
@@ -305,6 +288,9 @@ QVector<General::InterfaceMode> General::getCompatibleInterfaceModeForHierarchic
     return compatibleModes;
 }
 
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getRelativePath()
+//-----------------------------------------------------------------------------
 QString General::getRelativePath(QString from, QString to)  
 {
     if (from.isEmpty() || to.isEmpty())
@@ -324,7 +310,7 @@ QString General::getRelativePath(QString from, QString to)
     }
 
 	// if the directory does not exist
-	QDir ipXactDir(fromPath);
+	QDir ipXactDir = QDir(fromPath);
 
 	if (!ipXactDir.exists()) {
 		return QString();
@@ -353,6 +339,9 @@ QString General::getRelativePath(QString from, QString to)
     return relPath;
 }
 
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getRelativeSavePath()
+//-----------------------------------------------------------------------------
 QString General::getRelativeSavePath( const QString& from, const QString& to )
 {
 	if (from.isEmpty() || to.isEmpty())
@@ -372,7 +361,7 @@ QString General::getRelativeSavePath( const QString& from, const QString& to )
 	}
 
 	// if the directory does not exist
-	QDir ipXactDir(fromPath);
+	QDir ipXactDir = QDir(fromPath);
 
 	if (!ipXactDir.exists()) {
 		return QString();
@@ -386,6 +375,9 @@ QString General::getRelativeSavePath( const QString& from, const QString& to )
 	return ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
 }
 
+//-----------------------------------------------------------------------------
+// Function: generaldeclarations::getAbsolutePath()
+//-----------------------------------------------------------------------------
 QString General::getAbsolutePath(const QString& originalPath, const QString& relativePath)
 {
 	if (originalPath.isEmpty() || relativePath.isEmpty())

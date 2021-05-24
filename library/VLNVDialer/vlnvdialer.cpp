@@ -77,22 +77,11 @@ hidden_(false)
 }
 
 //-----------------------------------------------------------------------------
-// Function: vlnvdialer::onHandleTagFilterChange()
+// Function: VLNVDialer::setRootItem()
 //-----------------------------------------------------------------------------
-void VLNVDialer::onHandleTagFilterChange()
+void VLNVDialer::setRootItem(const LibraryItem* rootItem)
 {
-    QVector<TagData> filteredTags = tagFilter_->getTags();
-    emit tagFiltersChanged(filteredTags);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VLNVDialer::~VLNVDialer()
-//-----------------------------------------------------------------------------
-VLNVDialer::~VLNVDialer()
-{
-	// save the visibility of the filter widget
-	QSettings settings;
-	settings.setValue("FilterWidget/Hidden", hidden_);
+    dialer_.setRootItem(rootItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,6 +98,23 @@ void VLNVDialer::setFilters(Utils::FilterOptions options)
 Utils::FilterOptions VLNVDialer::getFilters() const
 {
     return filters_.getFilters();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::refreshLibrary()
+//-----------------------------------------------------------------------------
+void VLNVDialer::refreshLibrary()
+{
+    dialer_.refreshVendors();
+}
+
+//-----------------------------------------------------------------------------
+// Function: vlnvdialer::onHandleTagFilterChange()
+//-----------------------------------------------------------------------------
+void VLNVDialer::onHandleTagFilterChange()
+{
+    QVector<TagData> filteredTags = tagFilter_->getTags();
+    emit tagFiltersChanged(filteredTags);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,17 +139,11 @@ void VLNVDialer::onHideShowClick()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VLNVDialer::setRootItem()
+// Function: VLNVDialer::closeEvent()
 //-----------------------------------------------------------------------------
-void VLNVDialer::setRootItem(const LibraryItem* rootItem )
+void VLNVDialer::closeEvent(QCloseEvent *event)
 {
-	dialer_.setRootItem(rootItem);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VLNVDialer::refreshLibrary()
-//-----------------------------------------------------------------------------
-void VLNVDialer::refreshLibrary()
-{
-	dialer_.refreshVendors();
+    QSettings settings;
+    settings.setValue("FilterWidget/Hidden", hidden_);
+    QWidget::closeEvent(event);
 }

@@ -8,6 +8,23 @@
               * Changed or Information
 ===============================================================================
 
+13/11/2019 3.8.0
+----------------------------------------------------
+
++ Improved support for Transactional ports
+    * Added editor in Component Editor
+	* Added transactional connections and interfaces in Design schematic
+	* Removed transactional ports from generated Verilog files
++ Added tags for component categorization and searchs in library
++ Improved RTL import
+    * Added option to browse for files outside file sets
+	* Added option to select one module/entity from a file containing multiple definitions
++ Added support for file set references in slave bus interfaces
++ Improved editing options for Other Clock Driver timing values
+
+- Fixed an issue where "Save as..." on locked bus definition caused the application to crash
+- Fixed Linux Device Tree Generator Plugin to correctly format one device tree instead of multiple  
+
 29/03/2019 3.7.0
 ----------------------------------------------------
 

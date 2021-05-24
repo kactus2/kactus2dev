@@ -52,8 +52,7 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(
         new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ =
-        new RegisterFileModel(registerFile, expressionParser, parameterFinder,
+    model_ = new RegisterFileModel(registerFile, expressionParser, parameterFinder,
             expressionFormatter, registerFileValidator, this);
 
     ComponentParameterModel *componentParametersModel =
@@ -97,7 +96,9 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()),
         Qt::UniqueConnection);
-    connect(model_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()),
+    connect(model_, SIGNAL(graphicsChanged(int)), this, SIGNAL(graphicsChanged(int)),
+        Qt::UniqueConnection);
+    connect(model_, SIGNAL(childAddressingChanged(int)), this, SIGNAL(childAddressingChanged(int)),
         Qt::UniqueConnection);
     connect(model_, SIGNAL(errorMessage(const QString &)), this,
         SIGNAL(errorMessage(const QString &)), Qt::UniqueConnection);

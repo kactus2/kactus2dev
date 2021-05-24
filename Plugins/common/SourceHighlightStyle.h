@@ -25,7 +25,11 @@ public:
     SourceHighlightStyle();
 
     //! The destructor.
-    virtual ~SourceHighlightStyle();
+    virtual ~SourceHighlightStyle() = default;
+
+    // Disable copying.
+    SourceHighlightStyle(SourceHighlightStyle const& rhs) = delete;
+    SourceHighlightStyle& operator=(SourceHighlightStyle const& rhs) = delete;
 
     /*!
      *  Apply the language style rules on the given highlighter.
@@ -57,11 +61,6 @@ protected:
      */
     virtual void applyLanguageSpecificRules(LanguageHighlighter* highlighter) const; 
 
-private:
-
-    // Disable copying.
-    SourceHighlightStyle(SourceHighlightStyle const& rhs);
-    SourceHighlightStyle& operator=(SourceHighlightStyle const& rhs);
 
 };
 

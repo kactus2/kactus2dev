@@ -128,7 +128,7 @@ public:
      *
      *      @param [in] other The other endpoint of the connection.
      */
-    virtual void onDisconnect(ConnectionEndpoint const* other) = 0;
+    virtual void onDisconnect();
 
     /*! 
      *  Returns true if this endpoint can be connected to the given endpoint, taking existing

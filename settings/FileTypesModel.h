@@ -40,7 +40,11 @@ public:
     /*!
      *  The destructor.
      */
-    ~FileTypesModel();
+    virtual ~FileTypesModel() = default;
+
+    // Disable copying.
+    FileTypesModel(FileTypesModel const& rhs) = delete;
+    FileTypesModel& operator=(FileTypesModel const& rhs) = delete;
 
     /*!
      *  Saves the model to settings.
@@ -134,9 +138,6 @@ public slots:
 	void onRemoveItem(const QModelIndex& index);
 
 private:
-    // Disable copying.
-    FileTypesModel(FileTypesModel const& rhs);
-    FileTypesModel& operator=(FileTypesModel const& rhs);  
 
     //-----------------------------------------------------------------------------
     //! FileTypeEntry structure.

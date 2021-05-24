@@ -65,76 +65,81 @@ public:
         AddressBlockInterface* blockInterface,
 		ComponentEditorItem* parent);
 
-	/*!
-     * The destructor.
-     */
+	//! The destructor.
 	virtual ~ComponentEditorAddrBlockItem() = default;
+
+
+    //! No copying. No assignment.
+    ComponentEditorAddrBlockItem(const ComponentEditorAddrBlockItem& other) = delete;
+    ComponentEditorAddrBlockItem& operator=(const ComponentEditorAddrBlockItem& other) = delete;
 
 	/*!
      *  Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
 	 */
-	virtual QString getTooltip() const;
+	virtual QString getTooltip() const override final;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return QString Contains the text to display.
 	 */
-	virtual QString text() const;
+	virtual QString text() const override final;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
 	 *      @return bool True if item is in valid state.
 	 */
-	virtual bool isValid() const;
+	virtual bool isValid() const override final;
 
 	/*!
      *  Get pointer to the editor of this item.
 	 *
 	 *      @return The editor to use for this item.
 	 */
-	virtual ItemEditor* editor();
+	virtual ItemEditor* editor() override final;
 
 	/*!
      *  Add a new child to the item.
 	 * 
 	 *      @param [in] index The index to add the child into.
 	 */
-	virtual void createChild(int index);
+	virtual void createChild(int index) override final;
 
-	/*!
+    virtual void removeChild(int index) override final;
+
+    /*!
      *  Get pointer to the visualizer of this item.
 	 * 
 	 *      @return The visualizer to use for this item.
 	 */
-	virtual ItemVisualizer* visualizer();
+	virtual ItemVisualizer* visualizer() override final;
 
 	/*!
      *  Set the visualizer for this item.
 	 *
 	 *      @param [in] visualizer The visualizer.
 	 */
-	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
+	void setVisualizer(MemoryMapsVisualizer* visualizer);
 
 	/*!
      *  Get the visualizer graphics item for the address block.
 	 *
 	 *      @return QGraphicsItem* The graphics item.
 	 */
-	virtual QGraphicsItem* getGraphicsItem();
+	virtual QGraphicsItem* getGraphicsItem() override final;
 
 	/*!
      *  Update the graphics item of the address block.
 	 */
-	virtual void updateGraphics();
+	virtual void updateGraphics() override final;
 
 	/*!
      *  Remove the graphics item of the address block.
 	 */
-	virtual void removeGraphicsItem();
+	virtual void removeGraphicsItem() override final;
 
     /*!
      *  Change the address unit bits in component editor.
@@ -143,17 +148,22 @@ public:
      */
     void addressUnitBitsChanged(int newAddressUnitBits);
 
-protected slots:
+public slots:
 
-	/*!
-     *  Handler for editor's contentChanged signal.
-	 */
-	virtual void onEditorChanged();
+    //! Handle the change in item's addressing data.
+    void onAddressingChanged();
+
+    //! Handle the change in child item's addressing data.
+    void onChildAddressingChanged(int index);
+
+protected slots:
     
     /*!
      *  Handles the redrawing of the visualization of the item.
      */
     virtual void onGraphicsChanged();
+
+    void onChildGraphicsChanged(int index);    
 
 signals:
     
@@ -163,6 +173,10 @@ signals:
      *      @param [in] newAddressUnitBits  The new address unit bits.
      */
     void changeInAddressUnitBits(int newAddressUnitBits);
+
+
+    //! Signals a change in the item's address data.
+    void addressingChanged();
 
     /*
      *  Informs of register name change.
@@ -182,10 +196,6 @@ signals:
 
 private:
 	
-	//! No copying. No assignment.
-	ComponentEditorAddrBlockItem(const ComponentEditorAddrBlockItem& other);
-	ComponentEditorAddrBlockItem& operator=(const ComponentEditorAddrBlockItem& other);
-
     //! Memory map containing the edited address block.
     QSharedPointer<MemoryMapBase> containingMap_;
 
@@ -205,7 +215,8 @@ private:
     unsigned int addressUnitBits_;
 
     //! The used address block validator.
-    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
+    QSharedPointer<AddressBlockValidator> addressBlockValidator_;    
+    
 
     //! Interface for address blocks.
     AddressBlockInterface* blockInterface_;

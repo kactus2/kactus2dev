@@ -104,13 +104,33 @@ public:
     virtual QString getCompatibilityWarnings() const;
 
     /*!
+     *  Get component declarations from the selected input file.
+     *
+     *      @param [in] input   The selected input file.
+     *
+     *      @return List of component declarations found in the selected input.
+     */
+    virtual QStringList getFileComponents(QString const& input) const override final;
+
+    /*!
+     *  Get the name of the selected component declaration.
+     *
+     *      @param [in] componentDeclaration    The selected component declaration.
+     *
+     *      @return Name of the selected component declaration.
+     */
+    virtual QString getComponentName(QString const& componentDeclaration) const override final;
+
+    /*!
      *  Parses the given input and creates parameters from Verilog defines.
      *
-     *      @param [in] input               The input text to parse.
-     *      @param [in] targetComponent     The component to apply all imported changes to.
+     *      @param [in] input                   The input text to parse.
+     *      @param [in] componentDeclaration    Declaration of the selected component.
+     *      @param [in] targetComponent         The component to apply all imported changes to.
      */
-    virtual void import(QString const& input, QSharedPointer<Component> targetComponent);
-   
+    virtual void import(QString const& input, QString const& componentDeclaration,
+        QSharedPointer<Component> targetComponent) override final;
+
     /*!
      *  Sets the given highlighter to be used by the plugin.
      *
@@ -150,6 +170,27 @@ private:
      */
     QSharedPointer<Parameter> findParameterByName(QSharedPointer<Component> targetComponent, 
         QString const& name) const;
+
+    /*!
+     *  Parse the included verilog parameters.
+     *
+     *      @param [in] input               The input text to parse.
+     *      @param [in] targetComponent     The component to add the parameter to.
+     */
+    void parseParameters(QString const& input, QSharedPointer<Component> targetComponent);
+
+    /*!
+     *  Get the areas from the input text that do not contain verilog modules.
+     *
+     *      @param [in] input   The selected input.
+     *
+     *      @return List of non module text areas.
+     */
+    QStringList getNonModuleAreas(QString const& input) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! Parser for verilog parameters.
     VerilogParameterParser parameterParser_;

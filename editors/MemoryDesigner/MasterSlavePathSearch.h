@@ -26,11 +26,25 @@ class MasterSlavePathSearch
 {
 public:
 
-	//! The constructor.
+	/*!
+     *  The constructor.
+     */
 	MasterSlavePathSearch();
 
-	//! The destructor.
-	~MasterSlavePathSearch();
+	/*!
+     *  The destructor.
+     */
+	~MasterSlavePathSearch() = default;
+
+    /*!
+     *  Form master slave trees from the selected connectivity graph.
+     *
+     *      @param [in] graph   The selected connectivity graph.
+     *
+     *      @return Roots of the formed trees.
+     */
+    QVector<QSharedPointer<ConnectivityInterface> > findMasterSlaveRoots(
+        QSharedPointer<const ConnectivityGraph> graph);
 
     /*!
      *  Finds all paths from master interfaces to slave interfaces.
@@ -55,8 +69,21 @@ private:
      *
      *      @return The master interfaces for path start points.
      */
-    QVector<QSharedPointer<ConnectivityInterface const> > findInitialMasterInterfaces(
+    QVector<QSharedPointer<ConnectivityInterface> > findInitialMasterInterfaces(
         QSharedPointer<const ConnectivityGraph> graph) const;
+
+    /*!
+     *  Find interface nodes connected to the selected interface.
+     *
+     *      @param [in] startVertex         The selected interface.
+     *      @param [in] previousEdge        The edge traveled to the starting vertex. Excluded from the search.
+     *      @param [in] visitedVertices     List of interfaces that have already been examined.
+     *      @param [in] graph               The connectivity graph containing the search area.
+     */
+    void findConnectedInterfaceNodes(QSharedPointer<ConnectivityInterface> startVertex,
+        QSharedPointer<ConnectivityConnection const> previousEdge,
+        QVector<QSharedPointer<ConnectivityInterface> >& visitedVertices,
+        QSharedPointer<const ConnectivityGraph> graph);
 
     /*!
      *  Finds all the paths branching from the given start vertex.
@@ -65,8 +92,6 @@ private:
      *      @param [in] previousEdge    The edge traveled to the starting vertex and to exclude from the search.
      *      @param [in] existingPath    The traveled path to the start vertex.
      *      @param [in] graph           The connectivity graph to find the paths from.
-     *
-     *      @return <Description>.
      */
     void findPaths(QSharedPointer<ConnectivityInterface const> startVertex,
         QSharedPointer<ConnectivityConnection const> previousEdge, 
@@ -81,7 +106,7 @@ private:
      *
      *      @return The interface connected to the selected interface.
      */
-    QSharedPointer<ConnectivityInterface const> findConnectedInterface(
+    QSharedPointer<ConnectivityInterface> findConnectedInterface(
         QSharedPointer<ConnectivityInterface const> startInterface,
         QSharedPointer<ConnectivityConnection const> edge) const;
 

@@ -64,7 +64,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~SingleMemoryMapEditor();
+    virtual ~SingleMemoryMapEditor() = default;
 
 	/*!
 	 *  Reload the information from the model to the editor.
@@ -147,6 +147,10 @@ signals:
      *      @param [in] newName     The new name.
      */
     void addressBlockNameChanged(QString const& oldName, QString const& newName);
+
+    void childAddressingChanged(int);
+
+    void childGraphicsChanged(int);
 
 private:
 

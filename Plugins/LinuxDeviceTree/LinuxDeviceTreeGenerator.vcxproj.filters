@@ -28,9 +28,7 @@
     <ClCompile Include="LinuxDeviceTreePlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreePlugin.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
     <ClCompile Include="LinuxDeviceTreeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -61,9 +59,7 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\ParameterCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ParameterCache.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
     <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,9 +72,7 @@
     <ClCompile Include="..\..\editors\common\ComponentInstanceParameterFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceParameterFinder.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -88,15 +82,11 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_LinuxDeviceTree.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
     <ClCompile Include="LinuxDeviceTreeDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreeDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -155,21 +145,21 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="LinuxDeviceTreePlugin.h">
+    <QtMoc Include="LinuxDeviceTreePlugin.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
+    </QtMoc>
+    <QtMoc Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\editors\common\ComponentInstanceParameterFinder.h">
+    </QtMoc>
+    <QtMoc Include="..\..\editors\common\ComponentInstanceParameterFinder.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LinuxDeviceTree.qrc">
+    </QtMoc>
+    <QtRcc Include="LinuxDeviceTree.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LinuxDeviceTreeDialog.h">
+    </QtRcc>
+    <QtMoc Include="LinuxDeviceTreeDialog.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <Image Include="LinuxDeviceTreeGenerator.png">

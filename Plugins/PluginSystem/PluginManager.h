@@ -26,7 +26,7 @@ class PluginManager
 public:
 
     //! The destructor.     
-    ~PluginManager();
+    ~PluginManager() = default;
 
     /*!
      *  Adds the given plugin to the available plugins.

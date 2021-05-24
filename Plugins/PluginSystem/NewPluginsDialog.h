@@ -38,7 +38,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewPluginsDialog();
+    virtual ~NewPluginsDialog() = default;
+
+    //! Disable copying.
+    NewPluginsDialog(NewPluginsDialog const& rhs) = delete;
+    NewPluginsDialog& operator=(NewPluginsDialog const& rhs) = delete;
 
     /*!
      *  Adds a plugin to the plugin list.
@@ -60,10 +64,6 @@ private slots:
     void selectionChanged();
 
 private:
-    //! Disable copying.
-    NewPluginsDialog(NewPluginsDialog const& rhs);
-    NewPluginsDialog& operator=(NewPluginsDialog const& rhs);
-
     //! Sets the widget layout.
     void setupLayout();
 

@@ -223,10 +223,15 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
     // Create assignments fort top ports.
     foreach (QSharedPointer<MetaPort> mPort, *design->getTopInstance()->getPorts())
     {
+        if (mPort->isTransactional_)
+        {
+            continue;
+        }
+
         if (mPort->downAssignments_.size() > 0)
         {
             // Create a writer for each assignment of the port.
-            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->downAssignments_)
+            foreach(QSharedPointer<MetaPortAssignment> mpa, mPort->downAssignments_)
             {
                 // Current policy dictates that hierarchical inout ports are directly connected to an instance port.
                 // As an exception, it could have a default value assignment.
@@ -275,7 +280,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
         // Create writers for instance ports, wires, and assignments.
         foreach (QSharedPointer<MetaPort> mPort, *mInstance->getPorts())
         {
-            if (mPort->upAssignments_.size() < 1)
+            if (mPort->isTransactional_ || mPort->upAssignments_.size() < 1)
             {
                 continue;
             }

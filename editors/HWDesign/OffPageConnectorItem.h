@@ -42,7 +42,7 @@ public:
      *
      *      @param [in] parent  The parent connection endpoint.
      */
-    OffPageConnectorItem(ConnectionEndpoint* parent);
+    explicit OffPageConnectorItem(ConnectionEndpoint* parent);
 
 	/*!
      *  The destructor.
@@ -112,10 +112,8 @@ public:
 
     /*!
      *  Called when a connection has been removed from between this and another endpoint.
-     *
-     *      @param [in] other The other endpoint of the connection.
      */
-    virtual void onDisconnect(ConnectionEndpoint const* other);
+    virtual void onDisconnect() override final;
 
     /*!
      *  Returns true if a connection is valid between the two endpoints.

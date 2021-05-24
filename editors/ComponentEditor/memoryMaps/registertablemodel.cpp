@@ -380,7 +380,7 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
             emit fieldNameChanged(oldName, newName);
 
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
         }
         else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
         {
@@ -396,7 +396,8 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
 
             fieldInterface_->setOffset(fieldName, value.toString().toStdString());
 
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
+            emit addressingChanged(index.row());
         }
         else if (index.column() == RegisterColumns::WIDTH_COLUMN)
         {
@@ -408,7 +409,8 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
 
             fieldInterface_->setWidth(fieldName, value.toString().toStdString());
 
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
+            emit addressingChanged(index.row());
         }
         else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
         {
@@ -449,7 +451,8 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
 
             fieldInterface_->setIsPresent(fieldName, value.toString().toStdString());
 
-            emit graphicsChanged();
+            emit graphicsChanged(index.row());
+            emit addressingChanged(index.row());
         }
         else
         {

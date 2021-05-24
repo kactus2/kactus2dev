@@ -24,23 +24,13 @@
 AddressBlockGraphItem::AddressBlockGraphItem(QSharedPointer<AddressBlock> addrBlock,
     QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem *parent ):
 MemoryVisualizationItem(expressionParser, parent),
-addrBlock_(addrBlock),
-addrssableUnitBits_(0)
+addrBlock_(addrBlock)
 {
 	Q_ASSERT(addrBlock_);
-	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
-	setDefaultBrush(brush);
+	
+	setDefaultBrush(QBrush(KactusColors::ADDR_BLOCK_COLOR));
 
     updateDisplay();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockGraphItem::refresh()
-//-----------------------------------------------------------------------------
-void AddressBlockGraphItem::refresh() 
-{
-    updateDisplay();
-    reorganizeChildren();
 }
 
 //-----------------------------------------------------------------------------
@@ -117,5 +107,6 @@ quint64 AddressBlockGraphItem::getLastAddress() const
     {
         return 0;
     }
+
     return lastAddr -1;
 }

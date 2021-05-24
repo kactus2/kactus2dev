@@ -13,6 +13,7 @@
 #define INTERFACE_H
 
 #include <QString>
+#include <QVector>
 #include <QSharedPointer>
 
 class ConnectivityComponent;
@@ -35,7 +36,7 @@ public:
 	/*!
      *  The destructor.
      */
-	~ConnectivityInterface();
+	~ConnectivityInterface() = default;
 
     /*!
      *  Gets the name of the interface.
@@ -105,7 +106,7 @@ public:
      *
      *      @param [in] instance   The instance to set.
      */
-    void setInstance(QSharedPointer<ConnectivityComponent> instance);
+    void setInstance(QSharedPointer<ConnectivityComponent const> instance);
 
     /*!
      *  Gets the instance the interface is part of.
@@ -155,6 +156,27 @@ public:
      */
     bool isBridged() const;
 
+    /*!
+     *  Get the next interface nodes for a connection tree.
+     *
+     *      @return List of the next interface nodes.
+     */
+    QVector<QSharedPointer<ConnectivityInterface> > getChildInterfaceNodes() const;
+
+    /*!
+     *  Add an interface node to the tree.
+     *
+     *      @param [in] newChild    The new tree interface node.
+     */
+    void addChildInterfaceNode(QSharedPointer<ConnectivityInterface> newChild);
+
+    /*!
+     *  Remove a node from the tree.
+     *
+     *      @param [in] indexOfInterface    Index of the tree node.
+     */
+    void removeChildInterface(int const& indexOfInterface);
+
 private:
 
 	// Disable copying.
@@ -177,7 +199,7 @@ private:
     QString range_;
 
     //! The instance containing the interface.
-    QSharedPointer<ConnectivityComponent> instance_;
+    QSharedPointer<ConnectivityComponent const> instance_;
 
     //! The associated memory for the interface.
     QSharedPointer<MemoryItem> memory_;
@@ -185,8 +207,11 @@ private:
     //! Whether the interface is hierarchical or not.
     bool hierarchical_;
 
-    //! Wheter the interface is a part of a bridge or not.
+    //! Whether the interface is a part of a bridge or not.
     bool bridged_;
+
+    //! List of the next interface nodes in the tree.
+    QVector<QSharedPointer<ConnectivityInterface> > childInterfaceNodes_;
 };
 
 #endif // INTERFACE_H

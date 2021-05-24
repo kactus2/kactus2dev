@@ -124,9 +124,45 @@ QString VerilogIncludeImport::getCompatibilityWarnings() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogIncludeImport::getFileComponents()
+//-----------------------------------------------------------------------------
+QStringList VerilogIncludeImport::getFileComponents(QString const& input) const
+{
+    QStringList fileModules;
+
+    QRegularExpression multilineComment(VerilogSyntax::MULTILINE_COMMENT);
+
+    QString inspect = input;
+
+    int moduleBegin = inspect.indexOf(VerilogSyntax::MODULE_BEGIN);
+    int moduleEnd = VerilogSyntax::MODULE_END.match(inspect).capturedEnd();
+
+    while (moduleBegin != -1)
+    {
+        QString newModule = inspect.mid(moduleBegin, moduleEnd - moduleBegin);
+        fileModules.append(newModule);
+        inspect.remove(newModule);
+
+        moduleBegin = inspect.indexOf(VerilogSyntax::MODULE_BEGIN);
+        moduleEnd = VerilogSyntax::MODULE_END.match(inspect).capturedEnd();
+    }
+
+    return fileModules;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogIncludeImport::getComponentName()
+//-----------------------------------------------------------------------------
+QString VerilogIncludeImport::getComponentName(QString const& /*componentDeclaration*/) const
+{
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::import()
 //-----------------------------------------------------------------------------
-void VerilogIncludeImport::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VerilogIncludeImport::import(QString const& input, QString const& /*componentDeclaration*/,
+    QSharedPointer<Component> targetComponent)
 {
     QString nonCommentedInput = VerilogSyntax::cullStrayComments(input);
 
@@ -143,7 +179,7 @@ void VerilogIncludeImport::import(QString const& input, QSharedPointer<Component
         defineMatch = DEFINE.match(nonCommentedInput, position);
     }
 
-    parameterParser_.import(input, targetComponent, QSharedPointer<ComponentInstantiation>(0));    
+    parseParameters(input, targetComponent);
 }
 
 //-----------------------------------------------------------------------------
@@ -212,4 +248,48 @@ QSharedPointer<Parameter> VerilogIncludeImport::findParameterByName(
     }	
 
     return QSharedPointer<Parameter>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogIncludeImport::parseParameters()
+//-----------------------------------------------------------------------------
+void VerilogIncludeImport::parseParameters(QString const& input, QSharedPointer<Component> targetComponent)
+{
+    QStringList nonModuleAreas = getNonModuleAreas(input);
+
+    for (auto nonModule : nonModuleAreas)
+    {
+        parameterParser_.import(nonModule, targetComponent, QSharedPointer<ComponentInstantiation>(0));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogIncludeImport::getNonModuleAreas()
+//-----------------------------------------------------------------------------
+QStringList VerilogIncludeImport::getNonModuleAreas(QString const& input) const
+{
+    QString inspect = input;
+    QStringList nonModuleAreas;
+    QStringList containedModules = getFileComponents(input);
+
+    if (containedModules.isEmpty())
+    {
+        nonModuleAreas.append(input);
+    }
+    else
+    {
+        for (auto module : containedModules)
+        {
+            QStringList splitAreas = inspect.split(module);
+            nonModuleAreas.append(splitAreas.first());
+
+            inspect = splitAreas.last();
+            if (module == containedModules.last())
+            {
+                nonModuleAreas.append(inspect);
+            }
+        }
+    }
+
+    return nonModuleAreas;
 }
