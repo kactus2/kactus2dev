@@ -4528,9 +4528,6 @@
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemGroupListEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4891,9 +4888,6 @@
     <ClCompile Include="GeneratedFiles\moc_AbstractionPortsModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -5034,6 +5028,12 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AbstractionPortsEditor.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6843,9 +6843,6 @@
     <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingHistory.h">
       <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsModel.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
@@ -7532,9 +7529,6 @@
     <ClInclude Include="library\LibraryItemSelectionFactory.h">
       <Filter>Header Files\library</Filter>
     </ClInclude>
-    <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
     </ClInclude>
@@ -7615,9 +7609,6 @@
     </ClInclude>
     <ClInclude Include="common\widgets\tagEditor\TagManager.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
@@ -7708,6 +7699,12 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\APISupport.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

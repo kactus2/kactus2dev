@@ -13,9 +13,8 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
-#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 #include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter()
@@ -33,8 +32,12 @@ AbstractionDefinitionPortsSortFilter(portInterface, parent)
 //-----------------------------------------------------------------------------
 QColor AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
 {
-    if ((index.column() == LogicalPortColumns::PROTOCOLTYPE || index.column() == LogicalPortColumns::PAYLOADTYPE)
-        && indexedRowContainsPayload(index))
+    if (index.column() == LogicalPortColumns::PROTOCOLTYPE && indexedRowContainsPayload(index))
+    {
+        return KactusColors::MANDATORY_FIELD;
+    }
+    else if (index.column() == LogicalPortColumns::PAYLOADTYPE &&
+        indexedRowContainsPayload(index))
     {
         return KactusColors::MANDATORY_FIELD;
     }
@@ -49,7 +52,8 @@ bool AbstractionTransactionalPortsSortFilter::indexedRowContainsPayload(QModelIn
 {
     QModelIndex payloadNameIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADNAME);
     QModelIndex payloadTypeIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADTYPE);
-    QModelIndex payloadExtensionIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADEXTENSION);
+    QModelIndex payloadExtensionIndex =
+        index.sibling(index.row(), LogicalPortColumns::PAYLOADEXTENSION);
 
     return !payloadNameIndex.data(Qt::DisplayRole).toString().isEmpty() ||
         !payloadTypeIndex.data(Qt::DisplayRole).toString().isEmpty() ||
@@ -67,7 +71,6 @@ const
         return false;
     }
 
-    PortAbstractionInterface* portInterface = getPortInterface();
-    std::string portName = portInterface->getIndexedItemName(source_row);
-    return portInterface->portIsTransactional(portName);
+    std::string portName = portInterface_->getIndexedItemName(source_row);
+    return portInterface_->portIsTransactional(portName);
 }

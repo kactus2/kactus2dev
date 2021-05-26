@@ -14,8 +14,6 @@
 
 #include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
 
-class PortAbstractionInterface;
-
 //-----------------------------------------------------------------------------
 //! Sort filter proxy model for abstraction definition wire ports.
 //-----------------------------------------------------------------------------

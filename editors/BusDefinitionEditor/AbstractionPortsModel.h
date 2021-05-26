@@ -28,6 +28,7 @@
 
 class BusDefinition;
 class LibraryInterface;
+class PortAbstractionInterface;
 class Protocol;
 class TransactionalPort;
 class WirePort;
@@ -56,7 +57,8 @@ public:
      *      @param [in] libraryAccess   Interface to the library.
      *      @param [in] parent          Pointer to the owner of this model.
 	 */
-    AbstractionPortsModel(LibraryInterface* libraryAccess, QObject *parent);
+    AbstractionPortsModel(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface, 
+        QObject *parent);
 
 	/*!
 	 *  The destructor.
@@ -121,13 +123,6 @@ public:
      *      @return             True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-
-	/*!
-	 *  Set the abstraction definition for the model.
-	 *
-	 *      @param [in] absDef      The Abstraction definition to set.
-	 */
-	void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
     
     /*!
      *  Set the extend port abstractions.
@@ -154,6 +149,9 @@ public:
 	 *  Write the ports from the table to the abstraction definition.
 	 */
 	void save();
+
+
+    void resetPortModel();
 
 public slots:
 
@@ -358,6 +356,7 @@ private:
      */
     void createNewSignal(General::InterfaceMode newSignalMode, QModelIndexList const& selection);
 
+    QVector<int> getSelectedSignalRows(QModelIndexList const& selection);
     /*!
      *  Get a list of ports contained within the selected indexes.
      *
@@ -408,6 +407,7 @@ private:
      */
     QStringList getMissingSystemGroupsForSignal(AbstractionDefinitionSignalRow const& signal) const;
 
+    QStringList getMissingSystemGroupsForSignal(int const& signalIndex) const;
     /*!
      *  Check if the selected port contains other signals.
      *
@@ -494,16 +494,6 @@ private:
         AbstractionDefinitionSignalRow& port);
 
     /*!
-     *  Create signal rows from the selected port abstraction.
-     *
-     *      @param [in] portAbs             The selected port abstraction.
-     *      @param [in] lockExtendData      Lock the columns for extend signals.
-     *      @param [in] lockPortData        Lock the port abstraction data columns.
-     */
-    void createRowsForPortAbstraction(QSharedPointer<PortAbstraction> portAbs, bool lockExtendData,
-        bool lockPortData);
-
-    /*!
      *  Get the extend signal rows.
      *
      *      @param [in] extendPorts     List of extend port abstractions.
@@ -517,9 +507,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The abstraction definition being edited.
-	QSharedPointer<AbstractionDefinition> absDef_;
-
     //! The bus definition detailed in the abstraction definition.
     QSharedPointer<BusDefinition> busDefinition_;
 
@@ -528,6 +515,8 @@ private:
 
     //! Interface to the library.
     LibraryInterface* libraryAccess_;
+
+    PortAbstractionInterface* portInterface_;
 };
 
 #endif // ABSTRACTIONPORTSMODEL_H

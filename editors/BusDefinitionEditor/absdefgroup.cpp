@@ -22,6 +22,7 @@
 
 #include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
 #include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 #include <library/LibraryInterface.h>
 
@@ -38,13 +39,12 @@ vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 descriptionEditor_(new QPlainTextEdit(this)),
 portTabs_(this),
-wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, AbstractionPortsEditor::AbstractionType::WIRE, &portTabs_)),
-transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, AbstractionPortsEditor::AbstractionType::TRANSACTIONAL, &portTabs_)),
+wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, LogicalPortColumns::AbstractionType::WIRE, &portTabs_)),
+transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, LogicalPortColumns::AbstractionType::TRANSACTIONAL, &portTabs_)),
 abstraction_(),
 libraryHandler_(libraryHandler),
 portInterface_(portInterface)
 {
-
     vlnvDisplay_->setTitle(QStringLiteral("Abstraction definition"));
     extendEditor_->setTitle(tr("Extended abstraction definition"));
     extendEditor_->setMandatory(false);

@@ -17,6 +17,8 @@
 #include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
 #include <editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.h>
 #include <editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.h>
+#include <editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h>
+#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h>
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 #include <QHeaderView>
@@ -26,33 +28,35 @@
 // Function: AbstractionPortsEditor::AbstractionPortsEditor()
 //-----------------------------------------------------------------------------
 AbstractionPortsEditor::AbstractionPortsEditor(LibraryInterface* libraryAccess,
-    PortAbstractionInterface* portInterface, AbstractionType type, QWidget* parent):
+    PortAbstractionInterface* portInterface, LogicalPortColumns::AbstractionType type, QWidget* parent):
 QWidget(parent),
 portView_(this),
 portProxy_(nullptr),
-portModel_(new AbstractionPortsModel(libraryAccess, /*portInterface,*/ this)),
-portDelegate_(libraryAccess, this)
+portModel_(new AbstractionPortsModel(libraryAccess, portInterface, this)),
+portDelegate_(nullptr)
 {
-    if (type == AbstractionType::WIRE)
+    if (type == LogicalPortColumns::AbstractionType::WIRE)
     {
         portProxy_ = new AbstractionWirePortsSortFilter(portInterface, this);
+        portDelegate_ = new AbstractionWirePortsDelegate(libraryAccess, this);
     }
     else
     {
         portProxy_ = new AbstractionTransactionalPortsSortFilter(portInterface, this);
+        portDelegate_ = new AbstractionTransactionalPortsDelegate(libraryAccess, this);
     }
 
     portProxy_->setSourceModel(portModel_);
     
     portView_.setModel(portProxy_);
     portView_.setSortingEnabled(true);
-    portView_.setItemDelegate(&portDelegate_);
+    portView_.setItemDelegate(portDelegate_);
     portView_.setAllowImportExport(true);
     portView_.setItemsDraggable(false);
     portView_.setAlternatingRowColors(false);
     portView_.sortByColumn(0, Qt::AscendingOrder);
 
-    if (type == AbstractionType::WIRE)
+    if (type == LogicalPortColumns::AbstractionType::WIRE)
     {
         hideTransactionalColumns();
     }
@@ -60,6 +64,7 @@ portDelegate_(libraryAccess, this)
     {
         hideWireColumns();
     }
+
 
     connect(&portView_, SIGNAL(addMaster()), this, SLOT(onAddMaster()), Qt::UniqueConnection);
     connect(&portView_, SIGNAL(addSlave()), this, SLOT(onAddSlave()), Qt::UniqueConnection);
@@ -77,7 +82,7 @@ portDelegate_(libraryAccess, this)
     connect(portModel_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
-    if (type == AbstractionType::WIRE)
+    if (type == LogicalPortColumns::AbstractionType::WIRE)
     {
         connect(&portView_, SIGNAL(addItem(const QModelIndex&)),
             portModel_, SLOT(addWireSignal()), Qt::UniqueConnection);
@@ -149,7 +154,7 @@ QModelIndexList AbstractionPortsEditor::getSelectedIndexes()
 //-----------------------------------------------------------------------------
 void AbstractionPortsEditor::resetPortModel()
 {
-    //portModel_->resetPortModel();
+    portModel_->resetPortModel();
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +162,7 @@ void AbstractionPortsEditor::resetPortModel()
 //-----------------------------------------------------------------------------
 void AbstractionPortsEditor::setBusDef(QSharedPointer<BusDefinition> busDefinition)
 {
-    portDelegate_.setBusDef(busDefinition);
+    portDelegate_->setBusDef(busDefinition);
     portModel_->setBusDef(busDefinition);
 }
 
@@ -175,26 +180,26 @@ void AbstractionPortsEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void AbstractionPortsEditor::hideTransactionalColumns()
 {
-    QHeaderView* viewHeader = portView_.horizontalHeader();
-
-    viewHeader->hideSection(LogicalPortColumns::INITIATIVE);
-    viewHeader->hideSection(LogicalPortColumns::KIND);
-    viewHeader->hideSection(LogicalPortColumns::BUSWIDTH);
-    viewHeader->hideSection(LogicalPortColumns::PROTOCOLTYPE);
-    viewHeader->hideSection(LogicalPortColumns::PAYLOADNAME);
-    viewHeader->hideSection(LogicalPortColumns::PAYLOADTYPE);
-    viewHeader->hideSection(LogicalPortColumns::PAYLOADEXTENSION);
+    auto header = portView_.horizontalHeader();
+  
+    header->hideSection(LogicalPortColumns::INITIATIVE);
+    header->hideSection(LogicalPortColumns::KIND);
+    header->hideSection(LogicalPortColumns::BUSWIDTH);
+    header->hideSection(LogicalPortColumns::PROTOCOLTYPE);
+    header->hideSection(LogicalPortColumns::PAYLOADNAME);
+    header->hideSection(LogicalPortColumns::PAYLOADTYPE);
+    header->hideSection(LogicalPortColumns::PAYLOADEXTENSION);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsEditor::hideTransactionalColumns()
+// Function: AbstractionPortsEditor::hideWireColumns()
 //-----------------------------------------------------------------------------
 void AbstractionPortsEditor::hideWireColumns()
 {
-    QHeaderView* viewHeader = portView_.horizontalHeader();
-
-    viewHeader->hideSection(LogicalPortColumns::DIRECTION);
-    viewHeader->hideSection(LogicalPortColumns::WIDTH);
-    viewHeader->hideSection(LogicalPortColumns::DEFAULT_VALUE);
-    viewHeader->hideSection(LogicalPortColumns::DRIVER);
+    auto header = portView_.horizontalHeader();
+    
+    header->hideSection(LogicalPortColumns::DIRECTION);
+    header->hideSection(LogicalPortColumns::WIDTH);
+    header->hideSection(LogicalPortColumns::DEFAULT_VALUE);
+    header->hideSection(LogicalPortColumns::DRIVER);
 }

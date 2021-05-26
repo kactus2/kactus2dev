@@ -9,6 +9,9 @@
 // Common definitions for abstraction definition logical port table.
 //-----------------------------------------------------------------------------
 
+#ifndef LOGICAL_PORT_COLUMNS
+#define LOGICAL_PORT_COLUMNS
+
 namespace LogicalPortColumns
 {
     //! Enumeration for columns in abstraction definition logical port table.
@@ -33,4 +36,12 @@ namespace LogicalPortColumns
         DESCRIPTION,
         COLUMN_COUNT
     };
+
+    enum class AbstractionType
+    {
+        WIRE,
+        TRANSACTIONAL
+    };
 }
+
+#endif // !LOGICAL_PORT_COLUMNS

@@ -28,12 +28,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] columns         Storage for the column indexes.
-     *      @param [in] portInterface   Interface for accessing port abstractions.
-     *      @param [in] parent          Pointer to the owner of this model.
+     *      @param [in] parent  Pointer to the owner of this model.
 	 */
-    AbstractionDefinitionPortsSortFilter(PortAbstractionInterface* portInterface,
-        QObject *parent);
+    AbstractionDefinitionPortsSortFilter(
+        PortAbstractionInterface* portInterface, QObject *parent);
 
 	/*!
 	 *  The destructor.
@@ -61,22 +59,8 @@ protected:
      */
     virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
 
-    /*!
-     *  Check if the filter should accept the selected row.
-     *
-     *      @param [in] source_row      Row of the selected item.
-     *      @param [in] source_parent   Parent index of the item.
-     *
-     *      @return True, if the row is accepted, false otherwise.
-     */
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
-
-    /*!
-     *  Get the interface for accessing port abstractions.
-     *
-     *      @return Interface for accessing port abstractions.
-     */
-    PortAbstractionInterface* getPortInterface() const;
+    //! Interface for accessing port abstractions.
+    PortAbstractionInterface* portInterface_;
 
 private:
 	//! No copying. No assignment.
@@ -92,12 +76,34 @@ private:
      */
     bool isSystemGroupMandatory(QModelIndex const& index) const;
 
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
+    /*!
+     *  Check if the selected signal has an undefined mode.
+     *
+     *      @param [in] index   Model index of the selected signal.
+     *
+     *      @return True, if the selected signal has an undefined mode, false otherwise.
+     */
+    bool undefinedMode(QModelIndex const& index) const;
 
-    //! Interface for accessing port abstractions.
-    PortAbstractionInterface* portInterface_;
+    /*!
+     *  Check if the indexed port abstraction is an extend port.
+     *
+     *      @param [in] index   The selected port abstraction index.
+     *
+     *      @return True, if the port abstraction is extended, false otherwise.
+     */
+    bool isExtendPort(QModelIndex const& index) const;
+
+    /*!
+     *  Get the background colour on the previous row of the selected index.
+     *
+     *      @param [in] previousRow     The previous row.
+     *      @param [in] index           The selected index.
+     *
+     *      @return Background colour of the previous row.
+     */
+    QColor getPreviousColor(int const& previousRow, QModelIndex const& index) const;
+
 };
 
 #endif // ABSTRACTIONDEFINITIONPORTSSORTFILTER_H

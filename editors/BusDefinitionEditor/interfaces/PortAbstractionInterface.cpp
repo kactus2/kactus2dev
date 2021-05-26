@@ -1226,7 +1226,7 @@ void PortAbstractionInterface::addTransactionalPort(std::string const& newPortNa
     newPort->transactional_ = QSharedPointer<TransactionalPort>(new TransactionalPort());
 
     signals_.append(newPort);
-
+    ports_->append(newPort->abstraction_);
 }
 
 //-----------------------------------------------------------------------------

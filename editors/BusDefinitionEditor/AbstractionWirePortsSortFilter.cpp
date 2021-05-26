@@ -14,13 +14,14 @@
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 #include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsSortFilter::AbstractionWirePortsSortFilter()
 //-----------------------------------------------------------------------------
-AbstractionWirePortsSortFilter::AbstractionWirePortsSortFilter(PortAbstractionInterface* portInterface, 
+AbstractionWirePortsSortFilter::AbstractionWirePortsSortFilter(PortAbstractionInterface* portInterface,
     QObject *parent):
-AbstractionDefinitionPortsSortFilter(portInterface, parent)
+    AbstractionDefinitionPortsSortFilter(portInterface, parent)
 {
 
 }
@@ -30,11 +31,11 @@ AbstractionDefinitionPortsSortFilter(portInterface, parent)
 //-----------------------------------------------------------------------------
 bool AbstractionWirePortsSortFilter::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-    if (!source_parent.isValid())
+    if (source_parent.isValid())
     {
-        QModelIndex categoryIndex = sourceModel()->index(source_row, 0, QModelIndex());
-        return categoryIndex.data(AbstractionPortsModel::isWireRole).toBool();
+        return false;
     }
 
-    return AbstractionDefinitionPortsSortFilter::filterAcceptsRow(source_row, source_parent);
+    std::string portName = portInterface_->getIndexedItemName(source_row);
+    return portInterface_->portIsWire(portName);
 }

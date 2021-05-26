@@ -14,8 +14,8 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h>
 #include <editors/BusDefinitionEditor/AbstractionPortsView.h>
+#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 #include <QWidget>
 #include <QObject>
@@ -23,8 +23,10 @@
 class AbstractionPortsModel;
 class AbstractionDefinitionPortsSortFilter;
 class AbstractionDefinition;
+class AbstractionPortsDelegate;
 class BusDefinition;
 class PortAbstractionInterface;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for the ports of an abstraction definition.
@@ -35,12 +37,6 @@ class AbstractionPortsEditor : public QWidget
 
 public:
 
-    enum class AbstractionType
-    {
-        WIRE,
-        TRANSACTIONAL
-    };
-
     /*!
      *  The constructor.
      *
@@ -50,7 +46,7 @@ public:
      *      @param [in] parent          The owner of the editor.
      */
     AbstractionPortsEditor(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
-        AbstractionType type, QWidget* parent);
+        LogicalPortColumns::AbstractionType type, QWidget* parent);
 
     /*!
      *  The destructor.
@@ -135,8 +131,8 @@ private:
     QModelIndexList getSelectedIndexes();
 
     void hideTransactionalColumns();
-
     void hideWireColumns();
+
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -152,7 +148,8 @@ private:
     AbstractionPortsModel* portModel_;
 
     //! The item delegate for portView_.
-    AbstractionWirePortsDelegate portDelegate_;
+    AbstractionPortsDelegate* portDelegate_;
+
 };
 
 #endif // ABSTRACTIONPORTSEDITOR_H
