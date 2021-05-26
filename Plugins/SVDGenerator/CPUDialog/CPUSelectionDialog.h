@@ -92,6 +92,13 @@ public:
      */
     QString getTargetFileSet() const;
 
+    /*!
+     *  Get the target folder for the SVD files.
+     *
+     *      @return Path to the target folder of the selected SVD files.
+     */
+    QString getTargetFolder() const;
+
 private slots:
 
     /*!
@@ -112,6 +119,11 @@ private slots:
      *      @param [in] mapPeripherals  Value for memory map peripherals.
      */
     void onMapPeripherals(bool mapPeripherals);
+
+    /*!
+     *  Handle the change of target folder.
+     */
+    void onChangeTargetFolder();
 
 private:
 
@@ -181,6 +193,9 @@ private:
 
     //! Editor for CPU details.
     SVDCPUEditor* cpuDetailEditor_;
+
+    //! Editor for folder path.
+    QLineEdit* folderLine_;
 };
 
 #endif //CPUSELECTIONDIALOG_H

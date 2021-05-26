@@ -137,8 +137,6 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
-    QString xmlFilePath = utility->getLibraryInterface()->getDirectoryPath(component->getVlnv());
-
     GenerationTuple controlTuple;
     controlTuple.component = component;
     controlTuple.design = design;
@@ -161,6 +159,7 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
         {
             bool blocksArePeripherals = selectionDialog.peripheralsAreBlocks();
             bool mapsArePeripherals = selectionDialog.peripheralsAreMaps();
+            QString xmlFilePath = selectionDialog.getTargetFolder();
 
             SVDGenerator generator(utility->getLibraryInterface());
             generator.generate(component, xmlFilePath, cpuRoutes, blocksArePeripherals, mapsArePeripherals);

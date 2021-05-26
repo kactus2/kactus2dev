@@ -31,6 +31,8 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QFormLayout>
+#include <QIcon>
+#include <QFileDialog>
 
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::CPUSelectionDialog()
@@ -47,8 +49,14 @@ component_(topComponent),
 graphFactory_(library),
 blockPeripherals_(),
 mapPeripherals_(),
-cpuDetailEditor_(new SVDCPUEditor(this))
+cpuDetailEditor_(new SVDCPUEditor(this)),
+// folderLine_(new QLineEdit(library->getDirectoryPath(topComponent->getVlnv()), this))
+folderLine_(new QLineEdit(this))
 {
+    QString componentPath = library->getDirectoryPath(topComponent->getVlnv());
+    folderLine_->setText(componentPath);
+    folderLine_->setToolTip(componentPath);
+
     viewSelection_->addItems(viewNames);
     viewSelection_->setCurrentIndex(0);
 
@@ -101,9 +109,22 @@ void CPUSelectionDialog::setupLayout()
     QGroupBox* peripheralBox(new QGroupBox("Create peripherals from:"));
     peripheralBox->setLayout(peripheralLayout);
 
+    QPushButton* openFolderButton(
+        new QPushButton(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this));
+
+    connect(openFolderButton, SIGNAL(clicked()), this, SLOT(onChangeTargetFolder()), Qt::UniqueConnection);
+
+    QHBoxLayout* folderLayout(new QHBoxLayout());
+    folderLayout->addWidget(folderLine_, 1);
+    folderLayout->addWidget(openFolderButton);
+
+    QGroupBox* folderbox(new QGroupBox("Select destination folder"));
+    folderbox->setLayout(folderLayout);
+
     QVBoxLayout* leftLayout(new QVBoxLayout());
     leftLayout->addLayout(viewLayout);
     leftLayout->addWidget(fileSetBox_);
+    leftLayout->addWidget(folderbox);
     leftLayout->addWidget(peripheralBox);
     leftLayout->addStretch(1);
 
@@ -285,4 +306,24 @@ bool CPUSelectionDialog::saveToFileSet() const
 QString CPUSelectionDialog::getTargetFileSet() const
 {
     return fileSetSelection_->currentText();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::getTargetFolder()
+//-----------------------------------------------------------------------------
+QString CPUSelectionDialog::getTargetFolder() const
+{
+    return folderLine_->text();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::onChangeTargetFolder()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::onChangeTargetFolder()
+{
+    QString newDir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), folderLine_->text(),
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+    folderLine_->setText(newDir);
+    folderLine_->setToolTip(newDir);
 }
