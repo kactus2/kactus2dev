@@ -132,18 +132,13 @@ public:
     
     /*!
      *  Set the extend port abstractions.
-     *
-     *      @param [in] extendPorts     List of new extend port abstractions.
      */
     void setExtendedPorts();
 
+    /*!
+     *  Remove the extend port abstractions.
+     */
     void removeExtendedPorts();
-
-    void extendWireMode(std::string const& port, General::InterfaceMode mode, 
-        std::string const& systemGroup = std::string());
-
-    void extendTransactionalMode(std::string const& port, General::InterfaceMode mode, 
-        std::string const& systemGroup = std::string());
 
 	/*!
 	 *  Set the bus definition for the model.
@@ -237,10 +232,45 @@ signals:
 
 private:
 
+    /*!
+     * Check if the given index is locked and cannot be edited.
+     *
+     *     @param [in] index  The index to check.
+     *
+     *     @return True, if the index is locked, otherwise false.
+     */
     bool isLocked(QModelIndex const& index) const;
 
-    bool isExtendedRow(int row) const;
+    /*!
+     * Check if the given row is from extended abstractions.
+     *
+     *     @param [in] row  The row number to check.
+     *
+     *     @return True, if the given row is extended, otherwise false.
+     */
+     bool isExtendedRow(int row) const;
 
+    /*!
+     * Add definitions for extended wire.
+     *
+     *     @param [in] port         Name of the port to extend.
+     *     @param [in] mode         Mode of the port to extend.
+     *     @param [in] systemGroup  System group of the port to extend.
+     *
+     */
+    void extendWireMode(std::string const& port, General::InterfaceMode mode,
+        std::string const& systemGroup = std::string());
+
+    /*!
+     * Add definitions for extended transcational port.
+     *
+     *     @param [in] port         Name of the port to extend.
+     *     @param [in] mode         Mode of the port to extend.
+     *     @param [in] systemGroup  System group of the port to extend.
+     *
+     */
+    void extendTransactionalMode(std::string const& port, General::InterfaceMode mode,
+        std::string const& systemGroup = std::string());
 
     /*!
      *  Send change data signals for all the affected items.
@@ -283,8 +313,10 @@ private:
     //! Interface to the library.
     LibraryInterface* libraryAccess_;
 
+    //! Interface to the abstraction definition ports being edited.
     PortAbstractionInterface* portInterface_;
 
+    //! Interface to the abstraction definition being extended, if any.
     PortAbstractionInterface* extendInterface_;
 };
 

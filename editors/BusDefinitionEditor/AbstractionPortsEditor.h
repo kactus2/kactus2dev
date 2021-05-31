@@ -39,10 +39,11 @@ public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] portsModel      Model for this editor.
+     *     
      *      @param [in] libraryAccess   Interface to the library.
      *      @param [in] portInterface   Interface for accessing port abstractions.
+     *      @param [in] portsModel      Model for this editor.
+     *      @param [in] type            The type of ports the editor is targeted for: wire or transactional.
      *      @param [in] parent          The owner of the editor.
      */
     AbstractionPortsEditor(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
@@ -131,9 +132,11 @@ private:
      */
     QModelIndexList getSelectedIndexes();
 
+    //! Hide columns specific to transactional ports.
     void hideTransactionalColumns();
-    void hideWireColumns();
 
+    //! Hide columns specific to wire ports.
+    void hideWireColumns();
 
     //-----------------------------------------------------------------------------
     // Data.

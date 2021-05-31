@@ -522,75 +522,6 @@ void AbstractionPortsModel::setExtendedPorts()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::extendWireMode()
-//-----------------------------------------------------------------------------
-void AbstractionPortsModel::extendWireMode(std::string const& port, General::InterfaceMode mode,
-    std::string const& systemGroup)
-{
-    int extendIndex = extendInterface_->getItemIndex(port, mode, systemGroup);
-
-    if (extendIndex != -1)
-    {
-        std::string modeString = General::interfaceMode2Str(mode).toStdString();
-
-        if (portInterface_->portHasMode(port, modeString, systemGroup) == false)
-        {
-            if (mode == General::SYSTEM)
-            {
-                portInterface_->addWireSystemSignal(port, systemGroup);
-            }
-            else
-            {
-                portInterface_->addModeSpecificWireSignal(port, mode);
-            }
-        }      
-
-        int index = portInterface_->getItemIndex(port, mode, systemGroup);
-
-        portInterface_->setDirection(index, extendInterface_->getDirectionString(extendIndex));
-        portInterface_->setQualifier(index, extendInterface_->getQualifierString(extendIndex));
-    }    
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsModel::extendTransactionalMode()
-//-----------------------------------------------------------------------------
-void AbstractionPortsModel::extendTransactionalMode(std::string const& port, General::InterfaceMode mode, 
-    std::string const& systemGroup)
-{
-    int extendIndex = extendInterface_->getItemIndex(port, mode, systemGroup);
-
-    if (extendIndex != -1)
-    {
-        std::string modeString = General::interfaceMode2Str(mode).toStdString();
-
-        if (portInterface_->portHasMode(port, modeString, systemGroup) == false)
-        {
-            if (mode == General::SYSTEM)
-            {
-                portInterface_->addTransactionalSystemSignal(port, systemGroup);
-            }
-            else
-            {
-                portInterface_->addModeSpecificTransactionalSignal(port, mode);
-            }            
-        }
-
-        int index = portInterface_->getItemIndex(port, mode, systemGroup);
-
-        portInterface_->setQualifier(index, extendInterface_->getQualifierString(extendIndex));
-        portInterface_->setInitiative(index, extendInterface_->getInitiative(extendIndex));
-        portInterface_->setKind(index, extendInterface_->getKind(extendIndex));
-        portInterface_->setBusWidth(index, extendInterface_->getBusWidthValue(extendIndex));
-
-        portInterface_->setProtocolType(index, extendInterface_->getProtocolType(extendIndex));
-        portInterface_->setPayloadName(index, extendInterface_->getPayloadName(extendIndex));
-        portInterface_->setPayloadType(index, extendInterface_->getPayloadType(extendIndex));
-        portInterface_->setPayloadExtension(index, extendInterface_->getPayloadExtension(extendIndex));
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::removeExtendedPorts()
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::removeExtendedPorts()
@@ -815,4 +746,73 @@ bool AbstractionPortsModel::isExtendedRow(int row) const
 {
     return extendInterface_->portHasMode(portInterface_->getIndexedItemName(row),
         portInterface_->getModeString(row), portInterface_->getSystemGroup(row));
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::extendWireMode()
+//-----------------------------------------------------------------------------
+void AbstractionPortsModel::extendWireMode(std::string const& port, General::InterfaceMode mode,
+    std::string const& systemGroup)
+{
+    int extendIndex = extendInterface_->getItemIndex(port, mode, systemGroup);
+
+    if (extendIndex != -1)
+    {
+        std::string modeString = General::interfaceMode2Str(mode).toStdString();
+
+        if (portInterface_->portHasMode(port, modeString, systemGroup) == false)
+        {
+            if (mode == General::SYSTEM)
+            {
+                portInterface_->addWireSystemSignal(port, systemGroup);
+            }
+            else
+            {
+                portInterface_->addModeSpecificWireSignal(port, mode);
+            }
+        }
+
+        int index = portInterface_->getItemIndex(port, mode, systemGroup);
+
+        portInterface_->setDirection(index, extendInterface_->getDirectionString(extendIndex));
+        portInterface_->setQualifier(index, extendInterface_->getQualifierString(extendIndex));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::extendTransactionalMode()
+//-----------------------------------------------------------------------------
+void AbstractionPortsModel::extendTransactionalMode(std::string const& port, General::InterfaceMode mode,
+    std::string const& systemGroup)
+{
+    int extendIndex = extendInterface_->getItemIndex(port, mode, systemGroup);
+
+    if (extendIndex != -1)
+    {
+        std::string modeString = General::interfaceMode2Str(mode).toStdString();
+
+        if (portInterface_->portHasMode(port, modeString, systemGroup) == false)
+        {
+            if (mode == General::SYSTEM)
+            {
+                portInterface_->addTransactionalSystemSignal(port, systemGroup);
+            }
+            else
+            {
+                portInterface_->addModeSpecificTransactionalSignal(port, mode);
+            }
+        }
+
+        int index = portInterface_->getItemIndex(port, mode, systemGroup);
+
+        portInterface_->setQualifier(index, extendInterface_->getQualifierString(extendIndex));
+        portInterface_->setInitiative(index, extendInterface_->getInitiative(extendIndex));
+        portInterface_->setKind(index, extendInterface_->getKind(extendIndex));
+        portInterface_->setBusWidth(index, extendInterface_->getBusWidthValue(extendIndex));
+
+        portInterface_->setProtocolType(index, extendInterface_->getProtocolType(extendIndex));
+        portInterface_->setPayloadName(index, extendInterface_->getPayloadName(extendIndex));
+        portInterface_->setPayloadType(index, extendInterface_->getPayloadType(extendIndex));
+        portInterface_->setPayloadExtension(index, extendInterface_->getPayloadExtension(extendIndex));
+    }
 }
