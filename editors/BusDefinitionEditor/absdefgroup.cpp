@@ -33,17 +33,20 @@
 // Function: AbsDefGroup::AbsDefGroup()
 //-----------------------------------------------------------------------------
 AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface,
+    PortAbstractionInterface* extendInterface,
     QWidget *parent):
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
 vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 descriptionEditor_(new QPlainTextEdit(this)),
 portTabs_(this),
-wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, LogicalPortColumns::AbstractionType::WIRE, &portTabs_)),
-transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, LogicalPortColumns::AbstractionType::TRANSACTIONAL, &portTabs_)),
+portInterface_(portInterface),
+extendInterface_(extendInterface),
+portModel_(new AbstractionPortsModel(libraryHandler, portInterface, extendInterface, this)),
+wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, portModel_, LogicalPortColumns::AbstractionType::WIRE, &portTabs_)),
+transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, portModel_, LogicalPortColumns::AbstractionType::TRANSACTIONAL, &portTabs_)),
 abstraction_(),
-libraryHandler_(libraryHandler),
-portInterface_(portInterface)
+libraryHandler_(libraryHandler)
 {
     vlnvDisplay_->setTitle(QStringLiteral("Abstraction definition"));
     extendEditor_->setTitle(tr("Extended abstraction definition"));
@@ -190,7 +193,6 @@ void AbsDefGroup::onExtendChanged()
     removeSignalsFromExtendedDefinition();
 
     abstraction_->setExtends(extendEditor_->getVLNV());
-
     setupExtendedAbstraction();
 
     emit contentChanged();
@@ -202,6 +204,7 @@ void AbsDefGroup::onExtendChanged()
 void AbsDefGroup::setupExtendedAbstraction()
 {
     QSharedPointer<const AbstractionDefinition> extendedAbstraction = getExtendedAbstraction();
+    extendInterface_->setAbsDef(extendedAbstraction);
     QString extendDescription = "";
     if (extendedAbstraction)
     {
@@ -246,7 +249,7 @@ QSharedPointer<const AbstractionDefinition> AbsDefGroup::getExtendedAbstraction(
 //-----------------------------------------------------------------------------
 void AbsDefGroup::extendSignals(QSharedPointer<const AbstractionDefinition> extendAbstraction)
 {
-    portModel_->setExtendedPorts(BusDefinitionUtils::getExtendedLogicalSignals(extendAbstraction, libraryHandler_));
+    portModel_->setExtendedPorts();
 }
 
 //-----------------------------------------------------------------------------
@@ -254,12 +257,12 @@ void AbsDefGroup::extendSignals(QSharedPointer<const AbstractionDefinition> exte
 //-----------------------------------------------------------------------------
 void AbsDefGroup::removeSignalsFromExtendedDefinition()
 {
-    if (abstraction_->getExtends() != extendEditor_->getVLNV())
+    if (abstraction_->getExtends() != extendEditor_->getVLNV() || extendEditor_->getVLNV().isEmpty())
     {
         QSharedPointer<const AbstractionDefinition> extendedAbstraction = getExtendedAbstraction();
-        if (extendedAbstraction)
+        if (extendedAbstraction || extendEditor_->getVLNV().isEmpty())
         {
-            portModel_->removeExtendedPorts(extendedAbstraction->getLogicalPorts());
+            portModel_->removeExtendedPorts();
         }
     }
 }

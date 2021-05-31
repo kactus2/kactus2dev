@@ -28,11 +28,12 @@
 // Function: AbstractionPortsEditor::AbstractionPortsEditor()
 //-----------------------------------------------------------------------------
 AbstractionPortsEditor::AbstractionPortsEditor(LibraryInterface* libraryAccess,
-    PortAbstractionInterface* portInterface, LogicalPortColumns::AbstractionType type, QWidget* parent):
+    PortAbstractionInterface* portInterface, AbstractionPortsModel* portModel,
+    LogicalPortColumns::AbstractionType type, QWidget* parent):
 QWidget(parent),
 portView_(this),
 portProxy_(nullptr),
-portModel_(new AbstractionPortsModel(libraryAccess, portInterface, this)),
+portModel_(portModel),
 portDelegate_(nullptr)
 {
     if (type == LogicalPortColumns::AbstractionType::WIRE)

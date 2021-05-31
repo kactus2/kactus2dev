@@ -30,7 +30,8 @@ namespace
 //-----------------------------------------------------------------------------
 PortAbstractionInterface::PortAbstractionInterface() :
 MasterPortInterface(),
-ports_(0)
+ports_(0),
+signals_()
 {
 
 }
@@ -40,8 +41,13 @@ ports_(0)
 //-----------------------------------------------------------------------------
 void PortAbstractionInterface::setAbsDef(QSharedPointer<AbstractionDefinition const> absDef)
 {
-    ports_ = absDef->getLogicalPorts();
     signals_.clear();
+    if (absDef.isNull())
+    {
+        return;
+    }
+ 
+    ports_ = absDef->getLogicalPorts();
 
     for(auto port : *ports_)
     {
@@ -171,6 +177,41 @@ int PortAbstractionInterface::getItemIndex(std::string const& itemName) const
         if (signals_.at(i)->abstraction_->name() == itemNameQ)
         {
             return i;
+        }
+    }
+
+    return -1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getItemIndex()
+//-----------------------------------------------------------------------------
+int PortAbstractionInterface::getItemIndex(std::string const& itemName, General::InterfaceMode mode,
+    std::string const& systemGroup) const
+{
+    QString itemNameQ = QString::fromStdString(itemName);
+    QString systemGroupQ = QString::fromStdString(systemGroup);
+    for (int i = 0; i < signals_.size(); ++i)
+    {
+        if (signals_.at(i)->abstraction_->name() == itemNameQ && 
+            signals_.at(i)->mode_ == mode)
+        {
+            if (mode == General::SYSTEM)
+            {
+                if (signals_.at(i)->wire_ && signals_.at(i)->wire_->getSystemGroup() == systemGroupQ)
+                {
+                    return i;
+                }
+                if (signals_.at(i)->transactional_ && signals_.at(i)->transactional_->getSystemGroup() == systemGroupQ)
+                {
+                    return i;
+                }
+            }
+            else
+            {
+                return i;
+
+            }
         }
     }
 
@@ -1204,8 +1245,9 @@ void PortAbstractionInterface::addWirePort(std::string const& newPortName)
     QSharedPointer<PortAbstractionInterface::SignalRow> newPort(
         new PortAbstractionInterface::SignalRow(true, false));
     newPort->abstraction_ = QSharedPointer<PortAbstraction>(new PortAbstraction());
+    newPort->abstraction_->setLogicalName(uniqueNewName);
     newPort->abstraction_->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
-    newPort->wire_ = QSharedPointer<WirePort>(new WirePort());
+    newPort->wire_ = QSharedPointer<WirePort>(new WirePort());    
     
     signals_.append(newPort);
     ports_->append(newPort->abstraction_);
@@ -1221,6 +1263,7 @@ void PortAbstractionInterface::addTransactionalPort(std::string const& newPortNa
     QSharedPointer<PortAbstractionInterface::SignalRow> newPort(
         new PortAbstractionInterface::SignalRow(false, true));
     newPort->abstraction_ = QSharedPointer<PortAbstraction>(new PortAbstraction());
+    newPort->abstraction_->setLogicalName(uniqueNewName);
     newPort->abstraction_->setTransactional(
         QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction()));
     newPort->transactional_ = QSharedPointer<TransactionalPort>(new TransactionalPort());
@@ -1238,8 +1281,19 @@ void PortAbstractionInterface::addModeSpecificWireSignal(std::string const& port
     if (newMode == General::SYSTEM || !modeExistsForPort(newMode, QString::fromStdString(portName)))
     {
         QSharedPointer<PortAbstraction> selectedPort = getPort(portName);
-        QSharedPointer<PortAbstractionInterface::SignalRow> newSignal =
-            constructCopySignal(selectedPort, true, false);
+        QSharedPointer<PortAbstractionInterface::SignalRow> newSignal;
+        if (selectedPort.isNull())
+        {
+            addWirePort(portName);
+            selectedPort = ports_->last();
+            newSignal = signals_.last();
+        }
+        else
+        {
+            newSignal = constructCopySignal(selectedPort, true, false);
+            signals_.append(newSignal);
+        }
+
         newSignal->mode_ = newMode;
         newSignal->wire_->setSystemGroup("");
 
@@ -1258,8 +1312,6 @@ void PortAbstractionInterface::addModeSpecificWireSignal(std::string const& port
                 newSignal->wire_->setDirection(mirroredDirection);
             }
         }
-
-        signals_.append(newSignal);
     }
 }
 
@@ -1269,15 +1321,26 @@ void PortAbstractionInterface::addModeSpecificWireSignal(std::string const& port
 void PortAbstractionInterface::addWireSystemSignal(std::string const& portName, std::string const& systemGroup)
 {
     QSharedPointer<PortAbstraction> selectedPort = getPort(portName);
-    QSharedPointer<PortAbstractionInterface::SignalRow> newSignal = constructCopySignal(selectedPort, true, false);
+    QSharedPointer<PortAbstractionInterface::SignalRow> newSignal;
+    
+    if (selectedPort.isNull())
+    {
+        addWirePort(portName);
+        selectedPort = ports_->last();
+        newSignal = signals_.last();
+    }
+    else
+    {
+        newSignal = constructCopySignal(selectedPort, true, false);        
+        signals_.append(newSignal);
+    }
+
     newSignal->mode_ = General::SYSTEM;
     newSignal->wire_->setSystemGroup(QString::fromStdString(systemGroup));
-
-    signals_.append(newSignal);
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortAbstractionInterface::()
+// Function: PortAbstractionInterface::addModeSpecificTransactionalSignal()
 //-----------------------------------------------------------------------------
 void PortAbstractionInterface::addModeSpecificTransactionalSignal(std::string const& portName,
     General::InterfaceMode const& newMode)
@@ -1285,14 +1348,22 @@ void PortAbstractionInterface::addModeSpecificTransactionalSignal(std::string co
     if (newMode == General::SYSTEM || !modeExistsForPort(newMode, QString::fromStdString(portName)))
     {
         QSharedPointer<PortAbstraction> selectedPort = getPort(portName);
-        QSharedPointer<PortAbstractionInterface::SignalRow> newSignal =
-            constructCopySignal(selectedPort, false, true);
+        QSharedPointer<PortAbstractionInterface::SignalRow> newSignal;
+        if (selectedPort.isNull())
+        {
+            addTransactionalPort(portName);
+            selectedPort = ports_->last();
+            newSignal = signals_.last();
+        }
+        else
+        {
+            newSignal = constructCopySignal(selectedPort, false, true);
+            signals_.append(newSignal);
+        }
+
         newSignal->mode_ = newMode;
         newSignal->transactional_->setSystemGroup("");
-
-        signals_.append(newSignal);
     }
-
 }
 
 //-----------------------------------------------------------------------------

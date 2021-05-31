@@ -46,6 +46,7 @@ public:
      *      @param [in] parent          The owner of the editor.
      */
     AbstractionPortsEditor(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
+        AbstractionPortsModel* portModel,
         LogicalPortColumns::AbstractionType type, QWidget* parent);
 
     /*!

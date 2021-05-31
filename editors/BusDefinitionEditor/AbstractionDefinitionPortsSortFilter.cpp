@@ -36,10 +36,6 @@ QVariant AbstractionDefinitionPortsSortFilter::data(const QModelIndex &index, in
     {
         return getBackgroundColorForIndex(index);
     }
-    else if (role == Qt::ForegroundRole && isExtendPort(index))
-    {
-        return KactusColors::DISABLED_TEXT;
-    }
     else
     {
         return QSortFilterProxyModel::data(index, role);
@@ -152,25 +148,3 @@ bool AbstractionDefinitionPortsSortFilter::undefinedMode(QModelIndex const& inde
     return false;
 }
 
-//-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionPortsSortFilter::isExtendPort()
-//-----------------------------------------------------------------------------
-bool AbstractionDefinitionPortsSortFilter::isExtendPort(QModelIndex const& index) const
-{
-    if ((index.data(AbstractionPortsModel::isExtendLockedRole).toBool() &&
-            (index.column() == LogicalPortColumns::MODE || index.column() == LogicalPortColumns::DIRECTION ||
-            index.column() == LogicalPortColumns::INITIATIVE || index.column() == LogicalPortColumns::KIND ||
-            index.column() == LogicalPortColumns::BUSWIDTH ||
-            index.column() == LogicalPortColumns::PROTOCOLTYPE ||
-            index.column() == LogicalPortColumns::PAYLOADNAME ||
-            index.column() == LogicalPortColumns::PAYLOADTYPE ||
-            index.column() == LogicalPortColumns::PAYLOADEXTENSION)) ||
-        (index.data(AbstractionPortsModel::isPortLockedRole).toBool() &&
-            (index.column() == LogicalPortColumns::NAME || index.column() == LogicalPortColumns::QUALIFIER ||
-            index.column() == LogicalPortColumns::DESCRIPTION)))
-    {
-        return true;
-    }
-
-    return false;
-}

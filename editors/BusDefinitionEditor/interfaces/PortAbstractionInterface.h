@@ -60,6 +60,17 @@ public:
     virtual int getItemIndex(std::string const& itemName) const override final;
 
     /*!
+     *  Get index of the signal containing the selected port abstraction with the given mode.
+     *
+     *      @param [in] itemName    Name of the selected port abstraction.
+     *      @param [in] mode        Mode of the selected port abstraction.
+     *
+     *      @return Index of the selected signal.
+     */
+    virtual int getItemIndex(std::string const& itemName, General::InterfaceMode mode,
+        std::string const& systemGroup = std::string()) const;
+
+    /*!
      *  Get name of the indexed port.
      *
      *      @param [in] itemIndex   Index of the selected port.

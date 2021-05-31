@@ -4891,9 +4891,6 @@
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionExtendHandler.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\ParametersInterface.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
@@ -6814,9 +6811,6 @@
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsModel.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionExtendHandler.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\parameters\ParametersInterface.h">

@@ -47,7 +47,8 @@ public:
      *      @param [in] portInterface   Interface for accssing port abstractions.
 	 *      @param [in] parent          The owner of the editor.
 	 */
-	AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface, QWidget *parent);
+	AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface, 
+        PortAbstractionInterface* extendInterface, QWidget *parent);
 	
 	/*!
      *  The destructor.
@@ -178,6 +179,15 @@ private:
     //! Contains tabs for wire and transactional ports.
     QTabWidget portTabs_;
 
+    //! Interface for accessing port abstractions.
+    PortAbstractionInterface* portInterface_;
+
+    //! Interface for accessing extened port abstractions.
+    PortAbstractionInterface* extendInterface_;
+
+    //! The abstraction definition ports model.
+    AbstractionPortsModel* portModel_;
+
     //! Editor for wire ports.
     AbstractionPortsEditor* wirePortsEditor_;
 
@@ -190,11 +200,8 @@ private:
     //! The library interface.
     LibraryInterface* libraryHandler_;
 
-    //! The abstraction definition ports model.
-    AbstractionPortsModel* portModel_;
 
-    //! Interface for accessing port abstractions.
-    PortAbstractionInterface* portInterface_;
+ 
 };
 
 #endif // ABSDEFGROUP_H
