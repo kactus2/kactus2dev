@@ -54,7 +54,7 @@ generatedFiles_()
 // Function: SVDGenerator::generate()
 //-----------------------------------------------------------------------------
 void SVDGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> > const& cpuRoutes,
+    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes>> const& cpuRoutes,
     bool peripheralsAreBlocks, bool peripheralsAreMaps)
 {
     QStringList cpuNames;
@@ -80,7 +80,7 @@ QStringList SVDGenerator::getGeneratedFiles()
 // Function: SVDGenerator::writeFile()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuRoute, bool peripheralsAreBlocks,
+    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuRoute, bool peripheralsAreBlocks,
     bool peripheralsAreMaps, QStringList& fileNames)
 {
     QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->cpuInterface_;
@@ -176,7 +176,7 @@ QString SVDGenerator::formatName(QString const& name) const
 // Function: SVDGenerator::writeCPU()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU,
-    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuContainer)
+    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuContainer)
 {
     writer.writeStartElement("cpu");
 
@@ -232,7 +232,7 @@ void SVDGenerator::writeAddressSpaceData(QXmlStreamWriter& writer,
 // Function: SVDGenerator::writePeripherals()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writePeripherals(QXmlStreamWriter& writer,
-    QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> routeCollection, bool peripheralsAreBlocks,
+    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> routeCollection, bool peripheralsAreBlocks,
     bool peripheralsAreMaps)
 {
     writer.writeStartElement("peripherals");
@@ -265,7 +265,7 @@ void SVDGenerator::writePeripherals(QXmlStreamWriter& writer,
                 }
                 else
                 {
-                    writeBlockPeripherals(writer, component, interfaceMemory);
+                    writeBlockPeripherals(writer, component, interfaceMemory, memoryBaseAddress);
                 }
             }
         }
@@ -565,7 +565,8 @@ QString SVDGenerator::valueToHexa(quint64 const& value) const
 // Function: SVDGenerator::writeBlockPeripherals()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeBlockPeripherals(QXmlStreamWriter& writer,
-    QSharedPointer<const Component> containingComponent, QSharedPointer<MemoryItem> mapItem)
+    QSharedPointer<const Component> containingComponent, QSharedPointer<MemoryItem> mapItem,
+    quint64 const& mapBaseAddress)
 {
     for (auto blockItem : getAddressBlockItems(mapItem))
     {
@@ -581,7 +582,7 @@ void SVDGenerator::writeBlockPeripherals(QXmlStreamWriter& writer,
         writer.writeTextElement("version", containingComponent->getVlnv().getVersion());
         writeOptionalElement(writer, "description", block->description());
 
-        quint64 addressOffset = blockItem->getAddress().toULongLong();
+        quint64 addressOffset = blockItem->getAddress().toULongLong() + mapBaseAddress;
         QString addressOffsetInHexa = valueToHexa(addressOffset);
 
         writer.writeTextElement("baseAddress", addressOffsetInHexa);

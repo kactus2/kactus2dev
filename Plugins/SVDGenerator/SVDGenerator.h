@@ -74,7 +74,7 @@ public:
      *      @param [in] peripheralsAreMaps      Flag for constructing peripherals as memory maps.
      */
     void generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> > const& cpuRoutes,
+        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > const& cpuRoutes,
         bool peripheralsAreBlocks, bool peripheralsAreMaps);
 
     /*!
@@ -101,7 +101,7 @@ private:
      *      @param [in] fileNames               Names of the generated SVD files.
      */
     void writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-        QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuRoute, bool peripheralsAreBlocks,
+        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuRoute, bool peripheralsAreBlocks,
         bool peripheralsAreMaps, QStringList& fileNames);
 
     /*!
@@ -139,7 +139,7 @@ private:
      *      @param [in] cpuContianer    The CPU data container.
      */
     void writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU,
-        QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> cpuContainer);
+        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuContainer);
 
     /*!
      *  Write a boolean flag.
@@ -167,7 +167,7 @@ private:
      *      @param [in] peripheralsAreMaps      Flag for constructing peripherals as memory maps.
      */
     void writePeripherals(QXmlStreamWriter& writer,
-        QSharedPointer<ConnectivityGraphUtilities::cpuCheckInterface> routeCollection, bool peripheralsAreBlocks,
+        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> routeCollection, bool peripheralsAreBlocks,
         bool peripheralsAreMaps);
 
     /*!
@@ -260,9 +260,10 @@ private:
      *      @param [in] writer                  The xml stream writer.
      *      @param [in] containingComponent     Component containing the address block.
      *      @param [in] mapItem                 Memory map item containing the address block.
+     *      @param [in] mapBaseAddress          Base address of the containing memory map.
      */
     void writeBlockPeripherals(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
-        QSharedPointer<MemoryItem> mapItem);
+        QSharedPointer<MemoryItem> mapItem, quint64 const& mapBaseAddress);
 
     /*!
      *  Get the selected memory map.

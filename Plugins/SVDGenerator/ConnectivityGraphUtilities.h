@@ -27,13 +27,19 @@
 //-----------------------------------------------------------------------------
 namespace ConnectivityGraphUtilities
 {
+    const QString REVISION_FORMAT = "rNpM(N, M = [0 - 99])";
+
     //! Container for routes connected to a master interface.
-    struct cpuCheckInterface 
+    struct cpuDetailRoutes
     {
+        //! Name of the CPU.
+        QString cpuName_;
+
+        //! ID of the CPU.
         QString cpuID_;
 
-        //! Check box for the CPU.
-        QCheckBox* cpuCheck_;
+        //! Flag for creating an SVD file.
+        bool createFile_;
 
         //! Revision of the CPU.
         QString revision_;
