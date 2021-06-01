@@ -23,14 +23,15 @@ class Component;
 class ComponentInstance;
 class Design;
 class DesignConfiguration;
-class Field;
-class EnumeratedValue;
 
 class Interconnection;
 class AddressSpace;
 class MemoryMap;
 class MemoryMapBase;
 class Register;
+class Field;
+class EnumeratedValue;
+class FieldReset;
 class View;
 
 class LibraryInterface;
@@ -173,6 +174,17 @@ private:
         QString const& blockIdentifier, QSharedPointer<MemoryItem> blockItem) const;
 
     /*!
+     *  Get field items of the selected register item in order of offset.
+     *
+     *      @param [in] registerItem    The selected register item.
+     *      @param [in] fieldItems      Field items of the register item.
+     *
+     *      @return Field items in order of offset.
+     */
+    QMap<quint64, QSharedPointer<MemoryItem> > getOrderedFieldItems(QSharedPointer<MemoryItem> registerItem,
+        QVector<QSharedPointer<MemoryItem> > fieldItems) const;
+
+    /*!
      *  Creates a representation for a field within a register.
      *
      *      @param [in] field                   The field to transform into the graph.
@@ -196,6 +208,41 @@ private:
      */
     QSharedPointer<MemoryItem> createEnumeratedValueItem(QSharedPointer<const EnumeratedValue> enumeratedValue,
         QString const& fieldIdentifier, int const& addressUnitBits) const;
+
+    /*!
+     *  Create a representation of a reset within a field.
+     *
+     *      @param [in] fieldReset          The selected field reset.
+     *      @param [in] fieldIdentifier     Identifier of the containing field.
+     *      @param [in] addressUnitBits     The number of address unit bits in the memory map.
+     *
+     *      @return Representation of the reset.
+     */
+    QSharedPointer<MemoryItem> createFieldResetItem(QSharedPointer<FieldReset> fieldReset,
+        QString const& fieldIdentifier, int const& addressUnitBits) const;
+
+    /*!
+     *  Create a representation of a reset within a register.
+     *
+     *      @param [in] fieldItems          Field items within the selected register.
+     *      @param [in] registerItem        The selected register item.
+     *      @param [in] registerIdentifier  Identifier of the containing register.
+     *      @param [in] addressUnitBits     The number of address unit bits in the memory map.
+     *
+     *      @return Representation of the reset.
+     */
+    QSharedPointer<MemoryItem> createRegisterResetItem(QMap<quint64, QSharedPointer<MemoryItem> > fieldItems,
+        QSharedPointer<MemoryItem> registerItem, QString const& registerIdentifier, int const& addressUnitBits)
+        const;
+
+    /*!
+     *  Get the representation of HARD reset of the selected item.
+     *
+     *      @param [in] containingItem  The selected item.
+     *
+     *      @return Representation of a HARD reset.
+     */
+    QSharedPointer<MemoryItem> getHardResetItem(QSharedPointer<MemoryItem> containingItem) const;
 
     /*!
      *  Creates graph vertices from the bus interfaces of the given component.

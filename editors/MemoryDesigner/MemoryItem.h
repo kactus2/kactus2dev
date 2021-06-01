@@ -206,6 +206,34 @@ public:
      */
     QString getValue() const;
 
+    /*!
+     *  Get the reset value of the memory item.
+     *
+     *      @return The reset value of the memory item.
+     */
+    QString getResetValue() const;
+
+    /*!
+     *  Set a new reset value for the memory item.
+     *
+     *      @param [in] newResetValue   The new reset value.
+     */
+    void setResetValue(QString const& newResetValue);
+
+    /*!
+     *  Get the reset mask of the memory item.
+     *
+     *      @return The reset mask of the memory item.
+     */
+    QString getResetMask() const;
+
+    /*!
+     *  Set a new reset mask for the memory item.
+     *
+     *      @param [in] newResetMask    The new reset mask.
+     */
+    void setResetMask(QString const& newResetMask);
+
 private:
 
 	// Disable copying.
@@ -246,6 +274,12 @@ private:
 
     //! The usage value of the memory item.
     General::Usage usage_;
+
+    //! Reset value of the memory item.
+    QString resetValue_;
+
+    //! Reset mask of the memory item.
+    QString resetMask_;
 
     //! The sub-elements of the memory.
     QVector<QSharedPointer<MemoryItem> > childItems_;

@@ -34,6 +34,7 @@
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/FieldReset.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
@@ -363,19 +364,57 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
         regItem->setOffset(QString::number(registerOffset));
         regItem->setSize(expressionParser_->parseExpression(reg->getSize()));
 
+        QVector<QSharedPointer<MemoryItem> > fieldItems;
+
         foreach (QSharedPointer<Field> field, *reg->getFields())
         {
             if (field->getIsPresent().isEmpty() || 
                 expressionParser_->parseExpression(field->getIsPresent()).toInt() == 1)
             {
-                regItem->addChild(createField(field, registerIdentifier, registerAddress, addressableUnitBits));
+                fieldItems.append(createField(field, registerIdentifier, registerAddress, addressableUnitBits));
             }
         }
+
+        QMap<quint64, QSharedPointer<MemoryItem> > orderedFieldItems = getOrderedFieldItems(regItem, fieldItems);
+
+        QMapIterator<quint64, QSharedPointer<MemoryItem> > fieldIterator(orderedFieldItems);
+        while (fieldIterator.hasNext())
+        {
+            fieldIterator.next();
+            regItem->addChild(fieldIterator.value());
+        }
+
+        regItem->addChild(
+            createRegisterResetItem(orderedFieldItems, regItem, registerIdentifier, addressableUnitBits));
 
         registerAddress += registerSize / addressableUnitBits;      
 
         blockItem->addChild(regItem);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::setOrderedFieldItemsForRegister()
+//-----------------------------------------------------------------------------
+QMap<quint64, QSharedPointer<MemoryItem> > ConnectivityGraphFactory::getOrderedFieldItems(
+    QSharedPointer<MemoryItem> registerItem, QVector<QSharedPointer<MemoryItem> > fieldItems) const
+{
+    quint64 registerOffset = registerItem->getAddress().toULongLong();
+    QMap<quint64, QSharedPointer<MemoryItem> > orderedFieldItems;
+
+    for (auto fieldItem : fieldItems)
+    {
+        quint64 fieldAddress = fieldItem->getAddress().toInt();
+        quint64 fieldStart = fieldItem->getOffset().toInt();
+
+        int aub = fieldItem->getAUB().toInt();
+
+        fieldStart = (fieldAddress - registerOffset) * aub + fieldStart;
+
+        orderedFieldItems.insert(fieldStart, fieldItem);
+    }
+
+    return orderedFieldItems;
 }
 
 //-----------------------------------------------------------------------------
@@ -400,6 +439,11 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
         fieldItem->addChild(createEnumeratedValueItem(enumeratedValue, fieldIdentifier, addressableUnitBits));
     }
 
+    for (auto reset : *field->getResets())
+    {
+        fieldItem->addChild(createFieldResetItem(reset, fieldIdentifier, addressableUnitBits));
+    }
+
     return fieldItem;
 }
 
@@ -420,6 +464,131 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createEnumeratedValueItem(
     enumItem->setValue(expressionParser_->parseExpression(enumeratedValue->getValue()));
 
     return enumItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createFieldResetItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::createFieldResetItem(QSharedPointer<FieldReset> fieldReset,
+    QString const& fieldIdentifier, int const& addressUnitBits) const
+{
+    QString resetType = fieldReset->getResetTypeReference();
+    if (resetType.isEmpty())
+    {
+        resetType = MemoryDesignerConstants::HARD_RESET_TYPE;
+    }
+
+    QString resetIdentifier = fieldIdentifier + resetType;
+
+    QSharedPointer<MemoryItem> resetItem(new MemoryItem(resetType, MemoryDesignerConstants::RESET_TYPE));
+    resetItem->setIdentifier(resetIdentifier);
+    resetItem->setAUB(QString::number(addressUnitBits));
+
+    QString resetValue = expressionParser_->parseExpression(fieldReset->getResetValue());
+    qulonglong decimalResetValue = resetValue.toULongLong();
+    resetValue.setNum(decimalResetValue, 2);
+
+    QString resetMask = expressionParser_->parseExpression(fieldReset->getResetMask());
+    qulonglong decimalResetMask = resetMask.toULongLong();
+    resetMask.setNum(decimalResetMask, 2);
+
+    resetItem->setResetValue(resetValue);
+    resetItem->setResetMask(resetMask);
+
+    return resetItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createRegisterResetItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::createRegisterResetItem(
+    QMap<quint64, QSharedPointer<MemoryItem>> fieldItems, QSharedPointer<MemoryItem> registerItem,
+    QString const& registerIdentifier, int const& addressUnitBits) const
+{
+    QString resetIdentifier = registerIdentifier + MemoryDesignerConstants::HARD_RESET_TYPE;
+
+    QString resetValue = "";
+    QString resetMask = "";
+
+    QSharedPointer<MemoryItem> resetItem(
+        new MemoryItem(MemoryDesignerConstants::HARD_RESET_TYPE, MemoryDesignerConstants::RESET_TYPE));
+    resetItem->setIdentifier(resetIdentifier);
+    resetItem->setAUB(QString::number(addressUnitBits));
+
+    QMapIterator<quint64, QSharedPointer<MemoryItem> > fieldIterator(fieldItems);
+    quint64 currentEnd = 0;
+    while (fieldIterator.hasNext())
+    {
+        fieldIterator.next();
+        quint64 fieldStart = fieldIterator.key();
+        quint64 fieldEnd = 0;
+
+        QSharedPointer<MemoryItem> fieldItem = fieldIterator.value();
+        quint64 fieldWidth = fieldItem->getWidth().toInt();
+
+        if (fieldWidth > 0)
+        {
+            fieldEnd = fieldStart + fieldWidth - 1;
+        }
+
+        if (currentEnd < fieldStart)
+        {
+            for (int i = currentEnd; i < fieldStart; ++i )
+            {
+                resetValue.prepend("0");
+                resetMask.prepend("0");
+            }
+        }
+
+        QSharedPointer<MemoryItem> fieldResetItem = getHardResetItem(fieldItem);
+        if (fieldResetItem)
+        {
+            QString fieldResetValue = fieldResetItem->getResetValue();
+            QString fieldResetMask = fieldResetItem->getResetMask();
+
+            fieldResetValue = fieldResetValue.rightJustified(fieldWidth, '0', true);
+            fieldResetMask = fieldResetMask.rightJustified(fieldWidth, '0', true);
+
+            resetValue.prepend(fieldResetValue);
+            resetMask.prepend(fieldResetMask);
+        }
+        else
+        {
+            for (int i = 0; i < fieldWidth; ++i)
+            {
+                resetValue.prepend("0");
+                resetMask.prepend("0");
+            }
+        }
+        currentEnd = fieldEnd + 1;
+    }
+
+    quint64 registerSize = registerItem->getSize().toULongLong();
+    resetValue = resetValue.rightJustified(registerSize, '0', true);
+    resetMask = resetMask.rightJustified(registerSize, '0', true);
+
+    resetItem->setResetValue(resetValue);
+    resetItem->setResetMask(resetMask);
+
+    return resetItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::getHardResetItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::getHardResetItem(QSharedPointer<MemoryItem> containingItem)
+    const
+{
+    for (auto resetItem : containingItem->getChildItems())
+    {
+        if (resetItem->getType() == MemoryDesignerConstants::RESET_TYPE &&
+            resetItem->getName() == MemoryDesignerConstants::HARD_RESET_TYPE)
+        {
+            return resetItem;
+        }
+    }
+
+    return QSharedPointer<MemoryItem>();
 }
 
 //-----------------------------------------------------------------------------

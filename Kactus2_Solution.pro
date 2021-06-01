@@ -91,7 +91,7 @@ MemoryViewGenerator.depends = IPXACTmodels
 LinuxDeviceTreeGenerator.file = Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.pro
 LinuxDeviceTreeGenerator.depends = IPXACTmodels
 
-SVDGenerator.subdir = Plugins/SVDGenerator
+SVDGenerator.subdir = Plugins/SVDGenerator/SVDGeneratorPlugin.pro
 SVDGenerator.depends = IPXACTmodels
 
 test_all.subdir = tests

@@ -441,14 +441,50 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
         writer.writeTextElement("name", formatName(registerItem->getName()));
         writeOptionalElement(writer, "description", realRegister->description());
 
-        QString addressOffsetInHexa = valueToHexa(registerItem->getOffset().toULongLong());
+        quint64 registerOffset = registerItem->getAddress().toULongLong();
+        QString addressOffsetInHexa = valueToHexa(registerOffset);
         QString sizeString = registerItem->getSize();
 
         writer.writeTextElement("addressOffset", addressOffsetInHexa);
+
+        QSharedPointer<MemoryItem> resetItem = getResetItem(registerItem);
+        if (resetItem)
+        {
+            bool transformSuccess = true;
+            QString registerResetValue = resetItem->getResetValue();
+            quint64 resetValue = registerResetValue.toULongLong(&transformSuccess, 2);
+            registerResetValue = QString::number(resetValue, 16).toUpper();
+
+            int valueNumbers =
+                MemoryDesignerConstants::getAmountOfNumbersInRange(registerResetValue, registerResetValue);
+
+            QString registerResetMask = resetItem->getResetMask();
+            quint64 resetMask = registerResetMask.toULongLong(&transformSuccess, 2);
+            registerResetMask = QString::number(resetMask, 16).toUpper();
+
+            int maskNumbers =
+                MemoryDesignerConstants::getAmountOfNumbersInRange(registerResetMask, registerResetMask);
+
+            int resetNumbers = valueNumbers;
+            if (maskNumbers > resetNumbers)
+            {
+                resetNumbers = maskNumbers;
+            }
+
+            registerResetValue =
+                "0x" + MemoryDesignerConstants::getValueWithZerosAdded(registerResetValue, resetNumbers);
+            registerResetMask =
+                "0x" + MemoryDesignerConstants::getValueWithZerosAdded(registerResetMask, resetNumbers);
+
+            writer.writeTextElement("resetValue", registerResetValue);
+            writer.writeTextElement("resetMask", registerResetMask);
+        }
+
         writer.writeTextElement("size", sizeString);
         writeOptionalElement(writer, "access", AccessTypes::access2Str(realRegister->getAccess()));
 
-        writeFields(writer, realRegister, registerItem);
+        QMap<quint64, QSharedPointer<MemoryItem> > fieldItems = getFieldItemsInOrder(registerItem, registerOffset);
+        writeFields(writer, realRegister, registerOffset, fieldItems);
 
         writer.writeEndElement(); //! register
     }
@@ -457,13 +493,44 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
 }
 
 //-----------------------------------------------------------------------------
+// Function: SVDGenerator::getResetItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> SVDGenerator::getResetItem(QSharedPointer<MemoryItem> registerItem) const
+{
+    for (auto subItem : registerItem->getChildItems())
+    {
+        if (subItem->getType() == MemoryDesignerConstants::RESET_TYPE)
+        {
+            return subItem;
+        }
+    }
+
+    return QSharedPointer<MemoryItem>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::getFieldItemsInOrder()
+//-----------------------------------------------------------------------------
+QMap<quint64, QSharedPointer<MemoryItem> > SVDGenerator::getFieldItemsInOrder(
+    QSharedPointer<MemoryItem> registerItem, quint64 const& registerOffset)
+{
+    QMap<quint64, QSharedPointer<MemoryItem> > orderedFieldItems;
+    
+    for (auto fieldItem : getSubMemoryItems(registerItem, MemoryDesignerConstants::FIELD_TYPE))
+    {
+        quint64 fieldStart = getFieldStart(registerItem, registerOffset);
+        orderedFieldItems.insert(fieldStart, fieldItem);
+    }
+
+    return orderedFieldItems;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeFields()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register> containingRegister,
-    QSharedPointer<MemoryItem> registerItem)
+    quint64 registerOffset, QMap<quint64, QSharedPointer<MemoryItem>> fieldItems)
 {
-    QVector<QSharedPointer<MemoryItem> > fieldItems =
-        getSubMemoryItems(registerItem, MemoryDesignerConstants::FIELD_TYPE);
     if (fieldItems.isEmpty())
     {
         return;
@@ -471,10 +538,11 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
 
     writer.writeStartElement("fields");
 
-    quint64 registerOffset = registerItem->getAddress().toULongLong();
-
-    for (auto fieldItem : fieldItems)
+    QMapIterator<quint64, QSharedPointer<MemoryItem> > fieldIterator(fieldItems);
+    while (fieldIterator.hasNext())
     {
+        fieldIterator.next();
+        QSharedPointer<MemoryItem> fieldItem = fieldIterator.value();
         QSharedPointer<Field> actualField = getField(containingRegister, fieldItem);
         if (actualField)
         {
@@ -483,20 +551,9 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
             writer.writeTextElement("name", formatName(fieldItem->getName()));
             writeOptionalElement(writer, "description", actualField->description());
 
-            int aub = fieldItem->getAUB().toInt();
-
-            quint64 fieldAddress = fieldItem->getAddress().toInt();
-            quint64 fieldOffset = fieldItem->getOffset().toInt();
-            quint64 fieldWidth = fieldItem->getWidth().toInt();
-
-            fieldOffset = (fieldAddress - registerOffset) * aub + fieldOffset;
+            quint64 fieldOffset = getFieldStart(fieldItem, registerOffset);
             QString fieldStart = QString::number(fieldOffset);
-            QString fieldEnd = "";
-            if (fieldWidth > 0)
-            {
-                quint64 fieldEndNumber = fieldOffset + fieldWidth - 1;
-                fieldEnd = QString::number(fieldEndNumber);
-            }
+            QString fieldEnd = QString::number(getFieldEnd(fieldItem, fieldOffset));
 
             writer.writeTextElement("bitRange", "[" + fieldEnd + ":" + fieldStart + "]");
             writeOptionalElement(writer, "access", AccessTypes::access2Str(actualField->getAccess()));
@@ -508,6 +565,35 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
     }
 
     writer.writeEndElement(); //! fields
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::getFieldStart()
+//-----------------------------------------------------------------------------
+quint64 SVDGenerator::getFieldStart(QSharedPointer<MemoryItem> fieldItem, quint64 registerOffset)
+{
+    quint64 fieldAddress = fieldItem->getAddress().toInt();
+    quint64 fieldOffset = fieldItem->getOffset().toInt();
+
+    int aub = fieldItem->getAUB().toInt();
+
+    fieldOffset = (fieldAddress - registerOffset) * aub + fieldOffset;
+    return fieldOffset;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::getFieldEnd()
+//-----------------------------------------------------------------------------
+quint64 SVDGenerator::getFieldEnd(QSharedPointer<MemoryItem> fieldItem, quint64 fieldOffset)
+{
+    quint64 fieldWidth = fieldItem->getWidth().toInt();
+
+    if (fieldWidth > 0)
+    {
+        return fieldOffset + fieldWidth - 1;
+    }
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
