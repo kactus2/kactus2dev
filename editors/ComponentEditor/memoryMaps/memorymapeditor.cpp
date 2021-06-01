@@ -21,6 +21,7 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 
 #include <library/LibraryInterface.h>
 
@@ -32,17 +33,17 @@
 // Function: MemoryMapEditor::MemoryMapEditor()
 //-----------------------------------------------------------------------------
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-                                 QSharedPointer<MemoryMapBase> memoryRemap,
-                                 QSharedPointer<ParameterFinder> parameterFinder,
-                                 QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                 QSharedPointer<ExpressionParser> expressionParser,
-                                 QSharedPointer<AddressBlockValidator> addressBlockValidator,
-                                 QString const& addressUnitBits, QWidget* parent /* = 0 */):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    AddressBlockInterface* blockInterface, QSharedPointer<QList<QSharedPointer<MemoryBlockBase>>> blocks,
+    QWidget* parent):
 QGroupBox(tr("Address blocks summary"), parent),
 view_(new EditableTableView(this)),
-model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expressionFormatter,
-       addressBlockValidator, addressUnitBits, this))
+model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this)),
+interface_(blockInterface),
+blocks_(blocks)
 {
+    interface_->setAddressBlocks(blocks_);
+
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
@@ -105,6 +106,9 @@ model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expres
 
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
         model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+        this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -120,4 +124,6 @@ MemoryMapEditor::~MemoryMapEditor()
 void MemoryMapEditor::refresh()
 {
 	view_->update();
+
+    interface_->setAddressBlocks(blocks_);
 }

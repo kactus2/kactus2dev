@@ -25,6 +25,7 @@ class MemoryMap;
 class MemoryMapBase;
 class AddressBlock;
 class Register;
+class RegisterFile;
 class Field;
 class FieldReset;
 class WriteValueConstraint;
@@ -40,6 +41,8 @@ class RegisterBase;
 class BusInterface;
 class RemapState;
 class RemapPort;
+class AbstractParameterInterface;
+class IndirectInterface;
 
 //-----------------------------------------------------------------------------
 //! Calculates the amount of references made to component parameters.
@@ -173,6 +176,16 @@ public:
     int countReferencesInBaseMemoryMap(QString const& parameterID, QSharedPointer<MemoryMapBase> memoryMap) const;
 
     /*!
+     *  Count the references made to the selected parameter in the values of the selected memory base.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] memoryMap       The selected memory base.
+     *
+     *      @return The amount of references made to the selected parameter in the selected memory base.
+     */
+    int countReferencesInMemoryMapValues(QString const& parameterID, QSharedPointer<MemoryMapBase> memoryMap) const;
+
+    /*!
      *  Count the references made to the selected parameter in the selected address blocks.
      *
      *      @param [in] parameterID     ID of the selected parameter.
@@ -206,6 +219,17 @@ public:
         QSharedPointer<QList<QSharedPointer<RegisterBase> > > registers) const;
 
     /*!
+     *  Count the references made to the selected parameter in the selected register files.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] files           The selected register files.
+     *
+     *      @return The amount of references made to the selected parameter in the selected register files.
+     */
+    int countReferencesInRegisterFiles(QString const& parameterID,
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > > const& files) const;
+
+    /*!
      *  Count the references made to the selected parameter in the selected register.
      *
      *      @param [in] parameterID         ID of the selected parameter.
@@ -214,6 +238,28 @@ public:
      *      @return The amount of references made to the selected parameter in the selected register.
      */
     int countReferencesInSingleRegister(QString const& parameterID, QSharedPointer<Register> targetRegister) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected register file.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] targetFile      The selected register file.
+     *
+     *      @return The amount of references made to the selected parameter in the selected register file.
+     */
+    int countReferencesInSingleRegisterFile(QString const& parameterID, QSharedPointer<RegisterFile> targetFile)
+        const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected base register.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] baseRegister    The selected base register.
+     *
+     *      @return The amount of references made to the selected parameter in the selected base register.
+     */
+    int countReferencesInSingleBaseRegister(QString const& parameterID, QSharedPointer<RegisterBase> baseRegister)
+        const;
 
     /*!
      *  Count the references made to the selected parameter in the selected fields.
@@ -498,14 +544,36 @@ public:
      */
     int countReferencesInSingleRemapPort(QString const& parameterID, QSharedPointer<RemapPort> port) const;
 
+    /*!
+     *  Count the references made to the selected parameter in indirect interfaces.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *
+     *      @return The amount of references made to the selected parameter in the indirect interfaces.
+     */
+    int countReferencesInIndirectInterfaces(QString const& parameterID) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected indirect interface.
+     *
+     *      @param [in] parameterID         ID of the selected parameter.
+     *      @param [in] indirectInterface   The selected indirect interface.
+     *
+     *      @return The amount of references made to the selected parameter in the selected indirect interface.
+     */
+    int countRefrencesInSingleIndirectInterface(QString const& parameterID,
+        QSharedPointer<IndirectInterface> indirectInterface) const;
+
 public slots:
 
     /*!
-     *  Recalculate the references made to the selected parameters.
+     *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameterList   The selected parameters.
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
      */
-    virtual void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameterList);
+    virtual void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        AbstractParameterInterface* parameterInterface) override final;
 
 private:
 

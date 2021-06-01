@@ -20,11 +20,11 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-
-#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 
+#include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 
@@ -35,27 +35,33 @@
 //-----------------------------------------------------------------------------
 // Function: SingleAddressBlockEditor::SingleAddressBlockEditor()
 //-----------------------------------------------------------------------------
-SingleAddressBlockEditor::SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
+SingleAddressBlockEditor::SingleAddressBlockEditor(AddressBlockInterface* blockInterface,
+    QSharedPointer<AddressBlock> addressBlock,
+    QSharedPointer<MemoryMapBase> containingMap,
     QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<AddressBlockValidator> addressBlockValidator,
     QWidget* parent):
 ItemEditor(component, handler, parent),
-    nameEditor_(addressBlock, this, tr("Address block name and description")),
-    usageEditor_(),
-    baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
-    rangeEditor_(new ExpressionEditor(parameterFinder, this)),
-    widthEditor_(new ExpressionEditor(parameterFinder, this)),
-    isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-    accessEditor_(),
-    volatileEditor_(),
-    registersEditor_(new AddressBlockEditor(addressBlock->getRegisterData(), component, handler, 
-        parameterFinder, expressionFormatter, addressBlockValidator->getRegisterFileValidator(), this)),
-    registerFilesEditor_(new RegisterFileEditor(addressBlock->getRegisterData(), component, handler,
-        parameterFinder, expressionFormatter, addressBlockValidator->getRegisterFileValidator(), this)),
-    addressBlock_(addressBlock),
-    expressionParser_(expressionParser)
+nameEditor_(addressBlock, this, tr("Address block name and description")),
+usageEditor_(),
+baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
+rangeEditor_(new ExpressionEditor(parameterFinder, this)),
+widthEditor_(new ExpressionEditor(parameterFinder, this)),
+isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
+accessEditor_(),
+volatileEditor_(),
+registersEditor_(new AddressBlockEditor(addressBlock->getRegisterData(), blockInterface->getSubInterface(),
+    component, handler, parameterFinder, this)),
+registerFilesEditor_(new RegisterFileEditor(addressBlock->getRegisterData(), component, handler,
+    parameterFinder, expressionFormatter, addressBlockValidator->getRegisterFileValidator(), this)),
+blockName_(addressBlock->name().toStdString()),
+blockInterface_(blockInterface),
+containingMap_(containingMap),
+expressionParser_(expressionParser)
 {
+    blockInterface_->setAddressBlocks(containingMap_->getMemoryBlocks());
+
     baseAddressEditor_->setFixedHeight(20);
     rangeEditor_->setFixedHeight(20);
     widthEditor_->setFixedHeight(20);
@@ -104,29 +110,37 @@ void SingleAddressBlockEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void SingleAddressBlockEditor::refresh()
 {
+    blockInterface_->setAddressBlocks(containingMap_->getMemoryBlocks());
+
     nameEditor_.refresh();
     registersEditor_->refresh();
 
-    General::Usage usage = addressBlock_->getUsage();
-    registersEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || (usage != General::RESERVED));
-    registerFilesEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || (usage != General::RESERVED));
+    General::Usage usage = blockInterface_->getUsage(blockName_);
+    registersEditor_->setEnabled(blockInterface_->hasRegisters(blockName_) || (usage != General::RESERVED));
+    registerFilesEditor_->setEnabled(blockInterface_->hasRegisters(blockName_) || (usage != General::RESERVED));
 
     usageEditor_->setCurrentValue(usage);
 
     changeExpressionEditorSignalBlockStatus(true);
 
-    baseAddressEditor_->setExpression(addressBlock_->getBaseAddress());
-    baseAddressEditor_->setToolTip(formattedValueFor(addressBlock_->getBaseAddress()));
-    rangeEditor_->setExpression(addressBlock_->getRange());
-    rangeEditor_->setToolTip(formattedValueFor(addressBlock_->getRange()));
-    widthEditor_->setExpression(addressBlock_->getWidth());
-    widthEditor_->setToolTip(formattedValueFor(addressBlock_->getWidth()));
-    isPresentEditor_->setExpression(addressBlock_->getIsPresent());
+    baseAddressEditor_->setExpression(
+        QString::fromStdString(blockInterface_->getBaseAddressExpression(blockName_)));
+    baseAddressEditor_->setToolTip(
+        QString::fromStdString(blockInterface_->getBaseAddressValue(blockName_)));
+
+    rangeEditor_->setExpression(QString::fromStdString(blockInterface_->getRangeExpression(blockName_)));
+    rangeEditor_->setToolTip(QString::fromStdString(blockInterface_->getRangeValue(blockName_)));
+
+    widthEditor_->setExpression(QString::fromStdString(blockInterface_->getWidthExpression(blockName_)));
+    widthEditor_->setToolTip(QString::fromStdString(blockInterface_->getWidthValue(blockName_)));
+
+    isPresentEditor_->setExpression(QString::fromStdString(blockInterface_->getIsPresentExpression(blockName_)));
+    isPresentEditor_->setToolTip(QString::fromStdString(blockInterface_->getIsPresentValue(blockName_)));
 
     changeExpressionEditorSignalBlockStatus(false);
 
-    accessEditor_->setCurrentValue(addressBlock_->getAccess());
-    volatileEditor_->setCurrentValue(addressBlock_->getVolatile());
+    accessEditor_->setCurrentValue(blockInterface_->getAccess(blockName_));
+    volatileEditor_->setCurrentValue(QString::fromStdString(blockInterface_->getVolatile(blockName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -135,9 +149,9 @@ void SingleAddressBlockEditor::refresh()
 void SingleAddressBlockEditor::onBaseAddressChanged()
 {
     baseAddressEditor_->finishEditingCurrentWord();
-    addressBlock_->setBaseAddress(baseAddressEditor_->getExpression());
 
-    baseAddressEditor_->setToolTip(formattedValueFor(addressBlock_->getBaseAddress()));
+    blockInterface_->setBaseAddress(blockName_, baseAddressEditor_->getExpression().toStdString());
+    baseAddressEditor_->setToolTip(QString::fromStdString(blockInterface_->getBaseAddressValue(blockName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -146,9 +160,9 @@ void SingleAddressBlockEditor::onBaseAddressChanged()
 void SingleAddressBlockEditor::onRangeChanged()
 {
     rangeEditor_->finishEditingCurrentWord();
-    addressBlock_->setRange(rangeEditor_->getExpression());
 
-    rangeEditor_->setToolTip(formattedValueFor(addressBlock_->getRange()));
+    blockInterface_->setRange(blockName_, rangeEditor_->getExpression().toStdString());
+    rangeEditor_->setToolTip(QString::fromStdString(blockInterface_->getRangeValue(blockName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -158,10 +172,8 @@ void SingleAddressBlockEditor::onWidthChanged()
 {
     widthEditor_->finishEditingCurrentWord();
 
-    QString newWidth = widthEditor_->getExpression();
-    addressBlock_->setWidth(newWidth);
-
-    widthEditor_->setToolTip(formattedValueFor(newWidth));
+    blockInterface_->setWidth(blockName_, widthEditor_->getExpression().toStdString());
+    widthEditor_->setToolTip(QString::fromStdString(blockInterface_->getWidthValue(blockName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -171,10 +183,9 @@ void SingleAddressBlockEditor::onIsPresentEdited()
 {
     isPresentEditor_->finishEditingCurrentWord();
 
-    QString newIsPresent = isPresentEditor_->getExpression();
-    addressBlock_->setIsPresent(newIsPresent);
-
-    isPresentEditor_->setToolTip(formattedValueFor(newIsPresent));
+    blockInterface_->setIsPresent(blockName_, isPresentEditor_->getExpression().toStdString());
+    isPresentEditor_->setToolTip(
+        QString::fromStdString(blockInterface_->getIsPresentValue(blockName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -192,9 +203,9 @@ void SingleAddressBlockEditor::onUsageSelected(QString const& newUsage)
 {
     General::Usage usage = General::str2Usage(newUsage, General::USAGE_COUNT);
 
-    addressBlock_->setUsage(usage);
-    registersEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || (usage != General::RESERVED));
-    registerFilesEditor_->setEnabled(!addressBlock_->getRegisterData()->isEmpty() || (usage != General::RESERVED));
+    blockInterface_->setUsage(blockName_, newUsage.toStdString());
+    registersEditor_->setEnabled(blockInterface_->hasRegisters(blockName_) || (usage != General::RESERVED));
+    registerFilesEditor_->setEnabled(blockInterface_->hasRegisters(blockName_) || (usage != General::RESERVED));
 
     emit contentChanged();
 }
@@ -204,7 +215,7 @@ void SingleAddressBlockEditor::onUsageSelected(QString const& newUsage)
 //-----------------------------------------------------------------------------
 void SingleAddressBlockEditor::onAccessSelected(QString const& newAccess)
 {
-    addressBlock_->setAccess(AccessTypes::str2Access(newAccess, AccessTypes::ACCESS_COUNT));
+    blockInterface_->setAccess(blockName_, newAccess.toStdString());
 
     emit contentChanged();
 }
@@ -214,18 +225,7 @@ void SingleAddressBlockEditor::onAccessSelected(QString const& newAccess)
 //-----------------------------------------------------------------------------
 void SingleAddressBlockEditor::onVolatileSelected(QString const& newVolatileValue)
 {
-    if (newVolatileValue == QLatin1String("true"))
-    {
-        addressBlock_->setVolatile(true);
-    }
-    else if (newVolatileValue == QLatin1String("false"))
-    {
-        addressBlock_->setVolatile(false);
-    }
-    else
-    {
-        addressBlock_->clearVolatile();
-    }
+    blockInterface_->setVolatile(blockName_, newVolatileValue.toStdString());
 
     emit contentChanged();
 }
@@ -319,6 +319,9 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(registersEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(registersEditor_, SIGNAL(registerNameChanged(QString const&, QString const&)),
+        this, SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
     connect(registerFilesEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
     connect(registerFilesEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
     connect(registerFilesEditor_, SIGNAL(increaseReferences(QString)),
@@ -374,6 +377,8 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
+    connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onAddressBlockNameChanged()), Qt::UniqueConnection);
+
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         registersEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
@@ -390,4 +395,23 @@ void SingleAddressBlockEditor::changeExpressionEditorSignalBlockStatus(bool bloc
     rangeEditor_->blockSignals(blockStatus);
     widthEditor_->blockSignals(blockStatus);
     isPresentEditor_->blockSignals(blockStatus);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleAddressBlockEditor::onAddressBlockNameChanged()
+//-----------------------------------------------------------------------------
+void SingleAddressBlockEditor::onAddressBlockNameChanged(QString const& oldName, QString const& newName)
+{
+    if (oldName == QString::fromStdString(blockName_))
+    {
+        blockName_ = newName.toStdString();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleAddressBlockEditor::onAddressBlockNameChanged()
+//-----------------------------------------------------------------------------
+void SingleAddressBlockEditor::onAddressBlockNameChanged()
+{
+    blockName_ = nameEditor_.name().toStdString();
 }

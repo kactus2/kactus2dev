@@ -13,34 +13,34 @@
 
 #include "ComponentEditorSystemViewItem.h"
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
 #include <editors/ComponentEditor/software/systemView/SystemViewsEditor.h>
 
-#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/FileValidator.h>
+#include <IPXACTmodels/Component/validators/FileSetValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorSystemViewsItem::ComponentEditorSystemViewsItem()
 //-----------------------------------------------------------------------------
-ComponentEditorSystemViewsItem::ComponentEditorSystemViewsItem(
-	ComponentEditorTreeModel* model, 
-	LibraryInterface* libHandler,
-	QSharedPointer<Component> component,
-	ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent)
+ComponentEditorSystemViewsItem::ComponentEditorSystemViewsItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent):
+ComponentEditorItem(model, libHandler, component, parent),
+fileSetInterface_()
 {
+    constructFileSetInterface(parameterFinder, expressionParser, expressionFormatter);
+
 	foreach (QSharedPointer<SystemView> systemView, component->getSystemViews())
     {
 		QSharedPointer<ComponentEditorSystemViewItem> systemViewItem(
-			new ComponentEditorSystemViewItem(systemView, model, libHandler, component, this)); 
+			new ComponentEditorSystemViewItem(systemView, model, libHandler, component, fileSetInterface_, this)); 
 		childItems_.append(systemViewItem);
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorSystemViewsItem::~ComponentEditorSystemViewsItem()
-//-----------------------------------------------------------------------------
-ComponentEditorSystemViewsItem::~ComponentEditorSystemViewsItem()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +94,27 @@ ItemEditor* ComponentEditorSystemViewsItem::editor()
 void ComponentEditorSystemViewsItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorSystemViewItem> systemViewItem(
-		new ComponentEditorSystemViewItem(component_->getSystemViews().at(index), model_, libHandler_, component_, this));
+		new ComponentEditorSystemViewItem(
+            component_->getSystemViews().at(index), model_, libHandler_, component_, fileSetInterface_, this));
 	systemViewItem->setLocked(locked_);
 	childItems_.insert(index, systemViewItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileSetsItem::constructFileSetInterface()
+//-----------------------------------------------------------------------------
+void ComponentEditorSystemViewsItem::constructFileSetInterface(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter)
+{
+    QSharedPointer<FileValidator> fileValidator(new FileValidator(expressionParser));
+
+    FileInterface* fileInterface = new FileInterface(fileValidator, expressionParser, expressionFormatter);
+    FileBuilderInterface* fileBuilderInterface = new FileBuilderInterface(expressionParser, expressionFormatter);
+
+    QSharedPointer<FileSetValidator> fileSetValidator(new FileSetValidator(fileValidator, expressionParser));
+
+    fileSetInterface_ = new FileSetInterface(
+        fileSetValidator, expressionParser, expressionFormatter, fileInterface, fileBuilderInterface);
+
+    fileSetInterface_->setFileSets(component_->getFileSets());
 }

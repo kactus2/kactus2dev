@@ -13,6 +13,8 @@
 
 #include "TransactionalPort.h"
 
+#include <IPXACTmodels/common/TransactionalTypes.h>
+
 #include <QList>
 #include <QObject>
 #include <QString>
@@ -218,14 +220,19 @@ QString TransactionalAbstraction::getInitiative(General::InterfaceMode mode, QSt
     {
         initiative = getSlavePort()->getInitiative();
     }
-    else if (mode == General::SYSTEM)
+    else if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
     {
         QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup);
         if (systemPort)
         {
             initiative = systemPort->getInitiative();
         }
+    }
 
+    if (mode == General::MIRROREDMASTER || mode == General::MIRROREDSLAVE || mode == General::MIRROREDSYSTEM)
+    {
+        TransactionalTypes::Initiative mirroredInitiative = TransactionalTypes::convertToMirrored(initiative);
+        initiative = TransactionalTypes::initiativeToString(mirroredInitiative);
     }
 
     return initiative;

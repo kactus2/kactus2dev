@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -34,13 +35,15 @@ ComponentEditorAddrSpaceItem::ComponentEditorAddrSpaceItem(QSharedPointer<Addres
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<AddressSpaceValidator> addressSpaceValidator, ComponentEditorItem* parent):
+    QSharedPointer<AddressSpaceValidator> addressSpaceValidator, AddressBlockInterface* blockInterface,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 addrSpace_(addrSpace),
 localMemMapVisualizer_(new MemoryMapsVisualizer()),
 addrSpaceVisualizer_(new AddressSpaceVisualizer(addrSpace, expressionParser)),
 expressionParser_(expressionParser),
-spaceValidator_(addressSpaceValidator)
+spaceValidator_(addressSpaceValidator),
+blockInterface_(blockInterface)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -48,34 +51,33 @@ spaceValidator_(addressSpaceValidator)
 
 	setObjectName(tr("ComponentEditorAddrSpaceItem"));
 
-    if (addrSpace->getLocalMemoryMap())
+    QSharedPointer<MemoryMapBase> localMap = addrSpace->getLocalMemoryMap();
+    if (localMap)
     {
-        graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, addrSpace->getLocalMemoryMap(), expressionParser_);
+        graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, localMap, expressionParser_);
         localMemMapVisualizer_->addMemoryMapItem(graphItem_);
         graphItem_->updateDisplay();
 
-        if (addrSpace->getLocalMemoryMap())
+        for (QSharedPointer<MemoryBlockBase> block : *localMap->getMemoryBlocks())
         {
-            for (QSharedPointer<MemoryBlockBase> block : *addrSpace->getLocalMemoryMap()->getMemoryBlocks())
+            // if the item is for address block then create child for it
+            QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
+            if (addrBlock)
             {
-                // if the item is for address block then create child for it
-                QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
-                if (addrBlock)
-                {
-                    QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem
-                        (new ComponentEditorAddrBlockItem(addrBlock, model, libHandler, component, 
-                        referenceCounter_, parameterFinder_, expressionFormatter_,expressionParser_,
-                        spaceValidator_->getLocalMemoryMapValidator()->getAddressBlockValidator(), this));
+                QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(new ComponentEditorAddrBlockItem(
+                    localMap, addrBlock, model, libHandler, component, referenceCounter_, parameterFinder_,
+                    expressionFormatter_, expressionParser_,
+                    spaceValidator_->getLocalMemoryMapValidator()->getAddressBlockValidator(), blockInterface_,
+                    this));
 
-                    int addressUnitBits =
-                        expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
-                    addrBlockItem->addressUnitBitsChanged(addressUnitBits);
+                int addressUnitBits =
+                    expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
+                addrBlockItem->addressUnitBitsChanged(addressUnitBits);
 
-                    addrBlockItem->setVisualizer(localMemMapVisualizer_);
-                    childItems_.append(addrBlockItem);
-                }
+                addrBlockItem->setVisualizer(localMemMapVisualizer_);
+                childItems_.append(addrBlockItem);
             }
-        }        
+        }
     }
 }
 
@@ -119,9 +121,9 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_, parameterFinder_, 
-            expressionFormatter_, expressionParser_, spaceValidator_);
-		editor_->setProtection(locked_);
+        editor_ = new AddressSpaceEditor(component_, libHandler_, addrSpace_, parameterFinder_,
+            expressionFormatter_, expressionParser_, blockInterface_);
+        editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -157,21 +159,22 @@ QString ComponentEditorAddrSpaceItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpaceItem::createChild(int index)
 {
+    QSharedPointer<MemoryMapBase> localMap = addrSpace_->getLocalMemoryMap();
     if (!graphItem_)
     {
-        graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, addrSpace_->getLocalMemoryMap(), expressionParser_);
+        graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, localMap, expressionParser_);
         localMemMapVisualizer_->addMemoryMapItem(graphItem_);
         graphItem_->updateDisplay();
     }
 
-    QSharedPointer<MemoryBlockBase> block = addrSpace_->getLocalMemoryMap()->getMemoryBlocks()->at(index);
-	QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
+    QSharedPointer<MemoryBlockBase> block = localMap->getMemoryBlocks()->at(index);
+    QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
 	if (addrBlock)
     {
-		QSharedPointer<ComponentEditorAddrBlockItem> addressBlockItem
-            (new ComponentEditorAddrBlockItem(addrBlock, model_, libHandler_, component_, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_,
-            spaceValidator_->getLocalMemoryMapValidator()->getAddressBlockValidator(), this));
+		QSharedPointer<ComponentEditorAddrBlockItem> addressBlockItem(new ComponentEditorAddrBlockItem(localMap,
+            addrBlock, model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
+            expressionParser_, spaceValidator_->getLocalMemoryMapValidator()->getAddressBlockValidator(),
+            blockInterface_, this));
 		addressBlockItem->setLocked(locked_);
 
         int addressUnitBits = expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();

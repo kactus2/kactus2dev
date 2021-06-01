@@ -25,6 +25,7 @@ class FileBuilder;
 class ParameterFinder;
 class ExpressionFormatter;
 class ExpressionParser;
+class FileBuilderInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit file builders.
@@ -38,17 +39,23 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] fileBuilders            QList that contains the file builders to edit.
+     *      @param [in] fileBuilderInterface    Interface for accessing file builders.
      *      @param [in] parameterFinder         Finder used to identify parameters.
      *      @param [in] expressionParser        Parser used to calculate expressions.
      *      @param [in] expressionFormatter     Formatter used to format expressions.
-	 *      @param [in] parent                  Pointer to the owner of this editor.
+     *      @param [in] availableFileBuilders   List of editable file builders.
+     *      @param [in] parent                  Pointer to the owner of this editor.
 	 */
-    FileBuildersEditor(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent);
+    FileBuildersEditor(FileBuilderInterface* fileBuilderInterface,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<QList<QSharedPointer<FileBuilder> > > availableFileBuilders,
+        QWidget* parent);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~FileBuildersEditor();
 
 	/*!
@@ -102,6 +109,12 @@ private:
 
 	//! \brief Pointer to the proxy that is used to sort the view.
 	QSortFilterProxyModel proxy_;
+
+    //! List of editable file builders.
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > availableFileBuilders_;
+
+    //! Interface for accsessing file builders.
+    FileBuilderInterface* fileBuilderInterface_;
 };
 
 #endif // FILEBUILDERSEDITOR_H

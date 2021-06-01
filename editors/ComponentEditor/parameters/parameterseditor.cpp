@@ -21,6 +21,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ParametersView.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -32,22 +33,20 @@
 // Function: ParametersEditor::ParametersEditor()
 //-----------------------------------------------------------------------------
 ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterValidator> validator,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QWidget* parent): 
+    QSharedPointer<ParameterValidator> validator, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ParametersInterface* parameterInterface, QWidget *parent):
 ParameterItemEditor(component, handler, parent),
 view_(new ParametersView(this)),
-model_(0)
+model_(0),
+parameterInterface_(parameterInterface)
 {
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
     view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
     view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-    model_ = new ParametersModel(component->getParameters(), component->getChoices(), validator, expressionParser,
-        parameterFinder, expressionFormatter, this);
+    model_ = new ParametersModel(parameterInterface, expressionParser, parameterFinder, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -110,7 +109,6 @@ model_(0)
     sortingProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
 
     view_->sortByColumn(0, Qt::AscendingOrder);
-    view_->setColumnHidden(ParameterColumns::ID, true);
 
     // display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Parameters"), this);
@@ -123,18 +121,15 @@ model_(0)
 
     connect(view_, SIGNAL(recalculateReferenceToIndexes(QModelIndexList)),
         model_, SLOT(onGetParametersMachingIndexes(QModelIndexList)), Qt::UniqueConnection);
-    connect(model_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+    connect(model_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        Qt::UniqueConnection);
+
+    parameterInterface_->setParameters(component->getParameters());
 
 	refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersEditor::~ParametersEditor()
-//-----------------------------------------------------------------------------
-ParametersEditor::~ParametersEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -143,6 +138,11 @@ ParametersEditor::~ParametersEditor()
 void ParametersEditor::refresh()
 {
     view_->update();
+
+    if (!view_->isColumnHidden(ParameterColumns::ID))
+    {
+        view_->setColumnHidden(ParameterColumns::ID, true);
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -36,13 +36,6 @@ QPlainTextEdit(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: MessageConsole::~MessageConsole()
-//-----------------------------------------------------------------------------
-MessageConsole::~MessageConsole() 
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: MessageConsole::onErrorMessage()
 //-----------------------------------------------------------------------------
 void MessageConsole::onErrorMessage(QString const& message)

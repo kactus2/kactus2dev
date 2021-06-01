@@ -22,6 +22,8 @@ class View;
 class ExpressionParser;
 class ViewValidator;
 class InstantiationsValidator;
+class ModuleParameterInterface;
+
 //-----------------------------------------------------------------------------
 //! The Views-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -52,8 +54,10 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         ComponentEditorItem* parent);
 
-	//! The destructor.
-	virtual ~ComponentEditorViewsItem();
+	/*!
+     *  The destructor.
+     */
+	virtual ~ComponentEditorViewsItem() = default;
 
 	/*!
      *  Get the tool tip for the item.
@@ -98,7 +102,16 @@ private:
 	//! No assignment.
 	ComponentEditorViewsItem& operator=(const ComponentEditorViewsItem& other);
 
-	//! The views being edited.
+    /*!
+     *  Create interfaces for views.
+     */
+    void createInterfaces();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+    
+    //! The views being edited.
     QSharedPointer<QList<QSharedPointer<View> > > views_;
 
     //! The used expression parser.
@@ -106,6 +119,9 @@ private:
 
     //! The validator used for views.
     QSharedPointer<ViewValidator> viewValidator_;
+
+    //! Interface for accessing module parameters.
+    ModuleParameterInterface* moduleParameterInterface_;
 };
 
 #endif // COMPONENTEDITORVIEWSITEM_H

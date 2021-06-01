@@ -1,6 +1,6 @@
                                 README : Kactus2
 				   Copyright (c) 2012-2019 Tampere University
-                            http://funbase.cs.tut.fi
+                  https://research.tuni.fi/system-on-chip/tools
 
 Summary
 ----------------------------------------------------
@@ -14,7 +14,7 @@ Windows installer and tar-package for Linux are available in
 [SourceForge](https://sourceforge.net/projects/kactus2/)
 
 Guidelines for issue reporting and contributing are given in [CONTRIBUTING.md](CONTRIBUTING.md).
-Other support is provided by email: kactus2@cs.tut.fi
+Other support is provided by email: kactus2@tuni.fi
 
 What you can do with Kactus2
 ----------------------------------------------------
@@ -173,23 +173,39 @@ Please note a recent change to lower-case binary name i.e. kactus2, not Kactus2.
 
 #### 3b. Run Kactus2 command-line (experimental)
 
-Some tasks may be run in the command-line without the GUI. Currently only Verilog and VHDL 
-generators supports this feature and can be executed with command `generate_verilog` and
-`generate_vhdl`. Additional options are required as detailed below.
+Kactus2 can be run in the command-line without the GUI. Run:
 
-Example:
+    kactus2 -c
 
-    kactus2 generate_verilog -c tut.fi:cpu.logic:alu:1.0 -w structural_verilog -o ./rtl_out
-    
-This will generate structural Verilog for the `-c` component `tut.fi:cpu.logic:alu:1.0` and 
-its sub-component hierarchy defined in `-w` view `structural_verilog` into `-o` directory `./rtl_out`.
+This will start an interactive Python interpreter for executing series of commands. Kactus2
+IP-XACT data is readable and modifiable through the provided interafaces. Interface
+documentation will be added later here.
 
 Kactus2 supports the following general command-line options:
+* `-c, --no-gui`: Run in command-line mode without the GUI.
 * `-h, --help`: Show the application usage help and exit.
 * `-v, --version`: Show the application version and exit.
 
+Example usage showing importing a verilog file to IP-XACT component and generating an equivalent VHDL file: 
+```
+$kactus2 -c
+...
+Python 3.8.3 (tags/v3.8.3:6f8c832, May 13 2020, 22:20:16) [MSC v.1925 64 bit (AMD64)]
+>>> kactus2.importFile('D:/Data/ipxactexamplelib/wb_sum_buffer.v', 'tuni.fi:peripheral.logic:wb_sum_buffer:1.0')
+1
+>>> kactus2.generate('VHDL', 'tuni.fi:peripheral.logic:wb_sum_buffer:1.0', 'flat_verilog', 'D:/Data/ipxactexamplelib/generated')
+Running VHDL Generator 1.3.
+Running generation for tuni.fi:peripheral.logic:wb_sum_buffer:1.0 and view 'flat_verilog'.
+Target directory: D:/Data/ipxactexamplelib/generated
+Parsing the IP-Xact models...
+Writing the vhdl file...
+Done writing the vhdl file.
+VHDL generation complete.
+>>> exit()
+```
+
 Please note that the command-line interface is an experimental feature and very likely 
-subject to changes in the near future. 
+subject to change in the near future. 
 
 Settings and configurations
 ----------------------------------------------------
@@ -226,5 +242,5 @@ Licencing
 ----------------------------------------------------
 This software is licenced under the GPL2 General Public License.
 
-Kactus2 is also available for dual licencing. Please contact kactus2@cs.tut.fi
+Kactus2 is also available for dual licencing. Please contact kactus2@tuni.fi
 to purchase a commercial licence.

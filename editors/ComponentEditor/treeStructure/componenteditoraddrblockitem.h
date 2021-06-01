@@ -23,6 +23,10 @@ class MemoryMapsVisualizer;
 class AddressBlockGraphItem;
 class ExpressionParser;
 class AddressBlockValidator;
+class RegisterInterface;
+class AddressBlockInterface;
+class MemoryMapBase;
+
 //-----------------------------------------------------------------------------
 //! The item for a single address block in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -35,6 +39,7 @@ public:
 	/*!
 	 *  The constructor.
 	 *
+     *      @param [in] containingMap           Memory map containing the address block.
 	 *      @param [in] addrBlock               The address block being edited.
 	 *      @param [in] model                   The model that owns the items.
 	 *      @param [in] libHandler              The instance that manages the library.
@@ -44,21 +49,25 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression formatter.
      *      @param [in] addressBlockValidator   Validator used for address blocks.
+     *      @param [in] blockInterface          Interface for accessing address blocks.
 	 *      @param [in] parent                  The parent item.
 	 */
-	ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
-		ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
+    ComponentEditorAddrBlockItem(QSharedPointer<MemoryMapBase> containingMap,
+        QSharedPointer<AddressBlock> addrBlock,
+        ComponentEditorTreeModel* model,
+        LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressBlockValidator> addressBlockValidator,
+        AddressBlockInterface* blockInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~ComponentEditorAddrBlockItem() = default;
+
 
     //! No copying. No assignment.
     ComponentEditorAddrBlockItem(const ComponentEditorAddrBlockItem& other) = delete;
@@ -165,10 +174,30 @@ signals:
      */
     void changeInAddressUnitBits(int newAddressUnitBits);
 
+
     //! Signals a change in the item's address data.
     void addressingChanged();
 
-private:	
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Informs of address block name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void addressBlockNameChanged(QString const& oldName, QString const& newName);
+
+private:
+	
+    //! Memory map containing the edited address block.
+    QSharedPointer<MemoryMapBase> containingMap_;
 
 	//! The address block being edited.
 	QSharedPointer<AddressBlock> addrBlock_;
@@ -188,6 +217,9 @@ private:
     //! The used address block validator.
     QSharedPointer<AddressBlockValidator> addressBlockValidator_;    
     
+
+    //! Interface for address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

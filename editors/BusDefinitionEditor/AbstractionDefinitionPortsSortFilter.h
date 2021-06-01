@@ -15,6 +15,8 @@
 #include <QSortFilterProxyModel>
 #include <QColor>
 
+class PortAbstractionInterface;
+
 //-----------------------------------------------------------------------------
 //! Sort filter proxy model for abstraction definition ports.
 //-----------------------------------------------------------------------------
@@ -28,7 +30,8 @@ public:
 	 *
      *      @param [in] parent  Pointer to the owner of this model.
 	 */
-    AbstractionDefinitionPortsSortFilter(QObject *parent);
+    AbstractionDefinitionPortsSortFilter(
+        PortAbstractionInterface* portInterface, QObject *parent);
 
 	/*!
 	 *  The destructor.
@@ -56,6 +59,9 @@ protected:
      */
     virtual QColor getBackgroundColorForIndex(QModelIndex const& index) const;
 
+    //! Interface for accessing port abstractions.
+    PortAbstractionInterface* portInterface_;
+
 private:
 	//! No copying. No assignment.
 	AbstractionDefinitionPortsSortFilter(const AbstractionDefinitionPortsSortFilter& other);
@@ -80,15 +86,6 @@ private:
     bool undefinedMode(QModelIndex const& index) const;
 
     /*!
-     *  Check if the indexed port abstraction is an extend port.
-     *
-     *      @param [in] index   The selected port abstraction index.
-     *
-     *      @return True, if the port abstraction is extended, false otherwise.
-     */
-    bool isExtendPort(QModelIndex const& index) const;
-
-    /*!
      *  Get the background colour on the previous row of the selected index.
      *
      *      @param [in] previousRow     The previous row.
@@ -97,6 +94,7 @@ private:
      *      @return Background colour of the previous row.
      */
     QColor getPreviousColor(int const& previousRow, QModelIndex const& index) const;
+
 };
 
 #endif // ABSTRACTIONDEFINITIONPORTSSORTFILTER_H

@@ -11,6 +11,14 @@
 
 #include "WriteValueConstraint.h"
 
+namespace
+{
+    QString const WRITE_AS_READ_TEXT = QLatin1String("Write as read");
+    QString const ENUM_VALUES_TEXT = QLatin1String("Use enumerated values");
+    QString const MIN_MAX_LIMITS_TEXT = QLatin1String("Set minimum and maximum limits");
+    QString const NO_CONSTRAINTS_TEXT = QLatin1String("No constraints");
+};
+
 //-----------------------------------------------------------------------------
 // Function: WriteValueConstraint::WriteValueConstraint()
 //-----------------------------------------------------------------------------
@@ -148,4 +156,64 @@ void WriteValueConstraint::setMaximum(QString const& newMaximum)
 
     type_ = WriteValueConstraint::MIN_MAX;
     maximum_ = newMaximum;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WriteValueConstraint::stringToType()
+//-----------------------------------------------------------------------------
+WriteValueConstraint::Type WriteValueConversions::stringToType(QString const& typeText)
+{
+    if (typeText.compare(WRITE_AS_READ_TEXT) == 0)
+    {
+        return WriteValueConstraint::WRITE_AS_READ;
+    }
+    else if (typeText.compare(ENUM_VALUES_TEXT) == 0)
+    {
+        return WriteValueConstraint::USE_ENUM;
+    }
+    else if (typeText.compare(MIN_MAX_LIMITS_TEXT) == 0)
+    {
+        return WriteValueConstraint::MIN_MAX;
+    }
+    else
+    {
+        return WriteValueConstraint::TYPE_COUNT;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: WriteValueConstraint::typeToString()
+//-----------------------------------------------------------------------------
+QString WriteValueConversions::typeToString(WriteValueConstraint::Type const& constraintType)
+{
+    if (constraintType == WriteValueConstraint::WRITE_AS_READ)
+    {
+        return WRITE_AS_READ_TEXT;
+    }
+    else if (constraintType == WriteValueConstraint::USE_ENUM)
+    {
+        return ENUM_VALUES_TEXT;
+    }
+    else if (constraintType == WriteValueConstraint::MIN_MAX)
+    {
+        return MIN_MAX_LIMITS_TEXT;
+    }
+    else
+    {
+        return NO_CONSTRAINTS_TEXT;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: WriteValueConversions::getConstraintTypes()
+//-----------------------------------------------------------------------------
+QStringList WriteValueConversions::getConstraintTypes()
+{
+    QStringList types;
+    types.append(WRITE_AS_READ_TEXT);
+    types.append(ENUM_VALUES_TEXT);
+    types.append(MIN_MAX_LIMITS_TEXT);
+    types.append(NO_CONSTRAINTS_TEXT);
+
+    return types;
 }

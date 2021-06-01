@@ -20,6 +20,8 @@ class ExpressionParser;
 class Component;
 class AddressSpace;
 class AddressSpaceValidator;
+class AddressBlockInterface;
+
 //-----------------------------------------------------------------------------
 //! The Address spaces-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -108,6 +110,15 @@ private:
      */
     void createAddressSpaceValidator();
 
+    /*!
+     *  Create the interface for address blocks.
+     */
+    void createAddressBlockInterface();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! The address spaces being edited.
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces_;
 
@@ -116,6 +127,9 @@ private:
 
     //! The current address space validator.
     QSharedPointer<AddressSpaceValidator> spaceValidator_;
+
+    //! Interface for address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // COMPONENTEDITORADDRSPACESITEM_H

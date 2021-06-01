@@ -25,6 +25,8 @@ class AddressSpace;
 class MemoryMapBase;
 class MemoryBlockBase;
 class AddressSpaceValidator;
+class AddressBlockInterface;
+
 //-----------------------------------------------------------------------------
 //! The item for a single address space in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -46,6 +48,7 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] addressSpaceValidator   Validator for address spaces.
+     *      @param [in] blockInterface          Interface for accessing address blocks.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorAddrSpaceItem(QSharedPointer<AddressSpace> addrSpace,
@@ -57,6 +60,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
+        AddressBlockInterface* blockInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -177,6 +181,9 @@ private:
 
     //! The used address space validator.
     QSharedPointer<AddressSpaceValidator> spaceValidator_;
+
+    //! Block interface for address blocks.
+    AddressBlockInterface* blockInterface_;
 };
 
 #endif // COMPONENTEDITORADDRSPACEITEM_H

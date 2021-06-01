@@ -16,12 +16,10 @@
 #include <QSharedPointer>
 #include <QList>
 
-class BusInterface;
-class BusInterfaceValidator;
-class Component;
 class LibraryInterface;
 class ParameterFinder;
 class Parameter;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! The model that manages the objects for BusInterfacesEditor.
@@ -36,26 +34,31 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] libHandler          The instance that manages the library.
-	 *      @param [in] component           The component being edited.
 	 *      @param [in] parameterFinder     The parameter finder.
+     *      @param [in] busInterface        Interface for accessing bus interfaces.
 	 *      @param [in] parent              The owner of this model.
 	 */
-	BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
-        QSharedPointer<BusInterfaceValidator> validator,
-        QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
-	
-	//! The destructor
-	virtual ~BusInterfacesModel();
+    BusInterfacesModel(LibraryInterface* libHandler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        BusInterfaceInterface* busInterface,
+        QObject *parent);
 
-	/*! Get the number of rows an item contains.
+	/*!
+     *  The destructor.
+     */
+	virtual ~BusInterfacesModel() = default;
+
+	/*!
+     *  Get the number of rows an item contains.
 	 *
 	 *      @param [in] parent Identifies the parent that's row count is requested.
 	 *
 	 *      @return Number of rows the item has.
-	*/
+     */
 	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! Get the number of columns the item has to be displayed.
+	/*!
+     *  Get the number of columns the item has to be displayed.
 	 *
 	 *      @param [in] parent Identifies the parent that's column count is requested.
 	 *
@@ -63,41 +66,45 @@ public:
 	*/
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! Get the item flags that defines the possible operations for the item.
+	/*!
+     *  Get the item flags that defines the possible operations for the item.
 	 *
 	 *      @param [in] index Model index that identifies the item.
 	 *
 	 *      @return Qt::ItemFlags specify the possible operations for the item.
-	*/
+     */
 	Qt::ItemFlags flags(QModelIndex const& index) const;
 
-	/*! Get the header data for specified header.
+	/*!
+     *  Get the header data for specified header.
 	 *
 	 *      @param [in] section The section specifies the row/column number for the header.
 	 *      @param [in] orientation Specified if horizontal or vertical header is wanted.
 	 *      @param [in] role Specifies the type of the requested data.
 	 *
 	 *      @return QVariant Contains the requested data.
-	*/
+     */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	/*! Get the data for specified item.
+	/*!
+     *  Get the data for specified item.
 	 *
 	 *      @param [in] index Specifies the item that's data is requested.
 	 *      @param [in] role The role that defines what kind of data is requested.
 	 *
 	 *      @return QVariant Contains the data for the item.
-	*/
+     */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
-	/*! Save the data to the model for specified item
+	/*!
+     *  Save the data to the model for specified item
 	 *
 	 *      @param [in] index The model index of the item that's data is to be saved.
 	 *      @param [in] value The data that is to be saved.
 	 *      @param [in] role The role specifies what kind of data should be saved.
 	 *
 	 *      @return True if saving happened successfully.
-	*/
+     */
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
     /*!
@@ -130,52 +137,54 @@ public:
 
 public slots:
 
-	/*! Add a new item to the given index.
+	/*!
+     *  Add a new item to the given index.
 	 *
 	 *      @param [in] index The index identifying the position for new item.
-	 *
-	*/
+     */
 	virtual void onAddItem(QModelIndex const& index);
 
-	/*! Remove the item in the given index.
+	/*!
+     *  Remove the item in the given index.
 	 *
 	 *      @param [in] index The index identifying the item to remove.
-	 *
-	*/
+     */
 	virtual void onRemoveItem(QModelIndex const& index);
 
-	/*! Move item from the original position to new position.
+	/*!
+     *  Move item from the original position to new position.
 	 *
 	 *      @param [in] originalPos The index identifying the item to move.
 	 *      @param [in] newPos      The index identifying the position of the item after the move.
-     *
-	*/
+     */
     virtual void onMoveItem( QModelIndex const& originalPos, QModelIndex const& newPos );
 
 signals:
 
-	//! Emitted when the contents of the model change.
+	/*!
+     *  Emitted when the contents of the model change.
+     */
 	void contentChanged();
 
-	/*! Emitted when a new bus interface is added to the model.
+	/*!
+     *  Emitted when a new bus interface is added to the model.
 	 *
 	 *      @param [in] index The index of the added bus interface.
-	 *
-	*/
+     */
 	void busifAdded(int index);
 
-	/*! Emitted when a bus interface is removed from the model.
+	/*!
+     *  Emitted when a bus interface is removed from the model.
 	 *
 	 *      @param [in] index The index of the bus interface to remove.
-	 *
-	*/
+     */
 	void busifRemoved(int index);
 
-    /*! Emitted when a bus interface is moved from one position to another.
+    /*!
+     *  Emitted when a bus interface is moved from one position to another.
      *
      *      @param [in] source The row number of the bus interface before the move.
      *      @param [in] target The row number of the bus interface after the move.
-     *
      */
     void busIfMoved(int source, int target);
 
@@ -195,10 +204,8 @@ signals:
 
 private:
 
-	//! No copying
+    //! No copying. No assignment.
 	BusInterfacesModel(const BusInterfacesModel& other);
-
-	//! No assignment
 	BusInterfacesModel& operator=(const BusInterfacesModel& other);
 
     /*!
@@ -207,15 +214,6 @@ private:
      *      @param [in] busInterfaceIndex   The index of the removed bus interface.
      */
     void removeReferencesFromExpressions(int busInterfaceIndex);
-   
-    /*!
-     *  Get the expressions from parameters.
-     *
-     *      @param [in] parameters  The selected list of parameters.
-     *
-     *      @return A list of possible expressions within the parameters.
-     */
-    QStringList getExpressionsFromParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -224,13 +222,8 @@ private:
 	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! The component being edited.
-	QSharedPointer<Component> component_;
-
-	//! The bus interfaces being edited.
-	QSharedPointer<QList<QSharedPointer<BusInterface> > > busifs_;
-
-        QSharedPointer<BusInterfaceValidator> validator_;
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 
     //! The parameter finder.
     QSharedPointer<ParameterFinder> parameterFinder_;

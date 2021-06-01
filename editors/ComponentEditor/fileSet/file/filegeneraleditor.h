@@ -19,6 +19,7 @@
 #include <QSharedPointer>
 
 class File;
+class FileInterface;
 
 //-----------------------------------------------------------------------------
 //! FileGeneralEditor is a widget to edit File's general settings.
@@ -32,18 +33,28 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this widget
-	 *      @param [in] file    Pointer to the file that is being edited.
+	 *      @param [in] parent          Pointer to the owner of this widget
+	 *      @param [in] fileName        Name of the file that is being edited.
+     *      @param [in] fileInterface   Interface for accessing files.
 	 */
-	FileGeneralEditor(QWidget *parent, QSharedPointer<File> file);
+    FileGeneralEditor(QWidget *parent, std::string const& fileName, FileInterface* fileInterface);
 
-	//! The destructor.
-	virtual ~FileGeneralEditor();
-	
+	/*!
+     *  The destructor.
+     */
+	virtual ~FileGeneralEditor() = default;
+
 	/*!
      *  Restore the settings from the model.
 	 */
 	void refresh();
+
+    /*!
+     *  Handle the name change of the containing file.
+     *
+     *      @param [in] newName     The new name of the file.
+     */
+    void fileRenamed(std::string const& newName);
 
 signals:
 
@@ -70,8 +81,8 @@ private:
 	FileGeneralEditor(const FileGeneralEditor& other);
 	FileGeneralEditor& operator=(const FileGeneralEditor& other);
 	
-	//! Pointer to the file instance that is modified.
-	QSharedPointer<File> file_;
+	//! Name of the file that is modified.
+    std::string fileName_;
 
 	//! The editor to set the logical name for the file.
 	QLineEdit logicalName_;
@@ -87,6 +98,9 @@ private:
 
 	//! The check box to inform that file contains external declarations.
 	QCheckBox externalDec_;
+
+    //! Interface for accessing files.
+    FileInterface* fileInterface_;
 };
 
 #endif // FILEGENERALEDITOR_H

@@ -28,6 +28,7 @@
 class BusInterface;
 class Component;
 class LibraryInterface;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Container for editors to edit a bus interface.
@@ -48,19 +49,21 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser.
      *      @param [in] busInterfaceValidator   The validator for bus interfaces.
-	 *      @param [in] parent                  The owner of this container.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
+     *      @param [in] parent                  The owner of this container.
 	 *      @param [in] parentWnd               The parent window.
 	 */
-	BusInterfaceEditor(LibraryInterface* libHandler,
-		QSharedPointer<Component> component, 
-		QSharedPointer<BusInterface> busif,
+    BusInterfaceEditor(LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        QSharedPointer<BusInterface> busif,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<BusInterfaceValidator> busInterfaceValidator,
-		QWidget* parent,
+        BusInterfaceInterface* busInterface,
+        QWidget* parent,
         QWidget* parentWnd);
-	
+
 	//! The destructor
 	virtual ~BusInterfaceEditor();
 
@@ -87,9 +90,6 @@ private:
 	//! No assignment
 	BusInterfaceEditor& operator=(const BusInterfaceEditor& other);
    
-	//! The bus interface being edited.
-	QSharedPointer<BusInterface> busif_;
-
 	//! The widget that contains the editor for bus interface.
 	QTabWidget tabs_;
 

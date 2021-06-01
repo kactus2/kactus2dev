@@ -28,8 +28,8 @@
 class LibraryInterface;
 class Component;
 class AddressSpace;
+class AddressBlockInterface;
 
-class AddressSpaceValidator;
 //-----------------------------------------------------------------------------
 //! Editor to edit and save settings of an address space within component editor.
 //-----------------------------------------------------------------------------
@@ -48,18 +48,18 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
-     *      @param [in] addressSpaceValidator   Validator used for address spaces.
+     *      @param [in] blockInterface          Interface for address blocks.
 	 *      @param [in] parent                  The owner of this editor.
 	 */
-	AddressSpaceEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler,
-		QSharedPointer<AddressSpace> addrSpace,
+    AddressSpaceEditor(QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QSharedPointer<AddressSpace> addrSpace,
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
-		QWidget* parent = 0);
-	
+        AddressBlockInterface* blockInterface,
+        QWidget* parent = 0);
+
 	//! The destructor.
 	virtual ~AddressSpaceEditor() = default;
 

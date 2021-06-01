@@ -45,6 +45,7 @@
 
 #include <editors/ComponentEditor/common/ParameterCache.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>
@@ -57,6 +58,9 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
+
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -81,13 +85,25 @@ proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_),
 parameterFinder_(new ParameterCache(component_)),
-referenceCounter_(new ComponentParameterReferenceCounter(parameterFinder_, component_)),
+fullParameterFinder_(),
+referenceCounter_(0),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 validator_(expressionParser_, libHandler_),
-parameterReferenceTree_(new ComponentParameterReferenceTree(component_, expressionFormatter_, referenceCounter_)),
-parameterReferenceWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_, this))
+parameterReferenceTree_(0),
+parameterReferenceWindow_()
 {
+    fullParameterFinder_ = QSharedPointer<ComponentAndInstantiationsParameterFinder>(
+        new ComponentAndInstantiationsParameterFinder(component));
+
+    referenceCounter_ = QSharedPointer<ComponentParameterReferenceCounter>(
+        new ComponentParameterReferenceCounter(fullParameterFinder_, component_));
+
+    QSharedPointer<ExpressionFormatter> fullFormatter(new ExpressionFormatter(fullParameterFinder_));
+    parameterReferenceTree_ =
+        new ComponentParameterReferenceTree(component_, fullFormatter, referenceCounter_);
+    parameterReferenceWindow_ = new ParameterReferenceTreeWindow(parameterReferenceTree_, this);
+
     supportedWindows_ |= TabDocument::VENDOREXTENSIONWINDOW;
 
     // these can be used when debugging to identify the objects
@@ -231,6 +247,7 @@ void ComponentEditor::refresh()
     parameterReferenceTree_->setComponent(component_);
 
     parameterFinder_->setComponent(comp);
+    fullParameterFinder_->setComponent(comp);
 
 	// open the general editor.
 	onItemActivated(proxy_.index(0, 0, QModelIndex()));
@@ -568,7 +585,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser_, root)));
 
         QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
-            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser_, 
+            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser_,
             expressionFormatter_, root));
 
         root->addChildItem(parametersItem);
@@ -586,9 +603,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             expressionParser_, root)));
     }
 
-    QSharedPointer<InstantiationsItem> instantiationsItem (
-        new InstantiationsItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
-        expressionFormatter_, expressionParser_, root));
+    QSharedPointer<InstantiationsItem> instantiationsItem (new InstantiationsItem(&navigationModel_, libHandler_,
+        component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, root));
 
     root->addChildItem(instantiationsItem);
 
@@ -605,14 +621,19 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
     if (component->getImplementation() != KactusAttribute::SW)
     {
-        root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(
-            new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, root)));
+        root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(new ComponentEditorSystemViewsItem(
+            &navigationModel_, libHandler_, component, parameterFinder_, expressionParser_, expressionFormatter_,
+            root)));
     }
 
     if (component->getImplementation() == KactusAttribute::HW)
     {
-        QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(&navigationModel_, libHandler_,
-            component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, root));
+        BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
+            parameterFinder_, expressionFormatter_, expressionParser_, component, libHandler_);
+
+        QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(
+            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+            expressionParser_, root));
 
         root->addChildItem(portsItem);
         connect(portsItem.data(), SIGNAL(createInterface()), root, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
@@ -621,8 +642,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
 
         QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem (new ComponentEditorBusInterfacesItem(
-            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, root, parentWidget()));
+            busInterface, &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
+            expressionFormatter_, expressionParser_, root, parentWidget()));
 
         root->addChildItem(busInterfaceItem);
 
@@ -633,7 +654,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
         QSharedPointer<ComponentEditorIndirectInterfacesItem> indirectInterfacesItem(
             QSharedPointer<ComponentEditorIndirectInterfacesItem>(new ComponentEditorIndirectInterfacesItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, root, parentWidget())));
+            expressionParser_, busInterface, root, parentWidget())));
 
         root->addChildItem(indirectInterfacesItem);
 
@@ -786,6 +807,9 @@ void ComponentEditor::openItemEditor(QVector<QString> itemIdentifierChain)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditor::getComponent()
+//-----------------------------------------------------------------------------
 QSharedPointer<Component> ComponentEditor::getComponent() const
 {
     return component_;

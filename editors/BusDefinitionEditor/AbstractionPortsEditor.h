@@ -1,33 +1,37 @@
 //-----------------------------------------------------------------------------
-// File: AbstractionTransactionalPortsEditor.h
+// File: AbstractionPortsEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 05.06.2018
+// Date: 04.06.2018
 //
 // Description:
-// Editor for the transactional ports of an abstraction definition.
+// Editor for the ports of an abstraction definition.
 //-----------------------------------------------------------------------------
 
-#ifndef ABSTRACTIOTRANSACTIONALPORTSEDITOR_H
-#define ABSTRACTIOTRANSACTIONALPORTSEDITOR_H
+#ifndef ABSTRACTIONPORTSEDITOR_H
+#define ABSTRACTIONPORTSEDITOR_H
 
-#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <editors/BusDefinitionEditor/AbstractionPortsView.h>
-#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h>
+#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 #include <QWidget>
 #include <QObject>
-#include <QModelIndexList>
 
+class AbstractionPortsModel;
 class AbstractionDefinitionPortsSortFilter;
 class AbstractionDefinition;
+class AbstractionPortsDelegate;
 class BusDefinition;
+class PortAbstractionInterface;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
-//! Editor for the transactional ports of an abstraction definition.
+//! Editor for the ports of an abstraction definition.
 //-----------------------------------------------------------------------------
-class AbstractionTransactionalPortsEditor : public QWidget
+class AbstractionPortsEditor : public QWidget
 {
     Q_OBJECT
 
@@ -35,23 +39,26 @@ public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] portModel       Model for this editor.
+     *     
      *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] portInterface   Interface for accessing port abstractions.
+     *      @param [in] portsModel      Model for this editor.
+     *      @param [in] type            The type of ports the editor is targeted for: wire or transactional.
      *      @param [in] parent          The owner of the editor.
      */
-    AbstractionTransactionalPortsEditor(AbstractionPortsModel* portModel, LibraryInterface* libraryAccess,
-        QWidget *parent);
+    AbstractionPortsEditor(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
+        AbstractionPortsModel* portModel,
+        LogicalPortColumns::AbstractionType type, QWidget* parent);
 
     /*!
      *  The destructor.
      */
-    virtual ~AbstractionTransactionalPortsEditor() = default;
+    virtual ~AbstractionPortsEditor() = default;
 
     /*!
-     *  Hide the wire columns.
+     *  Reset the port abstraction model.
      */
-    void hideWireColumns();
+    void resetPortModel();
 
     /*!
      *  Set the bus definition referenced by the abstraction definition.
@@ -109,14 +116,15 @@ private slots:
 
 private:
     //! No copying. No assignment.
-    AbstractionTransactionalPortsEditor(const AbstractionTransactionalPortsEditor& other);
-    AbstractionTransactionalPortsEditor& operator=(const AbstractionTransactionalPortsEditor& other);
+    AbstractionPortsEditor(const AbstractionPortsEditor& other);
+    AbstractionPortsEditor& operator=(const AbstractionPortsEditor& other);
 
     /*!
      *  Sets the editor layout.
      */
     void setupLayout();
 
+   
     /*!
      *  Get a list of the selected indexes.
      *
@@ -124,11 +132,17 @@ private:
      */
     QModelIndexList getSelectedIndexes();
 
+    //! Hide columns specific to transactional ports.
+    void hideTransactionalColumns();
+
+    //! Hide columns specific to wire ports.
+    void hideWireColumns();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The table view to display the logical signals.
+    //! The table view to display the logical signals
     AbstractionPortsView portView_;
 
     //! Proxy model for sorting abstract ports.
@@ -138,7 +152,8 @@ private:
     AbstractionPortsModel* portModel_;
 
     //! The item delegate for portView_.
-    AbstractionTransactionalPortsDelegate portDelegate_;
+    AbstractionPortsDelegate* portDelegate_;
+
 };
 
-#endif // ABSTRACTIOTRANSACTIONALPORTSEDITOR_H
+#endif // ABSTRACTIONPORTSEDITOR_H

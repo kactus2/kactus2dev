@@ -27,6 +27,10 @@ class FieldReset;
 class FieldValidator;
 class ResetType;
 
+class ResetInterface;
+
+class Field;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the resets of a field.
 //-----------------------------------------------------------------------------
@@ -39,19 +43,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] resets                  List of resets being edited.
-     *      @param [in] resetTypes              List of reset types within the containing component.
-     *      @param [in] fieldValidator          Validator for register fields.
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] parameterFinder         Component parameter finder.
-     *      @param [in] expressionFormatter     Formatter for expressions containing references.
-	 *      @param [in] parent                  Pointer to the parent of this editor.
+     *      @param [in] resetInterface      Interface for resets.
+     *      @param [in] resetTypes          List of reset types within the containing component.
+     *      @param [in] expressionParser    The expression parser.
+     *      @param [in] parameterFinder     Component parameter finder.
+     *      @param [in] containingField     Field containing the resets.
+	 *      @param [in] parent              Pointer to the parent of this editor.
 	 */
-	ResetsEditor(QSharedPointer<QList<QSharedPointer<FieldReset> > > resets,
-        QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes,
-        QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QWidget* parent = 0);
+    ResetsEditor(ResetInterface* resetInterface, QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<Field> containingField, QWidget* parent = 0);
 
 	/*!
 	 *  The destructor.
@@ -98,6 +99,12 @@ private:
 
 	//! The model that manages the resets.
     ResetsModel* resetsModel_;
+
+    //! Field containing the resets.
+    QSharedPointer<Field> containingField_;
+
+    //! Interface for accessing resets.
+    ResetInterface* interface_;
 };
 
 #endif // RESETSEDITOR_H

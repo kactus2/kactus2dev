@@ -13,14 +13,16 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter()
 //-----------------------------------------------------------------------------
-AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter(QObject *parent):
-AbstractionDefinitionPortsSortFilter(parent)
+AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter(
+    PortAbstractionInterface* portInterface,
+    QObject *parent):
+AbstractionDefinitionPortsSortFilter(portInterface, parent)
 {
 
 }
@@ -30,8 +32,12 @@ AbstractionDefinitionPortsSortFilter(parent)
 //-----------------------------------------------------------------------------
 QColor AbstractionTransactionalPortsSortFilter::getBackgroundColorForIndex(QModelIndex const& index) const
 {
-    if ((index.column() == LogicalPortColumns::PROTOCOLTYPE || index.column() == LogicalPortColumns::PAYLOADTYPE)
-        && indexedRowContainsPayload(index))
+    if (index.column() == LogicalPortColumns::PROTOCOLTYPE && indexedRowContainsPayload(index))
+    {
+        return KactusColors::MANDATORY_FIELD;
+    }
+    else if (index.column() == LogicalPortColumns::PAYLOADTYPE &&
+        indexedRowContainsPayload(index))
     {
         return KactusColors::MANDATORY_FIELD;
     }
@@ -46,7 +52,8 @@ bool AbstractionTransactionalPortsSortFilter::indexedRowContainsPayload(QModelIn
 {
     QModelIndex payloadNameIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADNAME);
     QModelIndex payloadTypeIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADTYPE);
-    QModelIndex payloadExtensionIndex = index.sibling(index.row(), LogicalPortColumns::PAYLOADEXTENSION);
+    QModelIndex payloadExtensionIndex =
+        index.sibling(index.row(), LogicalPortColumns::PAYLOADEXTENSION);
 
     return !payloadNameIndex.data(Qt::DisplayRole).toString().isEmpty() ||
         !payloadTypeIndex.data(Qt::DisplayRole).toString().isEmpty() ||
@@ -57,13 +64,13 @@ bool AbstractionTransactionalPortsSortFilter::indexedRowContainsPayload(QModelIn
 // Function: AbstractionTransactionalPortsSortFilter::filterAcceptsRow()
 //-----------------------------------------------------------------------------
 bool AbstractionTransactionalPortsSortFilter::filterAcceptsRow(int source_row, const QModelIndex &source_parent)
-    const
+const
 {
-    if (!source_parent.isValid())
+    if (source_parent.isValid())
     {
-        QModelIndex categoryIndex = sourceModel()->index(source_row, 0, QModelIndex());
-        return categoryIndex.data(AbstractionPortsModel::isTransactionalRole).toBool();
+        return false;
     }
 
-    return AbstractionDefinitionPortsSortFilter::filterAcceptsRow(source_row, source_parent);
+    std::string portName = portInterface_->getIndexedItemName(source_row);
+    return portInterface_->portIsTransactional(portName);
 }

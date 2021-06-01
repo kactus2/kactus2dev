@@ -29,11 +29,13 @@ ComponentEditorMemMapItem::ComponentEditorMemMapItem(QSharedPointer<MemoryMap> m
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<MemoryMapValidator> memoryMapValidator, ComponentEditorItem* parent):
+    QSharedPointer<MemoryMapValidator> memoryMapValidator, MemoryMapInterface* mapInterface,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 memoryMap_(memoryMap),
 expressionParser_(expressionParser),
-memoryMapValidator_(memoryMapValidator)
+memoryMapValidator_(memoryMapValidator),
+mapInterface_(mapInterface)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -43,11 +45,15 @@ memoryMapValidator_(memoryMapValidator)
 
     QSharedPointer<MemoryRemapItem> defaultRemapItem(new MemoryRemapItem(memoryMap_, memoryMap_, model, libHandler,
         component, referenceCounter, parameterFinder, expressionFormatter, expressionParser_, memoryMapValidator_,
-        this));
+        mapInterface_, this));
     defaultRemapItem->setLocked(locked_);
 
     MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
     defaultRemapItem->setVisualizer(memoryRemapVisualizer);
+
+    connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        defaultRemapItem.data(), SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        Qt::UniqueConnection);
 
     connect(defaultRemapItem.data(), SIGNAL(addressUnitBitsChanged()),
         this, SLOT(changeAdressUnitBitsOnAddressBlocks()), Qt::UniqueConnection);
@@ -106,13 +112,17 @@ void ComponentEditorMemMapItem::createChild( int index )
 
     QSharedPointer<MemoryRemapItem> memoryRemapItem (new MemoryRemapItem(memoryRemap, memoryMap_, model_,
         libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
-        memoryMapValidator_, this));
+        memoryMapValidator_, mapInterface_, this));
     memoryRemapItem->setLocked(locked_);
 
     MemoryMapsVisualizer* memoryRemapVisualizer = new MemoryMapsVisualizer();
     memoryRemapItem->setVisualizer(memoryRemapVisualizer);
 
     childItems_.append(memoryRemapItem);
+
+    connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        memoryRemapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -179,10 +189,9 @@ void ComponentEditorMemMapItem::changeAdressUnitBitsOnAddressBlocks()
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::onMemoryRemapAdded()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex,
-    QSharedPointer<MemoryMap> parentMemoryMap)
+void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex, QString const& mapName)
 {
-    if (parentMemoryMap == memoryMap_)
+    if (mapName == memoryMap_->name())
     {
         onAddChild(memoryRemapIndex + 1);
     }
@@ -191,10 +200,9 @@ void ComponentEditorMemMapItem::onMemoryRemapAdded(int memoryRemapIndex,
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapitem::onMemoryRemapRemoved()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex,
-    QSharedPointer<MemoryMap> parentMemoryMap)
+void ComponentEditorMemMapItem::onMemoryRemapRemoved(int memoryRemapIndex, QString const& mapName)
 {
-    if (parentMemoryMap == memoryMap_)
+    if (mapName == memoryMap_->name())
     {
         onRemoveChild(memoryRemapIndex + 1);
     }

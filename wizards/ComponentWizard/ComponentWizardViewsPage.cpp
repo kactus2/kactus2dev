@@ -19,11 +19,16 @@
 
 #include <library/LibraryInterface.h>
 
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
+
+#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
 
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -35,9 +40,8 @@
 // Function: ComponentWizardViewsPage::ComponentWizardViewsPage()
 //-----------------------------------------------------------------------------
 ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh,
-                                                   QSharedPointer<ParameterFinder> parameterFinder,
-                                                   QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                                   ComponentWizard* parent):
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentWizard* parent):
 QWizardPage(parent),
 library_(lh),
 parent_(parent),
@@ -68,14 +72,6 @@ validator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parame
     connect(removeButton_, SIGNAL(clicked()), this, SLOT(onViewRemoved()), Qt::UniqueConnection);
     connect(viewList_, SIGNAL(clicked(QModelIndex const&)), 
         this, SLOT(onViewSelected(QModelIndex const&)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentWizardViewsPage::~ComponentWizardViewsPage()
-//-----------------------------------------------------------------------------
-ComponentWizardViewsPage::~ComponentWizardViewsPage()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -181,8 +177,26 @@ void ComponentWizardViewsPage::onViewSelected(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> component, QSharedPointer<View> view)
 {
-    ViewEditor* editor = new ViewEditor(component, view, library_, parameterFinder_, expressionFormatter_, this);
+    QSharedPointer<ComponentInstantiationParameterFinder> instantiationParameterFinder(
+        new ComponentInstantiationParameterFinder(QSharedPointer<ComponentInstantiation>()));
 
+    QSharedPointer<MultipleParameterFinder> combinedInstantiationFinder =
+        QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
+    combinedInstantiationFinder->addFinder(parameterFinder_);
+    combinedInstantiationFinder->addFinder(instantiationParameterFinder);
+
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(
+        new IPXactSystemVerilogParser(combinedInstantiationFinder));
+
+    QSharedPointer<ExpressionFormatter> moduleFormatter(new ExpressionFormatter(combinedInstantiationFinder));
+
+    QSharedPointer<ParameterValidator> validator(
+        new ParameterValidator(expressionParser, component->getChoices()));
+    ModuleParameterInterface* moduleParameterInterface = new ModuleParameterInterface(
+        validator, expressionParser, moduleFormatter, instantiationParameterFinder);
+
+    ViewEditor* editor = new ViewEditor(
+        component, view, library_, combinedInstantiationFinder, moduleFormatter, moduleParameterInterface, this);
     int editorIndex = editorTabs_->addTab(editor, view->name());
 
     updateIconForTab(editorIndex);

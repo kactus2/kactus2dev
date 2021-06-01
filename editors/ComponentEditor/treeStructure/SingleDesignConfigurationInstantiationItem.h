@@ -43,18 +43,16 @@ public:
      *      @param [in] expressionFormatter     Pointer to the expression formatter.
 	 *      @param [in] parent                  The parent item.
 	 */
-	SingleDesignConfigurationInstantiationItem(ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> referenceCounter,
+    SingleDesignConfigurationInstantiationItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+        QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<DesignConfigurationInstantiation> instantiation,
-        QSharedPointer<InstantiationsValidator> validator,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        ComponentEditorItem* parent);
+        QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent);
 
-	//! The destructor.
-	virtual ~SingleDesignConfigurationInstantiationItem();
+	/*!
+     *  The destructor.
+     */
+	virtual ~SingleDesignConfigurationInstantiationItem() = default;
 
 	/*!
      *  Get the tool tip for the item.

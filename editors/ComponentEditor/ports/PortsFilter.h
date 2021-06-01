@@ -13,8 +13,9 @@
 #define PORTSFILTER_H
 
 #include <QSortFilterProxyModel>
+#include <QSharedPointer>
 
-class Port;
+class PortsInterface;
 
 //-----------------------------------------------------------------------------
 //! Sorting proxy model for ports.
@@ -28,9 +29,10 @@ public:
 	 /*!
       *  Constructor.
       *
-      *      @param [in] parent     The parent object.
+      *      @param [in] portsInterface     Interface for accessing the component ports.
+      *      @param [in] parent             The parent object.
       */
-    PortsFilter(QObject* parent = 0);
+    PortsFilter(QSharedPointer<PortsInterface> portInterface, QObject* parent = 0);
 
 	 /*!
       *  Destructor.
@@ -71,16 +73,33 @@ protected:
 	 */
     virtual bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
 
+    /*!
+     *  Get the interface for accessing the component ports.
+     *
+     *      @return Interface for accessing the component ports.
+     */
+    QSharedPointer<PortsInterface> getInterface() const;
+
 private:
+
+    /*!
+     *  Get the name column.
+     *
+     *      @return Index of the name column.
+     */
+    virtual int nameColumn() const = 0;
 
     /*!
      *  Check if a port is filtered.
      *
-     *      @param [in] port    The selected port.
+     *      @param [in] portName    Name of the selected port.
      *
      *      @return True, if the port is accepted, false otherwise.
      */
-    virtual bool portIsAccepted(QSharedPointer<Port> port) const = 0;
+    virtual bool portIsAccepted(QString const& portName) const = 0;
+
+    //! Interface for accessing the component ports.
+    QSharedPointer<PortsInterface> portInterface_;
 };
 
 #endif // PORTSFILTER_H

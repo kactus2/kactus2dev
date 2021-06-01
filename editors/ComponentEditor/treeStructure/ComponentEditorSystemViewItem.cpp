@@ -22,23 +22,15 @@
 // Function: ComponentEditorSystemViewItem::ComponentEditorSystemViewItem()
 //-----------------------------------------------------------------------------
 ComponentEditorSystemViewItem::ComponentEditorSystemViewItem(QSharedPointer<SystemView> systemView,
-    ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component,
-    ComponentEditorItem* parent):
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    FileSetInterface* fileSetInterface, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    systemView_(systemView),
-    editAction_(new QAction(tr("Edit"), this))
+systemView_(systemView),
+editAction_(new QAction(tr("Edit"), this)),
+fileSetInterface_(fileSetInterface)
 {
     Q_ASSERT(systemView_);
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorSystemViewItem::~ComponentEditorSystemViewItem()
-//-----------------------------------------------------------------------------
-ComponentEditorSystemViewItem::~ComponentEditorSystemViewItem()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -88,7 +80,7 @@ ItemEditor* ComponentEditorSystemViewItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new SystemViewEditor(component_, systemView_, libHandler_, NULL);
+		editor_ = new SystemViewEditor(fileSetInterface_, component_, systemView_, libHandler_, NULL);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));

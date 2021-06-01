@@ -25,6 +25,8 @@ class ParameterFinder;
 class ParametersModel;
 class ExpressionFormatter;
 class ParametersView;
+class ParametersInterface;
+class AbstractParameterInterface;
 
 //-----------------------------------------------------------------------------
 //! Group box that can be used to edit list of parameters.
@@ -49,11 +51,15 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent);
-	
-	//! The destructor
+
+	/*!
+     *  The destructor.
+     */
 	virtual ~ParameterGroupBox();
 
-	//! Restore the changes made in the editor back to ones in parameter models.
+	/*!
+     *  Restore the changes made in the editor back to ones in parameter models.
+     */
 	virtual void refresh();
 
     /*!
@@ -99,9 +105,11 @@ signals:
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameters  The selected parameters.
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
      */
-    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
+    void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        AbstractParameterInterface* parameterInterface);
 
 private:
 	//! No copying. No assignment.
@@ -123,6 +131,9 @@ private:
 
     //! The parameter finder for locating the contained parameters.
     QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! Interface for accessing parameters.
+    ParametersInterface* parameterInterface_;
 };
 
 #endif // PARAMETERGROUPBOX_H

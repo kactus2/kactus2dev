@@ -23,6 +23,7 @@
 class LibraryInterface;
 class Component;
 class ParametersView;
+class ParameterValidator;
 
 //-----------------------------------------------------------------------------
 //! Editor to add/edit/remove parameters of a component.
@@ -39,21 +40,25 @@ public:
 	 *      @param [in] component               Pointer to the component being edited.
 	 *      @param [in] handler                 Pointer to the instance managing the library.
      *      @param [in] validator               The validator to use for checking parameter validity.
+     *      @param [in] parameterFinder         Pointer to the instance searching for parameters.
      *      @param [in] expressionParser        Expression parser for configurable elements.
-	 *      @param [in] parameterFinder         Pointer to the instance searching for parameters.
 	 *      @param [in] expressionFormatter     Pointer to the instance formatting the expressions.
-	 *      @param [in] parent                  Pointer to the owner of this widget.
+     *      @param [in] parameterInterface      Interface for accessing parameters.
+     *      @param [in] parent                  Pointer to the owner of this widget.
 	 */
-	ParametersEditor(QSharedPointer<Component> component,
+    ParametersEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterValidator> validator,
-        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-		QWidget *parent = 0);
-	
-	//! The destructor.
-	virtual ~ParametersEditor();
+        ParametersInterface* parameterInterface,
+        QWidget *parent = 0);
+
+	/*!
+     *  The destructor.
+     */
+	virtual ~ParametersEditor() = default;
 
 	/*!
      *  Reload the information from the model to the editor.
@@ -62,7 +67,9 @@ public:
 
 protected:
 
-	//! Handler for widget's show event.
+	/*!
+     *  Handler for widget's show event.
+     */
 	virtual void showEvent(QShowEvent* event);
 
 private:
@@ -82,6 +89,9 @@ private:
 
 	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;
+
+    //! Interface for accessing parameters.
+    ParametersInterface* parameterInterface_;
 };
 
 #endif // PARAMETERSEDITOR_H

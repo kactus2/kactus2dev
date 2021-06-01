@@ -27,6 +27,7 @@
 class FieldValidator;
 class FieldExpressionsGatherer;
 class ReferenceCalculator;
+class FieldInterface;
 
 //-----------------------------------------------------------------------------
 //! The model to manage the details of a single register.
@@ -40,21 +41,18 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] reg                     Pointer to the register being edited.
-	 *      @param [in] expressionParser        Pointer to the expression parser.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] fieldValidator          Validator used for fields.
-	 *      @param [in] parent                  Pointer to the owner of the model.
+	 *      @param [in] fieldInterface      Interface for fields.
+	 *      @param [in] expressionParser    Pointer to the expression parser.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] parent              Pointer to the owner of the model.
 	 */
-	RegisterTableModel(QSharedPointer<Register> reg,
-        QSharedPointer <ExpressionParser> expressionParser,
-        QSharedPointer <ParameterFinder> parameterFinder,
-        QSharedPointer <ExpressionFormatter> expressionFormatter,
-        QSharedPointer<FieldValidator> fieldValidator,
-		QObject *parent);
-	
-	//! The destructor.
+    RegisterTableModel(FieldInterface* fieldInterface, QSharedPointer <ExpressionParser> expressionParser,
+        QSharedPointer <ParameterFinder> parameterFinder, QObject *parent);
+
+
+	/*!
+     *  The destructor.
+     */
 	virtual ~RegisterTableModel() = default;
 
 	/*!
@@ -202,6 +200,15 @@ signals:
 
     void addressingChanged(int index);
 
+
+    /*
+     *  Informs of field name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void fieldNameChanged(QString const& oldName, QString const& newName);
+
 	//! Emitted when a new field is added to the given index.
 	void fieldAdded(int index);
 
@@ -215,13 +222,22 @@ private:
 	RegisterTableModel& operator=(const RegisterTableModel& other);
 
     /*!
-     *  Create a tooltip for field resets.
+     *  Get the formatted value of an expression in the selected index.
      *
-     *      @param [in] index   The index of selected field.
+     *      @param [in] index   The selected index.
      *
-     *      @return Tooltip for the resets of the selected field.
+     *      @return The formatted value of an expression in the selected index.
      */
-    QVariant toolTipValueForResets(QModelIndex const& index) const;
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the expression of the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The expression of the selected index.
+     */
+    virtual QVariant expressionForIndex(QModelIndex const& index) const;
 
     /*!
      *  Gets the value for the given index.
@@ -233,37 +249,34 @@ private:
     QVariant valueForIndex(QModelIndex const& index) const;
 
     /*!
-     *  Increase the number of references made in the copied field.
+     *  Decrease the number of references when removing a field.
      *
-     *      @param [in] pastedField             The copied field.
-     *      @param [in] gatherer                Field expressions gatherer.
-     *      @param [in] referenceCalculator     The reference calculator.
+     *      @param [in] fieldName   Name of the selected field.
      */
-    void increaseReferencesInPastedField(QSharedPointer<Field> pastedField, FieldExpressionsGatherer& gatherer,
-        ReferenceCalculator& referenceCalculator);
+    void decreaseReferencesWithRemovedField(QString const& fieldName);
 
     /*!
-     *  Get the names of the contained fields.
+     *  Increase the number of references made in the selected field.
      *
-     *      @return The names of the contained fields.
+     *      @param [in] fieldName   Name of the selected field.
      */
-    QStringList getCurrentItemNames() const;
+    void increaseReferencesInPastedField(QString const& fieldName);
+
+    /*!
+     *  Calculates the parameters used in the selected field.
+     *
+     *      @param [in] fieldName   Name of the selected field.
+     *
+     *      @return A map containing pairs of referenced ids and the number of references made to them.
+     */
+    QMap<QString, int> getReferencedParameters(QString const& fieldName) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the register being edited.
-	QSharedPointer<Register> reg_;
-
-	//! Contains the fields being edited.
-    QSharedPointer<QList<QSharedPointer<Field> > > fields_;
-
-    //! Expression formatter, formats the referencing expression to show parameter names.
-    QSharedPointer <ExpressionFormatter> expressionFormatter_;
-
-    //! The validator used for fields.
-    QSharedPointer<FieldValidator> fieldValidator_;
+    //! Interface for fields.
+    FieldInterface* fieldInterface_;
 };
 
 #endif // REGISTERTABLEMODEL_H

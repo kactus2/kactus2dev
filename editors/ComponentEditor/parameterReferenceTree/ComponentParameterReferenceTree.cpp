@@ -32,6 +32,7 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -39,6 +40,7 @@
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceTree::ComponentParameterReferenceTree()
@@ -115,6 +117,11 @@ void ComponentParameterReferenceTree::setupTree()
         if (referenceCounter_->countReferencesInRemapStates(getTargetID()) > 0)
         {
             createReferencesForRemapStates();
+        }
+
+        if (referenceCounter_->countReferencesInIndirectInterfaces(getTargetID()) > 0)
+        {
+            createReferencesForIndirectInterfaces();
         }
 
         if (topLevelItemCount() == 0)
@@ -526,6 +533,12 @@ void ComponentParameterReferenceTree::createReferencesForMemoryMaps()
 void ComponentParameterReferenceTree::createReferencesForSingleMemoryMap(QSharedPointer<MemoryMapBase> memoryMap,
     QTreeWidgetItem* memoryRemapItem)
 {
+    QString targetID = getTargetID();
+    if (referenceCounter_->countReferencesInMemoryMapValues(targetID, memoryMap) > 0)
+    {
+        createItemsForMemoryMap(memoryMap, memoryRemapItem);
+    }
+
     QTreeWidgetItem* middleAddressBlocksItem = createMiddleItem("Address blocks", memoryRemapItem);
 
     colourItemGrey(middleAddressBlocksItem);
@@ -562,19 +575,40 @@ void ComponentParameterReferenceTree::createReferencesForSingleAddressBlock(
 
     if (referenceCounter_->countReferencesInRegisters(targetID, addressBlock->getRegisterData()) > 0)
     {
-        QTreeWidgetItem* registersItem = createMiddleItem("Registers", addressBlockItem);
+        createReferencesForRegisters(targetID, addressBlock->getRegisterData(), addressBlockItem);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createReferencesForRegisters()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createReferencesForRegisters(QString const& targetID,
+    QSharedPointer<QList<QSharedPointer<RegisterBase>>> registerData, QTreeWidgetItem* parentItem)
+{
+    if (referenceCounter_->countReferencesInRegisters(targetID, registerData) > 0)
+    {
+        QTreeWidgetItem* registersItem = createMiddleItem("Registers", parentItem);
         colourItemGrey(registersItem);
 
-        foreach (QSharedPointer<RegisterBase> baseRegister, *addressBlock->getRegisterData())
+        for (auto baseRegister : *registerData)
         {
             QSharedPointer<Register> targetRegister = baseRegister.dynamicCast<Register>();
-
-            if (targetRegister)
+            if (targetRegister && referenceCounter_->countReferencesInSingleRegister(targetID, targetRegister) > 0)
             {
-                if (referenceCounter_->countReferencesInSingleRegister(targetID, targetRegister) > 0)
-                {
-                    createReferencesForSingleRegister(targetRegister, registersItem);
-                }
+                createReferencesForSingleRegister(targetRegister, registersItem);
+            }
+        }
+    }
+    if (referenceCounter_->countReferencesInRegisterFiles(targetID, registerData) > 0)
+    {
+        QTreeWidgetItem* registerFileItem = createMiddleItem("Register Files", parentItem);
+        colourItemGrey(registerFileItem);
+        for (auto baseRegister : *registerData)
+        {
+            QSharedPointer<RegisterFile> targetFile = baseRegister.dynamicCast<RegisterFile>();
+            if (targetFile && referenceCounter_->countReferencesInSingleRegisterFile(targetID, targetFile) > 0)
+            {
+                createReferencesForSingleRegisterFile(targetFile, registerFileItem);
             }
         }
     }
@@ -605,6 +639,20 @@ void ComponentParameterReferenceTree::createReferencesForSingleRegister(QSharedP
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createReferencesForSingleRegisterFile()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createReferencesForSingleRegisterFile(
+    QSharedPointer<RegisterFile> targetFile, QTreeWidgetItem* parentItem)
+{
+    QTreeWidgetItem* fileItem = createMiddleItem(targetFile->name(), parentItem);
+    QString targetID = getTargetID();
+
+    createItemsForRegisterFile(targetFile, fileItem);
+
+    createReferencesForRegisters(targetID, targetFile->getRegisterData(), fileItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -717,6 +765,27 @@ void ComponentParameterReferenceTree::createReferencesForRemapStates()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createReferencesForIndirectInterfaces()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createReferencesForIndirectInterfaces()
+{
+    QTreeWidgetItem* topIndirectInterfacesItem = createTopItem("Indirect Interfaces");
+    QString targetID = getTargetID();
+
+    for (auto indirectInterface : *component_->getIndirectInterfaces())
+    {
+        if (referenceCounter_->countRefrencesInSingleIndirectInterface(targetID, indirectInterface) > 0)
+        {
+            QTreeWidgetItem* interfaceItem = createMiddleItem(indirectInterface->name(), topIndirectInterfacesItem);
+
+            QTreeWidgetItem* parametersItem = createMiddleItem(QLatin1String("Parameters"), interfaceItem);
+            colourItemGrey(parametersItem);
+            createParameterReferences(indirectInterface->getParameters(), parametersItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceTree::createItemsForPort()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceTree::createItemsForPort(QSharedPointer<Port> port, QTreeWidgetItem* parent)
@@ -753,21 +822,61 @@ void ComponentParameterReferenceTree::createItemsForRegister(QSharedPointer<Regi
 {
     QString targetID = getTargetID();
 
-    if (targetRegister->getAddressOffset().contains(targetID))
-    {
-        createItem("Offset", targetRegister->getAddressOffset(), parent);
-    }
-    if (targetRegister->getDimension().contains(targetID))
-    {
-        createItem("Dimension", targetRegister->getDimension(), parent);
-    }
-    if (targetRegister->getIsPresent().contains(targetID))
-    {
-        createItem("Is present", targetRegister->getIsPresent(), parent);
-    }
+    createItemsForBaseRegister(targetRegister, parent);
     if (targetRegister->getSize().contains(targetID))
     {
         createItem("Size", targetRegister->getSize(), parent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createItemsForBaseRegister()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createItemsForBaseRegister(QSharedPointer<RegisterBase> baseRegister,
+    QTreeWidgetItem* parent)
+{
+    QString targetID = getTargetID();
+
+    if (baseRegister->getAddressOffset().contains(targetID))
+    {
+        createItem("Offset", baseRegister->getAddressOffset(), parent);
+    }
+    if (baseRegister->getDimension().contains(targetID))
+    {
+        createItem("Dimension", baseRegister->getDimension(), parent);
+    }
+    if (baseRegister->getIsPresent().contains(targetID))
+    {
+        createItem("Is present", baseRegister->getIsPresent(), parent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createItemsForRegisterFile()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createItemsForRegisterFile(QSharedPointer<RegisterFile> targetFile,
+    QTreeWidgetItem* parent)
+{
+    QString targetID = getTargetID();
+
+    createItemsForBaseRegister(targetFile, parent);
+    if (targetFile->getRange().contains(targetID))
+    {
+        createItem("Range", targetFile->getRange(), parent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createItemsForMemoryMap()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createItemsForMemoryMap(QSharedPointer<MemoryMapBase> targetMap,
+    QTreeWidgetItem* parent)
+{
+    QString targetID = getTargetID();
+
+    if (targetMap->getIsPresent().contains(targetID))
+    {
+        createItem("Is Present", targetMap->getIsPresent(), parent);
     }
 }
 

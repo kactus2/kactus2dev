@@ -22,47 +22,61 @@
 
 class Component;
 class TransparentBridge;
+class TransparentBridgeInterface;
+class BusInterfaceInterface;
+class SlaveInterface;
+class BusInterfaceValidator;
+class IndirectInterface;
+class IndirectInterfaceValidator;
 
-/*! Editor to edit the transparent bridge-elements within a slave interface mode or indirect interface.
- *
- */
-class BridgesEditor : public QGroupBox {
+ //-----------------------------------------------------------------------------
+ // Editor to edit the transparent bridge-elements within a slave interface mode or indirect interface.
+ //-----------------------------------------------------------------------------
+class BridgesEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
-	 *      @param [in] bridges     The bridges to edit in the editor.
-	 *      @param [in] component   The component that contains the bridges.
-	 *      @param [in] parent      The parent of this editor.
-	 *
-	*/
-	BridgesEditor(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
-        QSharedPointer<Component> component,
+     *      @param [in] busInterface    Interface for accessing bus interfaces.
+	 *      @param [in] bridges         The bridges to edit in the editor.
+	 *      @param [in] parent          The parent of this editor.
+     */
+    BridgesEditor(BusInterfaceInterface* busInterface,
+        QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
         QWidget* parent);
-	
-	//! The destructor.
+
+	/*!
+     *  The destructor.
+     */
 	virtual ~BridgesEditor();
 
     /*!
      *  Refresh the bridges in the editor.
-     *
-     *      @param [in] transparentBridges   The bridges to edit.
      */
-    void refresh(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > transparentBridges);
+    void refresh();
+
+    /*!
+     *  Setup the bridges for the editor.
+     *
+     *      @param [in] newBridges  The new bridges.
+     */
+    void setupBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > newBridges);
 
 signals:
 
-	//! Emitted when the contents of the bridges change.
+	/*!
+     *  Emitted when the contents of the bridges change.
+     */
 	void contentChanged();
 
 private:
 	
-	//! No copying
+    //! No copying. No assignment.
 	BridgesEditor(const BridgesEditor& other);
-
-	//! No assignment
 	BridgesEditor& operator=(const BridgesEditor& other);
 
 	//! The view to display the bridges.
@@ -73,6 +87,12 @@ private:
 
 	//! Model that manages the bridges.
 	BridgesModel model_;
+
+    //! Interface for accessing transparent bridges.
+    TransparentBridgeInterface* bridgeInterface_;
+
+    //! List of the available transparent bridges.
+    QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges_;
 };
 
 #endif // BRIDGESEDITOR_H

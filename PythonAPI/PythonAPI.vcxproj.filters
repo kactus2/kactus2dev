@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{a4643d2f-976e-41db-b8c3-dcebe194ff08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\expressionParser">
+      <UniqueIdentifier>{df97d1b4-0bae-479e-be0a-cc06210d3566}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{99f1e110-e88d-439c-af55-b7c05e07fcf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\expressionParser">
+      <UniqueIdentifier>{627d01cc-73d8-4f84-ad5b-e6b1f23ea67e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\validators">
+      <UniqueIdentifier>{8b35980a-477a-49b6-992e-6dbe8b13886e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\validators">
+      <UniqueIdentifier>{6eff49bd-1383-4976-b8a1-fed439e34c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\versionHelper">
+      <UniqueIdentifier>{0126d46a-be63-41be-92a9-b2bcd640ea46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\versionHelper">
+      <UniqueIdentifier>{b833d652-10f3-412f-8458-c70aed4b2768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces">
+      <UniqueIdentifier>{d7eb4d19-a61b-4d3e-87ed-745ae7fd56ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\interfaces">
+      <UniqueIdentifier>{96cb2a96-9473-4438-84b9-abaecd81d2c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\expressionParser\MemoryMaps">
+      <UniqueIdentifier>{8fb2d398-f203-4203-91f4-8a8fbb5d9381}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\expressionParser\MemoryMaps">
+      <UniqueIdentifier>{a52270f7-3878-432f-a519-1327e42f5b09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{b161e93c-7d11-4c2a-b62d-0cf5561abd20}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PythonAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\ListParameterFinder.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\validators\LibraryPathValidator\librarypathvalidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="..\VersionHelper.cpp">
+      <Filter>Source Files\versionHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
+      <Filter>Source Files\common\expressionParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\NameGroupInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\CommonInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp">
+      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI_wrap.cxx">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileInterface.cpp">
+      <Filter>Source Files\interfaces</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PythonAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
+      <Filter>Header Files\common\expressionParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
+      <Filter>Header Files\common\expressionParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\ListParameterFinder.h">
+      <Filter>Header Files\common\expressionParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\ComponentParameterFinder.h">
+      <Filter>Header Files\common\expressionParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\VersionHelper.h">
+      <Filter>Header Files\versionHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h">
+      <Filter>Header Files\common\expressionParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
+      <Filter>Header Files\common\expressionParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\CommonInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\NameGroupInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h">
+      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileInterface.h">
+      <Filter>Header Files\interfaces</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pythonapi_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\editors\ComponentEditor\common\ParameterCache.h">
+      <Filter>Header Files\common\expressionParser</Filter>
+    </QtMoc>
+    <QtMoc Include="..\common\validators\LibraryPathValidator\librarypathvalidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="PythonAPI.i" />
+  </ItemGroup>
+</Project>

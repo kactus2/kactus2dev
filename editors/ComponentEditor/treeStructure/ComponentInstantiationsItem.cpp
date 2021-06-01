@@ -27,18 +27,16 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
 //-----------------------------------------------------------------------------
-ComponentInstantiationsItem::ComponentInstantiationsItem(ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component, 
-    QSharedPointer<InstantiationsValidator> validator,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+ComponentInstantiationsItem::ComponentInstantiationsItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, ComponentInstantiationInterface* instantiationInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    validator_(validator),
-    expressionParser_(expressionParser)
+validator_(validator),
+expressionParser_(expressionParser),
+instantiationInterface_(instantiationInterface)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -49,21 +47,8 @@ ComponentEditorItem(model, libHandler, component, parent),
 
     foreach(QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
     {
-        QSharedPointer<MultipleParameterFinder> cimpFinder = QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
-        cimpFinder->addFinder(parameterFinder);
-        cimpFinder->addFinder(QSharedPointer<ComponentInstantiationParameterFinder>
-            (new ComponentInstantiationParameterFinder(instantiation)));
-
-        QSharedPointer<ParameterReferenceCounter> cimpCounter =  QSharedPointer<ParameterReferenceCounter>(new ParameterReferenceCounter(cimpFinder));
-        QSharedPointer<ExpressionFormatter> cimpFormatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(cimpFinder));
-        QSharedPointer<IPXactSystemVerilogParser> cimpParser = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
-        QSharedPointer<InstantiationsValidator> cimpValidator = QSharedPointer<InstantiationsValidator>(
-            new InstantiationsValidator(cimpParser, component->getFileSets(), QSharedPointer<ParameterValidator>(
-            new ParameterValidator(cimpParser, component->getChoices())), libHandler));
-
-        QSharedPointer<ComponentEditorItem> componentInstantiationItem (new SingleComponentInstantiationItem(
-            model, libHandler, component, instantiation, cimpValidator, cimpCounter, cimpFinder,
-            cimpFormatter, cimpParser, this));
+        QSharedPointer<SingleComponentInstantiationItem> componentInstantiationItem =
+            createChildItem(instantiation);
 
         childItems_.append(componentInstantiationItem);
 
@@ -103,7 +88,8 @@ ItemEditor* ComponentInstantiationsItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new ComponentInstantiationsEditor(component_, libHandler_, parameterFinder_, validator_, 0);
+        editor_ = new ComponentInstantiationsEditor(
+            component_, libHandler_, parameterFinder_, instantiationInterface_, 0);
         editor_->setProtection(locked_);
 
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -123,9 +109,7 @@ void ComponentInstantiationsItem::createChild( int index )
 {
     QSharedPointer<ComponentInstantiation> instantiation = component_->getComponentInstantiations()->at(index);
     
-    QSharedPointer<ComponentEditorItem> childItem(
-        new SingleComponentInstantiationItem(model_, libHandler_, component_, instantiation, validator_,
-        referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
+    QSharedPointer<SingleComponentInstantiationItem> childItem = createChildItem(instantiation);
 
     childItem->setLocked(locked_);
 
@@ -133,4 +117,36 @@ void ComponentInstantiationsItem::createChild( int index )
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     childItems_.append(childItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiationsItem::createSingleComponentInstantiationItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<SingleComponentInstantiationItem> ComponentInstantiationsItem::createChildItem(
+    QSharedPointer<ComponentInstantiation> instantiation)
+{
+    QSharedPointer<MultipleParameterFinder> cimpFinder =
+        QSharedPointer<MultipleParameterFinder>(new MultipleParameterFinder);
+    cimpFinder->addFinder(parameterFinder_);
+    cimpFinder->addFinder(QSharedPointer<ComponentInstantiationParameterFinder>
+        (new ComponentInstantiationParameterFinder(instantiation)));
+
+    QSharedPointer<ParameterReferenceCounter> cimpCounter =
+        QSharedPointer<ParameterReferenceCounter>(new ParameterReferenceCounter(cimpFinder));
+    QSharedPointer<ExpressionFormatter> cimpFormatter =
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(cimpFinder));
+
+    QSharedPointer<IPXactSystemVerilogParser> cimpParser =
+        QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
+
+    QSharedPointer<InstantiationsValidator> cimpValidator = QSharedPointer<InstantiationsValidator>(
+        new InstantiationsValidator(cimpParser, component_->getFileSets(),
+            QSharedPointer<ParameterValidator>(
+                new ParameterValidator(cimpParser, component_->getChoices())), libHandler_));
+
+    QSharedPointer<SingleComponentInstantiationItem> componentInstantiationItem(
+        new SingleComponentInstantiationItem(model_, libHandler_, component_, instantiation, cimpValidator,
+            cimpCounter, cimpFinder, cimpFormatter, cimpParser, instantiationInterface_, this));
+
+    return componentInstantiationItem;
 }

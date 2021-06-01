@@ -16,28 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: InterfaceModeSelector::InterfaceModeSelector()
 //-----------------------------------------------------------------------------
-InterfaceModeSelector::InterfaceModeSelector(QWidget *parent, QSharedPointer<BusInterface> busif,
-    bool showMonitor): QComboBox(parent),
-    showMonitor_(showMonitor)
-{
-    initialize();	
-
-    // if bus interface was specified
-    if (busif)
-    {
-        setCurrentIndex(busif->getInterfaceMode());
-    }
-    // if there is no bus interface then set "undefined" as selected
-    else
-    {
-        setCurrentIndex(General::INTERFACE_MODE_COUNT);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceModeSelector::InterfaceModeSelector()
-//-----------------------------------------------------------------------------
-InterfaceModeSelector::InterfaceModeSelector(General::InterfaceMode mode, QWidget* parent, bool showMonitor):
+InterfaceModeSelector::InterfaceModeSelector(QWidget* parent, General::InterfaceMode mode, bool showMonitor):
 QComboBox(parent),
 showMonitor_(showMonitor)
 {

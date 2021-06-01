@@ -24,6 +24,7 @@
 
 class BusInterface;
 class Component;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor to the slave details of a bus interface.
@@ -34,36 +35,42 @@ class BusIfInterfaceSlave : public BusIfInterfaceModeEditor
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
-	 *        @param [in]   busif       The bus interface being edited.
-	 *        @param [in]   component   The component being edited.
-	 *        @param [in]   parent      The owner of this editor.
-	 *
-	*/
-	BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,	QSharedPointer<Component> component, QWidget* parent);
-	
-	//! The destructor
-	virtual ~BusIfInterfaceSlave();
+     *      @param [in] busInterface    Interface for accessing bus interfaces.
+     *      @param [in] busName         Name of the edited bus interface.
+     *      @param [in]   parent      The owner of this editor.
+     */
+    BusIfInterfaceSlave(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
 
-	/*! Check for the validity of the edited item.
-	*
-	*       @return True if item is valid.
-	*/
+	/*!
+     *  The destructor.
+     */
+	virtual ~BusIfInterfaceSlave() = default;
+
+	/*!
+     *  Check for the validity of the edited item.
+     *
+     *       @return True if item is valid.
+     */
 	virtual bool isValid() const;
 
-	/*! Restore the changes made in the editor back to ones in the model.
-	*
-	*/
+	/*!
+     *  Restore the changes made in the editor back to ones in the model.
+     */
 	virtual void refresh();
 
-	/*! Get the interface mode of the editor
+	/*!
+     *  Get the interface mode of the editor
 	 * 
 	 *      @return General::InterfaceMode Specifies the interface mode.
-	*/
+     */
 	virtual General::InterfaceMode getInterfaceMode() const;
 
-	//! Save the interface mode-specific details to the bus interface.
+	/*!
+     *  Save the interface mode-specific details to the bus interface.
+     */
 	virtual void saveModeSpecific();
 
 private slots:
@@ -96,10 +103,8 @@ private slots:
 
 private:
 
-	//! No copying
+    //! No copying. No assignment.
 	BusIfInterfaceSlave(const BusIfInterfaceSlave& other);    
-
-	//! No assignment
 	BusIfInterfaceSlave& operator=(const BusIfInterfaceSlave& other);
 
     /*!
@@ -116,14 +121,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The slave interface mode being edited.
-	QSharedPointer<SlaveInterface> slave_;
-
     //! Holder for the memory map option.
     QGroupBox* memoryMapBox_;
 
 	//! The editor to select a memory map from the component.
 	ReferenceSelector memoryMapReferenceSelector_;
+
+    //! List of available transparent bridges.
+    QSharedPointer<QList<QSharedPointer<TransparentBridge> > > slaveBridges_;
 
 	//! The editor to edit the bridges of a slave interface.
 	BridgesEditor bridges_;

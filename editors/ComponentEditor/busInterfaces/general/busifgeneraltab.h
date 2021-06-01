@@ -30,7 +30,7 @@ class BusInterface;
 class Component;
 class LibraryInterface;
 class AbstractionTypesEditor;
-class BusInterfaceValidator;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Container for editor on the general tab of a bus interface editor.
@@ -50,16 +50,25 @@ public:
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
      *      @param [in] expressionParser        Pointer to the expression parser.
-     *      @param [in] busValidator            Validator for bus interfaces.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
+     *      @param [in] busName                 Name of the edited bus interface.
 	 *      @param [in] parent                  Pointer to the owner of this editor.
 	 *      @param [in] parentWnd               Pointer to the parent window.
 	 */
-	BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<BusInterface> busif,
-		QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<BusInterfaceValidator> busValidator, QWidget* parent, QWidget* parentWnd);
-	
-	//! The destructor.
+    BusIfGeneralTab(LibraryInterface* libHandler,
+        QSharedPointer<BusInterface> busif,
+        QSharedPointer<Component> component,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser,
+        BusInterfaceInterface* busInterface,
+        std::string busName,
+        QWidget* parent,
+        QWidget* parentWnd);
+
+	/*!
+     *  The destructor.
+     */
 	virtual ~BusIfGeneralTab();
 
 	/*!
@@ -83,16 +92,24 @@ public:
 
 signals:
 
-	//! Emitted when contents of the model change
+	/*!
+     *  Emitted when contents of the model change
+     */
 	void contentChanged();
 
-	//! Prints an error message to the user.
+	/*!
+     *  Prints an error message to the user.
+     */
 	void errorMessage(const QString& msg) const;
 
-	//! Prints a notification to user.
+	/*!
+     *  Prints a notification to user.
+     */
 	void noticeMessage(const QString& msg) const;
 
-	//! Emitted when a help page should be changed in the context help window.
+	/*!
+     *  Emitted when a help page should be changed in the context help window.
+     */
 	void helpUrlRequested(QString const& url);
 
     /*!
@@ -118,32 +135,56 @@ signals:
     void openReferenceTree(QString const& id, QString const& parameterName) const;
 
     /*!
-     *  Calculate the references made to the selected parameters.
+     *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameters  The selected parameters.
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
      */
-    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
+    void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        AbstractParameterInterface* parameterInterface);
+
+    /*!
+     *  Inform of the name change in the edited bus interface.
+     *
+     *      @param [in] newName     New name of the bus interface.
+     */
+    void nameChanged(std::string const& newName);
+
+public slots:
+
+    /*!
+     *  Handle the change in name of the edited bus interface.
+     */
+    void onNameChanged();
 
 protected:
 
-	//! Handler for widget's show event
+	/*!
+     *  Handler for widget's show event
+     */
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! Handler for changes in the bus type.
+	/*!
+     *  Handler for changes in the bus type.
+     */
 	void onBusTypeChanged();
 
-	//! Handler for changes in interface mode.
+	/*!
+     *  Handler for changes in interface mode.
+     */
 	void onModeChanged(General::InterfaceMode mode);
 
-	/*! Set the bus type for the bus interface.
+	/*!
+     *  Set the bus type for the bus interface.
 	 *
 	 *      @param [in] busDefVLNV The vlnv identifying the bus type.
 	 */
 	void onSetBusType(const VLNV& busDefVLNV);
 
-	/*! Set the abstraction type for the bus interface.
+	/*!
+     *  Set the abstraction type for the bus interface.
 	 *
 	 *      @param [in] absDefVLNV The vlnv identifying the abstraction definition.
 	 */
@@ -164,8 +205,8 @@ private:
     //! Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the bus interface being edited.
-	QSharedPointer<BusInterface> busif_;
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 
 	//! Contains the name, display name and description of bus interface.
 	NameGroupEditor nameEditor_;

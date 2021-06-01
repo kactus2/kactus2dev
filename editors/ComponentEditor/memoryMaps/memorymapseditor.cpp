@@ -19,6 +19,7 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
 
 #include <library/LibraryInterface.h>
 
@@ -32,17 +33,19 @@
 //-----------------------------------------------------------------------------
 // Function: memorymapseditor::MemoryMapsEditor()
 //-----------------------------------------------------------------------------
-MemoryMapsEditor::MemoryMapsEditor(QSharedPointer<Component> component,
+MemoryMapsEditor::MemoryMapsEditor(MemoryMapInterface* mapInterface, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, LibraryInterface* handler,
-    QSharedPointer<MemoryMapValidator> memoryMapValidator, QWidget *parent):
+    LibraryInterface* handler, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(new MemoryMapsView(this)),
 proxy_(new EditableTreeSortFilter(this)),
-model_(new MemoryMapsModel(
-    component, parameterFinder, expressionParser, expressionFormatter, memoryMapValidator, this)),
-delegate_()
+model_(new MemoryMapsModel(parameterFinder, expressionParser, mapInterface, this)),
+delegate_(),
+interface_(mapInterface),
+component_(component)
 {
+    mapInterface->setMemoryMaps(component);
+
     // display a label on top the table
     SummaryLabel* summaryLabel = new SummaryLabel(tr("Memory maps summary"), this);
 
@@ -102,10 +105,15 @@ void MemoryMapsEditor::connectSignals()
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(model_, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)),
-        this, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
-    connect(model_, SIGNAL(memoryRemapRemoved(int ,QSharedPointer<MemoryMap>)),
-        this, SIGNAL(memoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(memoryRemapAdded(int, QString const&)),
+        this, SIGNAL(memoryRemapAdded(int, QString const&)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(memoryRemapRemoved(int, QString const&)),
+        this, SIGNAL(memoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(aubChangedOnRow(int)), 
         this, SIGNAL(changeInAddressUnitBitsOnRow(int)), Qt::UniqueConnection);
@@ -136,6 +144,11 @@ void MemoryMapsEditor::connectSignals()
     connect(view_, SIGNAL(copyRows(QModelIndexList)),
         model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
     connect(view_, SIGNAL(pasteRows(QModelIndex)), model_, SLOT(onPasteRows(QModelIndex)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)), this,
+        SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -146,6 +159,8 @@ void MemoryMapsEditor::refresh()
     delegate_->updateRemapStateNames(getRemapStateNames());
 	view_->update();
     view_->expandAll();
+
+    interface_->setMemoryMaps(component_);
 }
 
 //-----------------------------------------------------------------------------

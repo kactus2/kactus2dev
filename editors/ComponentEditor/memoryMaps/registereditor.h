@@ -13,7 +13,6 @@
 #define REGISTEREDITOR_H
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Register.h>
 
 #include <QSharedPointer>
 #include <QGroupBox>
@@ -24,6 +23,8 @@ class ParameterFinder;
 class EditableTableView;
 class ExpressionFormatter;
 class FieldValidator;
+class FieldInterface;
+class Field;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of fields in a register.
@@ -37,23 +38,23 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] reg                     Pointer to the register being edited.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance that manages the library.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] fieldValidator          Validator used for fields.
-	 *      @param [in] parent                  Pointer to the parent of this editor.
+     *      @param [in] fields              Pointer to the available fields.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] handler             Pointer to the instance that manages the library.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+     *      @param [in] fieldInterface      Interface for fields.
+	 *      @param [in] parent              Pointer to the parent of this editor.
 	 */
-	RegisterEditor(QSharedPointer<Register> reg,
-		QSharedPointer<Component> component,
-		LibraryInterface* handler,
+    RegisterEditor(QSharedPointer<QList<QSharedPointer<Field> > > fields,
+        QSharedPointer<Component> component,
+        LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<FieldValidator> fieldValidator,
-		QWidget* parent = 0);
+        FieldInterface* fieldInterface,
+        QWidget* parent = 0);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~RegisterEditor() = default;
 
 	/*!
@@ -62,6 +63,14 @@ public:
 	virtual void refresh();
 
 signals:
+    
+    /*
+     *  Informs of field name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void fieldNameChanged(QString const& oldName, QString const& newName);
 
     /*!
      *  Informs of changes to the component editor tree.
@@ -125,11 +134,21 @@ private:
 	//! No assignment.
 	RegisterEditor& operator=(const RegisterEditor& other);
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! Pointer to the view that displays the items.
     EditableTableView* view_;
 
 	//! Pointer to the model that manages the details of items.
 	RegisterTableModel* model_;
+
+    //! Interface for accessing fields.
+    FieldInterface* interface_;
+
+    //! Pointer to the available fields.
+    QSharedPointer<QList<QSharedPointer<Field> > > fields_;
 };
 
 #endif // REGISTEREDITOR_H

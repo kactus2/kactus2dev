@@ -14,6 +14,8 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+
 #include <library/LibraryInterface.h>
 
 #include <Plugins/PluginSystem/PluginManager.h>
@@ -27,15 +29,19 @@
 // Function: FileSetsEditor::FileSetsEditor()
 //-----------------------------------------------------------------------------
 FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface,
-    QSharedPointer<ParameterFinder> parameterFinder):
+    QSharedPointer<ParameterFinder> parameterFinder, FileSetInterface* fileSetInterface):
 ItemEditor(component, libInterface),
-    splitter_(Qt::Vertical, this),
-    view_(&splitter_),
-    model_(component, parameterFinder, this),
-    proxy_(this),
-    dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), &splitter_),
-    firstShow_(true)
-{    
+splitter_(Qt::Vertical, this),
+view_(&splitter_),
+model_(fileSetInterface, parameterFinder, this),
+proxy_(this),
+dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), &splitter_),
+firstShow_(true),
+fileSetInterface_(fileSetInterface),
+availableFileSets_(component->getFileSets())
+{
+    fileSetInterface_->setFileSets(availableFileSets_);
+
     proxy_.setSourceModel(&model_);
 
     view_.setModel(&proxy_);
@@ -86,6 +92,8 @@ FileSetsEditor::~FileSetsEditor()
 //-----------------------------------------------------------------------------
 void FileSetsEditor::refresh()
 {
+    fileSetInterface_->setFileSets(availableFileSets_);
+
     view_.update();
 }
 

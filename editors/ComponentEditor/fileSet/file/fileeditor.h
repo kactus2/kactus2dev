@@ -30,6 +30,7 @@ class Component;
 class File;
 class ParameterFinder;
 class ExpressionParser;
+class FileInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for the details of a file.
@@ -45,22 +46,41 @@ public:
 	 *
 	 *      @param [in] handler             Pointer to the instance that manages the library.
 	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] file                Pointer to the file that is edited.
+	 *      @param [in] fileName            Name of the file that is edited.
      *      @param [in] parameterFinder     The used parameter finder.
      *      @param [in] expressionParser    Parser for calculating expressions.
+     *      @param [in] fileInterface       Interface for files.
+     *      @param [in] files               The available files.
 	 *      @param [in] parent              Pointer to the owner of this widget.
 	 */
-	FileEditor(LibraryInterface* handler, QSharedPointer<Component> component, QSharedPointer<File> file,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    FileEditor(LibraryInterface* handler,
+        QSharedPointer<Component> component,
+        std::string const& fileName,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        FileInterface* fileInterface,
+        QSharedPointer<QList<QSharedPointer<File> > > files,
         QWidget *parent = 0);
 
-	//! The destructor.
-	virtual ~FileEditor();
+	/*!
+     *  The destructor.
+     */
+	virtual ~FileEditor() = default;
 
 	/*!
      *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
+public slots:
+
+    /*!
+     *  Handle the name change of the containing file.
+     *
+     *      @param [in] oldName     Old name of the file.
+     *      @param [in] newName     The new name of the file.
+     */
+    void fileRenamed(std::string const& oldName, std::string const& newName);
 
 signals:
 
@@ -119,8 +139,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Pointer to the file that is edited in this editor.
-	QSharedPointer<File> file_;
+    //! Name of the file that is edited in this editor.
+    std::string fileName_;
 
     //! The editor for the file name and description.
     FileNameEditor nameEditor_;
@@ -151,6 +171,12 @@ private:
 
     //! The button for opening containing folder.
     QPushButton* openFolderButton_;
+
+    //! Interface for files.
+    FileInterface* fileInterface_;
+
+    //! The available files.
+    QSharedPointer<QList<QSharedPointer<File> > > availableFiles_;
 };
 
 #endif // FILEEDITOR_H

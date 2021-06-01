@@ -12,8 +12,7 @@
 #ifndef ABSDEFGROUP_H
 #define ABSDEFGROUP_H
 
-#include <editors/BusDefinitionEditor/AbstractionWirePortsEditor.h>
-#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.h>
+#include <editors/BusDefinitionEditor/AbstractionPortsEditor.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
@@ -30,7 +29,7 @@ class VLNVDisplayer;
 class VLNVEditor;
 class LibraryInterface;
 class AbstractionDefinitionPortsSortFilter;
-class AbstractionPortsModel;
+class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for the logical ports of an abstraction definition.
@@ -45,9 +44,11 @@ public:
      *  The constructor.
 	 *
      *      @param [in] libraryHandler  Allows access to the library.
+     *      @param [in] portInterface   Interface for accssing port abstractions.
 	 *      @param [in] parent          The owner of the editor.
 	 */
-	AbsDefGroup(LibraryInterface* libraryHandler, QWidget *parent);
+	AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface, 
+        PortAbstractionInterface* extendInterface, QWidget *parent);
 	
 	/*!
      *  The destructor.
@@ -178,11 +179,20 @@ private:
     //! Contains tabs for wire and transactional ports.
     QTabWidget portTabs_;
 
+    //! Interface for accessing port abstractions.
+    PortAbstractionInterface* portInterface_;
+
+    //! Interface for accessing extened port abstractions.
+    PortAbstractionInterface* extendInterface_;
+
+    //! The abstraction definition ports model.
+    AbstractionPortsModel* portModel_;
+
     //! Editor for wire ports.
-    AbstractionWirePortsEditor* wirePortsEditor_;
+    AbstractionPortsEditor* wirePortsEditor_;
 
     //! Editor for transactional ports.
-    AbstractionTransactionalPortsEditor* transactionalPortsEditor_;
+    AbstractionPortsEditor* transactionalPortsEditor_;
 
     //! The edited abstraction definition.
     QSharedPointer<AbstractionDefinition> abstraction_;
@@ -190,8 +200,8 @@ private:
     //! The library interface.
     LibraryInterface* libraryHandler_;
 
-    //! The abstraction definition ports model.
-    AbstractionPortsModel* portModel_;
+
+ 
 };
 
 #endif // ABSDEFGROUP_H

@@ -16,11 +16,14 @@
 #include <QSortFilterProxyModel>
 
 class Choice;
-class ModuleParameter;
 class ModuleParameterModel;
 class ParameterFinder;
 class ExpressionFormatter;
 class Parameter;
+class AbstractParameterInterface;
+class ModuleParameterInterface;
+class ParametersView;
+class ComponentInstantiation;
 
 //-----------------------------------------------------------------------------
 //! Editor for module parameters.
@@ -33,32 +36,47 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parameters              The selected module parameters.
+     *      @param [in] instantiation           Component instantiation containing the selected module parameters.
      *      @param [in] componentChoices        The component choices.
      *      @param [in] parameterFinder         The selected parameter finder.
      *      @param [in] expressionFormatter     The selected expression formatter.
+     *      @param [in] parameterInterface      Interface for accessing module parameters.
      *      @param [in] parent                  The owner of this editor.
      */
-    ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parameters,
+    ModuleParameterEditor(
+        QSharedPointer<ComponentInstantiation> instantiation,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        ModuleParameterInterface* parameterInterface,
         QWidget* parent);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	~ModuleParameterEditor();
 
-    //! Refresh the contents of the editor.
+    /*!
+     *  Refresh the contents of the editor.
+     */
     void refresh();
 
-    //! Enables the editing of module parameters.
+    /*!
+     *  Enables the editing of module parameters.
+     */
     void enableEditing();
 
-    //! Disables the editing of module parameters.
+    /*!
+     *  Disables the editing of module parameters.
+     */
     void disableEditing();
 
-    //! Sets the module parameters to edit.
-    void setModuleParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
+    /*!
+     *  Sets the module parameters to edit.
+     *
+     *      @param [in] containingInstantiation     Component instantiation containing the module parameters.
+     */
+    void setModuleParameters(QSharedPointer<ComponentInstantiation> containingInstantiation);
 
 signals:
     //! Emitted when contents of the editor change.
@@ -95,9 +113,11 @@ signals:
     /*!
      *  Recalculate references made to the selected parameters.
      *
-     *      @param [in] parameters  The selected parameters.
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
      */
-    void recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> > parameters);
+    void recalculateReferencesToParameters(QVector<QString> const& parameterList,
+        AbstractParameterInterface* parameterInterface);
 
 private:
 
@@ -110,6 +130,15 @@ private:
 
     //! Used for editing model parameters.
     ModuleParameterModel* model_;
+
+    //! Interface for accessing module parameters.
+    ModuleParameterInterface* moduleParameterInterface_;
+
+    //! The parameters view.
+    ParametersView* view_;
+
+    //! Component instantiation containing the module parameters.
+    QSharedPointer<ComponentInstantiation> instantiation_;
 };
 
 #endif // MODULEPARAMETEREDITOR_H

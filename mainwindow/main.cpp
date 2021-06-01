@@ -9,6 +9,9 @@
 // Kactus2 main entry point.
 //-----------------------------------------------------------------------------
 
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+
 #include "mainwindow.h"
 
 #include "CommandLineParser.h"
@@ -17,6 +20,8 @@
 #include <common/ui/MessageMediator.h>
 #include <common/ui/ConsoleMediator.h>
 #include <common/ui/GraphicalMessageMediator.h>
+
+#include <common/KactusAPI.h>
 
 #include <VersionHelper.h>
 
@@ -31,6 +36,13 @@
 #include <QPalette>
 #include <QTimer>
 #include <QObject>
+
+
+#include <iostream>
+
+#include "PythonAPI/PythonInterpreter.h"
+#include "PythonAPI/StdInputListener.h"
+#include "PythonAPI/FileChannel.h"
 
 //-----------------------------------------------------------------------------
 //! Private utility functions for main.
@@ -50,7 +62,7 @@ namespace
     //-----------------------------------------------------------------------------
     QCoreApplication* createApplication(int &argc, char* argv[])
     {
-        QCoreApplication* application = 0; 
+        QCoreApplication* application = nullptr; 
         if (startGui(argc))
         {
             QApplication* guiApplication = new QApplication(argc, argv);        
@@ -104,6 +116,7 @@ namespace
     }
 };
 
+
 //-----------------------------------------------------------------------------
 // Function: main()
 //-----------------------------------------------------------------------------
@@ -121,7 +134,20 @@ int main(int argc, char *argv[])
 
     loadPlugins(settings);
 
-    QScopedPointer<LibraryHandler> library(new LibraryHandler(0, mediator.data(), 0));
+    LibraryHandler::initialize(0, mediator.data(), 0);
+    QScopedPointer<LibraryHandler> library(LibraryHandler::getInstance());
+
+    QScopedPointer<KactusAPI> coreAPI(new KactusAPI(library.data(), mediator.data()));
+
+    wchar_t *program = Py_DecodeLocale(argv[0], NULL);
+    if (program == NULL)
+    {
+       // errorChannel_->write(QString("Fatal error: cannot decode application name."));
+        return false;
+    }
+
+    Py_SetProgramName(program);
+    PyMem_RawFree(program);
 
     if (startGui(argc))
     {
@@ -159,14 +185,28 @@ int main(int argc, char *argv[])
         QStringList arguments = application->arguments();
         CommandLineParser parser;
 
-        parser.readArguments(arguments);
-
-        if (!parser.helpOrVersionOptionSet())
+        parser.process(arguments, mediator.data());
+        
+        if (parser.commandlineMode())
         {
             library->searchForIPXactFiles();
+
+            QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
+            QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
+
+            PythonInterpreter console(outChannel.data(), errChannel.data(), application.data());
+            if (console.initialize() == false)
+            {
+                return 1;
+            }
+
+            QScopedPointer<StdInputListener> listener(new StdInputListener(&console, application.data()));
+
+            QObject::connect(listener.data(), SIGNAL(inputFailure()), application.data(), SLOT(quit()));
+
+            return application->exec();
         }
 
-        PluginUtilityAdapter utility(library.data(), mediator.data(), VersionHelper::createVersionString(), 0);
-        return parser.process(arguments, &utility);
+        return 1;
     }   
 }

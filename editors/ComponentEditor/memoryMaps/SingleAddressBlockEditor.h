@@ -33,19 +33,24 @@ class AccessComboBox;
 class BooleanComboBox;
 class RegisterFileEditor;
 class AddressBlockValidator;
+class AddressBlockInterface;
+class MemoryMapBase;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single address block.
 //-----------------------------------------------------------------------------
 class SingleAddressBlockEditor : public ItemEditor
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
 	/*!
 	 *  The constructor.
 	 *
+     *      @param [in] blockInterface          Interface for address blocks.
 	 *      @param [in] addressBlock            The address block being edited.
+     *      @param [in] containingMap           Memory map item containing the edited address block.
 	 *      @param [in] component               The component being edited.
 	 *      @param [in] handler                 The instance managing the library.
 	 *      @param [in] parameterFinder         The parameter finder.
@@ -54,7 +59,9 @@ public:
      *      @param [in] addressBlockValidator   Validator used for address blocks.
 	 *      @param [in] parent                  The parent of this editor.
 	 */
-    SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
+    SingleAddressBlockEditor(AddressBlockInterface* blockInterface,
+        QSharedPointer<AddressBlock> addressBlock,
+        QSharedPointer<MemoryMapBase> containingMap,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
@@ -79,6 +86,21 @@ public:
 	 */
 	virtual void refresh() override final;
 
+public slots:
+
+    /*
+     *  Handles addressblock name change from memory map editor.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void onAddressBlockNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Handles addressblock name change from name editor.
+     */
+    void onAddressBlockNameChanged();
+
 signals:
 
     /*!
@@ -87,6 +109,14 @@ signals:
      *      @param [in] newAddressUnitBits  The new address unit bits value.
      */
     void addressUnitBitsChanged(int newAddressUnitBits);
+
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
 
     void addressingChanged();
 
@@ -206,8 +236,14 @@ private:
     //! Editor for containing the register files of the address block.
     RegisterFileEditor* registerFilesEditor_;
 
-    //! The current address block.
-    QSharedPointer<AddressBlock> addressBlock_;
+    //! Name of the current address block.
+    std::string blockName_;
+
+    //! Interface for address blocks.
+    AddressBlockInterface* blockInterface_;
+
+    //! Memory map item containing the address block.
+    QSharedPointer<MemoryMapBase> containingMap_;
 
     //! The expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

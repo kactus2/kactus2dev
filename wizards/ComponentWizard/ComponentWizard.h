@@ -20,6 +20,7 @@
 class Component;
 class LibraryInterface;
 class ReferenceCounter;
+class FileSetInterface;
 
 //-----------------------------------------------------------------------------
 //! Component wizard dialog.
@@ -38,8 +39,10 @@ public:
      *      @param [in] handler	    Pointer to the instance which manages the library.
      *      @param [in] parent      The parent widget.
      */
-    ComponentWizard(QSharedPointer<Component> component, QString const& basePath,
-        LibraryInterface* handler, QWidget* parent);
+    ComponentWizard(QSharedPointer<Component> component,
+        QString const& basePath,
+        LibraryInterface* handler,
+        QWidget* parent);
 
     /*!
      *  Destructor.
@@ -73,6 +76,13 @@ private:
     // Disable copying.
     ComponentWizard(ComponentWizard const& rhs);
     ComponentWizard& operator=(ComponentWizard const& rhs);
+
+    /*!
+     *  Create an interface for accessing file sets.
+     *
+     *      @return Interface for accessing file sets.
+     */
+    FileSetInterface* createFileSetInterface();
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -26,6 +26,8 @@ class LibraryInterface;
 class ExpressionParser;
 class ParameterFinder;
 class ExpressionFormatter;
+class PortMapInterface;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Port map page for the bus interface wizard.
@@ -44,15 +46,18 @@ public:
      *      @param [in] lh                  The component library handler.
      *      @param [in] physicalPorts       The physical ports selected for mapping.
      *      @param [in] expressionParser    The used expression parser.
-     *      @param [in] formatter           The used expression formatter.
      *      @param [in] parameterFinder     The used parameter finder.
-     *      @param [in] validator           The validator for bus interface.
+     *      @param [in] busInterface        Interface for accessing bus interfaces.
      *      @param [in] parent              The parent wizard.
      */
-    BusInterfaceWizardPortMapPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh, QStringList physicalPorts, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<BusInterfaceValidator> validator, BusInterfaceWizard* parent);
+    BusInterfaceWizardPortMapPage(QSharedPointer<Component> component,
+        QSharedPointer<BusInterface> busIf,
+        LibraryInterface* lh,
+        QStringList physicalPorts,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        BusInterfaceInterface* busInterface,
+        BusInterfaceWizard* parent);
 
     /*!
      *  The destructor.
@@ -107,8 +112,8 @@ private:
     //! The widget for editing port maps.
     BusInterfacePortMapTab portMapTab_;
 
-    //! The bus interface validator.
-    QSharedPointer<BusInterfaceValidator> validator_;
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // BUSINTERFACEWIZARDPORTMAPPAGE_H

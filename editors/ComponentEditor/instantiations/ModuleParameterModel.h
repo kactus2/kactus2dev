@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -35,31 +36,20 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in]  moduleParameters       The module parameters being edited.
-     *      @param [in]  choices                The choices available for the model parameter values.
-     *      @param [in]  expressionParser       Expression parser for configurable elements.
-     *      @param [in]  parameterFinder        The parameter finder.
-     *      @param [in]  expressionFormatter    Expression formatter.
-	 *      @param [in]  parent                 The owner of this model.
-	*/
-    ModuleParameterModel(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters,
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+     *      @param [in] moduleParameterInterface    Interface for accessing module parameters.
+     *      @param [in] expressionParser            Expression parser for configurable elements.
+     *      @param [in] parameterFinder             The parameter finder.
+	 *      @param [in] parent                      The owner of this model.
+     */
+    ModuleParameterModel(ModuleParameterInterface* moduleParameterInterface,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent);
 
-	//! The destructor.
-	virtual ~ModuleParameterModel();
-
 	/*!
-     *  Get the number of rows in the model.
-	 *
-	 *      @param [in]  parent Model index of the parent of the item.
-	 *
-	 *      @return  Number of rows currently in the model.
-	 */
-	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
+     *  The destructor.
+     */
+	virtual ~ModuleParameterModel() = default;
 
 	/*!
      *  Get the number of columns in the model
@@ -112,25 +102,18 @@ public:
 	virtual bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
     /*!
-     *  Gets the model parameter in the given index.
-     *
-     *      @param [in] index   The index where to get the model parameter.
-     *
-     *      @return The model parameter whose data is in the given index.
+     *  Reset the model.
      */
-    virtual QSharedPointer<ModuleParameter> getParameter(QModelIndex const& index) const;    
-       
-    /*!
-     *  Sets the model parameters to edit and locks them.
-     *
-     *      @param [in] modelParameters   The model parameters to edit.
-     */
-    void setModelParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
+    void resetModelItems();
 
-    //! Enables the editing of module parameters in the model.
+    /*!
+     *  Enables the editing of module parameters in the model.
+     */
     void enableEditing();
 
-    //! Disables the editing of module parameters in the model.
+    /*!
+     *  Disables the editing of module parameters in the model.
+     */
     void disableEditing();
 
 public slots:
@@ -150,15 +133,6 @@ public slots:
 	virtual void onRemoveItem(const QModelIndex& index);
 
 protected:
-            
-    /*!
-     *  Gets the parameter on the given row.
-     *
-     *      @param [in] row   The row number where to get the parameter from.
-     *
-     *      @return The parameter on the given row.
-     */
-    virtual QSharedPointer<Parameter> getParameterOnRow(int row) const;
 
     /*!
      *  Gets the column for value format.
@@ -265,16 +239,6 @@ protected:
      */
     virtual int usageCountColumn() const;
 
-    /*!
-     *  Validates the data in a model parameter corresponding to a given column.
-     *
-     *      @param [in] column      The column whose data to validate.
-     *      @param [in] parameter   The model parameter whose data to validate.
-     *
-     *      @return True, if the data in the parameter is valid, otherwise false.
-     */
-    virtual bool validateIndex(QModelIndex const& index) const;
-
 private:
 
 	//! No copying.
@@ -283,20 +247,9 @@ private:
 	//! No assignment.
 	ModuleParameterModel& operator=(const ModuleParameterModel& other);
     
-	/*! Get the index of the given model parameter.
-	 *
-	 *      @param [in]  modelParam     The model parameter whose index is requested.
-	 *
-	 *      @return The index of the first column of the model parameter.
-	*/
-    virtual QModelIndex indexFor(QSharedPointer<ModuleParameter> moduleParameter) const;
-    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The model parameters to edit.
-    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters_;
 
     //! Disable for editing of module parameters.
     bool editingDisabled_;

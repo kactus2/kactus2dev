@@ -22,6 +22,7 @@ class LibraryInterface;
 class Component;
 class FileSet;
 class File;
+class FileInterface;
 
 //-----------------------------------------------------------------------------
 //! The editor to add/remove/edit files of a file set.
@@ -35,16 +36,23 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] fileSet     Pointer to the file set being edited.
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] parent      Pointer to the owner of this editor.
-	 *      @param [in] title       The title for the group box.
+     *      @param [in] availableFiles  List of editable files.
+     *      @param [ni] fileInterface   Interface for accessing files.
+	 *      @param [in] component       Pointer to the component being edited.
+	 *      @param [in] handler         Pointer to the instance that manages the library.
+	 *      @param [in] parent          Pointer to the owner of this editor.
+	 *      @param [in] title           The title for the group box.
 	 */
-	FilesEditor(QSharedPointer<Component> component, QSharedPointer<FileSet> fileSet, LibraryInterface* handler,
-        QWidget *parent, const QString& title = tr("Files"));
+    FilesEditor(QSharedPointer<QList<QSharedPointer<File> > > availableFiles,
+        FileInterface* fileInterface,
+        QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QWidget *parent,
+        const QString& title = tr("Files"));
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	~FilesEditor();
 
 public slots:
@@ -67,6 +75,14 @@ signals:
 
 	//! Emitted when a file is moved from position to another
 	void fileMoved(int source, int target);
+
+    /*!
+     *  Inform of a name change in a file.
+     *
+     *      @param [in] oldName     Old name of the file.
+     *      @param [in] newName     The new name of the file.
+     */
+    void fileRenamed(std::string const& oldName, std::string const& newName);
 
 private slots:
 
@@ -91,6 +107,11 @@ private:
 	//! The model to edit the file summary.
 	FilesModel model_;
 
+    //! Interface for accessing files.
+    FileInterface* fileInterface_;
+
+    //! The editable files.
+    QSharedPointer<QList<QSharedPointer<File> > > availableFiles_;
 };
 
 #endif // FILESEDITOR_H

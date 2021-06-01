@@ -25,6 +25,7 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WirePort.h>
 

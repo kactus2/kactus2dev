@@ -27,7 +27,7 @@ public:
 	 *
      *      @param [in] parent      Pointer to the owner of this model.
 	 */
-    AbstractionWirePortsSortFilter(QObject *parent);
+    AbstractionWirePortsSortFilter(PortAbstractionInterface* portInterface, QObject *parent);
 
 	/*!
 	 *  The destructor.

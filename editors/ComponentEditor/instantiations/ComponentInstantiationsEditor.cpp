@@ -17,6 +17,8 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
+#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
+
 #include <library/LibraryInterface.h>
 
 #include <QVBoxLayout>
@@ -26,13 +28,19 @@
 //-----------------------------------------------------------------------------
 ComponentInstantiationsEditor::ComponentInstantiationsEditor(QSharedPointer<Component> component,
     LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<InstantiationsValidator> validator, QWidget* parent /* = 0 */):
+    ComponentInstantiationInterface* instantiationInterface, QWidget* parent):
 ItemEditor(component, handler, parent),
 view_(new EditableTableView(this)),
 proxy_(new QSortFilterProxyModel(this)),
-model_(component, parameterFinder, validator, this)
+model_(0),
+instantiationInterface_(instantiationInterface),
+availableInstantiations_(component->getComponentInstantiations())
 {
-	proxy_->setSourceModel(&model_);	
+    instantiationInterface_->setComponentInstantiations(availableInstantiations_);
+
+    model_ = new ComponentInstantiationsModel(parameterFinder, instantiationInterface_, this);
+
+	proxy_->setSourceModel(model_);
     proxy_->setDynamicSortFilter(false);
 
 	view_->setModel(proxy_);    
@@ -42,18 +50,18 @@ model_(component, parameterFinder, validator, this)
 	// items can not be dragged
 	view_->setItemsDraggable(false);
 
-	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);   
-	connect(&model_, SIGNAL(componentInstantiationAdded(int)), 
+	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);   
+	connect(model_, SIGNAL(componentInstantiationAdded(int)), 
         this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(componentInstantiationRemoved(int)),
+	connect(model_, SIGNAL(componentInstantiationRemoved(int)),
         this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
-        &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-    connect(&model_, SIGNAL(decreaseReferences(QString)), this,
+    connect(model_, SIGNAL(decreaseReferences(QString)), this,
         SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     SummaryLabel* summaryLabel = new SummaryLabel(tr("Component instantiations summary"), this);
@@ -76,8 +84,11 @@ ComponentInstantiationsEditor::~ComponentInstantiationsEditor()
 // Function: ComponentInstantiationsEditor::refresh()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationsEditor::refresh()
-{    
+{
     proxy_->invalidate();
+    view_->update();
+
+    instantiationInterface_->setComponentInstantiations(availableInstantiations_);
 }
 
 //-----------------------------------------------------------------------------

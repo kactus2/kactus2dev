@@ -39,28 +39,25 @@
 //-----------------------------------------------------------------------------
 // Function: SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor()
 //-----------------------------------------------------------------------------
-SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor(
-    QSharedPointer<IndirectInterface> indirectInterface,
-    QSharedPointer<IndirectInterfaceValidator> validator,
-    QSharedPointer<Component> component,
-    LibraryInterface* library,
-    QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionFormatter> formatter,
-    QWidget* parent):
+SingleIndirectInterfaceEditor::SingleIndirectInterfaceEditor(QSharedPointer<IndirectInterface> indirectInterface,
+    QSharedPointer<IndirectInterfaceValidator> validator, QSharedPointer<Component> component,
+    LibraryInterface* library, QSharedPointer<ParameterFinder> finder,
+    QSharedPointer<ExpressionFormatter> formatter, BusInterfaceInterface* busInterface, QWidget* parent):
 ParameterItemEditor(component, library, parent),
-    indirectInterface_(indirectInterface),
-    validator_(validator),
-    component_(component),
-    nameEditor_(new NameGroupEditor(indirectInterface, this, tr("Indirect interface name and description"))),   
-    addressSelector_(new ReferenceSelector(this)),
-    dataSelector_(new ReferenceSelector(this)),
-    bitsInLauEditor_(new QLineEdit(this)),
-    endiannessSelector_(new QComboBox(this)),
-    memoryMapBox_(new QGroupBox(tr("Indirect memory map"), this)),
-    memoryMapSelector_(new ReferenceSelector(this)),
-    transparentBridgesEditor_(new BridgesEditor(indirectInterface->getTransparentBridges(), component, this)),
-    parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), component->getChoices(),
-        finder, formatter, this))
-{    
+indirectInterface_(indirectInterface),
+validator_(validator),
+component_(component),
+nameEditor_(new NameGroupEditor(indirectInterface, this, tr("Indirect interface name and description"))),   
+addressSelector_(new ReferenceSelector(this)),
+dataSelector_(new ReferenceSelector(this)),
+bitsInLauEditor_(new QLineEdit(this)),
+endiannessSelector_(new QComboBox(this)),
+memoryMapBox_(new QGroupBox(tr("Indirect memory map"), this)),
+memoryMapSelector_(new ReferenceSelector(this)),
+transparentBridgesEditor_(new BridgesEditor(busInterface, indirectInterface->getTransparentBridges(), this)),
+parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), component->getChoices(), finder,
+    formatter, this))
+{
     addressSelector_->setProperty("mandatoryField", true);
     dataSelector_->setProperty("mandatoryField", true);
 
@@ -93,8 +90,11 @@ ParameterItemEditor(component, library, parent),
     connect(parametersEditor_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
-    connect(parametersEditor_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+    connect(parametersEditor_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,6 +131,7 @@ void SingleIndirectInterfaceEditor::refresh()
     memoryMapSelector_->selectItem(indirectInterface_->getMemoryMapRef());
 
     transparentBridgesEditor_->setChecked(!indirectInterface_->getTransparentBridges()->isEmpty());
+    transparentBridgesEditor_->refresh();
 }
 
 //-----------------------------------------------------------------------------

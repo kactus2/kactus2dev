@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 7.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifinterfacemonitor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busIfInterfaceMonitor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 7.4.2011
+//
+// Description:
+// Editor the edit a monitor settings of a bus interface.
+//-----------------------------------------------------------------------------
 
 #include "busifinterfacemonitor.h"
 
@@ -11,10 +15,10 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/VLNV.h>
-
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
-
 #include <IPXACTmodels/Component/Component.h>
+
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 #include <QGridLayout>
 #include <QLabel>
@@ -22,16 +26,13 @@
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceMonitor::BusIfInterfaceMonitor()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMonitor::BusIfInterfaceMonitor(QSharedPointer<BusInterface> busif, 
-											 QSharedPointer<Component> component,
-											 LibraryInterface* libHandler,
-											 QWidget *parent): 
-BusIfInterfaceModeEditor(busif, component, tr("Monitor"), parent),
+BusIfInterfaceMonitor::BusIfInterfaceMonitor(BusInterfaceInterface* busInterface, std::string const& busName,
+    LibraryInterface* libHandler, QWidget *parent):
+BusIfInterfaceModeEditor(busInterface, busName, tr("Monitor"), parent),
 libHandler_(libHandler),
-monitor_(QSharedPointer<BusInterface::MonitorInterface>(new BusInterface::MonitorInterface())),
-interfaceMode_(this, QSharedPointer<BusInterface>(), false),
-systemGroup_(this) {
-
+interfaceMode_(this, General::INTERFACE_MODE_COUNT, false),
+systemGroup_(this)
+{
 	QLabel* modeLabel = new QLabel(tr("Interface mode:"), this);
 	QLabel* groupLabel = new QLabel(tr("Group:"), this);
 
@@ -47,13 +48,6 @@ systemGroup_(this) {
 		this, SLOT(onInterfaceModeChange(General::InterfaceMode)), Qt::UniqueConnection);
 	connect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
 		this, SLOT(onSystemGroupChange(QString const&)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMonitor::~BusIfInterfaceMonitor()
-//-----------------------------------------------------------------------------
-BusIfInterfaceMonitor::~BusIfInterfaceMonitor()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -83,18 +77,11 @@ bool BusIfInterfaceMonitor::isValid() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMonitor::refresh()
 {
-    if (getBusInterface()->getMonitor())
-    {
-        monitor_ = getBusInterface()->getMonitor();
-    }
-	else
-    {
-		monitor_ = QSharedPointer<BusInterface::MonitorInterface>(new BusInterface::MonitorInterface());
-	}
-	
-	// ask the correct mode from the monitor
-	General::InterfaceMode monitorMode = monitor_->interfaceMode_;
-	
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
+    General::InterfaceMode monitorMode = busInterface->getMonitorMode(busName);
+
 	// select the mode in the selector
 	interfaceMode_.setMode(monitorMode);
 
@@ -113,7 +100,7 @@ void BusIfInterfaceMonitor::refresh()
 			systemGroup_.setEnabled(true);
 
 			// find the current bus definition
-            VLNV busDefVLNV = getBusInterface()->getBusType();
+            VLNV busDefVLNV = busInterface->getBusType(busName);
 
 			// if there is no bus definition
 			if (!libHandler_->contains(busDefVLNV))
@@ -137,7 +124,7 @@ void BusIfInterfaceMonitor::refresh()
 			systemGroup_.addItems(groupList);
 
 			// ask the monitor which group to select
-			QString selectedGroup = monitor_->group_;
+            QString selectedGroup = QString::fromStdString(busInterface->getMonitorGroup(busName));
 
 			// select the same text that was previously selected if it still can be found
 			int index = systemGroup_.findText(selectedGroup);
@@ -170,7 +157,12 @@ General::InterfaceMode BusIfInterfaceMonitor::getInterfaceMode() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMonitor::saveModeSpecific()
 {
-    getBusInterface()->setMonitor(monitor_);
+    onSystemGroupChange(systemGroup_.currentText());
+
+    General::InterfaceMode monitorMode =
+        General::str2Interfacemode(interfaceMode_.currentText(), General::INTERFACE_MODE_COUNT);
+
+    onInterfaceModeChange(monitorMode);
 }
 
 //-----------------------------------------------------------------------------
@@ -178,7 +170,7 @@ void BusIfInterfaceMonitor::saveModeSpecific()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMonitor::onSystemGroupChange( QString const& groupName )
 {
-	monitor_->group_ = groupName;
+    getBusInterface()->setMonitorGroup(getBusName(), groupName.toStdString());
 	emit contentChanged();
 }
 
@@ -188,7 +180,11 @@ void BusIfInterfaceMonitor::onSystemGroupChange( QString const& groupName )
 void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
 {
 	// update the mode to the monitor 
-	monitor_->interfaceMode_ = mode;
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+    std::string modeString = General::interfaceMode2Str(mode).toStdString();
+
+    busInterface->setMonitorMode(busName, modeString);
 
 	// disconnect the combo box to avoid emitting signals
 	disconnect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
@@ -202,7 +198,7 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
     {
         systemGroup_.setEnabled(true);
         // find the current bus definition
-        VLNV busDefVLNV = getBusInterface()->getBusType();
+        VLNV busDefVLNV = busInterface->getBusType(busName);
 
 			// if there is no bus definition
         if (libHandler_->contains(busDefVLNV))
@@ -221,7 +217,7 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
                 systemGroup_.addItems(groupList);
 
                 // ask the monitor which group to select
-                QString selectedGroup = monitor_->group_;
+                QString selectedGroup = QString::fromStdString(busInterface->getMonitorGroup(busName));
 
                 // select the same text that was previously selected if it still can be found
                 int index = systemGroup_.findText(selectedGroup);
@@ -232,7 +228,7 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
     // if interface mode is not system or mirrored system then disable the combo box
     else
     {
-        monitor_->group_.clear();
+        busInterface->setMonitorGroup(busName, "");
 
         systemGroup_.setDisabled(true);
         systemGroup_.setCurrentIndex(-1);

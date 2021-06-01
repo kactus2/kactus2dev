@@ -28,9 +28,9 @@
 
 class BusInterface;
 class Component;
-
 class BusIfGeneralTab;
 class ExpressionParser;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! This widget stack contains the different editors to edit interface mode specific details of bus interface.
@@ -44,38 +44,53 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] busif               The bus interface being edited.
+	 *      @param [in] busInterface        Interface for accessing bus interfaces.
+     *      @param [in] busName             Name of the edited bus interface.
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] parameterFinder     The parameter finder.
 	 *      @param [in] handler             The instance that manages the library.
 	 *      @param [in] expressionParser    The expression parser.
 	 *      @param [in] parent              The owner of this stack.
 	 */
-	InterfaceModeStack(QSharedPointer<BusInterface> busif,
-		QSharedPointer<Component> component,
+    InterfaceModeStack(BusInterfaceInterface* busInterface,
+        std::string const& busName,
+        QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
-		LibraryInterface* handler,
+        LibraryInterface* handler,
         QSharedPointer<ExpressionParser> expressionParser,
-		QWidget* parent);
-	
-	//! The destructor
-	virtual ~InterfaceModeStack();
+        QWidget* parent);
 
-	//! Refresh the contents of the stack's editors.
+	/*!
+     *  The destructor.
+     */
+	virtual ~InterfaceModeStack() = default;
+
+	/*!
+     *  Refresh the contents of the stack's editors.
+     */
 	void refresh();
+
+    /*!
+     *  Change the name of the edited bus interface.
+     *
+     *      @param [in] newName     New name of the edited bus interface.
+     */
+    void nameChanged(std::string const& newName);
 
 public slots:
 
-	/*! Select the correct editor for the given interface mode.
+	/*!
+     *  Select the correct editor for the given interface mode.
 	 *
 	 *      @param [in] mode The mode for the bus interface.
-	 *
-	*/
+     */
 	void setMode(General::InterfaceMode mode);
 
 signals:
 
-	//! Emitted when the state of one of the editors change.
+	/*!
+     *  Emitted when the state of one of the editors change.
+     */
 	void contentChanged();
 
     /*!
@@ -94,17 +109,19 @@ signals:
 
 private:
 	
-	//! No copying
+    //! No copying. No assignment.
 	InterfaceModeStack(const InterfaceModeStack& other);
-
-	//! No assignment
 	InterfaceModeStack& operator=(const InterfaceModeStack& other);
 
-	//! The bus interface being edited.
-	QSharedPointer<BusInterface> busif_;
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
-	//! The current mode of the interface.
-	General::InterfaceMode mode_;
+	//! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
+
+    //! Name of the edited bus interface.
+    std::string busName_;
 
     //! The master interface.
 	BusIfInterfaceMaster master_;

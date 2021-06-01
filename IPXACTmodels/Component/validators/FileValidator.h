@@ -48,6 +48,15 @@ public:
     virtual bool validate(QSharedPointer<File> file) const;
 
     /*!
+     *  Check if the name is valid.
+     *
+     *      @param [in] name    The name to be evaluated.
+     *
+     *      @return True, if the name is valid, otherwise false.
+     */
+    bool hasValidName(QString const& name) const;
+
+    /*!
      *  Check if a build command has a valid replace default flags value.
      *
      *      @param [in] buildCommand    The selected build command.
@@ -71,15 +80,6 @@ private:
 	// Disable copying.
 	FileValidator(FileValidator const& rhs);
 	FileValidator& operator=(FileValidator const& rhs);
-
-    /*!
-     *  Check if the name is valid.
-     *
-     *      @param [in] name    The name to be evaluated.
-     *
-     *      @return True, if the name is valid, otherwise false.
-     */
-    bool hasValidName(QString const& name) const;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

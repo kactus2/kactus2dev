@@ -17,10 +17,11 @@
 #include <QSharedPointer>
 
 class Component;
-
 class ExpressionParser;
 class ViewValidator;
 class InstantiationsValidator;
+class ComponentInstantiationInterface;
+
 //-----------------------------------------------------------------------------
 //! The Instantiations-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -42,14 +43,10 @@ public:
      *      @param [in] expressionParser        The used expression parser.
 	 *      @param [in] parent                  The parent item.
 	 */
-	InstantiationsItem(ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        ComponentEditorItem* parent);
+    InstantiationsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+        QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~InstantiationsItem();
@@ -95,6 +92,15 @@ private:
 	InstantiationsItem(const InstantiationsItem& other);
 	InstantiationsItem& operator=(const InstantiationsItem& other);
 
+    /*!
+     *  Construct interfaces for instantiations.
+     */
+    void constructInterfaces();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
 
@@ -109,6 +115,9 @@ private:
 
     //! Child item for design instantiations.
     QSharedPointer<ComponentEditorItem> designInstantiationsItem_;
+
+    //! Interface for accessing component instantiations.
+    ComponentInstantiationInterface* componentInstantiationInterface_;
 };
 
 #endif // INSTANTIATIONSITEM_H

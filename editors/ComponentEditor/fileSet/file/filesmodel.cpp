@@ -21,6 +21,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
 
 #include <QFileInfo>
 #include <QMimeData>
@@ -32,20 +33,11 @@
 // Function: FilesModel::FilesModel()
 //-----------------------------------------------------------------------------
 FilesModel::FilesModel(LibraryInterface* handler, QSharedPointer<Component> component,
-                       QSharedPointer<FileSet> fileSet, QObject* parent):
+    FileInterface* fileInterface, QObject* parent):
 QAbstractTableModel(parent),
 handler_(handler),
 component_(component),
-fileSet_(fileSet), 
-files_(fileSet->getFiles())
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FilesModel::~FilesModel()
-//-----------------------------------------------------------------------------
-FilesModel::~FilesModel()
+fileInterface_(fileInterface)
 {
 
 }
@@ -60,7 +52,7 @@ int FilesModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/ ) const
 		return 0;
 	}
 
-    return files_->size();
+    return fileInterface_->itemCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -132,18 +124,18 @@ QVariant FilesModel::headerData(int section, Qt::Orientation orientation, int ro
 //-----------------------------------------------------------------------------
 QVariant FilesModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= files_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= fileInterface_->itemCount())
     {
 		return QVariant();
 	}
 
-    QSharedPointer<File> file = files_->at(index.row());
+    std::string fileName = fileInterface_->getIndexedItemName(index.row());
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == FileColumns::NAME_COLUMN)
         {
-            QFileInfo fileInfo(files_->at(index.row())->name());
+            QFileInfo fileInfo(QString::fromStdString(fileName));
             QString fileName = fileInfo.fileName();
             if (fileName.isEmpty())
             {
@@ -154,7 +146,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == FileColumns::PATH_COLUMN)
         {
-            QString filePath = file->name();
+            QString filePath = QString::fromStdString(fileName);
             if (filePath.isEmpty() && role == Qt::DisplayRole)
             {
                 filePath = tr("no path or URI defined");
@@ -164,18 +156,20 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == FileColumns::TYPES_COLUMN)
         {
-            return file->getFileTypes()->join("; ");
+            return getFileTypesString(fileName);
         }
         else if (index.column() == FileColumns::DESCRIPTION)
         {
+            QString fileDescription = QString::fromStdString(fileInterface_->getDescription(fileName));
+
             if (role == Qt::DisplayRole)
             {
-                return file->getDescription().replace(QRegularExpression("\n.*$",
-                    QRegularExpression::DotMatchesEverythingOption), "...");
+                return fileDescription.replace(
+                    QRegularExpression("\n.*$", QRegularExpression::DotMatchesEverythingOption), "...");
             }
             else
             {
-                return file->getDescription();
+                return fileDescription;
             }
         }
 	}
@@ -184,7 +178,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == FileColumns::NAME_COLUMN)
         {
-            if (file->name().isEmpty())
+            if (fileName.empty())
             {
                 return KactusColors::ERROR;
             }
@@ -193,7 +187,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
                 return KactusColors::REGULAR_TEXT;
             }
         }
-        if (index.column() == FileColumns::PATH_COLUMN && !(filePathExists(file) || isValidURI(file)))
+        if (index.column() == FileColumns::PATH_COLUMN && !(filePathExists(fileName) || isValidURI(fileName)))
         {
             return KactusColors::ERROR;
         }
@@ -203,9 +197,9 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == FileColumns::DESCRIPTION)
         {
-            return file->getDescription();
+            return QString::fromStdString(fileInterface_->getDescription(fileName));
         }
-        else if (!filePathExists(file) && !isValidURI(file))
+        else if (!filePathExists(fileName) && !isValidURI(fileName))
         {
             return tr("File path is not found or defines an invalid URI.");
         }
@@ -223,14 +217,31 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: filesmodel::getFileTypesString()
+//-----------------------------------------------------------------------------
+QString FilesModel::getFileTypesString(std::string const& fileName) const
+{
+    QStringList types;
+
+    for (auto fileType : fileInterface_->getFileTypes(fileName))
+    {
+        types.append(QString::fromStdString(fileType));
+    }
+
+    return types.join("; ");
+}
+
+//-----------------------------------------------------------------------------
 // Function: FilesModel::setData()
 //-----------------------------------------------------------------------------
 bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= files_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= fileInterface_->itemCount())
     {
 		return false;
 	}
+
+    std::string fileName = fileInterface_->getIndexedItemName(index.row());
 
     if (role == Qt::EditRole)
     {
@@ -247,18 +258,28 @@ bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int ro
                 return false;
             }
 
-            files_->at(index.row())->setName(filePath);
+            std::string newName = value.toString().toStdString();
+            fileInterface_->setName(fileName, newName);
+
+            //! Send information of the new name to the matching file editor...
+            emit fileRenamed(fileName, newName);
         }
         else if (index.column() == FileColumns::TYPES_COLUMN)
         {
             QString str = value.toString();
-            QSharedPointer<QStringList> fileTypes(new QStringList(str.split("; ", QString::SkipEmptyParts)));
+            QStringList fileTypes = str.split("; ", QString::SkipEmptyParts);
 
-            files_->at(index.row())->setFileTypes(fileTypes);
+            std::vector<std::string> newFileTypes;
+            for (auto singleType : fileTypes)
+            {
+                newFileTypes.push_back(singleType.toStdString());
+            }
+
+            fileInterface_->setFileTypes(fileName, newFileTypes);
         }
         else if (index.column() == FileColumns::DESCRIPTION)
         {
-            files_->at(index.row())->setDescription(value.toString());
+            fileInterface_->setDescription(fileName, value.toString().toStdString());
         }
         else
         {
@@ -316,7 +337,7 @@ bool FilesModel::dropMimeData(QMimeData const* data, Qt::DropAction action, int 
 //-----------------------------------------------------------------------------
 void FilesModel::onAddItem(QModelIndex const& index)
 {
-    int row = files_->size();
+    int row = fileInterface_->itemCount();
 
     // if the index is valid then add the item to the correct position
     if (index.isValid())
@@ -324,11 +345,10 @@ void FilesModel::onAddItem(QModelIndex const& index)
         row = index.row();
     }
 
-    QSettings settings;
-    QSharedPointer<File> file(new File());    
-
     beginInsertRows(QModelIndex(), row, row);
-    files_->insert(row, file);
+
+    fileInterface_->addFile(row, "unknown");
+
     endInsertRows();
 
     // inform navigation tree that file set is added
@@ -343,7 +363,7 @@ void FilesModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void FilesModel::onAddItem(QModelIndex const& index, const QString& filePath)
 {
-	int row = files_->size();
+    int row = fileInterface_->itemCount();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -362,20 +382,16 @@ void FilesModel::onAddItem(QModelIndex const& index, const QString& filePath)
 	}
 
 	// if the file is already contained in the list
-	foreach (QSharedPointer<File> file, *files_)
+    for (auto fileName : fileInterface_->getItemNames())
     {
-		if (file->name() == relPath)
+        if (QString::fromStdString(fileName) == relPath)
         {
-			return;
-		}
-	}
-
-	QSettings settings;
-    QSharedPointer<File> file(new File(relPath));
-	file->setFileTypes(settings);
+            return;
+        }
+    }
 
 	beginInsertRows(QModelIndex(), row, row);
-	files_->insert(row, file);
+    fileInterface_->addFile(row, relPath.toStdString());
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -391,14 +407,18 @@ void FilesModel::onAddItem(QModelIndex const& index, const QString& filePath)
 void FilesModel::onRemoveItem(QModelIndex const& index )
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= files_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= fileInterface_->itemCount())
     {
 		return;
 	}
 
+    std::string removedFileName = fileInterface_->getIndexedItemName(index.row());
+
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	files_->removeAt(index.row());
+
+    fileInterface_->removeFile(removedFileName);
+
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
@@ -413,11 +433,8 @@ void FilesModel::onRemoveItem(QModelIndex const& index )
 //-----------------------------------------------------------------------------
 void FilesModel::onMoveItem(QModelIndex const& originalPos, QModelIndex const& newPos )
 {
-	// if there was no item in the starting point
-    // if the indexes are the same
-    // if the indexes are outside the table
 	if (!originalPos.isValid() || originalPos == newPos || originalPos.row() < 0 ||
-        originalPos.row() >= files_->size())
+        originalPos.row() >= fileInterface_->itemCount())
     {
 		return;
 	}
@@ -426,19 +443,21 @@ void FilesModel::onMoveItem(QModelIndex const& originalPos, QModelIndex const& n
 	int target = 0;
 
 	// if the new position is invalid index then put the item last in the table
-	if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= files_->size())
+    if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= fileInterface_->itemCount())
     {
 		beginResetModel();
-		QSharedPointer<File> file = files_->takeAt(originalPos.row());
-		files_->append(file);
-		target = files_->size() - 1;
-		endResetModel();
+
+        std::string fileName = fileInterface_->getIndexedItemName(originalPos.row());
+        target = fileInterface_->itemCount() - 1;
+        fileInterface_->swapFiles(originalPos.row(), target);
+
+        endResetModel();
 	}
 	// if both indexes were valid
 	else
     {
 		beginResetModel();
-		files_->swap(originalPos.row(), newPos.row());
+        fileInterface_->swapFiles(originalPos.row(), newPos.row());
 		target = newPos.row();
 		endResetModel();
 	}
@@ -451,15 +470,15 @@ void FilesModel::onMoveItem(QModelIndex const& originalPos, QModelIndex const& n
 //-----------------------------------------------------------------------------
 // Function: filesmodel::fileExists()
 //-----------------------------------------------------------------------------
-bool FilesModel::filePathExists(QSharedPointer<File> file) const
+bool FilesModel::filePathExists(std::string const& fileName) const
 {
-    if (file->name().isEmpty())
+    if (fileName.empty())
     {
         return false;
     }
 
     QString xmlPath = handler_->getPath(component_->getVlnv());
-    QString absFilePath = General::getAbsolutePath(xmlPath, file->name());
+    QString absFilePath = General::getAbsolutePath(xmlPath, QString::fromStdString(fileName));
 
     QFileInfo fileInfo(absFilePath);
 
@@ -469,7 +488,7 @@ bool FilesModel::filePathExists(QSharedPointer<File> file) const
 //-----------------------------------------------------------------------------
 // Function: filesmodel::isValidURI()
 //-----------------------------------------------------------------------------
-bool FilesModel::isValidURI(QSharedPointer<File> file) const
+bool FilesModel::isValidURI(std::string const& fileName) const
 {
-    return Utils::URL_VALIDITY_REG_EXP.match(file->name()).hasMatch();
+    return Utils::URL_VALIDITY_REG_EXP.match(QString::fromStdString(fileName)).hasMatch();
 }

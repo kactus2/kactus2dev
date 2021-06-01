@@ -21,6 +21,8 @@ class MemoryVisualizationItem;
 class MemoryMapsVisualizer;
 class RegisterFileGraphItem;
 class RegisterFileValidator;
+class RegisterInterface;
+class AddressBlock;
 
 //-----------------------------------------------------------------------------
 //! Item representing a register file in the component editor browser tree.
@@ -42,6 +44,8 @@ public:
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression formatter.
      *      @param [in] addressBlockValidator   Validator used for address blocks.
+     *      @param [in] registerInterface       Interface for accessing registers.
+     *      @param [in] containingBlock         Address block containing the edited register file.
      *      @param [in] parent                  The parent item.
      */
     ComponentEditorRegisterFileItem(
@@ -54,9 +58,13 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<RegisterFileValidator> registerFileValidator,
+        RegisterInterface* registerInterface,
+        QSharedPointer<AddressBlock> containingBlock,
         ComponentEditorItem* parent);
 
-    //! The destructor.
+    /*!
+     *  The destructor.
+     */
     virtual ~ComponentEditorRegisterFileItem() = default;
 
     //! No copying. No assignment.
@@ -131,6 +139,14 @@ signals:
     void addressingChanged();
 
 
+    /*
+     *  Informs of register name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void registerNameChanged(QString const& oldName, QString const& newName);
+
  public slots:
 
     void onAddressingChanged();
@@ -162,6 +178,12 @@ private:
 
     //! The used address block validator.
     QSharedPointer<RegisterFileValidator> registerFileValidator_;
+
+    //! Interface for registers.
+    RegisterInterface* registerInterface_;
+
+    //! Address block containing the edited register file.
+    QSharedPointer<AddressBlock> containingBlock_;
 };
 
 #endif // COMPONENTEDITORREGISTERFILEITEM_H

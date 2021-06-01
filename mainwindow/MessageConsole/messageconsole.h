@@ -30,10 +30,16 @@ public:
 	 *      @param [in] parent     The owner of this widget
 	 *
 	*/
-	MessageConsole(QWidget *parent);
+	explicit MessageConsole(QWidget *parent);
 
 	//! The destructor
-	virtual ~MessageConsole();
+	virtual ~MessageConsole() = default;
+
+    //! No copying
+    MessageConsole(const MessageConsole& other) = delete;
+
+    //! No assignment
+    MessageConsole& operator=(const MessageConsole& other) = delete;
 
 public slots:
 
@@ -55,13 +61,11 @@ protected:
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
-	
-	//! No copying
-	MessageConsole(const MessageConsole& other);
 
-	//! No assignment
-	MessageConsole& operator=(const MessageConsole& other);
-    
+    /*! Set the color for text to be printed.
+     *
+     *      @param [in] color  The color to apply to text.
+    */
     void setTextColor(QColor const& color);
 	
     //! Copy the selected text to the clip board.

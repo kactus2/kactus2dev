@@ -10,46 +10,23 @@
 //-----------------------------------------------------------------------------
 
 #include "parametersmodel.h"
-
 #include "ParameterColumns.h"
 
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
+using namespace std;
 
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()
 //-----------------------------------------------------------------------------
-ParametersModel::ParametersModel(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QSharedPointer<ParameterValidator> validator, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject *parent):
-AbstractParameterModel(choices, validator, expressionParser, parameterFinder, expressionFormatter, parent), 
-parameters_(parameters)
+ParametersModel::ParametersModel(ParametersInterface* parameterInterface,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterFinder> parameterFinder, QObject *parent) :
+AbstractParameterModel(parameterInterface, expressionParser, parameterFinder, parent)
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::~ParametersModel()
-//-----------------------------------------------------------------------------
-ParametersModel::~ParametersModel()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::rowCount()
-//-----------------------------------------------------------------------------
-int ParametersModel::rowCount(QModelIndex const& parent /*= QModelIndex() */ ) const
-{
-	if (parent.isValid() || !parameters_)
-    {
-		return 0;
-	}
-
-	return parameters_->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -66,14 +43,11 @@ int ParametersModel::columnCount(QModelIndex const& parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: parametersmodel::setNewParameters()
+// Function: parametersmodel::resetModel()
 //-----------------------------------------------------------------------------
-void ParametersModel::setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
+void ParametersModel::resetModelItems()
 {
     beginResetModel();
-
-    parameters_ = newParameters;
-
     endResetModel();
 }
 
@@ -82,19 +56,24 @@ void ParametersModel::setNewParameters(QSharedPointer<QList<QSharedPointer<Param
 //-----------------------------------------------------------------------------
 void ParametersModel::onAddItem(QModelIndex const& index)
 {
-    int row = parameters_->size();
+    int row = getInterface()->itemCount();
 
     // if the index is valid then add the item to the correct position
-    if (index.isValid()) {
+    if (index.isValid())
+    {
         row = index.row();
     }
 
-    beginInsertRows(QModelIndex(), row, row);
-    parameters_->insert(row, QSharedPointer<Parameter>(new Parameter()));
-    endInsertRows();
+    ParametersInterface* parameterInterface = dynamic_cast<ParametersInterface*>(getInterface());
+    if (parameterInterface)
+    {
+        beginInsertRows(QModelIndex(), row, row);
+        parameterInterface->addParameter(row);
+        endInsertRows();
 
-    // tell also parent widget that contents have been changed
-    emit contentChanged();
+        // tell also parent widget that contents have been changed
+        emit contentChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -110,22 +89,20 @@ void ParametersModel::onRemoveItem(QModelIndex const& index )
 
     if (canRemoveRow(index.row()))
     {
-    	// remove the specified item
-	    beginRemoveRows(QModelIndex(), index.row(), index.row());
-    	parameters_->removeAt(index.row());
-	    endRemoveRows();
+        ParametersInterface* parameterInterface = dynamic_cast<ParametersInterface*>(getInterface());
+        if (parameterInterface)
+        {
+            string parameterName = getInterface()->getIndexedItemName(index.row());
 
-    	// tell also parent widget that contents have been changed
-	    emit contentChanged();
+            // remove the specified item
+            beginRemoveRows(QModelIndex(), index.row(), index.row());
+            parameterInterface->removeParameter(parameterName);
+            endRemoveRows();
+
+            // tell also parent widget that contents have been changed
+            emit contentChanged();
+        }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::getParameterOnRow()
-//-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ParametersModel::getParameterOnRow(int row) const
-{
-    return parameters_->at(row);
 }
 
 //-----------------------------------------------------------------------------

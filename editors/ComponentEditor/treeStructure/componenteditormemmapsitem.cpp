@@ -15,6 +15,12 @@
 #include <editors/ComponentEditor/memoryMaps/memorymapseditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
+#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
+
 #include <IPXACTmodels/Component/MemoryMap.h>
 
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
@@ -29,24 +35,24 @@
 // Function: componenteditormemmapsitem::ComponentEditorMemMapsItem()
 //-----------------------------------------------------------------------------
 ComponentEditorMemMapsItem::ComponentEditorMemMapsItem(ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
     memoryMaps_(component->getMemoryMaps()),
     visualizer_(nullptr),
     expressionParser_(expressionParser),
-    memoryMapValidator_()
+    memoryMapValidator_(),
+    mapInterface_()
 {
     createMemoryMapValidator();
 
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
+
+    createMemoryMapInterface();
 
 	setObjectName(tr("ComponentEditorMemMapsItem"));
 
@@ -82,9 +88,9 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new MemoryMapsEditor(component_, parameterFinder_, expressionParser_, expressionFormatter_, 
-            libHandler_, memoryMapValidator_);
-		editor_->setProtection(locked_);
+        editor_ =
+            new MemoryMapsEditor(mapInterface_, component_, parameterFinder_, expressionParser_, libHandler_);
+        editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -96,11 +102,17 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
         connect(editor_, SIGNAL(changeInAddressUnitBitsOnRow(int)), 
             this, SLOT(addressUnitBitsChangedOnMemoryMap(int)), Qt::UniqueConnection);
 
-        connect(editor_, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)),
-            this, SIGNAL(memoryRemapAdded(int ,QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(memoryRemapAdded(int, QString const&)),
+            this, SIGNAL(memoryRemapAdded(int, QString const&)), Qt::UniqueConnection);
 
-        connect(editor_, SIGNAL(memoryRemapRemoved(int, QSharedPointer<MemoryMap>)),
-            this, SIGNAL(memoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(memoryRemapRemoved(int, QString const&)),
+            this, SIGNAL(memoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
+
+        connect(editor_, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+            this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+            Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
 	}
@@ -122,15 +134,23 @@ void ComponentEditorMemMapsItem::createChild( int index )
 {
 	QSharedPointer<ComponentEditorMemMapItem> memoryMapItem(new ComponentEditorMemMapItem(memoryMaps_->at(index),
         model_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser_, memoryMapValidator_, this));
+        expressionParser_, memoryMapValidator_, mapInterface_, this));
 	memoryMapItem->setLocked(locked_);
 	childItems_.insert(index, memoryMapItem);
 	
-    connect(this, SIGNAL(memoryRemapAdded(int, QSharedPointer<MemoryMap>)),
-        memoryMapItem.data(), SLOT(onMemoryRemapAdded(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+    connect(this, SIGNAL(memoryRemapAdded(int, QString const&)),
+        memoryMapItem.data(), SLOT(onMemoryRemapAdded(int, QString const&)), Qt::UniqueConnection);
 
-    connect(this, SIGNAL(memoryRemapRemoved(int ,QSharedPointer<MemoryMap>)),
-        memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QSharedPointer<MemoryMap>)), Qt::UniqueConnection);
+    connect(this, SIGNAL(memoryRemapRemoved(int, QString const&)),
+        memoryMapItem.data(), SLOT(onMemoryRemapRemoved(int, QString const&)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        memoryMapItem.data(), SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
+        Qt::UniqueConnection);
+    connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        memoryMapItem.data(), SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
+        Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -183,4 +203,25 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
     memoryMapValidator_ = memoryMapValidator;
 
     memoryMapValidator_->componentChange(component_->getRemapStates(), component_->getResetTypes());
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::createMemoryMapInterface()
+//-----------------------------------------------------------------------------
+void ComponentEditorMemMapsItem::createMemoryMapInterface()
+{
+    QSharedPointer<AddressBlockValidator> blockValidator = memoryMapValidator_->getAddressBlockValidator();
+    QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
+    QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
+
+    ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
+    FieldInterface* fieldInterface(
+        new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
+    RegisterInterface* registerInterface(
+        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
+    AddressBlockInterface* blockInterface(
+        new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_, registerInterface));
+
+    mapInterface_ =
+        new MemoryMapInterface(memoryMapValidator_, expressionParser_, expressionFormatter_, blockInterface);
 }

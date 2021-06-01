@@ -18,6 +18,7 @@
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
 #include <editors/ComponentEditor/parameters/ParameterEditorHeaderView.h>
 #include <editors/ComponentEditor/parameters/parametersmodel.h>
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -34,16 +35,15 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterGroupBox::ParameterGroupBox()
 //-----------------------------------------------------------------------------
-ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
-                                     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-                                     QSharedPointer<ParameterFinder> parameterFinder,
-                                     QSharedPointer<ExpressionFormatter> expressionFormatter,
-									 QWidget *parent):
+ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter>>> parameters,
+    QSharedPointer<QList<QSharedPointer<Choice>>> choices, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
 view_(new ParametersView(this)),
 proxy_(new QSortFilterProxyModel(this)),
 model_(0),
-parameterFinder_(parameterFinder)
+parameterFinder_(parameterFinder),
+parameterInterface_()
 {
     ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
     view_->setHorizontalHeader(parameterHorizontalHeader);
@@ -58,8 +58,12 @@ parameterFinder_(parameterFinder)
     QSharedPointer<ParameterValidator> validator(new ParameterValidator(expressionParser, 
         choices));
 
-    model_ = new ParametersModel(parameters, choices, validator, expressionParser, parameterFinder, 
-        expressionFormatter, this);
+    parameterInterface_ = new ParametersInterface(validator, expressionParser, expressionFormatter);
+
+    parameterInterface_->setParameters(parameters);
+    parameterInterface_->setChoices(choices);
+
+    model_ = new ParametersModel(parameterInterface_, expressionParser, parameterFinder, this);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -101,8 +105,11 @@ parameterFinder_(parameterFinder)
 
     connect(view_, SIGNAL(recalculateReferenceToIndexes(QModelIndexList)),
         model_, SLOT(onGetParametersMachingIndexes(QModelIndexList)), Qt::UniqueConnection);
-    connect(model_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+    connect(model_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        Qt::UniqueConnection);
 
 	// set source model for proxy
 	proxy_->setSourceModel(model_);
@@ -133,6 +140,11 @@ void ParameterGroupBox::refresh()
 {
     proxy_->invalidate();
 	view_->update();
+
+    if (!view_->isColumnHidden(ParameterColumns::ID))
+    {
+        view_->setColumnHidden(ParameterColumns::ID, true);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -140,8 +152,9 @@ void ParameterGroupBox::refresh()
 //-----------------------------------------------------------------------------
 void ParameterGroupBox::setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
 {
-    model_->setNewParameters(newParameters);
-    
+    parameterInterface_->setParameters(newParameters);
+    model_->resetModelItems();
+
     QSharedPointer<ListParameterFinder> listFinder = parameterFinder_.dynamicCast<ListParameterFinder>();
     if (listFinder)
     {

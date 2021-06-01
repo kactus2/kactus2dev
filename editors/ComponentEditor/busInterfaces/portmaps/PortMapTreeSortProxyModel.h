@@ -30,11 +30,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] busInterface    The bus interface containing the port maps.
      *      @param [in] parent          The owner of this sorter.
      */
-    PortMapTreeSortProxyModel(QSharedPointer<BusInterface> busInterface, QObject *parent = 0);
-    
+    PortMapTreeSortProxyModel(QObject *parent = 0);
+
     /*!
      *  The destructor.
      */
@@ -91,9 +90,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The bus interface containing the port maps.
-    QSharedPointer<BusInterface> containingBus_;
 };
 
 #endif // PORTMAPTREESORTPROXYMODEL_H

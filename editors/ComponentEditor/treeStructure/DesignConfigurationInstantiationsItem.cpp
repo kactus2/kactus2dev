@@ -27,15 +27,11 @@
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationsItem::DesignConfigurationInstantiationsItem()
 //-----------------------------------------------------------------------------
-DesignConfigurationInstantiationsItem::DesignConfigurationInstantiationsItem(ComponentEditorTreeModel* model, 
-    LibraryInterface* libHandler,
-    QSharedPointer<Component> component, 
-    QSharedPointer<InstantiationsValidator> validator,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder, 
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> /*expressionParser*/, 
-    ComponentEditorItem* parent):
+DesignConfigurationInstantiationsItem::DesignConfigurationInstantiationsItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> /*expressionParser*/, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 validator_(validator)
 {

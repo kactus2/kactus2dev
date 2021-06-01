@@ -15,11 +15,12 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QSortFilterProxyModel>
-
 #include <QSharedPointer>
 
 class Component;
 class AbstractionType;
+class PortsInterface;
+class AbstractionTypeInterface;
 
 //! The port types.
 namespace PortTypes
@@ -49,16 +50,21 @@ public:
     };
 
 	 /*!
-	 *  Constructor.
-	 *
-	 *      @param [in] component  The owner component of the ports.
-	 *      @param [in] parent     The parent object.
-	 */
-    PortListSortProxyModel(QSharedPointer<Component> component, QObject *parent = 0);
+      *  Constructor.
+      *
+      *     @param [in] abstractionIndex        Index of the containing abstraction type.
+      *     @param [in] portInterface           Interface for accessing physical ports.
+      *     @param [in] abstractionInterface    Interface for accessing abstraction types.
+      *     @param [in] parent                  The parent object.
+      */
+    PortListSortProxyModel(int const& abstractionIndex,
+        PortsInterface* portInterface,
+        AbstractionTypeInterface* abstractionInterface,
+        QObject *parent = 0);
 
 	 /*!
-	 *  Destructor.
-	 */
+      * Destructor.
+      */
     virtual ~PortListSortProxyModel() = default;    
 
     /*!
@@ -85,9 +91,9 @@ public:
     /*!
      *  Setup a new abstraction type for sorting.
      *
-     *      @param [in] newAbstraction  The selected abstraction type.
+     *      @param [in] newAbstractionIndex     Index of the selected abstraction type.
      */
-    void setNewAbstractionType(QSharedPointer<AbstractionType> newAbstraction);
+    void setNewAbstractionType(int const& newAbstractionIndex);
 
 public slots:
 	 
@@ -183,17 +189,12 @@ private:
     
     /*!
      *  Add connected physical ports from the selected abstraction type port mappings.
-     *
-     *      @param [in] abstraction     The selected abstraction type.
      */
-    void addConnectedPortsFromAbstraction(QSharedPointer<AbstractionType> abstraction);
+    void addConnectedPortsFromAbstraction();
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The owner component of the ports.
-    QSharedPointer<Component> component_;
 
     //! Filter for allowed direction.
     DirectionFilter filterDirection_;
@@ -207,11 +208,17 @@ private:
     //! Filter for allowed port names. If set to empty, all ports are allowed by the filter.
     QStringList filterPorts_;
 
-    //! The connected abstraction type.
-    QSharedPointer<AbstractionType> abstraction_;
-
     //! The currently visible port type.
     QString visibleType_;
+
+    //! Interface for accessing ports.
+    PortsInterface* portInterface_;
+
+    //! Index of the selected abstraction type.
+    int abstractionIndex_;
+
+    //! Interface for accessing abstraction types.
+    AbstractionTypeInterface* abstractionInterface_;
 };
 
 #endif // PORTLISTSORTPROXYMODEL_H

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 21.6.2012
- *      Author: Antti Kamppi
- * 		filename: bridgesdelegate.cpp
- *		Project: Kactus2
- */
+//-----------------------------------------------------------------------------
+// File: BridgesDelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 21.6.2012
+//
+// Description:
+// 
+//-----------------------------------------------------------------------------
 
 #include "bridgesdelegate.h"
 
@@ -12,7 +16,6 @@
 #include <common/widgets/interfaceSelector/interfaceselector.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QApplication>
@@ -22,17 +25,10 @@
 //-----------------------------------------------------------------------------
 // Function: BridgesDelegate::BridgesDelegate()
 //-----------------------------------------------------------------------------
-BridgesDelegate::BridgesDelegate(QSharedPointer<Component> component, QObject *parent):
+BridgesDelegate::BridgesDelegate(BusInterfaceInterface* busInterface, QObject *parent):
 QStyledItemDelegate(parent),
-    component_(component),
-    opaqueGroupModify_(false)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: BridgesDelegate::~BridgesDelegate()
-//-----------------------------------------------------------------------------
-BridgesDelegate::~BridgesDelegate()
+busInterface_(busInterface),
+opaqueGroupModify_(false)
 {
 }
 
@@ -44,7 +40,7 @@ QWidget* BridgesDelegate::createEditor(QWidget* parent, const QStyleOptionViewIt
 {
     if (index.column() == BridgeColumns::MASTER_COLUMN)
     {
-        return new InterfaceSelector(component_, parent, General::MASTER);			
+        return new InterfaceSelector(busInterface_, parent, General::MASTER);
     }
     else
     {

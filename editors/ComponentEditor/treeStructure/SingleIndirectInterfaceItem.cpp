@@ -27,17 +27,16 @@
 //-----------------------------------------------------------------------------
 SingleIndirectInterfaceItem::SingleIndirectInterfaceItem(QSharedPointer<IndirectInterface> busif,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<IndirectInterfaceValidator> validator,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<IndirectInterfaceValidator> validator, BusInterfaceInterface* busInterface,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ParameterizableItem(model, libHandler, component, parent),
     indirectInterface_(busif),
     parentWnd_(parentWnd),
     expressionParser_(expressionParser),
-    validator_(validator)
+    validator_(validator),
+    busInterface_(busInterface)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -75,7 +74,7 @@ ItemEditor* SingleIndirectInterfaceItem::editor()
 	if (!editor_)
     {
 		editor_ = new SingleIndirectInterfaceEditor(indirectInterface_, validator_, component_, libHandler_, 
-            parameterFinder_, expressionFormatter_,  parentWnd_);
+            parameterFinder_, expressionFormatter_, busInterface_, parentWnd_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

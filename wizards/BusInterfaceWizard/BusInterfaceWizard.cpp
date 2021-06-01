@@ -23,11 +23,10 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
 
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
-#include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
@@ -48,6 +47,9 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(
+        expressionParser, component->getChoices()));
+
     BusInterfaceWizardBusDefinitionEditorPage::SignalNamingPolicy namingPolicy =
         BusInterfaceWizardBusDefinitionEditorPage::NAME;
     if (descriptionAsLogicalName)
@@ -55,12 +57,12 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
         namingPolicy = BusInterfaceWizardBusDefinitionEditorPage::DESCRIPTION;
     }
 
-    QSharedPointer<BusInterfaceValidator> busValidator =
-        createBusInterfaceValidator(component, expressionParser, handler);
+    BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
+        parameterFinder, expressionFormatter, expressionParser, component, handler);
 
     BusInterfaceWizardGeneralOptionsPage* optionsPage =
         new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, !absDefVLNV.isValid(), parameterFinder,
-        expressionFormatter, expressionParser, busValidator, this);
+            expressionFormatter, expressionParser, busInterface, this);
 
     connect(optionsPage, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -72,7 +74,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(component, busIf, handler, portNames, 
         this, absDefVLNV, expressionParser, namingPolicy));
     setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
-        expressionParser, expressionFormatter, parameterFinder, busValidator, this));
+        expressionParser, parameterFinder, busInterface, this));
     setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 
@@ -82,23 +84,4 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
 BusInterfaceWizard::~BusInterfaceWizard()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizard::createBusInterfaceValidator()
-//-----------------------------------------------------------------------------
-QSharedPointer<BusInterfaceValidator> BusInterfaceWizard::createBusInterfaceValidator(
-    QSharedPointer<Component> component, QSharedPointer<ExpressionParser> parser, LibraryInterface* handler)
-{
-    QSharedPointer<PortMapValidator> portMapValidator(new PortMapValidator(parser, component->getPorts(), handler));
-
-    QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, component->getChoices()));
-
-    QSharedPointer<BusInterfaceValidator> validator = QSharedPointer<BusInterfaceValidator>(
-        new BusInterfaceValidator(parser, component->getChoices(), component->getViews(), component->getPorts(),
-        component->getAddressSpaces(), component->getMemoryMaps(), component->getBusInterfaces(),
-        component->getFileSets(), component->getRemapStates(), portMapValidator, parameterValidator, handler));
-
-    return validator;
 }

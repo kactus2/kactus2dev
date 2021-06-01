@@ -875,7 +875,7 @@ void VhdlGenerator2::connectPorts(const QString& connectionName, const QString& 
     const QList<VhdlGenerator2::PortConnection>& ports)
 {
 	// at least 2 ports must be found
-    if (ports.size() < 1)
+    if (ports.size() < 2)
     {
         return;
     }

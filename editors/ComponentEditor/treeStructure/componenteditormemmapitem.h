@@ -23,6 +23,8 @@ class MemoryMapGraphItem;
 class ExpressionParser;
 class MemoryMap;
 class MemoryMapValidator;
+class MemoryMapInterface;
+
 //-----------------------------------------------------------------------------
 //! The item for a single memory map in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -44,6 +46,7 @@ public:
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] memoryMapValidator      Validator used for memory maps.
+     *      @param [in] mapInterface            Interface for accessing memory maps.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorMemMapItem(QSharedPointer<MemoryMap> memoryMap,
@@ -55,6 +58,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<MemoryMapValidator> memoryMapValidator,
+        MemoryMapInterface* mapInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -141,17 +145,35 @@ public slots:
      *  Add a memory remap item to the tree.
      *
      *      @param [in] memoryRemapIndex    The index of the new memory remap item.
-     *      @param [in] parentMemoryMap     The parent of the new memory remap item.
+     *      @param [in] mapName             Name of the parent of the new memory remap item.
      */
-    void onMemoryRemapAdded(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+    void onMemoryRemapAdded(int memoryRemapIndex, QString const& mapName);
 
     /*!
      *  Remove a memory remap item from the tree.
      *
      *      @param [in] memoryRemapIndex    The index of the removed memory remap item.
-     *      @param [in] parentMemoryMap     The parent of the removed memory remap item.
+     *      @param [in] mapName             Name of the parent of the removed memory remap item.
      */
-    void onMemoryRemapRemoved(int memoryRemapIndex, QSharedPointer<MemoryMap> parentMemoryMap);
+    void onMemoryRemapRemoved(int memoryRemapIndex, QString const& mapName);
+
+signals:
+    
+    /*
+     *  Informs of memory map name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void memoryMapNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Informs of memory remap name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
 
 private:
 
@@ -163,6 +185,9 @@ private:
 
     //! The validator used for memory maps.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
+
+    //! Interface for accessing memory maps.
+    MemoryMapInterface* mapInterface_;
 };
 
 #endif // COMPONENTEDITORMEMMAPITEM_H

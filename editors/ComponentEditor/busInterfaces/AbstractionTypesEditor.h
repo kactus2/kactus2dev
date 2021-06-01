@@ -23,7 +23,7 @@ class Component;
 class ConfigurableVLNVReference;
 class LibraryInterface;
 class VLNV;
-class AbstractionTypeValidator;
+class AbstractionTypeInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for the bus interface abstraction definitions.
@@ -37,15 +37,18 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] component       Component containing the edited port.
-     *      @param [in] library         Interface for the VLNV library.
-     *      @param [in] validator       Validator for abstraction types.
-     *      @param [in] parentWindow    The main window.
-	 *      @param [in] parent          The owner of the editor.
+     *      @param [in] component                   Component containing the edited port.
+     *      @param [in] library                     Interface for the VLNV library.
+     *      @param [in] abstractionTypeInterface    Interface for accessing abstraction types.
+     *      @param [in] parentWindow                The main window.
+	 *      @param [in] parent                      The owner of the editor.
 	 */
-    AbstractionTypesEditor(QSharedPointer<Component> component, LibraryInterface* library,
-        QSharedPointer<AbstractionTypeValidator> validator, QWidget* parentWindow, QWidget* parent);
-	
+    AbstractionTypesEditor(QSharedPointer<Component> component,
+        LibraryInterface* library,
+        AbstractionTypeInterface* abstractionTypeInterface,
+        QWidget* parentWindow,
+        QWidget* parent);
+
 	/*!
      *  The destructor.
      */
@@ -60,10 +63,8 @@ public:
 
     /*!
      *  Set a new bus interface for the abstraction types model.
-     *
-     *      @param [in] newBus  The selected bus interface.
      */
-    void setBusForModel(QSharedPointer<BusInterface> newBus);
+    void setBusForModel();
 
     /*!
      *  Add a new abstraction definition referencing the selected VLNV to the bus interface.
@@ -92,6 +93,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! Interface for accessing abstraction types.
+    AbstractionTypeInterface* abstractionTypeInterface_;
 
     //! The abstraction types view.
     EditableTableView* abstractionView_;

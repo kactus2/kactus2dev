@@ -16,7 +16,7 @@
 #include <QStringList>
 
 class LibraryInterface;
-class IPluginUtility;
+class MessageMediator;
 
 //-----------------------------------------------------------------------------
 //! Utilities for parsing and executing command line arguments.
@@ -29,7 +29,7 @@ public:
     CommandLineParser();
 
     // The destructor.
-    ~CommandLineParser();
+    ~CommandLineParser() = default;
 
     /*!
      *  Reads the given arguments. 
@@ -40,23 +40,21 @@ public:
     void readArguments(QStringList const& arguments);
 
     /*!
-     *  Checks if help or version option is set.
+     *  Checks if the command-line option is set.
      *
-     *      @param [in] arguments   The list of command line arguments to check.
-     *
-     *      @return True, if help or verion option is set, otherwise false.
+     *      @return True, if command-line option is set, otherwise false.
      */
-    bool helpOrVersionOptionSet() const;
+    bool commandlineMode() const;
 
     /*!
      *  Processes the given command line arguments and executes accordingly.
      *
-     *      @param [in] arguments   The command line arguments to process.
-     *      @param [in] utility     Utilities for library access and user notifications.     
+     *      @param [in] arguments       The command line arguments to process.
+     *      @param [in] messageChannel  Interface for output and error messages.     
      *
      *      @return 0 for a successful run, any other value for errors.
      */
-    int process(QStringList const& arguments, IPluginUtility* utility);
+    int process(QStringList const& arguments, MessageMediator* messageChannel);
    
 private:
 

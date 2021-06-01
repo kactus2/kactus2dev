@@ -14,7 +14,6 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 
@@ -28,7 +27,9 @@ class MemoryMapProxy;
 class LibraryInterface;
 class ExpressionParser;
 class Component;
-class AddressBlockValidator;
+class AddressBlockInterface;
+class AddressBlock;
+
 //-----------------------------------------------------------------------------
 //! The editor to edit the address blocks of a single memory map.
 //-----------------------------------------------------------------------------
@@ -41,25 +42,22 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] handler                 The instance managing the library.
-	 *      @param [in] memoryRemap             The memory remap being edited.
-	 *      @param [in] parameterFinder         The parameter finder for component.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The expression parser.
-     *      @param [in] addressBlockValidator   Validator used for address blocks.
-     *      @param [in] addressUnitBits         The current address unit bits.
-	 *      @param [in] parent                  The parent of this editor.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] handler             The instance managing the library.
+	 *      @param [in] parameterFinder     The parameter finder for component.
+     *      @param [in] expressionParser    The expression parser.
+     *      @param [in] blockInterface      Interface for address blocks.
+     *      @param [in] blocks              Pointer to the available address blocks.
+	 *      @param [in] parent              The parent of this editor.
 	 */
-	MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
-        QSharedPointer<MemoryMapBase> memoryRemap,
+    MemoryMapEditor(QSharedPointer<Component> component,
+        LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<AddressBlockValidator> addressBlockValidator,
-        QString const& addressUnitBits,
+        AddressBlockInterface* blockInterface,
+        QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blocks,
         QWidget* parent = 0);
-	
+
 	//! The destructor.
 	virtual ~MemoryMapEditor();
 
@@ -131,6 +129,14 @@ signals:
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
+    /*
+     *  Informs of address block name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void addressBlockNameChanged(QString const& oldName, QString const& newName);
+
 private:
 	
 	//! No copying.
@@ -144,6 +150,12 @@ private:
 
 	//! The model that manages the items.
 	MemoryMapModel* model_;
+
+    //! Interface for accessing address blocks.
+    AddressBlockInterface* interface_;
+
+    //! Pointer to the available address blocks.
+    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blocks_;
 };
 
 #endif // MEMORYMAPEDITOR_H

@@ -44,6 +44,12 @@ public:
 	*/
 	virtual ~PluginUtilityAdapter() = default;
 
+    // Disable copying.
+    PluginUtilityAdapter(PluginUtilityAdapter const& rhs) =delete;
+
+    // Disable assignment.
+    PluginUtilityAdapter& operator=(PluginUtilityAdapter const& rhs) = delete;
+
     //! Returns the library interface.
     virtual LibraryInterface* getLibraryInterface() override final;
 
@@ -72,11 +78,6 @@ public:
     virtual void printInfo(QString const& message) override final;
 
 private:
-    // Disable copying.
-    PluginUtilityAdapter(PluginUtilityAdapter const& rhs);
-
-    // Disable assignment.
-    PluginUtilityAdapter& operator=(PluginUtilityAdapter const& rhs);
 
 	//-----------------------------------------------------------------------------
 	// Data.

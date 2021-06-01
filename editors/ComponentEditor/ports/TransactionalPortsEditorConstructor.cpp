@@ -24,13 +24,11 @@
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructModel()
 //-----------------------------------------------------------------------------
-PortsModel* TransactionalPortsEditorConstructor::constructModel(QSharedPointer<Component> component,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<PortValidator> portValidator,
-    QSortFilterProxyModel* filter, QObject* parent) const
+PortsModel* TransactionalPortsEditorConstructor::constructModel(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<PortsInterface> portsInterface, QSortFilterProxyModel* filter, QObject* parent) const
 {
-    TransactionalPortsModel* transactionalModel = new TransactionalPortsModel(component->getModel(),
-        expressionParser, parameterFinder, expressionFormatter, portValidator, filter, parent);
+    TransactionalPortsModel* transactionalModel =
+        new TransactionalPortsModel(parameterFinder, portsInterface, filter, parent);
 
     return transactionalModel;
 }
@@ -38,9 +36,10 @@ PortsModel* TransactionalPortsEditorConstructor::constructModel(QSharedPointer<C
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructFilter()
 //-----------------------------------------------------------------------------
-PortsFilter* TransactionalPortsEditorConstructor::constructFilter(QObject* parent) const
+PortsFilter* TransactionalPortsEditorConstructor::constructFilter(QSharedPointer<PortsInterface> portsInterface,
+    QObject* parent) const
 {
-    TransactionalPortsFilter* transactionalFilter = new TransactionalPortsFilter(parent);
+    TransactionalPortsFilter* transactionalFilter = new TransactionalPortsFilter(portsInterface, parent);
     return transactionalFilter;
 }
 

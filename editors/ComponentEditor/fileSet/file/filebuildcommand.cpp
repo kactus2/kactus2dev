@@ -16,10 +16,10 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
 
@@ -31,22 +31,22 @@
 //-----------------------------------------------------------------------------
 // Function: FileBuildCommand::FileBuildCommand()
 //-----------------------------------------------------------------------------
-FileBuildCommand::FileBuildCommand(QSharedPointer<File> file,
-    QString const& componentPath,
-    QSharedPointer<ParameterFinder> parameterFinder,
+FileBuildCommand::FileBuildCommand(std::string fileName, FileInterface* fileInterface,
+    QString const& componentPath, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionParser> expressionParser, QWidget *parent):
 QGroupBox(tr("Build command"), parent),
-    file_(file),
-    buildCommand_(),
-    componentPath_(componentPath),
-    targetEditor_(this),
-    browseTargetButton_(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this),
-    commandEditor_(this),
-    flagsEditor_(this),
-    replaceDefaultEditor_(new ExpressionEditor(parameterFinder, this)),
-    expressionParser_(expressionParser)
+fileName_(fileName),
+fileInterface_(fileInterface),
+componentPath_(componentPath),
+targetEditor_(this),
+browseTargetButton_(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this),
+commandEditor_(this),
+flagsEditor_(this),
+replaceDefaultEditor_(new ExpressionEditor(parameterFinder, this)),
+expressionParser_(expressionParser)
 {
-    Q_ASSERT_X(file, "FileBuildCommand constructor", "Null File-pointer given to the constructor");
+    Q_ASSERT_X(
+        fileInterface_, "FileBuildCommand constructor", "Null File interface-pointer given to the constructor");
 
     replaceDefaultEditor_->setFixedHeight(20);
 
@@ -83,46 +83,23 @@ QGroupBox(tr("Build command"), parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileBuildCommand::~FileBuildCommand()
-//-----------------------------------------------------------------------------
-FileBuildCommand::~FileBuildCommand()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileBuildCommand::refresh()
 //-----------------------------------------------------------------------------
 void FileBuildCommand::refresh()
 {   
-    if (file_->getBuildCommand())
-    {
-        buildCommand_ = file_->getBuildCommand();
-    }
-    else
-    {
-        buildCommand_ = QSharedPointer<BuildCommand>(new BuildCommand());    
-    }
-
-    commandEditor_.setText(buildCommand_->getCommand());
-    flagsEditor_.setText(buildCommand_->getFlags());
+    commandEditor_.setText(QString::fromStdString(fileInterface_->getBuildCommandText(fileName_)));
+    flagsEditor_.setText(QString::fromStdString(fileInterface_->getBuildCommandFlags(fileName_)));
 
     replaceDefaultEditor_->blockSignals(true);
 
-    replaceDefaultEditor_->setExpression(buildCommand_->getReplaceDefaultFlags());
-    replaceDefaultEditor_->setToolTip(formattedValueFor(buildCommand_->getReplaceDefaultFlags()));
+    replaceDefaultEditor_->setExpression(
+        QString::fromStdString(fileInterface_->getBuildCommandReplaceDefaultFlagsExpression(fileName_)));
+    replaceDefaultEditor_->setToolTip(
+        QString::fromStdString(fileInterface_->getBuildCommandReplaceDefaultFlagsValue(fileName_)));
 
     replaceDefaultEditor_->blockSignals(false);
 
-    targetEditor_.setText(buildCommand_->getTargetName());
-}
-
-//-----------------------------------------------------------------------------
-// Function: filebuildcommand::formattedValueFor()
-//-----------------------------------------------------------------------------
-QString FileBuildCommand::formattedValueFor(QString const& expression) const
-{
-    return ExpressionFormatter::format(expression, expressionParser_);
+    targetEditor_.setText(QString::fromStdString(fileInterface_->getBuildCommandTarget(fileName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -130,8 +107,8 @@ QString FileBuildCommand::formattedValueFor(QString const& expression) const
 //-----------------------------------------------------------------------------
 void FileBuildCommand::onCommandChanged()
 {
-	buildCommand_->setCommand(commandEditor_.text());
-    updateFileBuildCommand();
+    fileInterface_->setBuildCommand(fileName_, commandEditor_.text().toStdString());
+
 	emit contentChanged();
 }
 
@@ -140,8 +117,8 @@ void FileBuildCommand::onCommandChanged()
 //-----------------------------------------------------------------------------
 void FileBuildCommand::onFlagsChanged()
 {
-	buildCommand_->setFlags(flagsEditor_.text());
-    updateFileBuildCommand();
+    fileInterface_->setBuildCommandFlags(fileName_, flagsEditor_.text().toStdString());
+
 	emit contentChanged();
 }
 
@@ -150,8 +127,8 @@ void FileBuildCommand::onFlagsChanged()
 //-----------------------------------------------------------------------------
 void FileBuildCommand::onTargetChanged()
 {
-	buildCommand_->setTargetName(targetEditor_.text());
-    updateFileBuildCommand();
+    fileInterface_->setBuildCommandTarget(fileName_, targetEditor_.text().toStdString());
+
 	emit contentChanged();
 }
 
@@ -163,29 +140,10 @@ void FileBuildCommand::onReplaceDefaultChanged()
     replaceDefaultEditor_->finishEditingCurrentWord();
 
     QString newReplace = replaceDefaultEditor_->getExpression();
-    buildCommand_->setReplaceDefaultFlags(newReplace);
+    fileInterface_->setbuildCommandReplaceDefaultFlags(fileName_, newReplace.toStdString());
 
-    replaceDefaultEditor_->setToolTip(formattedValueFor(newReplace));
-
-    updateFileBuildCommand();
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileBuildCommand::updateFileBuildCommand()
-//-----------------------------------------------------------------------------
-void FileBuildCommand::updateFileBuildCommand()
-{
-    bool emptyBuildCommand = commandEditor_.text().isEmpty() && flagsEditor_.text().isEmpty() &&
-        targetEditor_.text().isEmpty() && replaceDefaultEditor_->getExpression().isEmpty();
-
-    if (!file_->getBuildCommand() && !emptyBuildCommand)
-    {
-        file_->setBuildcommand(buildCommand_);
-    }
-    else if (emptyBuildCommand)
-    {
-        file_->setBuildcommand(QSharedPointer<BuildCommand>(0));
-    }
+    replaceDefaultEditor_->setToolTip(
+        QString::fromStdString(fileInterface_->getBuildCommandReplaceDefaultFlagsValue(fileName_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -250,4 +208,12 @@ void FileBuildCommand::setupLayout()
     topLayout->setColumnStretch(1, 1);
 
     setContentsMargins(0, 0, 0, 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileBuildCommand::fileRenamed()
+//-----------------------------------------------------------------------------
+void FileBuildCommand::fileRenamed(std::string const& newName)
+{
+    fileName_ = newName;
 }

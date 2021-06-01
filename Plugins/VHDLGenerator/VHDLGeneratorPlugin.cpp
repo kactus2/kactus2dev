@@ -38,14 +38,6 @@ VHDLGeneratorPlugin::VHDLGeneratorPlugin() : QObject(0), utility_(0), generation
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLGeneratorPlugin::VHDLGeneratorPlugin()
-//-----------------------------------------------------------------------------
-VHDLGeneratorPlugin::~VHDLGeneratorPlugin()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: VHDLGeneratorPlugin::getName()
 //----------------------------------------------------------------------------
 QString VHDLGeneratorPlugin::getName() const
@@ -58,7 +50,7 @@ QString VHDLGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VHDLGeneratorPlugin::getVersion() const
 {
-    return "1.2";
+    return "1.3";
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +66,7 @@ QString VHDLGeneratorPlugin::getDescription() const
 //-----------------------------------------------------------------------------
 QString VHDLGeneratorPlugin::getVendor() const
 {
-    return tr("tut.fi");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------
@@ -158,71 +150,62 @@ void VHDLGeneratorPlugin::runGenerator(IPluginUtility* utility,
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLGeneratorPlugin::getProgramRequirements()
+// Function: VHDLGeneratorPlugin::getOutputFormat()
 //-----------------------------------------------------------------------------
-QList<IPlugin::ExternalProgramRequirement> VHDLGeneratorPlugin::getProgramRequirements()
+QString VHDLGeneratorPlugin::getOutputFormat() const
 {
-    return QList<IPlugin::ExternalProgramRequirement>();
+    return QStringLiteral("VHDL");
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLGeneratorPlugin::getCommand()
+// Function: VHDLGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-QString VHDLGeneratorPlugin::getCommand() const
+void VHDLGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component, 
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, 
+    QString const& viewName, QString const& outputDirectory)
 {
-    return QStringLiteral("generate_vhdl");
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLGeneratorPlugin::process()
-//-----------------------------------------------------------------------------
-void VHDLGeneratorPlugin::process(QStringList const& arguments, IPluginUtility* utility)
-{
-    HDLCommandLineParser parser(getCommand());
-    HDLCommandLineParser::ParseResults parseResult = parser.parseArguments(arguments);
-
-    if (parseResult.cancelRun)
-    {
-        utility->printInfo(parseResult.message);
-        return;
-    }
-
     utility_ = utility;
 
     utility_->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
     // Must have a component under any condition.
-    QSharedPointer<Component> component =
-        utility_->getLibraryInterface()->getModel(parseResult.vlnv).dynamicCast<Component>();
-    if (!component)
+    if (component == nullptr)
     {
         utility_->printError(tr("Invalid component given as a parameter."));
         return;
     }
 
-    utility_->printInfo(tr("Running generation for %1 and view '%2'.").arg(parseResult.vlnv.toString(), 
-        parseResult.viewName));
+    utility_->printInfo(tr("Running generation for %1 and view '%2'.").arg(component->getVlnv().toString(),
+        viewName));
 
     QDir targetDirectory;
-    if (!targetDirectory.mkpath(parseResult.path))
+    if (!targetDirectory.mkpath(outputDirectory))
     {
-        utility_->printError(tr("Could not create target directory: %1").arg(parseResult.path));
+        utility_->printError(tr("Could not create target directory: %1").arg(outputDirectory));
         return;
     }
 
-    utility_->printInfo(tr("Target directory: %1").arg(parseResult.path));
+    utility_->printInfo(tr("Target directory: %1").arg(outputDirectory));
 
     const bool saveToFileset = false;
     QSharedPointer<ViewSelection> viewSettings(new ViewSelection(QStringLiteral("vhdl"), saveToFileset,
-        QString(), &generationSettings_, component->getViews(), component->getComponentInstantiations(), 
+        QString(), &generationSettings_, component->getViews(), component->getComponentInstantiations(),
         component->getFileSets()));
 
-    QString filePath = parseResult.path;
+    QString filePath = outputDirectory;
     filePath.append(QLatin1Char('/'));
-    filePath.append(findEntityName(component, parseResult.viewName));
+    filePath.append(findEntityName(component, viewName));
     filePath.append(QStringLiteral(".vhd"));
 
     generate(component, filePath, viewSettings);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VHDLGeneratorPlugin::getProgramRequirements()
+//-----------------------------------------------------------------------------
+QList<IPlugin::ExternalProgramRequirement> VHDLGeneratorPlugin::getProgramRequirements()
+{
+    return QList<IPlugin::ExternalProgramRequirement>();
 }
 
 //-----------------------------------------------------------------------------

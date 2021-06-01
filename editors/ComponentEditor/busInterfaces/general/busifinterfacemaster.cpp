@@ -11,22 +11,15 @@
 
 #include "busifinterfacemaster.h"
 
-#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
-
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
-
-#include <IPXACTmodels/common/validators/ValueFormatter.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 #include <QLabel>
 #include <QGridLayout>
@@ -35,22 +28,20 @@
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceMaster::BusIfInterfaceMaster()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMaster::BusIfInterfaceMaster(General::InterfaceMode mode, QSharedPointer<BusInterface> busif,
-                                           QSharedPointer<Component> component,
-                                           QSharedPointer<ParameterFinder> parameterFinder,
-                                           QSharedPointer<ExpressionParser> expressionParser, QWidget *parent):
-BusIfInterfaceModeEditor(busif, component, tr("Master"), parent), 
-master_(QSharedPointer<MasterInterface>(new MasterInterface())),
-mode_(mode),
+BusIfInterfaceMaster::BusIfInterfaceMaster(General::InterfaceMode mode,
+    BusInterfaceInterface* busInterface, std::string const& busName,
+    QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, QWidget *parent):
+BusIfInterfaceModeEditor(busInterface, busName, tr("Master"), parent),
 addressSpaceReferenceSelector_(this),
 baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
-expressionParser_(expressionParser),
-parameterFinder_(parameterFinder)
+parameterFinder_(parameterFinder),
+component_(component)
 {
     baseAddressEditor_->setFixedHeight(20);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
-    componentParameterModel->setExpressionParser(expressionParser_);
+    componentParameterModel->setExpressionParser(expressionParser);
     ParameterCompleter* baseAddressCompleter = new ParameterCompleter(this);
     baseAddressCompleter->setModel(componentParameterModel);
     baseAddressEditor_->setAppendingCompleter(baseAddressCompleter);
@@ -114,8 +105,8 @@ bool BusIfInterfaceMaster::isValid() const
 	}
 	
 	// if the selected address space does not belong to component
-    QStringList addrSpaceNames = getComponent()->getAddressSpaceNames();
-    if (!addrSpaceNames.contains(selectedAddrSpace))
+    QStringList addrSpaceNames = component_->getAddressSpaceNames();
+	if (!addrSpaceNames.contains(selectedAddrSpace))
     {
 		return false;
 	}
@@ -128,21 +119,13 @@ bool BusIfInterfaceMaster::isValid() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMaster::refresh()
 {
-	// if the model contains master-element
-    if (getBusInterface()->getMaster())
-    {
-        master_ = getBusInterface()->getMaster();
-    }
-	else
-    {
-		master_.clear();
-		master_ = QSharedPointer<MasterInterface>(new MasterInterface());
-	}
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
 
 	// update the selectable items
-    addressSpaceReferenceSelector_.refresh(getComponent()->getAddressSpaceNames());
-
-	QString addrSpaceRef = master_->getAddressSpaceRef();
+    addressSpaceReferenceSelector_.refresh(component_->getAddressSpaceNames());
+    QString addrSpaceRef = QString::fromStdString(busInterface->getAddressSpaceReference(busName));
 
 	// if address space ref is empty then there can be no base address
 	if (addrSpaceRef.isEmpty())
@@ -154,8 +137,9 @@ void BusIfInterfaceMaster::refresh()
         baseAddressEditor_->blockSignals(true);
 
         baseAddressEditor_->setEnabled(true);
-        baseAddressEditor_->setExpression(master_->getBaseAddress());
-        baseAddressEditor_->setToolTip(formattedValueFor(master_->getBaseAddress()));
+        baseAddressEditor_->setExpression(QString::fromStdString(busInterface->getBaseAddressExpression(busName)));
+        baseAddressEditor_->setToolTip(
+            QString::fromStdString(busInterface->getBaseAddressValue(busName)));
 
         baseAddressEditor_->blockSignals(false);
 	}
@@ -169,7 +153,7 @@ void BusIfInterfaceMaster::refresh()
 //-----------------------------------------------------------------------------
 General::InterfaceMode BusIfInterfaceMaster::getInterfaceMode() const
 {
-	return mode_;
+    return General::MASTER;
 }
 
 //-----------------------------------------------------------------------------
@@ -177,7 +161,7 @@ General::InterfaceMode BusIfInterfaceMaster::getInterfaceMode() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName)
 {
-	master_->setAddressSpaceRef(addrSpaceName);
+    getBusInterface()->setAddressSpaceReference(getBusName(), addrSpaceName.toStdString());
 
 	// if address space reference is empty then there can be no base address
 	if (addrSpaceName.isEmpty())
@@ -199,9 +183,13 @@ void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName)
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMaster::onBaseAddressChange()
 {
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
     baseAddressEditor_->finishEditingCurrentWord();
-    master_->setBaseAddress(baseAddressEditor_->getExpression());
-    baseAddressEditor_->setToolTip(formattedValueFor(baseAddressEditor_->getExpression()));
+    busInterface->setBaseAddress(busName, baseAddressEditor_->getExpression().toStdString());
+    baseAddressEditor_->setToolTip(
+        QString::fromStdString(busInterface->getBaseAddressValue(busName)));
 
     emit contentChanged();
 }	
@@ -211,15 +199,11 @@ void BusIfInterfaceMaster::onBaseAddressChange()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMaster::saveModeSpecific()
 {
-    getBusInterface()->setMaster(master_);
-}
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
 
-//-----------------------------------------------------------------------------
-// Function: busifinterfacemaster::formattedValueFor()
-//-----------------------------------------------------------------------------
-QString BusIfInterfaceMaster::formattedValueFor(QString const& expression) const
-{
-   return ExpressionFormatter::format(expression, expressionParser_);
+    busInterface->setAddressSpaceReference(busName, addressSpaceReferenceSelector_.currentText().toStdString());
+    busInterface->setBaseAddress(busName, baseAddressEditor_->getExpression().toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -242,5 +226,5 @@ void BusIfInterfaceMaster::removeReferencesFromExpressions()
     }
 
     baseAddressEditor_->clear();
-    master_->setBaseAddress("");
+    getBusInterface()->setBaseAddress(getBusName(), "");
 }

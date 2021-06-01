@@ -16,6 +16,7 @@
 
 #include <QSharedPointer>
 
+class FileSetInterface;
 class Component;
 
 //-----------------------------------------------------------------------------
@@ -30,13 +31,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent      Pointer to the owner of this model.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] items       QStringList that contains the items to add.
+	 *      @param [in] parent              Pointer to the owner of this model.
+	 *      @param [in] fileSetInterface    Interface for accessing file sets.
+	 *      @param [in] items               QStringList that contains the items to add.
 	 */
-	FileSetRefModel(QObject *parent, QSharedPointer<Component> component, const QStringList& items = QStringList());
-	
-	//! The destructor.
+    FileSetRefModel(QObject *parent, FileSetInterface* fileSetInterface, const QStringList& items = QStringList());
+
+	/*!
+     *  The destructor.
+     */
 	virtual ~FileSetRefModel();
 
 	/*!
@@ -49,14 +52,12 @@ public:
 
 private:
 
-	//! No copying.
+    //! No copying. //! No assignment.
 	FileSetRefModel(const FileSetRefModel& other);
-
-	//! No assignment.
 	FileSetRefModel& operator=(const FileSetRefModel& other);
 
-	//! Pointer to the component being edited.
-	QSharedPointer<Component> component_;
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
 };
 
 #endif // FILESETREFMODEL_H

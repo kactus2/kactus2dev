@@ -11,33 +11,24 @@
 
 #include "CommandLineParser.h"
 
-#include <QStringList>
+#include <common/ui/MessageMediator.h>
+#include <common/KactusAPI.h>
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
-
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/PluginManager.h>
-#include <Plugins/PluginSystem/CommandLineSupport.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
-
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <QStringList>
 
 //-----------------------------------------------------------------------------
 // Function: CommandLineParser::CommandLineParser()
 //-----------------------------------------------------------------------------
-CommandLineParser::CommandLineParser(): optionParser_(), preReadDone_(false)
+CommandLineParser::CommandLineParser() : optionParser_(), preReadDone_(false)
 {
     optionParser_.addHelpOption();
     optionParser_.addVersionOption();
-}
 
-//-----------------------------------------------------------------------------
-// Function: CommandLineParser::~CommandLineParser()
-//-----------------------------------------------------------------------------
-CommandLineParser::~CommandLineParser()
-{
+    QCommandLineOption interactiveOption({ "c", "no-gui" }, "Run in command-line mode.");
 
+    optionParser_.addOption(interactiveOption);
 }
 
 //-----------------------------------------------------------------------------
@@ -50,90 +41,33 @@ void CommandLineParser::readArguments(QStringList const& arguments)
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommandLineParser::helpOrVersionOptionSet()
+// Function: CommandLineParser::commandlineMode()
 //-----------------------------------------------------------------------------
-bool CommandLineParser::helpOrVersionOptionSet() const
+bool CommandLineParser::commandlineMode() const
 {
-    return optionParser_.isSet(QStringLiteral("help")) || optionParser_.isSet(QStringLiteral("version"));
+    return optionParser_.isSet(QStringLiteral("no-gui"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: CommandLineParser::process()
 //-----------------------------------------------------------------------------
-int CommandLineParser::process(QStringList const& arguments, IPluginUtility* utility)
-{   
+int CommandLineParser::process(QStringList const& arguments, MessageMediator* messageChannel)
+{
     if (preReadDone_ == false)
     {
         optionParser_.parse(arguments);
     }
 
-    if (optionParser_.positionalArguments().isEmpty() == false)
-    {
-        QString command = optionParser_.positionalArguments().first();       
-
-        PluginManager& pluginManager = PluginManager::getInstance();
-        foreach (IPlugin* plugin, pluginManager.getAllPlugins())
-        {
-            CommandLineSupport* support = dynamic_cast<CommandLineSupport*>(plugin);
-            if (support && support->getCommand().compare(command) == 0)
-            {
-                QStringList pluginArguments = arguments;
-                pluginArguments.pop_front();
-
-                support->process(pluginArguments, utility);
-                return 0;
-            }
-        }
-    }
-     
-    if (optionParser_.isSet(QStringLiteral("help")))
-    {
-        utility->printInfo(helpText());
-        return 0;
-    }
-
     if (optionParser_.isSet(QStringLiteral("version")))
     {
-        utility->printInfo(QStringLiteral("Kactus2 ") + utility->getKactusVersion());
+        QString versionText = KactusAPI::getVersion() +
+            "Copyright (C) 2021 Tampere University\n" +
+            "License GPL2: GNU GPL version 2 <https://gnu.org/licenses/gpl.html>\n";
+        
+        messageChannel->showMessage(versionText);
         return 0;
     }
 
     optionParser_.process(arguments);
     return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: CommandLineParser::helpText()
-//-----------------------------------------------------------------------------
-QString CommandLineParser::helpText()
-{
-    QString text("Usage: Kactus2 <command> [options]\n" 
-        "Kactus2 is a design environment for IP-XACT based SoC design.\n"
-        "Running Kactus2 without any options opens the graphical user interface.\n"
-        "\n"
-        "Arguments:\n"
-        "  command         The command to run.\n"
-        "\n"
-        "The available commands are:\n");
-
-    PluginManager& pluginManager = PluginManager::getInstance();
-    foreach (IPlugin* plugin, pluginManager.getAllPlugins())
-    {
-        CommandLineSupport* support = dynamic_cast<CommandLineSupport*>(plugin);
-        if (support)
-        {
-            text.append(QString("  %1\n").arg(support->getCommand()));
-        }
-    }
-
-    text.append(
-        "\n"
-        "The command may require additional options. See 'Kactus2 <command> -h'\n"
-        "for command-specific information.\n"
-        "\n"
-        "Options:\n"
-        "  -h, --help  Displays this help.\n"
-        "  -v, --version   Displays version information.\n");
-
-    return text;
 }

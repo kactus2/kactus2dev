@@ -41,6 +41,9 @@ class PortMapTreeDelegate;
 class PortMapValidator;
 class PortMapAutoConnector;
 class AbstractionType;
+class PortMapInterface;
+class BusInterfaceInterface;
+class AbstractionTypeInterface;
 
 //-----------------------------------------------------------------------------
 //! Tab for editing and viewing bus interface port maps.
@@ -56,22 +59,26 @@ public:
 	 *
 	 *      @param [in] libHandler          The instance that manages the library.
 	 *      @param [in] component           The component being edited.
-	 *      @param [in] busif               The bus interface being edited.
+     *      @param [in] busInterface        Interface for accessing bus interfaces.
+     *      @param [in] busName             Name of the edited bus interface.
      *      @param [in] expressionParser    The used expression parser.
-     *      @param [in] formatter           The used expression formatter.
      *      @param [in] finder              The used parameter finder.
-     *      @param [in] portMapValidator    Validator used for port maps.
+     *      @param [in] portMapInterface    Interface for accessing port maps.
 	 *      @param [in] parent              The owner of the editor.
 	 */
-	BusInterfacePortMapTab(LibraryInterface* libHandler, QSharedPointer<Component> component, 
-        QSharedPointer<BusInterface> busif,	QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder,
-        QSharedPointer<PortMapValidator> portMapValidator, QWidget* parent);
-	
+    BusInterfacePortMapTab(LibraryInterface* libHandler,
+        QSharedPointer<Component> component,
+        BusInterfaceInterface* busInterface,
+        std::string const& busName,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> finder,
+        PortMapInterface* portMapInterface,
+        QWidget* parent);
+
 	/*!
      *  The destructor.
      */
-    virtual ~BusInterfacePortMapTab();
+    virtual ~BusInterfacePortMapTab() = default;
 
 	/*!
      *  Restore the changes made in the editor back to ones in the model.
@@ -81,9 +88,9 @@ public:
 	/*!
      *  Set the abstraction type that defines the logical signals to use.
 	 *
-     *      @param [in] abstraction     The selected abstraction type.
+     *      @param [in] abstractionIndex    Index of the selected abstraction type.
 	 */
-    virtual void setAbsType(QSharedPointer<AbstractionType> abstraction);
+    virtual void setAbsType(int const& abstractionIndex);
 
     /*!
      *  Sets a subset of component ports to be visible in the physical port list.
@@ -96,6 +103,15 @@ public:
      *  Setup the available abstraction definitions.
      */
     void setAbstractionDefinitions();
+
+public slots:
+
+    /*!
+     *  Handle the change in the name of the edited bus interface.
+     *
+     *      @param [in] newName     New name of the edited bus interface.
+     */
+    void changeBusName(std::string const& newName);
 
 signals:
 
@@ -168,6 +184,11 @@ private:
 	BusInterfacePortMapTab(const BusInterfacePortMapTab& other);
 	BusInterfacePortMapTab& operator=(const BusInterfacePortMapTab& other);
 
+    /*!
+     *  Setup the currently active abstraction type.
+     */
+    void setupAbstraction();
+
 	/*!
      *  Set up the layout of the GUI items
      */
@@ -193,8 +214,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The bus interface being edited.
-	QSharedPointer<BusInterface> busif_;
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
+
+    //! Name of the edited bus interface.
+    std::string busName_;
 
 	//! The component being edited.
 	QSharedPointer<Component> component_;
@@ -249,9 +273,6 @@ private:
 
     //! Selects the active abstraction type.
     QComboBox* abstractionSelector_;
-
-    //! List of the available abstraction types.
-    QList<QSharedPointer<AbstractionType> > abstractions_;
 };
 
 #endif // BUSINTERFACEPORTMAPTAB_H

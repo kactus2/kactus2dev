@@ -28,6 +28,7 @@ class IndirectInterfaceValidator;
 class ReferenceSelector;
 class ParameterGroupBox;
 class ParameterFinder;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for a single indirect interface within a component.
@@ -49,40 +50,70 @@ public:
      *      @param [in] parent              The parent widget.
      */
     SingleIndirectInterfaceEditor(QSharedPointer<IndirectInterface> indirectInterface,
-        QSharedPointer<IndirectInterfaceValidator> validator, QSharedPointer<Component> component,
-        LibraryInterface* library, QSharedPointer<ParameterFinder> finder,
-        QSharedPointer<ExpressionFormatter> formatter, QWidget* parent);
+        QSharedPointer<IndirectInterfaceValidator> validator,
+        QSharedPointer<Component> component,
+        LibraryInterface* library,
+        QSharedPointer<ParameterFinder> finder,
+        QSharedPointer<ExpressionFormatter> formatter,
+        BusInterfaceInterface* busInterface,
+        QWidget* parent);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~SingleIndirectInterfaceEditor();
 
-    //! Refreshes the information in the editor.
+    /*!
+     *  Refreshes the information in the editor.
+     */
     virtual void refresh();
     
 protected:
 
-    //! Called when the editor is shown.
+    /*!
+     *  Called when the editor is shown.
+     */
     void showEvent(QShowEvent* event);
 
 private slots:
 
-    //! Called when the indirect address reference has changed.
+    /*!
+     *  Called when the indirect address reference has changed.
+     */
     void onIndirectAddressChanged();
 
-    //! Called when the indirect ddatareference has changed.
+    /*!
+     *  Called when the indirect ddatareference has changed.
+     */
     void onIndirectDataChanged();
 
-    //! Called when the bits in lau has changed.
+    /*!
+     *  Called when the bits in lau has changed.
+     */
     void onBitsInLauChanged();
 
-    //! Called when the endianness has changed.
+    /*!
+     *  Called when the endianness has changed.
+     */
     void onEndiannessChanged();
 
-    //! Called when the indirect memory map has changed.
+    /*!
+     *  Called when the indirect memory map has changed.
+     */
     void onMemoryMapChanged();
 
+    /*!
+     *  Handle the selection of memory map.
+     *
+     *      @param [in] checked     Flag for enabling memory map.
+     */
     void onMemoryMapSelected(bool checked);
 
+    /*!
+     *  Handle the selection of transparent bridges.
+     *
+     *      @param [in] checked     Flag for enabling transparent bridges.
+     */
     void onTransparentBridgeSelected(bool checked);
 private:
 

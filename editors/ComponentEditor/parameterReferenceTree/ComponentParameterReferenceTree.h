@@ -35,6 +35,7 @@ class MemoryRemap;
 class AddressBlock;
 class RegisterBase;
 class Register;
+class RegisterFile;
 class Field;
 class FieldReset;
 class BusInterface;
@@ -224,12 +225,31 @@ private:
         QTreeWidgetItem* middleAddressBlocksItem);
 
     /*!
+     *  Create the references for registers.
+     *
+     *      @param [in] targetID        The selected parameter ID.
+     *      @param [in] registerData    Selected register data.
+     *      @param [in] parentItem      Parent tree item of the new register items.
+     */
+    void createReferencesForRegisters(QString const& targetID,
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData, QTreeWidgetItem* parentItem);
+
+    /*!
      *  Create the references for a single register.
      *
      *      @param [in] targetRegister  The register.
      *      @param [in] parentItem      The parent tree item of the new register tree item.
      */
     void createReferencesForSingleRegister(QSharedPointer<Register> targetRegister, QTreeWidgetItem* parentItem);
+
+    /*!
+     *  Create the references for a single register file
+     *
+     *      @param [in] targetFile  The selected register file.
+     *      @param [in] parentItem  Parent tree item of the new register file tree item.
+     */
+    void createReferencesForSingleRegisterFile(QSharedPointer<RegisterFile> targetFile,
+        QTreeWidgetItem* parentItem);
 
     /*!
      *  Create references for bus interfaces.
@@ -242,12 +262,25 @@ private:
     void createReferencesForRemapStates();
 
     /*!
+     *  Create references for indirect interfaces.
+     */
+    void createReferencesForIndirectInterfaces();
+
+    /*!
      *  Create tree items for a port that is referencing this parameter.
      *
      *      @param [in] port        The referencing port.
      *      @param [in] parent      The parent of the upcoming item.
      */
     void createItemsForPort(QSharedPointer<Port> port, QTreeWidgetItem* parent);
+
+    /*!
+     *  Create tree items for a memory map that is referencing this parameter.
+     *
+     *      @param [in] targetMap   The referencing memory map.
+     *      @param [in] parent      The parent of the upcoming item.
+     */
+    void createItemsForMemoryMap(QSharedPointer<MemoryMapBase> targetMap, QTreeWidgetItem* parent);
 
     /*!
      *  Create tree items for an address block that is referencing this parameter.
@@ -264,6 +297,22 @@ private:
      *      @param [in] parent          The parent of the upcoming item.
      */
     void createItemsForRegister(QSharedPointer<Register> targetRegister, QTreeWidgetItem* parent);
+
+    /*!
+     *  Create tree items for a base register that is referencing this parameter.
+     *
+     *      @param [in] baseRegister    The referencing base register.
+     *      @param [in] parent          The parent of the upcoming item.
+     */
+    void createItemsForBaseRegister(QSharedPointer<RegisterBase> baseRegister, QTreeWidgetItem* parent);
+
+    /*!
+     *  Create tree items for a register file that is referencing this parameter.
+     *
+     *      @param [in] targetFile  The referencing register file.
+     *      @param [in] parent      The parent of the upcoming item.
+     */
+    void createItemsForRegisterFile(QSharedPointer<RegisterFile> targetFile, QTreeWidgetItem* parent);
 
     /*!
      *  Create tree items for a register field that is referencing this parameter.

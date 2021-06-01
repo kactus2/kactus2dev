@@ -20,6 +20,7 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <QVBoxLayout>
+#include <QLineEdit>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardVhdlImportPage::ComponentWizardVhdlImportPage()
@@ -50,7 +51,9 @@ editor_(new ImportEditor(component, handler, parameterFinder, expressionFormatte
     connect(editor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    registerField(InstanceData::VERILOGINSTANCES, this);
+    QLineEdit *dummy = new QLineEdit(this);
+    dummy->setVisible(false);
+    registerField(InstanceData::VERILOGINSTANCES, dummy);
 }
 
 //-----------------------------------------------------------------------------

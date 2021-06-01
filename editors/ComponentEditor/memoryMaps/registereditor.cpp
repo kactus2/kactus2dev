@@ -23,6 +23,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -30,23 +31,24 @@
 //-----------------------------------------------------------------------------
 // Function: registereditor::RegisterEditor()
 //-----------------------------------------------------------------------------
-RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Component> component,
-    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
-    QWidget* parent /* = 0 */):
+RegisterEditor::RegisterEditor(QSharedPointer<QList<QSharedPointer<Field>>> fields,
+    QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface, QWidget* parent):
 QGroupBox(tr("Fields summary"), parent),
-    view_(new EditableTableView(this)),
-    model_(0)
+view_(new EditableTableView(this)),
+model_(0),
+interface_(fieldInterface),
+fields_(fields)
 {
+    interface_->setFields(fields_);
+
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
     view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
     view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-
-    model_ = new RegisterTableModel(reg, expressionParser, parameterFinder, expressionFormatter, fieldValidator,
-        this);
+    model_ = new RegisterTableModel(fieldInterface, expressionParser, parameterFinder, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -85,6 +87,9 @@ QGroupBox(tr("Fields summary"), parent),
 	connect(model_, SIGNAL(fieldAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(fieldRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
+    connect(model_, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+        this, SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
     connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -114,4 +119,6 @@ QGroupBox(tr("Fields summary"), parent),
 void RegisterEditor::refresh()
 {
 	view_->update();
+
+    interface_->setFields(fields_);
 }

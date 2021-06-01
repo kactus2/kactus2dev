@@ -22,6 +22,17 @@ class BusInterfaceValidator;
 class Component;
 class LibraryInterface;
 class ExpressionParser;
+class ParameterValidator;
+class IPXactSystemVerilogParser;
+class BusInterfaceInterface;
+class FileSetInterface;
+class MemoryMapInterface;
+class AbstractionTypeInterface;
+class PortMapInterface;
+class TransparentBridgeInterface;
+class PortMapValidator;
+class ParameterFinder;
+class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! Bus wizard dialog.
@@ -86,16 +97,6 @@ private:
     // Disable copying.
     BusInterfaceWizard(BusInterfaceWizard const& rhs);
     BusInterfaceWizard& operator=(BusInterfaceWizard const& rhs);
-
-    /*!
-     *  Create the validator for bus interfaces.
-     *
-     *      @param [in] component   Component containing the bus interfaces.
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] handler     Library handler.
-     */
-    QSharedPointer<BusInterfaceValidator> createBusInterfaceValidator(QSharedPointer<Component> component,
-        QSharedPointer<ExpressionParser> parser, LibraryInterface* handler);
 };
 
 #endif // BUSINTERFACEWIZARD_H

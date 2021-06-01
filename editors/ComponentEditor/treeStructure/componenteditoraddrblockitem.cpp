@@ -14,6 +14,8 @@
 #include "componenteditorregisterfileitem.h"
 
 #include <editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
@@ -29,18 +31,21 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem()
 //-----------------------------------------------------------------------------
-ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
-    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<AddressBlockValidator> addressBlockValidator, ComponentEditorItem* parent):
+ComponentEditorAddrBlockItem::ComponentEditorAddrBlockItem(QSharedPointer<MemoryMapBase> containingMap,
+    QSharedPointer<AddressBlock> addrBlock, ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+    QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<AddressBlockValidator> addressBlockValidator,
+    AddressBlockInterface* blockInterface, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
+containingMap_(containingMap),
 addrBlock_(addrBlock),
 visualizer_(NULL),
 graphItem_(NULL),
 expressionParser_(expressionParser),
 addressUnitBits_(0),
-addressBlockValidator_(addressBlockValidator)
+addressBlockValidator_(addressBlockValidator),
+blockInterface_(blockInterface)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -86,8 +91,8 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleAddressBlockEditor(addrBlock_, component_, libHandler_, parameterFinder_,
-            expressionFormatter_, expressionParser_, addressBlockValidator_);
+        editor_ = new SingleAddressBlockEditor(blockInterface_, addrBlock_, containingMap_, component_,
+            libHandler_, parameterFinder_, expressionFormatter_, expressionParser_, addressBlockValidator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
@@ -103,6 +108,12 @@ ItemEditor* ComponentEditorAddrBlockItem::editor()
         
         connect(this, SIGNAL(changeInAddressUnitBits(int)),
             editor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
+
+        connect(editor_, SIGNAL(registerNameChanged(QString const&, QString const&)),
+            this, SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+        connect(this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+            editor_, SLOT(onAddressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
 
@@ -120,9 +131,14 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 	QSharedPointer<Register> reg = regmodel.dynamicCast<Register>();
 	if (reg)
     {
-		QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg, model_,
-            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_, 
-            expressionParser_, addressBlockValidator_->getRegisterValidator(), this));
+		QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg,
+            addrBlock_->getRegisterData(), model_, libHandler_, component_, parameterFinder_, expressionFormatter_,
+            referenceCounter_, expressionParser_, addressBlockValidator_->getRegisterValidator(),
+            blockInterface_->getSubInterface(), this));
+
+        connect(this, SIGNAL(registerNameChanged(QString const&, QString const&)),
+            regItem.data(), SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
 		regItem->setLocked(locked_);
 		
 		if (visualizer_)
@@ -146,9 +162,10 @@ void ComponentEditorAddrBlockItem::createChild( int index )
     QSharedPointer<RegisterFile> regFile = regmodel.dynamicCast<RegisterFile>();
     if (regFile)
     {
-        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regFile, model_,
-            libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
-            expressionParser_, addressBlockValidator_->getRegisterFileValidator(), this));
+        QSharedPointer<ComponentEditorRegisterFileItem> regFileItem(new ComponentEditorRegisterFileItem(regFile,
+            model_, libHandler_, component_, parameterFinder_, expressionFormatter_, referenceCounter_,
+            expressionParser_, addressBlockValidator_->getRegisterFileValidator(),
+            blockInterface_->getSubInterface(), addrBlock_, this));
         regFileItem->setLocked(locked_);
 
         if (visualizer_)

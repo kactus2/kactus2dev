@@ -24,6 +24,8 @@
 class LibraryInterface;
 class Component;
 class ParameterFinder;
+class FileSetInterface;
+class FileSet;
 
 //-----------------------------------------------------------------------------
 //! The editor to add/remove/edit file sets of a component.
@@ -37,12 +39,14 @@ public:
     /*! The constructor
      *
      *      @param [in] component           The component being edited.
-     *      @param [in] libraryInterface    The library interface.
+     *      @param [in] libInterface        The library interface.
      *      @param [in] parameterFinder     Finder used to identify parameters.
-     *      @param [in] pluginMgr           The plugin manager.    
+     *      @param [in] fileSetInterface    Interface for accessing file sets.
      */
-    FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface,
-        QSharedPointer<ParameterFinder> parameterFinder);
+    FileSetsEditor(QSharedPointer<Component> component,
+        LibraryInterface* libInterface,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        FileSetInterface* fileSetInterface);
     
     //! The destructor
     ~FileSetsEditor();
@@ -96,6 +100,12 @@ private:
 
     //! If true, the widget has not yet been shown at all.
     bool firstShow_;
+
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
+
+    //! The editable file sets.
+    QSharedPointer<QList<QSharedPointer<FileSet> > > availableFileSets_;
 };
 
 #endif // FILESETSEDITOR_H

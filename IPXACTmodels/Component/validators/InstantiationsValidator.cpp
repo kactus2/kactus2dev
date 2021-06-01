@@ -442,3 +442,11 @@ bool InstantiationsValidator::moduleParameterHasValidPresence(QSharedPointer<Mod
 
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: InstantiationsValidator::getParameterValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<ParameterValidator> InstantiationsValidator::getParameterValidator() const
+{
+    return parameterValidator_;
+}

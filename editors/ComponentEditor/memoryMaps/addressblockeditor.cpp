@@ -19,6 +19,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 
 #include <common/views/EditableTableView/editabletableview.h>
 
@@ -30,14 +31,17 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockEditor::AddressBlockEditor()
 //-----------------------------------------------------------------------------
-AddressBlockEditor::AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData,
-    QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<RegisterFileValidator> registerFileValidator, QWidget* parent):
+AddressBlockEditor::AddressBlockEditor(QSharedPointer<QList<QSharedPointer<RegisterBase>>> registers,
+    RegisterInterface* registerInterface, QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
 QGroupBox(tr("Registers summary"), parent),
-    view_(new EditableTableView(this)),
-    model_(0)
+view_(new EditableTableView(this)),
+model_(0),
+interface_(registerInterface),
+registers_(registers)
 {
+    interface_->setRegisters(registers_);
+
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
     view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
@@ -45,8 +49,7 @@ QGroupBox(tr("Registers summary"), parent),
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new AddressBlockModel(registerData, expressionParser, parameterFinder,
-        expressionFormatter, registerFileValidator, this);
+    model_ = new AddressBlockModel(registerInterface, expressionParser, parameterFinder, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -97,6 +100,9 @@ QGroupBox(tr("Registers summary"), parent),
 	connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
+    connect(model_, SIGNAL(registerNameChanged(QString const&, QString const&)),
+        this, SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
     connect(view_, SIGNAL(addItem(const QModelIndex&)),
         model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
    
@@ -125,4 +131,6 @@ QGroupBox(tr("Registers summary"), parent),
 void AddressBlockEditor::refresh()
 {
 	view_->update();
+
+    interface_->setRegisters(registers_);
 }

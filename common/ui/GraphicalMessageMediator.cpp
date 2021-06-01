@@ -25,14 +25,6 @@ GraphicalMessageMediator::GraphicalMessageMediator(): console_(0), statusBar_(0)
 }
 
 //-----------------------------------------------------------------------------
-// Function: GraphicalMessageMediator::~GraphicalMessageMediator()
-//-----------------------------------------------------------------------------
-GraphicalMessageMediator::~GraphicalMessageMediator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: GraphicalMessageMediator::showMessage()
 //-----------------------------------------------------------------------------
 void GraphicalMessageMediator::showMessage(QString const& message) const

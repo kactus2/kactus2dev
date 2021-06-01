@@ -15,6 +15,8 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 
+#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
+
 #include <QGridLayout>
 #include <QFormLayout>
 #include <QLabel>
@@ -26,12 +28,12 @@
 // Function: ComponentInstantiationEditor::ComponentInstantiationEditor()
 //-----------------------------------------------------------------------------
 ComponentInstantiationEditor::ComponentInstantiationEditor(QSharedPointer<Component> component,
-        LibraryInterface* library, QSharedPointer<ComponentInstantiation> componentInstantiation,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+    LibraryInterface* library, QSharedPointer<ComponentInstantiation> componentInstantiation,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ComponentInstantiationInterface* instantiationInterface, QWidget *parent):
 ParameterItemEditor(component, library, parent),
 component_(component),
-componentInstantiation_(componentInstantiation),
 nameGroupEditor_(componentInstantiation, this, tr("Component instance name and description")),
 languageEditor_(this), 
 languageStrict_(tr("strict"), this),
@@ -40,13 +42,18 @@ packageEditor_(this),
 modulelNameEditor_(this),
 architectureEditor_(this),
 configurationEditor_(this),
-fileSetRefs_(component, tr("File set references"), this),
-fileBuilders_(componentInstantiation->getDefaultFileBuilders(), parameterFinder, expressionParser,
-              expressionFormatter, this),
-moduleParameters_(componentInstantiation->getModuleParameters(), component->getChoices(), parameterFinder,
-expressionFormatter, this),
-parameters_(componentInstantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this)
+fileSetRefs_(instantiationInterface->getFileSetInterface(), tr("File set references"), this),
+fileBuilders_(instantiationInterface->getFileBuilderInterface(), parameterFinder, expressionParser,
+              expressionFormatter, componentInstantiation->getDefaultFileBuilders(), this),
+moduleParameters_(componentInstantiation, component->getChoices(), parameterFinder, expressionFormatter,
+    instantiationInterface->getModuleParameterInterface(), this),
+parameters_(componentInstantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter,
+    this),
+instantiationInterface_(instantiationInterface),
+availableInstantiations_(component->getComponentInstantiations())
 {
+    instantiationInterface_->setComponentInstantiations(availableInstantiations_);
+
     fileSetRefs_.initialize();
 
     connect(&nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -88,8 +95,11 @@ parameters_(componentInstantiation->getParameters(), component->getChoices(), pa
     connect(&moduleParameters_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
-    connect(&moduleParameters_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+    connect(&moduleParameters_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        Qt::UniqueConnection);
 
     connect(&parameters_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&parameters_, SIGNAL(increaseReferences(QString)),
@@ -99,18 +109,13 @@ parameters_(componentInstantiation->getParameters(), component->getChoices(), pa
     connect(&parameters_, SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
-    connect(&parameters_, SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)),
-        this ,SIGNAL(recalculateReferencesToParameters(QVector<QSharedPointer<Parameter> >)), Qt::UniqueConnection);
+    connect(&parameters_,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        this,
+        SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        Qt::UniqueConnection);
 
     setupLayout();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiationEditor::~ComponentInstantiationEditor()
-//-----------------------------------------------------------------------------
-ComponentInstantiationEditor::~ComponentInstantiationEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -118,24 +123,34 @@ ComponentInstantiationEditor::~ComponentInstantiationEditor()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::refresh()
 {
+    instantiationInterface_->setComponentInstantiations(availableInstantiations_);
+
     blockSignals(true);
 
     nameGroupEditor_.refresh();
+    std::string instantiationName = nameGroupEditor_.name().toStdString();
 
-    languageEditor_.setText(componentInstantiation_->getLanguage());
-    languageStrict_.setChecked(componentInstantiation_->isLanguageStrict());
+    languageEditor_.setText(QString::fromStdString(instantiationInterface_->getLanguage(instantiationName)));
+    languageStrict_.setChecked(instantiationInterface_->isLanguageStrict(instantiationName));
 
-    libraryEditor_.setText(componentInstantiation_->getLibraryName());
+    libraryEditor_.setText(QString::fromStdString(instantiationInterface_->getLibraryName(instantiationName)));
 
-    packageEditor_.setText(componentInstantiation_->getPackageName());
+    packageEditor_.setText(QString::fromStdString(instantiationInterface_->getPackageName(instantiationName)));
 
-    modulelNameEditor_.setText(componentInstantiation_->getModuleName());
+    modulelNameEditor_.setText(QString::fromStdString(instantiationInterface_->getModuleName(instantiationName)));
 
-    architectureEditor_.setText(componentInstantiation_->getArchitectureName());
+    architectureEditor_.setText(
+        QString::fromStdString(instantiationInterface_->getArchitectureName(instantiationName)));
 
-    configurationEditor_.setText(componentInstantiation_->getConfigurationName());
+    configurationEditor_.setText(
+        QString::fromStdString(instantiationInterface_->getConfigurationName(instantiationName)));
 
-    fileSetRefs_.setItems(*componentInstantiation_->getFileSetReferences());
+    QStringList fileSetReferences;
+    for (auto fileReference : instantiationInterface_->getFileSetReferences(instantiationName))
+    {
+        fileSetReferences.append(QString::fromStdString(fileReference));
+    }
+    fileSetRefs_.setItems(fileSetReferences);
 
     fileBuilders_.refresh();
 
@@ -147,21 +162,15 @@ void ComponentInstantiationEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstantiationEditor::getComponentInstance()
-//-----------------------------------------------------------------------------
-QSharedPointer<ComponentInstantiation> ComponentInstantiationEditor::getComponentInstance() const
-{
-    return componentInstantiation_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstantiationEditor::onLanguageChange()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::onLanguageChange()
 {
-    componentInstantiation_->setLanguage(languageEditor_.text());
-    componentInstantiation_->setLanguageStrictness(languageStrict_.isChecked());
-	emit contentChanged();
+    std::string instantiationName = nameGroupEditor_.name().toStdString();
+
+    instantiationInterface_->setLanguage(instantiationName, languageEditor_.text().toStdString());
+    instantiationInterface_->setLanguageStrictness(instantiationName, languageStrict_.isChecked());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -169,7 +178,8 @@ void ComponentInstantiationEditor::onLanguageChange()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::onLibraryChange()
 {
-    componentInstantiation_->setLibraryName(libraryEditor_.text());
+    instantiationInterface_->setLibraryName(nameGroupEditor_.name().toStdString(),
+        libraryEditor_.text().toStdString());
     emit contentChanged();
 }
 
@@ -178,7 +188,8 @@ void ComponentInstantiationEditor::onLibraryChange()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::onPackageChange()
 {
-    componentInstantiation_->setPackageName(packageEditor_.text());
+    instantiationInterface_->setPackageName(nameGroupEditor_.name().toStdString(),
+        packageEditor_.text().toStdString());
     emit contentChanged();
 }
 
@@ -187,8 +198,9 @@ void ComponentInstantiationEditor::onPackageChange()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::onModelNameChange()
 {
-    componentInstantiation_->setModuleName(modulelNameEditor_.text());
-	emit contentChanged();
+    instantiationInterface_->setModuleName(nameGroupEditor_.name().toStdString(),
+        modulelNameEditor_.text().toStdString());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +208,8 @@ void ComponentInstantiationEditor::onModelNameChange()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::onArchitectureChange()
 {
-    componentInstantiation_->setArchitectureName(architectureEditor_.text());
+    instantiationInterface_->setArchitectureName(nameGroupEditor_.name().toStdString(),
+        architectureEditor_.text().toStdString());
     emit contentChanged();
 }
 
@@ -205,7 +218,8 @@ void ComponentInstantiationEditor::onArchitectureChange()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::onConfigurationChange()
 {
-    componentInstantiation_->setConfigurationName(configurationEditor_.text());
+    instantiationInterface_->setConfigurationName(nameGroupEditor_.name().toStdString(),
+        configurationEditor_.text().toStdString());
     emit contentChanged();
 }
 
@@ -214,8 +228,12 @@ void ComponentInstantiationEditor::onConfigurationChange()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::onFileSetRefChange()
 {
-    componentInstantiation_->getFileSetReferences()->clear();
-    componentInstantiation_->getFileSetReferences()->append(fileSetRefs_.items());
+    std::vector<std::string> newReferences;
+    for (auto setReference : fileSetRefs_.items())
+    {
+        newReferences.push_back(setReference.toStdString());
+    }
+    instantiationInterface_->setFileSetReferences(nameGroupEditor_.name().toStdString(), newReferences);
 
 	emit contentChanged();
 }

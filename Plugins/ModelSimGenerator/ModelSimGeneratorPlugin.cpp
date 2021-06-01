@@ -32,13 +32,6 @@ ModelSimGeneratorPlugin::ModelSimGeneratorPlugin() : QObject(0)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelSimGeneratorPlugin::ModelSimGeneratorPlugin()
-//-----------------------------------------------------------------------------
-ModelSimGeneratorPlugin::~ModelSimGeneratorPlugin()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ModelSimGeneratorPlugin::getName()
 //----------------------------------------------------------------------------
 QString ModelSimGeneratorPlugin::getName() const
@@ -51,7 +44,7 @@ QString ModelSimGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString ModelSimGeneratorPlugin::getVersion() const
 {
-    return "2.0";
+    return "2.1";
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +60,7 @@ QString ModelSimGeneratorPlugin::getDescription() const
 //-----------------------------------------------------------------------------
 QString ModelSimGeneratorPlugin::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------
@@ -175,6 +168,69 @@ void ModelSimGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
     // Finally, save the changes.
     utility->printInfo(tr("Generation complete."));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelSimGeneratorPlugin::runGenerator()
+//-----------------------------------------------------------------------------
+void ModelSimGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component, 
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, 
+    QString const& viewName, QString const& outputDirectory)
+{
+    utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+
+    if (component == nullptr)
+    {
+        utility->printError(tr("Null component given as a parameter."));
+        return;
+    }
+
+    MessagePasser messages;
+
+    GenerationTuple input;
+    input.component = component;
+    input.design = design;
+    input.designConfiguration = designConfiguration;
+    input.messages = &messages;
+    
+    settings_.lastViewName_ = viewName;
+    
+    ModelSimWriterFactory factory(utility->getLibraryInterface(), &messages, &settings_,
+        utility->getKactusVersion(), getVersion());
+    
+    // Create model for the configuration widget.
+    QSharedPointer<GenerationControl> configuration(new GenerationControl
+    (utility->getLibraryInterface(), &factory, input, &settings_));
+
+    configuration->getOutputControl()->setOutputPath(outputDirectory);
+
+    configuration->parseDocuments();
+
+    QString warning;
+    if (!configuration->validSelections(warning))
+    {        
+        utility->printError(warning);
+        return;
+    }
+
+    if (configuration->writeDocuments())
+    {
+        // Finally, save the changes.
+        utility->printInfo(tr("Generation complete."));
+    }
+    else
+    {
+        utility->printError(tr("Generation failed."));
+
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModelSimGeneratorPlugin::getOutputFormat()
+//-----------------------------------------------------------------------------
+QString ModelSimGeneratorPlugin::getOutputFormat() const
+{
+    return QStringLiteral("do");
 }
 
 //-----------------------------------------------------------------------------

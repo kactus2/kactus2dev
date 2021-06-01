@@ -13,21 +13,32 @@
 
 #include <IPXACTmodels/Component/Port.h>
 
+#include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsFilter::TransactionalPortsFilter()
 //-----------------------------------------------------------------------------
-TransactionalPortsFilter::TransactionalPortsFilter(QObject* parent):
-PortsFilter(parent)
+TransactionalPortsFilter::TransactionalPortsFilter(QSharedPointer<PortsInterface> portInterface, QObject* parent):
+PortsFilter(portInterface, parent)
 {
 
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransactionalPortsFilter::nameColumn()
+//-----------------------------------------------------------------------------
+int TransactionalPortsFilter::nameColumn() const
+{
+    return TransactionalPortColumns::NAME;
+}
+
+//-----------------------------------------------------------------------------
 // Function: TransactionalPortsFilter::portIsAccepted()
 //-----------------------------------------------------------------------------
-bool TransactionalPortsFilter::portIsAccepted(QSharedPointer<Port> port) const
+bool TransactionalPortsFilter::portIsAccepted(QString const& portName) const
 {
-    if (port->getWire())
+    if (getInterface()->portIsWire(portName.toStdString()))
     {
         return false;
     }

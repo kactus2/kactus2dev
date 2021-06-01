@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 7.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifinterfacemslave.cpp
- */
+//-----------------------------------------------------------------------------
+// File: busIfInterfaceMSlave.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 7.4.2011
+//
+// Description:
+// Editor to edit mirrored slave details of a bus interface.
+//-----------------------------------------------------------------------------
 
 #include "busifinterfacemslave.h"
 
@@ -17,10 +21,9 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 #include <QLabel>
 #include <QGridLayout>
@@ -28,13 +31,10 @@
 //-----------------------------------------------------------------------------
 // Function: busifinterfacemslave::BusIfInterfaceMSlave()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMSlave::BusIfInterfaceMSlave(QSharedPointer<BusInterface> busif, 
-										   QSharedPointer<Component> component,
-                                           QSharedPointer<ParameterFinder> parameterFinder,
-                                           QSharedPointer<ExpressionParser> expressionParser,
-										   QWidget *parent):
-BusIfInterfaceModeEditor(busif, component, tr("Mirrored slave"), parent),
-mirroredSlave_(QSharedPointer<MirroredSlaveInterface>(new MirroredSlaveInterface())),
+BusIfInterfaceMSlave::BusIfInterfaceMSlave(BusInterfaceInterface* busInterface, std::string const& busName,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+    QWidget *parent):
+BusIfInterfaceModeEditor(busInterface, busName, tr("Mirrored slave"), parent),
 remapEditor_(new ExpressionEditor(parameterFinder, this)),
 rangeEditor_(new ExpressionEditor(parameterFinder, this)),
 expressionParser_(expressionParser),
@@ -81,14 +81,6 @@ parameterFinder_(parameterFinder)
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::~BusIfInterfaceMSlave()
-//-----------------------------------------------------------------------------
-BusIfInterfaceMSlave::~BusIfInterfaceMSlave()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: busifinterfacemslave::isValid()
 //-----------------------------------------------------------------------------
 bool BusIfInterfaceMSlave::isValid() const
@@ -101,36 +93,20 @@ bool BusIfInterfaceMSlave::isValid() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMSlave::refresh()
 {
-	// if the model contains master-element
-    if (getBusInterface()->getMirroredSlave())
-    {
-        mirroredSlave_ = getBusInterface()->getMirroredSlave();
-    }
-	else
-    {
-		mirroredSlave_.clear();
-		mirroredSlave_ = QSharedPointer<MirroredSlaveInterface>(new MirroredSlaveInterface());
-	}
-
     rangeEditor_->blockSignals(true);
 
-    rangeEditor_->setExpression(mirroredSlave_->getRange());
-    rangeEditor_->setToolTip(formattedValueFor(mirroredSlave_->getRange()));
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
+    rangeEditor_->setExpression(QString::fromStdString(busInterface->getRangeExpression(busName)));
+    rangeEditor_->setToolTip(QString::fromStdString(busInterface->getRangeValue(busName)));
 
     rangeEditor_->blockSignals(false);
 
     remapEditor_->blockSignals(true);
 
-    if (mirroredSlave_->getRemapAddresses() && !mirroredSlave_->getRemapAddresses()->isEmpty())
-    {
-        remapEditor_->setExpression(mirroredSlave_->getRemapAddresses()->first()->remapAddress_);
-        remapEditor_->setToolTip(formattedValueFor(mirroredSlave_->getRemapAddresses()->first()->remapAddress_));
-    }
-    else
-    {
-        remapEditor_->setExpression("");
-        remapEditor_->setToolTip("");
-    }
+    remapEditor_->setExpression(QString::fromStdString(busInterface->getRemapAddressExpression(busName)));
+    remapEditor_->setToolTip(QString::fromStdString(busInterface->getRemapAddressValue(busName)));
 
     remapEditor_->blockSignals(false);
 }
@@ -148,7 +124,11 @@ General::InterfaceMode BusIfInterfaceMSlave::getInterfaceMode() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceMSlave::saveModeSpecific()
 {
-    getBusInterface()->setMirroredSlave(mirroredSlave_);
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
+    busInterface->setRange(busName, rangeEditor_->getExpression().toStdString());
+    busInterface->setRemapAddress(busName, remapEditor_->getExpression().toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -159,9 +139,13 @@ void BusIfInterfaceMSlave::onRemapChange()
     remapEditor_->finishEditingCurrentWord();
 
     QString newRemapAddress = remapEditor_->getExpression();
-    mirroredSlave_->setRemapAddress(newRemapAddress);
 
-    remapEditor_->setToolTip(formattedValueFor(remapEditor_->getExpression()));
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
+    busInterface->setRemapAddress(busName, newRemapAddress.toStdString());
+
+    remapEditor_->setToolTip(QString::fromStdString(busInterface->getRemapAddressValue(busName)));
 
     emit contentChanged();
 }
@@ -172,18 +156,14 @@ void BusIfInterfaceMSlave::onRemapChange()
 void BusIfInterfaceMSlave::onRangeChange()
 {
     rangeEditor_->finishEditingCurrentWord();
-    mirroredSlave_->setRange(rangeEditor_->getExpression());
-    rangeEditor_->setToolTip(formattedValueFor(rangeEditor_->getExpression()));
+
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
+    busInterface->setRange(busName, rangeEditor_->getExpression().toStdString());
+    rangeEditor_->setToolTip(QString::fromStdString(busInterface->getRangeValue(busName)));
 
     emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::formattedValueFor()
-//-----------------------------------------------------------------------------
-QString BusIfInterfaceMSlave::formattedValueFor(QString const& expression) const
-{
-    return ExpressionFormatter::format(expression, expressionParser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -207,11 +187,12 @@ void BusIfInterfaceMSlave::removeReferencesFromExpressions()
     }
 
     remapEditor_->clear();
-    if (!mirroredSlave_->getRemapAddresses()->isEmpty())
-    {
-        mirroredSlave_->getRemapAddresses()->first()->remapAddress_.clear();
-    }
+
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
+    busInterface->setRemapAddress(busName, "");
 
     rangeEditor_->clear();
-    mirroredSlave_->setRange("");
+    busInterface->setRange(busName, "");
 }

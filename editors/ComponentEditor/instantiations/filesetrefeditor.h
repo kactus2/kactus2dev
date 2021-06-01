@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 
 class Component;
+class FileSetInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor to set the file set references of a view.
@@ -30,13 +31,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] title       Title for the QGroupBox
-	 *      @param [in] parent      The owner of this editor.
+	 *      @param [in] fileSetInterface    Interface for accessing file sets.
+	 *      @param [in] title               Title for the QGroupBox.
+	 *      @param [in] parent              The owner of this editor.
 	 */
-	FileSetRefEditor(QSharedPointer<Component> component, const QString title = tr("List"), QWidget *parent = 0);
-	
-	//! The destructor.
+    FileSetRefEditor(FileSetInterface* fileSetInterface, const QString title = tr("List"), QWidget *parent = 0);
+
+	/*!
+     *  The destructor.
+     */
 	virtual ~FileSetRefEditor();
 
 	/*!
@@ -55,7 +58,7 @@ private:
 	FileSetRefEditor& operator=(const FileSetRefEditor& other);
 
 	//! The component being edited.
-	QSharedPointer<Component> component_;
+    FileSetInterface* fileSetInterface_;
 };
 
 #endif // FILESETREFEDITOR_H

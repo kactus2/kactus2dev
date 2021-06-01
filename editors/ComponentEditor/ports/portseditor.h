@@ -24,6 +24,7 @@ class Component;
 class LibraryInterface;
 class PortValidator;
 class MasterPortsEditor;
+class PortsInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
@@ -176,6 +177,8 @@ private:
 
     //! Tabs for the port editors.
     QTabWidget* portTabs_;
+
+    QSharedPointer<PortsInterface> portsInterface_;
 };
 
 #endif // PORTSEDITOR_H

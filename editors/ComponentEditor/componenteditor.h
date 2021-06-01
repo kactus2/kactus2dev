@@ -32,8 +32,19 @@ class LibraryInterface;
 class PluginManager;
 class Component;
 class ExpressionParser;
+class ParameterFinder;
+class ExpressionFormatter;
 class ParameterReferenceTreeWindow;
 class ComponentParameterReferenceTree;
+class ComponentAndInstantiationsParameterFinder;
+class BusInterfaceInterface;
+class FileSetInterface;
+class MemoryMapInterface;
+class AbstractionTypeInterface;
+class PortMapInterface;
+class TransparentBridgeInterface;
+class PortMapValidator;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! The editor to edit/packet IP-Xact components.
@@ -261,8 +272,11 @@ private:
 	//! The slot to display the visualizers in.
 	ComponentEditorGroupSlot visualizerSlot_;
 
-    //! Finds the specified parameter inside the component.
+    //! Finds the specified parameter inside the component (does not include instantiations).
     QSharedPointer<ComponentParameterFinder> parameterFinder_;
+
+    //! Parameter finder for all the contained parameters (includes instantiations).
+    QSharedPointer<ComponentAndInstantiationsParameterFinder> fullParameterFinder_;
 
     //! The counter that increases the amount of references to parameters.
     QSharedPointer<ComponentParameterReferenceCounter> referenceCounter_;

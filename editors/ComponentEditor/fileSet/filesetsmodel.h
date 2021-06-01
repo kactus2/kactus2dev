@@ -19,6 +19,7 @@
 class FileSet;
 class Component;
 class ParameterFinder;
+class FileSetInterface;
 
 //-----------------------------------------------------------------------------
 //! The model class to manage the objects for FileSetsEditor.
@@ -32,17 +33,22 @@ public:
 	/*!
      *  The constructor
 	 *
-	 *      @param [in] component           The component being edited.
+	 *      @param [in] fileSetInterface    Interface for accessing file sets.
      *      @param [in] parameterFinder     Finder used to identify parameters.
 	 *      @param [in] parent              The owner of this model.
 	 */
-    FileSetsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+    FileSetsModel(FileSetInterface* fileSetInterface,
+        QSharedPointer<ParameterFinder> parameterFinder,
         QObject *parent);
-	
-	//! The destructor
-	~FileSetsModel();
 
-    //! Refreshes the model.
+	/*!
+     *  The destructor
+     */
+	~FileSetsModel() = default;
+
+    /*!
+     *  Refreshes the model.
+     */
     void refresh();
 
 	/*! Get the number of rows an item contains.
@@ -155,22 +161,19 @@ private:
     /*!
      *  Remove the references from the selected file set.
      *
-     *      @param [in] currentFileSet  The selected file set.
+     *      @param [in] fileSetName     Name of the selected file set.
      */
-    void decreaseReferencesWithRemovedFileSet(QSharedPointer<FileSet> currentFileSet);
+    void decreaseReferencesWithRemovedFileSet(std::string const& fileSetName);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The component being edited.
-	QSharedPointer<Component> component_;
-
-	//! The file sets to edit.
-    QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
-
     //! Finder used to locate parameter ids.
     QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_;
 };
 
 #endif // FILESETSMODEL_H

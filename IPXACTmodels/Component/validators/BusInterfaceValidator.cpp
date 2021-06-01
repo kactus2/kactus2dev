@@ -289,7 +289,7 @@ bool BusInterfaceValidator::hasValidSlaveInterface(QSharedPointer<BusInterface> 
     QSharedPointer<SlaveInterface> slave) const
 {
     bool validMemoryMapRef = slaveInterfaceHasValidMemoryMapRef(busInterface, slave);
-    bool validBridges = slaveInterfaceHasValidBridges(slave);
+    bool validBridges = slaveInterfaceHasValidBridges(slave->getBridges());
     bool validFileSetRefs = slaveInterfaceFileSetRefGroupsAreValid(slave);
 
     if (validMemoryMapRef && validBridges)
@@ -332,9 +332,15 @@ bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<Bu
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::slaveInterfaceHasValidBridges()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::slaveInterfaceHasValidBridges(QSharedPointer<SlaveInterface> slave) const
+bool BusInterfaceValidator::slaveInterfaceHasValidBridges(
+    QSharedPointer<QList<QSharedPointer<TransparentBridge>>> bridges) const
 {
-    for (QSharedPointer<TransparentBridge> bridge : *slave->getBridges())
+    if (!bridges)
+    {
+        return true;
+    }
+
+    for (QSharedPointer<TransparentBridge> bridge : *bridges)
     {
         if (slaveBridgeReferencesValidMaster(bridge))
         {

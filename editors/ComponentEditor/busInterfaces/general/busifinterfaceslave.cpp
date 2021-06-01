@@ -16,6 +16,11 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+
 #include <QFormLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -29,18 +34,15 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceSlave::BusIfInterfaceSlave()
 //-----------------------------------------------------------------------------
-BusIfInterfaceSlave::BusIfInterfaceSlave(QSharedPointer<BusInterface> busif,
-    QSharedPointer<Component> component,
-    QWidget *parent):
-BusIfInterfaceModeEditor(busif, component, tr("Slave"), parent),
-slave_(QSharedPointer<SlaveInterface>(new SlaveInterface())),
+BusIfInterfaceSlave::BusIfInterfaceSlave(BusInterfaceInterface* busInterface, std::string const& busName,
+    QWidget* parent):
+BusIfInterfaceModeEditor(busInterface, busName, tr("Slave"), parent),
 memoryMapBox_(new QGroupBox(tr("Memory map"), this)),
 memoryMapReferenceSelector_(this),
-bridges_(slave_->getBridges(), component, this),
-fileSetRefs_(component, tr("File set references"), this)
+slaveBridges_(busInterface->getBridges(busName)),
+bridges_(busInterface, slaveBridges_, this),
+fileSetRefs_(busInterface->getFileSetInterface(), tr("File set references"), this)
 {
-    Q_ASSERT(slave_);
-
     fileSetRefs_.initialize();
 
     memoryMapBox_->setCheckable(true);
@@ -63,13 +65,6 @@ fileSetRefs_(component, tr("File set references"), this)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::~BusIfInterfaceSlave()
-//-----------------------------------------------------------------------------
-BusIfInterfaceSlave::~BusIfInterfaceSlave()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusIfInterfaceSlave::isValid()
 //-----------------------------------------------------------------------------
 bool BusIfInterfaceSlave::isValid() const
@@ -82,25 +77,25 @@ bool BusIfInterfaceSlave::isValid() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::refresh()
 {
-	// if the model contains slave-element
-    if (getBusInterface()->getSlave())
-    {
-        slave_ = getBusInterface()->getSlave();
-    }
-	else 
-    {
-		slave_.clear();
-		slave_ = QSharedPointer<SlaveInterface>(new SlaveInterface());
-	}
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
 
-    memoryMapReferenceSelector_.refresh(getComponent()->getMemoryMapNames());
-    memoryMapReferenceSelector_.selectItem(slave_->getMemoryMapRef());
-    memoryMapBox_->setChecked(!slave_->getMemoryMapRef().isEmpty());
+    QStringList mapNameList;
+    for (auto mapName : busInterface->getMemoryMapInterface()->getItemNames())
+    {
+        mapNameList.append(QString::fromStdString(mapName));
+    }
+
+    QString mapReference = QString::fromStdString(busInterface->getMemoryMapReference(busName));
+
+    memoryMapReferenceSelector_.refresh(mapNameList);
+    memoryMapReferenceSelector_.selectItem(mapReference);
+    memoryMapBox_->setChecked(!mapReference.isEmpty());
 
     setupFileSetReferences();
 
-    bridges_.refresh(slave_->getBridges());
-    bridges_.setChecked(!slave_->getBridges()->isEmpty());
+    bridges_.refresh();
+    bridges_.setChecked(getBusInterface()->getBridgeInterface()->itemCount() != 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -110,18 +105,9 @@ void BusIfInterfaceSlave::setupFileSetReferences()
 {
     QStringList newFileSetItems;
 
-    if (slave_->getFileSetRefGroup())
+    for (auto fileSetName : getBusInterface()->getFileSetReferences(getBusName()))
     {
-        for (auto fileGroup : *slave_->getFileSetRefGroup())
-        {
-            if (fileGroup->group_.compare(DEFAULT_FILEGROUP) == 0)
-            {
-                for (auto fileReference : fileGroup->fileSetRefs_)
-                {
-                    newFileSetItems.append(fileReference);
-                }
-            }
-        }
+        newFileSetItems.append(QString::fromStdString(fileSetName));
     }
 
     fileSetRefs_.setItems(newFileSetItems);
@@ -140,7 +126,8 @@ General::InterfaceMode BusIfInterfaceSlave::getInterfaceMode() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::onMemoryMapChange(QString const& newMemoryMapName)
 {
-	slave_->setMemoryMapRef(newMemoryMapName);
+    getBusInterface()->setMemoryMapReference(getBusName(), newMemoryMapName.toStdString());
+
 	emit contentChanged();
 }
 
@@ -149,9 +136,11 @@ void BusIfInterfaceSlave::onMemoryMapChange(QString const& newMemoryMapName)
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::onMemoryMapSelected(bool checked)
 {
+    BusInterfaceInterface* busInterface = getBusInterface();
+
     if (checked)
     {
-        if (!slave_->getBridges()->isEmpty())
+        if (busInterface->getBridgeInterface()->itemCount() > 0)
         {
             memoryMapBox_->setChecked(false);
         }
@@ -160,7 +149,7 @@ void BusIfInterfaceSlave::onMemoryMapSelected(bool checked)
             bridges_.setChecked(false);
         }
     }
-    else if (!checked && !slave_->getMemoryMapRef().isEmpty())
+    else if (!checked && !QString::fromStdString(busInterface->getMemoryMapReference(getBusName())).isEmpty())
     {
         memoryMapBox_->setChecked(true);
     }
@@ -171,9 +160,12 @@ void BusIfInterfaceSlave::onMemoryMapSelected(bool checked)
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
 {
+    BusInterfaceInterface* busInterface = getBusInterface();
+    std::string busName = getBusName();
+
     if (checked)
     {
-        if (!slave_->getMemoryMapRef().isEmpty())
+        if (!QString::fromStdString(busInterface->getMemoryMapReference(busName)).isEmpty())
         {
             bridges_.setChecked(false);
         }
@@ -181,8 +173,14 @@ void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
         {
             memoryMapBox_->setChecked(false);
         }
+
+        if (!slaveBridges_)
+        {
+            slaveBridges_ = busInterface->createBridges(busName);
+            bridges_.setupBridges(slaveBridges_);
+        }
     }
-    else if (!checked && !slave_->getBridges()->isEmpty())
+    else if (!checked && busInterface->getBridgeInterface()->itemCount() > 0)
     {
         bridges_.setChecked(true);
     }
@@ -193,26 +191,13 @@ void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::onFileSetReferencesChanged()
 {
-    if (slave_->getFileSetRefGroup())
+    std::vector<std::string> newItems;
+    for (auto fileSetReference : fileSetRefs_.items())
     {
-        slave_->getFileSetRefGroup()->clear();
-    }
-    else
-    {
-        QSharedPointer<QList<QSharedPointer<SlaveInterface::FileSetRefGroup> > > newFileSetRefGroup
-            (new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >());
-        slave_->getFileSetRefGroup() = newFileSetRefGroup;
+        newItems.push_back(fileSetReference.toStdString());
     }
 
-    QStringList newItems = fileSetRefs_.items();
-    if (!newItems.isEmpty())
-    {
-        QSharedPointer<SlaveInterface::FileSetRefGroup> fileGroup(new SlaveInterface::FileSetRefGroup());
-        fileGroup->group_ = DEFAULT_FILEGROUP;
-
-        fileGroup->fileSetRefs_ = fileSetRefs_.items();
-        slave_->getFileSetRefGroup()->append(fileGroup);
-    }
+    getBusInterface()->setFileSetReferences(getBusName(), newItems);
 
     emit contentChanged();
 }
@@ -222,7 +207,16 @@ void BusIfInterfaceSlave::onFileSetReferencesChanged()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::saveModeSpecific()
 {
-    getBusInterface()->setSlave(slave_);
+    onFileSetReferencesChanged();
+
+    if (memoryMapBox_->isChecked())
+    {
+        onMemoryMapChange(memoryMapReferenceSelector_.currentText());
+    }
+    else if (bridges_.isChecked())
+    {
+        bridges_.refresh();
+    }
 }
 
 //-----------------------------------------------------------------------------

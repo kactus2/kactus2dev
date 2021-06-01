@@ -20,6 +20,8 @@ class Component;
 class Choice;
 class ExpressionParser;
 class ParameterValidator;
+class ParametersInterface;
+
 //-----------------------------------------------------------------------------
 //! The parameters-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -46,12 +48,12 @@ public:
         QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> refCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
-         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-		ComponentEditorItem* parent);
+        ComponentEditorItem* parent);
 
 	//! The destructor.
-	virtual ~ComponentEditorParametersItem();
+	virtual ~ComponentEditorParametersItem() = default;
 
 	/*!
      *  Get the font to be used for text of this item.
@@ -100,6 +102,8 @@ private:
     //! Validator for parameters.
     QSharedPointer<ParameterValidator> validator_;
 
+    //! Interface for parameters.
+    ParametersInterface* parameterInterface_;
 };
 
 #endif // COMPONENTEDITORPARAMETERITEM_H

@@ -51,6 +51,32 @@
 #include <QStringList>
 #include <QTimer>
 
+LibraryHandler* LibraryHandler::instance_ = nullptr;
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::getInstance()
+//-----------------------------------------------------------------------------
+LibraryHandler* LibraryHandler::getInstance()
+{
+    if (instance_ == nullptr)
+    {
+        initialize(nullptr, nullptr, nullptr);
+    }
+
+    return LibraryHandler::instance_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::initialize()
+//-----------------------------------------------------------------------------
+void LibraryHandler::initialize(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent)
+{
+    if (instance_ == nullptr)
+    {
+        LibraryHandler::instance_ = new LibraryHandler(parentWidget, messageChannel, parent);
+    }
+}
+
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::LibraryHandler()
 //-----------------------------------------------------------------------------
@@ -68,7 +94,8 @@ QObject(parent),
     integrityWidget_(0),
     saveInProgress_(false),
     fileWatch_(this),
-    itemExporter_(new ItemExporter(messageChannel, this, fileAccess_, parentWidget, this)),    checkResults_(),
+    itemExporter_(new ItemExporter(messageChannel, this, fileAccess_, parentWidget, this)),
+    checkResults_(),
     updatedPaths_()
 {
     // create the connections between models and library handler

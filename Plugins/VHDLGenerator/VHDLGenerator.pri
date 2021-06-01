@@ -14,7 +14,6 @@ HEADERS += ../../common/utils.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
     ../../IPXACTmodels/utilities/Search.h \
-    ../common/HDLParser/HDLCommandLineParser.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
     ./vhdlcomponentdeclaration.h \
     ./vhdlconnectionendpoint.h \
@@ -27,6 +26,7 @@ HEADERS += ../../common/utils.h \
     ./vhdlsignal.h \
     ./VhdlTypedObject.h \
     ./VHDLGenerator_global.h \
+    ../LinuxDeviceTree/LinuxDeviceTreeDialog.h \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
     ./VHDLGeneratorDialog.h \
     ./VHDLGeneratorPlugin.h \
@@ -41,7 +41,7 @@ SOURCES += ../../common/utils.cpp \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../IPXACTmodels/utilities/ComponentSearch.cpp \
-    ../common/HDLParser/HDLCommandLineParser.cpp \
+    ../LinuxDeviceTree/LinuxDeviceTreeDialog.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ./vhdlcomponentdeclaration.cpp \

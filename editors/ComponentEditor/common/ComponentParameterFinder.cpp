@@ -11,6 +11,7 @@
 
 #include "ComponentParameterFinder.h"
 
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
@@ -20,12 +21,13 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
-#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::ComponentParameterFinder()
 //-----------------------------------------------------------------------------
-ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component const> component) : component_(component)
+ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component const> component) :
+component_(component)
 {
 }
 
@@ -121,6 +123,11 @@ QStringList ComponentParameterFinder::getAllParameterIds() const
         {
             allParameterIds.append(registerParameter->getValueId());
         }
+
+        for (auto indirectInterfaceParameter : allIndirectInterfacesParameters())
+        {
+            allParameterIds.append(indirectInterfaceParameter->getValueId());
+        }
     }
 
     allParameterIds.removeAll("");
@@ -141,6 +148,7 @@ int ComponentParameterFinder::getNumberOfParameters() const
         parameterCount += allAddressSpaceParameters().count();
         parameterCount += busInterfaceParameterCount();
         parameterCount += registerParameterCount();
+        parameterCount += allIndirectInterfacesParameters().count();
     }
     return parameterCount;
 }
@@ -213,6 +221,14 @@ QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString cons
             if (registerParameter->getValueId() == parameterId)
             {
                 return registerParameter;
+            }
+        }
+
+        for (auto indirectInterfaceParameter : allIndirectInterfacesParameters())
+        {
+            if (indirectInterfaceParameter->getValueId() == parameterId)
+            {
+                return indirectInterfaceParameter;
             }
         }
     }    
@@ -352,4 +368,27 @@ int ComponentParameterFinder::registerParameterCount() const
     }
 
     return parameterCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::allIndirectInterfacesParameters()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<Parameter> > ComponentParameterFinder::allIndirectInterfacesParameters() const
+{
+    QList<QSharedPointer<Parameter> > indirectInterfacesParameters;
+
+    for (auto indirectInterface : *component_->getIndirectInterfaces())
+    {
+        indirectInterfacesParameters.append(*indirectInterface->getParameters());
+    }
+
+    return indirectInterfacesParameters;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::getComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<const Component> ComponentParameterFinder::getComponent() const
+{
+    return component_;
 }

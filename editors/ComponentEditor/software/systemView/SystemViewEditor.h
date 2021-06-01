@@ -32,13 +32,14 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component    The component being edited.
-     *      @param [in] systemView	 The system view being edited.
-     *      @param [in] libHandler   The library handler.
-     *      @param [in] parent       The parent widget.
+     *      @param [in] fileSetInterface    Interface for accessing file sets.
+     *      @param [in] component           The component being edited.
+     *      @param [in] systemView	        The system view being edited.
+     *      @param [in] libHandler          The library handler.
+     *      @param [in] parent              The parent widget.
      */
-	SystemViewEditor(QSharedPointer<Component> component, QSharedPointer<SystemView> systemView,
-		LibraryInterface* libHandler, QWidget* parent);
+	SystemViewEditor(FileSetInterface* fileSetInterface, QSharedPointer<Component> component,
+        QSharedPointer<SystemView> systemView, LibraryInterface* libHandler, QWidget* parent);
 
     //! The destructor.
     virtual ~SystemViewEditor();

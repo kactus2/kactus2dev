@@ -11,13 +11,15 @@
 
 #include "componenteditorfielditem.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <editors/ComponentEditor/memoryMaps/SingleFieldEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
-    
-#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -31,12 +33,13 @@ ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-    QSharedPointer<FieldValidator> fieldValidator, ComponentEditorItem* parent):
+    QSharedPointer<FieldValidator> fieldValidator, FieldInterface* fieldInterface, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
 expressionParser_(expressionParser),
-fieldValidator_(fieldValidator)
+fieldValidator_(fieldValidator),
+fieldInterface_(fieldInterface)
 {
 	Q_ASSERT(field_);
 
@@ -48,7 +51,7 @@ fieldValidator_(fieldValidator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorFieldItem::getTooltip()
+// Function: componenteditorfielditem::getTooltip()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFieldItem::getTooltip() const
 {
@@ -79,13 +82,16 @@ ItemEditor* ComponentEditorFieldItem::editor()
 	if (!editor_)
     {
         editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_, expressionParser_,
-            expressionFormatter_, fieldValidator_);
-		editor_->setProtection(locked_);
+            fieldValidator_, fieldInterface_, reg_);
+        editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(addressingChanged()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connect(this, SIGNAL(fieldNameChanged(QString const&, QString const&)),
+            editor_, SLOT(onFieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
 	}

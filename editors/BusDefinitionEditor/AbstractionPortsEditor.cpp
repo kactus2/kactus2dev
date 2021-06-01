@@ -1,47 +1,71 @@
 //-----------------------------------------------------------------------------
-// File: AbstractionTransactionalPortsEditor.cpp
+// File: AbstractionPortsEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 05.06.2018
+// Date: 04.06.2018
 //
 // Description:
-// Editor for the transactional ports of an abstraction definition.
+// Editor for the ports of an abstraction definition.
 //-----------------------------------------------------------------------------
 
-#include "AbstractionTransactionalPortsEditor.h"
+#include "AbstractionPortsEditor.h"
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+#include <editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.h>
 #include <editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.h>
+#include <editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h>
+#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h>
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
-#include <QVBoxLayout>
 #include <QHeaderView>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor()
+// Function: AbstractionPortsEditor::AbstractionPortsEditor()
 //-----------------------------------------------------------------------------
-AbstractionTransactionalPortsEditor::AbstractionTransactionalPortsEditor(AbstractionPortsModel* portModel,
-    LibraryInterface* libraryAccess, QWidget *parent):
+AbstractionPortsEditor::AbstractionPortsEditor(LibraryInterface* libraryAccess,
+    PortAbstractionInterface* portInterface, AbstractionPortsModel* portModel,
+    LogicalPortColumns::AbstractionType type, QWidget* parent):
 QWidget(parent),
 portView_(this),
-portProxy_(),
+portProxy_(nullptr),
 portModel_(portModel),
-portDelegate_(libraryAccess, this)
+portDelegate_(nullptr)
 {
-    portProxy_ = new AbstractionTransactionalPortsSortFilter(this);
-    portProxy_->setSourceModel(portModel_);
+    if (type == LogicalPortColumns::AbstractionType::WIRE)
+    {
+        portProxy_ = new AbstractionWirePortsSortFilter(portInterface, this);
+        portDelegate_ = new AbstractionWirePortsDelegate(libraryAccess, this);
+    }
+    else
+    {
+        portProxy_ = new AbstractionTransactionalPortsSortFilter(portInterface, this);
+        portDelegate_ = new AbstractionTransactionalPortsDelegate(libraryAccess, this);
+    }
 
+    portProxy_->setSourceModel(portModel_);
+    
     portView_.setModel(portProxy_);
     portView_.setSortingEnabled(true);
-    portView_.setItemDelegate(&portDelegate_);
+    portView_.setItemDelegate(portDelegate_);
     portView_.setAllowImportExport(true);
     portView_.setItemsDraggable(false);
     portView_.setAlternatingRowColors(false);
     portView_.sortByColumn(0, Qt::AscendingOrder);
+
+    if (type == LogicalPortColumns::AbstractionType::WIRE)
+    {
+        hideTransactionalColumns();
+    }
+    else
+    {
+        hideWireColumns();
+    }
+
 
     connect(&portView_, SIGNAL(addMaster()), this, SLOT(onAddMaster()), Qt::UniqueConnection);
     connect(&portView_, SIGNAL(addSlave()), this, SLOT(onAddSlave()), Qt::UniqueConnection);
@@ -59,8 +83,17 @@ portDelegate_(libraryAccess, this)
     connect(portModel_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
-    connect(&portView_, SIGNAL(addItem(const QModelIndex&)),
-        portModel_, SLOT(addTransactionalSignal()), Qt::UniqueConnection);
+    if (type == LogicalPortColumns::AbstractionType::WIRE)
+    {
+        connect(&portView_, SIGNAL(addItem(const QModelIndex&)),
+            portModel_, SLOT(addWireSignal()), Qt::UniqueConnection);
+    }
+    else
+    {
+        connect(&portView_, SIGNAL(addItem(const QModelIndex&)),
+            portModel_, SLOT(addTransactionalSignal()), Qt::UniqueConnection);
+    }
+
     connect(&portView_, SIGNAL(removeItem(const QModelIndex&)),
         portModel_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
@@ -68,45 +101,45 @@ portDelegate_(libraryAccess, this)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::onAddMaster()
+// Function: AbstractionPortsEditor::onAddMaster()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::onAddMaster()
+void AbstractionPortsEditor::onAddMaster()
 {
     QModelIndexList selection = getSelectedIndexes();
     portModel_->addMaster(selection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::onAddSlave()
+// Function: AbstractionPortsEditor::onAddSlave()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::onAddSlave()
+void AbstractionPortsEditor::onAddSlave()
 {
     QModelIndexList selection = getSelectedIndexes();
     portModel_->addSlave(selection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::onAddSystem()
+// Function: AbstractionPortsEditor::onAddSystem()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::onAddSystem()
+void AbstractionPortsEditor::onAddSystem()
 {
     QModelIndexList selection = getSelectedIndexes();
     portModel_->addSystem(selection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::onAddAllSystems()
+// Function: AbstractionPortsEditor::onAddAllSystems()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::onAddAllSystems()
+void AbstractionPortsEditor::onAddAllSystems()
 {
     QModelIndexList selection = getSelectedIndexes();
     portModel_->addAllSystems(selection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::getSelectedIndexes()
+// Function: AbstractionPortsEditor::getSelectedIndexes()
 //-----------------------------------------------------------------------------
-QModelIndexList AbstractionTransactionalPortsEditor::getSelectedIndexes()
+QModelIndexList AbstractionPortsEditor::getSelectedIndexes()
 {
     QModelIndexList selection;
     foreach(QModelIndex index, portView_.selected())
@@ -118,33 +151,56 @@ QModelIndexList AbstractionTransactionalPortsEditor::getSelectedIndexes()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::setBusDef()
+// Function: AbstractionPortsEditor::resetPortModel()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::setBusDef(QSharedPointer<BusDefinition> busDefinition)
+void AbstractionPortsEditor::resetPortModel()
 {
-    portDelegate_.setBusDef(busDefinition);
+    portModel_->resetPortModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsEditor::setBusDef()
+//-----------------------------------------------------------------------------
+void AbstractionPortsEditor::setBusDef(QSharedPointer<BusDefinition> busDefinition)
+{
+    portDelegate_->setBusDef(busDefinition);
     portModel_->setBusDef(busDefinition);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::setupLayout()
+// Function: AbstractionPortsEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::setupLayout()
+void AbstractionPortsEditor::setupLayout()
 {
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(&portView_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTransactionalPortsEditor::hideTransactionalColumns()
+// Function: AbstractionPortsEditor::hideTransactionalColumns()
 //-----------------------------------------------------------------------------
-void AbstractionTransactionalPortsEditor::hideWireColumns()
+void AbstractionPortsEditor::hideTransactionalColumns()
 {
+    auto header = portView_.horizontalHeader();
+  
+    header->hideSection(LogicalPortColumns::INITIATIVE);
+    header->hideSection(LogicalPortColumns::KIND);
+    header->hideSection(LogicalPortColumns::BUSWIDTH);
+    header->hideSection(LogicalPortColumns::PROTOCOLTYPE);
+    header->hideSection(LogicalPortColumns::PAYLOADNAME);
+    header->hideSection(LogicalPortColumns::PAYLOADTYPE);
+    header->hideSection(LogicalPortColumns::PAYLOADEXTENSION);
+}
 
-    QHeaderView* viewHeader = portView_.horizontalHeader();
-
-    viewHeader->hideSection(LogicalPortColumns::DIRECTION);
-    viewHeader->hideSection(LogicalPortColumns::WIDTH);
-    viewHeader->hideSection(LogicalPortColumns::DEFAULT_VALUE);
-    viewHeader->hideSection(LogicalPortColumns::DRIVER);
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsEditor::hideWireColumns()
+//-----------------------------------------------------------------------------
+void AbstractionPortsEditor::hideWireColumns()
+{
+    auto header = portView_.horizontalHeader();
+    
+    header->hideSection(LogicalPortColumns::DIRECTION);
+    header->hideSection(LogicalPortColumns::WIDTH);
+    header->hideSection(LogicalPortColumns::DEFAULT_VALUE);
+    header->hideSection(LogicalPortColumns::DRIVER);
 }

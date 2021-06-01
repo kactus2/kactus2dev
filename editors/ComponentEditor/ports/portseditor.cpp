@@ -11,17 +11,19 @@
 
 #include "portseditor.h"
 
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/ports/MasterPortsEditor.h>
 #include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.h>
 
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
-
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <library/LibraryInterface.h>
 
@@ -50,7 +52,8 @@ component_(component),
 handler_(handler),
 wireEditor_(0),
 transactionalEditor_(0),
-portTabs_(new QTabWidget(this))
+portTabs_(new QTabWidget(this)),
+portsInterface_()
 {
 	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
 	QString defaultPath = QString("%1/portListing.csv").arg(componentPath);
@@ -63,12 +66,15 @@ portTabs_(new QTabWidget(this))
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
-    wireEditor_ = new MasterPortsEditor(component, handler, new WirePortsEditorConstructor(), expressionParser,
-        parameterFinder, expressionFormatter, portValidator, parameterCompleter, defaultPath, this);
+    portsInterface_ =
+        QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressionParser, expressionFormatter));
+    portsInterface_->setPorts(component);
 
-    transactionalEditor_ =
-        new MasterPortsEditor(component, handler, new TransactionalPortsEditorConstructor(), expressionParser,
-            parameterFinder, expressionFormatter, portValidator, parameterCompleter, defaultPath, this);
+    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, new WirePortsEditorConstructor(),
+        parameterFinder, portValidator, parameterCompleter, defaultPath, this);
+    transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_,
+        new TransactionalPortsEditorConstructor(), parameterFinder, portValidator, parameterCompleter, defaultPath,
+        this);
 
     connectSignals();
 
@@ -223,6 +229,7 @@ void PortsEditor::setComponent(QSharedPointer<Component> component)
 {
     component_ = component;
 
+    portsInterface_->setPorts(component_);
     wireEditor_->setComponent(component);
     transactionalEditor_->setComponent(component);
 }
@@ -381,6 +388,11 @@ void PortsEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
         else
         {
             selectedPort = transactionalEditor_->getIndexedPort(itemIndex);
+        }
+
+        if (!selectedPort)
+        {
+            return;
         }
 
         extensionItem = selectedPort;

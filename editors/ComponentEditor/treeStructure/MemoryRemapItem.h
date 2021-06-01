@@ -25,6 +25,8 @@ class MemoryMap;
 class MemoryMapBase;
 class MemoryBlockBase;
 class MemoryMapValidator;
+class MemoryMapInterface;
+
 //-----------------------------------------------------------------------------
 //! The item for a single memory remap in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -47,6 +49,7 @@ public:
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
      *      @param [in] memoryMapValidator      Validator for memory maps.
+     *      @param [in] mapInterface            Interface for accessing memory maps.
      *      @param [in] parent                  The parent item.
      */
     MemoryRemapItem(QSharedPointer<MemoryMapBase> memoryRemap,
@@ -59,6 +62,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<MemoryMapValidator> memoryMapValidator,
+        MemoryMapInterface* mapInterface,
         ComponentEditorItem* parent);
 
     /*!
@@ -173,6 +177,30 @@ signals:
     //! Signals a change in the item's address data.
     void addressingChanged();
 
+    /*
+     *  Informs of address block name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void addressBlockNameChanged(QString const& oldName, QString const& newName);
+    
+    /*
+     *  Informs of memory map name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void memoryMapNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Informs of memory remap name change.
+     *
+     *      @param [in] parentName  Name of the containing memory map.
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void memoryRemapNameChanged(QString const& parentName, QString const& oldName, QString const& newName);
 
 private:
 
@@ -196,7 +224,9 @@ private:
 
     //! The used memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
-        
+
+    //! Interface for memory maps.
+    MemoryMapInterface* mapInterface_;
 };
 
 #endif // MEMORYREMAPITEM_H

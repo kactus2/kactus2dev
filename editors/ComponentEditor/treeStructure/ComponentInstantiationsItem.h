@@ -20,6 +20,11 @@ class Component;
 class ComponentInstantiation;
 class ExpressionParser;
 class InstantiationsValidator;
+class ParametersInterface;
+class SingleComponentInstantiationItem;
+class FileBuilderInterface;
+class ComponentInstantiationInterface;
+
 //-----------------------------------------------------------------------------
 //! The component instantiations-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -39,6 +44,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The used expression parser.
+     *      @param [in] instantiationInterface  Interface for accessing component instantiations.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentInstantiationsItem(ComponentEditorTreeModel* model,
@@ -49,6 +55,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        ComponentInstantiationInterface* instantiationInterface,
         ComponentEditorItem* parent);
 
 	//! The destructor.
@@ -88,11 +95,18 @@ private:
 	ComponentInstantiationsItem(const ComponentInstantiationsItem& other);
 	ComponentInstantiationsItem& operator=(const ComponentInstantiationsItem& other);
 
+    //! Create a child component instantiation item.
+    QSharedPointer<SingleComponentInstantiationItem> createChildItem(
+        QSharedPointer<ComponentInstantiation> instantiation);
+
     //! Validator for component instantiations.
     QSharedPointer<InstantiationsValidator> validator_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Interface for accessing component instantiations.
+    ComponentInstantiationInterface* instantiationInterface_;
 };
 
 #endif // COMPONENTINSTANTIATIONSITEM_H

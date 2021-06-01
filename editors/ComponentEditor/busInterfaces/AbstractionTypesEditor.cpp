@@ -15,6 +15,7 @@
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesModel.h>
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesDelegate.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
 
 #include <library/LibraryInterface.h>
 
@@ -25,10 +26,11 @@
 // Function: AbstractionTypesEditor::AbstractionTypesEditor()
 //-----------------------------------------------------------------------------
 AbstractionTypesEditor::AbstractionTypesEditor(QSharedPointer<Component> component, LibraryInterface* library,
-    QSharedPointer<AbstractionTypeValidator> validator, QWidget* parentWindow, QWidget* parent):
+    AbstractionTypeInterface* abstractionTypeInterface, QWidget* parentWindow, QWidget* parent):
 QGroupBox(parent),
+abstractionTypeInterface_(abstractionTypeInterface),
 abstractionView_(new EditableTableView(this)),
-abstractionModel_(new AbstractionTypesModel(validator, this)),
+abstractionModel_(new AbstractionTypesModel(abstractionTypeInterface_, this)),
 abstractionDelegate_(new AbstractionTypesDelegate(component, library, parentWindow, this)),
 library_(library)
 {
@@ -85,9 +87,9 @@ void AbstractionTypesEditor::setComponent(QSharedPointer<Component> newComponent
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesEditor::setBusForModel()
 //-----------------------------------------------------------------------------
-void AbstractionTypesEditor::setBusForModel(QSharedPointer<BusInterface> newBus)
+void AbstractionTypesEditor::setBusForModel()
 {
-    abstractionModel_->onChangeSelectedBusInterface(newBus);
+    abstractionModel_->onChangeSelectedBusInterface();
     abstractionView_->resizeColumnsToContents();
 }
 

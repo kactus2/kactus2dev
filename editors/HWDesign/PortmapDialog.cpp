@@ -18,11 +18,13 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
-#include <IPXACTmodels/Component/validators/PortMapValidator.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -51,11 +53,14 @@ otherBusIf_(otherBusIf)
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    QSharedPointer<PortMapValidator> portMapValidator(new PortMapValidator(expressionParser, component->getPorts(), library));
+
+    BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
+        parameterFinder, expressionFormatter, expressionParser, component, library);
 
     // Create the port map widget.
-    portmapWidget_ = new BusInterfacePortMapTab(library, component, busIf, expressionParser,
-        expressionFormatter, parameterFinder, portMapValidator, this);
+    portmapWidget_ = new BusInterfacePortMapTab(library,  component, busInterface, busIf->name().toStdString(),
+        expressionParser, parameterFinder, busInterface->getAbstractionTypeInterface()->getPortMapInterface(),
+        this);
 
     portmapWidget_->setAbstractionDefinitions();
 

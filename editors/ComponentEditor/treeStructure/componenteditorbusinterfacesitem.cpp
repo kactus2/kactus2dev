@@ -14,25 +14,30 @@
 
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
+#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorbusinterfacesitem::ComponentEditorBusInterfacesItem()
 //-----------------------------------------------------------------------------
-ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(BusInterfaceInterface* busInterface,
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
 parentWnd_(parentWnd),
 expressionParser_(expressionParser),
-validator_()
+validator_(),
+busInterface_(busInterface)
 {
     createBusInterfaceValidator();
 
@@ -42,22 +47,15 @@ validator_()
 
 	foreach (QSharedPointer<BusInterface> busif, *busifs_)
     {
-		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-            new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd));
+		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
+            busif, model, libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+            expressionParser_, validator_, busInterface_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
             this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 		childItems_.append(busifItem);
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorbusinterfacesitem::~ComponentEditorBusInterfacesItem()
-//-----------------------------------------------------------------------------
-ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() 
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +100,7 @@ ItemEditor* ComponentEditorBusInterfacesItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new BusInterfacesEditor(libHandler_, component_, validator_, parameterFinder_);
+		editor_ = new BusInterfacesEditor(libHandler_, component_, busInterface_, parameterFinder_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -128,9 +126,9 @@ QString ComponentEditorBusInterfacesItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorBusInterfacesItem::createChild(int index)
 {
-	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-		new ComponentEditorBusInterfaceItem(busifs_->at(index), model_, libHandler_, component_, referenceCounter_,
-        parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
+	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
+        busifs_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
+        expressionFormatter_, expressionParser_, validator_, busInterface_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),

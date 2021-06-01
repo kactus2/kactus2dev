@@ -13,7 +13,6 @@
 #define LOCALMEMORYMAPEDITOR_H
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>
@@ -27,7 +26,8 @@ class MemoryMapBase;
 class MemoryMapModel;
 class NameGroupEditor;
 
-class MemoryMapBaseValidator;
+class AddressBlockInterface;
+
 //-----------------------------------------------------------------------------
 //! LocalMemoryMapEditor is used to edit a local memory map of an address space.
 //-----------------------------------------------------------------------------
@@ -40,20 +40,18 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addressSpace            Pointer to the local memory map being edited.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance managing the library.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] memoryMapBaseValidator  Validator used for the memory map base.
-	 *      @param [in] parent                  Pointer to the owner of the editor.
+	 *      @param [in] addressSpace        Pointer to the local memory map being edited.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] handler             Pointer to the instance managing the library.
+	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+     *      @param [in] blockInterface      Interface for address blocks.
+	 *      @param [in] parent              Pointer to the owner of the editor.
 	 */
 	LocalMemoryMapEditor(QSharedPointer<AddressSpace> addressSpace,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
         QSharedPointer <ParameterFinder> parameterFinder,
-        QSharedPointer <ExpressionFormatter> expressionFormatter,
-        QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
+        AddressBlockInterface* blockInterface,
 		QWidget *parent);
 	
 	//! The destructor.

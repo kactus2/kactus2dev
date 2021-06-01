@@ -15,12 +15,14 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: filesetrefmodel::FileSetRefModel()
 //-----------------------------------------------------------------------------
-FileSetRefModel::FileSetRefModel(QObject *parent, QSharedPointer<Component> component, const QStringList& items):
+FileSetRefModel::FileSetRefModel(QObject *parent, FileSetInterface* fileSetInterface, const QStringList& items):
 ListManagerModel(items, parent),
-component_(component)
+fileSetInterface_(fileSetInterface)
 {
 
 }
@@ -75,7 +77,7 @@ QVariant FileSetRefModel::data( const QModelIndex& index, int role /*= Qt::Displ
     else if (role == Qt::ForegroundRole)
     {
         // if component contains the named file set.
-        if (component_->hasFileSet(items_.at(index.row())))
+        if (fileSetInterface_->fileSetExists(items_.at(index.row()).toStdString()))
         {
             return KactusColors::REGULAR_TEXT;
         }

@@ -959,6 +959,78 @@
     <Filter Include="Header Files\editors\common\FileHandler">
       <UniqueIdentifier>{9899fde0-87e9-463c-882a-86b05a20ba6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\memoryMaps\interfaces">
+      <UniqueIdentifier>{c34883a7-39da-429d-a472-68966f4183c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\interfaces">
+      <UniqueIdentifier>{214bede0-fbd8-4fa3-8988-455278b915e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\common\interfaces">
+      <UniqueIdentifier>{5693bb11-e718-4073-b034-7be67388395d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\common\interfaces">
+      <UniqueIdentifier>{8907f090-54b3-49ac-bd20-cdd212c82ac2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\fileSet\interfaces">
+      <UniqueIdentifier>{87070864-35d7-43b4-b521-35c12ad9742a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\fileSet\interfaces">
+      <UniqueIdentifier>{c0a4d8c3-229e-4ecd-bdad-1c3db702cc61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\instantiations\interfaces">
+      <UniqueIdentifier>{505ceca5-f699-4f57-9d99-7609492084cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\instantiations\interfaces">
+      <UniqueIdentifier>{9b21de33-ece2-40c5-bc88-0047b8a1439e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
+      <UniqueIdentifier>{4f909392-1e57-460d-bccf-f6eaddebbdad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
+      <UniqueIdentifier>{ece98f23-9e39-43e0-8624-f2c64622e284}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\BusDefinitionEditor\interfaces">
+      <UniqueIdentifier>{3cebef82-5883-4778-b1e8-75e74187f053}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\BusDefinitionEditor\interfaces">
+      <UniqueIdentifier>{a7c8e980-018f-4596-aad8-996bf453851a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\ports\interfaces">
+      <UniqueIdentifier>{635c99e6-325d-44e3-8df8-8811e54cc299}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\ports\interfaces">
+      <UniqueIdentifier>{c019f53b-f0e5-47cc-87f6-5fe5337f7d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\interfaces">
+      <UniqueIdentifier>{7bab447a-2cbb-4a6e-a314-033d9ea4202e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\interfaces">
+      <UniqueIdentifier>{7acb1b4e-e559-4636-9cb6-f47adc52b0d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PythonAPI">
+      <UniqueIdentifier>{c7179758-fd64-4532-9cc8-e0608bd5db93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PythonAPI\extensions">
+      <UniqueIdentifier>{e7fa917a-5229-4219-8191-6994ee849e8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PythonAPI">
+      <UniqueIdentifier>{827f9f2e-fa60-4b4b-b68c-dcc8411d01a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PythonAPI\extensions">
+      <UniqueIdentifier>{346878db-88ad-478f-a0fd-621e9a4d02fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mainwindow\ScriptingConsole">
+      <UniqueIdentifier>{7e1844e1-bfb2-429b-b702-f03dfed19ff2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mainwindow\ScriptingConsole">
+      <UniqueIdentifier>{1f1bbc33-e4ee-4a75-90e5-ea474c67ce62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\common\FileHandler">
+      <UniqueIdentifier>{1f5c20b3-cd33-42d6-844a-9d3eaccfa9ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\common\FileHandler">
+      <UniqueIdentifier>{dbbab44d-61c3-4e98-8091-f4654fcdbc6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -2641,9 +2713,6 @@
     <ClCompile Include="editors\ComponentEditor\parameters\parametersmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
@@ -2858,9 +2927,6 @@
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryMapsView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SingleAddressBlockEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleAddressBlockEditor.cpp">
@@ -4444,18 +4510,6 @@
     <ClCompile Include="GeneratedFiles\moc_AbstractionPortsView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AbstractionWirePortsEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsEditor.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsEditor.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AbstractionTransactionalPortsEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AbstractionWirePortsDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4472,9 +4526,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemGroupListEditor.cpp">
@@ -4837,13 +4888,148 @@
     <ClCompile Include="GeneratedFiles\moc_AbstractionPortsModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionExtendHandler.cpp">
+    <ClCompile Include="editors\ComponentEditor\parameters\ParametersInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\interfaces\ParameterizableInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\interfaces\NameGroupInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\interfaces\CommonInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleAddressBlockEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileSetInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\interfaces\ComponentInstantiationInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\interfaces\ModuleParameterInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\parameters\AbstractParameterInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\interfaces\PortMapInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\interfaces\PortAbstractionInterface.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\interfaces\PortsInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\TransparentBridgeInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\AbstractionTypeInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterfaceFactory.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\PythonInterpreter.cpp">
+      <Filter>Source Files\PythonAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\extensions\OutputForwarder.cpp">
+      <Filter>Source Files\PythonAPI\extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ChannelRelay.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PythonInterpreter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_StdInputListener.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\ChannelRelay.cpp">
+      <Filter>Source Files\PythonAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\FileChannel.cpp">
+      <Filter>Source Files\PythonAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\StdInputListener.cpp">
+      <Filter>Source Files\PythonAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ScriptingConsole.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ScriptingTextEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingConsole.cpp">
+      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingTextEditor.cpp">
+      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="common\KactusAPI.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingSideArea.cpp">
+      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingHistory.cpp">
+      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ScriptingHistory.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\FileHandler\FileHandler.cpp">
+      <Filter>Source Files\editors\common\FileHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsEditor.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AbstractionPortsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
   </ItemGroup>
@@ -6441,12 +6627,6 @@
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsView.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionWirePortsEditor.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsEditor.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionWirePortsDelegate.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
@@ -6627,16 +6807,37 @@
     <CustomBuild Include="common\widgets\tagEditor\TagSelector.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\FileHandler\FileHandler.h">
-      <Filter>Header Files\editors\common\FileHandler</Filter>
-    </CustomBuild>
     <CustomBuild Include="Plugins\PluginSystem\ImportPlugin\ImportPlugin.h">
       <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsModel.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionExtendHandler.h">
+    <CustomBuild Include="editors\ComponentEditor\parameters\ParametersInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PythonAPI\ChannelRelay.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PythonAPI\PythonInterpreter.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PythonAPI\StdInputListener.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingConsole.h">
+      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingTextEditor.h">
+      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingHistory.h">
+      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -6983,9 +7184,6 @@
     <ClInclude Include="editors\BusDefinitionEditor\LogicalPortColumns.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
-    <ClInclude Include="VersionHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\BridgeColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClInclude>
@@ -7060,9 +7258,6 @@
     </ClInclude>
     <ClInclude Include="mainwindow\CommandLineParser.h">
       <Filter>Header Files\mainwindow</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\CommandLineSupport.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
     <ClInclude Include="common\ui\GraphicalMessageMediator.h">
       <Filter>Header Files\common\ui</Filter>
@@ -7328,9 +7523,6 @@
     <ClInclude Include="library\LibraryItemSelectionFactory.h">
       <Filter>Header Files\library</Filter>
     </ClInclude>
-    <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
     </ClInclude>
@@ -7412,10 +7604,100 @@
     <ClInclude Include="common\widgets\tagEditor\TagManager.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </ClInclude>
+    <ClInclude Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\interfaces\ParameterizableInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\interfaces\CommonInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\interfaces\NameGroupInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\interfaces\ComponentInstantiationInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\interfaces\ModuleParameterInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\parameters\AbstractParameterInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\interfaces\PortMapInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\BusDefinitionEditor\interfaces\PortAbstractionInterface.h">
+      <Filter>Header Files\editors\BusDefinitionEditor\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\interfaces\PortsInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\ports\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\ports\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\TransparentBridgeInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\AbstractionTypeInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterfaceFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonAPI\FileChannel.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonAPI\WriteChannel.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonAPI\extensions\OutputForwarder.h">
+      <Filter>Header Files\PythonAPI\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="common\KactusAPI.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="mainwindow\ScriptingConsole\ScriptingSideArea.h">
+      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\FileHandler\FileHandler.h">
+      <Filter>Header Files\editors\common\FileHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\APISupport.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
-    <ClInclude Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.h">
+    <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
   </ItemGroup>

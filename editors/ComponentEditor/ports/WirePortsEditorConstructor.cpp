@@ -18,22 +18,18 @@
 #include <editors/ComponentEditor/ports/WirePortsFilter.h>
 #include <editors/ComponentEditor/ports/WirePortsDelegate.h>
 
-#include <IPXACTmodels/Component/validators/PortValidator.h>
-
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: WirePortsEditorConstructor::constructModel()
 //-----------------------------------------------------------------------------
-PortsModel* WirePortsEditorConstructor::constructModel(QSharedPointer<Component> component,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<PortValidator> portValidator,
-    QSortFilterProxyModel* filter, QObject* parent) const
+PortsModel* WirePortsEditorConstructor::constructModel(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<PortsInterface> portsInterface, QSortFilterProxyModel* filter, QObject* parent) const
 {
-    WirePortsModel* wireModel = new WirePortsModel(component->getModel(), expressionParser, parameterFinder,
-        expressionFormatter, portValidator, filter, parent);
+    WirePortsModel* wireModel = new WirePortsModel(parameterFinder, portsInterface, filter, parent);
 
     return wireModel;
 }
@@ -41,9 +37,10 @@ PortsModel* WirePortsEditorConstructor::constructModel(QSharedPointer<Component>
 //-----------------------------------------------------------------------------
 // Function: WirePortsEditorConstructor::constructFilter()
 //-----------------------------------------------------------------------------
-PortsFilter* WirePortsEditorConstructor::constructFilter(QObject* parent) const
+PortsFilter* WirePortsEditorConstructor::constructFilter(QSharedPointer<PortsInterface> portsInterface,
+    QObject* parent) const
 {
-    WirePortsFilter* wireFilter = new WirePortsFilter(parent);
+    WirePortsFilter* wireFilter = new WirePortsFilter(portsInterface, parent);
     return wireFilter;
 }
 

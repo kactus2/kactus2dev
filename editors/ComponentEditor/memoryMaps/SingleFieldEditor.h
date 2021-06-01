@@ -28,11 +28,12 @@ class ReadActionComboBox;
 class TestConstraintComboBox;
 class ParameterFinder;
 class ExpressionParser;
-class ExpressionFormatter;
 
+class Register;
 class Field;
 class Component;
 class FieldValidator;
+class FieldInterface;
 
 #include <QComboBox>
 
@@ -48,24 +49,30 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] field               The field being edited.
+	 *      @param [in] fieldItem           The field being edited.
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] handler             The instance managing the library.
      *      @param [in] parameterFinder     The instance for finding parameter references.
      *      @param [in] expressionParser    The expression parser to use.
-     *      @param [in] formatter           Expression formatter.
      *      @param [in] fieldValidator      The used field validator.
+     *      @param [in] fieldInterface      Interface for fields.
+     *      @param [in] containingRegister  Register containing the edited field.
 	 *      @param [in] parent              The parent of this editor.
 	 */
-	SingleFieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component,
-        LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
-        QSharedPointer<FieldValidator> fieldValidator, QWidget* parent = 0);
+    SingleFieldEditor(QSharedPointer<Field> fieldItem,
+        QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<FieldValidator> fieldValidator,
+        FieldInterface* fieldInterface,
+        QSharedPointer<Register> containingRegister,
+        QWidget* parent = 0);
 
     /*!
      *  The destructor.
      */
-    virtual ~SingleFieldEditor();
+    virtual ~SingleFieldEditor() = default;
 
     /*!
 	 *  Reload the information from the model to the editor.
@@ -74,6 +81,21 @@ public:
 
 signals:
     void addressingChanged();
+
+public slots:
+
+    /*
+     *  Handles field name change from register editor.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void onFieldNameChanged(QString const& oldName, QString const& newName);
+
+    /*
+     *  Handles field name change from name editor.
+     */
+    void onFieldNameChanged();
 
 protected:
 
@@ -271,11 +293,17 @@ private:
     //! The write constraint maximum value editor.
     ExpressionEditor* writeConstraintMaxLimit_;
 
-    //! The field being edited.
-    QSharedPointer<Field> field_;
+    //! Name of the edited field.
+    std::string fieldName_;
 
     //! The used field validator.
     QSharedPointer<FieldValidator> fieldValidator_;
+
+    //! Interface for fields.
+    FieldInterface* fieldInterface_;
+
+    //! Register containing the edited field.
+    QSharedPointer<Register> containingRegister_;
 };
 
 #endif // SINGLEFIELDEDITOR_H
