@@ -706,6 +706,27 @@ public:
      */
     std::vector<std::string> getAllExpressions(std::string const& busName) const;
 
+    /*!
+     *  Copy the selected bus interfaces.
+     *
+     *      @param [in] selectedRows    Indexes of the selected bus interfaces.
+     */
+    void copyRows(std::vector<int> selectedRows);
+
+    /*!
+     *  Paste the selected bus interfaces.
+     *
+     *      @return Names of the pasted bus interfaces.
+     */
+    std::vector<std::string> pasteRows();
+
+    /*!
+     *  Get the number of pasted bus interfaces.
+     *
+     *      @return Number of the pasted bus interfaces.
+     */
+    int getPasteRowCount() const;
+
     //! No copying. No assignment.
     BusInterfaceInterface(const BusInterfaceInterface& other) = delete;
     BusInterfaceInterface& operator=(const BusInterfaceInterface& other) = delete;

@@ -34,6 +34,8 @@
 #include <QRegularExpression>
 #include <QString>
 #include <QVariant>
+#include <QClipboard>
+#include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfacesModel::BusInterfacesModel()
@@ -139,7 +141,8 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
 	}
 
     std::string busName = busInterface_->getIndexedItemName(index.row());
-	if (role == Qt::DisplayRole || (role == Qt::ToolTipRole && index.column() != BusInterfaceColumns::DESCRIPTION))
+	if (role == Qt::DisplayRole || (
+        (role == Qt::EditRole || role == Qt::ToolTipRole) && index.column() != BusInterfaceColumns::DESCRIPTION))
     {
         if (index.column() == BusInterfaceColumns::NAME)
         {
@@ -253,6 +256,10 @@ bool BusInterfacesModel::setData(QModelIndex const& index, const QVariant& value
         else if (index.column() == BusInterfaceColumns::BUSDEF)
         {
             VLNV busType = VLNV(VLNV::BUSDEFINITION, value.toString(), ":");
+            if (!busType.isValid())
+            {
+                return false;
+            }
 
             busInterface_->setBustype(busName, busType.getVendor().toStdString(),
                 busType.getLibrary().toStdString(), busType.getName().toStdString(),
@@ -268,6 +275,10 @@ bool BusInterfacesModel::setData(QModelIndex const& index, const QVariant& value
             {
                 QSharedPointer<ConfigurableVLNVReference> absType(new ConfigurableVLNVReference(VLNV(
                     VLNV::ABSTRACTIONDEFINITION, value.toString(), ":")));
+                if (!absType->isValid())
+                {
+                    return false;
+                }
 
                 busInterface_->addAbstractionType(busName, absType->getVendor().toStdString(),
                     absType->getLibrary().toStdString(), absType->getName().toStdString(),
@@ -421,6 +432,31 @@ void BusInterfacesModel::onRemoveItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: businterfacesmodel::removeReferencesFromExpressions()
+//-----------------------------------------------------------------------------
+void BusInterfacesModel::removeReferencesFromExpressions(int busInterfaceIndex)
+{
+    std::string busName = busInterface_->getIndexedItemName(busInterfaceIndex);
+
+    QStringList expressions;
+    for (auto singleExpression : busInterface_->getAllExpressions(busName))
+    {
+        expressions.append(QString::fromStdString(singleExpression));
+    }
+
+    ReferenceCalculator referenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressions);
+
+    foreach(QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusInterfacesModel::onMoveItem()
 //-----------------------------------------------------------------------------
 void BusInterfacesModel::onMoveItem(QModelIndex const& originalPos, QModelIndex const& newPos)
@@ -453,26 +489,79 @@ void BusInterfacesModel::onMoveItem(QModelIndex const& originalPos, QModelIndex 
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfacesmodel::removeReferencesFromExpressions()
+// Function: BusInterfacesModel::onCopyRows()
 //-----------------------------------------------------------------------------
-void BusInterfacesModel::removeReferencesFromExpressions(int busInterfaceIndex)
+void BusInterfacesModel::onCopyRows(QModelIndexList indexList)
 {
-    std::string busName = busInterface_->getIndexedItemName(busInterfaceIndex);
-
-    QStringList expressions;
-    for (auto singleExpression : busInterface_->getAllExpressions(busName))
+    std::vector<int> busIndexes;
+    for (auto index : indexList)
     {
-        expressions.append(QString::fromStdString(singleExpression));
+        busIndexes.push_back(index.row());
+    }
+    
+    busInterface_->copyRows(busIndexes);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesModel::onPasteRows()
+//-----------------------------------------------------------------------------
+void BusInterfacesModel::onPasteRows()
+{
+    int pastedBusCount = busInterface_->getPasteRowCount();
+    if (pastedBusCount == 0)
+    {
+        return;
     }
 
-    ReferenceCalculator referenceCalculator(parameterFinder_);
-    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressions);
+    int rowBegin = busInterface_->itemCount();
+    int rowEnd = rowBegin + pastedBusCount - 1;
 
-    foreach (QString referencedId, referencedParameters.keys())
+    beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+    busInterface_->pasteRows();
+
+    for (int i = rowBegin; i <= rowEnd; ++i)
     {
-        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        emit busifAdded(i);
+        increaseReferencesInPastedBus(QString::fromStdString(busInterface_->getIndexedItemName(i)));
+    }
+
+    endInsertRows();
+
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: businterfacesmodel::increaseReferencesInPastedBus()
+//-----------------------------------------------------------------------------
+void BusInterfacesModel::increaseReferencesInPastedBus(QString const& busName)
+{
+    QMap<QString, int> referencedParameters = getReferencedParameters(busName);
+
+    QMapIterator<QString, int> refParameterIterator(referencedParameters);
+    while (refParameterIterator.hasNext())
+    {
+        refParameterIterator.next();
+        for (int i = 0; i < refParameterIterator.value(); ++i)
         {
-            emit decreaseReferences(referencedId);
+            emit increaseReferences(refParameterIterator.key());
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: businterfacesmodel::getReferencedParameters()
+//-----------------------------------------------------------------------------
+QMap<QString, int> BusInterfacesModel::getReferencedParameters(QString const& busName) const
+{
+    auto expressionList = busInterface_->getAllExpressions(busName.toStdString());
+    QStringList expressionListQT;
+    for (auto expression : expressionList)
+    {
+        expressionListQT.append(QString::fromStdString(expression));
+    }
+
+    ReferenceCalculator refCalculator(parameterFinder_);
+
+    return refCalculator.getReferencedParameters(expressionListQT);
 }
