@@ -12,6 +12,8 @@
 #ifndef RESETINTERFACE_H
 #define RESETINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/CommonInterface.h>
 
@@ -22,7 +24,7 @@ class FieldValidator;
 //-----------------------------------------------------------------------------
 //! Interface for editing resets.
 //-----------------------------------------------------------------------------
-class ResetInterface : public ParameterizableInterface, public CommonInterface
+class KACTUS2_API ResetInterface : public ParameterizableInterface, public CommonInterface
 {
 
 public:

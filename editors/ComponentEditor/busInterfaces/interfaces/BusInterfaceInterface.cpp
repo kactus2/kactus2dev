@@ -24,6 +24,10 @@
 #include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
 
+#include <QMimeData>
+#include <QApplication>
+#include <QClipboard>
+
 namespace
 {
     QString const DEFAULT_NAME = QLatin1String("bus_interface");
@@ -313,7 +317,7 @@ std::vector<std::string> BusInterfaceInterface::getItemNames() const
 bool BusInterfaceInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<BusInterface> editedBus = getBusInterface(currentName);
-    if (!editedBus)
+    if (!editedBus || currentName == newName)
     {
         return false;
     }
@@ -1370,4 +1374,77 @@ std::vector<std::string> BusInterfaceInterface::getAllExpressions(std::string co
     }
 
     return expressionList;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::copyRows()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::copyRows(std::vector<int> selectedRows)
+{
+    QList<QSharedPointer<BusInterface> > copiedBuses;
+    for (auto index : selectedRows)
+    {
+        QSharedPointer<BusInterface> currentBus = busInterfaces_->at(index);
+        copiedBuses.append(currentBus);
+    }
+
+    QVariant registerVariant;
+    registerVariant.setValue(copiedBuses);
+
+    QMimeData* newMimeData = new QMimeData();
+    newMimeData->setData("text/xml/ipxact:register", QByteArray());
+    newMimeData->setImageData(registerVariant);
+
+    QApplication::clipboard()->setMimeData(newMimeData);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::pasteRows()
+//-----------------------------------------------------------------------------
+std::vector<std::string> BusInterfaceInterface::pasteRows()
+{
+    std::vector<std::string> pastedBusNames;
+
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<BusInterface> > >())
+        {
+            QList<QSharedPointer<BusInterface> > copiedBusList =
+                pasteVariant.value<QList<QSharedPointer<BusInterface>>>();
+
+            for (auto copiedBus : copiedBusList)
+            {
+                QSharedPointer<BusInterface> newBus(new BusInterface(*copiedBus.data()));
+                newBus->setName(getUniqueName(newBus->name().toStdString(), DEFAULT_NAME.toStdString()));
+                busInterfaces_->append(newBus);
+
+                pastedBusNames.push_back(newBus->name().toStdString());
+            }
+        }
+    }
+
+    return pastedBusNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::getPasteRowCount()
+//-----------------------------------------------------------------------------
+int BusInterfaceInterface::getPasteRowCount() const
+{
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<BusInterface> > >())
+        {
+            QList<QSharedPointer<BusInterface> > newBuses =
+                pasteVariant.value<QList<QSharedPointer<BusInterface> > >();
+            return newBuses.count();
+        }
+    }
+
+    return 0;
 }

@@ -12,6 +12,8 @@
 #ifndef ABSTRACTPARAMETERSINTERFACE_H
 #define ABSTRACTPARAMETERSINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
@@ -23,7 +25,7 @@ class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Interface for editing parameters.
 //-----------------------------------------------------------------------------
-class AbstractParameterInterface: public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API AbstractParameterInterface: public ParameterizableInterface, public NameGroupInterface
 {
 public:
 

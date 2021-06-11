@@ -43,12 +43,6 @@
     <Filter Include="Source Files\versionHelper">
       <UniqueIdentifier>{b833d652-10f3-412f-8458-c70aed4b2768}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\interfaces">
-      <UniqueIdentifier>{d7eb4d19-a61b-4d3e-87ed-745ae7fd56ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\interfaces">
-      <UniqueIdentifier>{96cb2a96-9473-4438-84b9-abaecd81d2c8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\expressionParser\MemoryMaps">
       <UniqueIdentifier>{8fb2d398-f203-4203-91f4-8a8fbb5d9381}</UniqueIdentifier>
     </Filter>
@@ -87,38 +81,14 @@
     <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
       <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\parameters\ParametersInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
       <Filter>Source Files\common\expressionParser</Filter>
     </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\NameGroupInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\interfaces\CommonInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
     </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
@@ -126,35 +96,14 @@
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp">
       <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="PythonAPI_wrap.cxx">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\fileSet\interfaces\FileInterface.cpp">
-      <Filter>Source Files\interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,38 +128,14 @@
     <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h">
       <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\parameters\ParametersInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
       <Filter>Header Files\common\expressionParser</Filter>
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
     </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\CommonInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\NameGroupInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\interfaces\ParameterizableInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h">
-      <Filter>Header Files\interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
@@ -218,32 +143,11 @@
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
     </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
     </ClInclude>
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h">
       <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\PortsInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\parameters\AbstractParameterInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h">
-      <Filter>Header Files\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\fileSet\interfaces\FileInterface.h">
-      <Filter>Header Files\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

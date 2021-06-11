@@ -12,6 +12,8 @@
 #ifndef FILESETINTERFACE_H
 #define FILESETINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
@@ -27,7 +29,7 @@ class FileBuilderInterface;
 //-----------------------------------------------------------------------------
 //! Interface for editing filesets.
 //-----------------------------------------------------------------------------
-class FileSetInterface: public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API FileSetInterface: public ParameterizableInterface, public NameGroupInterface
 {
 
 public:

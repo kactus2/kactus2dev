@@ -12,6 +12,8 @@
 #ifndef COMMONINTERFACE_H
 #define COMMONINTERFACE_H
 
+#include <common/Global.h>
+
 #include <string>
 #include <vector>
 #include <QString>
@@ -19,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! Common functions for interfaces.
 //-----------------------------------------------------------------------------
-class CommonInterface
+class KACTUS2_API CommonInterface
 {
 public:
 

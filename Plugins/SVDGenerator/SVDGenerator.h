@@ -235,14 +235,35 @@ private:
         QSharedPointer<MemoryItem> blockItem);
 
     /*!
+     *  Get the field items of the selected register item in ascending offset order.
+     *
+     *      @param [in] registerItem    The selected register item.
+     *      @param [in] registerOffset  Offset of the register.
+     *
+     *      @return Field items of the selected register item in ascending offset order.
+     */
+    QMap<quint64, QSharedPointer<MemoryItem> > getFieldItemsInOrder(QSharedPointer<MemoryItem> registerItem,
+        quint64 const& registerOffset);
+
+    /*!
+     *  Get the first reset item of the selected memory item.
+     *
+     *      @param [in] registerItem    The selected memory item.
+     *
+     *      @return The first reset item of the selected memory item.
+     */
+    QSharedPointer<MemoryItem> getResetItem(QSharedPointer<MemoryItem> registerItem) const;
+
+    /*!
      *  Write the fields of the selected register.
      *
      *      @param [in] writer              The xml stream writer.
      *      @param [in] containingRegister  The selected register.
-     *      @param [in] registerItem        The selected register item.
+     *      @param [in] registerOffset      Offset of the register.
+     *      @param [in] fieldItems          Ordered field items.
      */
-    void writeFields(QXmlStreamWriter& writer, QSharedPointer<Register> containingRegister,
-        QSharedPointer<MemoryItem> registerItem);
+    void writeFields(QXmlStreamWriter& writer, QSharedPointer<Register> containingRegister, quint64 registerOffset,
+        QMap<quint64, QSharedPointer<MemoryItem> > fieldItems);
 
     /*!
      *  Write the enumerated values of the selected field.
@@ -309,6 +330,26 @@ private:
      */
     QSharedPointer<Field> getField(QSharedPointer<Register> containingRegister,
         QSharedPointer<MemoryItem> fieldItem) const;
+
+    /*!
+     *  Get the start of the selected field.
+     *
+     *      @param [in] fieldItem       The selected field item.
+     *      @param [in] registerOffset  Offset of the containing register.
+     *
+     *      @return Start of the selected field.
+     */
+    quint64 getFieldStart(QSharedPointer<MemoryItem> fieldItem, quint64 registerOffset);
+
+    /*!
+     *  Get the end of the selected field.
+     *
+     *      @param [in] fieldItem       The selected field item.
+     *      @param [in] registerOffset  Offset of the containing register.
+     *
+     *      @return End of the selected field.
+     */
+    quint64 getFieldEnd(QSharedPointer<MemoryItem> fieldItem, quint64 fieldOffset);
 
     /*!
      *  Get the selected enumerated value.

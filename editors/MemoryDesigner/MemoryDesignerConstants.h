@@ -44,12 +44,14 @@ namespace MemoryDesignerConstants
     const qreal MAPSUBITEMPOSITIONX = RANGEINTERVAL * 4.5;
 
     const QString RESERVED_NAME = QLatin1String("Reserved");
+    const QString HARD_RESET_TYPE = QLatin1String("HARD");
 
     const QString MEMORYMAP_TYPE = QLatin1String("memoryMap");
     const QString ADDRESSBLOCK_TYPE = QLatin1String("addressBlock");
     const QString REGISTER_TYPE = QLatin1String("register");
     const QString FIELD_TYPE = QLatin1String("field");
     const QString ENUMERATED_VALUE_TYPE = QLatin1String("enumeratedValue");
+    const QString RESET_TYPE = QLatin1String("reset");
     const QString ADDRESSSPACE_TYPE = QLatin1String("addressSpace");
     const QString ADDRESSSEGMENT_TYPE = QLatin1String("segment");
 

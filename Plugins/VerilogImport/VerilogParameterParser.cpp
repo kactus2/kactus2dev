@@ -75,9 +75,11 @@ void VerilogParameterParser::import(QString const& componentDeclaration, QShared
     {
         copyIdsFromOldModelParameters(parsedParameters, targetComponentInstantiation);
 
-        for (QSharedPointer<ModuleParameter> existingParameter :
-            *targetComponentInstantiation->getModuleParameters())
+        QList<QSharedPointer<ModuleParameter> > existingParameterList =
+            *targetComponentInstantiation->getModuleParameters();
+        for (int i = 0; i < existingParameterList.size(); ++i)
         {
+            auto existingParameter = existingParameterList.at(i);
             if (existingParameter->getAttribute("imported").isEmpty())
             {
                 targetComponentInstantiation->getModuleParameters()->removeAll(existingParameter);

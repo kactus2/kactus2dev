@@ -159,6 +159,18 @@ public slots:
      */
     virtual void onMoveItem( QModelIndex const& originalPos, QModelIndex const& newPos );
 
+    /*!
+     *  Handle the bus interface copying.
+     *
+     *      @param [in] indexList   List of indexes to be copied.
+     */
+    void onCopyRows(QModelIndexList indexList);
+
+    /*!
+     *  Handle the bus interface pasteing.
+     */
+    void onPasteRows();
+
 signals:
 
 	/*!
@@ -214,6 +226,22 @@ private:
      *      @param [in] busInterfaceIndex   The index of the removed bus interface.
      */
     void removeReferencesFromExpressions(int busInterfaceIndex);
+
+    /*!
+     *  Increase the number of references made in the selected bus interface.
+     *
+     *      @param [in] registerName    Name of the selected bus interface.
+     */
+    void increaseReferencesInPastedBus(QString const& busName);
+
+    /*!
+     *  Calculates the parameters used in the selected bus interface.
+     *
+     *      @param [in] registerName    Name of the selected bus interface.
+     *
+     *      @return A map containing pairs of referenced ids and the number of references made to them.
+     */
+    QMap<QString, int> getReferencedParameters(QString const& busName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

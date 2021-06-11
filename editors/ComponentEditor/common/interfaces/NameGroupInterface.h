@@ -12,6 +12,8 @@
 #ifndef NAMEGROUPINTERFACE_H
 #define NAMEGROUPINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/CommonInterface.h>
 
 #include <QString>
@@ -19,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! Interface for name groups.
 //-----------------------------------------------------------------------------
-class NameGroupInterface : public CommonInterface
+class KACTUS2_API NameGroupInterface : public CommonInterface
 {
 public:
 

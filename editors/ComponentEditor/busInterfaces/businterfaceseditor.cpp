@@ -45,6 +45,7 @@ model_(handler, parameterFinder, busInterface, this)
 	QString defaultPath = QString("%1/busIfListing.csv").arg(componentPath);
 	view_.setDefaultImportExportPath(defaultPath);
 	view_.setAllowImportExport(true);
+    view_.setAllowElementCopying(true);
 
     // Items can be dragged to change positions. Drop is enabled for vlnv columns.
     view_.setItemsDraggable(true);
@@ -64,6 +65,10 @@ model_(handler, parameterFinder, busInterface, this)
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
         &model_, SLOT(onMoveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(copyRows(QModelIndexList)),
+        &model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(pasteRows()), &model_, SLOT(onPasteRows()), Qt::UniqueConnection);
 
     connect(&model_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

@@ -12,6 +12,8 @@
 #ifndef FILEBUILDERINTERFACE_H
 #define FILEBUILDERINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/CommonInterface.h>
 
@@ -24,7 +26,7 @@ class FileBuilder;
 //-----------------------------------------------------------------------------
 //! Interface for editing file builders.
 //-----------------------------------------------------------------------------
-class FileBuilderInterface : public ParameterizableInterface, public CommonInterface
+class KACTUS2_API FileBuilderInterface : public ParameterizableInterface, public CommonInterface
 {
 
 public:

@@ -494,4 +494,6 @@ private:
 
 };
 
+Q_DECLARE_METATYPE(QSharedPointer<BusInterface>);
+
 #endif // BUSINTERFACE_H

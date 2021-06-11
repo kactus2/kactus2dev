@@ -230,3 +230,35 @@ QString MemoryItem::getValue() const
 {
     return value_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getResetValue()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getResetValue() const
+{
+    return resetValue_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setResetValue()
+//-----------------------------------------------------------------------------
+void MemoryItem::setResetValue(QString const& newResetValue)
+{
+    resetValue_ = newResetValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getResetMask()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getResetMask() const
+{
+    return resetMask_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setResetMask()
+//-----------------------------------------------------------------------------
+void MemoryItem::setResetMask(QString const& newResetMask)
+{
+    resetMask_ = newResetMask;
+}

@@ -12,6 +12,8 @@
 #ifndef MASTERPORTINTERFACE_H
 #define MASTERPORTINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
@@ -19,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! Master interface for editing component ports and port abstractions.
 //-----------------------------------------------------------------------------
-class MasterPortInterface : public NameGroupInterface
+class KACTUS2_API MasterPortInterface : public NameGroupInterface
 {
 public:
 
