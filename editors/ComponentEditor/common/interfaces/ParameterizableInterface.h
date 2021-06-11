@@ -12,6 +12,8 @@
 #ifndef PARAMETERIZABLEINTERFACE_H
 #define PARAMETERIZABLEINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
@@ -21,7 +23,7 @@ class ValueFormatter;
 //-----------------------------------------------------------------------------
 //! Interface for parameterizable items.
 //-----------------------------------------------------------------------------
-class ParameterizableInterface
+class KACTUS2_API ParameterizableInterface
 {
 public:
 

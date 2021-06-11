@@ -12,6 +12,8 @@
 #ifndef FIELDINTERFACE_H
 #define FIELDINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
@@ -29,7 +31,7 @@ class WriteValueConstraint;
 //-----------------------------------------------------------------------------
 //! Interface for editing fields.
 //-----------------------------------------------------------------------------
-class FieldInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API FieldInterface : public ParameterizableInterface, public NameGroupInterface
 {
 
 public:

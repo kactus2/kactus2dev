@@ -12,6 +12,8 @@
 #ifndef PORTSINTERFACE_H
 #define PORTSINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/ports/interfaces/MasterPortInterface.h>
 
@@ -24,7 +26,7 @@ class PortValidator;
 //-----------------------------------------------------------------------------
 //! Interface for editing component ports.
 //-----------------------------------------------------------------------------
-class PortsInterface : public ParameterizableInterface, public MasterPortInterface
+class KACTUS2_API PortsInterface : public ParameterizableInterface, public MasterPortInterface
 {
 public:
 

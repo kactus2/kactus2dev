@@ -12,6 +12,8 @@
 #ifndef FILEINTERFACE_H
 #define FILEINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
@@ -26,7 +28,7 @@ class FileValidator;
 //-----------------------------------------------------------------------------
 //! Interface for editing files.
 //-----------------------------------------------------------------------------
-class FileInterface: public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API FileInterface: public ParameterizableInterface, public NameGroupInterface
 {
 
 public:

@@ -12,6 +12,8 @@
 #ifndef ADDRESSBLOCKINTERFACE_H
 #define ADDRESSBLOCKINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
@@ -30,7 +32,7 @@ class RegisterInterface;
 //-----------------------------------------------------------------------------
 //! Interface for editing address blocks.
 //-----------------------------------------------------------------------------
-class AddressBlockInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API AddressBlockInterface : public ParameterizableInterface, public NameGroupInterface
 {
 
 public:

@@ -9,7 +9,14 @@
 %include "InterfaceFiles\QString.i"
 %include "InterfaceFiles\NameGroup.i"
 
+%include <windows.i>
+#define Q_DECL_EXPORT __declspec(dllexport)
+#define Q_DECL_IMPORT __declspec(dllimport)
+
+%include "..\common\Global.h"
+
 %{
+#include "..\common\Global.h"
 #include "PythonAPI.h"
 #include "..\editors\ComponentEditor\common\interfaces\CommonInterface.h"
 #include "..\editors\ComponentEditor\common\interfaces\NameGroupInterface.h"

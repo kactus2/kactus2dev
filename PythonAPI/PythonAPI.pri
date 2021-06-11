@@ -23,22 +23,7 @@ HEADERS += ./PythonAPI.h \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
     ../common/validators/LibraryPathValidator/librarypathvalidator.h \
-    ../VersionHelper.h \
-    ../editors/ComponentEditor/common/interfaces/CommonInterface.h \
-    ../editors/ComponentEditor/common/interfaces/NameGroupInterface.h \
-    ../editors/ComponentEditor/common/interfaces/ParameterizableInterface.h \
-    ../editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h \
-    ../editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h \
-    ../editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h \
-    ../editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h \
-    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
-    ../editors/ComponentEditor/parameters/AbstractParameterInterface.h \
-    ../editors/ComponentEditor/parameters/ParametersInterface.h \
-    ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.h \
-    ../editors/ComponentEditor/ports/interfaces/PortsInterface.h \
-    ../editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h \
-    ../editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h \
-    ../editors/ComponentEditor/fileSet/interfaces/FileInterface.h
+    ../VersionHelper.h
 SOURCES += ./PythonAPI.cpp \
     ../editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp \
     ../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -55,19 +40,4 @@ SOURCES += ./PythonAPI.cpp \
     ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ../VersionHelper.cpp \
-    ../editors/ComponentEditor/common/interfaces/CommonInterface.cpp \
-    ../editors/ComponentEditor/common/interfaces/NameGroupInterface.cpp \
-    ../editors/ComponentEditor/common/interfaces/ParameterizableInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.cpp \
-    ../editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
-    ../editors/ComponentEditor/parameters/AbstractParameterInterface.cpp \
-    ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
-    ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp \
-    ../editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
-    ./PythonAPI_wrap.cxx \
-    ../editors/ComponentEditor/fileSet/interfaces/FileSetInterface.cpp \
-    ../editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.cpp \
-    ../editors/ComponentEditor/fileSet/interfaces/FileInterface.cpp
+    ./PythonAPI_wrap.cxx

@@ -12,6 +12,8 @@
 #ifndef REGISTERINTERFACE_H
 #define REGISTERINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
@@ -28,7 +30,7 @@ class FieldInterface;
 //-----------------------------------------------------------------------------
 //! Interface for editing registers.
 //-----------------------------------------------------------------------------
-class RegisterInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API RegisterInterface : public ParameterizableInterface, public NameGroupInterface
 {
 
 public:

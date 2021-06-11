@@ -12,6 +12,8 @@
 #ifndef PARAMETERSINTERFACE_H
 #define PARAMETERSINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
 
 class Parameter;
@@ -19,7 +21,7 @@ class Parameter;
 //-----------------------------------------------------------------------------
 //! Interface for editing parameters.
 //-----------------------------------------------------------------------------
-class ParametersInterface : public AbstractParameterInterface
+class KACTUS2_API ParametersInterface : public AbstractParameterInterface
 {
 public:
 

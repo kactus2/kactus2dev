@@ -12,6 +12,8 @@
 #ifndef MEMORYMAPINTERFACE_H
 #define MEMORYMAPINTERFACE_H
 
+#include <common/Global.h>
+
 #include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
 #include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
 
@@ -25,7 +27,7 @@ class AddressBlockInterface;
 //-----------------------------------------------------------------------------
 //! Interface for editing memory maps and remaps.
 //-----------------------------------------------------------------------------
-class MemoryMapInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API MemoryMapInterface : public ParameterizableInterface, public NameGroupInterface
 {
 
 public:
