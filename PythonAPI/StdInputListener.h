@@ -14,11 +14,12 @@
 
 #include <QObject>
 
-#include <QSharedPointer>
-#include <QTextStream>
-
+#ifdef Q_OS_WIN
 #include <windows.h>
 #include <QWinEventNotifier>
+#else
+#include <QSocketNotifier>
+#endif
 
 class WriteChannel;
 
@@ -29,7 +30,7 @@ public:
 
     //! The constructor.
     StdInputListener(WriteChannel* outputChannel, QObject* parent = nullptr);
-    
+
     //! The destructor.
     virtual ~StdInputListener() = default;
 
@@ -45,9 +46,12 @@ private:
 
     WriteChannel* outputChannel_;
 
-    QTextStream inputBuffer_;
-
+#ifdef Q_OS_WIN
     QWinEventNotifier* notifier_;
+#else
+    QSocketNotifier* notifier_;
+#endif
+
 };
 
 

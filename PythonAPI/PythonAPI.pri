@@ -67,7 +67,8 @@ SOURCES += ./PythonAPI.cpp \
     ../editors/ComponentEditor/parameters/ParametersInterface.cpp \
     ../editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp \
     ../editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
-    ./PythonAPI_wrap.cxx \
     ../editors/ComponentEditor/fileSet/interfaces/FileSetInterface.cpp \
     ../editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.cpp \
-    ../editors/ComponentEditor/fileSet/interfaces/FileInterface.cpp
+    ../editors/ComponentEditor/fileSet/interfaces/FileInterface.cpp \
+    ./PythonAPI_wrap.cxx
+

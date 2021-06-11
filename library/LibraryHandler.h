@@ -658,7 +658,7 @@ private:
     //-----------------------------------------------------------------------------
 
 
-    static LibraryHandler* LibraryHandler::instance_;
+    static LibraryHandler* instance_;
 
     //! Widget to parent open dialogs.
     QWidget* parentWidget_;

@@ -230,7 +230,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/validators/AbstractionTypeValidator.h \
     ./Component/validators/AddressBlockValidator.h \
     ./Component/validators/AddressSpaceValidator.h \
-    ./Component/validators/BuildCommandValidator.h \
     ./Component/validators/BusInterfaceValidator.h \
     ./Component/validators/ChannelValidator.h \
     ./Component/validators/ChoiceValidator.h \

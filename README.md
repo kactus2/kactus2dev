@@ -68,10 +68,12 @@ The following packages are required (on Ubuntu):
   * qttools5-private-dev
   * qttools5-dev-tools
   * libqt5svg5-dev
+  * libpython3.7-dev
+  * swig
 
 Example:
 ```
-sudo apt-get install qt5-default qttools5-private-dev qttools5-dev-tools libqt5svg5-dev
+sudo apt-get install qt5-default qttools5-private-dev qttools5-dev-tools libqt5svg5-dev libpython3.7-dev swig
 ```
 
 b) Manually download and install from https://www.qt.io/download/
@@ -140,10 +142,11 @@ Run `sudo make install`, if the current user has no write permissions to the tar
 (e.g. /opt/edatools/kactus2).
 
 Finally, make sure the shared libraries can be found by the program loader. If the installation
-is shared between multiple users, consider listing the libraries in /etc/ld.so.conf. For example,
-create the file /etc/ld.so.conf.d/kactus2-3.4.0.conf and in it add a single line that contains the
-path to the installation directory (e.g. /opt/edatools/kactus2). Run `ldconfig` to update the paths
-in the loader.
+is shared between multiple users, consider listing the libraries in /etc/ld.so.conf. 
+
+Example for Ubuntu 18.04.2 LTS:
+Create the file /etc/ld.so.conf.d/kactus2.conf and add a single line that contains the target 
+installation path (e.g. /opt/edatools/kactus2). Run `ldconfig` to update the paths in the loader.
 
 Please note, if you do ./configure with wrong Qt binaries, you will have to delete the generated 
 makefiles before configuring again. The easiest way to do this, is to run command `make distclean`.
@@ -171,7 +174,7 @@ c) In some systems, a link to the executable is created, if Kactus2 was installe
 
 Please note a recent change to lower-case binary name i.e. kactus2, not Kactus2.
 
-#### 3b. Run Kactus2 command-line (experimental)
+#### 3b. Run Kactus2 on command-line (experimental)
 
 Kactus2 can be run in the command-line without the GUI. Run:
 
@@ -179,7 +182,8 @@ Kactus2 can be run in the command-line without the GUI. Run:
 
 This will start an interactive Python interpreter for executing series of commands. Kactus2
 IP-XACT data is readable and modifiable through the provided interafaces. Interface
-documentation will be added later here.
+documentation will be added later here. Example scripts can be found in PythonAPI/ExampleScripts
+directory.
 
 Kactus2 supports the following general command-line options:
 * `-c, --no-gui`: Run in command-line mode without the GUI.
@@ -206,6 +210,37 @@ VHDL generation complete.
 
 Please note that the command-line interface is an experimental feature and very likely 
 subject to change in the near future. 
+
+Troubleshooting:
+
+```
+Could not import Kactus2 PythonAPI.
+ModuleNotFoundError: No module named 'pythonAPI'
+```
+The Python module (pythonAPI, no underscore prefix) for the API could not be found. Make sure 
+the directory PythonAPI is in your PYTHONPATH environment variable. For non-persistent 
+setup you can set PYTHONPATH at Kactus2 startup by running e.g. 
+`PYTHONPATH=~/kactus2/PythonAPI kactus2 -c`
+
+
+```
+ModuleNotFoundError: No module named '_pythonAPI'
+```
+File _pythonAPI.so (with underscore) could not be found. Check that PythonAPI project was 
+compiled succesfully and libPythonAPI.so was created in the PythonAPI directory. 
+SWIG requires the library name to match _pythonAPI.so, so create the link manually with 
+`ln -s -f PythonAPI/libPythonAPI.so.1.0.0 PythonAPI/_pythonAPI.so`
+
+
+```
+ImportError: libKactus2.so: cannot open shared object file: No such file or directory
+```
+File libKactus2.so could not be found. Check that Kactus2 project was compiled succesfully
+and libKactus2.so was created in /usr/lib, /usr/lib64 or your local install directory. Running
+`make install` copies the .so file in the target install directory. Also make sure the
+library can be found run-time. See the end of section 2b) for details on library path
+loading.
+
 
 Settings and configurations
 ----------------------------------------------------

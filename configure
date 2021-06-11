@@ -1,10 +1,27 @@
 #!/bin/sh
 
-echo "Configuring Kactus2..."
-echo ""
+# Change this to your Qt binaries directory.
 QTBIN_PATH=""
 
-print_success() { 
+# Change this to your python3.x-config binary. It is recommended to use absolute path
+# to avoid ambiquity when multiple Python versions are installed.
+#PYTHON_CONFIG=python3-config
+
+
+echo "Configuring Kactus2..."
+echo ""
+
+#echo "Locating python3-config..."
+
+#if ! command -v $PYTHON_CONFIG >/dev/null 2>&1;
+#then
+#    echo "$PYTHON_CONFIG could not be found. Please set variable PYTHON_CONFIG."
+#    exit
+#fi
+
+#export PYTHON_CONFIG=$PYTHON_CONFIG
+
+print_success() {
     if [ -f "Makefile" ];
     then
         echo ""
