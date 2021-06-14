@@ -16,7 +16,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 

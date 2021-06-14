@@ -658,13 +658,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h \
     ./editors/BusDefinitionEditor/AbstractionPortsView.h \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.h \
-    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.h \
     ./editors/BusDefinitionEditor/AbstractionPortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionPortsModel.h \
+    ./editors/BusDefinitionEditor/AbstractionPortsEditor.h \
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
-    ./editors/BusDefinitionEditor/AbstractionExtendHandler.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
     ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h \
     ./editors/common/BusInterfaceUtilities.h \
@@ -869,13 +867,14 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h
+    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h \
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/WriteChannel.h \
     ./PythonAPI/ChannelRelay.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/OutputForwarder.h
+
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAPI.cpp \
@@ -1433,15 +1432,13 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/BusDefinitionEditor/absdefgroup.cpp \
     ./editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.cpp \
-    ./editors/BusDefinitionEditor/AbstractionExtendHandler.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsDelegate.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsModel.cpp \
     ./editors/BusDefinitionEditor/AbstractionPortsView.cpp \
+    ./editors/BusDefinitionEditor/AbstractionPortsEditor.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.cpp \
-    ./editors/BusDefinitionEditor/AbstractionTransactionalPortsEditor.cpp \
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/AbstractionWirePortsDelegate.cpp \
-    ./editors/BusDefinitionEditor/AbstractionWirePortsEditor.cpp \
     ./editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
@@ -1639,10 +1636,11 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
-    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.cpp
+    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.cpp \
     ./PythonAPI/ChannelRelay.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/OutputForwarder.cpp
+
 RESOURCES += kactus.qrc

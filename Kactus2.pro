@@ -15,9 +15,12 @@ INCLUDEPATH += . \
     $(QTDIR)/../qttools/include \
     $(QTDIR)/../qttools/include/QtHelp \
     $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
-    $(QTDIR)/../qtxmlpatterns/include
+    $(QTDIR)/../qtxmlpatterns/include 
 LIBS += -L./executable \
-    -lIPXACTmodels
+    -lIPXACTmodels \
+    $$PYTHON_LIBS
+
+QMAKE_CXXFLAGS += $$PYTHON_C_FLAGS
 
 DESTDIR = ./executable
 DEPENDPATH += .
@@ -36,7 +39,6 @@ unix:QMAKE_POST_LINK = ln -f -s kactus2 executable/libKactus2.so; ./createhelp
 win32:RC_FILE = Kactus2.rc
 win32-g++*:LIBS += -Wl,--export-all-symbols,--out-implib,executable/libKactus2.a
 
-config.path = /etc/xdg/TUT
 config.files = ./Administrative/releaseFiles/Kactus2.ini
 
 # bin_path and other install targets set in .qmake.conf

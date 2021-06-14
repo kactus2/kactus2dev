@@ -4,7 +4,7 @@
 %include "QString.i"
 
 %{
-#include "IPXACTmodels\common\NameGroup.h"
+#include "IPXACTmodels/common/NameGroup.h"
 %}
 
 class NameGroup

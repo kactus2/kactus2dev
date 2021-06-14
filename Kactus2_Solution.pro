@@ -7,6 +7,7 @@ TEMPLATE = subdirs
 SUBDIRS = \
     IPXACTmodels \
     Kactus2 \
+    PythonAPI \
     MCAPICodeGenerator \
     CppSourceAnalyzer \
     VHDLSourceAnalyzer \
@@ -25,7 +26,7 @@ SUBDIRS = \
     QuartusProjectGenerator \
     MemoryViewGenerator \
     LinuxDeviceTreeGenerator \
-	SVDGenerator
+    SVDGenerator
 
 CONFIG(test) {
     SUBDIRS += test_all
@@ -36,6 +37,9 @@ IPXACTmodels.subdir = IPXACTmodels
 Kactus2.file = Kactus2.pro
 Kactus2.depends = IPXACTmodels
 Kactus2.makefile = Makefile.Kactus2
+
+PythonAPI.subdir = PythonAPI
+PythonAPI.depends = IPXACTmodels Kactus2
 
 MCAPICodeGenerator.subdir = Plugins/MCAPICodeGenerator
 MCAPICodeGenerator.depends = IPXACTmodels Kactus2
@@ -91,7 +95,7 @@ MemoryViewGenerator.depends = IPXACTmodels
 LinuxDeviceTreeGenerator.file = Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.pro
 LinuxDeviceTreeGenerator.depends = IPXACTmodels
 
-SVDGenerator.subdir = Plugins/SVDGenerator/SVDGeneratorPlugin.pro
+SVDGenerator.file = Plugins/SVDGenerator/SVDGeneratorPlugin.pro
 SVDGenerator.depends = IPXACTmodels
 
 test_all.subdir = tests

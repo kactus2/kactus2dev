@@ -18,6 +18,7 @@
 #include <QString>
 
 #include <iostream>
+
 #include <string>
 
 StdInputListener::StdInputListener(WriteChannel* outputChannel, QObject* parent /*= nullptr*/) :
@@ -29,14 +30,14 @@ StdInputListener::StdInputListener(WriteChannel* outputChannel, QObject* parent 
     QObject::connect(notifier_, &QWinEventNotifier::activated, this, &StdInputListener::inputReadable);
 
 #else
-    notifier(new QSocketNotifier(_fileno(stdin), QSocketNotifier::Read, this))
+    notifier_(new QSocketNotifier(fileno(stdin), QSocketNotifier::Read))
 {
-    connect(notifier, &QSocketNotifier::activated, this, SLOT(inputReadable()));
+    connect(notifier_, &QSocketNotifier::activated, this, &StdInputListener::inputReadable);
 #endif
 }
 
 void StdInputListener::inputReadable()
-{    
+{
     if (std::cin.eof())                          // Ctrl-D pressed 
     {
         emit inputFailure();
