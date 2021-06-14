@@ -68,8 +68,8 @@ The following packages are required (on Ubuntu):
   * qttools5-private-dev
   * qttools5-dev-tools
   * libqt5svg5-dev
-  * libpython3.7-dev
-  * swig
+  * libpython3.7-dev or newer
+  * swig, version 3.0.12 or newer
 
 Example:
 ```
@@ -97,7 +97,7 @@ Kactus2 root directory.
 Example:
 ```
 mkdir ~/kactus2
-tar -xvf kactus2-3.4.0.tar.gz -C ~/kactus2
+tar -xvf kactus2-3.9.0.tar.gz -C ~/kactus2
 cd ~/kactus2
 ```
 
@@ -108,6 +108,13 @@ a) Default installation for all users (requires admin privileges).
 Open file .qmake.conf and check that the paths are compatible with your Linux distribution.
 The defaults should work with Ubuntu 64-bit, Debian and CentOS 7 64-bit, but on some systems
 you may have to change lib_path from /usr/lib to /usr/lib64.
+Next, check that the PYTHON_CONFIG variable has been set correctly and matches the installed
+Python version.
+
+Example for Python version 3.7:
+```
+PYTHON_CONFIG=python3.7-config
+```
 
 Now run following commands:
 ```
@@ -129,7 +136,7 @@ Example:
     LOCAL_INSTALL_DIR="~/kactus2"
   
 By default, the shared libraries are installed in the same directory, but can be configured
-by setting the lib_path on line 44.
+by setting the lib_path on line 60.
   
 Now run the following commands:
 ```
@@ -172,7 +179,7 @@ c) In some systems, a link to the executable is created, if Kactus2 was installe
 
     kactus2
 
-Please note a recent change to lower-case binary name i.e. kactus2, not Kactus2.
+Please note the lower-case binary name i.e. kactus2, not Kactus2.
 
 #### 3b. Run Kactus2 on command-line (experimental)
 
@@ -180,15 +187,17 @@ Kactus2 can be run in the command-line without the GUI. Run:
 
     kactus2 -c
 
-This will start an interactive Python interpreter for executing series of commands. Kactus2
-IP-XACT data is readable and modifiable through the provided interafaces. Interface
-documentation will be added later here. Example scripts can be found in PythonAPI/ExampleScripts
-directory.
+This will start an interactive Python interpreter for executing series of commands. 
 
-Kactus2 supports the following general command-line options:
+Kactus2 supports the following command-line options:
 * `-c, --no-gui`: Run in command-line mode without the GUI.
 * `-h, --help`: Show the application usage help and exit.
 * `-v, --version`: Show the application version and exit.
+
+On command-line the IP-XACT data is readable and modifiable through the provided interafaces.
+Interface documentation will be added later. Example script files can be found in 
+PythonAPI/ExampleScripts directory. 
+The API module is imported at startup and instantiated as `kactus2`. 
 
 Example usage showing importing a verilog file to IP-XACT component and generating an equivalent VHDL file: 
 ```
@@ -211,7 +220,13 @@ VHDL generation complete.
 Please note that the command-line interface is an experimental feature and very likely 
 subject to change in the near future. 
 
-Troubleshooting:
+#### Troubleshooting for Python API:
+
+```
+sh: 1: python3-config: not found
+```
+Running `./configure` gives this error when the Python 3 configuration utilities
+cannot be found. Set the variable PYTHON_CONFIG in .qmake.conf.
 
 ```
 Could not import Kactus2 PythonAPI.
@@ -240,7 +255,6 @@ and libKactus2.so was created in /usr/lib, /usr/lib64 or your local install dire
 `make install` copies the .so file in the target install directory. Also make sure the
 library can be found run-time. See the end of section 2b) for details on library path
 loading.
-
 
 Settings and configurations
 ----------------------------------------------------
