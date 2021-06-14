@@ -36,9 +36,11 @@ public:
      *
      *     @param [in] outputChannel    Channel for standard messages and interpreter output.
      *     @param [in] errorChannel     Channel for error messages.
+     *     @param [in] interactive      Interactive console, if set to true, otherwise reading input from file.
      *     @param [in] parent           The parent object.
      */
-     explicit PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel, QObject* parent = nullptr);
+     explicit PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel, bool interactive = true,
+         QObject* parent = nullptr);
 
      // ! The destructor.
     virtual ~PythonInterpreter();
@@ -49,7 +51,7 @@ public:
      *
      *     @return True, if initialization was successful, otherwise false.
      */
-     bool initialize();
+     bool initialize();     
 
     /*!
      * Write a command for interpreter to execute.
@@ -99,6 +101,8 @@ private:
 
     //! Buffer to store multiple lines for command to execute.
     std::string inputBuffer_;
+
+    bool interactive_;
 
     //! True, if the current command requires multiple lines (e.g. loop).
     bool runMultiline_;

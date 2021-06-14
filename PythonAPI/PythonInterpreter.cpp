@@ -21,10 +21,12 @@
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::PythonInterpreter()
 //-----------------------------------------------------------------------------
-PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel, QObject* parent) :
+PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel,
+    bool interactive, QObject* parent) :
     QObject(parent), 
     WriteChannel(),
     inputBuffer_(),
+    interactive_(interactive),
     runMultiline_(false),
     outputChannel_(outputChannel),
     errorChannel_(errorChannel),
@@ -96,7 +98,7 @@ void PythonInterpreter::runFile(QString const& filePath)
     if (scriptFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         int fd = scriptFile.handle();
-        FILE* f = fdopen(dup(fd), "rb"); // !!! use dup()
+        FILE* f = fdopen(dup(fd), "rb");
 
         PyRun_SimpleFile(f, scriptFile.fileName().toLocal8Bit());
 
@@ -309,6 +311,11 @@ bool PythonInterpreter::setAPI()
 //-----------------------------------------------------------------------------
 void PythonInterpreter::printPrompt() const
 {
+    if (interactive_ == false)
+    {
+        return;
+    }
+
     if (runMultiline_)
     {
         outputChannel_->write("... ");
