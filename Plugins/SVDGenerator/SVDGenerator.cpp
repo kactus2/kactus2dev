@@ -340,7 +340,7 @@ void SVDGenerator::writeAddressBlocks(QXmlStreamWriter& writer,
         }
 
         writeSingleAddressBlock(
-            writer, blockBaseAddress, containingBlock, blockItem);
+            writer, blockBaseAddress, containingBlock, blockItem, true);
     }
 }
 
@@ -385,7 +385,7 @@ QVector<QSharedPointer<MemoryItem>> SVDGenerator::getSubMemoryItems(QSharedPoint
 // Function: SVDGenerator::writeSingleAddressBlock()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset,
-    QSharedPointer<AddressBlock> containingBlock, QSharedPointer<MemoryItem> blockItem)
+    QSharedPointer<AddressBlock> containingBlock, QSharedPointer<MemoryItem> blockItem, bool writeCluster)
 {
     writer.writeStartElement("addressBlock");
 
@@ -410,14 +410,14 @@ void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 con
 
     writer.writeEndElement(); //! addressBlock
 
-    writeRegisters(writer, containingBlock, blockItem);
+    writeRegisters(writer, containingBlock, blockItem, writeCluster);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeRegisters()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-    QSharedPointer<MemoryItem> blockItem)
+    QSharedPointer<MemoryItem> blockItem, bool writeCluster)
 {
     QVector<QSharedPointer<MemoryItem> > registerItems =
         getSubMemoryItems(blockItem, MemoryDesignerConstants::REGISTER_TYPE);
@@ -428,6 +428,44 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
 
     writer.writeStartElement("registers");
 
+    if (writeCluster)
+    {
+        writeRegisterCluster(writer, containingBlock, blockItem, registerItems);
+    }
+    else
+    {
+        writeRegisterElements(writer, registerItems, containingBlock);
+    }
+
+
+    writer.writeEndElement(); //! registers
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::writeRegisterCluster()
+//-----------------------------------------------------------------------------
+void SVDGenerator::writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
+    QSharedPointer<MemoryItem> blockItem, QVector<QSharedPointer<MemoryItem>> registerItems)
+{
+    writer.writeStartElement("cluster");
+
+    writer.writeTextElement("dim", "1");
+
+    QString rangeInHexa = valueToHexa(blockItem->getRange().toULongLong());
+    writer.writeTextElement("dimIncrement", rangeInHexa);
+    writer.writeTextElement("name", blockItem->getName());
+
+    writeRegisterElements(writer, registerItems, containingBlock);
+
+    writer.writeEndElement(); //! cluster
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::writeRegisterElements()
+//-----------------------------------------------------------------------------
+void SVDGenerator::writeRegisterElements(QXmlStreamWriter& writer,
+    QVector<QSharedPointer<MemoryItem>> registerItems, QSharedPointer<AddressBlock> containingBlock)
+{
     for (auto registerItem : registerItems)
     {
         QSharedPointer<Register> realRegister = getRegister(containingBlock, registerItem);
@@ -488,8 +526,6 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
 
         writer.writeEndElement(); //! register
     }
-
-    writer.writeEndElement(); //! registers
 }
 
 //-----------------------------------------------------------------------------
@@ -673,7 +709,7 @@ void SVDGenerator::writeBlockPeripherals(QXmlStreamWriter& writer,
 
         writer.writeTextElement("baseAddress", addressOffsetInHexa);
 
-        writeSingleAddressBlock(writer, 0, block, blockItem);
+        writeSingleAddressBlock(writer, 0, block, blockItem, false);
 
         writer.writeEndElement(); //! peripheral
     }

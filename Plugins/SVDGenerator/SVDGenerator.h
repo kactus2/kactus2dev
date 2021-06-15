@@ -220,9 +220,10 @@ private:
      *      @param [in] offset              Offset of the address block.
      *      @param [in] containingBlock     The containing address block.
      *      @param [in] blockItem           The selected address block item.
+     *      @param [in] writeCluster        Flag for writing register cluster.
      */
     void writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset,
-        QSharedPointer<AddressBlock> containingBlock, QSharedPointer<MemoryItem> blockItem);
+        QSharedPointer<AddressBlock> containingBlock, QSharedPointer<MemoryItem> blockItem, bool writeCluster);
 
     /*!
      *  Write the registers of the selected address block item.
@@ -230,9 +231,32 @@ private:
      *      @param [in] writer              The xml stream writer.
      *      @param [in] containingBlock     The containing address block.
      *      @param [in] blockItem           The selected address block item.
+     *      @param [in] writeCluster        Flag for writing register cluster.
      */
     void writeRegisters(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-        QSharedPointer<MemoryItem> blockItem);
+        QSharedPointer<MemoryItem> blockItem, bool writeCluster);
+
+    /*!
+     *  Write the register cluster.
+     *
+     *      @param [in] writer              The xml stream writer.
+     *      @param [in] containingBlock     The containing address block.
+     *      @param [in] blockItem           The selected address block item.
+     *      @param [in] registerItems       The clustered register items.
+     */
+    void writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
+        QSharedPointer<MemoryItem> blockItem, QVector<QSharedPointer<MemoryItem> > registerItems);
+
+    /*!
+     *  Write the selected register elements.
+     *
+     *      @param [in] writer              The xml stream writer.
+     *      @param [in] containingBlock     The containing address block.
+     *      @param [in] blockItem           The selected address block item.
+     *      @param [in] registerItems       The selected register items.
+     */
+    void writeRegisterElements(QXmlStreamWriter& writer, QVector<QSharedPointer<MemoryItem> > registerItems,
+        QSharedPointer<AddressBlock> containingBlock);
 
     /*!
      *  Get the field items of the selected register item in ascending offset order.
