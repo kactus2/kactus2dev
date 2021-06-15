@@ -410,14 +410,14 @@ void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 con
 
     writer.writeEndElement(); //! addressBlock
 
-    writeRegisters(writer, containingBlock, blockItem, writeCluster);
+    writeRegisters(writer, containingBlock, blockItem, addressOffsetInHexa, writeCluster);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeRegisters()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-    QSharedPointer<MemoryItem> blockItem, bool writeCluster)
+    QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa, bool writeCluster)
 {
     QVector<QSharedPointer<MemoryItem> > registerItems =
         getSubMemoryItems(blockItem, MemoryDesignerConstants::REGISTER_TYPE);
@@ -430,7 +430,7 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
 
     if (writeCluster)
     {
-        writeRegisterCluster(writer, containingBlock, blockItem, registerItems);
+        writeRegisterCluster(writer, containingBlock, blockItem, addressOffsetInHexa, registerItems);
     }
     else
     {
@@ -445,15 +445,13 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
 // Function: SVDGenerator::writeRegisterCluster()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-    QSharedPointer<MemoryItem> blockItem, QVector<QSharedPointer<MemoryItem>> registerItems)
+    QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa,
+    QVector<QSharedPointer<MemoryItem>> registerItems)
 {
     writer.writeStartElement("cluster");
 
-    writer.writeTextElement("dim", "1");
-
-    QString rangeInHexa = valueToHexa(blockItem->getRange().toULongLong());
-    writer.writeTextElement("dimIncrement", rangeInHexa);
     writer.writeTextElement("name", blockItem->getName());
+    writer.writeTextElement("addressOffset", addressOffsetInHexa);
 
     writeRegisterElements(writer, registerItems, containingBlock);
 

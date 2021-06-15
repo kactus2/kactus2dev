@@ -228,24 +228,27 @@ private:
     /*!
      *  Write the registers of the selected address block item.
      *
-     *      @param [in] writer              The xml stream writer.
-     *      @param [in] containingBlock     The containing address block.
-     *      @param [in] blockItem           The selected address block item.
-     *      @param [in] writeCluster        Flag for writing register cluster.
+     *      @param [in] writer                  The xml stream writer.
+     *      @param [in] containingBlock         The containing address block.
+     *      @param [in] blockItem               The selected address block item.
+     *      @param [in] addressOffsetInHexa     Offset of the address block in hex format.
+     *      @param [in] writeCluster            Flag for writing register cluster.
      */
     void writeRegisters(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-        QSharedPointer<MemoryItem> blockItem, bool writeCluster);
+        QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa, bool writeCluster);
 
     /*!
      *  Write the register cluster.
      *
-     *      @param [in] writer              The xml stream writer.
-     *      @param [in] containingBlock     The containing address block.
-     *      @param [in] blockItem           The selected address block item.
-     *      @param [in] registerItems       The clustered register items.
+     *      @param [in] writer                  The xml stream writer.
+     *      @param [in] containingBlock         The containing address block.
+     *      @param [in] blockItem               The selected address block item.
+     *      @param [in] addressOffsetInHexa     Offset of the address block in hex format.
+     *      @param [in] registerItems           The clustered register items.
      */
     void writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-        QSharedPointer<MemoryItem> blockItem, QVector<QSharedPointer<MemoryItem> > registerItems);
+        QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa,
+        QVector<QSharedPointer<MemoryItem> > registerItems);
 
     /*!
      *  Write the selected register elements.
