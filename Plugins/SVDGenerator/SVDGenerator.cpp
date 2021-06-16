@@ -340,7 +340,7 @@ void SVDGenerator::writeAddressBlocks(QXmlStreamWriter& writer,
         }
 
         writeSingleAddressBlock(
-            writer, blockBaseAddress, containingBlock, blockItem, true);
+            writer, blockBaseAddress, mapBaseAddress, containingBlock, blockItem, true);
     }
 }
 
@@ -385,7 +385,8 @@ QVector<QSharedPointer<MemoryItem>> SVDGenerator::getSubMemoryItems(QSharedPoint
 // Function: SVDGenerator::writeSingleAddressBlock()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset,
-    QSharedPointer<AddressBlock> containingBlock, QSharedPointer<MemoryItem> blockItem, bool writeCluster)
+    quint64 const& mapBaseAddress, QSharedPointer<AddressBlock> containingBlock,
+    QSharedPointer<MemoryItem> blockItem, bool writeCluster)
 {
     writer.writeStartElement("addressBlock");
 
@@ -410,14 +411,16 @@ void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 con
 
     writer.writeEndElement(); //! addressBlock
 
-    writeRegisters(writer, containingBlock, blockItem, addressOffsetInHexa, writeCluster);
+    quint64 registerOffsetChange = offset + mapBaseAddress;
+    writeRegisters(writer, containingBlock, blockItem, registerOffsetChange, addressOffsetInHexa, writeCluster);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeRegisters()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-    QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa, bool writeCluster)
+    QSharedPointer<MemoryItem> blockItem, quint64 const& blockPosition, QString const& addressOffsetInHexa,
+    bool writeCluster)
 {
     QVector<QSharedPointer<MemoryItem> > registerItems =
         getSubMemoryItems(blockItem, MemoryDesignerConstants::REGISTER_TYPE);
@@ -430,11 +433,11 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
 
     if (writeCluster)
     {
-        writeRegisterCluster(writer, containingBlock, blockItem, addressOffsetInHexa, registerItems);
+        writeRegisterCluster(writer, containingBlock, blockItem, blockPosition, addressOffsetInHexa, registerItems);
     }
     else
     {
-        writeRegisterElements(writer, registerItems, containingBlock);
+        writeRegisterElements(writer, registerItems, containingBlock, 0);
     }
 
 
@@ -445,7 +448,7 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
 // Function: SVDGenerator::writeRegisterCluster()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-    QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa,
+    QSharedPointer<MemoryItem> blockItem, quint64 const& blockPosition, QString const& addressOffsetInHexa,
     QVector<QSharedPointer<MemoryItem>> registerItems)
 {
     writer.writeStartElement("cluster");
@@ -453,7 +456,7 @@ void SVDGenerator::writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer
     writer.writeTextElement("name", blockItem->getName());
     writer.writeTextElement("addressOffset", addressOffsetInHexa);
 
-    writeRegisterElements(writer, registerItems, containingBlock);
+    writeRegisterElements(writer, registerItems, containingBlock, blockPosition);
 
     writer.writeEndElement(); //! cluster
 }
@@ -462,7 +465,8 @@ void SVDGenerator::writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer
 // Function: SVDGenerator::writeRegisterElements()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeRegisterElements(QXmlStreamWriter& writer,
-    QVector<QSharedPointer<MemoryItem>> registerItems, QSharedPointer<AddressBlock> containingBlock)
+    QVector<QSharedPointer<MemoryItem>> registerItems, QSharedPointer<AddressBlock> containingBlock,
+    quint64 const& blockPosition)
 {
     for (auto registerItem : registerItems)
     {
@@ -478,7 +482,7 @@ void SVDGenerator::writeRegisterElements(QXmlStreamWriter& writer,
         writeOptionalElement(writer, "description", realRegister->description());
 
         quint64 registerOffset = registerItem->getAddress().toULongLong();
-        QString addressOffsetInHexa = valueToHexa(registerOffset);
+        QString addressOffsetInHexa = valueToHexa(registerOffset - blockPosition);
         QString sizeString = registerItem->getSize();
 
         writer.writeTextElement("addressOffset", addressOffsetInHexa);
@@ -552,7 +556,7 @@ QMap<quint64, QSharedPointer<MemoryItem> > SVDGenerator::getFieldItemsInOrder(
     
     for (auto fieldItem : getSubMemoryItems(registerItem, MemoryDesignerConstants::FIELD_TYPE))
     {
-        quint64 fieldStart = getFieldStart(registerItem, registerOffset);
+        quint64 fieldStart = getFieldStart(fieldItem, registerOffset);
         orderedFieldItems.insert(fieldStart, fieldItem);
     }
 
@@ -707,7 +711,7 @@ void SVDGenerator::writeBlockPeripherals(QXmlStreamWriter& writer,
 
         writer.writeTextElement("baseAddress", addressOffsetInHexa);
 
-        writeSingleAddressBlock(writer, 0, block, blockItem, false);
+        writeSingleAddressBlock(writer, 0, 0, block, blockItem, false);
 
         writer.writeEndElement(); //! peripheral
     }

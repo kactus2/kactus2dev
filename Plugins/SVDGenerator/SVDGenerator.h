@@ -218,11 +218,12 @@ private:
      *
      *      @param [in] writer              The xml stream writer.
      *      @param [in] offset              Offset of the address block.
+     *      @param [in] mapBaseAddress      Base address of the memory map.
      *      @param [in] containingBlock     The containing address block.
      *      @param [in] blockItem           The selected address block item.
      *      @param [in] writeCluster        Flag for writing register cluster.
      */
-    void writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset,
+    void writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset, quint64 const& mapBaseAddress,
         QSharedPointer<AddressBlock> containingBlock, QSharedPointer<MemoryItem> blockItem, bool writeCluster);
 
     /*!
@@ -231,11 +232,13 @@ private:
      *      @param [in] writer                  The xml stream writer.
      *      @param [in] containingBlock         The containing address block.
      *      @param [in] blockItem               The selected address block item.
+     *      @param [in] blockPosition           Position of the containing address block in the memory map.
      *      @param [in] addressOffsetInHexa     Offset of the address block in hex format.
      *      @param [in] writeCluster            Flag for writing register cluster.
      */
     void writeRegisters(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-        QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa, bool writeCluster);
+        QSharedPointer<MemoryItem> blockItem, quint64 const& blockPosition, QString const& addressOffsetInHexa,
+        bool writeCluster);
 
     /*!
      *  Write the register cluster.
@@ -243,11 +246,12 @@ private:
      *      @param [in] writer                  The xml stream writer.
      *      @param [in] containingBlock         The containing address block.
      *      @param [in] blockItem               The selected address block item.
+     *      @param [in] blockPosition           Position of the containing address block in the memory map.
      *      @param [in] addressOffsetInHexa     Offset of the address block in hex format.
      *      @param [in] registerItems           The clustered register items.
      */
     void writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-        QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa,
+        QSharedPointer<MemoryItem> blockItem, quint64 const& blockPosition, QString const& addressOffsetInHexa,
         QVector<QSharedPointer<MemoryItem> > registerItems);
 
     /*!
@@ -257,9 +261,10 @@ private:
      *      @param [in] containingBlock     The containing address block.
      *      @param [in] blockItem           The selected address block item.
      *      @param [in] registerItems       The selected register items.
+     *      @param [in] blockPosition       Position of the containing address block in the memory map.
      */
     void writeRegisterElements(QXmlStreamWriter& writer, QVector<QSharedPointer<MemoryItem> > registerItems,
-        QSharedPointer<AddressBlock> containingBlock);
+        QSharedPointer<AddressBlock> containingBlock, quint64 const& blockPosition);
 
     /*!
      *  Get the field items of the selected register item in ascending offset order.
