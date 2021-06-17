@@ -70,12 +70,9 @@ public:
      *      @param [in] topComponent            The top component in the hierarchy to generate listing for.
      *      @param [in] componentPath           Path to the component folder.
      *      @param [in] cpuRoutes               CPU and its connected routes.
-     *      @param [in] peripheralsAreBlocks    Flag for constructing peripherals as address blocks.
-     *      @param [in] peripheralsAreMaps      Flag for constructing peripherals as memory maps.
      */
     void generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > const& cpuRoutes,
-        bool peripheralsAreBlocks, bool peripheralsAreMaps);
+        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > const& cpuRoutes);
 
     /*!
      *  Get the generated files.
@@ -96,13 +93,10 @@ private:
      *      @param [in] topComponent            Top component of the design.
      *      @param [in] componentPath           Path to the component folder.
      *      @param [in] cpuRoute                The selected CPU route container.
-     *      @param [in] peripheralsAreBlocks    Flag for constructing peripherals as address blocks.
-     *      @param [in] peripheralsAreMaps      Flag for constructing peripherals as memory maps.
      *      @param [in] fileNames               Names of the generated SVD files.
      */
     void writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuRoute, bool peripheralsAreBlocks,
-        bool peripheralsAreMaps, QStringList& fileNames);
+        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuRoute, QStringList& fileNames);
 
     /*!
      *  Get the number of files containing the selected name.
@@ -163,12 +157,9 @@ private:
      *
      *      @param [in] writer                  The xml stream writer.
      *      @param [in] routeCollection         The selected CPU route container.
-     *      @param [in] peripheralsAreBlocks    Flag for constructing peripherals as address blocks.
-     *      @param [in] peripheralsAreMaps      Flag for constructing peripherals as memory maps.
      */
     void writePeripherals(QXmlStreamWriter& writer,
-        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> routeCollection, bool peripheralsAreBlocks,
-        bool peripheralsAreMaps);
+        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> routeCollection);
 
     /*!
      *  Write memory map peripheral of the selected memory item.
@@ -179,7 +170,7 @@ private:
      *      @param [in] mapBaseAddress          Base address of the memory map.
      *      @param [in] mapBaseAddressInHexa    Base address of the memory map in hex format.
      */
-    void writeMapPeripheral(QXmlStreamWriter& writer, QSharedPointer<const Component> component,
+    void writePeripheral(QXmlStreamWriter& writer, QSharedPointer<const Component> component,
         QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress, QString const& mapBaseAddressInHexa);
 
     /*!
@@ -218,45 +209,34 @@ private:
      *
      *      @param [in] writer              The xml stream writer.
      *      @param [in] offset              Offset of the address block.
-     *      @param [in] containingBlock     The containing address block.
      *      @param [in] blockItem           The selected address block item.
-     *      @param [in] writeCluster        Flag for writing register cluster.
      */
-    void writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset,
-        QSharedPointer<AddressBlock> containingBlock, QSharedPointer<MemoryItem> blockItem, bool writeCluster);
+    void writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset, 
+         QSharedPointer<MemoryItem> blockItem);
 
-    /*!
-     *  Write the registers of the selected address block item.
-     *
-     *      @param [in] writer              The xml stream writer.
-     *      @param [in] containingBlock     The containing address block.
-     *      @param [in] blockItem           The selected address block item.
-     *      @param [in] writeCluster        Flag for writing register cluster.
-     */
-    void writeRegisters(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-        QSharedPointer<MemoryItem> blockItem, bool writeCluster);
+    void writeRegisters(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
+        QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress);
 
     /*!
      *  Write the register cluster.
      *
-     *      @param [in] writer              The xml stream writer.
-     *      @param [in] containingBlock     The containing address block.
-     *      @param [in] blockItem           The selected address block item.
-     *      @param [in] registerItems       The clustered register items.
+     *      @param [in] writer                  The xml stream writer.
+     *      @param [in] containingBlock         The address block containing the registers.
+     *      @param [in] blockItem               The selected address block item.
+     *      @param [in] addressOffsetInHexa     Offset of the address block in hex format.  
      */
     void writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-        QSharedPointer<MemoryItem> blockItem, QVector<QSharedPointer<MemoryItem> > registerItems);
+        QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa);
 
     /*!
      *  Write the selected register elements.
      *
-     *      @param [in] writer              The xml stream writer.
-     *      @param [in] containingBlock     The containing address block.
-     *      @param [in] blockItem           The selected address block item.
-     *      @param [in] registerItems       The selected register items.
+     *      @param [in] writer             The xml stream writer.
+     *      @param [in] registerItem       The selected register item.
+     *      @param [in] realRegister       The selected IP-XACT register.
      */
-    void writeRegisterElements(QXmlStreamWriter& writer, QVector<QSharedPointer<MemoryItem> > registerItems,
-        QSharedPointer<AddressBlock> containingBlock);
+    void writeRegister(QXmlStreamWriter& writer, QSharedPointer<MemoryItem> registerItem,
+        QSharedPointer<Register> realRegister);
 
     /*!
      *  Get the field items of the selected register item in ascending offset order.
@@ -298,17 +278,6 @@ private:
      */
     void writeEnumeratedValues(QXmlStreamWriter& writer, QSharedPointer<Field> containingField,
         QSharedPointer<MemoryItem> fieldItem);
-
-    /*!
-     *  Write address block peripheral of the selected memory map item.
-     *
-     *      @param [in] writer                  The xml stream writer.
-     *      @param [in] containingComponent     Component containing the address block.
-     *      @param [in] mapItem                 Memory map item containing the address block.
-     *      @param [in] mapBaseAddress          Base address of the containing memory map.
-     */
-    void writeBlockPeripherals(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
-        QSharedPointer<MemoryItem> mapItem, quint64 const& mapBaseAddress);
 
     /*!
      *  Get the selected memory map.
