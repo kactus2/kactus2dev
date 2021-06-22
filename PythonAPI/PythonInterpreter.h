@@ -53,13 +53,6 @@ public:
      */
      bool initialize();     
 
-    /*!
-     * Write a command for interpreter to execute.
-     *
-     *     @param [in] command  The command to execute.
-     */
-     virtual void write(QString const& command) override final;
-
      /*!
       * Run a script from a given file.
       *
@@ -73,7 +66,16 @@ public:
      *     @param [in] line  The line to execute.
      */
      void execute(std::string const& line);
-   
+
+public slots:
+
+    /*!
+     * Write a command for interpreter to execute.
+     *
+     *     @param [in] command  The command to execute.
+     */
+    virtual void write(QString const& command) override final;
+
 private:
 
     /*!
@@ -118,6 +120,8 @@ private:
 
     //! The local context for the interpreter when running a command.
     PyObject* localContext_;
+
+    PyThreadState* threadState_;
 };
 
 #endif // PYTHON_INTERPRETER_H

@@ -17,6 +17,7 @@
 #include <QPlainTextEdit>
 #include <QToolBar>
 #include <QListWidget>
+#include <QThread>
 
 #include <PythonAPI/ChannelRelay.h>
 
@@ -37,7 +38,7 @@ public:
     explicit ScriptingConsole(QWidget* parent);
     
     //! The destructor.
-    virtual ~ScriptingConsole() = default;
+    virtual ~ScriptingConsole();
 
     //! Apply the application settings.
     void applySettings();
@@ -79,6 +80,8 @@ private:
     QListWidget* historyListing_;
 
     QToolBar* toolBar_;
+
+    QThread scriptThread_;
 
 };
 

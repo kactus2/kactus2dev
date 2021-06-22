@@ -31,7 +31,8 @@ PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* 
     outputChannel_(outputChannel),
     errorChannel_(errorChannel),
     globalContext_(nullptr),
-    localContext_(nullptr)
+    localContext_(nullptr),
+    threadState_(nullptr)
 {
    
 }
@@ -61,11 +62,14 @@ bool PythonInterpreter::initialize()
         return false;
     }
 
+    threadState_ = Py_NewInterpreter();
+
     outputChannel_->write(QString("Python ") + QString(Py_GetVersion()) + QString("\n"));    
 
-    localContext_ = PyDict_New();
-    globalContext_ = PyDict_New();
-    PyDict_SetItemString(globalContext_, "__builtins__", PyEval_GetBuiltins());
+    PyObject *module = PyImport_ImportModule("__main__");
+    localContext_ = PyModule_GetDict(module);
+    globalContext_ = localContext_;
+    //PyDict_SetItemString(globalContext_, "__builtins__", PyEval_GetBuiltins());
 
     if (setOutputChannels() == false)
     {
@@ -74,6 +78,7 @@ bool PythonInterpreter::initialize()
 
     setAPI();
 
+    PyEval_ReleaseThread(threadState_);
 
     printPrompt();
     return true;
@@ -94,13 +99,16 @@ void PythonInterpreter::runFile(QString const& filePath)
 {
     Q_ASSERT_X(Py_IsInitialized(), "Python interpreter", "Trying to execute file without initializing.");
 
+
     QFile scriptFile(filePath);
     if (scriptFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         int fd = scriptFile.handle();
         FILE* f = fdopen(dup(fd), "rb");
 
+        PyEval_AcquireThread(threadState_);
         PyRun_SimpleFile(f, scriptFile.fileName().toLocal8Bit());
+        PyEval_ReleaseThread(threadState_);
 
         fclose(f);
 
@@ -108,6 +116,7 @@ void PythonInterpreter::runFile(QString const& filePath)
 
         printPrompt();
     }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -128,6 +137,9 @@ void PythonInterpreter::execute(std::string const& command)
 
     auto inputSize = inputBuffer_.length();
     bool endMultiline = runMultiline_ && inputSize >= 2 && inputBuffer_.at(inputSize - 2) == '\n';
+
+
+    PyEval_AcquireThread(threadState_);
 
     PyObject* src = Py_CompileString(inputBuffer_.c_str(), "<stdin>", Py_single_input);
 
@@ -191,6 +203,8 @@ void PythonInterpreter::execute(std::string const& command)
         runMultiline_ = false;
         inputBuffer_.clear();
     }
+
+    PyEval_ReleaseThread(threadState_);
 
     printPrompt();
 }
@@ -265,7 +279,6 @@ bool PythonInterpreter::setOutputChannels()
 //-----------------------------------------------------------------------------
 bool PythonInterpreter::setAPI()
 {
- 
     PyObject* emptyList = PyList_New(0);
     PyObject* apiModule = PyImport_ImportModuleEx("pythonAPI", globalContext_, localContext_, emptyList);
     Py_XDECREF(emptyList);
@@ -293,14 +306,12 @@ bool PythonInterpreter::setAPI()
             return false;
         }
 
-        PyObject* apiObject;
         // Creates an instance of the class
         if (PyCallable_Check(python_class))
         {
-            apiObject = PyObject_CallObject(python_class, nullptr);
+            PyObject* apiObject = PyObject_CallObject(python_class, nullptr);
             PyDict_SetItemString(localContext_, "kactus2", apiObject);
         }
-
     }
 
     return true;

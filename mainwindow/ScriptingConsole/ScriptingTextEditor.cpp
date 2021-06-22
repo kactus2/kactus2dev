@@ -26,13 +26,12 @@
 //-----------------------------------------------------------------------------
 // Function: ScriptingTextEditor::ScriptingTextEditor()
 //-----------------------------------------------------------------------------
-ScriptingTextEditor::ScriptingTextEditor(WriteChannel* outputChannel, ScriptingHistory* history, QWidget* parent):
+ScriptingTextEditor::ScriptingTextEditor(ScriptingHistory* history, QWidget* parent):
     QPlainTextEdit(parent),
     promtSideArea_(new ScriptingSideArea(this)),
     history_(history),
     textLockPosition_(0), 
     promptText_(),
-    outputChannel_(outputChannel),
     copyAction_(tr("Copy"), this),
     useTabs_(false)
 {    
@@ -53,6 +52,7 @@ ScriptingTextEditor::ScriptingTextEditor(WriteChannel* outputChannel, ScriptingH
 
     connect(this, SIGNAL(updateRequest(QRect const&, int)),
         this, SLOT(updateSideArea(QRect const&, int)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void ScriptingTextEditor::keyPressEvent(QKeyEvent *e)
 
         textLockPosition_ = textCursor().position();
 
-        outputChannel_->write(command);
+        emit write(command);
 
         history_->push(command);
     }

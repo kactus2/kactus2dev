@@ -18,7 +18,6 @@
 
 #include "ScriptingSideArea.h"
 
-class WriteChannel;
 class ScriptingHistory;
 
 //-----------------------------------------------------------------------------
@@ -30,7 +29,7 @@ class ScriptingTextEditor : public QPlainTextEdit
 public:
 
     //! The constructor.
-    ScriptingTextEditor(WriteChannel* outputChannel, ScriptingHistory* history, QWidget* parent = nullptr);
+    ScriptingTextEditor(ScriptingHistory* history, QWidget* parent = nullptr);
 
 
     //! The destructor.
@@ -43,6 +42,10 @@ public:
     int sideAreaWidth() const;
 
     void sideAreaPaintEvent();
+
+signals:
+
+    void write(QString const& line);
 
 public slots:
 
@@ -94,9 +97,6 @@ private:
 
     //! The current prompt text.
     QString promptText_;
-
-    //! Write channel to write user input into.
-    WriteChannel* outputChannel_;
 
     //! Copy the selected text to the clip board.
     QAction copyAction_;
