@@ -18,15 +18,12 @@
 
 #include "ScriptingSideArea.h"
 
-#include "PythonAPI/ReadChannel.h"
-
-
 class ScriptingHistory;
 
 //-----------------------------------------------------------------------------
 //! Text editor for script write and run.
 //-----------------------------------------------------------------------------
-class ScriptingTextEditor : public QPlainTextEdit, public ReadChannel
+class ScriptingTextEditor : public QPlainTextEdit
 {
     Q_OBJECT
 public:
@@ -46,11 +43,9 @@ public:
 
     void sideAreaPaintEvent();
 
-
-    virtual QString readline() override final;
-
 signals:
 
+    //! Emitted when a line is completed in the editor.
     void write(QString const& line);
 
 public slots:
@@ -94,8 +89,10 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! Side area for the widget.
     ScriptingSideArea* promtSideArea_;
 
+    //! Command history.
     ScriptingHistory* history_;
 
     //! Lock position in the text i.e. text before the position cannot be changed.
@@ -107,9 +104,9 @@ private:
     //! Copy the selected text to the clip board.
     QAction copyAction_;
 
+    //! Use tabs or spaces for indentation.
     bool useTabs_;
 
-    QString buffer_;
 };
 
 #endif // SCRIPTINGTEXTEDITOR_H

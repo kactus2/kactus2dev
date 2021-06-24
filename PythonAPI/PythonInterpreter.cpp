@@ -21,14 +21,12 @@
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::PythonInterpreter()
 //-----------------------------------------------------------------------------
-PythonInterpreter::PythonInterpreter(ReadChannel* inputChannel, WriteChannel* outputChannel, WriteChannel* errorChannel,
+PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel,
     bool interactive, QObject* parent) :
     QObject(parent), 
     WriteChannel(),
-    inputBuffer_(),
     interactive_(interactive),
     runMultiline_(false),
-    inputChannel_(inputChannel),
     outputChannel_(outputChannel),
     errorChannel_(errorChannel),
     globalContext_(nullptr),
