@@ -257,13 +257,6 @@ library can be found run-time. See the end of section 2b) for details on library
 loading.
 
 
-```
-Typing help() freezes the GUI on Windows
-```
-Click on the console window running on the background of Kactus2 and press enter. This will
-unlock the application as the interactive help no longer waits for input.
-
-
 Settings and configurations
 ----------------------------------------------------
 

@@ -873,7 +873,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/ChannelRelay.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/OutputForwarder.h
+    ./PythonAPI/extensions/IOCatcher.h
 
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
@@ -1641,6 +1641,6 @@ SOURCES += ./VersionHelper.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/OutputForwarder.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp
 
 RESOURCES += kactus.qrc

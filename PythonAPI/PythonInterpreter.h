@@ -21,6 +21,7 @@
 #include <string>
 
 #include <PythonAPI/WriteChannel.h>
+#include <PythonAPI/ReadChannel.h>
 
 //-----------------------------------------------------------------------------
 //! Convenience class for accessing Python interpreter.
@@ -39,7 +40,8 @@ public:
      *     @param [in] interactive      Interactive console, if set to true, otherwise reading input from file.
      *     @param [in] parent           The parent object.
      */
-     explicit PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel, bool interactive = true,
+     explicit PythonInterpreter(ReadChannel* inputChannel, WriteChannel* outputChannel, 
+         WriteChannel* errorChannel, bool interactive = true,
          QObject* parent = nullptr);
 
      // ! The destructor.
@@ -109,6 +111,8 @@ private:
     //! True, if the current command requires multiple lines (e.g. loop).
     bool runMultiline_;
 
+    ReadChannel* inputChannel_;
+
     //! Channel for interpreter output.
     WriteChannel* outputChannel_;
 
@@ -122,6 +126,8 @@ private:
     PyObject* localContext_;
 
     PyThreadState* threadState_;
+
+    PyGILState_STATE state;
 };
 
 #endif // PYTHON_INTERPRETER_H

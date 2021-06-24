@@ -31,14 +31,16 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     QWidget(parent),
     outputChannel_(new ChannelRelay(this)),
     errorChannel_(new ChannelRelay(this)),
-    interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, true)),
     history_(new ScriptingHistory(this)),
     scriptEditor_(new ScriptingTextEditor(history_, this)),
+    interpreter_(new PythonInterpreter(scriptEditor_, outputChannel_, errorChannel_, true)),
+ 
     historyListing_(new QListWidget(this)),
     toolBar_(new QToolBar(this)),
     scriptThread_(this)
 {    
     interpreter_->moveToThread(&scriptThread_);
+    connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
 
     connect(outputChannel_, SIGNAL(data(QString const&)),
         scriptEditor_, SLOT(print(QString const&)), Qt::UniqueConnection);
@@ -78,10 +80,11 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
         scriptEditor_->printError(tr("Could not initialize interpreter. Script disabled."));
         scriptEditor_->setReadOnly(true);
     }
+    else
+    {
+          scriptThread_.start();
+    }
 
-    connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
-
-    scriptThread_.start();
 
     setupLayout();
 }

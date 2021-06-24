@@ -71,11 +71,12 @@ private:
 
     ScriptingHistory* history_;
 
+    //! Text editor for script writing and run.
+    ScriptingTextEditor* scriptEditor_;
+
     //! Interpreter instance for Python.
     PythonInterpreter* interpreter_;
 
-    //! Text editor for script writing and run.
-    ScriptingTextEditor* scriptEditor_;
 
     QListWidget* historyListing_;
 

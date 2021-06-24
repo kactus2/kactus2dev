@@ -18,12 +18,15 @@
 
 #include "ScriptingSideArea.h"
 
+#include "PythonAPI/ReadChannel.h"
+
+
 class ScriptingHistory;
 
 //-----------------------------------------------------------------------------
 //! Text editor for script write and run.
 //-----------------------------------------------------------------------------
-class ScriptingTextEditor : public QPlainTextEdit
+class ScriptingTextEditor : public QPlainTextEdit, public ReadChannel
 {
     Q_OBJECT
 public:
@@ -42,6 +45,9 @@ public:
     int sideAreaWidth() const;
 
     void sideAreaPaintEvent();
+
+
+    virtual QString readline() override final;
 
 signals:
 
@@ -102,6 +108,8 @@ private:
     QAction copyAction_;
 
     bool useTabs_;
+
+    QString buffer_;
 };
 
 #endif // SCRIPTINGTEXTEDITOR_H
