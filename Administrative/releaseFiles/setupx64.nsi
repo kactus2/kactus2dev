@@ -118,6 +118,15 @@ Section "MainSection" SEC01
   File "..\..\Help\Kactus2Help.qhc"
   File "..\..\Help\Kactus2Help.qch"
 
+  SetOutPath "$INSTDIR\ExampleScripts"
+  SetOverwrite on
+  File "..\..\PythonAPI\ExampleScripts\createComponent.py"
+  File "..\..\PythonAPI\ExampleScripts\createComponentItems.py"
+  File "..\..\PythonAPI\ExampleScripts\createComponentItems.py"
+  File "..\..\PythonAPI\ExampleScripts\listRegisters.py"
+  File "..\..\PythonAPI\ExampleScripts\parameterUsage.py"
+  File "..\..\PythonAPI\ExampleScripts\verilogGenerator.py"
+  
   SetOutPath "$APPDATA\TUT"
   SetOverwrite off
   File /oname=Kactus2.ini "DefaultSettingsWin.ini"
@@ -264,12 +273,21 @@ Section Uninstall
   Delete "$SMPROGRAMS\Kactus2\License.lnk"
   Delete "$SMPROGRAMS\Kactus2\Kactus2.lnk"
 
+  Delete "$INSTDIR\ExampleScripts\createComponent.py"
+  Delete "$INSTDIR\ExampleScripts\createComponentItems.py"
+  Delete "$INSTDIR\ExampleScripts\createComponentItems.py"
+  Delete "$INSTDIR\ExampleScripts\listRegisters.py"
+  Delete "$INSTDIR\ExampleScripts\parameterUsage.py"
+  Delete "$INSTDIR\ExampleScripts\verilogGenerator.py"
+  
   RMDir "$SMPROGRAMS\Kactus2"
   RMDir "$INSTDIR\Help"
   RMDir "$INSTDIR\Plugins"
   RMDir "$INSTDIR\sqldrivers"
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\accessible"
+  RMDir "$INSTDIR\ExampleScripts"
+  RMDir "$INSTDIR\__pycache__"
   RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\IPTLM.apiDef\1.1"
   RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\IPTLM.apiDef"
   RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\2.015"

@@ -432,7 +432,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
     fieldItem->setAUB(QString::number(addressableUnitBits));
     fieldItem->setWidth(expressionParser_->parseExpression(field->getBitWidth()));
     fieldItem->setAddress(QString::number(regAddress + bitOffset/addressableUnitBits));
-    fieldItem->setOffset(QString::number(bitOffset % addressableUnitBits));
+    fieldItem->setOffset(QString::number(bitOffset));
 
     for (auto enumeratedValue : *field->getEnumeratedValues())
     {

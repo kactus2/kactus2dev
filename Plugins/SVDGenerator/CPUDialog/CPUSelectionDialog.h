@@ -65,20 +65,6 @@ public:
     QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > getSelectedCPUs();
 
     /*!
-     *  Check if the peripherals for SVD generation are address blocks.
-     *
-     *      @return True, if the peripherals are address blocks, false otherwise.
-     */
-    bool peripheralsAreBlocks() const;
-
-    /*!
-     *  Check if the peripherals for SVD generation are memory maps.
-     *
-     *      @return True, if the peripherals are memory maps, false otherwise.
-     */
-    bool peripheralsAreMaps() const;
-
-    /*!
      *  Check if the files should be saved to a file set.
      *
      *      @return True, if the files should be saved to a file set, false otherwise.
@@ -105,20 +91,6 @@ private slots:
      *  Handle the view selection.
      */
     void onViewChanged();
-
-    /*!
-     *  Change peripherals to be constructed from address blocks.
-     *
-     *      @param [in] blockPeripherals    Value for address block peripherals.
-     */
-    void onBlockPeripherals(bool blockPeripherals);
-
-    /*!
-     *  Change peripherals to be constructed from memory maps.
-     *
-     *      @param [in] mapPeripherals  Value for memory map peripherals.
-     */
-    void onMapPeripherals(bool mapPeripherals);
 
     /*!
      *  Handle the change of target folder.
@@ -184,12 +156,6 @@ private:
 
     //! Graph factory for creating the design connections.
     ConnectivityGraphFactory graphFactory_;
-
-    //! Check box for creating peripherals from address blocks.
-    QCheckBox* blockPeripherals_;
-
-    //! Check box for creating peripherals from memory maps.
-    QCheckBox* mapPeripherals_;
 
     //! Editor for CPU details.
     SVDCPUEditor* cpuDetailEditor_;

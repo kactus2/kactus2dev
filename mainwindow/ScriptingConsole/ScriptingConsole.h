@@ -17,6 +17,7 @@
 #include <QPlainTextEdit>
 #include <QToolBar>
 #include <QListWidget>
+#include <QThread>
 
 #include <PythonAPI/ChannelRelay.h>
 
@@ -37,7 +38,7 @@ public:
     explicit ScriptingConsole(QWidget* parent);
     
     //! The destructor.
-    virtual ~ScriptingConsole() = default;
+    virtual ~ScriptingConsole();
 
     //! Apply the application settings.
     void applySettings();
@@ -70,15 +71,18 @@ private:
 
     ScriptingHistory* history_;
 
+    //! Text editor for script writing and run.
+    ScriptingTextEditor* scriptEditor_;
+
     //! Interpreter instance for Python.
     PythonInterpreter* interpreter_;
 
-    //! Text editor for script writing and run.
-    ScriptingTextEditor* scriptEditor_;
 
     QListWidget* historyListing_;
 
     QToolBar* toolBar_;
+
+    QThread scriptThread_;
 
 };
 

@@ -21,6 +21,7 @@
 #include <string>
 
 #include <PythonAPI/WriteChannel.h>
+#include <PythonAPI/ReadChannel.h>
 
 //-----------------------------------------------------------------------------
 //! Convenience class for accessing Python interpreter.
@@ -36,9 +37,12 @@ public:
      *
      *     @param [in] outputChannel    Channel for standard messages and interpreter output.
      *     @param [in] errorChannel     Channel for error messages.
+     *     @param [in] interactive      Interactive console, if set to true, otherwise reading input from file.
      *     @param [in] parent           The parent object.
      */
-     explicit PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel, QObject* parent = nullptr);
+     explicit PythonInterpreter(ReadChannel* inputChannel, WriteChannel* outputChannel, 
+         WriteChannel* errorChannel, bool interactive = true,
+         QObject* parent = nullptr);
 
      // ! The destructor.
     virtual ~PythonInterpreter();
@@ -49,14 +53,7 @@ public:
      *
      *     @return True, if initialization was successful, otherwise false.
      */
-     bool initialize();
-
-    /*!
-     * Write a command for interpreter to execute.
-     *
-     *     @param [in] command  The command to execute.
-     */
-     virtual void write(QString const& command) override final;
+     bool initialize();     
 
      /*!
       * Run a script from a given file.
@@ -71,7 +68,16 @@ public:
      *     @param [in] line  The line to execute.
      */
      void execute(std::string const& line);
-   
+
+public slots:
+
+    /*!
+     * Write a command for interpreter to execute.
+     *
+     *     @param [in] command  The command to execute.
+     */
+    virtual void write(QString const& command) override final;
+
 private:
 
     /*!
@@ -100,8 +106,12 @@ private:
     //! Buffer to store multiple lines for command to execute.
     std::string inputBuffer_;
 
+    bool interactive_;
+
     //! True, if the current command requires multiple lines (e.g. loop).
     bool runMultiline_;
+
+    ReadChannel* inputChannel_;
 
     //! Channel for interpreter output.
     WriteChannel* outputChannel_;
@@ -114,6 +124,10 @@ private:
 
     //! The local context for the interpreter when running a command.
     PyObject* localContext_;
+
+    PyThreadState* threadState_;
+
+    PyGILState_STATE state;
 };
 
 #endif // PYTHON_INTERPRETER_H

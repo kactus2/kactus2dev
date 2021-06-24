@@ -20,21 +20,22 @@
 #include <QPainter>
 #include <QSettings>
 #include <QVariant>
+#include <QTextStream>
 
 #include <PythonAPI/WriteChannel.h>
 
 //-----------------------------------------------------------------------------
 // Function: ScriptingTextEditor::ScriptingTextEditor()
 //-----------------------------------------------------------------------------
-ScriptingTextEditor::ScriptingTextEditor(WriteChannel* outputChannel, ScriptingHistory* history, QWidget* parent):
+ScriptingTextEditor::ScriptingTextEditor(ScriptingHistory* history, QWidget* parent):
     QPlainTextEdit(parent),
     promtSideArea_(new ScriptingSideArea(this)),
     history_(history),
     textLockPosition_(0), 
     promptText_(),
-    outputChannel_(outputChannel),
     copyAction_(tr("Copy"), this),
-    useTabs_(false)
+    useTabs_(false),
+    buffer_()
 {    
     setContentsMargins(0, 0, 0, 0);
    
@@ -53,6 +54,7 @@ ScriptingTextEditor::ScriptingTextEditor(WriteChannel* outputChannel, ScriptingH
 
     connect(this, SIGNAL(updateRequest(QRect const&, int)),
         this, SLOT(updateSideArea(QRect const&, int)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +189,8 @@ void ScriptingTextEditor::keyPressEvent(QKeyEvent *e)
 
         textLockPosition_ = textCursor().position();
 
-        outputChannel_->write(command);
+        buffer_ = command;
+        emit write(command);
 
         history_->push(command);
     }
@@ -288,4 +291,17 @@ void ScriptingTextEditor::sideAreaPaintEvent()
         painter.drawText(4, top, promtSideArea_->width()-4, fontMetrics().height(),
             Qt::AlignLeft, promptText_);
     }
+}
+
+QString ScriptingTextEditor::readline()
+{
+
+    while (buffer_.isEmpty())
+    {
+
+    }
+    QString res = buffer_;
+    buffer_.clear();
+    return res;
+    //return buffer_;
 }

@@ -31,16 +31,24 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     QWidget(parent),
     outputChannel_(new ChannelRelay(this)),
     errorChannel_(new ChannelRelay(this)),
-    interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, this)),
     history_(new ScriptingHistory(this)),
-    scriptEditor_(new ScriptingTextEditor(interpreter_, history_, this)),
+    scriptEditor_(new ScriptingTextEditor(history_, this)),
+    interpreter_(new PythonInterpreter(scriptEditor_, outputChannel_, errorChannel_, true)),
+ 
     historyListing_(new QListWidget(this)),
-    toolBar_(new QToolBar(this))
+    toolBar_(new QToolBar(this)),
+    scriptThread_(this)
 {    
+    interpreter_->moveToThread(&scriptThread_);
+    connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
+
     connect(outputChannel_, SIGNAL(data(QString const&)),
         scriptEditor_, SLOT(print(QString const&)), Qt::UniqueConnection);
     connect(errorChannel_, SIGNAL(data(QString const&)),
         scriptEditor_, SLOT(printError(QString const&)), Qt::UniqueConnection);
+
+    connect(scriptEditor_, SIGNAL(write(QString const&)),
+        interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
 
     bool enabled = interpreter_->initialize();
 
@@ -72,8 +80,22 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
         scriptEditor_->printError(tr("Could not initialize interpreter. Script disabled."));
         scriptEditor_->setReadOnly(true);
     }
+    else
+    {
+          scriptThread_.start();
+    }
+
 
     setupLayout();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptingConsole::applySettings()
+//-----------------------------------------------------------------------------
+ScriptingConsole::~ScriptingConsole()
+{
+    scriptThread_.quit();
+    scriptThread_.wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -100,6 +122,8 @@ void ScriptingConsole::onSaveAction()
         {
             output << historyListing_->item(i)->text() << "\n";
         }
+
+        outputFile.close();
     }
 }
 

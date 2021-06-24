@@ -18,19 +18,21 @@
 
 #include "ScriptingSideArea.h"
 
-class WriteChannel;
+#include "PythonAPI/ReadChannel.h"
+
+
 class ScriptingHistory;
 
 //-----------------------------------------------------------------------------
 //! Text editor for script write and run.
 //-----------------------------------------------------------------------------
-class ScriptingTextEditor : public QPlainTextEdit
+class ScriptingTextEditor : public QPlainTextEdit, public ReadChannel
 {
     Q_OBJECT
 public:
 
     //! The constructor.
-    ScriptingTextEditor(WriteChannel* outputChannel, ScriptingHistory* history, QWidget* parent = nullptr);
+    ScriptingTextEditor(ScriptingHistory* history, QWidget* parent = nullptr);
 
 
     //! The destructor.
@@ -43,6 +45,13 @@ public:
     int sideAreaWidth() const;
 
     void sideAreaPaintEvent();
+
+
+    virtual QString readline() override final;
+
+signals:
+
+    void write(QString const& line);
 
 public slots:
 
@@ -95,13 +104,12 @@ private:
     //! The current prompt text.
     QString promptText_;
 
-    //! Write channel to write user input into.
-    WriteChannel* outputChannel_;
-
     //! Copy the selected text to the clip board.
     QAction copyAction_;
 
     bool useTabs_;
+
+    QString buffer_;
 };
 
 #endif // SCRIPTINGTEXTEDITOR_H

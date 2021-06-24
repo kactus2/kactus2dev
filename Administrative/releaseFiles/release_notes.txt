@@ -8,10 +8,17 @@
               * Changed or Information
 ===============================================================================
 
-01/06/2021 3.9.0
+00/06/2021 3.9.0
 ----------------------------------------------------
 
++ Added PythonAPI to provide access to Kactus2 through python code
+	* PythonAPI is separated from Qt
+	* PythonAPI folder contains example scripts
+	* PythonAPI can also use some generators (VHDL, Verilog, Linux device tree and Makefile)
 + Added KactusAPI class to provide library and utilities to PythonAPI
++ Added a console in GUI for interpreting python scripts
+	* Allows multiline code to be executed in Python on Windows console mode
+	* Added script history, run file and save function
 + Separated Kactus2 editor models into interfaces
 	* Ports
 	* Parameters
@@ -26,17 +33,10 @@
 	* Port maps
 	* Port abstractions
 	* Bus interfaces
-+ Added PythonAPI to provide access to Kactus2 through python code
-	* PythonAPI is separated from Qt
-	* PythonAPI folder contains example scripts
-	* PythonAPI can also use some generators (VHDL, Verilog, Linux device tree, modelSIM and Makefile)
-+ Added a console for interpreting python scripts
-	* Allows multiline code to be executed in Python on Windows console mode
-	* Added script history and save function
+
 + Added CMSIS System View Description (SVD) generator plugin
 	* SVD files can be created from a HW design
 + Added extend port abstractions to abstraction definition editor
-+ Added workflow for code analysis
 + Added depenency analysis for (system) Verilog module instantiations
 
 - Fixed parameter string value parsing in Verilog import
@@ -49,7 +49,7 @@
 	* Fixed visualization on expanding items
 	* Fixed updating register files
 	* Updated visualization to correctly display over 32-bit long address ranges
-	
+- Fixed crashing when re-importing a file to a Component
 
 13/11/2019 3.8.0
 ----------------------------------------------------

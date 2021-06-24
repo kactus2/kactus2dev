@@ -54,16 +54,14 @@ generatedFiles_()
 // Function: SVDGenerator::generate()
 //-----------------------------------------------------------------------------
 void SVDGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes>> const& cpuRoutes,
-    bool peripheralsAreBlocks, bool peripheralsAreMaps)
+    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes>> const& cpuRoutes)
 {
     QStringList cpuNames;
     for (auto cpuMasterRoute : cpuRoutes)
     {
-        if (cpuMasterRoute->routes_.size() > 0)
+        if (cpuMasterRoute->routes_.empty() == false)
         {
-            writeFile(topComponent, componentPath, cpuMasterRoute, peripheralsAreBlocks, peripheralsAreMaps,
-                cpuNames);
+            writeFile(topComponent, componentPath, cpuMasterRoute, cpuNames);
         }
     }
 }
@@ -80,8 +78,7 @@ QStringList SVDGenerator::getGeneratedFiles()
 // Function: SVDGenerator::writeFile()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuRoute, bool peripheralsAreBlocks,
-    bool peripheralsAreMaps, QStringList& fileNames)
+    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuRoute, QStringList& fileNames)
 {
     QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->cpuInterface_;
     QSharedPointer<const ConnectivityComponent> routeComponent = cpuInterface->getInstance();
@@ -118,7 +115,7 @@ void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString con
         writeDevice(xmlWriter, topComponent);
         writeCPU(xmlWriter, interfaceCPU, cpuRoute);
         writeAddressSpaceData(xmlWriter, cpuInterface);
-        writePeripherals(xmlWriter, cpuRoute, peripheralsAreBlocks, peripheralsAreMaps);
+        writePeripherals(xmlWriter, cpuRoute);
 
         xmlWriter.writeEndElement();    //! device
 
@@ -232,8 +229,7 @@ void SVDGenerator::writeAddressSpaceData(QXmlStreamWriter& writer,
 // Function: SVDGenerator::writePeripherals()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writePeripherals(QXmlStreamWriter& writer,
-    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> routeCollection, bool peripheralsAreBlocks,
-    bool peripheralsAreMaps)
+    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> routeCollection)
 {
     writer.writeStartElement("peripherals");
     QSharedPointer<const ConnectivityInterface> cpuInterface = routeCollection->cpuInterface_;
@@ -259,14 +255,7 @@ void SVDGenerator::writePeripherals(QXmlStreamWriter& writer,
                 quint64 memoryBaseAddress = pathAddresses.remappedAddress_;
                 QString baseAddressInHexa = valueToHexa(memoryBaseAddress);
 
-                if (peripheralsAreMaps)
-                {
-                    writeMapPeripheral(writer, component, interfaceMemory, memoryBaseAddress, baseAddressInHexa);
-                }
-                else
-                {
-                    writeBlockPeripherals(writer, component, interfaceMemory, memoryBaseAddress);
-                }
+                writePeripheral(writer, component, interfaceMemory, memoryBaseAddress, baseAddressInHexa);
             }
         }
     }
@@ -275,9 +264,9 @@ void SVDGenerator::writePeripherals(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDGenerator::writeMapPeripheral()
+// Function: SVDGenerator::writePeripheral()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writeMapPeripheral(QXmlStreamWriter& writer, QSharedPointer<const Component> component,
+void SVDGenerator::writePeripheral(QXmlStreamWriter& writer, QSharedPointer<const Component> component,
     QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress, QString const& mapBaseAddressInHexa)
 {
     QSharedPointer<MemoryMap> memoryMap = getMemoryMap(mapItem, component);
@@ -293,7 +282,7 @@ void SVDGenerator::writeMapPeripheral(QXmlStreamWriter& writer, QSharedPointer<c
     writeOptionalElement(writer, "description", memoryMap->description());
     writer.writeTextElement("baseAddress", mapBaseAddressInHexa);
     writeAddressBlocks(writer, component, mapItem, mapBaseAddress);
-
+    writeRegisters(writer, component, mapItem, mapBaseAddress);
     writer.writeEndElement(); //! peripheral
 }
 
@@ -326,21 +315,13 @@ void SVDGenerator::writeAddressBlocks(QXmlStreamWriter& writer,
 {
     for (auto blockItem : getAddressBlockItems(mapItem))
     {
-        QSharedPointer<AddressBlock> containingBlock =
-            getAddressBlock(containingComponent, mapItem, blockItem);
-        if (!containingBlock)
-        {
-            continue;
-        }
-
         quint64 blockBaseAddress = blockItem->getAddress().toULongLong();
         if (blockBaseAddress >= mapBaseAddress)
         {
             blockBaseAddress = blockBaseAddress - mapBaseAddress;
         }
 
-        writeSingleAddressBlock(
-            writer, blockBaseAddress, containingBlock, blockItem);
+        writeSingleAddressBlock(writer, blockBaseAddress, blockItem);
     }
 }
 
@@ -385,7 +366,7 @@ QVector<QSharedPointer<MemoryItem>> SVDGenerator::getSubMemoryItems(QSharedPoint
 // Function: SVDGenerator::writeSingleAddressBlock()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset,
-    QSharedPointer<AddressBlock> containingBlock, QSharedPointer<MemoryItem> blockItem)
+    QSharedPointer<MemoryItem> blockItem)
 {
     writer.writeStartElement("addressBlock");
 
@@ -409,15 +390,43 @@ void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 con
     writer.writeTextElement("usage", usageString);
 
     writer.writeEndElement(); //! addressBlock
-
-    writeRegisters(writer, containingBlock, blockItem);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeRegisters()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
-    QSharedPointer<MemoryItem> blockItem)
+void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
+    QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress)
+{
+    writer.writeStartElement("registers");
+
+    for (auto blockItem : getAddressBlockItems(mapItem))
+    {
+        QSharedPointer<AddressBlock> containingBlock = getAddressBlock(containingComponent, mapItem, blockItem);
+        if (!containingBlock)
+        {
+            continue;
+        }
+
+        quint64 blockBaseAddress = blockItem->getAddress().toULongLong();
+        if (blockBaseAddress >= mapBaseAddress)
+        {
+            blockBaseAddress = blockBaseAddress - mapBaseAddress;
+        }
+
+        QString addressOffsetInHexa = valueToHexa(blockBaseAddress);
+
+        writeRegisterCluster(writer, containingBlock, blockItem, addressOffsetInHexa);
+    }
+
+    writer.writeEndElement(); // registers
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::writeRegisterCluster()
+//-----------------------------------------------------------------------------
+void SVDGenerator::writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> containingBlock,
+    QSharedPointer<MemoryItem> blockItem, QString const& addressOffsetInHexa)
 {
     QVector<QSharedPointer<MemoryItem> > registerItems =
         getSubMemoryItems(blockItem, MemoryDesignerConstants::REGISTER_TYPE);
@@ -426,7 +435,10 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
         return;
     }
 
-    writer.writeStartElement("registers");
+    writer.writeStartElement("cluster");
+
+    writer.writeTextElement("name", blockItem->getName());
+    writer.writeTextElement("addressOffset", addressOffsetInHexa);
 
     for (auto registerItem : registerItems)
     {
@@ -436,60 +448,70 @@ void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<Addre
             continue;
         }
 
-        writer.writeStartElement("register");
-
-        writer.writeTextElement("name", formatName(registerItem->getName()));
-        writeOptionalElement(writer, "description", realRegister->description());
-
-        quint64 registerOffset = registerItem->getAddress().toULongLong();
-        QString addressOffsetInHexa = valueToHexa(registerOffset);
-        QString sizeString = registerItem->getSize();
-
-        writer.writeTextElement("addressOffset", addressOffsetInHexa);
-
-        QSharedPointer<MemoryItem> resetItem = getResetItem(registerItem);
-        if (resetItem)
-        {
-            bool transformSuccess = true;
-            QString registerResetValue = resetItem->getResetValue();
-            quint64 resetValue = registerResetValue.toULongLong(&transformSuccess, 2);
-            registerResetValue = QString::number(resetValue, 16).toUpper();
-
-            int valueNumbers =
-                MemoryDesignerConstants::getAmountOfNumbersInRange(registerResetValue, registerResetValue);
-
-            QString registerResetMask = resetItem->getResetMask();
-            quint64 resetMask = registerResetMask.toULongLong(&transformSuccess, 2);
-            registerResetMask = QString::number(resetMask, 16).toUpper();
-
-            int maskNumbers =
-                MemoryDesignerConstants::getAmountOfNumbersInRange(registerResetMask, registerResetMask);
-
-            int resetNumbers = valueNumbers;
-            if (maskNumbers > resetNumbers)
-            {
-                resetNumbers = maskNumbers;
-            }
-
-            registerResetValue =
-                "0x" + MemoryDesignerConstants::getValueWithZerosAdded(registerResetValue, resetNumbers);
-            registerResetMask =
-                "0x" + MemoryDesignerConstants::getValueWithZerosAdded(registerResetMask, resetNumbers);
-
-            writer.writeTextElement("resetValue", registerResetValue);
-            writer.writeTextElement("resetMask", registerResetMask);
-        }
-
-        writer.writeTextElement("size", sizeString);
-        writeOptionalElement(writer, "access", AccessTypes::access2Str(realRegister->getAccess()));
-
-        QMap<quint64, QSharedPointer<MemoryItem> > fieldItems = getFieldItemsInOrder(registerItem, registerOffset);
-        writeFields(writer, realRegister, registerOffset, fieldItems);
-
-        writer.writeEndElement(); //! register
+        writeRegister(writer, registerItem, realRegister);
     }
 
-    writer.writeEndElement(); //! registers
+    writer.writeEndElement(); //! cluster
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::writeRegisterElements()
+//-----------------------------------------------------------------------------
+void SVDGenerator::writeRegister(QXmlStreamWriter& writer, QSharedPointer<MemoryItem> registerItem,
+    QSharedPointer<Register> realRegister)
+{
+    writer.writeStartElement("register");
+
+    writer.writeTextElement("name", formatName(registerItem->getName()));
+    writeOptionalElement(writer, "description", realRegister->description());
+
+    quint64 registerOffset = registerItem->getOffset().toULongLong();
+    QString addressOffsetInHexa = valueToHexa(registerOffset);
+    QString sizeString = registerItem->getSize();
+
+    writer.writeTextElement("addressOffset", addressOffsetInHexa);
+
+    QSharedPointer<MemoryItem> resetItem = getResetItem(registerItem);
+    if (resetItem)
+    {
+        bool transformSuccess = true;
+        QString registerResetValue = resetItem->getResetValue();
+        quint64 resetValue = registerResetValue.toULongLong(&transformSuccess, 2);
+        registerResetValue = QString::number(resetValue, 16).toUpper();
+
+        int valueNumbers =
+            MemoryDesignerConstants::getAmountOfNumbersInRange(registerResetValue, registerResetValue);
+
+        QString registerResetMask = resetItem->getResetMask();
+        quint64 resetMask = registerResetMask.toULongLong(&transformSuccess, 2);
+        registerResetMask = QString::number(resetMask, 16).toUpper();
+
+        int maskNumbers =
+            MemoryDesignerConstants::getAmountOfNumbersInRange(registerResetMask, registerResetMask);
+
+        int resetNumbers = valueNumbers;
+        if (maskNumbers > resetNumbers)
+        {
+            resetNumbers = maskNumbers;
+        }
+
+        registerResetValue =
+            "0x" + MemoryDesignerConstants::getValueWithZerosAdded(registerResetValue, resetNumbers);
+        registerResetMask =
+            "0x" + MemoryDesignerConstants::getValueWithZerosAdded(registerResetMask, resetNumbers);
+
+        writer.writeTextElement("resetValue", registerResetValue);
+        writer.writeTextElement("resetMask", registerResetMask);
+    }
+
+    writer.writeTextElement("size", sizeString);
+    writeOptionalElement(writer, "access", AccessTypes::access2Str(realRegister->getAccess()));
+
+    QMap<quint64, QSharedPointer<MemoryItem> > fieldItems = getFieldItemsInOrder(registerItem, registerOffset);
+    writeFields(writer, realRegister, registerOffset, fieldItems);
+
+    writer.writeEndElement(); //! register
+
 }
 
 //-----------------------------------------------------------------------------
@@ -518,7 +540,7 @@ QMap<quint64, QSharedPointer<MemoryItem> > SVDGenerator::getFieldItemsInOrder(
     
     for (auto fieldItem : getSubMemoryItems(registerItem, MemoryDesignerConstants::FIELD_TYPE))
     {
-        quint64 fieldStart = getFieldStart(registerItem, registerOffset);
+        quint64 fieldStart = getFieldStart(fieldItem, registerOffset);
         orderedFieldItems.insert(fieldStart, fieldItem);
     }
 
@@ -551,9 +573,8 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
             writer.writeTextElement("name", formatName(fieldItem->getName()));
             writeOptionalElement(writer, "description", actualField->description());
 
-            quint64 fieldOffset = getFieldStart(fieldItem, registerOffset);
-            QString fieldStart = QString::number(fieldOffset);
-            QString fieldEnd = QString::number(getFieldEnd(fieldItem, fieldOffset));
+            QString fieldStart = fieldItem->getOffset();
+            QString fieldEnd = QString::number(getFieldEnd(fieldItem, fieldStart.toULongLong()));
 
             writer.writeTextElement("bitRange", "[" + fieldEnd + ":" + fieldStart + "]");
             writeOptionalElement(writer, "access", AccessTypes::access2Str(actualField->getAccess()));
@@ -645,38 +666,6 @@ QString SVDGenerator::valueToHexa(quint64 const& value) const
         MemoryDesignerConstants::getValueWithZerosAdded(valueInHexa, valueNumbers);
 
     return valueInHexa;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SVDGenerator::writeBlockPeripherals()
-//-----------------------------------------------------------------------------
-void SVDGenerator::writeBlockPeripherals(QXmlStreamWriter& writer,
-    QSharedPointer<const Component> containingComponent, QSharedPointer<MemoryItem> mapItem,
-    quint64 const& mapBaseAddress)
-{
-    for (auto blockItem : getAddressBlockItems(mapItem))
-    {
-        QSharedPointer<AddressBlock> block = getAddressBlock(containingComponent, mapItem, blockItem);
-        if (!block)
-        {
-            continue;
-        }
-
-        writer.writeStartElement("peripheral");
-
-        writer.writeTextElement("name", formatName(block->name()));
-        writer.writeTextElement("version", containingComponent->getVlnv().getVersion());
-        writeOptionalElement(writer, "description", block->description());
-
-        quint64 addressOffset = blockItem->getAddress().toULongLong() + mapBaseAddress;
-        QString addressOffsetInHexa = valueToHexa(addressOffset);
-
-        writer.writeTextElement("baseAddress", addressOffsetInHexa);
-
-        writeSingleAddressBlock(writer, 0, block, blockItem);
-
-        writer.writeEndElement(); //! peripheral
-    }
 }
 
 //-----------------------------------------------------------------------------
