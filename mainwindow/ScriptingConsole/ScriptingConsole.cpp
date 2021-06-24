@@ -33,8 +33,7 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     errorChannel_(new ChannelRelay(this)),
     history_(new ScriptingHistory(this)),
     scriptEditor_(new ScriptingTextEditor(history_, this)),
-    interpreter_(new PythonInterpreter(scriptEditor_, outputChannel_, errorChannel_, true)),
- 
+    interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, true)),
     historyListing_(new QListWidget(this)),
     toolBar_(new QToolBar(this)),
     scriptThread_(this)

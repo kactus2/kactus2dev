@@ -34,8 +34,7 @@ ScriptingTextEditor::ScriptingTextEditor(ScriptingHistory* history, QWidget* par
     textLockPosition_(0), 
     promptText_(),
     copyAction_(tr("Copy"), this),
-    useTabs_(false),
-    buffer_()
+    useTabs_(false)
 {    
     setContentsMargins(0, 0, 0, 0);
    
@@ -189,7 +188,6 @@ void ScriptingTextEditor::keyPressEvent(QKeyEvent *e)
 
         textLockPosition_ = textCursor().position();
 
-        buffer_ = command;
         emit write(command);
 
         history_->push(command);
@@ -291,17 +289,4 @@ void ScriptingTextEditor::sideAreaPaintEvent()
         painter.drawText(4, top, promtSideArea_->width()-4, fontMetrics().height(),
             Qt::AlignLeft, promptText_);
     }
-}
-
-QString ScriptingTextEditor::readline()
-{
-
-    while (buffer_.isEmpty())
-    {
-
-    }
-    QString res = buffer_;
-    buffer_.clear();
-    return res;
-    //return buffer_;
 }
