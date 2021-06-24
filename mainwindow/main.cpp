@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
             bool interactive = isatty(fileno(stdin));
             PythonInterpreter console(outChannel.data(), errChannel.data(), interactive, application.data());
 
-            if (console.initialize() == false)
+            if (console.initialize(interactive) == false)
             {
                 return 1;
             }

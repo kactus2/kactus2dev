@@ -22,10 +22,10 @@
 // Function: PythonInterpreter::PythonInterpreter()
 //-----------------------------------------------------------------------------
 PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel,
-    bool interactive, QObject* parent) :
+    bool printPromt, QObject* parent) :
     QObject(parent), 
     WriteChannel(),
-    interactive_(interactive),
+    printPrompt_(printPromt),
     runMultiline_(false),
     outputChannel_(outputChannel),
     errorChannel_(errorChannel),
@@ -48,7 +48,7 @@ PythonInterpreter::~PythonInterpreter()
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::initialize()
 //-----------------------------------------------------------------------------
-bool PythonInterpreter::initialize()
+bool PythonInterpreter::initialize(bool interactive)
 {
     PyImport_AppendInittab("IOCatcher", &PyInit_IOCatcher);
 
@@ -68,7 +68,7 @@ bool PythonInterpreter::initialize()
     localContext_ = PyModule_GetDict(module);
     globalContext_ = localContext_;
 
-    if (setOutputChannels() == false)
+    if (redirectIO(interactive) == false)
     {
         return false;
     }
@@ -209,7 +209,7 @@ void PythonInterpreter::execute(std::string const& command)
 //-----------------------------------------------------------------------------
 // Function: PythonInterpreter::setOutputChannels()
 //-----------------------------------------------------------------------------
-bool PythonInterpreter::setOutputChannels()
+bool PythonInterpreter::redirectIO(bool interative)
 {
     PyObject* IOCatcherName = PyUnicode_FromString("IOCatcher");
     if (IOCatcherName == NULL)
@@ -269,27 +269,29 @@ bool PythonInterpreter::setOutputChannels()
         return false;
     }
 
-
-    PyObject* input_python_class = PyDict_GetItemString(dict, "InputCatcher");
-
-    if (input_python_class == NULL) 
+    if (interative == false)
     {
-        PyErr_Print();
-        errorChannel_->write(QStringLiteral("Fails to get the input Python class.\n"));
-        return false;
-    }
+        PyObject* input_python_class = PyDict_GetItemString(dict, "InputCatcher");
 
-    PyObject* inputBuffer;
+        if (input_python_class == NULL)
+        {
+            PyErr_Print();
+            errorChannel_->write(QStringLiteral("Fails to get the input Python class.\n"));
+            return false;
+        }
 
-    // Creates an instance of the class
-    if (PyCallable_Check(input_python_class))
-    {
-        inputBuffer = PyObject_CallObject(input_python_class, nullptr);
-    }
+        PyObject* inputBuffer;
 
-    if (PySys_SetObject("stdin", inputBuffer) < 0)
-    {
-        return false;
+        // Creates an instance of the class
+        if (PyCallable_Check(input_python_class))
+        {
+            inputBuffer = PyObject_CallObject(input_python_class, nullptr);
+        }
+
+        if (PySys_SetObject("stdin", inputBuffer) < 0)
+        {
+            return false;
+        }
     }
 
     return true;
@@ -343,7 +345,7 @@ bool PythonInterpreter::setAPI()
 //-----------------------------------------------------------------------------
 void PythonInterpreter::printPrompt() const
 {
-    if (interactive_ == false)
+    if (printPrompt_ == false)
     {
         return;
     }

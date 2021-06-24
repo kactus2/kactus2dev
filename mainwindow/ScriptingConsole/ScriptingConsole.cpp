@@ -49,7 +49,7 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     connect(scriptEditor_, SIGNAL(write(QString const&)),
         interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
 
-    bool enabled = interpreter_->initialize();
+    bool enabled = interpreter_->initialize(false);
 
     QAction* historyAction = toolBar_->addAction(QIcon(":/icons/common/graphics/history.png"), QString());
     historyAction->setToolTip(QStringLiteral("Show history"));
