@@ -112,6 +112,7 @@ Section "MainSection" SEC01
   File "..\..\x64\executable\Plugins\VHDLImport.dll"
   #File "..\..\x64\executable\Plugins\MemoryViewGenerator.dll"
   File "..\..\x64\executable\Plugins\LinuxDeviceTreeGenerator.dll"
+  File "..\..\x64\executable\Plugins\SVDGeneratorPlugin.dll"
 
   SetOutPath "$INSTDIR\Help"
   SetOverwrite on
@@ -219,6 +220,7 @@ Section Uninstall
   Delete "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
+  Delete "$INSTDIR\Plugins\SVDGeneratorPlugin.dll"
   Delete "$INSTDIR\Plugins\VHDLImport.dll"
   Delete "$INSTDIR\Plugins\LinuxDeviceTreeGenerator.dll"
   Delete "$INSTDIR\Plugins\MemoryViewGenerator.dll"
