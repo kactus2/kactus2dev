@@ -36,11 +36,11 @@ public:
      *
      *     @param [in] outputChannel    Channel for standard messages and interpreter output.
      *     @param [in] errorChannel     Channel for error messages.
-     *     @param [in] interactive      Interactive console, if set to true, otherwise reading input from file.
+     *     @param [in] printPromt       Flag for enabling prompt printing.
      *     @param [in] parent           The parent object.
      */
      explicit PythonInterpreter(WriteChannel* outputChannel, 
-         WriteChannel* errorChannel, bool interactive = true,
+         WriteChannel* errorChannel, bool printPromt = true,
          QObject* parent = nullptr);
 
      // ! The destructor.
@@ -50,9 +50,11 @@ public:
     /*!
      * Initializes the interpterter. This function must be called before writing any commands with write().
      *
+     *     @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
+     *
      *     @return True, if initialization was successful, otherwise false.
      */
-     bool initialize();     
+     bool initialize(bool interactive = true);     
 
      /*!
       * Run a script from a given file.
@@ -82,9 +84,11 @@ private:
     /*!
      * Redirect the interpreter output and error output to WriteChannels.
      *
-     *     @return True, if the outputs could be redirected, otherwise false.
+     *     @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
+     *
+     *     @return True, if the input and outputs could be redirected, otherwise false.
      */
-     bool setOutputChannels();
+     bool redirectIO(bool interactive);
 
      /*!
       * Import and set the core api available in python context.
@@ -105,7 +109,8 @@ private:
     //! Buffer to store multiple lines for command to execute.
     std::string inputBuffer_ = std::string();
 
-    bool interactive_;
+    //! Flag for enabling prompt printing.
+    bool printPrompt_;
 
     //! True, if the current command requires multiple lines (e.g. loop).
     bool runMultiline_;
