@@ -104,6 +104,15 @@ public:
      */
     static QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(GenerationTuple input);
 
+    /*!
+     *  Reconfigure the selected file.
+     *
+     *      @param [in] fileIndex   Index of the selected file.
+     *
+     *      @return The reconfigured file output.
+     */
+    QSharedPointer<GenerationOutput> setupRenamedSelection(int const& fileIndex);
+
 protected:
 
     /*!

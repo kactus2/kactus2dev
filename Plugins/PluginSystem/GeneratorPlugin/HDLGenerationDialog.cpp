@@ -26,14 +26,14 @@
 // Function: HDLGenerationDialog::HDLGenerationDialog()
 //-----------------------------------------------------------------------------
 HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> configuration,
-	QString const& targetFileType, QWidget *parent) : 
-	QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint), 
-    configuration_(configuration),
-    viewSelection_(new ViewSelectionWidget(configuration->getViewSelection(), this)),
-    fileOutput_(new FileOutputWidget(configuration->getOutputControl())),
-    generalWarningLabel_(new QLabel), 
-    previewer_(new QPlainTextEdit(this)),
-    console_(new MessageConsole(this))
+	QString const& targetFileType, QWidget *parent) :
+QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint), 
+configuration_(configuration),
+viewSelection_(new ViewSelectionWidget(configuration->getViewSelection(), this)),
+fileOutput_(new FileOutputWidget(configuration->getOutputControl())),
+generalWarningLabel_(new QLabel), 
+previewer_(new QPlainTextEdit(this)),
+console_(new MessageConsole(this))
 {
     setWindowTitle(tr("File generation for %1").arg(targetFileType));
 
@@ -98,6 +98,9 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     // Connect file output.
     connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationOutput>)), 
         this, SLOT(onSelectedFileChanged(QSharedPointer<GenerationOutput>)), Qt::UniqueConnection);
+    connect(fileOutput_, SIGNAL(fileNameChanged(int const&)),
+        this, SLOT(onFileNameChanged(int const&)), Qt::UniqueConnection);
+
     connect(fileOutput_, SIGNAL(outputPathChanged()), this, SLOT(onOutputPathChanged()), Qt::UniqueConnection);
 
     // Connect the dialog buttons to their respective functions.
@@ -170,6 +173,15 @@ void HDLGenerationDialog::onNoticeMessage(QString const& message)
 void HDLGenerationDialog::onErrorMessage(QString const& message)
 {
     console_->onErrorMessage(message);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::onFileNameChanged()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::onFileNameChanged(int const& itemIndex)
+{
+    QSharedPointer<GenerationOutput> selection = configuration_->setupRenamedSelection(itemIndex);
+    onSelectedFileChanged(selection);
 }
 
 //-----------------------------------------------------------------------------

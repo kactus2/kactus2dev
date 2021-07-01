@@ -417,3 +417,42 @@ void GenerationControl::insertFileDescription(QSharedPointer<File> file)
     // Append the generation time description to the description.
     file->setDescription("Generated at " + time + " on " + date + " by Kactus2. " + desc);
 }
+
+//-----------------------------------------------------------------------------
+// Function: GenerationControl::setupRenamedSelection()
+//-----------------------------------------------------------------------------
+QSharedPointer<GenerationOutput> GenerationControl::setupRenamedSelection(int const& fileIndex)
+{
+    QSharedPointer < QList<QSharedPointer<GenerationOutput> > > generationOutputs = outputControl_->getOutputs();
+    QSharedPointer<GenerationOutput> selection = generationOutputs->at(fileIndex);
+    QString selectionFileName = selection->fileName_;
+    if (selectionFileName.right(2) == ".v")
+    {
+        selectionFileName = selectionFileName.left(selectionFileName.size() - 2);
+    }
+
+    if (!isDesignGeneration_)
+    {
+        input_.messages->showMessage(QObject::tr("Formatting component %1.").
+            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+
+        QSharedPointer<MetaComponent> componentParser = selection->metaComponent_;
+        componentParser->formatComponent();
+        componentParser->setModuleName(selectionFileName);
+
+        QSharedPointer<GenerationOutput> output =
+            factory_->prepareComponent(outputControl_->getOutputPath(), componentParser);
+        if (output)
+        {
+            input_.messages->showMessage(QObject::tr("Writing content for preview %1.").
+                arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+
+            output->write(outputControl_->getOutputPath());
+
+            selection = output;
+            generationOutputs->replace(fileIndex, selection);
+        }
+    }
+
+    return selection;
+}
