@@ -194,8 +194,10 @@ int main(int argc, char *argv[])
             QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
             QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));
 
-            PythonInterpreter console(outChannel.data(), errChannel.data(), application.data());
-            if (console.initialize() == false)
+            bool interactive = isatty(fileno(stdin));
+            PythonInterpreter console(outChannel.data(), errChannel.data(), interactive, application.data());
+
+            if (console.initialize(interactive) == false)
             {
                 return 1;
             }

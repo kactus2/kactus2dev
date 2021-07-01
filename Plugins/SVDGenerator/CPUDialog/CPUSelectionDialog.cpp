@@ -47,12 +47,11 @@ cpuSelection_(),
 library_(library),
 component_(topComponent),
 graphFactory_(library),
-blockPeripherals_(),
-mapPeripherals_(),
 cpuDetailEditor_(new SVDCPUEditor(this)),
-// folderLine_(new QLineEdit(library->getDirectoryPath(topComponent->getVlnv()), this))
 folderLine_(new QLineEdit(this))
 {
+    setWindowTitle("File generation for SVD");
+
     QString componentPath = library->getDirectoryPath(topComponent->getVlnv());
     folderLine_->setText(componentPath);
     folderLine_->setToolTip(componentPath);
@@ -94,20 +93,8 @@ void CPUSelectionDialog::setupLayout()
 
     QVBoxLayout* filesetLayout(new QVBoxLayout());
     filesetLayout->addWidget(fileSetSelection_);
-
+    filesetLayout->addStretch(1);
     fileSetBox_->setLayout(filesetLayout);
-
-    blockPeripherals_ = new QCheckBox("Address blocks", this);
-    mapPeripherals_ = new QCheckBox("Memory maps", this);
-    blockPeripherals_->setChecked(true);
-    mapPeripherals_->setChecked(false);
-
-    QVBoxLayout* peripheralLayout(new QVBoxLayout());
-    peripheralLayout->addWidget(blockPeripherals_);
-    peripheralLayout->addWidget(mapPeripherals_);
-
-    QGroupBox* peripheralBox(new QGroupBox("Create peripherals from:"));
-    peripheralBox->setLayout(peripheralLayout);
 
     QPushButton* openFolderButton(
         new QPushButton(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this));
@@ -117,6 +104,7 @@ void CPUSelectionDialog::setupLayout()
     QHBoxLayout* folderLayout(new QHBoxLayout());
     folderLayout->addWidget(folderLine_, 1);
     folderLayout->addWidget(openFolderButton);
+    folderLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
     QGroupBox* folderbox(new QGroupBox("Select destination folder"));
     folderbox->setLayout(folderLayout);
@@ -125,8 +113,7 @@ void CPUSelectionDialog::setupLayout()
     leftLayout->addLayout(viewLayout);
     leftLayout->addWidget(fileSetBox_);
     leftLayout->addWidget(folderbox);
-    leftLayout->addWidget(peripheralBox);
-    leftLayout->addStretch(1);
+
 
     QHBoxLayout* topLayout(new QHBoxLayout());
     topLayout->addLayout(leftLayout);
@@ -140,9 +127,6 @@ void CPUSelectionDialog::setupLayout()
 
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
-
-    connect(blockPeripherals_, SIGNAL(clicked(bool)), this, SLOT(onBlockPeripherals(bool)), Qt::UniqueConnection);
-    connect(mapPeripherals_, SIGNAL(clicked(bool)), this, SLOT(onMapPeripherals(bool)), Qt::UniqueConnection);
 
     QVBoxLayout* masterLayout(new QVBoxLayout(this));
     masterLayout->addLayout(topLayout);
@@ -194,11 +178,11 @@ void CPUSelectionDialog::setupCPUSelection()
                     cpuInterface->routes_.append(masterRoute);
 
                     cpuInterface->createFile_ = true;
-                    cpuInterface->revision_ = "";
-                    cpuInterface->endian_ = "";
+                    cpuInterface->revision_ = QString();
+                    cpuInterface->endian_ = QString();
                     cpuInterface->mpuPresent_ = false;
                     cpuInterface->fpuPresent_ = false;
-                    cpuInterface->nvicPrioBits_ = "";
+                    cpuInterface->nvicPrioBits_ = QString();
                     cpuInterface->vendorSystickConfig_ = false;
 
                     cpuSelection_.append(cpuInterface);
@@ -258,38 +242,6 @@ QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > CPUSelecti
     }
 
     return cpus;
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUSelectionDialog::onBlockPeripherals()
-//-----------------------------------------------------------------------------
-void CPUSelectionDialog::onBlockPeripherals(bool blockPeripherals)
-{
-    mapPeripherals_->setChecked(!blockPeripherals);
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUSelectionDialog::onMapPeripherals()
-//-----------------------------------------------------------------------------
-void CPUSelectionDialog::onMapPeripherals(bool mapPeripherals)
-{
-    blockPeripherals_->setChecked(!mapPeripherals);
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUSelectionDialog::peripheralsAreBlocks()
-//-----------------------------------------------------------------------------
-bool CPUSelectionDialog::peripheralsAreBlocks() const
-{
-    return blockPeripherals_->isChecked();
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUSelectionDialog::peripheralsAreMaps()
-//-----------------------------------------------------------------------------
-bool CPUSelectionDialog::peripheralsAreMaps() const
-{
-    return mapPeripherals_->isChecked();
 }
 
 //-----------------------------------------------------------------------------

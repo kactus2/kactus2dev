@@ -4972,9 +4972,6 @@
     <ClCompile Include="PythonAPI\PythonInterpreter.cpp">
       <Filter>Source Files\PythonAPI</Filter>
     </ClCompile>
-    <ClCompile Include="PythonAPI\extensions\OutputForwarder.cpp">
-      <Filter>Source Files\PythonAPI\extensions</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ChannelRelay.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -5031,6 +5028,9 @@
     </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="PythonAPI\extensions\IOCatcher.cpp">
+      <Filter>Source Files\PythonAPI\extensions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6840,6 +6840,9 @@
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="PythonAPI\WriteChannel.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7676,12 +7679,6 @@
     <ClInclude Include="PythonAPI\FileChannel.h">
       <Filter>Header Files\PythonAPI</Filter>
     </ClInclude>
-    <ClInclude Include="PythonAPI\WriteChannel.h">
-      <Filter>Header Files\PythonAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="PythonAPI\extensions\OutputForwarder.h">
-      <Filter>Header Files\PythonAPI\extensions</Filter>
-    </ClInclude>
     <ClInclude Include="common\KactusAPI.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -7699,6 +7696,12 @@
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonAPI\ReadChannel.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="PythonAPI\extensions\IOCatcher.h">
+      <Filter>Header Files\PythonAPI\extensions</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

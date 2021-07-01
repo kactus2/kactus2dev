@@ -36,9 +36,12 @@ public:
      *
      *     @param [in] outputChannel    Channel for standard messages and interpreter output.
      *     @param [in] errorChannel     Channel for error messages.
+     *     @param [in] printPromt       Flag for enabling prompt printing.
      *     @param [in] parent           The parent object.
      */
-     explicit PythonInterpreter(WriteChannel* outputChannel, WriteChannel* errorChannel, QObject* parent = nullptr);
+     explicit PythonInterpreter(WriteChannel* outputChannel, 
+         WriteChannel* errorChannel, bool printPromt = true,
+         QObject* parent = nullptr);
 
      // ! The destructor.
     virtual ~PythonInterpreter();
@@ -47,16 +50,11 @@ public:
     /*!
      * Initializes the interpterter. This function must be called before writing any commands with write().
      *
+     *     @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
+     *
      *     @return True, if initialization was successful, otherwise false.
      */
-     bool initialize();
-
-    /*!
-     * Write a command for interpreter to execute.
-     *
-     *     @param [in] command  The command to execute.
-     */
-     virtual void write(QString const& command) override final;
+     bool initialize(bool interactive = true);     
 
      /*!
       * Run a script from a given file.
@@ -71,15 +69,26 @@ public:
      *     @param [in] line  The line to execute.
      */
      void execute(std::string const& line);
-   
+
+public slots:
+
+    /*!
+     * Write a command for interpreter to execute.
+     *
+     *     @param [in] command  The command to execute.
+     */
+    virtual void write(QString const& command) override final;
+
 private:
 
     /*!
      * Redirect the interpreter output and error output to WriteChannels.
      *
-     *     @return True, if the outputs could be redirected, otherwise false.
+     *     @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
+     *
+     *     @return True, if the input and outputs could be redirected, otherwise false.
      */
-     bool setOutputChannels();
+     bool redirectIO(bool interactive);
 
      /*!
       * Import and set the core api available in python context.
@@ -98,7 +107,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Buffer to store multiple lines for command to execute.
-    std::string inputBuffer_;
+    std::string inputBuffer_ = std::string();
+
+    //! Flag for enabling prompt printing.
+    bool printPrompt_;
 
     //! True, if the current command requires multiple lines (e.g. loop).
     bool runMultiline_;
@@ -114,6 +126,9 @@ private:
 
     //! The local context for the interpreter when running a command.
     PyObject* localContext_;
+
+    //! Interpreter thread state value holder.
+    PyThreadState* threadState_;
 };
 
 #endif // PYTHON_INTERPRETER_H

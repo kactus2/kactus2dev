@@ -157,12 +157,10 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
             selectionDialog.getSelectedCPUs();
         if (!cpuRoutes.isEmpty())
         {
-            bool blocksArePeripherals = selectionDialog.peripheralsAreBlocks();
-            bool mapsArePeripherals = selectionDialog.peripheralsAreMaps();
             QString xmlFilePath = selectionDialog.getTargetFolder();
 
             SVDGenerator generator(utility->getLibraryInterface());
-            generator.generate(component, xmlFilePath, cpuRoutes, blocksArePeripherals, mapsArePeripherals);
+            generator.generate(component, xmlFilePath, cpuRoutes);
 
             if (selectionDialog.saveToFileSet())
             {
