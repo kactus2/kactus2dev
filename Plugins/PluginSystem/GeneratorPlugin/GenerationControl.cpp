@@ -186,6 +186,22 @@ bool GenerationControl::validSelections(QString &warning)
 //-----------------------------------------------------------------------------
 void GenerationControl::parseDocuments()
 {
+    QSharedPointer<QList<QSharedPointer<GenerationOutput> > > generatedOutputs = outputControl_->getOutputs();
+    if (generatedOutputs->isEmpty())
+    {
+        initializeDocuments();
+    }
+    else
+    {
+        reInitializeDocuments(generatedOutputs);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenerationControl::initializeDocuments()
+//-----------------------------------------------------------------------------
+void GenerationControl::initializeDocuments()
+{
     // Clear the existing list of files.
     outputControl_->getOutputs()->clear();
 
@@ -255,6 +271,93 @@ void GenerationControl::parseDocuments()
         // Append to the list of proposed outputs.
         outputControl_->getOutputs()->append(output);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenerationControl::reInitializeDocuments()
+//-----------------------------------------------------------------------------
+void GenerationControl::reInitializeDocuments(
+    QSharedPointer<QList<QSharedPointer<GenerationOutput> > > generationOutputs)
+{
+    QList<QSharedPointer<GenerationOutput> > newGenerations;
+
+    if (isDesignGeneration_)
+    {
+        //! Verilog generator does not work properly while switching folders. A custom name is not kept.
+        //! Component side works already, design configuration does not.
+
+        QList<QSharedPointer<MetaDesign> > designs =
+            MetaDesign::parseHierarchy(library_, input_, viewSelection_->getView());
+
+        QList<QSharedPointer<GenerationOutput> > documents = factory_->prepareDesign(designs);
+        for (auto output : documents)
+        {
+            if (!output)
+            {
+                continue;
+            }
+
+            QSharedPointer<GenerationOutput> matchingMetaOutput = getMatchingMetaDesignOutput(output);
+            if (matchingMetaOutput)
+            {
+                QSharedPointer<MetaDesign> matchingMeta = matchingMetaOutput->metaDesign_;
+                output->metaDesign_->getTopInstance()->setModuleName(
+                    matchingMeta->getTopInstance()->getModuleName());
+                output->fileName_ = matchingMetaOutput->fileName_;
+
+                output->write(outputControl_->getOutputPath());
+                newGenerations.append(output);
+            }
+        }
+    }
+    else
+    {
+        for (int outputIndex = 0; outputIndex < generationOutputs->size(); ++outputIndex)
+        {
+            QSharedPointer<GenerationOutput> selection = generationOutputs->at(outputIndex);
+            QSharedPointer<MetaComponent> componentParser = selection->metaComponent_;
+            if (componentParser)
+            {
+                QSharedPointer<MetaComponent> newComponentParser(
+                    new MetaComponent(input_.messages, input_.component, viewSelection_->getView()));
+                newComponentParser->formatComponent();
+                newComponentParser->setModuleName(componentParser->getModuleName());
+
+                QSharedPointer<GenerationOutput> output =
+                    factory_->prepareComponent(outputControl_->getOutputPath(), componentParser);
+                if (output)
+                {
+                    output->fileName_ = selection->fileName_;
+                    output->write(outputControl_->getOutputPath());
+                    newGenerations.append(output);
+                }
+            }
+        }
+    }
+
+    outputControl_->getOutputs()->clear();
+    for (auto generation : newGenerations)
+    {
+        outputControl_->getOutputs()->append(generation);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GenerationControl::getMatchingMetaDesign()
+//-----------------------------------------------------------------------------
+QSharedPointer<GenerationOutput> GenerationControl::getMatchingMetaDesignOutput(
+    QSharedPointer<GenerationOutput> output) const
+{
+    for (auto designOutput : *outputControl_->getOutputs())
+    {
+        if (designOutput->metaDesign_->getTopInstance()->getComponent()->getVlnv() ==
+            output->metaDesign_->getTopInstance()->getComponent()->getVlnv())
+        {
+            return designOutput;
+        }
+    }
+
+    return QSharedPointer<GenerationOutput>();
 }
 
 //-----------------------------------------------------------------------------
@@ -431,7 +534,12 @@ QSharedPointer<GenerationOutput> GenerationControl::setupRenamedSelection(int co
         selectionFileName = selectionFileName.left(selectionFileName.size() - 2);
     }
 
-    if (!isDesignGeneration_)
+    if (isDesignGeneration_)
+    {
+        selection->metaDesign_->getTopInstance()->setModuleName(selectionFileName);
+        generationOutputs->replace(fileIndex, selection);
+    }
+    else
     {
         input_.messages->showMessage(QObject::tr("Formatting component %1.").
             arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));

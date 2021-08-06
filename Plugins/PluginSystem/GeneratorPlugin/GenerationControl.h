@@ -127,6 +127,27 @@ protected:
 private:
 
     /*!
+     *  Initialize the generation documents.
+     */
+    void initializeDocuments();
+
+    /*!
+     *  Re-initialize the generation documents.
+     *
+     *      @param [in] generationOutputs   Current documents.
+     */
+    void reInitializeDocuments(QSharedPointer<QList<QSharedPointer<GenerationOutput> > > generationOutputs);
+
+    /*!
+     *  Get the existing generation output matching the selected generation output.
+     *
+     *      @param [in] output  The selected generation output.
+     *
+     *      @return The matching generation output.
+     */
+    QSharedPointer<GenerationOutput> getMatchingMetaDesignOutput(QSharedPointer<GenerationOutput> output) const;
+
+    /*!
      *  Returns the default output path.     
      */
     QString defaultOutputPath() const;
