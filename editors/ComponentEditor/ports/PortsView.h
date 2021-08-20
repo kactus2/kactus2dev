@@ -14,7 +14,11 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QAction>
+
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 // View for port editor.
@@ -28,10 +32,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] nameColumn  Name column index of.
-	 *      @param [in] parent      The parent widget.	 
+     *      @param [in] nameColumn      Name column index of.
+     *      @param [in] busInterface    Interface for accessing bus interfaces.
+	 *      @param [in] parent          The parent widget.
 	 */
-    PortsView(int const& nameColumn, QWidget *parent);
+    PortsView(int const& nameColumn, BusInterfaceInterface* busInterface, QWidget *parent);
 
 	//! The destructor.
 	virtual ~PortsView();
@@ -51,6 +56,14 @@ signals:
      */
     void changeExtensionsEditorItem(QModelIndex const& itemIndex);
 
+    /*!
+     *  Create ports from the signals of the selected abstraction definition.
+     *
+     *      @param [in] busName             Name of the bus interface containing the abstraction definition.
+     *      @param [in] abstractionVLNV     VLNV string of the selected abstraction definition.
+     */
+    void createPortsFromAbstraction(std::string const& busName, QString const& abstractionVLNV);
+
 private slots:
 
     //! Handler for new bus definition and interface creation.     
@@ -58,6 +71,16 @@ private slots:
 
     //! Handler for new bus interface creation.
     virtual void onCreateExistingBus();
+
+    /*!
+     *  Handle the creation of ports from the selected bus interface.
+     */
+    void onCreatePortsFromBus();
+
+    /*!
+     *  Handle the creation of ports from the selected abstraction definition.
+     */
+    void onCreatePortsFromAbstraction();
 
 protected:
 
@@ -79,6 +102,10 @@ protected:
 
 private:
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Action for creating a new bus definition and interface.
     QAction createBus_;
 
@@ -87,6 +114,9 @@ private:
 
     //! Name column index.
     int nameColumn_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // PORTSVIEW_H

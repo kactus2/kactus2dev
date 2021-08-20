@@ -25,10 +25,11 @@
 // Function: TransactionalPortsEditorConstructor::constructModel()
 //-----------------------------------------------------------------------------
 PortsModel* TransactionalPortsEditorConstructor::constructModel(QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortsInterface> portsInterface, QSortFilterProxyModel* filter, QObject* parent) const
+    QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
+    QSortFilterProxyModel* filter, QObject* parent) const
 {
     TransactionalPortsModel* transactionalModel =
-        new TransactionalPortsModel(parameterFinder, portsInterface, filter, parent);
+        new TransactionalPortsModel(parameterFinder, portsInterface, signalInterface, filter, parent);
 
     return transactionalModel;
 }
@@ -46,9 +47,10 @@ PortsFilter* TransactionalPortsEditorConstructor::constructFilter(QSharedPointer
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructView()
 //-----------------------------------------------------------------------------
-PortsView* TransactionalPortsEditorConstructor::constructView(QString const& defaultPath, QWidget* parent) const
+PortsView* TransactionalPortsEditorConstructor::constructView(QString const& defaultPath,
+    BusInterfaceInterface* busInterface, QWidget* parent) const
 {
-    PortsView* view = new PortsView(TransactionalPortColumns::NAME, parent);
+    PortsView* view = new PortsView(TransactionalPortColumns::NAME, busInterface, parent);
 
     view->setDefaultImportExportPath(defaultPath);
     view->setAllowImportExport(true);

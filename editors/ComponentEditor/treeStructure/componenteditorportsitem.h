@@ -17,9 +17,10 @@
 #include <QList>
 
 class Port;
-
 class ExpressionParser;
 class PortValidator;
+class BusInterfaceInterface;
+
 //-----------------------------------------------------------------------------
 //! The Ports-item in the component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -39,6 +40,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorPortsItem(ComponentEditorTreeModel* model,
@@ -48,6 +50,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        BusInterfaceInterface* busInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor
@@ -104,6 +107,9 @@ private:
 
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // COMPONENTEDITORPORTSITEM_H

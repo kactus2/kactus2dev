@@ -38,9 +38,7 @@
 //-----------------------------------------------------------------------------
 // Function: ImportEditor::ImportEditor()
 //-----------------------------------------------------------------------------
-ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer <ComponentParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler, QSharedPointer<ComponentParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter, BusInterfaceInterface* busInterface, QWidget *parent):
 QWidget(parent),
 splitter_(Qt::Vertical, this),
 componentXmlPath_(handler->getPath(component->getVlnv())),
@@ -68,7 +66,7 @@ componentViews_(component->getViews())
     QSharedPointer<PortValidator> portValidator (new PortValidator(expressionParser, componentViews_));
 
     portEditor_ = new PortsEditor(importComponent_, handler, parameterFinder, expressionFormatter, portValidator,
-        &splitter_);
+        busInterface, &splitter_);
 
     // CSV import/export is disabled in the wizard.
 	portEditor_->setAllowImportExport(false);

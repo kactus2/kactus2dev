@@ -19,6 +19,8 @@
 #include "ComponentWizardViewsPage.h"
 #include "ComponentWizardConclusionPage.h"
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
@@ -54,13 +56,18 @@ referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
     setOption(NoDefaultButton, true);
     setOption(HaveFinishButtonOnEarlyPages, true);
 
+    QSharedPointer<IPXactSystemVerilogParser> parser(new IPXactSystemVerilogParser(parameterFinder_));
+
+    BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
+        parameterFinder_, expressionFormatter_, parser, component, handler);
+
     ComponentWizardImportPage* importPage = new ComponentWizardImportPage(component, handler, 
-        parameterFinder_, expressionFormatter_, this);
+        parameterFinder_, expressionFormatter_, busInterface, this);
 
     ComponentWizardConclusionPage* conclusionPage = new ComponentWizardConclusionPage(component, handler,
         expressionFormatter_, this);
 
-    FileSetInterface* fileSetInterface = createFileSetInterface();
+    FileSetInterface* fileSetInterface = createFileSetInterface(parser);
 
     setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
@@ -127,10 +134,8 @@ void ComponentWizard::onComponentChanged(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 // Function: ComponentWizard::createFileSetInterface()
 //-----------------------------------------------------------------------------
-FileSetInterface* ComponentWizard::createFileSetInterface()
+FileSetInterface* ComponentWizard::createFileSetInterface(QSharedPointer<ExpressionParser> parser)
 {
-    QSharedPointer<ExpressionParser> parser(new IPXactSystemVerilogParser(parameterFinder_));
-
     QSharedPointer<FileValidator> fileValidator(new FileValidator(parser));
     QSharedPointer<FileSetValidator> fileSetValidator(new FileSetValidator(fileValidator, parser));
 

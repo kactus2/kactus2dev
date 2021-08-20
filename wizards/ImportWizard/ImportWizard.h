@@ -37,11 +37,11 @@ public:
      *      @param [in] handler	   The library handle.
      *      @param [in] parent     The parent widget.
      */
-    ImportWizard(QSharedPointer<const Component> component,
-                 LibraryInterface* handler,
-                 QWidget* parent);
+    ImportWizard(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent);
 
-    //! The destructor.
+    /*!
+     *  The destructor.
+     */
     ~ImportWizard();
 
     /*!

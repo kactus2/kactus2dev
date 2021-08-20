@@ -11,6 +11,7 @@
 
 #include "MasterPortsEditor.h"
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <editors/ComponentEditor/ports/portsmodel.h>
@@ -23,6 +24,7 @@
 
 #include <library/LibraryInterface.h>
 
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
@@ -32,18 +34,20 @@
 // Function: MasterPortsEditor::MasterPortsEditor()
 //-----------------------------------------------------------------------------
 MasterPortsEditor::MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<PortsInterface> portsInterface, PortsEditorConstructor* editorConstructor,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortValidator> portValidator,
-    ParameterCompleter* parameterCompleter, QString const& defaultPath, QWidget *parent):
+    QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
+    PortsEditorConstructor* editorConstructor, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<PortValidator> portValidator, ParameterCompleter* parameterCompleter,
+    QString const& defaultPath, BusInterfaceInterface* busInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
-view_(editorConstructor->constructView(defaultPath, this)),
+view_(editorConstructor->constructView(defaultPath, busInterface, this)),
 model_(0),
 proxy_(editorConstructor->constructFilter(portsInterface, this)),
 delegate_(editorConstructor->constructDelegate(
     component, parameterCompleter, parameterFinder, portValidator, this)),
-portInterface_(portsInterface)
+portInterface_(portsInterface),
+busInterface_(busInterface)
 {
-    model_ = editorConstructor->constructModel(parameterFinder, portsInterface, proxy_, this);
+    model_ = editorConstructor->constructModel(parameterFinder, portsInterface, signalInterface, proxy_, this);
 
     view_->setItemDelegate(delegate_);
 
@@ -106,6 +110,9 @@ void MasterPortsEditor::connectSignals()
     connect(this, SIGNAL(ivalidateThisFilter()), proxy_, SLOT(invalidate()), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(portCountChanged()), this, SIGNAL(portCountChanged()), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(createPortsFromAbstraction(std::string const&, QString const&)),
+        this, SLOT(onCreatePortsFromAbstraction(std::string const&, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,4 +163,26 @@ QSharedPointer<Port> MasterPortsEditor::getIndexedPort(QModelIndex const& portIn
 {
     std::string portName = portInterface_->getIndexedItemName(portIndex.row());
     return portInterface_->getPort(portName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterPortsEditor::onCreatePortsFromAbstraction()
+//-----------------------------------------------------------------------------
+void MasterPortsEditor::onCreatePortsFromAbstraction(std::string const& busName, QString const& abstractionString)
+{
+    VLNV abstractionVLNV(VLNV::ABSTRACTIONDEFINITION, abstractionString);
+    QSharedPointer<const Document> vlnvDocument = handler()->getModelReadOnly(abstractionVLNV);
+    if (vlnvDocument)
+    {
+        QSharedPointer<const AbstractionDefinition> abstraction =
+            vlnvDocument.dynamicCast<const AbstractionDefinition>();
+        if (abstraction)
+        {
+            General::InterfaceMode busMode = busInterface_->getMode(busName);
+            General::InterfaceMode busMonitorMode = busInterface_->getMonitorMode(busName);
+            QString systemGroup = QString::fromStdString(busInterface_->getSystemGroup(busName));
+
+            model_->onCreatePortsFromAbstraction(abstraction, busMode, busMonitorMode, systemGroup);
+        }
+    }
 }

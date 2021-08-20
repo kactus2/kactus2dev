@@ -25,6 +25,7 @@ class LibraryInterface;
 class PortValidator;
 class MasterPortsEditor;
 class PortsInterface;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
@@ -43,14 +44,16 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] portValidator           Validator used for ports.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
 	 *      @param [in] parent                  The owner of this widget.
 	 */
 	PortsEditor(QSharedPointer<Component> component,
-                LibraryInterface* handler,
-                QSharedPointer<ParameterFinder> parameterFinder,
-                QSharedPointer<ExpressionFormatter> expressionFormatter,
-                QSharedPointer<PortValidator> portValidator,
-                QWidget *parent = 0);
+        LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<PortValidator> portValidator,
+        BusInterfaceInterface* busInterface,
+        QWidget *parent = 0);
 
 	/*!
      *  The destructor.
@@ -179,6 +182,9 @@ private:
     QTabWidget* portTabs_;
 
     QSharedPointer<PortsInterface> portsInterface_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // PORTSEDITOR_H
