@@ -21,6 +21,7 @@ class Component;
 class LibraryInterface;
 class ReferenceCounter;
 class FileSetInterface;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Component wizard dialog.
@@ -80,9 +81,11 @@ private:
     /*!
      *  Create an interface for accessing file sets.
      *
+     *      @param [in] parser  Expression parser.
+     *
      *      @return Interface for accessing file sets.
      */
-    FileSetInterface* createFileSetInterface();
+    FileSetInterface* createFileSetInterface(QSharedPointer<ExpressionParser> parser);
 
     //-----------------------------------------------------------------------------
     // Data.

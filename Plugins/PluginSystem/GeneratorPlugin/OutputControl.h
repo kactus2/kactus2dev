@@ -18,6 +18,9 @@
 
 #include "ViewSelection.h"
 
+class MetaComponent;
+class MetaDesign;
+
 struct GenerationOutput
 {
     //! The name for the file created from the output.
@@ -27,6 +30,12 @@ struct GenerationOutput
     //! The content of the output, ie. what will be written to the file.
     QString fileContent_;
     
+    //! The meta component of the output.
+    QSharedPointer<MetaComponent> metaComponent_;
+
+    //! The meta design of the output.
+    QSharedPointer<MetaDesign> metaDesign_;
+
     GenerationOutput() = default;
 
     virtual ~GenerationOutput() = default;

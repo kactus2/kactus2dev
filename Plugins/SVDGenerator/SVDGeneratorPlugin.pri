@@ -38,7 +38,8 @@ HEADERS += ./SVDGenerator.h \
     ./CPUDialog/CPUSelectionDialog.h \
     ./CPUDialog/SVDCPUEditor.h \
     ./CPUDialog/SVDCPUModel.h \
-    ./CPUDialog/SVDCPUDelegate.h
+    ./CPUDialog/SVDCPUDelegate.h \
+    ../PluginSystem/GeneratorPlugin/MessagePasser.h
 SOURCES += ./ConnectivityGraphUtilities.cpp \
     ./SVDGenerator.cpp \
     ./SVDGeneratorPlugin.cpp \
@@ -67,7 +68,8 @@ SOURCES += ./ConnectivityGraphUtilities.cpp \
     ../../editors/MemoryDesigner/MemoryItem.cpp \
     ../../IPXACTmodels/utilities/ComponentSearch.cpp \
     ./CPUDialog/CPUSelectionDialog.cpp \
+    ./CPUDialog/SVDCPUDelegate.cpp \
     ./CPUDialog/SVDCPUEditor.cpp \
     ./CPUDialog/SVDCPUModel.cpp \
-    ./CPUDialog/SVDCPUDelegate.cpp
+    ../PluginSystem/GeneratorPlugin/MessagePasser.cpp
 RESOURCES += SVDGenerator.qrc

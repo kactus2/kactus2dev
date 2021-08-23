@@ -633,7 +633,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
         QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, root));
+            expressionParser_, busInterface, root));
 
         root->addChildItem(portsItem);
         connect(portsItem.data(), SIGNAL(createInterface()), root, SLOT(onInterfaceAdded()), Qt::UniqueConnection);

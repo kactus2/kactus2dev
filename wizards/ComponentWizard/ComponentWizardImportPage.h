@@ -26,6 +26,7 @@ class LibraryInterface;
 class ImportEditor;
 class Kactus2Value;
 class Kactus2Group;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Import page for the component wizard.
@@ -42,13 +43,15 @@ public:
      *      @param [in] handler                 Pointer to the instance which manages the library.
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
      *      @param [in] parent                  The parent wizard.
      */
     ComponentWizardImportPage(QSharedPointer<Component> component,
-		 LibraryInterface* handler,
-         QSharedPointer <ComponentParameterFinder> parameterFinder,
-         QSharedPointer<ExpressionFormatter> expressionFormatter,
-		 QWidget* parent);
+        LibraryInterface* handler,
+        QSharedPointer <ComponentParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        BusInterfaceInterface* busInterface,
+        QWidget* parent);
 
     /*!
      *  Destructor.

@@ -27,9 +27,11 @@
 // Function: WirePortsEditorConstructor::constructModel()
 //-----------------------------------------------------------------------------
 PortsModel* WirePortsEditorConstructor::constructModel(QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortsInterface> portsInterface, QSortFilterProxyModel* filter, QObject* parent) const
+    QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
+    QSortFilterProxyModel* filter, QObject* parent) const
 {
-    WirePortsModel* wireModel = new WirePortsModel(parameterFinder, portsInterface, filter, parent);
+    WirePortsModel* wireModel =
+        new WirePortsModel(parameterFinder, portsInterface, signalInterface, filter, parent);
 
     return wireModel;
 }
@@ -47,9 +49,10 @@ PortsFilter* WirePortsEditorConstructor::constructFilter(QSharedPointer<PortsInt
 //-----------------------------------------------------------------------------
 // Function: WirePortsEditorConstructor::constructView()
 //-----------------------------------------------------------------------------
-PortsView* WirePortsEditorConstructor::constructView(QString const& defaultPath, QWidget* parent) const
+PortsView* WirePortsEditorConstructor::constructView(QString const& defaultPath,
+    BusInterfaceInterface* busInterface, QWidget* parent) const
 {
-    PortsView* view = new PortsView(WirePortColumns::NAME, parent);
+    PortsView* view = new PortsView(WirePortColumns::NAME, busInterface, parent);
 
     view->setDefaultImportExportPath(defaultPath);
     view->setAllowImportExport(true);

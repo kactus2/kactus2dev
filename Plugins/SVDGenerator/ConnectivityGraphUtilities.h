@@ -87,6 +87,41 @@ namespace ConnectivityGraphUtilities
      */
     QSharedPointer<Cpu> getInterfacedCPU(QSharedPointer<const Component> containingComponent,
         QSharedPointer<const ConnectivityInterface> routeInterface);
+
+    /*!
+     *  Get the CPUs of the selected component.
+     *
+     *      @param [in] library     The library interface containing the selected component.
+     *      @param [in] component   The selected component.
+     *      @param [in] viewName    Name of the selected view.
+     *
+     *      @return List of the component CPU routes.
+     */
+    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > getDefaultCPUs(LibraryInterface* library,
+        QSharedPointer<Component> component, QString const& viewName);
+
+    /*!
+     *  Check if a CPU exists for the selected interface.
+     *
+     *      @param [in] master      The selected interface.
+     *      @param [in] cpuList     List of available CPUs.
+     *
+     *      @return True, if a check box exists, false otherwise.
+     */
+    bool interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master,
+        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuList);
+
+    /*!
+     *  Get the CPU container of the selected interface.
+     *
+     *      @param [in] master      The selected interface.
+     *      @param [in] cpuList     List of available CPUs.
+     *
+     *      @return CPU check box container matching the selected interface.
+     */
+    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> getMatchingCpuContainer(
+        QSharedPointer<const ConnectivityInterface> master,
+        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuList);
 };
 
 #endif //CONNECTIVITYGRAPHUTILITIES_H

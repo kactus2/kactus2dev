@@ -113,25 +113,6 @@ private:
      */
     void setupCPUSelection();
 
-    /*!
-     *  Check if a check box exists for the selected interface.
-     *
-     *      @param [in] master  The selected interface.
-     *
-     *      @return True, if a check box exists, false otherwise.
-     */
-    bool interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master);
-
-    /*!
-     *  Get the CPU check box container of the selected interface.
-     *
-     *      @param [in] master  The selected interface.
-     *
-     *      @return CPU check box container matching the selected interface.
-     */
-    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> getMatchingCpuContainer(
-        QSharedPointer<const ConnectivityInterface> master);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

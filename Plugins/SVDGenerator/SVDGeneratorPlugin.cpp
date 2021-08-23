@@ -16,7 +16,11 @@
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/SVDGenerator/CPUDialog/CPUSelectionDialog.h>
+
+#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
+#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
 
 #include <library/LibraryInterface.h>
 
@@ -183,6 +187,58 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
     {
         utility->printInfo(tr("Generation aborted."));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGeneratorPlugin::runGenerator()
+//-----------------------------------------------------------------------------
+void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration,
+    QString const& viewName, QString const& outputDirectory)
+{
+    utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+    utility->printInfo(tr("Running generation for %1 and view '%2'.").arg(component->getVlnv().toString(),
+        viewName));
+
+    QDir targetDirectory;
+    if (!targetDirectory.mkpath(outputDirectory))
+    {
+        utility->printError(tr("Could not create target directory: %1").arg(outputDirectory));
+        return;
+    }
+
+    utility->printInfo(tr("Target directory: %1").arg(outputDirectory));
+
+
+    MessagePasser messages;
+
+    GenerationTuple input;
+    input.component = component;
+    input.design = design;
+    input.designConfiguration = designConfiguration;
+    input.messages = &messages;
+
+    LibraryInterface* utilityLibrary = utility->getLibraryInterface();
+    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuRoutes =
+        ConnectivityGraphUtilities::getDefaultCPUs(utilityLibrary, component, viewName);
+
+    if (cpuRoutes.isEmpty())
+    {
+        utility->printInfo(tr("Generation Failed. No CPUs found."));
+    }
+
+    SVDGenerator generator(utilityLibrary);
+    generator.generate(component, outputDirectory, cpuRoutes);
+
+    utility->printInfo(tr("Generation complete."));
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGeneratorPlugin::getOutputFormat()
+//-----------------------------------------------------------------------------
+QString SVDGeneratorPlugin::getOutputFormat() const
+{
+    return QStringLiteral("SVD");
 }
 
 //-----------------------------------------------------------------------------
