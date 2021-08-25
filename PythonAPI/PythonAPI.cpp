@@ -55,6 +55,10 @@
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 
+#include <IPXACTmodels/Design/Interconnection.h>
+#include <IPXACTmodels/Design/AdHocConnection.h>
+#include <IPXACTmodels/Design/ActiveInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::PythonAPI()
 //-----------------------------------------------------------------------------
@@ -62,6 +66,7 @@ PythonAPI::PythonAPI():
 library_(KactusAPI::getLibrary()),
 messager_(KactusAPI::getMessageChannel()),
 activeComponent_(),
+activeDesign_(),
 portsInterface_(),
 componentParameterInterface_(),
 mapInterface_(),
@@ -353,15 +358,7 @@ std::string PythonAPI::getFirstViewName()
 bool PythonAPI::openComponent(std::string const& vlnvString)
 {
     QString componentVLNV = QString::fromStdString(vlnvString);
-    QStringList vlnvArray = componentVLNV.split(':');
-    if (vlnvArray.size() != 4)
-    {
-        messager_->showError(QString("The given VLNV %1 is not valid").arg(componentVLNV));
-        return false;
-    }
-
-    VLNV targetVLNV(VLNV::COMPONENT, vlnvArray.at(0), vlnvArray.at(1), vlnvArray.at(2), vlnvArray.at(3));
-    QSharedPointer<Document> componentDocument = library_->getModel(targetVLNV);
+    QSharedPointer<Document> componentDocument = getDocument(componentVLNV);
     if (componentDocument)
     {
         QSharedPointer<Component> component = componentDocument.dynamicCast<Component>();
@@ -395,6 +392,22 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
         messager_->showError(QString("Could not open document with VLNV %1").arg(componentVLNV));
         return false;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getDocument()
+//-----------------------------------------------------------------------------
+QSharedPointer<Document> PythonAPI::getDocument(QString const& vlnvString) const
+{
+    QStringList vlnvArray = vlnvString.split(':');
+    if (vlnvArray.size() != 4)
+    {
+        messager_->showError(QString("The given VLNV %1 is not valid").arg(vlnvString));
+        return QSharedPointer<Document>();
+    }
+
+    VLNV targetVLNV(VLNV::COMPONENT, vlnvArray.at(0), vlnvArray.at(1), vlnvArray.at(2), vlnvArray.at(3));
+    return library_->getModel(targetVLNV);
 }
 
 //-----------------------------------------------------------------------------
@@ -858,4 +871,284 @@ void PythonAPI::sendFileSetNotFoundError(QString const& setName) const
 {
     messager_->showError(QString("Could not find file set %1 within component %2").
         arg(setName, activeComponent_->getVlnv().toString()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::openDesign()
+//-----------------------------------------------------------------------------
+bool PythonAPI::openDesign(std::string const& vlnvString)
+{
+    QString designVLNV = QString::fromStdString(vlnvString);
+    QSharedPointer<Document> designDocument = getDocument(designVLNV);
+    if (designDocument)
+    {
+        QSharedPointer<Design> design = designDocument.dynamicCast<Design>();
+        if (design)
+        {
+            activeDesign_ = design;
+            messager_->showMessage(QString("Design %1 is open").arg(designVLNV));
+            return true;
+        }
+        else
+        {
+            messager_->showError(QString("The given VLNV %1 is not a design").arg(designVLNV));
+            return false;
+        }
+    }
+    else
+    {
+        messager_->showError(QString("Could not open document with VLNV %1").arg(designVLNV));
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::closeOpenDesign()
+//-----------------------------------------------------------------------------
+void PythonAPI::closeOpenDesign()
+{
+    if (activeDesign_)
+    {
+        messager_->showMessage(QString("Design %1 is closed").arg(activeDesign_->getVlnv().toString()));
+    }
+
+    activeDesign_ = QSharedPointer<Design>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::saveDesign()
+//-----------------------------------------------------------------------------
+void PythonAPI::saveDesign()
+{
+    if (activeDesign_)
+    {
+        messager_->showMessage(QString("Saving design %1 ...").arg(activeDesign_->getVlnv().toString()));
+
+        if (library_->writeModelToFile(activeDesign_))
+        {
+            messager_->showMessage(QString("Save complete"));
+        }
+        else
+        {
+            messager_->showError(QString("Could not save design %1").arg(activeDesign_->getVlnv().toString()));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::addComponentInstance()
+//-----------------------------------------------------------------------------
+bool PythonAPI::addComponentInstance(std::string const& vlnvString, std::string const& instanceName)
+{
+    if (!activeDesign_)
+    {
+        messager_->showMessage(QString("No open design"));
+        return false;
+    }
+
+    QSharedPointer<Document> instanceDocument = getDocument(QString::fromStdString(vlnvString));
+    if (!instanceDocument)
+    {
+        messager_->showMessage(QString("Could not find instance %1").arg(instanceDocument->getVlnv().toString()));
+        return false;
+    }
+
+    QSharedPointer<Component> instanceComponent = instanceDocument.dynamicCast<Component>();
+    if (!instanceComponent)
+    {
+        messager_->showMessage(QString("%1 is not a component").arg(instanceComponent->getVlnv().toString()));
+        return false;
+    }
+
+    QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
+    componentInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
+        new ConfigurableVLNVReference(instanceComponent->getVlnv())));
+
+    QString baseName = QString::fromStdString(instanceName);
+    if (baseName.isEmpty())
+    {
+        baseName = instanceComponent->getVlnv().getName();
+    }
+
+    componentInstance->setInstanceName(getUniqueInstanceName(baseName));
+    activeDesign_->getComponentInstances()->append(componentInstance);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getUniqueInstanceName()
+//-----------------------------------------------------------------------------
+QString PythonAPI::getUniqueInstanceName(QString const& baseName) const
+{
+    QSettings settings; // this reads the application settings automatically
+    QString format = settings.value("Policies/InstanceNames", "").toString();
+    if (format.isEmpty())
+    {
+        format = "$ComponentName$_$InstanceNumber$";
+    }
+
+    // Determine a unique name by using a running number.
+    int runningNumber = 0;
+
+    QStringList instanceNames;
+    for (auto name : getInstanceNames())
+    {
+        instanceNames.append(QString::fromStdString(name));
+    }
+
+    QString name = format;
+    name.replace("$ComponentName$", baseName);
+    name.replace("$InstanceNumber$", QString::number(runningNumber));
+
+    while (instanceNames.contains(name))
+    {
+        runningNumber++;
+
+        name = format;
+        name.replace("$ComponentName$", baseName);
+        name.replace("$InstanceNumber$", QString::number(runningNumber));
+    }
+
+    return name;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getInstanceNames()
+//-----------------------------------------------------------------------------
+std::vector<std::string> PythonAPI::getInstanceNames() const
+{
+    std::vector<std::string> instanceNames;
+
+    if (activeDesign_)
+    {
+        for (auto instance : *activeDesign_->getComponentInstances())
+        {
+            instanceNames.push_back(instance->getInstanceName().toStdString());
+        }
+    }
+
+    return instanceNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeComponentInstance()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeComponentInstance(std::string const& instanceName)
+{
+    if (!activeDesign_)
+    {
+        messager_->showMessage(QString("No open design"));
+        return false;
+    }
+
+    QString instanceNameQ = QString::fromStdString(instanceName);
+    QSharedPointer<ComponentInstance> instance = getComponentInstance(instanceNameQ);
+    if (!instance)
+    {
+        messager_->showMessage(QString("Could not find component instance %1 within %2").
+            arg(instanceNameQ, activeDesign_->getVlnv().toString()));
+        return false;
+    }
+
+    removeInstanceConnections(instanceName);
+    removeInstanceAdHocConnections(instanceName);
+
+    activeDesign_->getComponentInstances()->removeAll(instance);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getComponentInstance()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstance> PythonAPI::getComponentInstance(QString const& instanceName) const
+{
+    if (activeDesign_)
+    {
+        for (auto instance : *activeDesign_->getComponentInstances())
+        {
+            if (instance->getInstanceName() == instanceName)
+            {
+                return instance;
+            }
+        }
+    }
+
+    return QSharedPointer<ComponentInstance>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeInstanceConnections()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeInstanceConnections(std::string const& instanceName)
+{
+    QString instanceNameQ = QString::fromStdString(instanceName);
+    QSharedPointer<ComponentInstance> instance = getComponentInstance(instanceNameQ);
+    if (!instance)
+    {
+        messager_->showMessage(QString("Could not find component instance %1 within %2").
+            arg(instanceNameQ, activeDesign_->getVlnv().toString()));
+        return false;
+    }
+
+    QVector<QSharedPointer<Interconnection> > removedConnections;
+    for (auto connection : *activeDesign_->getInterconnections())
+    {
+        if (connection->getStartInterface()->getComponentReference() == instanceNameQ)
+        {
+            removedConnections.append(connection);
+        }
+        else
+        {
+            for (auto connectionInterface : *connection->getActiveInterfaces())
+            {
+                if (connectionInterface->getComponentReference() == instanceNameQ)
+                {
+                    removedConnections.append(connection);
+                    break;
+                }
+            }
+        }
+    }
+
+    for (auto connection : removedConnections)
+    {
+        activeDesign_->getInterconnections()->removeAll(connection);
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeInstanceAdHocConnections()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeInstanceAdHocConnections(std::string const& instanceName)
+{
+    QString instanceNameQ = QString::fromStdString(instanceName);
+    QSharedPointer<ComponentInstance> instance = getComponentInstance(instanceNameQ);
+    if (!instance)
+    {
+        messager_->showMessage(QString("Could not find component instance %1 within %2").
+            arg(instanceNameQ, activeDesign_->getVlnv().toString()));
+        return false;
+    }
+
+    QVector<QSharedPointer<AdHocConnection> > removedConnections;
+    for (auto connection : *activeDesign_->getAdHocConnections())
+    {
+        for (auto connectionInterface : *connection->getInternalPortReferences())
+        {
+            if (connectionInterface->getComponentRef() == instanceNameQ)
+            {
+                removedConnections.append(connection);
+                break;
+            }
+        }
+    }
+
+    for (auto connection : removedConnections)
+    {
+        activeDesign_->getAdHocConnections()->removeAll(connection);
+    }
+
+    return true;
 }

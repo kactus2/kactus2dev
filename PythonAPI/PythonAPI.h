@@ -43,6 +43,9 @@ class ExpressionFormatter;
 class ParameterValidator;
 class MemoryMapValidator;
 
+class Design;
+class ComponentInstance;
+
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data using Python.
 //-----------------------------------------------------------------------------
@@ -292,13 +295,103 @@ public:
     void setFilesForInterface(std::string const& setName);
 
     /*!
-     *  Set the available file builderss for the file interface.
+     *  Set the available file builders for the file interface.
      *
      *      @param [in] setName     Name of the file set containing the available file builders.
      */
     void setFileBuildersForInterface(std::string const& setName);
 
+    /*!
+     *  Set the selected design as active design.
+     *
+     *      @param [in] vlnvString  VLNV of the selected design.
+     *
+     *      @return True, if the design exists, false otherwise.
+     */
+    bool openDesign(std::string const& vlnvString);
+
+    /*!
+     *  Remove the active design.
+     */
+    void closeOpenDesign();
+
+    /*!
+     *  Save the design to the library.
+     */
+    void saveDesign();
+
+    /*!
+     *  Add the selected component instance to the active design.
+     *
+     *      @param [in] vlnvString      VLNV of the component within the selected component instance.
+     *      @param [in] instanceName    Name for the new component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool addComponentInstance(std::string const& vlnvString, std::string const& instanceName);
+
+    /*!
+     *  Get the names of component instances within the active design.
+     *
+     *      @return Names of component instances within the active design.
+     */
+    std::vector<std::string> getInstanceNames() const;
+
+    /*!
+     *  Remove the selected component instance from the active design.
+     *
+     *      @param [in] instanceName    Name of the selected component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeComponentInstance(std::string const& instanceName);
+
+    /*!
+     *  Remove connections from the selected component instance.
+     *
+     *      @param [in] instanceName    Name of the selected component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeInstanceConnections(std::string const& instanceName);
+
+    /*!
+     *  Remove ad hoc connections from the selected component instance.
+     *
+     *      @param [in] instanceName    Name of the selected component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeInstanceAdHocConnections(std::string const& instanceName);
+
 private:
+
+    /*!
+     *  Get a unique name for the containing component instance.
+     *
+     *      @param [in] baseName    The new component instance name.
+     *
+     *      @return Unique name formed from the basename.
+     */
+    QString getUniqueInstanceName(QString const& baseName) const;
+
+    /*!
+     *  Get the selected document.
+     *
+     *      @param [in] vlnvString  VLNV of the selected document in string form.
+     *
+     *      @return The selected document.
+     */
+    QSharedPointer<Document> getDocument(QString const& vlnvString) const;
+
+    /*!
+     *  Get the selected component instance.
+     *
+     *      @param [in] instanceName    Name of the selected component instance.
+     *
+     *      @return The selected component instance.
+     */
+    QSharedPointer<ComponentInstance> getComponentInstance(QString const& instanceName) const;
 
     /*!
      *  Construct validator for memory items.
@@ -420,6 +513,9 @@ private:
 
     //! Currently active component.
     QSharedPointer<Component> activeComponent_;
+
+    //! Currently active design.
+    QSharedPointer<Design> activeDesign_;
 
     //! Interface for accessing the component ports.
     PortsInterface* portsInterface_;
