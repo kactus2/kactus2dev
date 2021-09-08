@@ -64,6 +64,10 @@ void BusInterfaceInterface::setBusInterfaces(QSharedPointer<Component> newCompon
 
     fileSetInterface_->setFileSets(newComponent->getFileSets());
     mapInterface_->setMemoryMaps(newComponent);
+
+    busValidator_->componentChange(newComponent->getChoices(), newComponent->getViews(), newComponent->getPorts(),
+        newComponent->getAddressSpaces(), newComponent->getMemoryMaps(), busInterfaces_,
+        newComponent->getFileSets(), newComponent->getRemapStates());
 }
 
 //-----------------------------------------------------------------------------
@@ -679,6 +683,22 @@ bool BusInterfaceInterface::removeBusInterface(std::string const& busName)
     }
 
     return busInterfaces_->removeOne(removedItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::busInterfaceExists()
+//-----------------------------------------------------------------------------
+bool BusInterfaceInterface::busInterfaceExists(std::string const& busName) const
+{
+    for (auto name : getItemNames())
+    {
+        if (name == busName)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

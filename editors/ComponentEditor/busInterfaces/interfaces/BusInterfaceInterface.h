@@ -36,7 +36,7 @@ class ParametersInterface;
 //-----------------------------------------------------------------------------
 //! Interface for accessing bus interfaces.
 //-----------------------------------------------------------------------------
-class BusInterfaceInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API BusInterfaceInterface : public ParameterizableInterface, public NameGroupInterface
 {
 public:
 
@@ -632,6 +632,15 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool removeBusInterface(std::string const& busName);
+
+    /*!
+     *  Check if the selected bus interface exists.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return True, if the bus interface exists, false otherwise.
+     */
+    bool busInterfaceExists(std::string const& busName) const;
 
     /*!
      *  Get the interface for accessing transparent bridges.

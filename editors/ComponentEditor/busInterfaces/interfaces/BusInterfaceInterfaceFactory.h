@@ -14,6 +14,8 @@
 
 #include <QSharedPointer>
 
+#include <common/Global.h>
+
 class LibraryInterface;
 
 class Component;
@@ -49,7 +51,7 @@ namespace BusInterfaceInterfaceFactory
      *
      *      @return Interface for accessing bus interfaces.
      */
-    BusInterfaceInterface* createBusInterface(QSharedPointer<ParameterFinder> parameterFinder,
+    KACTUS2_API BusInterfaceInterface* createBusInterface(QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Component> component,
         LibraryInterface* library);

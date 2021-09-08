@@ -34,6 +34,7 @@ class PortsInterface;
 class ParametersInterface;
 class MemoryMapInterface;
 class FileSetInterface;
+class BusInterfaceInterface;
 
 class ComponentParameterFinder;
 class ExpressionParser;
@@ -45,6 +46,9 @@ class MemoryMapValidator;
 
 class Design;
 class ComponentInstance;
+class Interconnection;
+class ActiveInterface;
+class AdHocConnection;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data using Python.
@@ -364,7 +368,143 @@ public:
      */
     bool removeInstanceAdHocConnections(std::string const& instanceName);
 
+    /*!
+     *  Create an interconnection between two bus interfaces.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first bus interface.
+     *      @param [in] startBus            Name of the first bus interface.
+     *      @param [in] endInstanceName     Name of the component instance containing the second bus interface.
+     *      @param [in] endBus              Name of the second bus interface.
+     *
+     *      @return True, if the connection was created, false otherwise.
+     */
+    bool createConnection(std::string const& startInstanceName, std::string const& startBus,
+        std::string const& endInstanceName, std::string const& endBus);
+
+    /*!
+     *  Remove an interconnection between two bus interfaces.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first bus interface.
+     *      @param [in] startBus            Name of the first bus interface.
+     *      @param [in] endInstanceName     Name of the component instance containing the second bus interface.
+     *      @param [in] endBus              Name of the second bus interface.
+     *
+     *      @return True, if the connection was removed, false otherwise.
+     */
+    bool removeConnection(std::string const& startInstanceName, std::string const& startBus,
+        std::string const& endInstanceName, std::string const& endBus);
+
+    /*!
+     *  Create an ad hoc connection between two ports.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first port.
+     *      @param [in] startPort           Name of the first port.
+     *      @param [in] endInstanceName     Name of the component instance containing the second port.
+     *      @param [in] endPort             Name of the second port.
+     *
+     *      @return True, if the connection was created, false otherwise.
+     */
+    bool createAdHocConnection(std::string const& startInstanceName, std::string const& startPort,
+        std::string const& endInstanceName, std::string const& endPort);
+
+    /*!
+     *  Remove an ad hoc connection between two ports.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first port.
+     *      @param [in] startPort           Name of the first port.
+     *      @param [in] endInstanceName     Name of the component instance containing the second port.
+     *      @param [in] endPort             Name of the second port.
+     *
+     *      @return True, if the ad hoc connection was removed, false otherwise.
+     */
+    bool removeAdHocConnection(std::string const& startInstanceName, std::string const& startPort,
+        std::string const& endInstanceName, std::string const& endPort);
+
 private:
+
+    /*!
+     *  Check if the connection end points exist.
+     *
+     *      @param [in] startInstanceName   Name of the instance containing the first interface.
+     *      @param [in] startBus            Name of the first interface.
+     *      @param [in] endInstanceName     Name of the instance containing the second interface.
+     *      @param [in] endBus              Name of the second interface.
+     *      @param [in] isAdHocConnection   Flag for ad hoc connections.
+     *
+     *      @return True, if the connection end points exist, false otherwise.
+     */
+    bool connectionEndsCheck(QString const& startInstanceName, QString const& startBus,
+        QString const& endInstanceName, QString const& endBus, bool isAdHocConnection);
+
+    /*!
+     *  Check if the ad hoc connection end points exist.
+     *
+     *      @param [in] startComponent      Component containing the first port.
+     *      @param [in] startBus            Name of the first port.
+     *      @param [in] startInstanceName   Name of the instance containing the first port.
+     *      @param [in] endComponent        Component containing the second port.
+     *      @param [in] endBus              Name of the second port.
+     *      @param [in] endInstanceName     Name of the instance containing the second port.
+     *
+     *      @return True, if the ad hoc connection end points exist, false otherwise.
+     */
+    bool endsCheckForAdHoc(QSharedPointer<const Component> startComponent, QString const& startBus,
+        QString const& startInstanceName, QSharedPointer<const Component> endComponent, QString const& endBus,
+        QString const& endInstanceName);
+
+    /*!
+     *  Check if the interconnection end points exist.
+     *
+     *      @param [in] startComponent      Component containing the first bus interface.
+     *      @param [in] startBus            Name of the first bus interface.
+     *      @param [in] startInstanceName   Name of the instance containing the first bus interface.
+     *      @param [in] endComponent        Component containing the second bus interface.
+     *      @param [in] endBus              Name of the second bus interface.
+     *      @param [in] endInstanceName     Name of the instance containing the second bus interface.
+     *
+     *      @return True, if the interconnection end points exist, false otherwise.
+     */
+    bool endsCheckForInterconnection(QSharedPointer<const Component> startComponent, QString const& startBus,
+        QString const& startInstanceName, QSharedPointer<const Component> endComponent, QString const& endBus,
+        QString const& endInstanceName);
+
+    /*!
+     *  Get the selected interconnection.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first bus interface.
+     *      @param [in] startBus            Name of the first bus interface.
+     *      @param [in] endInstanceName     Name of the component instance containing the second bus interface.
+     *      @param [in] endBus              Name of the second bus interface.
+     *
+     *      @return The selected interconnection.
+     */
+    QSharedPointer<Interconnection> findConnection(QString const& startInstanceName, QString const& startBus,
+        QString const& endInstanceName, QString const& endBus) const;
+
+    /*!
+     *  Check if the selected interface contains the data.
+     *
+     *      @param [in] instanceName            Name of the containing component instance.
+     *      @param [in] interfaceReference      Name of the bus interface.
+     *      @param [in] connectionInterface     The selected active interface.
+     *
+     *      @return True, if the selected interface contains the desired data, false otherwise.
+     */
+    bool interfaceMatchesConnection(QString const& instanceName, QString const& interfaceReference,
+        QSharedPointer<ActiveInterface> connectionInterface) const;
+
+    /*!
+     *  Get the selected ad hoc connection.
+     *
+     *      @param [in] startInstanceName   Name of the first containing component instance.
+     *      @param [in] startPort           Name of the first port.
+     *      @param [in] endInstanceName     Name of the second containing component instance.
+     *      @param [in] endPort             Name of the second port.
+     *
+     *      @return The selected ad hoc connection.
+     */
+    QSharedPointer<AdHocConnection> getAdhocConnection(QString const& startInstanceName, QString const& startPort,
+        QString const& endInstanceName, QString const& endPort) const;
 
     /*!
      *  Get a unique name for the containing component instance.
@@ -519,6 +659,9 @@ private:
 
     //! Interface for accessing the component ports.
     PortsInterface* portsInterface_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 
     //! Interface for accessing the component parameters.
     ParametersInterface* componentParameterInterface_;
