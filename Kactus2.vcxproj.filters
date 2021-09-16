@@ -1031,6 +1031,12 @@
     <Filter Include="Source Files\editors\common\FileHandler">
       <UniqueIdentifier>{dbbab44d-61c3-4e98-8091-f4654fcdbc6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\HWDesign\interfaces">
+      <UniqueIdentifier>{8ff47ee3-a8ad-4457-af2f-38e47da9402b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\HWDesign\interfaces">
+      <UniqueIdentifier>{968fe741-7d53-4209-9dc2-3274b9a45ebb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -5032,6 +5038,15 @@
     <ClCompile Include="PythonAPI\extensions\IOCatcher.cpp">
       <Filter>Source Files\PythonAPI\extensions</Filter>
     </ClCompile>
+    <ClCompile Include="editors\HWDesign\interfaces\ComponentInstanceInterface.cpp">
+      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\interfaces\InterconnectionInterface.cpp">
+      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\interfaces\AdHocConnectionInterface.cpp">
+      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7702,6 +7717,15 @@
     </ClInclude>
     <ClInclude Include="PythonAPI\extensions\IOCatcher.h">
       <Filter>Header Files\PythonAPI\extensions</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\HWDesign\interfaces\ComponentInstanceInterface.h">
+      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\HWDesign\interfaces\InterconnectionInterface.h">
+      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\HWDesign\interfaces\AdHocConnectionInterface.h">
+      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

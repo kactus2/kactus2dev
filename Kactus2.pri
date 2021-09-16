@@ -879,7 +879,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./editors/HWDesign/interfaces/ComponentInstanceInterface.h \
+    ./editors/HWDesign/interfaces/InterconnectionInterface.h \
+    ./editors/HWDesign/interfaces/AdHocConnectionInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAPI.cpp \
@@ -1646,5 +1649,8 @@ SOURCES += ./VersionHelper.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./editors/HWDesign/interfaces/ComponentInstanceInterface.cpp \
+    ./editors/HWDesign/interfaces/InterconnectionInterface.cpp \
+    ./editors/HWDesign/interfaces/AdHocConnectionInterface.cpp
 RESOURCES += kactus.qrc

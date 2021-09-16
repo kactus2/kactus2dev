@@ -45,10 +45,10 @@ class ParameterValidator;
 class MemoryMapValidator;
 
 class Design;
-class ComponentInstance;
-class Interconnection;
-class ActiveInterface;
-class AdHocConnection;
+
+class ComponentInstanceInterface;
+class InterconnectionInterface;
+class AdHocConnectionInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data using Python.
@@ -335,13 +335,6 @@ public:
     bool addComponentInstance(std::string const& vlnvString, std::string const& instanceName);
 
     /*!
-     *  Get the names of component instances within the active design.
-     *
-     *      @return Names of component instances within the active design.
-     */
-    std::vector<std::string> getInstanceNames() const;
-
-    /*!
      *  Remove the selected component instance from the active design.
      *
      *      @param [in] instanceName    Name of the selected component instance.
@@ -367,6 +360,16 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool removeInstanceAdHocConnections(std::string const& instanceName);
+
+    /*!
+     *  Set a new name for the selected component instance.
+     *
+     *      @param [in] currentName     Name of the selected component instance.
+     *      @param [in] newName         New name for the component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool renameInstance(std::string const& currentName, std::string const& newName);
 
     /*!
      *  Create an interconnection between two bus interfaces.
@@ -395,6 +398,16 @@ public:
         std::string const& endInstanceName, std::string const& endBus);
 
     /*!
+     *  Set a new name for the selected interconnection.
+     *
+     *      @param [in] currentName     Name of the selected interconnection.
+     *      @param [in] newName         New name for the interconnection.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool renameConnection(std::string const& currentName, std::string const& newName);
+
+    /*!
      *  Create an ad hoc connection between two ports.
      *
      *      @param [in] startInstanceName   Name of the component instance containing the first port.
@@ -419,6 +432,16 @@ public:
      */
     bool removeAdHocConnection(std::string const& startInstanceName, std::string const& startPort,
         std::string const& endInstanceName, std::string const& endPort);
+
+    /*!
+     *  Set a new name for the selected ad hoc connection.
+     *
+     *      @param [in] currentName     Name of the selected ad hoc connection.
+     *      @param [in] newName         New name for the ad hoc connection.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool renameAdHocConnection(std::string const& currentName, std::string const& newName);
 
 private:
 
@@ -469,53 +492,6 @@ private:
         QString const& endInstanceName);
 
     /*!
-     *  Get the selected interconnection.
-     *
-     *      @param [in] startInstanceName   Name of the component instance containing the first bus interface.
-     *      @param [in] startBus            Name of the first bus interface.
-     *      @param [in] endInstanceName     Name of the component instance containing the second bus interface.
-     *      @param [in] endBus              Name of the second bus interface.
-     *
-     *      @return The selected interconnection.
-     */
-    QSharedPointer<Interconnection> findConnection(QString const& startInstanceName, QString const& startBus,
-        QString const& endInstanceName, QString const& endBus) const;
-
-    /*!
-     *  Check if the selected interface contains the data.
-     *
-     *      @param [in] instanceName            Name of the containing component instance.
-     *      @param [in] interfaceReference      Name of the bus interface.
-     *      @param [in] connectionInterface     The selected active interface.
-     *
-     *      @return True, if the selected interface contains the desired data, false otherwise.
-     */
-    bool interfaceMatchesConnection(QString const& instanceName, QString const& interfaceReference,
-        QSharedPointer<ActiveInterface> connectionInterface) const;
-
-    /*!
-     *  Get the selected ad hoc connection.
-     *
-     *      @param [in] startInstanceName   Name of the first containing component instance.
-     *      @param [in] startPort           Name of the first port.
-     *      @param [in] endInstanceName     Name of the second containing component instance.
-     *      @param [in] endPort             Name of the second port.
-     *
-     *      @return The selected ad hoc connection.
-     */
-    QSharedPointer<AdHocConnection> getAdhocConnection(QString const& startInstanceName, QString const& startPort,
-        QString const& endInstanceName, QString const& endPort) const;
-
-    /*!
-     *  Get a unique name for the containing component instance.
-     *
-     *      @param [in] baseName    The new component instance name.
-     *
-     *      @return Unique name formed from the basename.
-     */
-    QString getUniqueInstanceName(QString const& baseName) const;
-
-    /*!
      *  Get the selected document.
      *
      *      @param [in] vlnvString  VLNV of the selected document in string form.
@@ -523,15 +499,6 @@ private:
      *      @return The selected document.
      */
     QSharedPointer<Document> getDocument(QString const& vlnvString) const;
-
-    /*!
-     *  Get the selected component instance.
-     *
-     *      @param [in] instanceName    Name of the selected component instance.
-     *
-     *      @return The selected component instance.
-     */
-    QSharedPointer<ComponentInstance> getComponentInstance(QString const& instanceName) const;
 
     /*!
      *  Construct validator for memory items.
@@ -671,6 +638,15 @@ private:
 
     //! Interface for accessing file sets.
     FileSetInterface* fileSetInterface_;
+
+    //! Interface for accessing component instances.
+    ComponentInstanceInterface* instanceInterface_;
+
+    //! Interface for accessing interconnections.
+    InterconnectionInterface* connectionInterface_;
+
+    //! Interface for accessing ad hoc connections.
+    AdHocConnectionInterface* adhocConnectionInterface_;
 
     //! Component parameter finder.
     QSharedPointer<ComponentParameterFinder> parameterFinder_;

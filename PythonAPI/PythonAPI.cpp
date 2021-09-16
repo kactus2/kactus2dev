@@ -21,6 +21,9 @@
 
 #include <editors/common/BusInterfaceUtilities.h>
 
+#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
@@ -34,9 +37,9 @@
 #include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 #include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
 
-#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/HWDesign/interfaces/ComponentInstanceInterface.h>
+#include <editors/HWDesign/interfaces/InterconnectionInterface.h>
+#include <editors/HWDesign/interfaces/AdHocConnectionInterface.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -77,6 +80,9 @@ busInterface_(),
 componentParameterInterface_(),
 mapInterface_(),
 fileSetInterface_(),
+instanceInterface_(),
+connectionInterface_(),
+adhocConnectionInterface_(),
 parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Component>())),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
@@ -95,6 +101,10 @@ mapValidator_()
     constructMemoryValidators();
     constructMemoryInterface();
     constructFileSetInterface();
+
+    connectionInterface_ = new InterconnectionInterface();
+    adhocConnectionInterface_ = new AdHocConnectionInterface();
+    instanceInterface_ = new ComponentInstanceInterface(connectionInterface_, adhocConnectionInterface_);
 }
 
 //-----------------------------------------------------------------------------
@@ -899,6 +909,11 @@ bool PythonAPI::openDesign(std::string const& vlnvString)
         {
             activeDesign_ = design;
             messager_->showMessage(QString("Design %1 is open").arg(designVLNV));
+
+            instanceInterface_->setComponentInstances(activeDesign_);
+            connectionInterface_->setInterconnections(activeDesign_);
+            adhocConnectionInterface_->setConnections(activeDesign_);
+
             return true;
         }
         else
@@ -958,88 +973,35 @@ bool PythonAPI::addComponentInstance(std::string const& vlnvString, std::string 
         return false;
     }
 
-    QSharedPointer<Document> instanceDocument = getDocument(QString::fromStdString(vlnvString));
+    QString combinedVLNV = QString::fromStdString(vlnvString);
+    QSharedPointer<Document> instanceDocument = getDocument(combinedVLNV);
     if (!instanceDocument)
     {
-        messager_->showMessage(QString("Could not find instance %1").arg(instanceDocument->getVlnv().toString()));
+        messager_->showMessage(QString("Could not find document %1").arg(combinedVLNV));
         return false;
     }
 
     QSharedPointer<Component> instanceComponent = instanceDocument.dynamicCast<Component>();
     if (!instanceComponent)
     {
-        messager_->showMessage(QString("%1 is not a component").arg(instanceComponent->getVlnv().toString()));
+        messager_->showMessage(QString("%1 is not a component").arg(combinedVLNV));
         return false;
     }
 
-    QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
-    componentInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
-        new ConfigurableVLNVReference(instanceComponent->getVlnv())));
-
-    QString baseName = QString::fromStdString(instanceName);
-    if (baseName.isEmpty())
+    QStringList vlnvList = combinedVLNV.split(":");
+    if (vlnvList.size() < 4)
     {
-        baseName = instanceComponent->getVlnv().getName();
+        messager_->showMessage(QString("The VLNV %1 is not correct").arg(combinedVLNV));
+        return false;
     }
 
-    componentInstance->setInstanceName(getUniqueInstanceName(baseName));
-    activeDesign_->getComponentInstances()->append(componentInstance);
-    return true;
-}
+    std::string newVendor = vlnvList.at(0).toStdString();
+    std::string newLibrary = vlnvList.at(1).toStdString();
+    std::string newName = vlnvList.at(2).toStdString();
+    std::string newVersion = vlnvList.at(3).toStdString();
 
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::getUniqueInstanceName()
-//-----------------------------------------------------------------------------
-QString PythonAPI::getUniqueInstanceName(QString const& baseName) const
-{
-    QSettings settings; // this reads the application settings automatically
-    QString format = settings.value("Policies/InstanceNames", "").toString();
-    if (format.isEmpty())
-    {
-        format = "$ComponentName$_$InstanceNumber$";
-    }
-
-    // Determine a unique name by using a running number.
-    int runningNumber = 0;
-
-    QStringList instanceNames;
-    for (auto name : getInstanceNames())
-    {
-        instanceNames.append(QString::fromStdString(name));
-    }
-
-    QString name = format;
-    name.replace("$ComponentName$", baseName);
-    name.replace("$InstanceNumber$", QString::number(runningNumber));
-
-    while (instanceNames.contains(name))
-    {
-        runningNumber++;
-
-        name = format;
-        name.replace("$ComponentName$", baseName);
-        name.replace("$InstanceNumber$", QString::number(runningNumber));
-    }
-
-    return name;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::getInstanceNames()
-//-----------------------------------------------------------------------------
-std::vector<std::string> PythonAPI::getInstanceNames() const
-{
-    std::vector<std::string> instanceNames;
-
-    if (activeDesign_)
-    {
-        for (auto instance : *activeDesign_->getComponentInstances())
-        {
-            instanceNames.push_back(instance->getInstanceName().toStdString());
-        }
-    }
-
-    return instanceNames;
+    instanceInterface_->addComponentInstance(instanceName);
+    return instanceInterface_->setComponentReference(instanceName, newVendor, newLibrary, newName, newVersion);
 }
 
 //-----------------------------------------------------------------------------
@@ -1053,39 +1015,7 @@ bool PythonAPI::removeComponentInstance(std::string const& instanceName)
         return false;
     }
 
-    QString instanceNameQ = QString::fromStdString(instanceName);
-    QSharedPointer<ComponentInstance> instance = getComponentInstance(instanceNameQ);
-    if (!instance)
-    {
-        messager_->showMessage(QString("Could not find component instance %1 within %2").
-            arg(instanceNameQ, activeDesign_->getVlnv().toString()));
-        return false;
-    }
-
-    removeInstanceConnections(instanceName);
-    removeInstanceAdHocConnections(instanceName);
-
-    activeDesign_->getComponentInstances()->removeAll(instance);
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::getComponentInstance()
-//-----------------------------------------------------------------------------
-QSharedPointer<ComponentInstance> PythonAPI::getComponentInstance(QString const& instanceName) const
-{
-    if (activeDesign_)
-    {
-        for (auto instance : *activeDesign_->getComponentInstances())
-        {
-            if (instance->getInstanceName() == instanceName)
-            {
-                return instance;
-            }
-        }
-    }
-
-    return QSharedPointer<ComponentInstance>();
+    return instanceInterface_->removeComponentInstance(instanceName);
 }
 
 //-----------------------------------------------------------------------------
@@ -1093,41 +1023,7 @@ QSharedPointer<ComponentInstance> PythonAPI::getComponentInstance(QString const&
 //-----------------------------------------------------------------------------
 bool PythonAPI::removeInstanceConnections(std::string const& instanceName)
 {
-    QString instanceNameQ = QString::fromStdString(instanceName);
-    QSharedPointer<ComponentInstance> instance = getComponentInstance(instanceNameQ);
-    if (!instance)
-    {
-        messager_->showMessage(QString("Could not find component instance %1 within %2").
-            arg(instanceNameQ, activeDesign_->getVlnv().toString()));
-        return false;
-    }
-
-    QVector<QSharedPointer<Interconnection> > removedConnections;
-    for (auto connection : *activeDesign_->getInterconnections())
-    {
-        if (connection->getStartInterface()->getComponentReference() == instanceNameQ)
-        {
-            removedConnections.append(connection);
-        }
-        else
-        {
-            for (auto connectionInterface : *connection->getActiveInterfaces())
-            {
-                if (connectionInterface->getComponentReference() == instanceNameQ)
-                {
-                    removedConnections.append(connection);
-                    break;
-                }
-            }
-        }
-    }
-
-    for (auto connection : removedConnections)
-    {
-        activeDesign_->getInterconnections()->removeAll(connection);
-    }
-
-    return true;
+    return connectionInterface_->removeInstanceInterconnections(instanceName);
 }
 
 //-----------------------------------------------------------------------------
@@ -1135,34 +1031,15 @@ bool PythonAPI::removeInstanceConnections(std::string const& instanceName)
 //-----------------------------------------------------------------------------
 bool PythonAPI::removeInstanceAdHocConnections(std::string const& instanceName)
 {
-    QString instanceNameQ = QString::fromStdString(instanceName);
-    QSharedPointer<ComponentInstance> instance = getComponentInstance(instanceNameQ);
-    if (!instance)
-    {
-        messager_->showMessage(QString("Could not find component instance %1 within %2").
-            arg(instanceNameQ, activeDesign_->getVlnv().toString()));
-        return false;
-    }
+    return adhocConnectionInterface_->removeInstanceAdHocConnections(instanceName);
+}
 
-    QVector<QSharedPointer<AdHocConnection> > removedConnections;
-    for (auto connection : *activeDesign_->getAdHocConnections())
-    {
-        for (auto connectionInterface : *connection->getInternalPortReferences())
-        {
-            if (connectionInterface->getComponentRef() == instanceNameQ)
-            {
-                removedConnections.append(connection);
-                break;
-            }
-        }
-    }
-
-    for (auto connection : removedConnections)
-    {
-        activeDesign_->getAdHocConnections()->removeAll(connection);
-    }
-
-    return true;
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::renameInstance()
+//-----------------------------------------------------------------------------
+bool PythonAPI::renameInstance(std::string const& currentName, std::string const& newName)
+{
+    return instanceInterface_->setName(currentName, newName);
 }
 
 //-----------------------------------------------------------------------------
@@ -1182,16 +1059,7 @@ bool PythonAPI::createConnection(std::string const& startInstanceName, std::stri
         return false;
     }
 
-    QString connectionName = startInstanceNameQ + QStringLiteral("_") + startBusNameQ + QStringLiteral("_to_") +
-        endInstanceNameQ + QStringLiteral("_") + endBusNameQ;
-
-    QSharedPointer<ActiveInterface> startInterface(new ActiveInterface(startInstanceNameQ, startBusNameQ));
-    QSharedPointer<ActiveInterface> endInterface(new ActiveInterface(endInstanceNameQ, endBusNameQ));
-
-    QSharedPointer<Interconnection> newConnection(new Interconnection(connectionName, startInterface));
-    newConnection->getActiveInterfaces()->append(endInterface);
-
-    activeDesign_->getInterconnections()->append(newConnection);
+    connectionInterface_->addInterconnection(startInstanceName, startBus, endInstanceName, endBus);
 
     return true;
 }
@@ -1202,36 +1070,49 @@ bool PythonAPI::createConnection(std::string const& startInstanceName, std::stri
 bool PythonAPI::connectionEndsCheck(QString const& startInstanceName, QString const& startBus,
     QString const& endInstanceName, QString const& endBus, bool isAdHocConnection)
 {
-    QSharedPointer<ComponentInstance> startInstance = getComponentInstance(startInstanceName);
-    QSharedPointer<ComponentInstance> endInstance = getComponentInstance(endInstanceName);
-
-    if (!startInstance)
+    if (!instanceInterface_->instanceExists(startInstanceName.toStdString()))
     {
         messager_->showMessage(QString("Could not find component instance %1 within %2").
             arg(startInstanceName, activeDesign_->getVlnv().toString()));
         return false;
     }
-    if (!endInstance)
+    if (!instanceInterface_->instanceExists(endInstanceName.toStdString()))
     {
         messager_->showMessage(QString("Could not find component instance %1 within %2").
             arg(endInstanceName, activeDesign_->getVlnv().toString()));
         return false;
     }
 
-    QSharedPointer<const Document> startDocument =
-        library_->getModelReadOnly(*startInstance->getComponentRef().data());
-    QSharedPointer<const Document> endDocument =
-        library_->getModelReadOnly(*endInstance->getComponentRef().data());
+    QSharedPointer<ConfigurableVLNVReference> startComponenReference =
+        instanceInterface_->getComponentReference(startInstanceName.toStdString());
+    QSharedPointer<ConfigurableVLNVReference> endComponentReference =
+        instanceInterface_->getComponentReference(endInstanceName.toStdString());
+
+    if (!startComponenReference)
+    {
+        messager_->showMessage(QString("Component instance %1 does not have a component reference").
+            arg(startInstanceName));
+        return false;
+    }
+    if (!endComponentReference)
+    {
+        messager_->showMessage(QString("Component instance %1 does not have a component reference").
+            arg(endInstanceName));
+        return false;
+    }
+
+    QSharedPointer<const Document> startDocument = library_->getModelReadOnly(*startComponenReference.data());
+    QSharedPointer<const Document> endDocument = library_->getModelReadOnly(*endComponentReference.data());
     if (!startDocument)
     {
         messager_->showMessage(QString("Component instance %1 references a non-existing document %2").
-            arg(startInstanceName, startInstance->getComponentRef()->toString()));
+            arg(startInstanceName, startComponenReference->toString()));
         return false;
     }
     if (!endDocument)
     {
         messager_->showMessage(QString("Component instance %1 references a non-existing document %2").
-            arg(endInstanceName, endInstance->getComponentRef()->toString()));
+            arg(endInstanceName, endComponentReference->toString()));
         return false;
     }
 
@@ -1240,13 +1121,13 @@ bool PythonAPI::connectionEndsCheck(QString const& startInstanceName, QString co
     if (!startComponent)
     {
         messager_->showMessage(QString("Component instance %1 component reference %1 is not a component").
-            arg(startInstanceName, startInstance->getComponentRef()->toString()));
+            arg(startInstanceName, startComponenReference->toString()));
         return false;
     }
     if (!endComponent)
     {
         messager_->showMessage(QString("Component instance %1 component reference %1 is not a component").
-            arg(endInstanceName, endInstance->getComponentRef()->toString()));
+            arg(endInstanceName, endComponentReference->toString()));
         return false;
     }
 
@@ -1384,65 +1265,25 @@ bool PythonAPI::endsCheckForInterconnection(QSharedPointer<const Component> star
 bool PythonAPI::removeConnection(std::string const& startInstanceName, std::string const& startBus,
     std::string const& endInstanceName, std::string const& endBus)
 {
-    QString startInstanceNameQ = QString::fromStdString(startInstanceName);
-    QString endInstanceNameQ = QString::fromStdString(endInstanceName);
-    QString startBusNameQ = QString::fromStdString(startBus);
-    QString endBusNameQ = QString::fromStdString(endBus);
-
-    QSharedPointer<Interconnection> connection = findConnection(startInstanceNameQ, startBusNameQ,
-        endInstanceNameQ, endBusNameQ);
-    if (!connection)
+    std::string connectionName =
+        connectionInterface_->getConnectionName(startInstanceName, startBus, endInstanceName, endBus);
+    bool success = connectionInterface_->removeInterconnection(connectionName);
+    
+    if (success == false)
     {
-        messager_->showMessage(QString("Could not find connection %1_%2_to_%3_%4.").arg(
-            startInstanceNameQ, startBusNameQ, endInstanceNameQ, endBusNameQ));
-        return false;
+        messager_->showMessage(QString("Could not find connection %1.").
+            arg(QString::fromStdString(connectionName)));
     }
 
-    activeDesign_->getInterconnections()->removeAll(connection);
-    return true;
+    return success;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::interfaceMatchesConnection()
+// Function: PythonAPI::renameConnection()
 //-----------------------------------------------------------------------------
-bool PythonAPI::interfaceMatchesConnection(QString const& instanceName, QString const& interfaceReference,
-    QSharedPointer<ActiveInterface> connectionInterface) const
+bool PythonAPI::renameConnection(std::string const& currentName, std::string const& newName)
 {
-    return connectionInterface->getComponentReference() == instanceName &&
-        connectionInterface->getBusReference() == interfaceReference;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::findConnection()
-//-----------------------------------------------------------------------------
-QSharedPointer<Interconnection> PythonAPI::findConnection(QString const& startInstanceName,
-    QString const& startBus, QString const& endInstanceName, QString const& endBus) const
-{
-    for (auto connection : *activeDesign_->getInterconnections())
-    {
-        if (interfaceMatchesConnection(startInstanceName, startBus, connection->getStartInterface()))
-        {
-            for (auto connectionInterface : *connection->getActiveInterfaces())
-            {
-                if (interfaceMatchesConnection(endInstanceName, endBus, connectionInterface))
-                {
-                    return connection;
-                }
-            }
-        }
-        else if (interfaceMatchesConnection(endInstanceName, endBus, connection->getStartInterface()))
-        {
-            for (auto connectionInterface : *connection->getActiveInterfaces())
-            {
-                if (interfaceMatchesConnection(startInstanceName, startBus, connectionInterface))
-                {
-                    return connection;
-                }
-            }
-        }
-    }
-
-    return QSharedPointer<Interconnection>();
+    return connectionInterface_->setName(currentName, newName);
 }
 
 //-----------------------------------------------------------------------------
@@ -1465,14 +1306,8 @@ bool PythonAPI::createAdHocConnection(std::string const& startInstanceName, std:
     QString connectionName = startInstanceNameQ + QStringLiteral("_") + startPortNameQ + QStringLiteral("_to_") +
         endInstanceNameQ + QStringLiteral("_") + endPortNameQ;
 
-    QSharedPointer<PortReference> startPortReference(new PortReference(startPortNameQ, startInstanceNameQ));
-    QSharedPointer<PortReference> endPortReference(new PortReference(endPortNameQ, endInstanceNameQ));
-
-    QSharedPointer<AdHocConnection> newConnection(new AdHocConnection(connectionName));
-    newConnection->getInternalPortReferences()->append(startPortReference);
-    newConnection->getInternalPortReferences()->append(endPortReference);
-
-    activeDesign_->getAdHocConnections()->append(newConnection);
+    adhocConnectionInterface_->addAdHocConnection(
+        startInstanceName, startPort, endInstanceName, endPort, connectionName.toStdString());
 
     return true;
 
@@ -1484,56 +1319,22 @@ bool PythonAPI::createAdHocConnection(std::string const& startInstanceName, std:
 bool PythonAPI::removeAdHocConnection(std::string const& startInstanceName, std::string const& startPort,
     std::string const& endInstanceName, std::string const& endPort)
 {
-    QString startInstanceNameQ = QString::fromStdString(startInstanceName);
-    QString endInstanceNameQ = QString::fromStdString(endInstanceName);
-    QString startPortNameQ = QString::fromStdString(startPort);
-    QString endPortNameQ = QString::fromStdString(endPort);
-
-    QSharedPointer<AdHocConnection> connection =
-        getAdhocConnection(startInstanceNameQ, startPortNameQ, endInstanceNameQ, endPortNameQ);
-    if (!connection)
+    std::string connectionName =
+        adhocConnectionInterface_->getConnectionName(startInstanceName, startPort, endInstanceName, endPort);
+    bool success = adhocConnectionInterface_->removeAdHocConnection(connectionName);
+    if (success == false)
     {
-        messager_->showMessage(QString("Could not find connection %1_%2_to_%3_%4.").arg(
-            startInstanceNameQ, startPortNameQ, endInstanceNameQ, endPortNameQ));
-        return false;
+        messager_->showMessage(QString("Could not find connection %1.").
+            arg(QString::fromStdString(connectionName)));
     }
 
-    activeDesign_->getAdHocConnections()->removeAll(connection);
-    return true;
+    return success;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonAPI::getAdhocConnection()
+// Function: PythonAPI::renameAdHocConnection()
 //-----------------------------------------------------------------------------
-QSharedPointer<AdHocConnection> PythonAPI::getAdhocConnection(QString const& startInstanceName,
-    QString const& startPort, QString const& endInstanceName, QString const& endPort) const
+bool PythonAPI::renameAdHocConnection(std::string const& currentName, std::string const& newName)
 {
-    bool firstFound = false;
-    bool secondFound = false;
-
-    for (auto connection : *activeDesign_->getAdHocConnections())
-    {
-        for (auto connectionPort : *connection->getInternalPortReferences())
-        {
-            if (connectionPort->getComponentRef() == startInstanceName &&
-                connectionPort->getPortRef() == startPort)
-            {
-                firstFound = true;
-            }
-            if (connectionPort->getComponentRef() == endInstanceName && connectionPort->getPortRef() == endPort)
-            {
-                secondFound = true;
-            }
-        }
-
-        if (firstFound && secondFound)
-        {
-            return connection;
-        }
-        
-        firstFound = false;
-        secondFound = false;
-    }
-
-    return QSharedPointer<AdHocConnection>();
+    return adhocConnectionInterface_->setName(currentName, newName);
 }
