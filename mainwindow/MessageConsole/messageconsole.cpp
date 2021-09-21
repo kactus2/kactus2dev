@@ -67,6 +67,9 @@ void MessageConsole::onNoticeMessage(QString const& message)
 	// notices are printed in blue
 	setTextColor(KactusColors::REGULAR_MESSAGE);
 	appendPlainText(message);
+
+    moveCursor(QTextCursor::Start);
+    moveCursor(QTextCursor::End);
 }
 
 //-----------------------------------------------------------------------------
