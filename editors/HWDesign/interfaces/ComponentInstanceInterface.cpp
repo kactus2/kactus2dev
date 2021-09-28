@@ -32,7 +32,7 @@ ComponentInstanceInterface::ComponentInstanceInterface(InterconnectionInterface*
 NameGroupInterface(),
 componentInstances_(),
 connectionInterface_(connectionInterface),
-adHocInterface_(adHocInterface)
+adHocConnectionInterface_(adHocInterface)
 {
 
 }
@@ -45,7 +45,7 @@ void ComponentInstanceInterface::setComponentInstances(QSharedPointer<Design> ne
     componentInstances_ = newDesign->getComponentInstances();
 
     connectionInterface_->setInterconnections(newDesign);
-    adHocInterface_->setConnections(newDesign);
+    adHocConnectionInterface_->setConnections(newDesign);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,6 +142,10 @@ bool ComponentInstanceInterface::setName(std::string const& currentName, std::st
     QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
 
     editedInstance->setInstanceName(uniqueNewName);
+
+    connectionInterface_->renameComponentReferences(currentName, newName);
+    adHocConnectionInterface_->renameComponentReferences(currentName, newName);
+
     return true;
 }
 
@@ -251,7 +255,7 @@ bool ComponentInstanceInterface::removeComponentInstance(std::string const& inst
     }
 
     connectionInterface_->removeInstanceInterconnections(instanceName);
-    adHocInterface_->removeInstanceAdHocConnections(instanceName);
+    adHocConnectionInterface_->removeInstanceAdHocConnections(instanceName);
 
     return componentInstances_->removeOne(removedItem);
 }

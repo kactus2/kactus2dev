@@ -75,6 +75,18 @@ public:
         std::string const& endInstanceName, std::string const& endBusName) const;
 
     /*!
+     *  Get the name of the selected hierarchical interconnection.
+     *
+     *      @param [in] instanceName    Name of the component instance containing the selected bus interface.
+     *      @param [in] instanceBus     Name of the selected component instance bus interface.
+     *      @param [in] topBus          Name of the top component bus interface.
+     *
+     *      @return Name of the selected interconnection.
+     */
+    std::string getHierarchicalConnectionName(std::string const& instanceName, std::string const& instanceBus,
+        std::string const& topBus) const;
+
+    /*!
      *  Get the number of available interconnections.
      *
      *      @return Number of available interconnections.
@@ -146,6 +158,17 @@ public:
         std::string const& endComponentInstance, std::string const& endBus, std::string const& connectionName = "");
 
     /*!
+     *  Add a new hierarchical interconnection.
+     *
+     *      @param [in] instanceName        Name of the component instance containing the selected bus interface.
+     *      @param [in] instanceBus         Name of the selected component instance bus interface.
+     *      @param [in] topBus              Name of the selected top component bus interface.
+     *      @param [in] connectionName      Name of the connection.
+     */
+    void addHierarchicalInterconnection(std::string const& instanceName, std::string const& instanceBus,
+        std::string const& topBus, std::string const& connectionName = "");
+
+    /*!
      *  Remove the selected interconnection.
      *
      *      @param [in] connectionName  Name of the selected interconnection.
@@ -171,6 +194,14 @@ public:
      *      @return True, if the interconnection exists, false otherwise.
      */
     bool interconnectionExists(std::string const& connectionName) const;
+
+    /*!
+     *  Rename the component references in connections.
+     *
+     *      @param [in] currentName     Current name of the component instance.
+     *      @param [in] newName         New name for the component instance.
+     */
+    void renameComponentReferences(std::string const& currentName, std::string const& newName);
 
     //! No copying. No assignment.
     InterconnectionInterface(const InterconnectionInterface& other) = delete;

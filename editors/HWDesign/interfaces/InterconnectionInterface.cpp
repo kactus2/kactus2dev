@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ActiveInterface.h>
 #include <IPXACTmodels/Design/Interconnection.h>
+#include <IPXACTmodels/Design/HierInterface.h>
 
 namespace
 {
@@ -126,6 +127,35 @@ std::string InterconnectionInterface::getConnectionName(std::string const& start
             {
                 if (connectionInterface->getComponentReference() == endInstance &&
                     connectionInterface->getBusReference() == endBus)
+                {
+                    return connection->name().toStdString();
+                }
+            }
+        }
+    }
+
+    return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectionInterface::getHierarchicalConnectionName()
+//-----------------------------------------------------------------------------
+std::string InterconnectionInterface::getHierarchicalConnectionName(std::string const& instanceName,
+    std::string const& instanceBus, std::string const& topBus) const
+{
+    QString instanceQ = QString::fromStdString(instanceName);
+    QString instanceBusQ = QString::fromStdString(instanceBus);
+    QString topBusQ = QString::fromStdString(topBus);
+
+    for (auto connection : *interconnections_)
+    {
+        QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
+        if (startInterface && startInterface->getComponentReference() == instanceQ &&
+            startInterface->getBusReference() == instanceBusQ)
+        {
+            for (auto connectionInterface : *connection->getHierInterfaces())
+            {
+                if (connectionInterface->getBusReference() == topBusQ)
                 {
                     return connection->name().toStdString();
                 }
@@ -268,6 +298,32 @@ void InterconnectionInterface::addInterconnection(std::string const& startCompon
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectionInterface::addHierarchicalInterconnection()
+//-----------------------------------------------------------------------------
+void InterconnectionInterface::addHierarchicalInterconnection(std::string const& instanceName,
+    std::string const& instanceBus, std::string const& topBus, std::string const& connectionName /* = "" */)
+{
+    QString instanceNameQ = QString::fromStdString(instanceName);
+    QString instanceBusQ = QString::fromStdString(instanceBus);
+    QString topBusQ = QString::fromStdString(topBus);
+
+    QSharedPointer<ActiveInterface> instanceInterface(new ActiveInterface(instanceNameQ, instanceBusQ));
+
+    QSharedPointer<HierInterface> topInterface(new HierInterface(topBusQ));
+
+    QString newConnectionName = QString::fromStdString(connectionName);
+    if (newConnectionName.isEmpty())
+    {
+        newConnectionName = instanceNameQ + QLatin1String("_") + instanceBusQ + QLatin1String("_to_") + topBusQ;
+    }
+    
+    QSharedPointer<Interconnection> newConnection(new Interconnection(newConnectionName, instanceInterface));
+    newConnection->getHierInterfaces()->append(topInterface);
+
+    interconnections_->append(newConnection);
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectionInterface::removeInterconnection()
 //-----------------------------------------------------------------------------
 bool InterconnectionInterface::removeInterconnection(std::string const& connectionName)
@@ -345,4 +401,30 @@ bool InterconnectionInterface::interconnectionExists(std::string const& connecti
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectionInterface::renameComponentReferences()
+//-----------------------------------------------------------------------------
+void InterconnectionInterface::renameComponentReferences(std::string const& currentName,
+    std::string const& newName)
+{
+    QString oldInstanceName = QString::fromStdString(currentName);
+    QString newInstanceName = QString::fromStdString(newName);
+
+    for (auto connection : *interconnections_)
+    {
+        if (connection->getStartInterface()->getComponentReference() == oldInstanceName)
+        {
+            connection->getStartInterface()->setComponentReference(newInstanceName);
+        }
+
+        for (auto connectionInterface : *connection->getActiveInterfaces())
+        {
+            if (connectionInterface->getComponentReference() == oldInstanceName)
+            {
+                connectionInterface->setComponentReference(newInstanceName);
+            }
+        }
+    }
 }

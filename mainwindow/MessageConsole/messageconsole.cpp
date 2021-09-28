@@ -68,8 +68,7 @@ void MessageConsole::onNoticeMessage(QString const& message)
 	setTextColor(KactusColors::REGULAR_MESSAGE);
 	appendPlainText(message);
 
-    moveCursor(QTextCursor::Start);
-    moveCursor(QTextCursor::End);
+    viewport()->update();
 }
 
 //-----------------------------------------------------------------------------

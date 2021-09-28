@@ -75,6 +75,18 @@ public:
         std::string const& endInstanceName, std::string const& endPortName) const;
 
     /*!
+     *  Get the name of the selected hierarchical ad hoc connection.
+     *
+     *      @param [in] instanceName    Name of the component instance containing the selected port.
+     *      @param [in] instancePort    Name of the selected component instance port.
+     *      @param [in] topPort         Name of the top component port.
+     *
+     *      @return Name of the selected ad hoc connection.
+     */
+    std::string getHierarchicalConnectionName(std::string const& instanceName, std::string const& instancePort,
+        std::string const& topPort) const;
+
+    /*!
      *  Get the number of available ad hoc connections.
      *
      *      @return Number of available ad hoc connections.
@@ -147,6 +159,17 @@ public:
         std::string const& connectionName = "");
 
     /*!
+     *  Add a new hierarchical ad hoc connection. 
+     *
+     *      @param [in] instanceName        Name of the component instance containing the selected port.
+     *      @param [in] instancePort        Name of the selected port.
+     *      @param [in] topPort             Name of the top component port.
+     *      @param [in] connectionName      Name of the new ad hoc connection.
+     */
+    void addHierarchicalAdHocConnection(std::string const& instanceName, std::string const& instancePort,
+        std::string const& topPort, std::string const& connectionName = "");
+
+    /*!
      *  Remove the selected ad hoc connection.
      *
      *      @param [in] busName     Name of the selected ad hoc connection.
@@ -172,6 +195,14 @@ public:
      *      @return True, if the ad hoc connection exists, false otherwise.
      */
     bool adHocConnectionExists(std::string const& connectionName) const;
+
+    /*!
+     *  Rename the component references in connections.
+     *
+     *      @param [in] currentName     Current name of the component instance.
+     *      @param [in] newName         New name for the component instance.
+     */
+    void renameComponentReferences(std::string const& currentName, std::string const& newName);
 
     //! No copying. No assignment.
     AdHocConnectionInterface(const AdHocConnectionInterface& other) = delete;

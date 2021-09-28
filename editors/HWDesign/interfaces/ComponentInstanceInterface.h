@@ -202,7 +202,7 @@ private:
     InterconnectionInterface* connectionInterface_;
 
     //! Interface for accessing design ad hoc connections.
-    AdHocConnectionInterface* adHocInterface_;
+    AdHocConnectionInterface* adHocConnectionInterface_;
 };
 
 #endif // COMPONENTINSTANCEINTERFACE_H
