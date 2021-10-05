@@ -318,6 +318,19 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
     blockItem->setAddress(QString::number(baseAddress));
     blockItem->setRange(expressionParser_->parseExpression(addressBlock->getRange()));
     blockItem->setWidth(expressionParser_->parseExpression(addressBlock->getWidth()));
+    blockItem->setUsage(addressBlock->getUsage());
+
+    QString blockPresence = addressBlock->getIsPresent();
+    if (blockPresence.isEmpty())
+    {
+        blockPresence = "1";
+    }
+    else
+    {
+        blockPresence = expressionParser_->parseExpression(addressBlock->getIsPresent());
+    }
+
+    blockItem->setIsPresent(blockPresence);
 
     foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
     {

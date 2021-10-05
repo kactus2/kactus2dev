@@ -143,7 +143,8 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        generateDeviceTree(component, dialog.getSelectedView(), dialog.getOutputPath());
+        generateDeviceTree(
+            component, dialog.getSelectedView(), dialog.getOutputPath(), dialog.allowAddressBlocks());
 
         if (dialog.saveFileToFileSet())
         {
@@ -167,7 +168,7 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 // Function: LinuxDeviceTreePlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
-    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, 
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration,
     QString const& viewName, QString const& outputDirectory)
 {
     utility_ = utility;
@@ -192,7 +193,7 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     utility_->printInfo(tr("Target directory: %1").arg(outputDirectory));
 
     QString generatorPath = createFileNamePath(outputDirectory, component->getVlnv().getName());
-    generateDeviceTree(component, viewName, generatorPath);
+    generateDeviceTree(component, viewName, generatorPath, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -232,10 +233,10 @@ QString LinuxDeviceTreePlugin::createFileNamePath(QString const& suggestedPath, 
 // Function: LinuxDeviceTreePlugin::generateDeviceTree()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreePlugin::generateDeviceTree(QSharedPointer<Component> component, QString const& activeView,
-    QString const& filePath)
+    QString const& filePath, bool writeBlocks)
 {
     LinuxDeviceTreeGenerator generator(utility_->getLibraryInterface());
-    generator.generate(component, activeView, filePath);
+    generator.generate(component, activeView, writeBlocks, filePath);
 
     utility_->printInfo("Generation successful.");
 }

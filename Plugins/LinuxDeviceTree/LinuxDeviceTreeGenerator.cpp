@@ -58,12 +58,13 @@ LinuxDeviceTreeGenerator::~LinuxDeviceTreeGenerator()
 // Function: LinuxDeviceTreeGenerator::generate()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::generate(QSharedPointer<Component> topComponent, QString const& activeView,
-    QString const& outputPath)
+    bool writeAddressBlocks, QString const& outputPath)
 {
     QSharedPointer<ConnectivityGraph> graph = graphFactory_.createConnectivityGraph(topComponent, activeView);
     MasterSlavePathSearch searchAlgorithm;
 
-    writeFile(outputPath, topComponent, activeView, getMasterRoots(searchAlgorithm.findMasterSlaveRoots(graph)));
+    writeFile(outputPath, topComponent, activeView, writeAddressBlocks,
+        getMasterRoots(searchAlgorithm.findMasterSlaveRoots(graph)));
 }
 
 //-----------------------------------------------------------------------------
@@ -155,7 +156,7 @@ bool LinuxDeviceTreeGenerator::cpuContainersMatch(ComponentCPUContainer const& f
 // Function: LinuxDeviceTreeGenerator::writeFile()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writeFile(QString const& outputPath, QSharedPointer<Component> topComponent,
-    QString const& activeView, QVector<QSharedPointer<ConnectivityInterface>> masterRoots)
+    QString const& activeView, bool writeAddressBlocks, QVector<QSharedPointer<ConnectivityInterface>> masterRoots)
 {
     QFile outputFile(outputPath);
     if (!outputFile.open(QIODevice::WriteOnly))
@@ -167,7 +168,7 @@ void LinuxDeviceTreeGenerator::writeFile(QString const& outputPath, QSharedPoint
 
     int pathNumber = 0;
     QVector<QSharedPointer<const Cpu> > connectedCPUs;
-    writePaths(outputStream, topComponent, activeView, masterRoots, pathNumber, connectedCPUs);
+    writePaths(outputStream, topComponent, activeView, masterRoots, pathNumber, connectedCPUs, writeAddressBlocks);
 
     writeUnconnectedCPUs(outputStream, pathNumber, connectedCPUs, topComponent, activeView);
 
@@ -179,15 +180,15 @@ void LinuxDeviceTreeGenerator::writeFile(QString const& outputPath, QSharedPoint
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writePaths(QTextStream& outputStream, QSharedPointer<Component> topComponent,
     QString const& activeView, QVector<QSharedPointer<ConnectivityInterface>> interfaceNodes, int pathNumber,
-    QVector<QSharedPointer<const Cpu>>& connectedCPUs)
+    QVector<QSharedPointer<const Cpu>>& connectedCPUs, bool writeAddressBlocks)
 {
     for (auto node : interfaceNodes)
     {
         LinuxDeviceTreeGenerator::ComponentCPUContainer cpuContainer = getCPUsForInterface(node);
         if (cpuContainer.interfacedCPUs_.isEmpty())
         {
-            writePaths(
-                outputStream, topComponent, activeView, node->getChildInterfaceNodes(), pathNumber, connectedCPUs);
+            writePaths(outputStream, topComponent, activeView, node->getChildInterfaceNodes(), pathNumber,
+                connectedCPUs, writeAddressBlocks);
         }
         else
         {
@@ -206,7 +207,7 @@ void LinuxDeviceTreeGenerator::writePaths(QTextStream& outputStream, QSharedPoin
 
             if (writePathOk)
             {
-                startPathWriting(outputStream, node, cpuContainer, pathNumber);
+                startPathWriting(outputStream, node, cpuContainer, pathNumber, writeAddressBlocks);
                 outputStream << endl;
                 pathNumber++;
             }
@@ -268,8 +269,7 @@ QSharedPointer<Component const> LinuxDeviceTreeGenerator::getComponentContaining
 //-----------------------------------------------------------------------------
 QVector<LinuxDeviceTreeGenerator::CpuMemory> LinuxDeviceTreeGenerator::getMemories(
     QSharedPointer<const ConnectivityInterface> previousInterface,
-    QSharedPointer<ConnectivityInterface> interfaceNode, quint64 baseAddress, quint64 const& memoryItemRange)
-    const
+    QSharedPointer<ConnectivityInterface> interfaceNode, quint64 baseAddress, quint64 const& memoryItemRange) const
 {
     QVector<LinuxDeviceTreeGenerator::CpuMemory> newCpuMemories;
     quint64 newBaseAddress = baseAddress;
@@ -291,13 +291,14 @@ QVector<LinuxDeviceTreeGenerator::CpuMemory> LinuxDeviceTreeGenerator::getMemori
             QPair<quint64, quint64> memoryAddress = MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(
                 interfaceNode->getConnectedMemory());
 
+            quint64 memoryBase = newBaseAddress;
             newBaseAddress += memoryAddress.first;
             if (newMemoryRange == 0)
             {
                 newMemoryRange = memoryAddress.second + 1;
             }
 
-            LinuxDeviceTreeGenerator::CpuMemory newMemory{ interfaceNode, newBaseAddress, newMemoryRange };
+            LinuxDeviceTreeGenerator::CpuMemory newMemory{ interfaceNode, memoryBase, newBaseAddress, newMemoryRange };
             newCpuMemories.append(newMemory);
             return newCpuMemories;
         }
@@ -368,7 +369,8 @@ LinuxDeviceTreeGenerator::ComponentCPUContainer LinuxDeviceTreeGenerator::getCom
 // Function: LinuxDeviceTreeGenerator::startPathWriting()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::startPathWriting(QTextStream& outputStream,
-    QSharedPointer<const ConnectivityInterface> pathRootNode, ComponentCPUContainer cpuContainer, int pathNumber)
+    QSharedPointer<const ConnectivityInterface> pathRootNode, ComponentCPUContainer cpuContainer, int pathNumber,
+    bool writeAddressBlocks)
 {
     writeTreeStart(outputStream, pathNumber);
 
@@ -389,9 +391,9 @@ void LinuxDeviceTreeGenerator::startPathWriting(QTextStream& outputStream,
     quint64 memoryItemBaseAddress = 0;
     quint64 memoryItemRange = 0;
     writePathNode(outputStream, QSharedPointer<ConnectivityInterface>(), pathRootNode, memoryItemBaseAddress,
-        memoryItemRange, prefix);
+        memoryItemRange, prefix, writeAddressBlocks);
 
-    writeMemories(outputStream, cpuContainer, prefix);
+    writeMemories(outputStream, cpuContainer, prefix, writeAddressBlocks);
 
     prefix.remove(0, 1);
     writeLineEnding(outputStream, prefix);
@@ -403,7 +405,7 @@ void LinuxDeviceTreeGenerator::startPathWriting(QTextStream& outputStream,
 void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
     QSharedPointer<const ConnectivityInterface> previousInterface,
     QSharedPointer<const ConnectivityInterface> interfaceNode, quint64 const& baseAddress,
-    quint64 const& memoryItemRange, QString& prefix)
+    quint64 const& memoryItemRange, QString& prefix, bool writeAddressBlocks)
 {
     if (!canWriteNode(interfaceNode, previousInterface))
     {
@@ -434,13 +436,14 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
                 MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(
                     interfaceNode->getConnectedMemory());
 
-            newBaseAddress += memoryAddress.first;
+            quint64 mapBaseAddress = newBaseAddress + memoryAddress.first;
             if (newMemoryRange == 0)
             {
                 newMemoryRange = memoryAddress.second + 1;
             }
 
-            writeMemoryMapItem(outputStream, interfaceNode, newBaseAddress, newMemoryRange, prefix);
+            writeMemoryMapItem(outputStream, interfaceNode, newBaseAddress, mapBaseAddress, newMemoryRange,
+                prefix, writeAddressBlocks);
             outputStream << endl;
 
             return;
@@ -451,7 +454,8 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
     {
         if (pathNode != previousInterface)
         {
-            writePathNode(outputStream, interfaceNode, pathNode, newBaseAddress, newMemoryRange, prefix);
+            writePathNode(
+                outputStream, interfaceNode, pathNode, newBaseAddress, newMemoryRange, prefix, writeAddressBlocks);
 
             if (pathNode->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0 &&
                 pathNode->isBridged())
@@ -564,22 +568,24 @@ void LinuxDeviceTreeGenerator::writeBridge(QTextStream& outputStream,
 // Function: LinuxDeviceTreeGenerator::writeMemoryMapItem()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writeMemoryMapItem(QTextStream& outputStream,
-    QSharedPointer<ConnectivityInterface const> interfaceNode, quint64 baseAddress, quint64 range, QString& prefix)
+    QSharedPointer<ConnectivityInterface const> interfaceNode, quint64 itemBaseAddress, quint64 mapBaseAddress,
+    quint64 range, QString& prefix, bool writeAddressBlocks)
 {
     QString instanceName = interfaceNode->getInstance()->getName();
     QString componentVLNV = interfaceNode->getInstance()->getVlnv();
     QString memoryItemName = interfaceNode->getConnectedMemory()->getName();
 
-    writeMemoryData(
-        outputStream, memoryItemName, instanceName, componentVLNV, baseAddress, range, false, prefix);
+    writeMemoryData(outputStream, memoryItemName, instanceName, componentVLNV, itemBaseAddress, mapBaseAddress,
+        range, false, prefix, interfaceNode, writeAddressBlocks);
 }
 
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeGenerator::writeMapComment()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writeMemoryData(QTextStream& outputStream, QString const& itemName,
-    QString const& instanceName, QString const& componentVLNV, quint64 const& baseAddress, quint64 const& range,
-    bool isMemory, QString& prefix) const
+    QString const& instanceName, QString const& componentVLNV, quint64 const& itemBaseAddress,
+    quint64 const& mapBaseAddress, quint64 const& range, bool isMemory, QString& prefix,
+    QSharedPointer<ConnectivityInterface const> memoryNode, bool writeAddressBlocks) const
 {
     outputStream << prefix << "// Memory map '" << itemName << "' in instance '" << instanceName <<
         "' of component " << componentVLNV << endl;
@@ -590,7 +596,7 @@ void LinuxDeviceTreeGenerator::writeMemoryData(QTextStream& outputStream, QStrin
     {
         writtenName = QLatin1String("memory");
     }
-    outputStream << prefix << writtenName << "@" << QString::number(baseAddress, 16).toUpper() << " {" << endl;
+    outputStream << prefix << writtenName << "@" << QString::number(mapBaseAddress, 16).toUpper() << " {" << endl;
     prefix.append(TABPREFIX);
 
     if (isMemory)
@@ -598,8 +604,84 @@ void LinuxDeviceTreeGenerator::writeMemoryData(QTextStream& outputStream, QStrin
         outputStream << prefix << QLatin1String("device_type = \"memory\";") << endl;
     }
 
-    outputStream << prefix << "reg = <0x" << QString::number(baseAddress, 16).toUpper() << " 0x" <<
+    outputStream << prefix << "reg = <0x" << QString::number(mapBaseAddress, 16).toUpper() << " 0x" <<
         QString::number(range, 16).toUpper() << ">;" << endl;
+
+    if (writeAddressBlocks)
+    {
+        writeAddressBlocksData(outputStream, memoryNode, itemBaseAddress, prefix);
+    }
+
+    prefix.remove(0, 1);
+    writeLineEnding(outputStream, prefix);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeGenerator::writeAddressBlocksData()
+//-----------------------------------------------------------------------------
+void LinuxDeviceTreeGenerator::writeAddressBlocksData(QTextStream& outputStream,
+    QSharedPointer<ConnectivityInterface const> memoryNode, quint64 const& itemBaseAddress, QString& prefix) const
+{
+    for (auto childItem : memoryNode->getConnectedMemory()->getChildItems())
+    {
+        if (childItem->getType() == "addressBlock")
+        {
+            writeSingleAddressBlock(outputStream, memoryNode, childItem, itemBaseAddress, prefix);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeGenerator::writeSingleAddressBlock()
+//-----------------------------------------------------------------------------
+void LinuxDeviceTreeGenerator::writeSingleAddressBlock(QTextStream& outputStream,
+    QSharedPointer<ConnectivityInterface const> containingMemoryNode, QSharedPointer<MemoryItem> blockItem,
+    quint64 const& itemBaseAddress, QString& prefix) const
+{
+    QString blockName = blockItem->getName();
+
+    outputStream << endl;
+    outputStream << prefix << "// Address block '" << blockName << "'" << endl;
+
+    quint64 blockAddress = blockItem->getAddress().toULongLong() + itemBaseAddress;
+    QString blockAddressString = QString::number(blockAddress, 16);
+
+    outputStream << prefix << blockItem->getName() << "@" << blockAddressString << " {" <<  endl;
+    prefix.append(TABPREFIX);
+
+    QStringList vlnvList = containingMemoryNode->getInstance()->getVlnv().split(":");
+    QString vendor = "";
+    if (vlnvList.size() > 0)
+    {
+        vendor = vlnvList.first();
+    }
+
+    QString blockStatus = "disabled";
+    bool canConvertPresence = false;
+    int blockPresence = blockItem->getIsPresent().toInt(&canConvertPresence);
+    if (canConvertPresence & blockPresence != 0)
+    {
+        blockStatus = "okay";
+    }
+
+    outputStream << prefix << "compatible = \"" << vendor << ", " << blockName << "\";" << endl;
+    outputStream << prefix << "status = \"" << blockStatus << "\";" << endl;
+    outputStream << prefix << "#address-cells = <2>;" << endl;
+    outputStream << prefix << "#size-cells = <1>;" << endl;
+
+    General::Usage blockUsage = blockItem->getUsage();
+    if (blockUsage == General::REGISTER)
+    {
+        quint64 blockRange = blockItem->getRange().toULongLong();
+        QString blockRangeString = QString::number(blockRange, 16);
+
+        outputStream << prefix << "reg = <0x" << blockAddressString << " 0x" << blockRangeString << ">;" << endl;
+    }
+    else if (blockUsage == General::MEMORY)
+    {
+        outputStream << prefix << "device_type = \"memory\"" << endl;
+    }
+
     prefix.remove(0, 1);
     writeLineEnding(outputStream, prefix);
 }
@@ -608,7 +690,7 @@ void LinuxDeviceTreeGenerator::writeMemoryData(QTextStream& outputStream, QStrin
 // Function: LinuxDeviceTreeGenerator::writeMemories()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writeMemories(QTextStream& outputStream, ComponentCPUContainer const& cpuContainer,
-    QString& prefix) const
+    QString& prefix, bool writeAddressBlocks) const
 {
     for (auto memory : cpuContainer.memory_)
     {
@@ -616,8 +698,8 @@ void LinuxDeviceTreeGenerator::writeMemories(QTextStream& outputStream, Componen
         QString instanceName = memory.memoryInterface_->getInstance()->getName();
         QString componentVLNV = memory.memoryInterface_->getInstance()->getVlnv();
 
-        writeMemoryData(outputStream, mapName, instanceName, componentVLNV, memory.baseAddress_,
-            memory.range_, true, prefix);
+        writeMemoryData(outputStream, mapName, instanceName, componentVLNV, memory.itemBaseAddress_,
+            memory.mapBaseAddress_, memory.range_, true, prefix, memory.memoryInterface_, writeAddressBlocks);
 
         outputStream << endl;
     }

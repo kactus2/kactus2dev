@@ -24,6 +24,7 @@ class Design;
 #include <QLineEdit>
 #include <QLabel>
 #include <QSharedPointer>
+#include <QCheckBox>
 
 //-----------------------------------------------------------------------------
 //! Dialog for setting linux device tree generation options.
@@ -76,6 +77,13 @@ public:
      *      @return	The name of the selected file set.
      */
     QString getTargetFileSet() const;
+
+    /*!
+     *  Check if address blocks should be written.
+     *
+     *      @return True, if address blocks should be written, false otherwise.
+     */
+    bool allowAddressBlocks() const;
 
 public slots:
 
@@ -132,6 +140,9 @@ private:
 
     //! Editor for selecting the path for the device tree file.
     QLineEdit* fileEditor_;
+
+    //! Check box for writing address blocks.
+    QCheckBox* writeBlocks_;
 };
 
 #endif // LINUXDEVICETREEDIALOG_H
