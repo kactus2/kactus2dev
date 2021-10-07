@@ -21,6 +21,7 @@ name_(name),
 vlnv_(),
 uuid_(),
 activeView_(),
+channeled_(false),
 memories_()
 {
 
@@ -104,4 +105,20 @@ void ConnectivityComponent::addMemory(QSharedPointer<MemoryItem> spaceItem)
 QVector<QSharedPointer<MemoryItem> > ConnectivityComponent::getMemories() const
 {
     return memories_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityComponent::setChanneled()
+//-----------------------------------------------------------------------------
+void ConnectivityComponent::setChanneled()
+{
+    channeled_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityComponent::isChanneled()
+//-----------------------------------------------------------------------------
+bool ConnectivityComponent::isChanneled() const
+{
+    return channeled_;
 }

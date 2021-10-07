@@ -16,8 +16,9 @@
 // Function: ScriptingHistory::ScriptingHistory()
 //-----------------------------------------------------------------------------
 ScriptingHistory::ScriptingHistory(QObject* parent /*= nullptr*/) :
-    history_(),
-    historyPosition_(0)
+QObject(parent),
+history_(),
+historyPosition_(0)
 {
 
 }

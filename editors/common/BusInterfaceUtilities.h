@@ -12,6 +12,8 @@
 #ifndef BUSINTERFACECOMPATIBILITIES_H
 #define BUSINTERFACECOMPATIBILITIES_H
 
+#include <common/Global.h>
+
 #include <QSharedPointer>
 
 #include <IPXACTmodels/generaldeclarations.h>
@@ -25,7 +27,6 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 namespace BusInterfaceUtilities
 {
-
     /*!
      *  Checks if the selected bus definitions match.
      *
@@ -36,6 +37,18 @@ namespace BusInterfaceUtilities
      */
     bool hasMatchingBusDefinitions(QSharedPointer<const BusDefinition> firstDefinition,
         VLNV const& secondDefinitionVLNV, LibraryInterface* library);
+
+    /*!
+     *  Check if the selected bus definition VLNVs can be connected.
+     *
+     *      @param [in] firstDefinitionVLNV     The first VLNV.
+     *      @param [in] secondDefinitionVLNV    The second VLNV.
+     *      @param [in] library                 Access to the library.
+     *
+     *      @return True, if the selected bus definition VLNVs can be connected, false otherwise.
+     */
+    KACTUS2_API bool busDefinitionVLNVsMatch(VLNV const& firstDefinitionVLNV, VLNV const& secondDefinitionVLNV,
+        LibraryInterface* library);
 
     /*!
      *  Get the path for the icon of the bus interface mode.

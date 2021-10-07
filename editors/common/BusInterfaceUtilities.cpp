@@ -48,6 +48,22 @@ bool BusInterfaceUtilities::hasMatchingBusDefinitions(QSharedPointer<const BusDe
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusInterfaceUtilities::hasMatchingBusDefinitions()
+//-----------------------------------------------------------------------------
+bool BusInterfaceUtilities::busDefinitionVLNVsMatch(VLNV const& firstDefinitionVLNV,
+    VLNV const& secondDefinitionVLNV, LibraryInterface* library)
+{
+    QSharedPointer<const BusDefinition> firstDefinition =
+        library->getModelReadOnly(firstDefinitionVLNV).dynamicCast<const BusDefinition>();
+    if (firstDefinition)
+    {
+        return BusInterfaceUtilities::hasMatchingBusDefinitions(firstDefinition, secondDefinitionVLNV, library);
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusInterfaceUtilities::getIconPath()
 //-----------------------------------------------------------------------------
 QString BusInterfaceUtilities::getIconPath(General::InterfaceMode busMode)

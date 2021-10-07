@@ -51,11 +51,13 @@ public:
     /*!
      *  Generates the linux device tree.
      *
-     *      @param [in] topComponent    The top component in the hierarchy to generate listing for.
-     *      @param [in] activeView      The active view for the generation.
-     *      @param [in] outputPath      Path to the output file.
+     *      @param [in] topComponent        The top component in the hierarchy to generate listing for.
+     *      @param [in] activeView          The active view for the generation.
+     *      @param [in] writeAddressBlocks  Flag for writing address block data.
+     *      @param [in] outputPath          Path to the output file.
      */
-    void generate(QSharedPointer<Component> topComponent, QString const& activeView, QString const& outputPath);
+    void generate(QSharedPointer<Component> topComponent, QString const& activeView, bool writeAddressBlocks,
+        QString const& outputPath);
   
 private:
 
@@ -69,8 +71,11 @@ private:
         //! Interface containing the memory item.
         QSharedPointer<ConnectivityInterface const> memoryInterface_;
 
+        //! Base address of the memory location.
+        quint64 itemBaseAddress_;
+
         //! Base address of the memory.
-        quint64 baseAddress_;
+        quint64 mapBaseAddress_;
 
         //! Range of the memory.
         quint64 range_;
@@ -113,38 +118,42 @@ private:
     /*!
      *  Write the device tree file.
      *
-     *      @param [in] outputPath      Path for the file.
-     *      @param [in] topComponent    The top component in the hierarchy to generate listing for.
-     *      @param [in] activeView      The currently active view of the top component.
-     *      @param [in] masterRoots     List of the master interfaces.
+     *      @param [in] outputPath          Path for the file.
+     *      @param [in] topComponent        The top component in the hierarchy to generate listing for.
+     *      @param [in] activeView          The currently active view of the top component.
+     *      @param [in] writeAddressBlocks  Flag for writing address block data.
+     *      @param [in] masterRoots         List of the master interfaces.
      */
     void writeFile(QString const& outputPath, QSharedPointer<Component> topComponent, QString const& activeView,
-        QVector<QSharedPointer<ConnectivityInterface> >  masterRoots);
+        bool writeAddressBlocks, QVector<QSharedPointer<ConnectivityInterface> >  masterRoots);
 
 	/*!
 	 *  Write the found memory paths.
 	 *
-	 *      @param [in]	outputStream    The stream to write into.
-	 *		@param [in]	topComponent    The starting component for the search.
-	 *		@param [in]	activeView      The currently active view of the starting component.
-	 *		@param [in]	interfaceNodes  List of interface nodes.
-     *      @param [in] pathNumber      Number of the current CPU container.
-     *      @param [in] connectedCPUs   List of handled CPUs.
-	 */
+	 *      @param [in]	outputStream        The stream to write into.
+	 *		@param [in]	topComponent        The starting component for the search.
+	 *		@param [in]	activeView          The currently active view of the starting component.
+	 *		@param [in]	interfaceNodes      List of interface nodes.
+     *      @param [in] pathNumber          Number of the current CPU container.
+     *      @param [in] connectedCPUs       List of handled CPUs.
+     *      @param [in] writeAddressBlocks  Flag for writing address block data.
+     */
     void writePaths(QTextStream& outputStream, QSharedPointer<Component> topComponent, QString const& activeView,
         QVector<QSharedPointer<ConnectivityInterface> > interfaceNodes, int pathNumber,
-        QVector<QSharedPointer<const Cpu> >& connectedCPUs);
+        QVector<QSharedPointer<const Cpu> >& connectedCPUs, bool writeAddressBlocks);
 
     /*!
      *  Write the selected interface path.
      *
-     *      @param [in] outputStream    The stream to write into.
-     *      @param [in] path            The selected interface path.
-     *      @param [in] cpuContainer    Container for component and its CPUs connected to the starting interface.
-     *		@param [in]	pathNumber      The current running number for CPU listings.
+     *      @param [in] outputStream        The stream to write into.
+     *      @param [in] path                The selected interface path.
+     *      @param [in] cpuContainer        Container for component and its CPUs connected to the starting
+     *                                          interface.
+     *		@param [in]	pathNumber          The current running number for CPU listings.
+     *      @param [in] writeAddressBlocks  Flag for writing address block data.
      */
     void startPathWriting(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> pathRootNode,
-        ComponentCPUContainer cpuContainer, int pathNumber);
+        ComponentCPUContainer cpuContainer, int pathNumber, bool writeAddressBlocks);
 
     /*!
      *  Write the selected interface node.
@@ -155,10 +164,11 @@ private:
      *      @param [in] baseAddress         Currently effective base address.
      *      @param [in] memoryItemRange     Currently effective range of the memory item.
      *      @param [in] prefix              Current tab prefix of the items.
+     *      @param [in] writeAddressBlocks  Flag for writing address block data.
      */
     void writePathNode(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> previousInterface,
         QSharedPointer<const ConnectivityInterface> interfaceNode, quint64 const& baseAddress,
-        quint64 const& memoryItemRange, QString& prefix);
+        quint64 const& memoryItemRange, QString& prefix, bool writeAddressBlocks);
 
     /*!
      *  Check if an interface node has access to memory interface nodes.
@@ -266,48 +276,79 @@ private:
      *
      *      @param [in] outputStream    The stream to write into.
      *      @param [in] interfaceNode   Interface containing the bridge.
+     *      @param [in] bridgeType      The bridge type.
      *      @param [in] prefix          The prefix for the bridge.
      */
     void writeBridge(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
-        QString& prefix);
+        QString const& bridgeType, QString& prefix);
 
     /*!
      *  Write a memory map item.
      *
-     *      @param [in] outputStream    Stream to write into.
-     *      @param [in] interfaceNode   Interface containing the memory item.
-     *      @param [in] baseAddress     Base address of the memory item.
-     *      @param [in] range           Range of the memory item.
-     *      @param [in] prefix          Prefix of the memory map item.
+     *      @param [in] outputStream        Stream to write into.
+     *      @param [in] interfaceNode       Interface containing the memory item.
+     *      @param [in] itemBaseAddress     Base address of the memory location.
+     *      @param [in] baseAddress         Base address of the memory item.
+     *      @param [in] range               Range of the memory item.
+     *      @param [in] prefix              Prefix of the memory map item.
+     *      @param [in] writeAddressBlocks  Flag for writing address block data.
      */
     void writeMemoryMapItem(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
-        quint64 baseAddress, quint64 range, QString& prefix);
+        quint64 itemBaseAddress, quint64 mapBaseAddress, quint64 range, QString& prefix, bool writeAddressBlocks);
 
     /*!
      *  Write memory item.
      *
-     *      @param [in] outputStream    Stream to write into.
-     *      @param [in] itemName        Name of the memory item.
-     *      @param [in] instanceName    Name of the instance containing the memory item.
-     *      @param [in] componentVLNV   VLNV of the component instance.
-     *      @param [in] baseAddress     Base address of the memory item.
-     *      @param [in] range           Range of the memory item.
-     *      @param [in] isMemory        Item memory usage.
-     *      @param [in] prefix          Prefix of the memory item.
+     *      @param [in] outputStream        Stream to write into.
+     *      @param [in] itemName            Name of the memory item.
+     *      @param [in] instanceName        Name of the instance containing the memory item.
+     *      @param [in] componentVLNV       VLNV of the component instance.
+     *      @param [in] baseAddress         Base address of the memory item.
+     *      @param [in] range               Range of the memory item.
+     *      @param [in] isMemory            Item memory usage.
+     *      @param [in] prefix              Prefix of the memory item.
+     *      @param [in] memoryNode          Interface containing the memory item.
+     *      @param [in] writeAddressBlocks  Flag for writing address block data.
      */
     void writeMemoryData(QTextStream& outputStream, QString const& itemName, QString const& instanceName,
-        QString const& componentVLNV, quint64 const& baseAddress, quint64 const& range, bool isMemory,
-        QString& prefix) const;
+        QString const& componentVLNV, quint64 const& itemBaseAddress, quint64 const& mapBaseAddress,
+        quint64 const& range, bool isMemory, QString& prefix,
+        QSharedPointer<ConnectivityInterface const> memoryNode, bool writeAddressBlocks) const;
+
+    /*!
+     *  Write address blocks.
+     *
+     *      @param [in] outputStream        Stream to write into.
+     *      @param [in] memoryNode          Interface containing the memory item.
+     *      @param [in] itemBaseAddress     Base address of the memory location.
+     *      @param [in] prefix              Prefix of the address blocks.
+     */
+    void writeAddressBlocksData(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> memoryNode,
+        quint64 const& itemBaseAddress, QString& prefix) const;
+
+    /*!
+     *  Write the selected address block.
+     *
+     *      @param [in] outputStream        Stream to write into.
+     *      @param [in] memoryNode          Interface containing the memory item.
+     *      @param [in] blockItem           The selected address block memory item.
+     *      @param [in] itemBaseAddress     Base address of the memory location.
+     *      @param [in] prefix              Prefix of the address blocks.
+     */
+    void writeSingleAddressBlock(QTextStream& outputStream,
+        QSharedPointer<ConnectivityInterface const> containingMemoryNode, QSharedPointer<MemoryItem> blockItem,
+        quint64 const& itemBaseAddress, QString& prefix) const;
 
     /*!
      *  Write the memory items with usage memory.
      *
-     *      @param [in] outputStream    Stream to write into.
-     *      @param [in] cpuContainer    CPU containing the memories.
-     *      @param [in] prefix          Prefix of the memories.
+     *      @param [in] outputStream        Stream to write into.
+     *      @param [in] cpuContainer        CPU containing the memories.
+     *      @param [in] prefix              Prefix of the memories.
+     *      @param [in] writeAddressBlocks  Flag for writing address block data.
      */
-    void writeMemories(QTextStream& outputStream, ComponentCPUContainer const& cpuContainer, QString& prefix)
-        const;
+    void writeMemories(QTextStream& outputStream, ComponentCPUContainer const& cpuContainer, QString& prefix,
+        bool writeAddressBlocks) const;
 
     /*!
      *	Write the unconnected CPUs of the design.

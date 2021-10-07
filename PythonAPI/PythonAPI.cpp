@@ -19,6 +19,11 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/APISupport.h>
 
+#include <editors/common/BusInterfaceUtilities.h>
+
+#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
@@ -29,11 +34,14 @@
 #include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
 
-#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/HWDesign/interfaces/ComponentInstanceInterface.h>
+#include <editors/HWDesign/interfaces/InterconnectionInterface.h>
+#include <editors/HWDesign/interfaces/AdHocConnectionInterface.h>
 
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -55,6 +63,10 @@
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 
+#include <IPXACTmodels/Design/Interconnection.h>
+#include <IPXACTmodels/Design/AdHocConnection.h>
+#include <IPXACTmodels/Design/ActiveInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::PythonAPI()
 //-----------------------------------------------------------------------------
@@ -62,10 +74,15 @@ PythonAPI::PythonAPI():
 library_(KactusAPI::getLibrary()),
 messager_(KactusAPI::getMessageChannel()),
 activeComponent_(),
+activeDesign_(),
 portsInterface_(),
+busInterface_(),
 componentParameterInterface_(),
 mapInterface_(),
 fileSetInterface_(),
+instanceInterface_(),
+connectionInterface_(),
+adhocConnectionInterface_(),
 parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Component>())),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
@@ -77,9 +94,17 @@ mapValidator_()
     componentParameterInterface_ =
         new ParametersInterface(parameterValidator_, expressionParser_, expressionFormatter_);
 
+    QSharedPointer<Component> temporaryComponent(new Component());
+    busInterface_ = BusInterfaceInterfaceFactory::createBusInterface(
+        parameterFinder_, expressionFormatter_, expressionParser_, temporaryComponent, library_);
+
     constructMemoryValidators();
     constructMemoryInterface();
     constructFileSetInterface();
+
+    connectionInterface_ = new InterconnectionInterface();
+    adhocConnectionInterface_ = new AdHocConnectionInterface();
+    instanceInterface_ = new ComponentInstanceInterface(connectionInterface_, adhocConnectionInterface_);
 }
 
 //-----------------------------------------------------------------------------
@@ -353,15 +378,7 @@ std::string PythonAPI::getFirstViewName()
 bool PythonAPI::openComponent(std::string const& vlnvString)
 {
     QString componentVLNV = QString::fromStdString(vlnvString);
-    QStringList vlnvArray = componentVLNV.split(':');
-    if (vlnvArray.size() != 4)
-    {
-        messager_->showError(QString("The given VLNV %1 is not valid").arg(componentVLNV));
-        return false;
-    }
-
-    VLNV targetVLNV(VLNV::COMPONENT, vlnvArray.at(0), vlnvArray.at(1), vlnvArray.at(2), vlnvArray.at(3));
-    QSharedPointer<Document> componentDocument = library_->getModel(targetVLNV);
+    QSharedPointer<Document> componentDocument = getDocument(componentVLNV);
     if (componentDocument)
     {
         QSharedPointer<Component> component = componentDocument.dynamicCast<Component>();
@@ -380,6 +397,8 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
 
             fileSetInterface_->setFileSets(component->getFileSets());
 
+            busInterface_->setBusInterfaces(component);
+
             activeComponent_ = component;
             messager_->showMessage(QString("Component %1 is open").arg(componentVLNV));
             return true;
@@ -395,6 +414,22 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
         messager_->showError(QString("Could not open document with VLNV %1").arg(componentVLNV));
         return false;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getDocument()
+//-----------------------------------------------------------------------------
+QSharedPointer<Document> PythonAPI::getDocument(QString const& vlnvString) const
+{
+    QStringList vlnvArray = vlnvString.split(':');
+    if (vlnvArray.size() != 4)
+    {
+        messager_->showError(QString("The given VLNV %1 is not valid").arg(vlnvString));
+        return QSharedPointer<Document>();
+    }
+
+    VLNV targetVLNV(VLNV::COMPONENT, vlnvArray.at(0), vlnvArray.at(1), vlnvArray.at(2), vlnvArray.at(3));
+    return library_->getModel(targetVLNV);
 }
 
 //-----------------------------------------------------------------------------
@@ -858,4 +893,522 @@ void PythonAPI::sendFileSetNotFoundError(QString const& setName) const
 {
     messager_->showError(QString("Could not find file set %1 within component %2").
         arg(setName, activeComponent_->getVlnv().toString()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::openDesign()
+//-----------------------------------------------------------------------------
+bool PythonAPI::openDesign(std::string const& vlnvString)
+{
+    QString designVLNV = QString::fromStdString(vlnvString);
+    QSharedPointer<Document> designDocument = getDocument(designVLNV);
+    if (designDocument)
+    {
+        QSharedPointer<Design> design = designDocument.dynamicCast<Design>();
+        if (design)
+        {
+            activeDesign_ = design;
+            messager_->showMessage(QString("Design %1 is open").arg(designVLNV));
+
+            instanceInterface_->setComponentInstances(activeDesign_);
+            connectionInterface_->setInterconnections(activeDesign_);
+            adhocConnectionInterface_->setConnections(activeDesign_);
+
+            return true;
+        }
+        else
+        {
+            messager_->showError(QString("The given VLNV %1 is not a design").arg(designVLNV));
+            return false;
+        }
+    }
+    else
+    {
+        messager_->showError(QString("Could not open document with VLNV %1").arg(designVLNV));
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::closeOpenDesign()
+//-----------------------------------------------------------------------------
+void PythonAPI::closeOpenDesign()
+{
+    if (activeDesign_)
+    {
+        messager_->showMessage(QString("Design %1 is closed").arg(activeDesign_->getVlnv().toString()));
+    }
+
+    activeDesign_ = QSharedPointer<Design>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::saveDesign()
+//-----------------------------------------------------------------------------
+void PythonAPI::saveDesign()
+{
+    if (activeDesign_)
+    {
+        messager_->showMessage(QString("Saving design %1 ...").arg(activeDesign_->getVlnv().toString()));
+
+        if (library_->writeModelToFile(activeDesign_))
+        {
+            messager_->showMessage(QString("Save complete"));
+        }
+        else
+        {
+            messager_->showError(QString("Could not save design %1").arg(activeDesign_->getVlnv().toString()));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::addComponentInstance()
+//-----------------------------------------------------------------------------
+bool PythonAPI::addComponentInstance(std::string const& vlnvString, std::string const& instanceName)
+{
+    if (!activeDesign_)
+    {
+        messager_->showMessage(QString("No open design"));
+        return false;
+    }
+
+    QString combinedVLNV = QString::fromStdString(vlnvString);
+    QSharedPointer<Document> instanceDocument = getDocument(combinedVLNV);
+    if (!instanceDocument)
+    {
+        messager_->showMessage(QString("Could not find document %1").arg(combinedVLNV));
+        return false;
+    }
+
+    QSharedPointer<Component> instanceComponent = instanceDocument.dynamicCast<Component>();
+    if (!instanceComponent)
+    {
+        messager_->showMessage(QString("%1 is not a component").arg(combinedVLNV));
+        return false;
+    }
+
+    QStringList vlnvList = combinedVLNV.split(":");
+    if (vlnvList.size() < 4)
+    {
+        messager_->showMessage(QString("The VLNV %1 is not correct").arg(combinedVLNV));
+        return false;
+    }
+
+    std::string newVendor = vlnvList.at(0).toStdString();
+    std::string newLibrary = vlnvList.at(1).toStdString();
+    std::string newName = vlnvList.at(2).toStdString();
+    std::string newVersion = vlnvList.at(3).toStdString();
+
+    instanceInterface_->addComponentInstance(instanceName);
+    return instanceInterface_->setComponentReference(instanceName, newVendor, newLibrary, newName, newVersion);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeComponentInstance()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeComponentInstance(std::string const& instanceName)
+{
+    if (!activeDesign_)
+    {
+        messager_->showMessage(QString("No open design"));
+        return false;
+    }
+
+    return instanceInterface_->removeComponentInstance(instanceName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeInstanceConnections()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeInstanceConnections(std::string const& instanceName)
+{
+    return connectionInterface_->removeInstanceInterconnections(instanceName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeInstanceAdHocConnections()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeInstanceAdHocConnections(std::string const& instanceName)
+{
+    return adhocConnectionInterface_->removeInstanceAdHocConnections(instanceName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::renameInstance()
+//-----------------------------------------------------------------------------
+bool PythonAPI::renameInstance(std::string const& currentName, std::string const& newName)
+{
+    return instanceInterface_->setName(currentName, newName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::createConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::createConnection(std::string const& startInstanceName, std::string const& startBus,
+    std::string const& endInstanceName, std::string const& endBus)
+{
+    QString startInstanceNameQ = QString::fromStdString(startInstanceName);
+    QString endInstanceNameQ = QString::fromStdString(endInstanceName);
+    QString startBusNameQ = QString::fromStdString(startBus);
+    QString endBusNameQ = QString::fromStdString(endBus);
+
+    if (!connectionEndsCheck(startInstanceNameQ, startBusNameQ, endInstanceNameQ, endBusNameQ, false))
+    {
+        messager_->showMessage(QString("Could not create connection"));
+        return false;
+    }
+
+    connectionInterface_->addInterconnection(startInstanceName, startBus, endInstanceName, endBus);
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::createHierarchicalConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::createHierarchicalConnection(std::string const& instanceName, std::string const& instanceBus,
+    std::string const& topBus)
+{
+    QString instanceNameQ = QString::fromStdString(instanceName);
+    QString instanceBusNameQ = QString::fromStdString(instanceBus);
+    QString topBusQ = QString::fromStdString(topBus);
+
+    if (!instanceExists(instanceNameQ))
+    {
+        messager_->showMessage(QString("Could not create connection"));
+        return false;
+    }
+
+    connectionInterface_->addHierarchicalInterconnection(instanceName, instanceBus, topBus);
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::connectionExistenceCheck()
+//-----------------------------------------------------------------------------
+bool PythonAPI::connectionEndsCheck(QString const& startInstanceName, QString const& startBus,
+    QString const& endInstanceName, QString const& endBus, bool isAdHocConnection)
+{
+    if (instanceExists(startInstanceName) == false || instanceExists(endInstanceName) == false)
+    {
+        return false;
+    }
+
+    QSharedPointer<ConfigurableVLNVReference> startComponenReference =
+        instanceInterface_->getComponentReference(startInstanceName.toStdString());
+    QSharedPointer<ConfigurableVLNVReference> endComponentReference =
+        instanceInterface_->getComponentReference(endInstanceName.toStdString());
+    QSharedPointer<const Document> startDocument = library_->getModelReadOnly(*startComponenReference.data());
+    QSharedPointer<const Document> endDocument = library_->getModelReadOnly(*endComponentReference.data());
+    QSharedPointer<const Component> startComponent = startDocument.dynamicCast<const Component>();
+    QSharedPointer<const Component> endComponent = endDocument.dynamicCast<const Component>();
+
+
+    if (isAdHocConnection)
+    {
+        return endsCheckForAdHoc(
+            startComponent, startBus, startInstanceName, endComponent, endBus, endInstanceName);
+    }
+    else
+    {
+        return endsCheckForInterconnection(
+            startComponent, startBus, startInstanceName, endComponent, endBus, endInstanceName);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::instanceExists()
+//-----------------------------------------------------------------------------
+bool PythonAPI::instanceExists(QString const& instanceName) const
+{
+    if (!instanceInterface_->instanceExists(instanceName.toStdString()))
+    {
+        messager_->showMessage(QString("Could not find component instance %1 within %2").
+            arg(instanceName, activeDesign_->getVlnv().toString()));
+        return false;
+    }
+
+    QSharedPointer<ConfigurableVLNVReference> instanceComponenReference =
+        instanceInterface_->getComponentReference(instanceName.toStdString());
+
+    if (!instanceComponenReference)
+    {
+        messager_->showMessage(QString("Component instance %1 does not have a component reference").
+            arg(instanceName));
+        return false;
+    }
+
+    QSharedPointer<const Document> instanceDocument =
+        library_->getModelReadOnly(*instanceComponenReference.data());
+    if (!instanceDocument)
+    {
+        messager_->showMessage(QString("Component instance %1 references a non-existing document %2").
+            arg(instanceName, instanceComponenReference->toString()));
+        return false;
+    }
+
+    QSharedPointer<const Component> instanceComponent = instanceDocument.dynamicCast<const Component>();
+    if (!instanceComponent)
+    {
+        messager_->showMessage(QString("Component instance %1 component reference %1 is not a component").
+            arg(instanceName, instanceComponenReference->toString()));
+        return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::endsCheckForAdHoc()
+//-----------------------------------------------------------------------------
+bool PythonAPI::endsCheckForAdHoc(QSharedPointer<const Component> startComponent, QString const& startBus,
+    QString const& startInstanceName, QSharedPointer<const Component> endComponent, QString const& endBus,
+    QString const& endInstanceName)
+{
+    openComponent(startComponent->getVlnv().toString().toStdString());
+
+    DirectionTypes::Direction startDirection =
+        DirectionTypes::str2Direction(QString::fromStdString(portsInterface_->getDirection(
+            startBus.toStdString())), DirectionTypes::DIRECTION_INVALID);
+
+    if (!portsInterface_->portExists(startBus.toStdString()))
+    {
+        messager_->showMessage(QString("Could not find port %1 within component instance %2.").
+            arg(startBus, startInstanceName));
+        return false;
+    }
+
+    openComponent(endComponent->getVlnv().toString().toStdString());
+    DirectionTypes::Direction endDirection = DirectionTypes::str2Direction(QString::fromStdString(
+        portsInterface_->getDirection(endBus.toStdString())), DirectionTypes::DIRECTION_INVALID);
+
+    if (!portsInterface_->portExists(endBus.toStdString()))
+    {
+        messager_->showMessage(QString("Could not find port %1 within component instance %2.").
+            arg(endBus, endInstanceName));
+        return false;
+    }
+
+    closeOpenComponent();
+
+    if (startDirection == DirectionTypes::DIRECTION_INVALID ||
+        endDirection == DirectionTypes::DIRECTION_INVALID ||
+        (startDirection == DirectionTypes::IN && endDirection == DirectionTypes::IN) ||
+        (startDirection == DirectionTypes::OUT && endDirection == DirectionTypes::OUT))
+    {
+        messager_->showMessage(QString("Ports %1 in %2 and %3 in %4 have incompatible directions %5 and %6.").
+            arg(startBus, startInstanceName, endBus, endInstanceName,
+                DirectionTypes::direction2Str(startDirection), DirectionTypes::direction2Str(endDirection)));
+        return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::endsCheckForInterconnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::endsCheckForInterconnection(QSharedPointer<const Component> startComponent,
+    QString const& startBus, QString const& startInstanceName, QSharedPointer<const Component> endComponent,
+    QString const& endBus, QString const& endInstanceName)
+{
+    openComponent(startComponent->getVlnv().toString().toStdString());
+
+    ConfigurableVLNVReference startBusType = busInterface_->getBusType(startBus.toStdString());
+    General::InterfaceMode startMode = busInterface_->getMode(startBus.toStdString());
+    General::InterfaceMode startMonitor = busInterface_->getMonitorMode(startBus.toStdString());
+
+    if (!busInterface_->busInterfaceExists(startBus.toStdString()))
+    {
+        messager_->showMessage(QString("Could not find bus interface %1 within component instance %2.").
+            arg(startBus, startInstanceName));
+        return false;
+    }
+
+    openComponent(endComponent->getVlnv().toString().toStdString());
+
+    ConfigurableVLNVReference endBusType = busInterface_->getBusType(endBus.toStdString());
+    General::InterfaceMode endMode = busInterface_->getMode(endBus.toStdString());
+    General::InterfaceMode endMonitor = busInterface_->getMonitorMode(endBus.toStdString());
+
+    if (!busInterface_->busInterfaceExists(endBus.toStdString()))
+    {
+        messager_->showMessage(QString("Could not find bus interface %1 within component instance %2.").
+            arg(endBus, endInstanceName));
+        return false;
+    }
+
+    closeOpenComponent();
+
+    if (!BusInterfaceUtilities::busDefinitionVLNVsMatch(startBusType, endBusType, library_))
+    {
+        messager_->showMessage(QString("Bus interfaces %1 in %2 and %3 in %4 are not of the same bus type").
+            arg(startBus, startInstanceName, endBus, endInstanceName));
+        return false;
+    }
+
+    QVector<General::InterfaceMode> startCompatibleModes =
+        General::getCompatibleInterfaceModesForActiveInterface(startMode);
+
+    if ((startMode == General::MONITOR && startMonitor != endMode) ||
+        (endMode == General::MONITOR && endMonitor != startMode) ||
+        !startCompatibleModes.contains(endMode))
+    {
+        QString startModeString = General::interfaceMode2Str(startMode);
+        QString endModeString = General::interfaceMode2Str(endMode);
+        if (startModeString == General::MONITOR)
+        {
+            startModeString = General::interfaceMode2Str(startMonitor);
+        }
+        if (endModeString == General::MONITOR)
+        {
+            endModeString = General::interfaceMode2Str(endMonitor);
+        }
+
+        messager_->showMessage(QString(
+            "Bus interface modes of %1 in %2 and %3 in %4 have incompatible bus interface modes %5 and %6.").
+            arg(startBus, startInstanceName, endBus, endInstanceName, startModeString, endModeString));
+        return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeInstanceConnection(std::string const& startInstanceName, std::string const& startBus,
+    std::string const& endInstanceName, std::string const& endBus)
+{
+    std::string connectionName =
+        connectionInterface_->getConnectionName(startInstanceName, startBus, endInstanceName, endBus);
+
+    return removeConnection(connectionName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeHierarchicalConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeHierarchicalConnection(std::string const& instanceName, std::string const& instanceBus,
+    std::string const& topBus)
+{
+    std::string connectionName =
+        connectionInterface_->getHierarchicalConnectionName(instanceName, instanceBus, topBus);
+
+    return removeConnection(connectionName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeConnection(std::string const& connectionName)
+{
+    bool success = connectionInterface_->removeInterconnection(connectionName);
+
+    if (success == false)
+    {
+        messager_->showMessage(QString("Could not find connection %1.").
+            arg(QString::fromStdString(connectionName)));
+    }
+
+    return success;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::renameConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::renameConnection(std::string const& currentName, std::string const& newName)
+{
+    return connectionInterface_->setName(currentName, newName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::createAdHocConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::createAdHocConnection(std::string const& startInstanceName, std::string const& startPort,
+    std::string const& endInstanceName, std::string const& endPort)
+{
+    QString startInstanceNameQ = QString::fromStdString(startInstanceName);
+    QString endInstanceNameQ = QString::fromStdString(endInstanceName);
+    QString startPortNameQ = QString::fromStdString(startPort);
+    QString endPortNameQ = QString::fromStdString(endPort);
+
+    if (!connectionEndsCheck(startInstanceNameQ, startPortNameQ, endInstanceNameQ, endPortNameQ, true))
+    {
+        messager_->showMessage(QString("Could not create connection"));
+        return false;
+    }
+
+    adhocConnectionInterface_->addAdHocConnection(startInstanceName, startPort, endInstanceName, endPort);
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::createHierarchicalAdHocConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::createHierarchicalAdHocConnection(std::string const& instanceName, std::string const& instancePort,
+    std::string const& topPort)
+{
+    QString instanceNameQ = QString::fromStdString(instanceName);
+    QString instancePortQ = QString::fromStdString(instancePort);
+    QString topPortQ = QString::fromStdString(topPort);
+
+    if (!instanceExists(instanceNameQ))
+    {
+        messager_->showMessage(QString("Could not create connection"));
+        return false;
+    }
+
+    adhocConnectionInterface_->addHierarchicalAdHocConnection(instanceName, instancePort, topPort);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeInstanceAdHocConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeInstanceAdHocConnection(std::string const& startInstanceName, std::string const& startPort,
+    std::string const& endInstanceName, std::string const& endPort)
+{
+    std::string connectionName =
+        adhocConnectionInterface_->getConnectionName(startInstanceName, startPort, endInstanceName, endPort);
+
+    return removeAdHocConnection(connectionName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeAdHocConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeAdHocConnection(std::string const& connectionName)
+{
+    bool success = adhocConnectionInterface_->removeAdHocConnection(connectionName);
+    if (success == false)
+    {
+        messager_->showMessage(QString("Could not find connection %1.").
+            arg(QString::fromStdString(connectionName)));
+    }
+
+    return success;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::removeHierarchicalAdHocConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::removeHierarchicalAdHocConnection(std::string const& instanceName, std::string const& instancePort,
+    std::string const& topPort)
+{
+    std::string connectionName =
+        adhocConnectionInterface_->getHierarchicalConnectionName(instanceName, instancePort, topPort);
+
+    return removeAdHocConnection(connectionName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::renameAdHocConnection()
+//-----------------------------------------------------------------------------
+bool PythonAPI::renameAdHocConnection(std::string const& currentName, std::string const& newName)
+{
+    return adhocConnectionInterface_->setName(currentName, newName);
 }

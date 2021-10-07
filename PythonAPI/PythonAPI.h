@@ -34,6 +34,7 @@ class PortsInterface;
 class ParametersInterface;
 class MemoryMapInterface;
 class FileSetInterface;
+class BusInterfaceInterface;
 
 class ComponentParameterFinder;
 class ExpressionParser;
@@ -42,6 +43,12 @@ class ExpressionFormatter;
 
 class ParameterValidator;
 class MemoryMapValidator;
+
+class Design;
+
+class ComponentInstanceInterface;
+class InterconnectionInterface;
+class AdHocConnectionInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data using Python.
@@ -292,13 +299,281 @@ public:
     void setFilesForInterface(std::string const& setName);
 
     /*!
-     *  Set the available file builderss for the file interface.
+     *  Set the available file builders for the file interface.
      *
      *      @param [in] setName     Name of the file set containing the available file builders.
      */
     void setFileBuildersForInterface(std::string const& setName);
 
+    /*!
+     *  Set the selected design as active design.
+     *
+     *      @param [in] vlnvString  VLNV of the selected design.
+     *
+     *      @return True, if the design exists, false otherwise.
+     */
+    bool openDesign(std::string const& vlnvString);
+
+    /*!
+     *  Remove the active design.
+     */
+    void closeOpenDesign();
+
+    /*!
+     *  Save the design to the library.
+     */
+    void saveDesign();
+
+    /*!
+     *  Add the selected component instance to the active design.
+     *
+     *      @param [in] vlnvString      VLNV of the component within the selected component instance.
+     *      @param [in] instanceName    Name for the new component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool addComponentInstance(std::string const& vlnvString, std::string const& instanceName);
+
+    /*!
+     *  Remove the selected component instance from the active design.
+     *
+     *      @param [in] instanceName    Name of the selected component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeComponentInstance(std::string const& instanceName);
+
+    /*!
+     *  Remove connections from the selected component instance.
+     *
+     *      @param [in] instanceName    Name of the selected component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeInstanceConnections(std::string const& instanceName);
+
+    /*!
+     *  Remove ad hoc connections from the selected component instance.
+     *
+     *      @param [in] instanceName    Name of the selected component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeInstanceAdHocConnections(std::string const& instanceName);
+
+    /*!
+     *  Set a new name for the selected component instance.
+     *
+     *      @param [in] currentName     Name of the selected component instance.
+     *      @param [in] newName         New name for the component instance.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool renameInstance(std::string const& currentName, std::string const& newName);
+
+    /*!
+     *  Create an interconnection between two bus interfaces.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first bus interface.
+     *      @param [in] startBus            Name of the first bus interface.
+     *      @param [in] endInstanceName     Name of the component instance containing the second bus interface.
+     *      @param [in] endBus              Name of the second bus interface.
+     *
+     *      @return True, if the connection was created, false otherwise.
+     */
+    bool createConnection(std::string const& startInstanceName, std::string const& startBus,
+        std::string const& endInstanceName, std::string const& endBus);
+
+    /*!
+     *  Create a hierarchical interconnection between two bus interfaces.
+     *
+     *      @param [in] instanceName    Name of the component instance containing the selected bus interface.
+     *      @param [in] instanceBus     Name of the component instance bus interface.
+     *      @param [in] topBus          Name of the top component bus interface.
+     *
+     *      @return True, if the connection was created, false otherwise.
+     */
+    bool createHierarchicalConnection(std::string const& instanceName, std::string const& instanceBus,
+        std::string const& topBus);
+
+    /*!
+     *  Remove an interconnection between two bus interfaces.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first bus interface.
+     *      @param [in] startBus            Name of the first bus interface.
+     *      @param [in] endInstanceName     Name of the component instance containing the second bus interface.
+     *      @param [in] endBus              Name of the second bus interface.
+     *
+     *      @return True, if the connection was removed, false otherwise.
+     */
+    bool removeInstanceConnection(std::string const& startInstanceName, std::string const& startBus,
+        std::string const& endInstanceName, std::string const& endBus);
+
+    /*!
+     *  Remove an interconnection between two bus interfaces.
+     *
+     *      @param [in] instanceName    Name of the component instance containing the selected bus interface.
+     *      @param [in] instanceBus     Name of the component instance bus interface.
+     *      @param [in] topBus          Name of the top component bus interface.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeHierarchicalConnection(std::string const& instanceName, std::string const& instanceBus,
+        std::string const& topBus);
+
+    /*!
+     *  Set a new name for the selected interconnection.
+     *
+     *      @param [in] currentName     Name of the selected interconnection.
+     *      @param [in] newName         New name for the interconnection.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool renameConnection(std::string const& currentName, std::string const& newName);
+
+    /*!
+     *  Create an ad hoc connection between two ports.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first port.
+     *      @param [in] startPort           Name of the first port.
+     *      @param [in] endInstanceName     Name of the component instance containing the second port.
+     *      @param [in] endPort             Name of the second port.
+     *
+     *      @return True, if the connection was created, false otherwise.
+     */
+    bool createAdHocConnection(std::string const& startInstanceName, std::string const& startPort,
+        std::string const& endInstanceName, std::string const& endPort);
+
+    /*!
+     *  Create a hierarchical ad hoc connection between two ports.
+     *
+     *      @param [in] instanceName    Name of the component instance containing the selected port.
+     *      @param [in] instancePort    Name of the component instance port.
+     *      @param [in] topPort         Name of the top component port.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool createHierarchicalAdHocConnection(std::string const& instanceName, std::string const& instancePort,
+        std::string const& topPort);
+
+    /*!
+     *  Remove an ad hoc connection between two ports.
+     *
+     *      @param [in] startInstanceName   Name of the component instance containing the first port.
+     *      @param [in] startPort           Name of the first port.
+     *      @param [in] endInstanceName     Name of the component instance containing the second port.
+     *      @param [in] endPort             Name of the second port.
+     *
+     *      @return True, if the ad hoc connection was removed, false otherwise.
+     */
+    bool removeInstanceAdHocConnection(std::string const& startInstanceName, std::string const& startPort,
+        std::string const& endInstanceName, std::string const& endPort);
+
+    /*!
+     *  Remove a hierarchical ad hoc connection between two ports.
+     *
+     *      @param [in] instanceName    Name of the component instance containing the selected port.
+     *      @param [in] instancePort    Name of the component instance port.
+     *      @param [in] topPort         Name of the top component port.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeHierarchicalAdHocConnection(std::string const& instanceName, std::string const& instancePort,
+        std::string const& topPort);
+
+    /*!
+     *  Set a new name for the selected ad hoc connection.
+     *
+     *      @param [in] currentName     Name of the selected ad hoc connection.
+     *      @param [in] newName         New name for the ad hoc connection.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool renameAdHocConnection(std::string const& currentName, std::string const& newName);
+
 private:
+
+    /*!
+     *  Check if the connection end points exist.
+     *
+     *      @param [in] startInstanceName   Name of the instance containing the first interface.
+     *      @param [in] startBus            Name of the first interface.
+     *      @param [in] endInstanceName     Name of the instance containing the second interface.
+     *      @param [in] endBus              Name of the second interface.
+     *      @param [in] isAdHocConnection   Flag for ad hoc connections.
+     *
+     *      @return True, if the connection end points exist, false otherwise.
+     */
+    bool connectionEndsCheck(QString const& startInstanceName, QString const& startBus,
+        QString const& endInstanceName, QString const& endBus, bool isAdHocConnection);
+
+    /*!
+     *  Check if the selected component instance exists.
+     *
+     *      @param [in] instanceName    Name of the selected component instance.
+     *
+     *      @return True, if the component instance exists, false otherwise.
+     */
+    bool instanceExists(QString const& instanceName) const;
+
+    /*!
+     *  Check if the ad hoc connection end points exist.
+     *
+     *      @param [in] startComponent      Component containing the first port.
+     *      @param [in] startBus            Name of the first port.
+     *      @param [in] startInstanceName   Name of the instance containing the first port.
+     *      @param [in] endComponent        Component containing the second port.
+     *      @param [in] endBus              Name of the second port.
+     *      @param [in] endInstanceName     Name of the instance containing the second port.
+     *
+     *      @return True, if the ad hoc connection end points exist, false otherwise.
+     */
+    bool endsCheckForAdHoc(QSharedPointer<const Component> startComponent, QString const& startBus,
+        QString const& startInstanceName, QSharedPointer<const Component> endComponent, QString const& endBus,
+        QString const& endInstanceName);
+
+    /*!
+     *  Check if the interconnection end points exist.
+     *
+     *      @param [in] startComponent      Component containing the first bus interface.
+     *      @param [in] startBus            Name of the first bus interface.
+     *      @param [in] startInstanceName   Name of the instance containing the first bus interface.
+     *      @param [in] endComponent        Component containing the second bus interface.
+     *      @param [in] endBus              Name of the second bus interface.
+     *      @param [in] endInstanceName     Name of the instance containing the second bus interface.
+     *
+     *      @return True, if the interconnection end points exist, false otherwise.
+     */
+    bool endsCheckForInterconnection(QSharedPointer<const Component> startComponent, QString const& startBus,
+        QString const& startInstanceName, QSharedPointer<const Component> endComponent, QString const& endBus,
+        QString const& endInstanceName);
+
+    /*!
+     *  Remove the selected interconnection.
+     *
+     *      @param [in] connectionName  Name of the selected interconnection.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeConnection(std::string const& connectionName);
+
+    /*!
+     *  Remove the selected ad hoc connection.
+     *
+     *      @param [in] connectionName  Name of the selected ad hoc connection.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool removeAdHocConnection(std::string const& connectionName);
+
+    /*!
+     *  Get the selected document.
+     *
+     *      @param [in] vlnvString  VLNV of the selected document in string form.
+     *
+     *      @return The selected document.
+     */
+    QSharedPointer<Document> getDocument(QString const& vlnvString) const;
 
     /*!
      *  Construct validator for memory items.
@@ -421,8 +696,14 @@ private:
     //! Currently active component.
     QSharedPointer<Component> activeComponent_;
 
+    //! Currently active design.
+    QSharedPointer<Design> activeDesign_;
+
     //! Interface for accessing the component ports.
     PortsInterface* portsInterface_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 
     //! Interface for accessing the component parameters.
     ParametersInterface* componentParameterInterface_;
@@ -432,6 +713,15 @@ private:
 
     //! Interface for accessing file sets.
     FileSetInterface* fileSetInterface_;
+
+    //! Interface for accessing component instances.
+    ComponentInstanceInterface* instanceInterface_;
+
+    //! Interface for accessing interconnections.
+    InterconnectionInterface* connectionInterface_;
+
+    //! Interface for accessing ad hoc connections.
+    AdHocConnectionInterface* adhocConnectionInterface_;
 
     //! Component parameter finder.
     QSharedPointer<ComponentParameterFinder> parameterFinder_;

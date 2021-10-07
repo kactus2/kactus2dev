@@ -174,12 +174,13 @@ private:
     /*!
      *  Generate the device tree.
      *
-     *      @param [in] component   The selected top component.
-     *      @param [in] activeView  View of the selected top component.
-     *      @param [in] filePath    Path for the device tree file.
+     *      @param [in] component       The selected top component.
+     *      @param [in] activeView      View of the selected top component.
+     *      @param [in] filePath        Path for the device tree file.
+     *      @param [in] writeBlocks     Flag for writing address block data.
      */
     void generateDeviceTree(QSharedPointer<Component> component, QString const& activeView,
-        QString const& filePath);
+        QString const& filePath, bool writeBlocks);
 
     //-----------------------------------------------------------------------------
     // Data.

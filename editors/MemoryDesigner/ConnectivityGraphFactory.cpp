@@ -318,6 +318,19 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
     blockItem->setAddress(QString::number(baseAddress));
     blockItem->setRange(expressionParser_->parseExpression(addressBlock->getRange()));
     blockItem->setWidth(expressionParser_->parseExpression(addressBlock->getWidth()));
+    blockItem->setUsage(addressBlock->getUsage());
+
+    QString blockPresence = addressBlock->getIsPresent();
+    if (blockPresence.isEmpty())
+    {
+        blockPresence = "1";
+    }
+    else
+    {
+        blockPresence = expressionParser_->parseExpression(addressBlock->getIsPresent());
+    }
+
+    blockItem->setIsPresent(blockPresence);
 
     foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
     {
@@ -704,6 +717,11 @@ void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(
     QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces, QSharedPointer<ConnectivityGraph> graph)
     const
 {
+    if (!instancedComponent->getChannels()->isEmpty())
+    {
+        instanceNode->setChanneled();
+    }
+
     foreach (QSharedPointer<Channel> channel, *instancedComponent->getChannels())
     {
         createInternalConnectionsForChannel(channel, instanceName, instanceInterfaces, graph);
@@ -948,11 +966,18 @@ void ConnectivityGraphFactory::createInternalConnectionsForChannel(QSharedPointe
         QSharedPointer<ConnectivityInterface> startInterface =
             getInterface(startInterfaceName, instanceName, instanceInterfaces);
 
-        foreach (QString const& targetName, channelInterfaces)
+        if (startInterface)
         {
-            QSharedPointer<ConnectivityInterface> target =
-                getInterface(targetName, instanceName, instanceInterfaces);
-            createConnectionData(channel->name(), startInterface, target, graph);
+            foreach(QString const& targetName, channelInterfaces)
+            {
+                QSharedPointer<ConnectivityInterface> target =
+                    getInterface(targetName, instanceName, instanceInterfaces);
+
+                if (target)
+                {
+                    createConnectionData(channel->name(), startInterface, target, graph);
+                }
+            }
         }
     }
 }

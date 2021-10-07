@@ -32,7 +32,8 @@ QDialog(parent),
 viewSelector_(new QComboBox(this)),
 fileSetGroup_(new QGroupBox(tr("Add file to fileset"))),
 fileSetSelector_(new QComboBox(this)),
-fileEditor_(new QLineEdit(this))
+fileEditor_(new QLineEdit(this)),
+writeBlocks_(new QCheckBox("Write address blocks"))
 {
     setWindowTitle("Linux Device Tree generator");
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -87,6 +88,14 @@ bool LinuxDeviceTreeDialog::saveFileToFileSet() const
 QString LinuxDeviceTreeDialog::getTargetFileSet() const
 {
     return fileSetSelector_->currentText();
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeDialog::allowAddressBlocks()
+//-----------------------------------------------------------------------------
+bool LinuxDeviceTreeDialog::allowAddressBlocks() const
+{
+    return writeBlocks_->isChecked();
 }
 
 //-----------------------------------------------------------------------------
@@ -189,6 +198,8 @@ void LinuxDeviceTreeDialog::setupLayout()
     QFormLayout* viewLayout = new QFormLayout();
     viewLayout->addRow(tr("Select view:"), viewSelector_);
 
+    viewLayout->addRow(writeBlocks_);
+
     QFormLayout* fileSetLayout = new QFormLayout();
     fileSetLayout->addRow(tr("Select file set:"), fileSetSelector_);
     fileSetGroup_->setLayout(fileSetLayout);
@@ -204,8 +215,8 @@ void LinuxDeviceTreeDialog::setupLayout()
     QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);
 
     settingsLayout->addLayout(viewLayout);
-    settingsLayout->addWidget(fileSetGroup_);
     settingsLayout->addLayout(fileLayout);
+    settingsLayout->addWidget(fileSetGroup_);
 
     QDialogButtonBox* buttons = new QDialogButtonBox(Qt::Horizontal, this);
     buttons->addButton(tr("Write file"), QDialogButtonBox::AcceptRole);
