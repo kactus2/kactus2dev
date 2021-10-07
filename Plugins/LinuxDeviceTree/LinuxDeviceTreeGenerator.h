@@ -276,10 +276,11 @@ private:
      *
      *      @param [in] outputStream    The stream to write into.
      *      @param [in] interfaceNode   Interface containing the bridge.
+     *      @param [in] bridgeType      The bridge type.
      *      @param [in] prefix          The prefix for the bridge.
      */
     void writeBridge(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
-        QString& prefix);
+        QString const& bridgeType, QString& prefix);
 
     /*!
      *  Write a memory map item.

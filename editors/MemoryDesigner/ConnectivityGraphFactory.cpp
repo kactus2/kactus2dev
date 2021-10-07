@@ -717,6 +717,11 @@ void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(
     QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces, QSharedPointer<ConnectivityGraph> graph)
     const
 {
+    if (!instancedComponent->getChannels()->isEmpty())
+    {
+        instanceNode->setChanneled();
+    }
+
     foreach (QSharedPointer<Channel> channel, *instancedComponent->getChannels())
     {
         createInternalConnectionsForChannel(channel, instanceName, instanceInterfaces, graph);
@@ -961,11 +966,18 @@ void ConnectivityGraphFactory::createInternalConnectionsForChannel(QSharedPointe
         QSharedPointer<ConnectivityInterface> startInterface =
             getInterface(startInterfaceName, instanceName, instanceInterfaces);
 
-        foreach (QString const& targetName, channelInterfaces)
+        if (startInterface)
         {
-            QSharedPointer<ConnectivityInterface> target =
-                getInterface(targetName, instanceName, instanceInterfaces);
-            createConnectionData(channel->name(), startInterface, target, graph);
+            foreach(QString const& targetName, channelInterfaces)
+            {
+                QSharedPointer<ConnectivityInterface> target =
+                    getInterface(targetName, instanceName, instanceInterfaces);
+
+                if (target)
+                {
+                    createConnectionData(channel->name(), startInterface, target, graph);
+                }
+            }
         }
     }
 }

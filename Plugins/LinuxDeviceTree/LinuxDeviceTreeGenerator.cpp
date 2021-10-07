@@ -412,6 +412,12 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
         return;
     }
 
+    if (interfaceNode->getInstance()->isChanneled() &&
+        (!previousInterface || interfaceNode->getInstance() != previousInterface->getInstance()))
+    {
+        writeBridge(outputStream, interfaceNode, "channel", prefix);
+    }
+
     quint64 newBaseAddress = baseAddress;
     quint64 newMemoryRange = memoryItemRange;
 
@@ -428,7 +434,7 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
     {
         if (interfaceNode->isBridged())
         {
-            writeBridge(outputStream, interfaceNode, prefix);
+            writeBridge(outputStream, interfaceNode, "bridge", prefix);
         }
         else if (interfaceNode->getConnectedMemory())
         {
@@ -467,6 +473,13 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
 
     if (interfaceNode->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0 &&
         interfaceNode->isBridged())
+    {
+        prefix.remove(0, 1);
+        writeLineEnding(outputStream, prefix);
+    }
+
+    if (interfaceNode->getInstance()->isChanneled() &&
+        (!previousInterface || interfaceNode->getInstance() != previousInterface->getInstance()))
     {
         prefix.remove(0, 1);
         writeLineEnding(outputStream, prefix);
@@ -548,13 +561,14 @@ void LinuxDeviceTreeGenerator::writeCPU(QTextStream& outputStream, QString const
 // Function: LinuxDeviceTreeGenerator::writeBridge()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writeBridge(QTextStream& outputStream,
-    QSharedPointer<ConnectivityInterface const> interfaceNode, QString& prefix)
+    QSharedPointer<ConnectivityInterface const> interfaceNode, QString const& bridgeType, QString& prefix)
 {
     QString instanceName = interfaceNode->getInstance()->getName();
     QString componentVLNV = interfaceNode->getInstance()->getVlnv();
     QSharedPointer<const Component> interfacedComponent = getComponentContainingInterface(interfaceNode);
 
-    outputStream << prefix << "// Instance '" << instanceName << "' of bridge component " << componentVLNV << endl;
+    outputStream << prefix << "// Instance '" << instanceName << "' of " << bridgeType << " component " <<
+        componentVLNV << endl;
     outputStream << prefix << interfacedComponent->getVlnv().getName() << " {" << endl;
 
     prefix.append(TABPREFIX);
