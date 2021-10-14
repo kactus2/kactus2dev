@@ -242,10 +242,11 @@ private:
      *		@param [in]	outputStream    The stream to write into.
      *      @param [in] designVendor    Vendor of the selected design.
      *      @param [in] designName      Name of the selected design.
+     *      @param [in] masterRoots     Roots of the connectivity graph.
      *      @param [in] prefix          Current tab prefix of the items.
      */
     void writeTreeStart(QTextStream& outputStream, QString const& designVendor, QString const& designName,
-        QString& prefix);
+        QVector<QSharedPointer<ConnectivityInterface> > masterRoots, QString& prefix);
 
     /*!
      *	Write a line ending.
@@ -281,10 +282,36 @@ private:
      *      @param [in] outputStream    The stream to write into.
      *      @param [in] interfaceNode   Interface containing the bridge.
      *      @param [in] bridgeType      The bridge type.
+     *      @param [in] baseAddress     The current base address of the connection chain.
+     *      @param [in] memoryRange     Range given for memory items.
      *      @param [in] prefix          The prefix for the bridge.
      */
     void writeBridge(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
-        QString const& bridgeType, QString& prefix);
+        QString const& bridgeType, quint64 baseAddress, quint64 memoryRange, QString& prefix);
+
+    /*!
+     *  Get address and size requirements of the selected interface node.
+     *
+     *      @param [in] itemNode        The selected interface node.
+     *      @param [in] previousNode    Previous node in the connectivity graph.
+     *      @param [in] baseAddress     The current base address of the connection chain.
+     *      @param [in] memoryRange     Current range for the memory items.
+     *      @param [in] stopAtBridges   Flag for stopping the requirement check at bridge components.
+     *
+     *      @return Addres / size requirement pair.
+     */
+    QPair<quint64, quint64> getAddressAndSizeRequirements(QSharedPointer<ConnectivityInterface const> itemNode,
+        QSharedPointer<ConnectivityInterface const> previousNode, quint64 baseAddress, quint64 memoryRange,
+        bool stopAtBridges);
+
+    /*!
+     *  Calculate the amount of 32 bit sizes of the selected value.
+     *
+     *      @param [in] requirementValue    The selected value.
+     *
+     *      @return The amount of 32 bit sizes of the selected value.
+     */
+    int calculateRequiredBits(quint64 const& requirementValue) const;
 
     /*!
      *  Write a memory map item.

@@ -182,8 +182,8 @@ void LinuxDeviceTreeGenerator::writeFile(QString const& outputPath, QSharedPoint
     QVector<QSharedPointer<const Cpu> > connectedCPUs;
 
     QString prefix = TABPREFIX;
-    writeTreeStart(
-        outputStream, hierarchicalDesign->getVlnv().getVendor(), hierarchicalDesign->getVlnv().getName(), prefix);
+    writeTreeStart(outputStream, hierarchicalDesign->getVlnv().getVendor(),
+        hierarchicalDesign->getVlnv().getName(), masterRoots, prefix);
     writePaths(outputStream, topComponent, activeView, masterRoots, connectedCPUs, writeAddressBlocks, prefix);
     writeUnconnectedCPUs(outputStream, connectedCPUs, topComponent, activeView, prefix);
 
@@ -421,14 +421,14 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
         return;
     }
 
+    quint64 newBaseAddress = baseAddress;
+    quint64 newMemoryRange = memoryItemRange;
+
     if (interfaceNode->getInstance()->isChanneled() &&
         (!previousInterface || interfaceNode->getInstance() != previousInterface->getInstance()))
     {
-        writeBridge(outputStream, interfaceNode, "channel", prefix);
+        writeBridge(outputStream, interfaceNode, "channel", newBaseAddress, newMemoryRange, prefix);
     }
-
-    quint64 newBaseAddress = baseAddress;
-    quint64 newMemoryRange = memoryItemRange;
 
     if (interfaceNode->getMode().compare(QLatin1String("master"), Qt::CaseInsensitive) == 0)
     {
@@ -443,7 +443,7 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
     {
         if (interfaceNode->isBridged())
         {
-            writeBridge(outputStream, interfaceNode, "bridge", prefix);
+            writeBridge(outputStream, interfaceNode, "bridge", newBaseAddress, newMemoryRange, prefix);
         }
         else if (interfaceNode->getConnectedMemory())
         {
@@ -521,12 +521,25 @@ bool LinuxDeviceTreeGenerator::canWriteNode(QSharedPointer<const ConnectivityInt
 // Function: LinuxDeviceTreeGenerator::writeTreeStart()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writeTreeStart(QTextStream& outputStream, QString const& designVendor,
-    QString const& designName, QString& prefix)
+    QString const& designName, QVector<QSharedPointer<ConnectivityInterface>> masterRoots, QString& prefix)
 {
     outputStream << "/dts-v1/;" << endl << endl << "/ {" << endl;
 
-    outputStream << prefix << "#address-cells = <0x1>;" << endl;
-    outputStream << prefix << "#size-cells = <0x1>;" << endl;
+    QSharedPointer<ConnectivityInterface> rootNode(new ConnectivityInterface("Root"));
+    for (auto masterNode : masterRoots)
+    {
+        rootNode->addChildInterfaceNode(masterNode);
+    }
+
+    QPair<quint64, quint64> addressSizeRequirements =
+        getAddressAndSizeRequirements(rootNode, QSharedPointer<ConnectivityInterface const>(), 0, 0, false);
+
+    int addressRequirementBits = calculateRequiredBits(addressSizeRequirements.first);
+    int sizeRequirementBits = calculateRequiredBits(addressSizeRequirements.second);
+
+    outputStream << prefix << "#address-cells = <0x" << QString::number(addressRequirementBits, 16) << ">;" <<
+        endl;
+    outputStream << prefix << "#size-cells = <0x" << QString::number(sizeRequirementBits, 16) << ">;" << endl;
 
     QString compatibaleText = "\"" + designVendor + "," + designName + "\";";
     outputStream << prefix << "model = " << compatibaleText << endl;
@@ -550,8 +563,8 @@ void LinuxDeviceTreeGenerator::writeIntroductionToCPUs(QTextStream& outputStream
 
     prefix.append(TABPREFIX);
 
-    outputStream << prefix << "#address-cells = <1>;" << endl;
-    outputStream << prefix << "#size-cells = <1>;" << endl << endl;
+    outputStream << prefix << "#address-cells = <0x1>;" << endl;
+    outputStream << prefix << "#size-cells = <0x1>;" << endl << endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -574,7 +587,8 @@ void LinuxDeviceTreeGenerator::writeCPU(QTextStream& outputStream, QString const
 // Function: LinuxDeviceTreeGenerator::writeBridge()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writeBridge(QTextStream& outputStream,
-    QSharedPointer<ConnectivityInterface const> interfaceNode, QString const& bridgeType, QString& prefix)
+    QSharedPointer<ConnectivityInterface const> interfaceNode, QString const& bridgeType, quint64 baseAddress,
+    quint64 memoryRange, QString& prefix)
 {
     QString instanceName = interfaceNode->getInstance()->getName();
     QString componentVLNV = interfaceNode->getInstance()->getVlnv();
@@ -586,9 +600,109 @@ void LinuxDeviceTreeGenerator::writeBridge(QTextStream& outputStream,
 
     prefix.append(TABPREFIX);
 
+    QPair<quint64, quint64> addressSizeRequirements = getAddressAndSizeRequirements(
+        interfaceNode, QSharedPointer<ConnectivityInterface const>(), baseAddress, memoryRange, true);
+
+    int addressRequirementBits = calculateRequiredBits(addressSizeRequirements.first);
+    int sizeRequirementBits = calculateRequiredBits(addressSizeRequirements.second);
+
     outputStream << prefix << "compatible = \"simple-bus\";" << endl;
-    outputStream << prefix << "#address-cells = <0x1>;" << endl;
-    outputStream << prefix << "#size-cells = <0x1>;" << endl << endl;
+    outputStream << prefix << "#address-cells = <0x" << QString::number(addressRequirementBits, 16) << ">;" << endl;
+    outputStream << prefix << "#size-cells = <0x" << QString::number(sizeRequirementBits, 16) << ">;" << endl << endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeGenerator::getAddressAndSizeRequirements()
+//-----------------------------------------------------------------------------
+QPair<quint64, quint64> LinuxDeviceTreeGenerator::getAddressAndSizeRequirements(
+    QSharedPointer<ConnectivityInterface const> itemNode, QSharedPointer<ConnectivityInterface const> previousNode,
+    quint64 baseAddress, quint64 memoryRange, bool stopAtBridges)
+{
+    QPair<quint64, quint64> addressSizeRequirements;
+    addressSizeRequirements.first = baseAddress;
+    addressSizeRequirements.second = memoryRange;
+
+    if (!canWriteNode(itemNode, previousNode))
+    {
+        return addressSizeRequirements;
+    }
+
+    quint64 newBaseAddress = baseAddress;
+    quint64 newRange = memoryRange;
+
+    if (stopAtBridges && (itemNode->getInstance()->isChanneled() && previousNode &&
+        itemNode->getInstance() != previousNode->getInstance()))
+    {
+        return addressSizeRequirements;
+    }
+
+    if (itemNode->getMode().compare(QLatin1String("master"), Qt::CaseInsensitive) == 0)
+    {
+        newBaseAddress += itemNode->getBaseAddress().toULongLong();
+    }
+    else if (itemNode->getMode().compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0)
+    {
+        newBaseAddress += itemNode->getRemapAddress().toULongLong();
+        newRange = itemNode->getRemapRange().toULongLong();
+    }
+    else if (itemNode->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0)
+    {
+        if (itemNode->isBridged())
+        {
+            return addressSizeRequirements;
+        }
+        else if (itemNode->getConnectedMemory())
+        {
+            QPair<quint64, quint64> memoryAddress =
+                MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(itemNode->getConnectedMemory());
+
+            if (newRange == 0)
+            {
+                newRange = memoryAddress.second + 1;
+            }
+
+            addressSizeRequirements.first += memoryAddress.first;
+            addressSizeRequirements.second = newRange;
+
+            return addressSizeRequirements;
+        }
+    }
+
+    for (auto pathNode : itemNode->getChildInterfaceNodes())
+    {
+        if (pathNode != previousNode)
+        {
+            QPair<quint64, quint64> newAddressSize =
+                getAddressAndSizeRequirements(pathNode, itemNode, newBaseAddress, newRange, stopAtBridges);
+
+            if (newAddressSize.first > addressSizeRequirements.first)
+            {
+                addressSizeRequirements.first = newAddressSize.first;
+            }
+            if (newAddressSize.second > addressSizeRequirements.second)
+            {
+                addressSizeRequirements.second = newAddressSize.second;
+            }
+        }
+    }
+
+    return addressSizeRequirements;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeGenerator::calculateRequiredBits()
+//-----------------------------------------------------------------------------
+int LinuxDeviceTreeGenerator::calculateRequiredBits(quint64 const& requirementValue) const
+{
+    QString requirement = QString::number(requirementValue, 2);
+    int requirementBits = requirement.size() / 32;
+
+    if (requirement.size() > requirementBits * 32)
+    {
+        requirementBits += 1;
+    }
+
+    return requirementBits;
 }
 
 //-----------------------------------------------------------------------------
