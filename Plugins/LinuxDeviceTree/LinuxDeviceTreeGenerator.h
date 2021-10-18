@@ -134,13 +134,13 @@ private:
 	 *		@param [in]	topComponent        The starting component for the search.
 	 *		@param [in]	activeView          The currently active view of the starting component.
 	 *		@param [in]	interfaceNodes      List of interface nodes.
-     *      @param [in] pathNumber          Number of the current CPU container.
      *      @param [in] connectedCPUs       List of handled CPUs.
      *      @param [in] writeAddressBlocks  Flag for writing address block data.
+     *      @param [in] prefix              Current tab prefix of the items.
      */
     void writePaths(QTextStream& outputStream, QSharedPointer<Component> topComponent, QString const& activeView,
-        QVector<QSharedPointer<ConnectivityInterface> > interfaceNodes, int pathNumber,
-        QVector<QSharedPointer<const Cpu> >& connectedCPUs, bool writeAddressBlocks);
+        QVector<QSharedPointer<ConnectivityInterface> > interfaceNodes,
+        QVector<QSharedPointer<const Cpu> >& connectedCPUs, bool writeAddressBlocks, QString& prefix);
 
     /*!
      *  Write the selected interface path.
@@ -151,9 +151,10 @@ private:
      *                                          interface.
      *		@param [in]	pathNumber          The current running number for CPU listings.
      *      @param [in] writeAddressBlocks  Flag for writing address block data.
+     *      @param [in] prefix              Current tab prefix of the items.
      */
     void startPathWriting(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> pathRootNode,
-        ComponentCPUContainer cpuContainer, int pathNumber, bool writeAddressBlocks);
+        ComponentCPUContainer cpuContainer, bool writeAddressBlocks, QString& prefix);
 
     /*!
      *  Write the selected interface node.
@@ -239,9 +240,13 @@ private:
      *	Write the start of the device tree.
      *
      *		@param [in]	outputStream    The stream to write into.
-     *		@param [in]	pathNumber      The current running number for CPU listings.
+     *      @param [in] designVendor    Vendor of the selected design.
+     *      @param [in] designName      Name of the selected design.
+     *      @param [in] masterRoots     Roots of the connectivity graph.
+     *      @param [in] prefix          Current tab prefix of the items.
      */
-    void writeTreeStart(QTextStream& outputStream, int pathNumber);
+    void writeTreeStart(QTextStream& outputStream, QString const& designVendor, QString const& designName,
+        QVector<QSharedPointer<ConnectivityInterface> > masterRoots, QString& prefix);
 
     /*!
      *	Write a line ending.
@@ -277,10 +282,36 @@ private:
      *      @param [in] outputStream    The stream to write into.
      *      @param [in] interfaceNode   Interface containing the bridge.
      *      @param [in] bridgeType      The bridge type.
+     *      @param [in] baseAddress     The current base address of the connection chain.
+     *      @param [in] memoryRange     Range given for memory items.
      *      @param [in] prefix          The prefix for the bridge.
      */
     void writeBridge(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
-        QString const& bridgeType, QString& prefix);
+        QString const& bridgeType, quint64 baseAddress, quint64 memoryRange, QString& prefix);
+
+    /*!
+     *  Get address and size requirements of the selected interface node.
+     *
+     *      @param [in] itemNode        The selected interface node.
+     *      @param [in] previousNode    Previous node in the connectivity graph.
+     *      @param [in] baseAddress     The current base address of the connection chain.
+     *      @param [in] memoryRange     Current range for the memory items.
+     *      @param [in] stopAtBridges   Flag for stopping the requirement check at bridge components.
+     *
+     *      @return Addres / size requirement pair.
+     */
+    QPair<quint64, quint64> getAddressAndSizeRequirements(QSharedPointer<ConnectivityInterface const> itemNode,
+        QSharedPointer<ConnectivityInterface const> previousNode, quint64 baseAddress, quint64 memoryRange,
+        bool stopAtBridges);
+
+    /*!
+     *  Calculate the amount of 32 bit sizes of the selected value.
+     *
+     *      @param [in] requirementValue    The selected value.
+     *
+     *      @return The amount of 32 bit sizes of the selected value.
+     */
+    int calculateRequiredBits(quint64 const& requirementValue) const;
 
     /*!
      *  Write a memory map item.
@@ -354,25 +385,25 @@ private:
      *	Write the unconnected CPUs of the design.
      *
      *		@param [in]	outputStream    The stream to write into.
-     *		@param [in]	pathNumber      The current running number for CPU listings.
      *		@param [in]	connectedCPUs   List of the connected CPUs.
      *		@param [in]	topComponent    The top component of the design.
      *		@param [in]	activeView      Currently active view of the top component.
+     *      @param [in] prefix          Current tab prefix of the items.
      */
-    void writeUnconnectedCPUs(QTextStream& outputStream, int& pathNumber,
-        QVector<QSharedPointer<Cpu const> >& connectedCPUs, QSharedPointer<Component const> topComponent,
-        QString const& activeView);
+    void writeUnconnectedCPUs(QTextStream& outputStream, QVector<QSharedPointer<Cpu const> >& connectedCPUs,
+        QSharedPointer<Component const> topComponent, QString const& activeView, QString& prefix);
 
     /*!
      *	Write the unconnected CPUS of the selected component.
      *
      *		@param [in]	outputStream    The stream to write into.
-     *		@param [in]	pathNumber      The current running number for CPU listings.
      *		@param [in]	component       The selected component.
      *		@param [in]	connectedCPUs   List of the connected CPUs.
+     *      @param [in] prefix          Current tab prefix of the items.
      */
-    void writeUnconnectedCPUsOfComponent(QTextStream& outputStream, int& pathNumber,
-        QSharedPointer<Component const> component, QVector<QSharedPointer<Cpu const> >& connectedCPUs);
+    void writeUnconnectedCPUsOfComponent(QTextStream& outputStream,
+        QSharedPointer<Component const> component, QVector<QSharedPointer<Cpu const> >& connectedCPUs,
+        QString& prefix);
 
     /*!
      *	Get the active view matching the selected view name.
@@ -423,14 +454,14 @@ private:
      *	Search the selected design for any unconnected CPUs.
      *
      *		@param [in]	outputStream    The stream to write into.
-     *		@param [in]	pathNumber      The current running number for CPU listings.
      *		@param [in]	connectedCPUs   List of the connected CPUs.
      *		@param [in]	design          The selected design.
      *		@param [in]	configuration   Design configuration of the selected design.
+     *      @param [in] prefix          Current tab prefix of the items.
      */
-    void analyzeDesignForUnconnectedCPUs(QTextStream& outputStream, int& pathNumber,
+    void analyzeDesignForUnconnectedCPUs(QTextStream& outputStream,
         QVector<QSharedPointer<Cpu const> >& connectedCPUs, QSharedPointer<const Design> design,
-        QSharedPointer<const DesignConfiguration> configuration);
+        QSharedPointer<const DesignConfiguration> configuration, QString& prefix);
 
     //-----------------------------------------------------------------------------
     // Data.
