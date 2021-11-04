@@ -5047,6 +5047,9 @@
     <ClCompile Include="editors\HWDesign\interfaces\AdHocConnectionInterface.cpp">
       <Filter>Source Files\editors\HWDesign\interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="editors\HWDesign\WarningSymbol.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6857,6 +6860,9 @@
     </CustomBuild>
     <CustomBuild Include="PythonAPI\WriteChannel.h">
       <Filter>Header Files\PythonAPI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\HWDesign\WarningSymbol.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

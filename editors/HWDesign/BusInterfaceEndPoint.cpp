@@ -20,6 +20,7 @@
 #include <editors/HWDesign/InterfaceGraphics.h>
 #include <editors/HWDesign/HWMoveCommands.h>
 #include <editors/HWDesign/columnview/HWColumn.h>
+#include <editors/HWDesign/WarningSymbol.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -36,9 +37,10 @@ BusInterfaceEndPoint::BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, Q
 HWConnectionEndpoint(busIf->name(), component, parent, dir),
 busInterface_(busIf),
 oldPos_(),
+portMapWarning_(new WarningSymbol(this)),
 library_(library)
 {
-
+    portMapWarning_->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -76,6 +78,15 @@ void BusInterfaceEndPoint::updateEndPointGraphics()
     else
     {
         shape = getInterfaceShapeWithDirection(direction);
+    }
+
+    if (busInterface_->getAllPortMaps()->isEmpty())
+    {
+        portMapWarning_->setVisible(true);
+    }
+    else
+    {
+        portMapWarning_->setVisible(false);
     }
 
     setPolygon(shape);
@@ -201,6 +212,16 @@ void BusInterfaceEndPoint::setDescription(QString const& description)
 bool BusInterfaceEndPoint::isExclusive() const
 {
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::setDirection()
+//-----------------------------------------------------------------------------
+void BusInterfaceEndPoint::setDirection(QVector2D const& dir)
+{
+    portMapWarning_->moveSymbol(dir);
+
+    HWConnectionEndpoint::setDirection(dir);
 }
 
 //-----------------------------------------------------------------------------
