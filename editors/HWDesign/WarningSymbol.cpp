@@ -23,6 +23,8 @@ QGraphicsPolygonItem(parent),
 exclamationLine_(new QGraphicsPolygonItem(this)),
 exclamationDot_(new QGraphicsPolygonItem(this))
 {
+    setToolTip("No portmaps found");
+
     QPen warningPen(Qt::black, 0);
     setPen(warningPen);
 

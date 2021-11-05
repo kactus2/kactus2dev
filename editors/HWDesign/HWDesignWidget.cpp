@@ -330,6 +330,9 @@ bool HWDesignWidget::saveAs()
 		return false;
 	}
 
+    design = QSharedPointer<Design>(new Design(*design));
+    design->setVlnv(designVLNV);
+
 	// update the hierarchical bus interfaces of the top-component
 	getDiagram()->updateHierComponent();
 
