@@ -5079,7 +5079,6 @@
     <CustomBuild Include="Help\kactus2help.qhp">
       <Filter>Help Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="appicon.ico" />
     <CustomBuild Include="Kactus2.pri" />
     <CustomBuild Include="Kactus2.pro" />
     <CustomBuild Include="common\delegates\ComboDelegate\combodelegate.h">
@@ -7733,6 +7732,9 @@
     <ClInclude Include="editors\HWDesign\interfaces\AdHocConnectionInterface.h">
       <Filter>Header Files\editors\HWDesign\interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -7741,5 +7743,11 @@
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Kactus21.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="appicon.ico" />
   </ItemGroup>
 </Project>
