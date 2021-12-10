@@ -25,6 +25,7 @@ class Port;
 class DesignDiagram;
 class HWComponentItem;
 class LibraryInterface;
+class WarningSymbol;
 
 //-----------------------------------------------------------------------------
 //! Parent interface class for HW bus interfaces.
@@ -91,6 +92,15 @@ public:
      *      @return True, if the bus interface is exclusive, false otherwise.
      */
     virtual bool isExclusive() const;
+
+    /*!
+     *  Sets the draw direction of the endpoint.
+     *
+     *      @param [in] dir The draw direction to set.
+     *
+     *      @remarks The direction can be changed only if isDirectionFixed() returns false.
+     */
+    virtual void setDirection(QVector2D const& dir);
 
     /*!
      *  Check if the end point is a bus interface.
@@ -327,6 +337,9 @@ private:
 
     //! Old positions of the associated end points.
     QMap<ConnectionEndpoint*, QPointF> oldPortPositions_;
+
+    //! Warning symbol for bus interfaces with no port maps.
+    WarningSymbol* portMapWarning_;
 
     //! Access to the library.
     LibraryInterface* library_;

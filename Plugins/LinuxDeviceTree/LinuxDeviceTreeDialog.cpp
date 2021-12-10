@@ -11,10 +11,18 @@
 
 #include "LinuxDeviceTreeDialog.h"
 
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/DesignInstantiation.h>
+#include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
+#include <library/LibraryInterface.h>
+
+#include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUEditor.h>
 
 #include <QFileDialog>
 #include <QPushButton>
@@ -27,18 +35,24 @@
 // Function: LinuxDeviceTreeDialog::LinuxDeviceTreeDialog()
 //-----------------------------------------------------------------------------
 LinuxDeviceTreeDialog::LinuxDeviceTreeDialog(QString const& defaultPath, QSharedPointer<Component> component,
-    QSharedPointer<Design> design, QWidget* parent):
+    QSharedPointer<Design> design, LibraryInterface* library, QWidget* parent):
 QDialog(parent),
+library_(library),
+topComponent_(component),
 viewSelector_(new QComboBox(this)),
 fileSetGroup_(new QGroupBox(tr("Add file to fileset"))),
 fileSetSelector_(new QComboBox(this)),
 fileEditor_(new QLineEdit(this)),
-writeBlocks_(new QCheckBox("Write address blocks"))
+writeBlocks_(new QCheckBox("Write address blocks")),
+cpuEditor_(new LinuxDeviceTreeCPUEditor(this)),
+graphFactory_(library),
+searchAlgorithm_()
 {
     setWindowTitle("Linux Device Tree generator");
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     fileEditor_->setText(defaultPath);
+    fileEditor_->setToolTip(defaultPath);
 
     fileSetGroup_->setCheckable(true);
     fileSetGroup_->setChecked(true);
@@ -46,6 +60,11 @@ writeBlocks_(new QCheckBox("Write address blocks"))
 
     setupViewSelector(component, design);
     setupFileSetSelector(component->getFileSets());
+
+    setupCPUEditor(viewSelector_->currentText());
+
+    connect(viewSelector_, SIGNAL(currentTextChanged(QString const&)),
+        this, SLOT(setupCPUEditor(QString const&)), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -116,12 +135,13 @@ void LinuxDeviceTreeDialog::accept()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeDialog::onBrowse()
 {
-    QString filePath = QFileDialog::getSaveFileName(this, tr("Select output file for generation"),
-        fileEditor_->text(), QStringLiteral("DTS files (.dts)"));
+    QString newDir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), fileEditor_->text(),
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 
-    if (!filePath.isEmpty())
+    if (!newDir.isEmpty())
     {
-        fileEditor_->setText(filePath);
+        fileEditor_->setText(newDir);
+        fileEditor_->setToolTip(newDir);
     }
 }
 
@@ -191,6 +211,85 @@ void LinuxDeviceTreeDialog::setupFileSetSelector(
 }
 
 //-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeDialog::setupCPUEditor()
+//-----------------------------------------------------------------------------
+void LinuxDeviceTreeDialog::setupCPUEditor(QString const& view)
+{
+    QSharedPointer<ConnectivityGraph> graph =
+        graphFactory_.createConnectivityGraph(topComponent_, view);
+
+    QVector < QSharedPointer<ConnectivityInterface> > masterRoots = searchAlgorithm_.findMasterSlaveRoots(graph);
+
+    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuContainers =
+        LinuxDeviceTreeCPUDetails::getCPUContainers(topComponent_->getVlnv().getName(), masterRoots, library_);
+
+    cpuEditor_->setupCPUDetails(cpuContainers);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeDialog::getDesignName()
+//-----------------------------------------------------------------------------
+QString LinuxDeviceTreeDialog::getDesignName()
+{
+    QString viewName = viewSelector_->currentText();
+    for (auto designView : *topComponent_->getViews())
+    {
+        if (designView->name() == viewName)
+        {
+            QString instantiationReference = designView->getDesignInstantiationRef();
+            if (!instantiationReference.isEmpty())
+            {
+                for (auto instantiation : *topComponent_->getDesignInstantiations())
+                {
+                    if (instantiation->name() == instantiationReference)
+                    {
+                        QSharedPointer<ConfigurableVLNVReference> designVLNV =
+                            instantiation->getDesignReference();
+                        if (designVLNV)
+                        {
+                            return designVLNV->getName();
+                        }
+
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                instantiationReference = designView->getDesignConfigurationInstantiationRef();
+                if (!instantiationReference.isEmpty())
+                {
+                    for (auto instantiation : *topComponent_->getDesignConfigurationInstantiations())
+                    {
+                        if (instantiation->name() == instantiationReference)
+                        {
+                            QSharedPointer<ConfigurableVLNVReference> designConfigurationVLNV =
+                                instantiation->getDesignConfigurationReference();
+
+                            QSharedPointer<const Document> designDocument =
+                                library_->getModelReadOnly(*designConfigurationVLNV.data());
+                            if (designDocument)
+                            {
+                                QSharedPointer<const DesignConfiguration> designConfiguration =
+                                    designDocument.dynamicCast<const DesignConfiguration>();
+                                if (designConfiguration)
+                                {
+                                    return designConfiguration->getDesignRef().getName();
+                                }
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return "";
+}
+
+//-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeDialog::setupLayout()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeDialog::setupLayout()
@@ -204,12 +303,13 @@ void LinuxDeviceTreeDialog::setupLayout()
     fileSetLayout->addRow(tr("Select file set:"), fileSetSelector_);
     fileSetGroup_->setLayout(fileSetLayout);
 
-    QPushButton* browseButton = new QPushButton(tr("Browse..."), this);
+    QPushButton* openFolderButton(
+        new QPushButton(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this));
 
     QHBoxLayout* fileLayout = new QHBoxLayout();
     fileLayout->addWidget(new QLabel(tr("Output file:"), this));
     fileLayout->addWidget(fileEditor_);
-    fileLayout->addWidget(browseButton);
+    fileLayout->addWidget(openFolderButton);
 
     QGroupBox* settingsGroup = new QGroupBox(tr("Settings"), this);
     QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);
@@ -222,11 +322,24 @@ void LinuxDeviceTreeDialog::setupLayout()
     buttons->addButton(tr("Write file"), QDialogButtonBox::AcceptRole);
     buttons->addButton(QDialogButtonBox::Cancel);
 
+    QHBoxLayout* editorLayout = new QHBoxLayout();
+    editorLayout->addWidget(settingsGroup, 2);
+    editorLayout->addWidget(cpuEditor_, 3);
+
     QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(settingsGroup);
+    topLayout->addLayout(editorLayout);
     topLayout->addWidget(buttons);
 
-    connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
+    connect(openFolderButton, SIGNAL(clicked()), this, SLOT(onBrowse()), Qt::UniqueConnection);
     connect(buttons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(buttons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LinuxDeviceTreeDialog::getAcceptedContainers()
+//-----------------------------------------------------------------------------
+QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > LinuxDeviceTreeDialog::getAcceptedContainers()
+const
+{
+    return cpuEditor_->getAcceptedContainers();
 }

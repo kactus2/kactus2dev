@@ -22,6 +22,10 @@
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeDialog.h>
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>
 
+#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
+#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
+#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
+
 #include <library/LibraryInterface.h>
 
 #include <QCoreApplication>
@@ -133,29 +137,40 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> /*designConfiguration*/)
 {
     utility_ = utility;
+    LibraryInterface* library = utility_->getLibraryInterface();
     utility->printInfo("Running Linux Device Tree Generator " + getVersion());
 
-    QFileInfo targetInfo(utility_->getLibraryInterface()->getPath(component->getVlnv()));
+    QFileInfo targetInfo(library->getPath(component->getVlnv()));
+    QString suggestedPath = library->getDirectoryPath(component->getVlnv());
 
-    QString suggestedPath = createFileNamePath(targetInfo.absolutePath(), component->getVlnv().getName());
-
-    LinuxDeviceTreeDialog dialog(suggestedPath, component, design, utility_->getParentWidget());
+    LinuxDeviceTreeDialog dialog(suggestedPath, component, design, library, utility_->getParentWidget());
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        generateDeviceTree(
-            component, dialog.getSelectedView(), dialog.getOutputPath(), dialog.allowAddressBlocks());
-
-        if (dialog.saveFileToFileSet())
+        QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > acceptedContainers =
+            dialog.getAcceptedContainers();
+        if (!acceptedContainers.isEmpty())
         {
-            QString relativePath = General::getRelativePath(targetInfo.absoluteFilePath(), suggestedPath);
-            QString targetFileSet = dialog.getTargetFileSet();
+            generateDeviceTree(
+                component, dialog.getSelectedView(), dialog.getOutputPath(), dialog.allowAddressBlocks(),
+                dialog.getAcceptedContainers());
 
-            saveFileToFileSet(component, targetFileSet, relativePath);
+            if (dialog.saveFileToFileSet())
+            {
+                QString targetFileSet = dialog.getTargetFileSet();
 
-            utility->getLibraryInterface()->writeModelToFile(component);
-            utility->printInfo("File " + relativePath + " stored in fileset " + targetFileSet +
-                " within component " + component->getVlnv().toString() + ".");
+                for (auto cpuContainer : acceptedContainers)
+                {
+                    QString relativePath =
+                        General::getRelativePath(targetInfo.absoluteFilePath(), cpuContainer->filePath_);
+
+                    saveFileToFileSet(component, targetFileSet, relativePath);
+
+                    utility->getLibraryInterface()->writeModelToFile(component);
+                    utility->printInfo("File " + relativePath + " stored in fileset " + targetFileSet +
+                        " within component " + component->getVlnv().toString() + ".");
+                }
+            }
         }
     }
     else
@@ -192,8 +207,18 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 
     utility_->printInfo(tr("Target directory: %1").arg(outputDirectory));
 
-    QString generatorPath = createFileNamePath(outputDirectory, component->getVlnv().getName());
-    generateDeviceTree(component, viewName, generatorPath, false);
+    LibraryInterface* library = utility_->getLibraryInterface();
+    ConnectivityGraphFactory graphFactory(library);
+    MasterSlavePathSearch searchAlgorithm;
+
+    QSharedPointer<ConnectivityGraph> graph = graphFactory.createConnectivityGraph(component, viewName);
+
+    QVector < QSharedPointer<ConnectivityInterface> > masterRoots = searchAlgorithm.findMasterSlaveRoots(graph);
+
+    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuContainers =
+        LinuxDeviceTreeCPUDetails::getCPUContainers(component->getVlnv().getName(), masterRoots, library);
+
+    generateDeviceTree(component, viewName, outputDirectory, false, cpuContainers);
 }
 
 //-----------------------------------------------------------------------------
@@ -233,12 +258,18 @@ QString LinuxDeviceTreePlugin::createFileNamePath(QString const& suggestedPath, 
 // Function: LinuxDeviceTreePlugin::generateDeviceTree()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreePlugin::generateDeviceTree(QSharedPointer<Component> component, QString const& activeView,
-    QString const& filePath, bool writeBlocks)
+    QString const& folderPath, bool writeBlocks,
+    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer>> acceptedContainers)
 {
     LinuxDeviceTreeGenerator generator(utility_->getLibraryInterface());
-    generator.generate(component, activeView, writeBlocks, filePath);
-
-    utility_->printInfo("Generation successful.");
+    if (generator.generate(component, activeView, writeBlocks, acceptedContainers, folderPath) == true)
+    {
+        utility_->printInfo("Generation successful.");
+    }
+    else
+    {
+        utility_->printError("Generation failed.");
+    }
 }
 
 //-----------------------------------------------------------------------------

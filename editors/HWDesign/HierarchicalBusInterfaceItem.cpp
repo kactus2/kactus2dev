@@ -139,7 +139,7 @@ bool HierarchicalBusInterfaceItem::isHierarchical() const
 //-----------------------------------------------------------------------------
 void HierarchicalBusInterfaceItem::setDirection(QVector2D const& dir)
 {
-    HWConnectionEndpoint::setDirection(dir);
+    BusInterfaceEndPoint::setDirection(dir);
 
     dataGroup_->setDirection(dir);
 

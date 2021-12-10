@@ -294,3 +294,5 @@ This software is licenced under the GPL2 General Public License.
 
 Kactus2 is also available for dual licencing. Please contact kactus2@tuni.fi
 to purchase a commercial licence.
+
+Python® (Python is a registered trademark of the Python Software Foundation).
