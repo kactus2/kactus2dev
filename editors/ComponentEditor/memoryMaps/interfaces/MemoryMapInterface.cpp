@@ -65,9 +65,11 @@ void MemoryMapInterface::setMemoryMaps(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryMap> MemoryMapInterface::getMemoryMap(std::string const& itemName) const
 {
+    QString itemNameQ = QString::fromStdString(itemName);
+
     for (auto currentMap : *mapData_)
     {
-        if (currentMap->name().toStdString() == itemName)
+        if (currentMap->name() == itemNameQ)
         {
             return currentMap;
         }
