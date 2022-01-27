@@ -287,6 +287,9 @@
     <ClCompile Include="Component\RemapStateWriter.cpp" />
     <ClCompile Include="Component\Segment.cpp" />
     <ClCompile Include="Component\SlaveInterface.cpp" />
+    <ClCompile Include="Component\SubSpaceMap.cpp" />
+    <ClCompile Include="Component\SubspaceMapReader.cpp" />
+    <ClCompile Include="Component\SubSpaceMapWriter.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\TransparentBridge.cpp" />
     <ClCompile Include="Component\validators\AbstractionTypeValidator.cpp" />
@@ -556,6 +559,9 @@
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="Component\FieldReset.h" />
+    <ClInclude Include="Component\SubSpaceMap.h" />
+    <ClInclude Include="Component\SubspaceMapReader.h" />
+    <ClInclude Include="Component\SubSpaceMapWriter.h" />
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
     <ClInclude Include="Component\validators\RegisterFileValidator.h" />
     <ClInclude Include="utilities\BusDefinitionUtils.h" />

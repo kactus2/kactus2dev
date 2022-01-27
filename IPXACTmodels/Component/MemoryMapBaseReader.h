@@ -73,6 +73,15 @@ protected:
     void parseMemoryBlocks(QDomNode const& MemoryMapBaseBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase)
         const;
 
+    /*!
+     *  Reads the contained subspace maps.
+     *
+     *      @param [in] MemoryMapBaseBaseNode   XML description of the memory map base.
+     *      @param [in] newMemoryMapBase        The new memory map base item.
+     */
+    void parseSubspaceMaps(QDomNode const& MemoryMapBaseBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase)
+        const;
+
 private:
 
     //! No copying allowed.

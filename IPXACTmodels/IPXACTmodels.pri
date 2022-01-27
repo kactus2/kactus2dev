@@ -258,7 +258,9 @@ HEADERS += ./generaldeclarations.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
     ./utilities/BusDefinitionUtils.h \
-    ./utilities/XmlUtils.h
+    ./utilities/XmlUtils.h \
+    ./Component/SubSpaceMap.h \
+    ./Component/SubSpaceMapWriter.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -507,4 +509,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/IpxactFile.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
     ./utilities/BusDefinitionUtils.cpp \
-    ./utilities/XmlUtils.cpp
+    ./utilities/XmlUtils.cpp \
+    ./Component/SubSpaceMap.cpp \
+    ./Component/SubSpaceMapWriter.cpp

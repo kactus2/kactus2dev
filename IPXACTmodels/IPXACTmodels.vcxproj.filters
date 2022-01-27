@@ -1013,6 +1013,15 @@
     <ClCompile Include="utilities\BusDefinitionUtils.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Component\SubSpaceMap.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SubSpaceMapWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SubspaceMapReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1545,6 +1554,15 @@
     </ClInclude>
     <ClInclude Include="common\TagData.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SubSpaceMap.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SubSpaceMapWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SubspaceMapReader.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

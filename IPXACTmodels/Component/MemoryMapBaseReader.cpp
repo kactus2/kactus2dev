@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/Component/AddressBlockReader.h>
+#include <IPXACTmodels/Component/SubspaceMapReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseReader::MemoryMapBaseReader()
@@ -45,6 +46,8 @@ void MemoryMapBaseReader::readMemoryMapBase(QDomNode const& MemoryMapBaseNode,
     parsePresence(MemoryMapBaseNode, newMemoryMapBase);
 
     parseMemoryBlocks(MemoryMapBaseNode, newMemoryMapBase);
+
+    parseSubspaceMaps(MemoryMapBaseNode, newMemoryMapBase);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,6 +93,27 @@ void MemoryMapBaseReader::parseMemoryBlocks(QDomNode const& MemoryMapBaseBaseNod
                 addressBlockReader.createAddressBlockFrom(addressBlockNode);
 
             newMemoryMapBaseBase->getMemoryBlocks()->append(newAddressBlock);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseReader::parseSubspaceMaps()
+//-----------------------------------------------------------------------------
+void MemoryMapBaseReader::parseSubspaceMaps(QDomNode const& MemoryMapBaseBaseNode,
+    QSharedPointer<MemoryMapBase> newMemoryMapBase) const
+{
+    QDomNodeList childNodes = MemoryMapBaseBaseNode.childNodes();
+
+    SubspaceMapReader subspaceMapReader;
+
+    for (int childIndex = 0; childIndex < childNodes.count(); ++childIndex)
+    {
+        QDomNode subspaceNode = childNodes.at(childIndex);
+        if (subspaceNode.nodeName() == QLatin1String("ipxact:subspaceMap"))
+        {
+            QSharedPointer<SubSpaceMap> newSubspaceMap = subspaceMapReader.createSubspaceMapFrom(subspaceNode);
+            newMemoryMapBase->getSubSpaceMaps()->append(newSubspaceMap);
         }
     }
 }
