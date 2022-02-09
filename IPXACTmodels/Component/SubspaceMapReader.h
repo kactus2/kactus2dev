@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/Component/MemoryBlockBaseReader.h>
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -24,7 +24,7 @@ class SubSpaceMap;
 //-----------------------------------------------------------------------------
 //! Reader class for ipxact:subspaceMap element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT SubspaceMapReader : public CommonItemsReader
+class IPXACTMODELS_EXPORT SubspaceMapReader : public MemoryBlockBaseReader
 {
 public:
 
@@ -60,38 +60,6 @@ private:
      *      @param [in/out] newSubspaceMap  The subspace map to insert the attributes into.
      */
     void parseAttributes(QDomNode const& subspaceMapNode, QSharedPointer<SubSpaceMap> newSubspaceMap) const;
-
-    /*!
-     *  Reads the name group.
-     *
-     *      @param [in] subspaceMapNode     XML description of the subspace map.
-     *      @param [in] newSubspaceMap      The new subspace map.
-     */
-    void parseNameGroup(QDomNode const& subspaceMapNode, QSharedPointer<SubSpaceMap> newSubspaceMap) const;
-
-    /*!
-     *  Reads the presence.
-     *
-     *      @param [in] subspaceMapNode     XML description of the subspace map.
-     *      @param [in] newSubspaceMap      The new subspace map.
-     */
-    void parsePresence(QDomNode const& subspaceMapNode, QSharedPointer<SubSpaceMap> newSubspaceMap) const;
-
-    /*!
-     *  Reads the base address.
-     *
-     *      @param [in] subspaceMapNode     XML description of the subspace map.
-     *      @param [in] newSubspaceMap      The new subspace map.
-     */
-    void parseBaseAddress(QDomNode const& subspaceMapNode, QSharedPointer<SubSpaceMap> newSubspaceMap) const;
-
-    /*!
-     *  Reads the parameters.
-     *
-     *      @param [in] subspaceMapNode     XML description of the subspace map.
-     *      @param [in] newSubspaceMap      The new subspace map.
-     */
-    void parseParameters(QDomNode const& subspaceMapNode, QSharedPointer<SubSpaceMap> newSubspaceMap) const;
 };
 
 #endif // SUBSPACEMAPREADER_H

@@ -17,7 +17,8 @@
 //-----------------------------------------------------------------------------
 // Function: SubSpaceMapWriter::SubSpaceMapWriter()
 //-----------------------------------------------------------------------------
-SubSpaceMapWriter::SubSpaceMapWriter(): CommonItemsWriter()
+SubSpaceMapWriter::SubSpaceMapWriter():
+MemoryBlockBaseWriter()
 {
 
 }
@@ -55,25 +56,4 @@ void SubSpaceMapWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer
     {
         writer.writeAttribute(QStringLiteral("segmentRef"), subMap->getSegmentReference());
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubSpaceMapWriter::writeNameGroup()
-//-----------------------------------------------------------------------------
-void SubSpaceMapWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap) const
-{
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, subMap);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubSpaceMapWriter::writeBaseAddress()
-//-----------------------------------------------------------------------------
-void SubSpaceMapWriter::writeBaseAddress(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap) const
-{
-    writer.writeStartElement(QStringLiteral("ipxact:addressSpecifier"));
-
-    writer.writeTextElement(QStringLiteral("ipxact:baseAddress"), subMap->getBaseAddress());
-
-    writer.writeEndElement(); // ipxact:addressSpecifier
 }

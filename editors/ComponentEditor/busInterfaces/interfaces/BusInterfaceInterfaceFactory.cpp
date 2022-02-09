@@ -61,8 +61,11 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::createBusInterface(
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser,
         component->getChoices()));
 
+    ParametersInterface* parameterInterface =
+        createParameterInterface(parameterValidator, expressionParser, expressionFormatter);
+
     MemoryMapInterface* mapInterface = createMapInterface(parameterFinder, expressionFormatter, expressionParser,
-        parameterValidator, component);
+        parameterValidator, component, parameterInterface);
 
     AbstractionTypeInterface* abstractionInterface = createAbstractionTypeInterface(
         parameterFinder, expressionFormatter, expressionParser, portMapValidator, component, library);
@@ -73,9 +76,6 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::createBusInterface(
         component->getChoices(), component->getViews(), component->getPorts(), component->getAddressSpaces(),
         component->getMemoryMaps(), component->getBusInterfaces(), component->getFileSets(),
         component->getRemapStates(), portMapValidator, parameterValidator, library));
-
-    ParametersInterface* parameterInterface =
-        createParameterInterface(parameterValidator, expressionParser, expressionFormatter);
 
     BusInterfaceInterface* busInterface(new BusInterfaceInterface(busValidator, expressionParser,
         expressionFormatter, fileSetInterface, mapInterface, abstractionInterface, bridgeInterface,
@@ -112,7 +112,7 @@ FileSetInterface* BusInterfaceInterfaceFactory::createFileSetInterface(
 MemoryMapInterface* BusInterfaceInterfaceFactory::createMapInterface(
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterValidator> parameterValidator,
-    QSharedPointer<Component> component)
+    QSharedPointer<Component> component, ParametersInterface* parameterInterface)
 {
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(expressionParser));
     QSharedPointer<FieldValidator> fieldValidator(
@@ -134,8 +134,8 @@ MemoryMapInterface* BusInterfaceInterfaceFactory::createMapInterface(
         new FieldInterface(fieldValidator, expressionParser, expressionFormatter, resetInterface));
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser, expressionFormatter, fieldInterface));
-    AddressBlockInterface* blockInterface(
-        new AddressBlockInterface(blockValidator, expressionParser, expressionFormatter, registerInterface));
+    AddressBlockInterface* blockInterface(new AddressBlockInterface(
+        blockValidator, expressionParser, expressionFormatter, registerInterface, parameterInterface));
 
     MemoryMapInterface* mapInterface =
         new MemoryMapInterface(memoryMapValidator, expressionParser, expressionFormatter, blockInterface);

@@ -78,13 +78,15 @@ namespace BusInterfaceInterfaceFactory
      *      @param [in] expressionParser        Parser for expressions.
      *      @param [in] parameterValidator      Validator for parameters.
      *      @param [in] component               The containing component.
+     *      @param [in] parameterInterface      Interface for accessing parameters.
      *
      *      @return Interface for accessing memory maps.
      */
     MemoryMapInterface* createMapInterface(QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterValidator> parameterValidator, QSharedPointer<Component> component);
+        QSharedPointer<ParameterValidator> parameterValidator, QSharedPointer<Component> component,
+        ParametersInterface* parameterInterface);
 
     /*!
      *  Create the interface for accessing abstraction types.

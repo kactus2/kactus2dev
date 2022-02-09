@@ -64,14 +64,6 @@ protected:
      */
     void writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const;
 
-    /*!
-     *  Write the subspace maps.
-     *
-     *      @param [in] writer      Used XML writer.
-     *      @param [in] mapBase     The selected memory map base.
-     */
-    void writeSubMaps(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> mapBase) const;
-
 private:
 
     //! No copying allowed.

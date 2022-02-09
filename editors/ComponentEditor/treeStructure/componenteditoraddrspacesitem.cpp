@@ -20,6 +20,8 @@
 #include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 
@@ -186,12 +188,18 @@ void ComponentEditorAddrSpacesItem::createAddressBlockInterface()
     QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
     QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
 
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser_,
+        component_->getChoices()));
+
+    ParametersInterface* parameterInterface(
+        new ParametersInterface(parameterValidator, expressionParser_, expressionFormatter_));
+
     ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
 
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
-    blockInterface_ =
-        new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_, registerInterface);
+    blockInterface_ = new AddressBlockInterface(
+        blockValidator, expressionParser_, expressionFormatter_, registerInterface, parameterInterface);
 }

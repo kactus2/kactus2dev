@@ -17,8 +17,7 @@
 MemoryMapBase::MemoryMapBase(QString const& name /* = QString() */):
 NameGroup(name),
 isPresent_(),
-memoryBlocks_(new QList<QSharedPointer<MemoryBlockBase> > ()),
-subMaps_(new QList<QSharedPointer<SubSpaceMap> >())
+memoryBlocks_(new QList<QSharedPointer<MemoryBlockBase> > ())
 {
 
 }
@@ -29,11 +28,9 @@ subMaps_(new QList<QSharedPointer<SubSpaceMap> >())
 MemoryMapBase::MemoryMapBase(const MemoryMapBase& other):
 NameGroup(other),
 isPresent_(other.isPresent_),
-memoryBlocks_(new QList<QSharedPointer<MemoryBlockBase> > ()),
-subMaps_(new QList<QSharedPointer<SubSpaceMap> > ())
+memoryBlocks_(new QList<QSharedPointer<MemoryBlockBase> > ())
 {
     copyMemoryBlocks(other);
-    copySubMaps(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -47,9 +44,7 @@ MemoryMapBase& MemoryMapBase::operator=( const MemoryMapBase& other)
         isPresent_ = other.isPresent_;
 
         memoryBlocks_->clear();
-        subMaps_->clear();
         copyMemoryBlocks(other);
-        copySubMaps(other);
     }
 
     return *this;
@@ -113,31 +108,6 @@ bool MemoryMapBase::hasMemoryBlocks() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBase::getSubSpaceMaps()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<SubSpaceMap> > > MemoryMapBase::getSubSpaceMaps() const
-{
-    return subMaps_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapBase::setSubSpaceMaps()
-//-----------------------------------------------------------------------------
-void MemoryMapBase::setSubSpaceMaps(QSharedPointer<QList<QSharedPointer<SubSpaceMap> > > newSubMaps)
-{
-    subMaps_->clear();
-    subMaps_ = newSubMaps;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapBase::hasSubSpaceMaps()
-//-----------------------------------------------------------------------------
-bool MemoryMapBase::hasSubSpaceMaps() const
-{
-    return !subMaps_->isEmpty();
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapBase::copyMemoryBlocks()
 //-----------------------------------------------------------------------------
 void MemoryMapBase::copyMemoryBlocks(const MemoryMapBase& other)
@@ -148,21 +118,6 @@ void MemoryMapBase::copyMemoryBlocks(const MemoryMapBase& other)
         {
             QSharedPointer<MemoryBlockBase> copy = memoryBlockBase->clone();
             memoryBlocks_->append(copy);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapBase::copySubMaps()
-//-----------------------------------------------------------------------------
-void MemoryMapBase::copySubMaps(const MemoryMapBase& other)
-{
-    foreach(QSharedPointer<SubSpaceMap> subMap, *other.subMaps_)
-    {
-        if (subMap)
-        {
-            QSharedPointer<SubSpaceMap> copy = subMap->clone();
-            subMaps_->append(copy);
         }
     }
 }

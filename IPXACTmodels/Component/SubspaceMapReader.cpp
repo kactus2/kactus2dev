@@ -18,13 +18,13 @@
 // Function: SubspaceMapReader::SubspaceMapReader()
 //-----------------------------------------------------------------------------
 SubspaceMapReader::SubspaceMapReader() :
-CommonItemsReader()
+MemoryBlockBaseReader()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubspaceMapReader::createSubspaceMapFrom()
+// Function: SubspaceMapReader::createMemoryBlockFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<SubSpaceMap> SubspaceMapReader::createSubspaceMapFrom(QDomNode const& subspaceMapNode) const
 {
@@ -69,61 +69,4 @@ void SubspaceMapReader::parseAttributes(QDomNode const& subspaceMapNode,
         }
     }
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubspaceMapReader::parseNameGroup()
-//-----------------------------------------------------------------------------
-void SubspaceMapReader::parseNameGroup(QDomNode const& subspaceMapNode,
-    QSharedPointer<SubSpaceMap> newSubspaceMap) const
-{
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(subspaceMapNode, newSubspaceMap);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubspaceMapReader::parsePresence()
-//-----------------------------------------------------------------------------
-void SubspaceMapReader::parsePresence(QDomNode const& subspaceMapNode,
-    QSharedPointer<SubSpaceMap> newSubspaceMap) const
-{
-    QDomElement isPresentElement = subspaceMapNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
-    if (!isPresentElement.isNull())
-    {
-        QString isPresent = isPresentElement.firstChild().nodeValue();
-        newSubspaceMap->setIsPresent(isPresent);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubspaceMapReader::parseBaseAddress()
-//-----------------------------------------------------------------------------
-void SubspaceMapReader::parseBaseAddress(QDomNode const& subspaceMapNode,
-    QSharedPointer<SubSpaceMap> newSubspaceMap) const
-{
-    QDomElement addressSpecifierElement =
-        subspaceMapNode.firstChildElement(QStringLiteral("ipxact:addressSpecifier"));
-    if (!addressSpecifierElement.isNull())
-    {
-        QDomElement baseAddressElement =
-            addressSpecifierElement.firstChildElement(QStringLiteral("ipxact:baseAddress"));
-        if (!baseAddressElement.isNull())
-        {
-            QString baseAddress = baseAddressElement.nodeValue();
-            newSubspaceMap->setBaseAddress(baseAddress);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseParameters()
-//-----------------------------------------------------------------------------
-void SubspaceMapReader::parseParameters(QDomNode const& subspaceMapNode,
-    QSharedPointer<SubSpaceMap> newSubspaceMap) const
-{
-    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(subspaceMapNode);
-    if (!newParameters->isEmpty())
-    {
-        newSubspaceMap->setParameters(newParameters);
-    }
 }

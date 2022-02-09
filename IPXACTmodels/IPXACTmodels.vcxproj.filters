@@ -1022,6 +1022,12 @@
     <ClCompile Include="Component\SubspaceMapReader.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Component\MemoryBlockBaseReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MemoryBlockBaseWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1562,6 +1568,12 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="Component\SubspaceMapReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryBlockBaseReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MemoryBlockBaseWriter.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>

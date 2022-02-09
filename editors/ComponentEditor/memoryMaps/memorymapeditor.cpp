@@ -42,7 +42,7 @@ model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, thi
 interface_(blockInterface),
 blocks_(blocks)
 {
-    interface_->setAddressBlocks(blocks_);
+    interface_->setMemoryBlocks(blocks_);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
@@ -125,5 +125,5 @@ void MemoryMapEditor::refresh()
 {
 	view_->update();
 
-    interface_->setAddressBlocks(blocks_);
+    interface_->setMemoryBlocks(blocks_);
 }

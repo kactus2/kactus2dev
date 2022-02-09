@@ -258,6 +258,8 @@
     <ClCompile Include="Component\InstantiationsWriter.cpp" />
     <ClCompile Include="Component\MasterInterface.cpp" />
     <ClCompile Include="Component\MemoryBlockBase.cpp" />
+    <ClCompile Include="Component\MemoryBlockBaseReader.cpp" />
+    <ClCompile Include="Component\MemoryBlockBaseWriter.cpp" />
     <ClCompile Include="Component\MemoryMap.cpp" />
     <ClCompile Include="Component\MemoryMapBase.cpp" />
     <ClCompile Include="Component\MemoryMapBaseReader.cpp" />
@@ -559,6 +561,8 @@
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="Component\FieldReset.h" />
+    <ClInclude Include="Component\MemoryBlockBaseReader.h" />
+    <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />

@@ -139,6 +139,9 @@ HEADERS += ./generaldeclarations.h \
     ./Design/validator/DesignValidator.h \
     ./Design/validator/InterconnectionValidator.h \
     ./Component/FieldReset.h \
+    ./Component/SubSpaceMap.h \
+    ./Component/SubspaceMapReader.h \
+    ./Component/SubSpaceMapWriter.h \
     ./Component/AddressBlock.h \
     ./Component/AddressSpace.h \
     ./Component/AlternateRegister.h \
@@ -259,8 +262,8 @@ HEADERS += ./generaldeclarations.h \
     ./Catalog/validators/CatalogValidator.h \
     ./utilities/BusDefinitionUtils.h \
     ./utilities/XmlUtils.h \
-    ./Component/SubSpaceMap.h \
-    ./Component/SubSpaceMapWriter.h
+    ./Component/MemoryBlockBaseReader.h \
+    ./Component/MemoryBlockBaseWriter.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -468,6 +471,9 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/RemapStateWriter.cpp \
     ./Component/Segment.cpp \
     ./Component/SlaveInterface.cpp \
+    ./Component/SubSpaceMap.cpp \
+    ./Component/SubspaceMapReader.cpp \
+    ./Component/SubSpaceMapWriter.cpp \
     ./Component/Transactional.cpp \
     ./Component/TransparentBridge.cpp \
     ./Component/View.cpp \
@@ -510,5 +516,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
     ./utilities/BusDefinitionUtils.cpp \
     ./utilities/XmlUtils.cpp \
-    ./Component/SubSpaceMap.cpp \
-    ./Component/SubSpaceMapWriter.cpp
+    ./Component/MemoryBlockBaseReader.cpp \
+    ./Component/MemoryBlockBaseWriter.cpp

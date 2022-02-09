@@ -14,14 +14,12 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/Extendable.h>
-#include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
 
 //-----------------------------------------------------------------------------
 //! Contains elements for sub space maps.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT SubSpaceMap : public NameGroup, public Extendable
+class IPXACTMODELS_EXPORT SubSpaceMap : public MemoryBlockBase
 {
 
 public:
@@ -31,7 +29,7 @@ public:
      *
      *      @param [in] name    Name of the memory map base.
      */
-    SubSpaceMap(QString const& name = QString());
+    SubSpaceMap(QString const& name = QString(), QString const& baseAddress = QString());
 
     /*!
      *  Copy constructor.
@@ -57,7 +55,7 @@ public:
 	 * 
 	 *      @return Pointer to the cloned subspace map item.
 	 */
-	virtual QSharedPointer<SubSpaceMap> clone() const;
+	virtual QSharedPointer<MemoryBlockBase> clone() const;
 
     /*!
      *  Get the master interface reference.
@@ -87,56 +85,7 @@ public:
      */
     void setSegmentReference(QString const& newSegmentReference);
 
-    /*!
-     *  Get the presence of the subspace map.
-     *
-     *      @return The presence of the subspace map.
-     */
-    QString getIsPresent() const;
-
-    /*!
-     *  Set a new presence for the subspace map.
-     *
-     *      @param [in] newIsPresent    The new presence value.
-     */
-    void setIsPresent(QString const& newIsPresent);
-
-    /*!
-     *  Get the base address of the subspace map.
-     *
-     *      @return The base address of the subspace map.
-     */
-    QString getBaseAddress() const;
-
-    /*!
-     *  Set a new base address for the subspace map.
-     *
-     *      @param [in] newBaseAddress  The new base address.
-     */
-    void setBaseAddress(QString const& newBaseAddress);
-
-    /*!
-     *  Get the contained parameters.
-     *
-     *      @return Pointer to a list containing the parameters.
-     */
-    QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() const;
-
-    /*!
-     *  Set the parameters.
-     *
-     *      @param [in] newParameters   Pointer to a list containing the new parameters.
-     */
-    void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
-
 private:
-
-    /*!
-     *  Copies parameters from another subspace map.
-     *
-     *      @param [in] other   The subspace map to copy parameters from.
-     */
-    void copyParameters(SubSpaceMap const& other);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -147,15 +96,6 @@ private:
 
     //! Reference to a segment in the address space of the referenced master reference.
     QString segmentRef_;
-
-    //! Presence of the subspace map.
-    QString isPresent_;
-
-    //! Base address of the subspace map.
-    QString baseAddress_;
-
-    //! List of contained parameters.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 };
 
 #endif // SUBSPACEMAP_H

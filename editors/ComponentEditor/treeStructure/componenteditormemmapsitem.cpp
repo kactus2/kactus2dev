@@ -21,6 +21,8 @@
 #include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
 
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+
 #include <IPXACTmodels/Component/MemoryMap.h>
 
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
@@ -214,13 +216,19 @@ void ComponentEditorMemMapsItem::createMemoryMapInterface()
     QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
     QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
 
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser_,
+        component_->getChoices()));
+
+    ParametersInterface* parameterInterface(
+        new ParametersInterface(parameterValidator, expressionParser_, expressionFormatter_));
+
     ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
-    AddressBlockInterface* blockInterface(
-        new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_, registerInterface));
+    AddressBlockInterface* blockInterface(new AddressBlockInterface(
+        blockValidator, expressionParser_, expressionFormatter_, registerInterface, parameterInterface));
 
     mapInterface_ =
         new MemoryMapInterface(memoryMapValidator_, expressionParser_, expressionFormatter_, blockInterface);

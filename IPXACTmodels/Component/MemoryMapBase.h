@@ -99,20 +99,6 @@ public:
     bool hasMemoryBlocks() const;
 
     /*!
-     *  Get a list of the contained subspace maps.
-     *
-     *      @return Pointer to a list containing the subspace maps stored in this memory map.
-     */
-    QSharedPointer<QList<QSharedPointer<SubSpaceMap> > > getSubSpaceMaps() const;
-
-    /*!
-     *  Set the subspace maps for this memory map.
-     *
-     *      @param [in] newSubMaps  Pointer to a list containing the subspace maps to be stored in this memory map.
-     */
-    void setSubSpaceMaps(QSharedPointer<QList<QSharedPointer<SubSpaceMap> > > newSubMaps);
-
-    /*!
      *  Check if the memory map contains any subspace maps.
      *
      *      @return True, if the memory map contains subspace items, false otherwise.
@@ -128,13 +114,6 @@ private:
      */
     void copyMemoryBlocks(const MemoryMapBase& other);
 
-    /*!
-     *  Copy the contained subspace maps.
-     *
-     *      @param [in] other   The memory map base being copied.
-     */
-    void copySubMaps(const MemoryMapBase& other);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -144,9 +123,6 @@ private:
 
     //! Contains pointers to the contained memory blocks.
     QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks_;
-
-    //! Contains pointers to the contained subspace maps.
-    QSharedPointer<QList<QSharedPointer<SubSpaceMap> > > subMaps_;
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<MemoryMapBase>);

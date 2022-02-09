@@ -548,8 +548,8 @@ void PythonAPI::constructMemoryInterface()
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
-    AddressBlockInterface* blockInterface(
-        new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_, registerInterface));
+    AddressBlockInterface* blockInterface(new AddressBlockInterface(
+        blockValidator, expressionParser_, expressionFormatter_, registerInterface, componentParameterInterface_));
 
     mapInterface_ = new MemoryMapInterface(mapValidator_, expressionParser_, expressionFormatter_, blockInterface);
 }
@@ -577,7 +577,7 @@ void PythonAPI::setBlocksForInterface(std::string const& mapName)
         return;
     }
 
-    blockInterface->setAddressBlocks(containingMap->getMemoryBlocks());
+    blockInterface->setMemoryBlocks(containingMap->getMemoryBlocks());
     blockInterface->setAddressUnitBits(containingMap->getAddressUnitBits().toStdString());
 }
 

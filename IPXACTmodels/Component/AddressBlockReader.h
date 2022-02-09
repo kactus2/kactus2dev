@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/Component/MemoryBlockBaseReader.h>
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -24,17 +24,19 @@ class AddressBlock;
 //-----------------------------------------------------------------------------
 //! Reader class for ipxact:addressBlock element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AddressBlockReader : public CommonItemsReader
+class IPXACTMODELS_EXPORT AddressBlockReader : public MemoryBlockBaseReader
 {
 public:
 
-    //! The constructor.
+    /*!
+     *  The constructor.
+     */
     AddressBlockReader();
 
     /*!
      *  The destructor.
      */
-    ~AddressBlockReader();
+    ~AddressBlockReader() = default;
 
     /*!
      *  Creates a new address block from a given address block node.
@@ -50,30 +52,6 @@ private:
     //! No copying allowed.
     AddressBlockReader(AddressBlockReader const& rhs);
     AddressBlockReader& operator=(AddressBlockReader const& rhs);
-
-    /*!
-     *  Reads the name group.
-     *
-     *      @param [in] addressBlockNode    XML description of the address block.
-     *      @param [in] newAddressBlock     The new address block.
-     */
-    void parseNameGroup(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock) const;
-
-    /*!
-     *  Reads the presence.
-     *
-     *      @param [in] addressBlockNode    XML description of the address block.
-     *      @param [in] newAddressBlock     The new address block.
-     */
-    void parsePresence(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock) const;
-
-    /*!
-     *  Reads the base address.
-     *
-     *      @param [in] addressBlockNode    XML description of the address block.
-     *      @param [in] newAddressBlock     The new address block.
-     */
-    void parseBaseAddress(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock) const;
 
     /*!
      *  Reads the type identifier.
@@ -122,14 +100,6 @@ private:
      *      @param [in] newAddressBlock     The new address block.
      */
     void parseAccess(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock) const;
-
-    /*!
-     *  Reads the parameters.
-     *
-     *      @param [in] addressBlockNode    XML description of the address block.
-     *      @param [in] newAddressBlock     The new address block.
-     */
-    void parseParameters(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock) const;
 
     /*!
      *  Reads the register data.

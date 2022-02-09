@@ -21,15 +21,8 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockReader::AddressBlockReader()
 //-----------------------------------------------------------------------------
-AddressBlockReader::AddressBlockReader(): CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockReader::~AddressBlockReader()
-//-----------------------------------------------------------------------------
-AddressBlockReader::~AddressBlockReader()
+AddressBlockReader::AddressBlockReader():
+MemoryBlockBaseReader()
 {
 
 }
@@ -66,40 +59,6 @@ QSharedPointer<AddressBlock> AddressBlockReader::createAddressBlockFrom(QDomNode
     parseVendorExtensions(addressBlockNode, newAddressBlock);
 
     return newAddressBlock;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseNameGroup()
-//-----------------------------------------------------------------------------
-void AddressBlockReader::parseNameGroup(QDomNode const& addressBlockNode,
-    QSharedPointer<AddressBlock> newAddressBlock) const
-{
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(addressBlockNode, newAddressBlock);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parsePresence()
-//-----------------------------------------------------------------------------
-void AddressBlockReader::parsePresence(QDomNode const& addressBlockNode,
-    QSharedPointer<AddressBlock> newAddressBlock) const
-{
-    QDomElement isPresentElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
-    if (!isPresentElement.isNull())
-    {
-        QString isPresent = isPresentElement.firstChild().nodeValue();
-        newAddressBlock->setIsPresent(isPresent);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseBaseAddress()
-//-----------------------------------------------------------------------------
-void AddressBlockReader::parseBaseAddress(QDomNode const& addressBlockNode,
-    QSharedPointer<AddressBlock> newAddressBlock) const
-{
-    QString baseAddress = addressBlockNode.firstChildElement(QStringLiteral("ipxact:baseAddress")).firstChild().nodeValue();
-    newAddressBlock->setBaseAddress(baseAddress);
 }
 
 //-----------------------------------------------------------------------------
@@ -184,19 +143,6 @@ void AddressBlockReader::parseAccess(QDomNode const& addressBlockNode,
         QString accessString = accessElement.firstChild().nodeValue();
         AccessTypes::Access access = AccessTypes::str2Access(accessString, AccessTypes::ACCESS_COUNT);
         newAddressBlock->setAccess(access);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseParameters()
-//-----------------------------------------------------------------------------
-void AddressBlockReader::parseParameters(QDomNode const& addressBlockNode,
-    QSharedPointer<AddressBlock> newAddressBlock) const
-{
-    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(addressBlockNode);
-    if (!newParameters->isEmpty())
-    {
-        newAddressBlock->setParameters(newParameters);
     }
 }
 

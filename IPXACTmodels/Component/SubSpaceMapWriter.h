@@ -13,7 +13,8 @@
 #define SUBSPACEMAPWRITER_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/common/CommonItemsWriter.h>
+
+#include <IPXACTmodels/Component/MemoryBlockBaseWriter.h>
 
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
@@ -23,7 +24,7 @@ class SubSpaceMap;
 //-----------------------------------------------------------------------------
 //! Writer class for ipxact:subSpaceMap element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT SubSpaceMapWriter : public CommonItemsWriter
+class IPXACTMODELS_EXPORT SubSpaceMapWriter : public MemoryBlockBaseWriter
 {
 public:
 
@@ -58,22 +59,6 @@ private:
      *      @param [in] subMap  The subspace map whose attributes to write.
      */
     void writeAttributes(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap) const;
-
-    /*!
-     *  Write the name group.
-     *
-     *      @param [in] writer  Used XML writer.
-     *      @param [in] subMap  Selected subspace map.
-     */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap) const;
-
-    /*!
-     *  Write the base address.
-     *
-     *      @param [in] writer  Used XML writer.
-     *      @param [in] subMap  The subspace map whose base address to write.
-     */
-    void writeBaseAddress(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap) const;
 };
 
 #endif // SUBSPACEMAPWRITER_H

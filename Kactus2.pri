@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+    ./resource1.h \
     ./editors/ComponentEditor/common/ComponentParameterFinder.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
@@ -768,6 +769,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/HWDesign/HWDesignDiagram.h \
     ./editors/HWDesign/HWDesignWidget.h \
     ./editors/HWDesign/OffPageConnectorItem.h \
+    ./editors/HWDesign/WarningSymbol.h \
     ./editors/HWDesign/columnview/ColumnEditDialog.h \
     ./editors/HWDesign/columnview/HWColumn.h \
     ./editors/HWDesign/views/CellEditTableView.h \
@@ -883,7 +885,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/HWDesign/WarningSymbol.h
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAPI.cpp \
@@ -1546,6 +1550,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/HWDesign/OffPageConnectorItem.cpp \
     ./editors/HWDesign/PortmapDialog.cpp \
     ./editors/HWDesign/SelectItemTypeDialog.cpp \
+    ./editors/HWDesign/WarningSymbol.cpp \
     ./editors/HWDesign/columnview/ColumnEditDialog.cpp \
     ./editors/HWDesign/columnview/HWColumn.cpp \
     ./editors/HWDesign/views/CellEditTableView.cpp \
@@ -1654,5 +1659,7 @@ SOURCES += ./VersionHelper.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/HWDesign/WarningSymbol.cpp
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.cpp
 RESOURCES += kactus.qrc
