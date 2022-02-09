@@ -27,7 +27,7 @@ IPXACTMODELS_EXPORT QStringList BusDefinitionUtils::getSystemGroups(QSharedPoint
     QStringList systemGroups = bus->getSystemGroupNames();
 
     VLNV const extendVLNV = bus->getExtends();
-    if (extendVLNV.isValid() && extendVLNV.getType() == VLNV::BUSDEFINITION)
+    if (extendVLNV.isValid() && extendVLNV.getType() == VLNV::BUSDEFINITION && extendVLNV != bus->getVlnv())
     {
         QSharedPointer<const Document> extendDocument = libraryAccess->getModelReadOnly(extendVLNV);
         if (extendDocument)
@@ -58,7 +58,8 @@ IPXACTMODELS_EXPORT QList<QSharedPointer<PortAbstraction> > BusDefinitionUtils::
     QList<QSharedPointer<PortAbstraction> > extendsignals = *abstraction->getLogicalPorts();
 
     VLNV const extendVLNV = abstraction->getExtends();
-    if (extendVLNV.isValid() && extendVLNV.getType() == VLNV::BUSDEFINITION)
+    if (extendVLNV.isValid() && extendVLNV.getType() == VLNV::BUSDEFINITION && 
+        extendVLNV != abstraction->getVlnv())
     {
         QSharedPointer<const Document> extendDocument = libraryAccess->getModelReadOnly(extendVLNV);
         if (extendDocument)
