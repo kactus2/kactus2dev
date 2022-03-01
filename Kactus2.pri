@@ -589,7 +589,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterFileColumns.h \
     ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryBlockModel.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryBlockDelegate.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h \
@@ -603,6 +607,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/ResetsEditor.h \
     ./editors/ComponentEditor/memoryMaps/ResetsModel.h \
     ./editors/ComponentEditor/memoryMaps/ResetsDelegate.h \
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h \
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapModel.h \
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapDelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.h \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.h \
@@ -635,8 +642,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
     ./editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h \
     ./editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.h \
     ./editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h \
     ./editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h \
+    ./editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h \
     ./editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
     ./editors/ComponentEditor/resetTypes/ResetTypeColumns.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
@@ -885,9 +894,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.h
+    ./editors/ComponentEditor/treeStructure/SubspaceMapItem.h \
+    ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.h \
+    ./common/widgets/busReferenceComboBox/BusReferenceComboBox.h \
+    ./common/widgets/segmentComboBox/SegmentComboBox.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAPI.cpp \
@@ -1269,6 +1279,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluemodel.cpp \
     ./editors/ComponentEditor/memoryMaps/ExpressionProxyModel.cpp \
     ./editors/ComponentEditor/memoryMaps/fieldeditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/MemoryBlockDelegate.cpp \
+    ./editors/ComponentEditor/memoryMaps/MemoryBlockFilter.cpp \
+    ./editors/ComponentEditor/memoryMaps/MemoryBlockModel.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapmodel.cpp \
@@ -1290,6 +1303,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapDelegate.cpp \
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapModel.cpp \
+    ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
@@ -1308,9 +1324,11 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
     ./editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.cpp \
     ./editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.cpp \
     ./editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.cpp \
     ./editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.cpp \
     ./editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
+    ./editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
@@ -1659,7 +1677,8 @@ SOURCES += ./VersionHelper.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.cpp
+    ./editors/ComponentEditor/treeStructure/SubspaceMapItem.cpp \
+    ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.cpp \
+    ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
+    ./common/widgets/segmentComboBox/SegmentComboBox.cpp
 RESOURCES += kactus.qrc

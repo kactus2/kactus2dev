@@ -1,30 +1,25 @@
 //-----------------------------------------------------------------------------
-// File: Component.h
+// File: SubspaceMapsEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Antti Kamppi
-// Date: 22.08.2012
+// Author: Mikko Teuho
+// Date: 25.01.2022
 //
 // Description:
-// The editor to edit the address blocks of a single memory map.
+// The editor to edit the subspace maps of a single memory map.
 //-----------------------------------------------------------------------------
 
-/*
-#include "memorymapeditor.h"
-
-#include "ExpressionProxyModel.h"
-#include "memorymapmodel.h"
-#include "memorymapdelegate.h"
-#include "MemoryMapColumns.h"
+#include "SubspaceMapsEditor.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h>
+#include <editors/ComponentEditor/memoryMaps/SubspaceMapColumns.h>
+#include <editors/ComponentEditor/memoryMaps/SubspaceMapModel.h>
+#include <editors/ComponentEditor/memoryMaps/SubspaceMapDelegate.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
-
-#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -33,17 +28,19 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapEditor::MemoryMapEditor()
 //-----------------------------------------------------------------------------
-MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+SubspaceMapsEditor::SubspaceMapsEditor(QSharedPointer<Component> component,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
-    AddressBlockInterface* blockInterface, QSharedPointer<QList<QSharedPointer<MemoryBlockBase>>> blocks,
+    SubspaceMapInterface* subspaceMapInterface, QSharedPointer<QList<QSharedPointer<MemoryBlockBase>>> blocks,
     QWidget* parent):
-QGroupBox(tr("Address blocks summary"), parent),
+QGroupBox(tr("Subspace maps summary"), parent),
 view_(new EditableTableView(this)),
-model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this)),
-interface_(blockInterface),
-blocks_(blocks)
+model_(new SubspaceMapModel(subspaceMapInterface, expressionParser, parameterFinder, this)),
+interface_(subspaceMapInterface),
+blocks_(blocks),
+component_(component)
 {
-    interface_->setAddressBlocks(blocks_);
+    interface_->setMemoryBlocks(blocks_);
+    interface_->setupSubInterfaces(component_);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
@@ -54,34 +51,23 @@ blocks_(blocks)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
-    ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
-    proxy->setColumnToAcceptExpressions(MemoryMapColumns::BASE_COLUMN);
-    proxy->setColumnToAcceptExpressions(MemoryMapColumns::RANGE_COLUMN);
-    proxy->setColumnToAcceptExpressions(MemoryMapColumns::WIDTH_COLUMN);
-    proxy->setColumnToAcceptExpressions(MemoryMapColumns::IS_PRESENT);
+    MemoryBlockFilter* proxy = new MemoryBlockFilter(expressionParser, subspaceMapInterface, this);
+    proxy->setColumnToAcceptExpressions(SubspaceMapColumns::BASE);
+    proxy->setColumnToAcceptExpressions(SubspaceMapColumns::IS_PRESENT);
 
 	proxy->setSourceModel(model_);
 	view_->setModel(proxy);
-
-	//! \brief Enable import/export csv file
-    const QString compPath = handler->getDirectoryPath(component->getVlnv());
-	QString defPath = QString("%1/addrBlockList.csv").arg(compPath);
-	view_->setDefaultImportExportPath(defPath);
-	view_->setAllowImportExport(true);
     view_->setAllowElementCopying(true);
-
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
-    view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
-
-	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
+    view_->setItemDelegate(new SubspaceMapDelegate(parameterCompleter, parameterFinder, interface_,
+        component->getAddressSpaces(), this));
+    view_->sortByColumn(SubspaceMapColumns::BASE, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(graphicsChanged(int)), this, SIGNAL(graphicsChanged(int)), Qt::UniqueConnection);
     
-    connect(model_, SIGNAL(childAddressingChanged(int)), 
-        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
@@ -108,24 +94,22 @@ blocks_(blocks)
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
         model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
 
-    connect(model_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
-        this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(blockNameChanged(QString const&, QString const&)),
+        this, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(invalidateOtherFilter()), this, SIGNAL(invalidateOtherFilter()), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(invalidateThisFilter()), proxy, SLOT(invalidate()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapEditor::~MemoryMapEditor()
+// Function: SubspaceMapsEditor::refresh()
 //-----------------------------------------------------------------------------
-MemoryMapEditor::~MemoryMapEditor()
+void SubspaceMapsEditor::refresh()
 {
+    view_->update();
+
+    interface_->setMemoryBlocks(blocks_);
+    interface_->setupSubInterfaces(component_);
 }
 
-//-----------------------------------------------------------------------------
-// Function: MemoryMapEditor::refresh()
-//-----------------------------------------------------------------------------
-void MemoryMapEditor::refresh()
-{
-	view_->update();
-
-    interface_->setAddressBlocks(blocks_);
-}
-*/

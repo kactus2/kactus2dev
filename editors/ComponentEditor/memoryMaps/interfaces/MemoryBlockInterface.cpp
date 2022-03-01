@@ -11,11 +11,16 @@
 
 #include "MemoryBlockInterface.h"
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/SubSpaceMap.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/Segment.h>
+#include <IPXACTmodels/Component/validators/MemoryBlockValidator.h>
 
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 #include <QMimeData>
 #include <QApplication>
@@ -27,12 +32,15 @@ using namespace std;
 // Function: MemoryBlockInterface::MemoryBlockInterface()
 //-----------------------------------------------------------------------------
 MemoryBlockInterface::MemoryBlockInterface(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, ParametersInterface* parameterInterface):
+    QSharedPointer<ExpressionFormatter> expressionFormatter, BusInterfaceInterface* busInterface,
+    ParametersInterface* parameterInterface):
 ParameterizableInterface(expressionParser, expressionFormatter),
 NameGroupInterface(),
 blockData_(),
 addressUnitBits_(""),
-parameterInterface_(parameterInterface)
+parameterInterface_(parameterInterface),
+availableAddressSpaces_(),
+busInterfaceInterface_(busInterface)
 {
 
 }
@@ -43,6 +51,23 @@ parameterInterface_(parameterInterface)
 void MemoryBlockInterface::setMemoryBlocks(QSharedPointer<QList<QSharedPointer<MemoryBlockBase>>> newMemoryBlocks)
 {
     blockData_ = newMemoryBlocks;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::setupAddressSpaces()
+//-----------------------------------------------------------------------------
+void MemoryBlockInterface::setupSubInterfaces(QSharedPointer<Component> newComponent)
+{
+    availableAddressSpaces_ = newComponent->getAddressSpaces();
+    busInterfaceInterface_->setBusInterfaces(newComponent);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::getBusInterface()
+//-----------------------------------------------------------------------------
+BusInterfaceInterface* MemoryBlockInterface::getBusInterface() const
+{
+    return busInterfaceInterface_;
 }
 
 //-----------------------------------------------------------------------------
@@ -291,6 +316,95 @@ bool MemoryBlockInterface::setIsPresent(std::string const& blockName, std::strin
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::getRangeValue()
+//-----------------------------------------------------------------------------
+std::string MemoryBlockInterface::getRangeValue(std::string const& blockName, int const& baseNumber) const
+{
+    std::string rangeValue = "0";
+
+    QSharedPointer<MemoryBlockBase> selectedBlock = getBlock(blockName);
+    if (selectedBlock)
+    {
+        QSharedPointer<AddressBlock> addressBlock = selectedBlock.dynamicCast<AddressBlock>();
+        QSharedPointer<SubSpaceMap> subspace = selectedBlock.dynamicCast<SubSpaceMap>();
+        if (addressBlock)
+        {
+            rangeValue = parseExpressionToBaseNumber(addressBlock->getRange(), baseNumber).toStdString();
+        }
+        else if (subspace)
+        {
+            quint64 memoryRange = 1;
+
+            QSharedPointer<AddressSpace> referencedSpace =
+                getReferencedAddressSpace(subspace->getMasterReference());
+            if (referencedSpace)
+            {
+                QSharedPointer<Segment> referencedSegment =
+                    getReferencedSegment(referencedSpace, subspace->getSegmentReference());
+
+                if (referencedSegment)
+                {
+                    memoryRange = parseExpressionToDecimal(referencedSegment->getRange()).toULongLong();
+                }
+                else
+                {
+                    memoryRange = parseExpressionToDecimal(referencedSpace->getRange()).toULongLong();
+                }
+
+            }
+
+            QString rangeQ = QString::number(memoryRange);
+            rangeValue = parseExpressionToBaseNumber(rangeQ, baseNumber).toStdString();
+        }
+    }
+
+    return rangeValue;
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::getReferencedAddressSpace()
+//-----------------------------------------------------------------------------
+QSharedPointer<AddressSpace> MemoryBlockInterface::getReferencedAddressSpace(QString const& masterBusReference)
+const
+{
+    QString spaceReference =
+        QString::fromStdString(busInterfaceInterface_->getAddressSpaceReference(masterBusReference.toStdString()));
+    if (!spaceReference.isEmpty())
+    {
+        for (auto space : *availableAddressSpaces_)
+        {
+            if (space->name() == spaceReference)
+            {
+                return space;
+            }
+        }
+    }
+
+    return QSharedPointer<AddressSpace>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::getReferencedSegment()
+//-----------------------------------------------------------------------------
+QSharedPointer<Segment> MemoryBlockInterface::getReferencedSegment(QSharedPointer<AddressSpace> referencedSpace,
+    QString const& segmentReference) const
+{
+    if (!segmentReference.isEmpty())
+    {
+        for (auto segment : *referencedSpace->getSegments())
+        {
+            if (segment->name() == segmentReference)
+            {
+                return segment;
+            }
+        }
+    }
+
+    return QSharedPointer<Segment>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::getAllReferencesToIdInItem()
 //-----------------------------------------------------------------------------
 int MemoryBlockInterface::getAllReferencesToIdInItem(const string& itemName, string const&  valueID) const
@@ -340,7 +454,6 @@ QString MemoryBlockInterface::getNewBlockBaseAddress() const
             }
         }
     }
-
 
     // convert the address to hexadecimal form
     QString newBase = QString::number(lastBaseAddress + lastRange, 16);
@@ -432,4 +545,46 @@ int MemoryBlockInterface::getPasteRowCount() const
     }
     
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::itemHasValidName()
+//-----------------------------------------------------------------------------
+bool MemoryBlockInterface::itemHasValidName(std::string const& itemName) const
+{
+    QSharedPointer<MemoryBlockBase> block = getBlock(itemName);
+    if (block)
+    {
+        return getValidator()->hasValidName(block);
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::hasValidBaseAddress()
+//-----------------------------------------------------------------------------
+bool MemoryBlockInterface::hasValidBaseAddress(std::string const& itemName) const
+{
+    QSharedPointer<MemoryBlockBase> block = getBlock(itemName);
+    if (block)
+    {
+        return getValidator()->hasValidBaseAddress(block);
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryBlockInterface::hasValidIsPresent()
+//-----------------------------------------------------------------------------
+bool MemoryBlockInterface::hasValidIsPresent(std::string const& itemName) const
+{
+    QSharedPointer<MemoryBlockBase> block = getBlock(itemName);
+    if (block)
+    {
+        return getValidator()->hasValidIsPresent(block);
+    }
+
+    return false;
 }

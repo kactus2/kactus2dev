@@ -13,11 +13,16 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
-#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
-
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/SubSpaceMap.h>
+
+#include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 
 #include <QRegularExpression>
 
@@ -25,9 +30,13 @@
 // Function: MemoryMapBaseValidator::MemoryMapBaseValidator()
 //-----------------------------------------------------------------------------
 MemoryMapBaseValidator::MemoryMapBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<AddressBlockValidator> addressBlockValidator):
+    QSharedPointer<AddressBlockValidator> addressBlockValidator,
+    QSharedPointer<SubspaceMapValidator> subspaceValidator):
 expressionParser_(expressionParser),
-addressBlockValidator_(addressBlockValidator)
+addressBlockValidator_(addressBlockValidator),
+subspaceValidator_(subspaceValidator),
+availableBusInterfaces_(),
+availableSpaces_()
 {
 
 }
@@ -35,9 +44,19 @@ addressBlockValidator_(addressBlockValidator)
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseValidator::componentChange()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes)
+void MemoryMapBaseValidator::componentChange(QSharedPointer<Component> newComponent)
 {
-    addressBlockValidator_->componentChange(newResetTypes);
+    addressBlockValidator_->componentChange(newComponent);
+    subspaceValidator_->componentChange(newComponent);
+
+    availableBusInterfaces_.clear();
+    availableSpaces_.clear();
+
+    if (newComponent)
+    {
+        availableBusInterfaces_ = newComponent->getBusInterfaces();
+        availableSpaces_ = newComponent->getAddressSpaces();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -46,6 +65,14 @@ void MemoryMapBaseValidator::componentChange(QSharedPointer<QList<QSharedPointer
 QSharedPointer<AddressBlockValidator> MemoryMapBaseValidator::getAddressBlockValidator() const
 {
     return addressBlockValidator_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::getSubspaceValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<SubspaceMapValidator> MemoryMapBaseValidator::getSubspaceValidator() const
+{
+    return subspaceValidator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -104,31 +131,36 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
 {
     if (!memoryMapBase->getMemoryBlocks()->isEmpty())
     {
-        QStringList addressBlockNames;
+        QStringList memoryBlockNames;
         for (int blockIndex = 0; blockIndex < memoryMapBase->getMemoryBlocks()->size(); ++blockIndex)
         {
             QSharedPointer<MemoryBlockBase> blockData = memoryMapBase->getMemoryBlocks()->at(blockIndex);
-            QSharedPointer<AddressBlock> addressBlock = blockData.dynamicCast<AddressBlock>();
-            if (addressBlock)
+            if (memoryBlockNames.contains(blockData->name()))
             {
-                if (addressBlockNames.contains(addressBlock->name()) ||
-                    !addressBlockValidator_->validate(addressBlock, addressUnitBits))
+                return false;
+            }
+
+            memoryBlockNames.append(blockData->name());
+
+            QSharedPointer<AddressBlock> addressBlock = blockData.dynamicCast<AddressBlock>();
+            if (addressBlock &&
+                (!addressBlockValidator_->validate(addressBlock, addressUnitBits) ||
+                    !addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock)))
+            {
+                return false;
+            }
+            else
+            {
+                QSharedPointer<SubSpaceMap> subspace = blockData.dynamicCast<SubSpaceMap>();
+                if (subspace && !subspaceValidator_->validate(subspace))
                 {
                     return false;
                 }
-                else
-                {
-                    addressBlockNames.append(addressBlock->name());
+            }
 
-                    if (addressBlockOverlaps(addressBlock, memoryMapBase, blockIndex))
-                    {
-                        return false;
-                    }
-                    if (!addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
-                    {
-                        return false;
-                    }
-                }
+            if (memoryBlockOverlaps(blockData, memoryMapBase, blockIndex))
+            {
+                return false;
             }
         }
     }
@@ -159,20 +191,16 @@ bool MemoryMapBaseValidator::addressBlockWidthIsMultiplicationOfAUB(QString cons
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseValidator::addressBlockOverlap()
 //-----------------------------------------------------------------------------
-bool MemoryMapBaseValidator::addressBlockOverlaps(QSharedPointer<AddressBlock> addressBlock,
-    QSharedPointer<MemoryMapBase> memoryMapBase, int addressBlockIndex) const
+bool MemoryMapBaseValidator::memoryBlockOverlaps(QSharedPointer<MemoryBlockBase> memoryBlock,
+    QSharedPointer<MemoryMapBase> memoryMapBase, int memoryBlockIndex) const
 {
-    for (int blockIndex = addressBlockIndex + 1; blockIndex < memoryMapBase->getMemoryBlocks()->size();
+    for (int blockIndex = memoryBlockIndex + 1; blockIndex < memoryMapBase->getMemoryBlocks()->size();
         ++blockIndex)
     {
-        QSharedPointer<MemoryBlockBase> blockData = memoryMapBase->getMemoryBlocks()->at(blockIndex);
-        QSharedPointer<AddressBlock> comparedBlock = blockData.dynamicCast<AddressBlock>();
-        if (comparedBlock)
+        QSharedPointer<MemoryBlockBase> comparisonBlock = memoryMapBase->getMemoryBlocks()->at(blockIndex);
+        if (twoMemoryBlocksOverlap(memoryBlock, comparisonBlock))
         {
-            if (twoAddressBlocksOverlap(addressBlock, comparedBlock))
-            {
-                return true;
-            }
+            return true;
         }
     }
 
@@ -182,29 +210,108 @@ bool MemoryMapBaseValidator::addressBlockOverlaps(QSharedPointer<AddressBlock> a
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseValidator::twoAddressBlocksOverlap()
 //-----------------------------------------------------------------------------
-bool MemoryMapBaseValidator::twoAddressBlocksOverlap(QSharedPointer<AddressBlock> addressBlock,
-    QSharedPointer<AddressBlock> comparedBlock) const
+bool MemoryMapBaseValidator::twoMemoryBlocksOverlap(QSharedPointer<MemoryBlockBase> memoryBlock,
+    QSharedPointer<MemoryBlockBase> comparedBlock) const
 {
-    int blockBegin    = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toInt();
-    int blockEnd      = blockBegin + expressionParser_->parseExpression(addressBlock->getRange()).toInt() - 1;
-    bool blockPresent = addressBlock->getIsPresent().isEmpty() || expressionParser_->parseExpression(addressBlock->getIsPresent()).toInt();
+    bool blockPresent = memoryBlock->getIsPresent().isEmpty() ||
+        expressionParser_->parseExpression(memoryBlock->getIsPresent()).toInt();
+    bool comparedPresent = comparedBlock->getIsPresent().isEmpty() ||
+        expressionParser_->parseExpression(comparedBlock->getIsPresent()).toInt();
 
+    if (blockPresent && comparedPresent)
+    {
+        quint64 blockBegin = expressionParser_->parseExpression(memoryBlock->getBaseAddress()).toULongLong();
+        quint64 blockEnd = blockBegin + getBlockRange(memoryBlock) - 1;
 
-    int compareBegin    = expressionParser_->parseExpression(comparedBlock->getBaseAddress()).toInt();
-    int compareEnd      = compareBegin + expressionParser_->parseExpression(comparedBlock->getRange()).toInt() - 1;
-    bool comparedPresent = comparedBlock->getIsPresent().isEmpty() || expressionParser_->parseExpression(comparedBlock->getIsPresent()).toInt();
+        quint64 compareBegin = expressionParser_->parseExpression(comparedBlock->getBaseAddress()).toULongLong();
+        quint64 compareEnd = compareBegin + getBlockRange(comparedBlock) - 1;
 
-    if (blockPresent && comparedPresent) {
-      if (((blockBegin >= compareBegin && blockBegin <= compareEnd) ||
-          (blockEnd >= compareBegin && blockEnd <= compareEnd)) ||
-          ((compareBegin >= blockBegin && compareBegin <= blockEnd) ||
-          (compareEnd >= blockBegin && compareEnd <= blockEnd)))
-      {
-          return true;
-      }
+        if (((blockBegin >= compareBegin && blockBegin <= compareEnd) ||
+            (blockEnd >= compareBegin && blockEnd <= compareEnd)) ||
+            ((compareBegin >= blockBegin && compareBegin <= blockEnd) ||
+            (compareEnd >= blockBegin && compareEnd <= blockEnd)))
+        {
+            return true;
+        }
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::getBlockEnd()
+//-----------------------------------------------------------------------------
+quint64 MemoryMapBaseValidator::getBlockRange(QSharedPointer<MemoryBlockBase> block) const
+{
+    quint64 memoryRange = 0;
+    QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
+    if (addressBlock)
+    {
+        memoryRange = expressionParser_->parseExpression(addressBlock->getRange()).toULongLong();
+    }
+
+    QSharedPointer<SubSpaceMap> subspace = block.dynamicCast<SubSpaceMap>();
+    if (subspace)
+    {
+        memoryRange = 1;
+
+        QSharedPointer<AddressSpace> referencedSpace = getReferencedAddressSpace(subspace);
+        if (referencedSpace)
+        {
+            QSharedPointer<Segment> referencedSegment = getReferencedSegment(subspace, referencedSpace);
+
+            if (referencedSegment)
+            {
+                memoryRange = expressionParser_->parseExpression(referencedSegment->getRange()).toULongLong();
+            }
+            else
+            {
+                memoryRange = expressionParser_->parseExpression(referencedSpace->getRange()).toULongLong();
+            }
+        }
+    }
+
+    return memoryRange;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::getReferencedAddressSpace()
+//-----------------------------------------------------------------------------
+QSharedPointer<AddressSpace> MemoryMapBaseValidator::getReferencedAddressSpace(
+    QSharedPointer<SubSpaceMap> subspace) const
+{
+    for (auto bus : *availableBusInterfaces_)
+    {
+        if (subspace->getMasterReference() == bus->name())
+        {
+            for (auto space : *availableSpaces_)
+            {
+                if (bus->getAddressSpaceRef() == space->name())
+                {
+                    return space;
+                }
+            }
+        }
+    }
+
+    return QSharedPointer<AddressSpace>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::getReferencedSegment()
+//-----------------------------------------------------------------------------
+QSharedPointer<Segment> MemoryMapBaseValidator::getReferencedSegment(QSharedPointer<SubSpaceMap> subspace,
+    QSharedPointer<AddressSpace> containingSpace) const
+{
+    for (auto segment : *containingSpace->getSegments())
+    {
+        if (segment->name() == subspace->getSegmentReference())
+        {
+            return segment;
+        }
+    }
+
+    return QSharedPointer<Segment>();
 }
 
 //-----------------------------------------------------------------------------
@@ -256,32 +363,41 @@ void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
 {
     if (!memoryMapBase->getMemoryBlocks()->isEmpty())
     {
-        QStringList addressBlockNames;
+        QStringList memoryBlockNames;
         for (int blockIndex = 0; blockIndex < memoryMapBase->getMemoryBlocks()->size(); ++blockIndex)
         {
             QSharedPointer<MemoryBlockBase> memoryBlock = memoryMapBase->getMemoryBlocks()->at(blockIndex);
+            if (memoryBlockNames.contains(memoryBlock->name()))
+            {
+                errors.append(QObject::tr("Name %1 of memory blocks in %2 is not unique")
+                    .arg(memoryBlock->name()).arg(context));
+            }
+
+            memoryBlockNames.append(memoryBlock->name());
+
             QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
-            if (addressBlock)
+            QSharedPointer<SubSpaceMap> subspace = memoryBlock.dynamicCast<SubSpaceMap>();
+            if (addressBlock || subspace)
             {
-                addressBlockValidator_->findErrorsIn(errors, addressBlock, addressUnitBits, context);
+                if (addressBlock)
+                {
+                    addressBlockValidator_->findErrorsIn(errors, addressBlock, addressUnitBits, context);
+                    if (!addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
+                    {
+                        errors.append(QObject::tr(
+                            "Width of address block %1 is not a multiple of the address unit bits of %2 %3")
+                            .arg(addressBlock->name())
+                            .arg(memoryMapBase->elementName())
+                            .arg(memoryMapBase->name()));
+                    }
+                }
+                else if (subspace)
+                {
+                    subspaceValidator_->findErrorsIn(errors, subspace, context);
+                }
+
+                findErrorsInOverlappingBlocks(errors, memoryMapBase, memoryBlock, blockIndex, context);
             }
-
-            if (addressBlockNames.contains(addressBlock->name()))
-            {
-                errors.append(QObject::tr("Name %1 of address blocks in %2 is not unique")
-                    .arg(addressBlock->name()).arg(context));
-            }
-
-            findErrorsInOverlappingBlocks(errors, memoryMapBase, addressBlock, blockIndex, context);
-
-            if (!addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
-            {
-                errors.append(QObject::tr("Width of address block %1 is not a multiple of the address unit bits "
-                    "of %2 %3")
-                    .arg(addressBlock->name()).arg(memoryMapBase->elementName()).arg(memoryMapBase->name()));
-            }
-
-            addressBlockNames.append(addressBlock->name());
         }
     }
 }
@@ -290,20 +406,19 @@ void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
 // Function: MemoryMapBaseValidator::findErrorsInOverlappingBlocks()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseValidator::findErrorsInOverlappingBlocks(QVector<QString>& errors,
-    QSharedPointer<MemoryMapBase> memoryMapBase, QSharedPointer<AddressBlock> addressBlock, int blockIndex,
+    QSharedPointer<MemoryMapBase> memoryMapBase, QSharedPointer<MemoryBlockBase> memoryBlock, int blockIndex,
     QString const& context) const
 {
     for (int comparisonIndex = blockIndex + 1; comparisonIndex < memoryMapBase->getMemoryBlocks()->size();
         ++comparisonIndex)
     {
-        QSharedPointer<MemoryBlockBase> blockData = memoryMapBase->getMemoryBlocks()->at(comparisonIndex);
-        QSharedPointer<AddressBlock> comparisonBlock = blockData.dynamicCast<AddressBlock>();
+        QSharedPointer<MemoryBlockBase> comparisonBlock = memoryMapBase->getMemoryBlocks()->at(comparisonIndex);
         if (comparisonBlock)
         {
-            if (twoAddressBlocksOverlap(addressBlock, comparisonBlock))
+            if (twoMemoryBlocksOverlap(memoryBlock, comparisonBlock))
             {
-                errors.append(QObject::tr("Address blocks %1 and %2 overlap in %3")
-                    .arg(addressBlock->name()).arg(comparisonBlock->name()).arg(context));
+                errors.append(QObject::tr("Memory blocks %1 and %2 overlap in %3")
+                    .arg(memoryBlock->name()).arg(comparisonBlock->name()).arg(context));
             }
         }
     }

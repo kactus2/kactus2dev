@@ -20,11 +20,14 @@
 #include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
-
+#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
-
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
@@ -199,12 +202,16 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
 
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
         new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator));
-    QSharedPointer<MemoryMapValidator> memoryMapValidator (
-        new MemoryMapValidator(expressionParser_, addressBlockValidator, component_->getRemapStates()));
+
+    QSharedPointer<SubspaceMapValidator> subspaceValidator(
+        new SubspaceMapValidator(expressionParser_, parameterValidator));
+
+    QSharedPointer<MemoryMapValidator> memoryMapValidator(new MemoryMapValidator(
+        expressionParser_, addressBlockValidator, subspaceValidator, component_));
 
     memoryMapValidator_ = memoryMapValidator;
 
-    memoryMapValidator_->componentChange(component_->getRemapStates(), component_->getResetTypes());
+    memoryMapValidator_->componentChange(component_);
 }
 
 //-----------------------------------------------------------------------------
@@ -212,6 +219,7 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
 //-----------------------------------------------------------------------------
 void ComponentEditorMemMapsItem::createMemoryMapInterface()
 {
+    QSharedPointer<SubspaceMapValidator> subspaceValidator = memoryMapValidator_->getSubspaceValidator();
     QSharedPointer<AddressBlockValidator> blockValidator = memoryMapValidator_->getAddressBlockValidator();
     QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
     QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
@@ -227,9 +235,35 @@ void ComponentEditorMemMapsItem::createMemoryMapInterface()
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
-    AddressBlockInterface* blockInterface(new AddressBlockInterface(
-        blockValidator, expressionParser_, expressionFormatter_, registerInterface, parameterInterface));
+
+    BusInterfaceInterface* busInterface = createInterfaceForBus(parameterValidator);
+
+    AddressBlockInterface* blockInterface(new AddressBlockInterface(blockValidator, expressionParser_,
+        expressionFormatter_, busInterface, registerInterface, parameterInterface));
+    SubspaceMapInterface* subspaceInterface(new SubspaceMapInterface(
+        subspaceValidator, expressionParser_, expressionFormatter_, busInterface, parameterInterface));
 
     mapInterface_ =
-        new MemoryMapInterface(memoryMapValidator_, expressionParser_, expressionFormatter_, blockInterface);
+        new MemoryMapInterface(memoryMapValidator_, expressionParser_, expressionFormatter_);
+    mapInterface_->setAddressBlockInterface(blockInterface);
+    mapInterface_->setSubspaceMapInterface(subspaceInterface);
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditormemmapsitem::createInterfaceForBus()
+//-----------------------------------------------------------------------------
+BusInterfaceInterface* ComponentEditorMemMapsItem::createInterfaceForBus(
+    QSharedPointer<ParameterValidator> parameterValidator)
+{
+    QSharedPointer<PortMapValidator> portMapValidator(
+        new PortMapValidator(expressionParser_, component_->getPorts(), libHandler_));
+    QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser_,
+        component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
+        memoryMaps_, component_->getBusInterfaces(), component_->getFileSets(), component_->getRemapStates(),
+        portMapValidator, parameterValidator, libHandler_));
+
+    BusInterfaceInterface* busInterface(
+        new BusInterfaceInterface(busValidator, expressionParser_, expressionFormatter_));
+
+    return busInterface;
 }

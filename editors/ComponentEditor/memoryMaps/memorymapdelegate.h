@@ -12,13 +12,12 @@
 #ifndef MEMORYMAPDELEGATE_H
 #define MEMORYMAPDELEGATE_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+#include <editors/ComponentEditor/memoryMaps/MemoryBlockDelegate.h>
 
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors to add/remove/edit details of a single memory map.
 //-----------------------------------------------------------------------------
-class MemoryMapDelegate : public ExpressionDelegate
+class MemoryMapDelegate : public MemoryBlockDelegate
 {
 	Q_OBJECT
 
@@ -34,8 +33,10 @@ public:
 	MemoryMapDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder,
         QObject *parent);
 	
-	//! The destructor.
-	virtual ~MemoryMapDelegate();
+	/*!
+     *  The destructor.
+     */
+	virtual ~MemoryMapDelegate() = default;
 
 	/*!
      *  Create a new editor for the given item
@@ -77,34 +78,37 @@ protected:
      */
     virtual bool columnAcceptsExpression(int column) const;
 
-    //! Gets the description column.
+    /*!
+     *  Gets the description column.
+     */
     virtual int descriptionColumn() const;
-
-private slots:
-
-	/*!
-     *  Commit the data from the sending editor and close the editor.
-	 */
-	void commitAndCloseEditor();
 
 private:
 	
-	//! No copying.
+    //! No copying.	No assignment.
 	MemoryMapDelegate(const MemoryMapDelegate& other);
-
-	//! No assignment.
 	MemoryMapDelegate& operator=(const MemoryMapDelegate& other);
 
     /*!
-     *  Creates an editor for name.
+     *  Get the column for block name.
      *
-     *      @param [in] parent   The parent widget for the editor.
-     *      @param [in] option   The style options for the editor.
-     *      @param [in] index    The index for which the editor is created.
-     *
-     *      @return Editor for editing name.
+     *      @return Index of the name column.
      */
-    QWidget* createNameEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index) const;
+    virtual int nameColumn() const override final;
+
+    /*!
+     *  Get the column for block base address.
+     *
+     *      @return Index of the base address column.
+     */
+    virtual int baseAddressColumn() const override final;
+
+    /*!
+     *  Get the column for block is present.
+     *
+     *      @return Index of the is present column.
+     */
+    virtual int isPresentColumn() const override final;
 };
 
 #endif // MEMORYMAPDELEGATE_H

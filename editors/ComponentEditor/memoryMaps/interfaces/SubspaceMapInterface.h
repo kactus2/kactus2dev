@@ -16,12 +16,14 @@
 
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.h>
 
+class Component;
 class SubSpaceMap;
 class AddressSpace;
 class Segment;
 
 class BusInterfaceInterface;
 class ParametersInterface;
+class SubspaceMapValidator;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing subspace maps.
@@ -34,14 +36,16 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] subspaceValidator       Validator for subspace maps.
      *      @param [in] expressionParser        Parser for expressions.
      *      @param [in] expressionFormatter     Formatter for expressions.
      *      @param [in] busInterfaceInterface   Interface for accessing bus interfaces.
      *      @param [in] parameterInterface      Interface for accessing parameters.
      */
-    SubspaceMapInterface(QSharedPointer<ExpressionParser> expressionParser,
+    SubspaceMapInterface(QSharedPointer<SubspaceMapValidator> subspaceValidator,
+        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        BusInterfaceInterface* busInterfaceInterface,
+        BusInterfaceInterface* busInterface,
         ParametersInterface* parameterInterface);
 
 	/*!
@@ -50,11 +54,13 @@ public:
     virtual ~SubspaceMapInterface() = default;
 
     /*!
-     *  Set the available address spaces. Replace this with the address space interface when done.
+     *  Check if the selected memory block is accepted.
      *
-     *      @param [in] newAddressSpaces    List of available address spaces.
+     *      @param [in] blockName   Name of the selected memory block.
+     *
+     *      @return True, if the memory block is accepted, false otherwise.
      */
-    void setAddressSpaces(QSharedPointer<QList<QSharedPointer<AddressSpace> > > newAddressSpaces);
+    virtual bool acceptBlock(std::string const& blockName) const override final;
 
     /*!
      *  Get the master bus interface reference of the selected subspace map.
@@ -95,17 +101,6 @@ public:
     bool setSegmentReference(std::string const& itemName, std::string const& newSegmentReference);
 
     /*!
-     *  Get the calculated range value of the selected memory block.
-     *
-     *      @param [in] blockName   Name of the selected memory block.
-     *      @param [in] baseNumber  Base for displaying the value.
-     *
-     *      @return Calculated range value of the selected memory block.
-     */
-    virtual std::string getRangeValue(std::string const& blockName, int const& baseNumber = 0) const override
-        final;
-
-    /*!
      *  Validates the contained items.
      *
      *      @return True, if all the ports are valid, false otherwise.
@@ -113,31 +108,22 @@ public:
     virtual bool validateItems() const override final;
 
     /*!
-     *  Check if the selected item has a valid name.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return True, if the name is valid, false otherwise.
-     */
-    virtual bool itemHasValidName(std::string const& itemName) const override final;
-
-    /*!
-     *  Check if the selected subspace map has a valid base address.
-     *
-     *      @param [in] itemName    Name of the selected subspace map .
-     *
-     *      @return True, if the subspace map is valid, false otherwise.
-     */
-    virtual bool hasValidBaseAddress(std::string const& itemName) const override final;
-
-    /*!
-     *  Check if the selected subspace map has a valid is present value.
+     *  Check if the selected subspace map has a valid master bus interface reference.
      *
      *      @param [in] itemName    Name of the selected subspace map.
      *
-     *      @return True, if the is present value is valid, false otherwise.
+     *      @return True, if the master bus interface reference is valid, false otherwise.
      */
-    virtual bool hasValidIsPresent(std::string const& itemName) const override final;
+    bool hasValidMasterReference(std::string const& itemName) const;
+
+    /*!
+     *  Check if the selected subspace map has a valid segment reference.
+     *
+     *      @param [in] itemName    Name of the selected subspace map.
+     *
+     *      @return True, if the segment reference is valid, false otherwise.
+     */
+    bool hasValidSegmentReference(std::string const& itemName) const;
 
     /*!
      *  Add a new subspace map.
@@ -216,35 +202,18 @@ private:
     virtual int countItems(QList<QSharedPointer<MemoryBlockBase> > itemList) const override final;
 
     /*!
-     *  Get the address space within the bus interface referenced by the selected subspace map.
+     *  Get the subspace map validator.
      *
-     *      @param [in] subspaceMapName     Name of the selected subspace map.
-     *
-     *      @return Address space within the bus interface referenced by the selected subspace map.
+     *      @return The subspace map validator.
      */
-    QSharedPointer<AddressSpace> getReferencedAddressSpace(std::string const& subspaceMapName) const;
-
-    /*!
-     *  Get the segment referenced by the selected subspace map.
-     *
-     *      @param [in] referencedSpace     Address space within the master bus interface referenced by the
-     *                                      selected subspace map.
-     *      @param [in] subspaceMapName     Name of the selected subspace map.
-     *
-     *      @return Segment referenced by the selected subspace map.
-     */
-    QSharedPointer<Segment> getReferencedSegment(QSharedPointer<AddressSpace> referencedSpace,
-        std::string const& subspaceMapName) const;
+    virtual QSharedPointer<MemoryBlockValidator> getValidator() const override final;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! List of available address spaces.
-    QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces_;
-
-    //! Interface for accessing bus interfaces.
-    BusInterfaceInterface* busInterfaceInterface_;
+    //! The subspace map validator.
+    QSharedPointer<SubspaceMapValidator> validator_;
 };
 
 #endif // SUBSPACEMAPINTERFACE_H

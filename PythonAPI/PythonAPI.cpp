@@ -31,6 +31,7 @@
 #include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
@@ -59,6 +60,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/validators/FileValidator.h>
@@ -392,7 +394,7 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
             componentParameterInterface_->setParameters(component->getParameters());
             componentParameterInterface_->setChoices(component->getChoices());
 
-            mapValidator_->componentChange(component->getRemapStates(), component->getResetTypes());
+            mapValidator_->componentChange(component);
             mapInterface_->setMemoryMaps(component);
 
             fileSetInterface_->setFileSets(component->getFileSets());
@@ -528,8 +530,11 @@ void PythonAPI::constructMemoryValidators()
     QSharedPointer<AddressBlockValidator> blockValidator(new AddressBlockValidator(
         expressionParser_, registerValidator, registerFileValidator, parameterValidator_));
 
-    QSharedPointer<MemoryMapValidator> mapValidator(new MemoryMapValidator(expressionParser_, blockValidator,
-        QSharedPointer<QList<QSharedPointer<RemapState>>>()));
+    QSharedPointer<SubspaceMapValidator> subspaceValidator(
+        new SubspaceMapValidator(expressionParser_, parameterValidator_));
+
+    QSharedPointer<MemoryMapValidator> mapValidator(
+        new MemoryMapValidator(expressionParser_, blockValidator, subspaceValidator, QSharedPointer<Component>()));
 
     mapValidator_ = mapValidator;
 }
@@ -539,6 +544,7 @@ void PythonAPI::constructMemoryValidators()
 //-----------------------------------------------------------------------------
 void PythonAPI::constructMemoryInterface()
 {
+    QSharedPointer<SubspaceMapValidator> subspaceValidator = mapValidator_->getSubspaceValidator();
     QSharedPointer<AddressBlockValidator> blockValidator = mapValidator_->getAddressBlockValidator();
     QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
     QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
@@ -548,10 +554,16 @@ void PythonAPI::constructMemoryInterface()
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
-    AddressBlockInterface* blockInterface(new AddressBlockInterface(
-        blockValidator, expressionParser_, expressionFormatter_, registerInterface, componentParameterInterface_));
 
-    mapInterface_ = new MemoryMapInterface(mapValidator_, expressionParser_, expressionFormatter_, blockInterface);
+    AddressBlockInterface* blockInterface(new AddressBlockInterface(blockValidator, expressionParser_,
+        expressionFormatter_, busInterface_, registerInterface, componentParameterInterface_));
+    SubspaceMapInterface* subspaceInterface(new SubspaceMapInterface(
+        subspaceValidator, expressionParser_, expressionFormatter_, busInterface_, componentParameterInterface_));
+
+    mapInterface_ = new MemoryMapInterface(mapValidator_, expressionParser_, expressionFormatter_);
+
+    mapInterface_->setAddressBlockInterface(blockInterface);
+    mapInterface_->setSubspaceMapInterface(subspaceInterface);
 }
 
 //-----------------------------------------------------------------------------
@@ -567,7 +579,7 @@ MemoryMapInterface* PythonAPI::getMapInterface()
 //-----------------------------------------------------------------------------
 void PythonAPI::setBlocksForInterface(std::string const& mapName)
 {
-    AddressBlockInterface* blockInterface = mapInterface_->getSubInterface();
+    AddressBlockInterface* blockInterface = mapInterface_->getAddressBlockInterface();
 
     QString mapNameQT = QString::fromStdString(mapName);
     QSharedPointer<MemoryMap> containingMap = getMemoryMap(mapNameQT);
@@ -586,7 +598,7 @@ void PythonAPI::setBlocksForInterface(std::string const& mapName)
 //-----------------------------------------------------------------------------
 void PythonAPI::setRegistersForInterface(std::string const& mapName, std::string const& blockName)
 {
-    RegisterInterface* interfacePointer = mapInterface_->getSubInterface()->getSubInterface();
+    RegisterInterface* interfacePointer = mapInterface_->getAddressBlockInterface()->getSubInterface();
 
     QString mapNameQT = QString::fromStdString(mapName);
     QString blockNameQT = QString::fromStdString(blockName);
@@ -618,7 +630,8 @@ void PythonAPI::setRegistersForInterface(std::string const& mapName, std::string
 void PythonAPI::setFieldsForInterface(std::string const& mapName, std::string const& blockName,
     std::string const& registerName)
 {
-    FieldInterface* interfacePointer = mapInterface_->getSubInterface()->getSubInterface()->getSubInterface();
+    FieldInterface* interfacePointer =
+        mapInterface_->getAddressBlockInterface()->getSubInterface()->getSubInterface();
 
     QString mapNameQT = QString::fromStdString(mapName);
     QString blockNameQT = QString::fromStdString(blockName);
@@ -658,7 +671,7 @@ void PythonAPI::setResetsForInterface(std::string const& mapName, std::string co
     std::string const& registerName, std::string const& fieldName)
 {
     ResetInterface* interfacePointer =
-        mapInterface_->getSubInterface()->getSubInterface()->getSubInterface()->getSubInterface();
+        mapInterface_->getAddressBlockInterface()->getSubInterface()->getSubInterface()->getSubInterface();
 
     QString mapNameQT = QString::fromStdString(mapName);
     QString blockNameQT = QString::fromStdString(blockName);

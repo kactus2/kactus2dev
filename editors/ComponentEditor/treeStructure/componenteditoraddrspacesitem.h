@@ -21,6 +21,8 @@ class Component;
 class AddressSpace;
 class AddressSpaceValidator;
 class AddressBlockInterface;
+class BusInterfaceInterface;
+class ParameterValidator;
 
 //-----------------------------------------------------------------------------
 //! The Address spaces-item in the component editor navigation tree.
@@ -114,6 +116,15 @@ private:
      *  Create the interface for address blocks.
      */
     void createAddressBlockInterface();
+
+    /*!
+     *  Create interface for accessing bus interfaces.
+     *
+     *      @param [in] parameterValidator  Validator for parameters.
+     *
+     *      @return Interface for accessing bus interfaces.
+     */
+    BusInterfaceInterface* createInterfaceForBus(QSharedPointer<ParameterValidator> parameterValidator);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -22,8 +22,8 @@
 class AddressBlock;
 class MemoryBlockBase;
 class AddressBlockValidator;
-
 class RegisterInterface;
+class BusInterfaceInterface;
 
 #include <QVector>
 #include <QMap>
@@ -42,12 +42,14 @@ public:
      *      @param [in] blockValidator          Validator for address blocks.
      *      @param [in] expressionParser        Parser for expressions.
      *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
      *      @param [in] subInterface            Interface for accessing registers.
      *      @param [in] parameterInterface      Interface for accessing parameters.
      */
     AddressBlockInterface(QSharedPointer<AddressBlockValidator> blockValidator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        BusInterfaceInterface* busInterface,
         RegisterInterface* subInterface,
         ParametersInterface* parameterInterface);
 	
@@ -57,15 +59,13 @@ public:
     virtual ~AddressBlockInterface() = default;
 
     /*!
-     *  Get the calculated range value of the selected address block.
+     *  Check if the selected memory block is an address block.
      *
-     *      @param [in] blockName   Name of the selected address block.
-     *      @param [in] baseNumber  Base for displaying the value.
+     *      @param [in] blockName   Name of the selected memory block.
      *
-     *      @return Calculated range value of the selected address block.
+     *      @return True, if the memory block is an address block, false otherwise.
      */
-    virtual std::string getRangeValue(std::string const& blockName, int const& baseNumber = 0) const override
-        final;
+    virtual bool acceptBlock(std::string const& blockName) const override final;
 
     /*!
      *  Get the formatted range expression of the selected address block.
@@ -237,24 +237,6 @@ public:
     virtual bool validateItems() const override final;
 
     /*!
-     *  Check if the selected item has a valid name.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return True, if the name is valid, false otherwise.
-     */
-    virtual bool itemHasValidName(std::string const& itemName) const override final;
-
-    /*!
-     *  Check if the selected address block has a valid base address.
-     *
-     *      @param [in] itemName    Name of the selected address block.
-     *
-     *      @return True, if the base address is valid, false otherwise.
-     */
-    virtual bool hasValidBaseAddress(std::string const& itemName) const override final;
-
-    /*!
      *  Check if the selected address block has a valid range.
      *
      *      @param [in] itemName    Name of the selected address block.
@@ -271,15 +253,6 @@ public:
      *      @return True, if the width is valid, false otherwise.
      */
     bool hasValidWidth(std::string const& itemName) const;
-
-    /*!
-     *  Check if the selected address block has a valid is present value.
-     *
-     *      @param [in] itemName    Name of the selected address block.
-     *
-     *      @return True, if the is present value is valid, false otherwise.
-     */
-    virtual bool hasValidIsPresent(std::string const& itemName) const override final;
 
     /*!
      *  Check if the selected address block has a valid usage.
@@ -377,6 +350,13 @@ private:
      *      @return Number of address block items in the selected list.
      */
     virtual int countItems(QList<QSharedPointer<MemoryBlockBase> > itemList) const override final;
+
+    /*!
+     *  Get the address block validator.
+     *
+     *      @return The address block validator.
+     */
+    virtual QSharedPointer<MemoryBlockValidator> getValidator() const override final;
 
     //-----------------------------------------------------------------------------
     // Data.

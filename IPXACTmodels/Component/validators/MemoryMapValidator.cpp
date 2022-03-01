@@ -16,28 +16,36 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapValidator::MemoryMapValidator()
 //-----------------------------------------------------------------------------
 MemoryMapValidator::MemoryMapValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<AddressBlockValidator> addressBlockValidator,
-    QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates):
-MemoryMapBaseValidator(expressionParser, addressBlockValidator),
-availableRemapStates_(remapStates)
+    QSharedPointer<SubspaceMapValidator> subspaceValidator, QSharedPointer<Component> component):
+MemoryMapBaseValidator(expressionParser, addressBlockValidator, subspaceValidator),
+availableRemapStates_()
 {
-
+    componentChange(component);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapValidator::componentChange()
 //-----------------------------------------------------------------------------
-void MemoryMapValidator::componentChange(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
-    QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes)
+void MemoryMapValidator::componentChange(QSharedPointer<Component> newComponent)
 {
-    availableRemapStates_ = newRemapStates;
+    if (availableRemapStates_)
+    {
+        availableRemapStates_->clear();
+    }
 
-    MemoryMapBaseValidator::componentChange(newResetTypes);
+    if (newComponent)
+    {
+        availableRemapStates_ = newComponent->getRemapStates();
+    }
+
+    MemoryMapBaseValidator::componentChange(newComponent);
 }
 
 //-----------------------------------------------------------------------------

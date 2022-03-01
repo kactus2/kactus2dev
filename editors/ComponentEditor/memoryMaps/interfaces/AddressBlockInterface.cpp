@@ -29,12 +29,20 @@ namespace
 //-----------------------------------------------------------------------------
 AddressBlockInterface::AddressBlockInterface(QSharedPointer<AddressBlockValidator> blockValidator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    RegisterInterface* subInterface, ParametersInterface* parameterInterface):
-MemoryBlockInterface(expressionParser, expressionFormatter, parameterInterface),
+    BusInterfaceInterface* busInterface, RegisterInterface* subInterface, ParametersInterface* parameterInterface):
+MemoryBlockInterface(expressionParser, expressionFormatter, busInterface, parameterInterface),
 validator_(blockValidator),
 subInterface_(subInterface)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockInterface::getValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryBlockValidator> AddressBlockInterface::getValidator() const
+{
+    return validator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -46,17 +54,17 @@ std::string AddressBlockInterface::getDefaultName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::getRangeValue()
+// Function: AddressBlockInterface::acceptBlock()
 //-----------------------------------------------------------------------------
-std::string AddressBlockInterface::getRangeValue(std::string const& blockName, int const& baseNumber) const
+bool AddressBlockInterface::acceptBlock(std::string const& blockName) const
 {
-    QSharedPointer<AddressBlock> selectedBlock = getAddressBlock(blockName);
-    if (selectedBlock)
+    QSharedPointer<AddressBlock> block = getAddressBlock(blockName);
+    if (block)
     {
-        return parseExpressionToBaseNumber(selectedBlock->getRange(), baseNumber).toStdString();
+        return true;
     }
 
-    return string("");
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -344,34 +352,6 @@ bool AddressBlockInterface::validateItems() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::itemHasValidName()
-//-----------------------------------------------------------------------------
-bool AddressBlockInterface::itemHasValidName(string const& itemName) const
-{
-    QSharedPointer<AddressBlock> block = getAddressBlock(itemName);
-    if (block)
-    {
-        return validator_->hasValidName(block);
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::hasValidBaseAddress()
-//-----------------------------------------------------------------------------
-bool AddressBlockInterface::hasValidBaseAddress(std::string const& itemName) const
-{
-    QSharedPointer<AddressBlock> block = getAddressBlock(itemName);
-    if (block)
-    {
-        return validator_->hasValidBaseAddress(block);
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::hasValidRange()
 //-----------------------------------------------------------------------------
 bool AddressBlockInterface::hasValidRange(std::string const& itemName) const
@@ -394,20 +374,6 @@ bool AddressBlockInterface::hasValidWidth(std::string const& itemName) const
     if (block)
     {
         return validator_->hasValidWidth(block);
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockInterface::hasValidIsPresent()
-//-----------------------------------------------------------------------------
-bool AddressBlockInterface::hasValidIsPresent(std::string const& itemName) const
-{
-    QSharedPointer<AddressBlock> block = getAddressBlock(itemName);
-    if (block)
-    {
-        return validator_->hasValidIsPresent(block);
     }
 
     return false;

@@ -14,6 +14,8 @@
 #include <IPXACTmodels/Component/SubSpaceMap.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 
 #include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 
@@ -27,14 +29,21 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: SubspaceMapInterface::SubspaceMapInterface()
 //-----------------------------------------------------------------------------
-SubspaceMapInterface::SubspaceMapInterface(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, BusInterfaceInterface* busInterface,
-    ParametersInterface* parameterInterface):
-MemoryBlockInterface(expressionParser, expressionFormatter, parameterInterface),
-addressSpaces_(),
-busInterfaceInterface_(busInterface)
+SubspaceMapInterface::SubspaceMapInterface(QSharedPointer<SubspaceMapValidator> subspaceValidator,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    BusInterfaceInterface* busInterface, ParametersInterface* parameterInterface):
+MemoryBlockInterface(expressionParser, expressionFormatter, busInterface, parameterInterface),
+validator_(subspaceValidator)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubspaceMapInterface::getValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryBlockValidator> SubspaceMapInterface::getValidator() const
+{
+    return validator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -46,11 +55,17 @@ std::string SubspaceMapInterface::getDefaultName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubspaceMapInterface::setAddressSpaces()
+// Function: SubspaceMapInterface::acceptBlock()
 //-----------------------------------------------------------------------------
-void SubspaceMapInterface::setAddressSpaces(QSharedPointer<QList<QSharedPointer<AddressSpace> > > newAddressSpaces)
+bool SubspaceMapInterface::acceptBlock(std::string const& blockName) const
 {
-    addressSpaces_ = newAddressSpaces;
+    QSharedPointer<SubSpaceMap> block = getSubspaceMap(blockName);
+    if (block)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -130,130 +145,48 @@ bool SubspaceMapInterface::setSegmentReference(std::string const& itemName, std:
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubspaceMapInterface::getRangeValue()
-//-----------------------------------------------------------------------------
-std::string SubspaceMapInterface::getRangeValue(std::string const& blockName, int const& baseNumber) const
-{
-    std::string rangeValue = "0";
-
-    QSharedPointer<SubSpaceMap> subMap = getSubspaceMap(blockName);
-    if (subMap)
-    {
-        QSharedPointer<AddressSpace> referencedSpace = getReferencedAddressSpace(blockName);
-        if (referencedSpace)
-        {
-            QSharedPointer<Segment> referencedSegment = getReferencedSegment(referencedSpace, blockName);
-
-            quint64 memoryRange = 0;
-
-            if (referencedSegment)
-            {
-                memoryRange = parseExpressionToDecimal(referencedSegment->getRange()).toULongLong();
-            }
-            else
-            {
-                memoryRange = parseExpressionToDecimal(referencedSpace->getRange()).toULongLong();
-            }
-
-            QString rangeQ = QString::number(memoryRange);
-
-            rangeValue = parseExpressionToBaseNumber(rangeQ, baseNumber).toStdString();
-        }
-    }
-
-    return rangeValue;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubspaceMapInterface::getReferencedAddressSpace()
-//-----------------------------------------------------------------------------
-QSharedPointer<AddressSpace> SubspaceMapInterface::getReferencedAddressSpace(std::string const& subspaceMapName)
-const
-{
-    std::string masterBusReference = getMasterReference(subspaceMapName);
-
-    QString spaceReference =
-        QString::fromStdString(busInterfaceInterface_->getAddressSpaceReference(masterBusReference));
-    if (!spaceReference.isEmpty())
-    {
-        for (auto space : *addressSpaces_)
-        {
-            if (space->name() == spaceReference)
-            {
-                return space;
-            }
-        }
-    }
-
-    return QSharedPointer<AddressSpace>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubspaceMapInterface::getReferencedSegment()
-//-----------------------------------------------------------------------------
-QSharedPointer<Segment> SubspaceMapInterface::getReferencedSegment(QSharedPointer<AddressSpace> referencedSpace,
-    std::string const& subspaceMapName) const
-{
-    QString segmentReference = QString::fromStdString(getSegmentReference(subspaceMapName));
-    if (!segmentReference.isEmpty())
-    {
-        for (auto segment : *referencedSpace->getSegments())
-        {
-            if (segment->name() == segmentReference)
-            {
-                return segment;
-            }
-        }
-    }
-
-    return QSharedPointer<Segment>();
-}
-
-//-----------------------------------------------------------------------------
 // Function: SubspaceMapInterface::validateItems()
 //-----------------------------------------------------------------------------
 bool SubspaceMapInterface::validateItems() const
 {
+    for (auto currentItemName : getItemNames())
+    {
+        QSharedPointer<SubSpaceMap> block = getSubspaceMap(currentItemName);
+        if (block)
+        {
+            if (!validator_->validate(block))
+            {
+                return false;
+            }
+        }
+    }
+
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubspaceMapInterface::itemHasValidName()
+// Function: SubspaceMapInterface::hasValidMasterReference()
 //-----------------------------------------------------------------------------
-bool SubspaceMapInterface::itemHasValidName(string const& itemName) const
+bool SubspaceMapInterface::hasValidMasterReference(std::string const& itemName) const
 {
     QSharedPointer<SubSpaceMap> subMap = getSubspaceMap(itemName);
     if (subMap)
     {
-        return true;
+        return validator_->hasValidMasterReference(subMap);
     }
 
     return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubspaceMapInterface::hasValidBaseAddress()
+// Function: SubspaceMapInterface::hasValidSegmentReference()
 //-----------------------------------------------------------------------------
-bool SubspaceMapInterface::hasValidBaseAddress(std::string const& itemName) const
+bool SubspaceMapInterface::hasValidSegmentReference(std::string const& itemName) const
 {
     QSharedPointer<SubSpaceMap> subMap = getSubspaceMap(itemName);
     if (subMap)
     {
-        return true;
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubspaceMapInterface::hasValidIsPresent()
-//-----------------------------------------------------------------------------
-bool SubspaceMapInterface::hasValidIsPresent(std::string const& itemName) const
-{
-    QSharedPointer<SubSpaceMap> subMap = getSubspaceMap(itemName);
-    if (subMap)
-    {
-        return true;
+        return validator_->hasValidSegmentReference(subMap);
     }
 
     return false;

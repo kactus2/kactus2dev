@@ -24,6 +24,7 @@ class MemoryMap;
 class MemoryRemap;
 class RemapState;
 class AddressBlockValidator;
+class SubspaceMapValidator;
 
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:memoryMap.
@@ -37,11 +38,13 @@ public:
 	 *
 	 *      @param [in] expressionParser        The parser to use for solving expressions.
      *      @param [in] addressBlockValidator   Validator used for address blocks.
-     *      @param [in] remapStates             The currently available remap states.
+     *      @param [in] subspaceValidator       Validator used for subspace maps.
+     *      @param [in] component               The containing component.
 	 */
     MemoryMapValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressBlockValidator> addressBlockValidator,
-        QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates);
+        QSharedPointer<SubspaceMapValidator> subspaceValidator,
+        QSharedPointer<Component> component);
 
 	//! The destructor.
 	virtual ~MemoryMapValidator() override final = default;
@@ -49,11 +52,9 @@ public:
     /*!
      *  Change the containing component.
      *
-     *      @param [in] newRemapStates  Remap states of the selected component.
-     *      @param [in] newResetTypes   Reset types of the selected component.
+     *      @param [in] newComponent    The selected component.
      */
-    void componentChange(QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
-        QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
+    void componentChange(QSharedPointer<Component> newComponent);
 
     /*!
      *  Validates the given memory map.

@@ -40,15 +40,31 @@ namespace
 // Function: MemoryMapInterface::MemoryMapInterface()
 //-----------------------------------------------------------------------------
 MemoryMapInterface::MemoryMapInterface(QSharedPointer<MemoryMapValidator> mapValidator,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    AddressBlockInterface* subInterface):
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
 ParameterizableInterface(expressionParser, expressionFormatter),
 component_(),
 mapData_(),
 validator_(mapValidator),
-subInterface_(subInterface)
+addressBlockInterface_(0),
+subspaceInterface_(0)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::setAddressBlockInterface()
+//-----------------------------------------------------------------------------
+void MemoryMapInterface::setAddressBlockInterface(AddressBlockInterface* blockInterface)
+{
+    addressBlockInterface_ = blockInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::setSubspaceMapInterface()
+//-----------------------------------------------------------------------------
+void MemoryMapInterface::setSubspaceMapInterface(SubspaceMapInterface* submapInterface)
+{
+    subspaceInterface_ = submapInterface;
 }
 
 //-----------------------------------------------------------------------------
@@ -899,11 +915,19 @@ QString MemoryMapInterface::pasteMemoryRemap(QSharedPointer<MemoryRemap> remapCo
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapInterface::getSubInterface()
+// Function: MemoryMapInterface::getAddressBlockInterface()
 //-----------------------------------------------------------------------------
-AddressBlockInterface* MemoryMapInterface::getSubInterface() const
+AddressBlockInterface* MemoryMapInterface::getAddressBlockInterface() const
 {
-    return subInterface_;
+    return addressBlockInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::getSubspaceMapInterface()
+//-----------------------------------------------------------------------------
+SubspaceMapInterface* MemoryMapInterface::getSubspaceMapInterface() const
+{
+    return subspaceInterface_;
 }
 
 //-----------------------------------------------------------------------------

@@ -309,6 +309,7 @@
     <ClCompile Include="Component\validators\FileValidator.cpp" />
     <ClCompile Include="Component\validators\IndirectInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
+    <ClCompile Include="Component\validators\MemoryBlockValidator.cpp" />
     <ClCompile Include="Component\validators\PortMapValidator.cpp" />
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
     <ClCompile Include="Component\validators\PortTypeValidator.cpp" />
@@ -320,6 +321,7 @@
     <ClCompile Include="Component\validators\MemoryMapValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryReserve.cpp" />
     <ClCompile Include="Component\validators\RegisterValidator.cpp" />
+    <ClCompile Include="Component\validators\SubspaceMapValidator.cpp" />
     <ClCompile Include="Component\validators\ViewValidator.cpp" />
     <ClCompile Include="Component\View.cpp" />
     <ClCompile Include="Component\ViewReader.cpp" />
@@ -566,8 +568,10 @@
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />
+    <ClInclude Include="Component\validators\MemoryBlockValidator.h" />
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
     <ClInclude Include="Component\validators\RegisterFileValidator.h" />
+    <ClInclude Include="Component\validators\SubspaceMapValidator.h" />
     <ClInclude Include="utilities\BusDefinitionUtils.h" />
     <ClInclude Include="utilities\XmlUtils.h" />
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">

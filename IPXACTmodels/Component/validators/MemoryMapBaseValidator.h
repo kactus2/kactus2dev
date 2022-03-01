@@ -19,9 +19,17 @@
 
 class ExpressionParser;
 class MemoryMapBase;
-class AddressBlock;
+class MemoryBlockBase;
 class AddressBlockValidator;
 class ResetType;
+class SubspaceMapValidator;
+class Component;
+class AddressBlock;
+class SubSpaceMap;
+class BusInterface;
+class AddressSpace;
+class Segment;
+
 //-----------------------------------------------------------------------------
 //! Validator for the base ipxact:memoryMap.
 //-----------------------------------------------------------------------------
@@ -36,17 +44,20 @@ public:
      *      @param [in] addressBlockValidator   Validator used for address blocks.
 	 */
     MemoryMapBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<AddressBlockValidator> addressBlockValidator);
+        QSharedPointer<AddressBlockValidator> addressBlockValidator,
+        QSharedPointer<SubspaceMapValidator> subspaceValidator);
 
-	//! The destructor.
+	/*!
+     *  The destructor.
+     */
 	virtual ~MemoryMapBaseValidator() = default;
     
     /*!
      *  Change the containing component.
      *
-     *      @param [in] newResetTypes   Reset types of the selected component.
+     *      @param [in] newComponent    The selected component.
      */
-    void componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
+    void componentChange(QSharedPointer<Component> newComponent);
 
     /*!
      *  Get the validator used for address blocks.
@@ -54,6 +65,13 @@ public:
      *      @return The validator used for address blocks.
      */
     QSharedPointer<AddressBlockValidator> getAddressBlockValidator() const;
+
+    /*!
+     *  Get the validator used for subspace maps.
+     *
+     *      @return The validator used for subspace maps.
+     */
+    QSharedPointer<SubspaceMapValidator> getSubspaceValidator() const;
 
     /*!
      *  Validates the given memory map base.
@@ -120,25 +138,54 @@ private:
 	MemoryMapBaseValidator& operator=(MemoryMapBaseValidator const& rhs);
 
     /*!
-     *  Check if the address block overlaps with another address block.
+     *  Check if the memory block overlaps with another memory block.
      *
-     *      @param [in] addressBlock        The selected address block.
+     *      @param [in] memoryBlock         The selected memory block.
      *      @param [in] memoryMapBase       The selected memory map base.
-     *      @param [in] addressBlockIndex   The index of the address block.
+     *      @param [in] memoryBlockIndex    The index of the memory block.
      *
-     *      @return True, if the address blocks overlap, otherwise false.
+     *      @return True, if the memory blocks overlap, otherwise false.
      */
-    bool addressBlockOverlaps(QSharedPointer<AddressBlock> addressBlock,
-        QSharedPointer<MemoryMapBase> memoryMapBase, int addressBlockIndex) const;
+    bool memoryBlockOverlaps(QSharedPointer<MemoryBlockBase> memoryBlock,
+        QSharedPointer<MemoryMapBase> memoryMapBase, int memoryBlockIndex) const;
 
     /*!
-     *  Check if two address blocks overlap.
+     *  Check if two memory blocks overlap.
      *
-     *      @param [in] addressBlock    The selected address block.
-     *      @param [in] comparedBlock   The compared address block.
+     *      @param [in] memoryBlock     The selected memory block.
+     *      @param [in] comparedBlock   The compared memory block.
      */
-    bool twoAddressBlocksOverlap(QSharedPointer<AddressBlock> addressBlock,
-        QSharedPointer<AddressBlock> comparedBlock) const;
+    bool twoMemoryBlocksOverlap(QSharedPointer<MemoryBlockBase> memoryBlock,
+        QSharedPointer<MemoryBlockBase> comparedBlock) const;
+
+    /*!
+     *  Get the range of the selected memory block
+     *
+     *      @param [in] block   The selected memory block.
+     *
+     *      @return Range of the selected memory block.
+     */
+    quint64 getBlockRange(QSharedPointer<MemoryBlockBase> block) const;
+
+    /*!
+     *  Get the address space referenced by the selected subspace map.
+     *
+     *      @param [in] subspace    The selected subspace map.
+     *
+     *      @return The referenced address space.
+     */
+    QSharedPointer<AddressSpace> getReferencedAddressSpace(QSharedPointer<SubSpaceMap> subspace) const;
+
+    /*!
+     *  Get the segment referenced by the selected subspace map.
+     *
+     *      @param [in] subspace            The selected subspace map.
+     *      @param [in] containingSpace     Address space referenced by the subspace map.
+     *
+     *      @return Segment referened by the selected subspace map.
+     */
+    QSharedPointer<Segment> getReferencedSegment(QSharedPointer<SubSpaceMap> subspace,
+        QSharedPointer<AddressSpace> containingSpace) const;
 
     /*!
      *  Check if the address block width is a multiplication of address unit bits.
@@ -183,16 +230,16 @@ private:
         QString const& addressUnitBits, QString const& context) const;
 
     /*!
-     *  Find errors within overlapping address blocks.
+     *  Find errors within overlapping memory blocks.
      *
      *      @param [in] errors          List of found errors.
      *      @param [in] memoryMapBase   The selected memory map base.
-     *      @param [in] addressBlock    The selected address block.
+     *      @param [in] memoryBlock     The selected memory block.
      *      @param [in] blockIndex      The index of the address block.
      *      @param [in] context         Context to help locate the error.
      */
     void findErrorsInOverlappingBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
-        QSharedPointer<AddressBlock> addressBlock, int blockIndex, QString const& context) const;
+        QSharedPointer<MemoryBlockBase> memoryBlock, int blockIndex, QString const& context) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -203,6 +250,15 @@ private:
 
     //! The used address block validator.
     QSharedPointer<AddressBlockValidator> addressBlockValidator_;
+
+    //! Validator for subspace maps.
+    QSharedPointer<SubspaceMapValidator> subspaceValidator_;
+
+    //! Interface for accessomg bus interfaces.
+    QSharedPointer<QList<QSharedPointer<BusInterface> > > availableBusInterfaces_;
+
+    //! List of available address spaces.
+    QSharedPointer<QList<QSharedPointer<AddressSpace> > > availableSpaces_;
 };
 
 #endif // MEMORYMAPBASEVALIDATOR_H

@@ -29,6 +29,7 @@ class FieldValidator;
 class ParameterValidator;
 class RegisterBaseValidator;
 class ResetType;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Register.
@@ -54,9 +55,9 @@ public:
     /*!
      *  Change the containing component.
      *
-     *      @param [in] newResetTypes   Reset types of the selected component.
+     *      @param [in] newComponent    The selected component.
      */
-    void componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
+    void componentChange(QSharedPointer<Component> newComponent);
 
     /*!
      *  Get the field validator.

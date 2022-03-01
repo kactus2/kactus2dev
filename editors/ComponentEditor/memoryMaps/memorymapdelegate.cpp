@@ -26,15 +26,7 @@
 //-----------------------------------------------------------------------------
 MemoryMapDelegate::MemoryMapDelegate(QCompleter* parameterNameCompleter,
                                      QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapDelegate::~MemoryMapDelegate()
-//-----------------------------------------------------------------------------
-MemoryMapDelegate::~MemoryMapDelegate()
+MemoryBlockDelegate(parameterNameCompleter, parameterFinder, parent)
 {
 
 }
@@ -45,11 +37,7 @@ MemoryMapDelegate::~MemoryMapDelegate()
 QWidget* MemoryMapDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     QModelIndex const& index) const 
 {
-    if (index.column() == MemoryMapColumns::NAME_COLUMN)
-    {
-        return createNameEditor(parent, option, index);
-    }
-    else if (index.column() == MemoryMapColumns::USAGE_COLUMN)
+    if (index.column() == MemoryMapColumns::USAGE_COLUMN)
     {
         UsageComboBox* usageBox = new UsageComboBox(parent);
         return usageBox;
@@ -66,7 +54,7 @@ QWidget* MemoryMapDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
     }
     else
     {
-        return ExpressionDelegate::createEditor(parent, option, index);
+        return MemoryBlockDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -102,7 +90,7 @@ void MemoryMapDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
     }
     else
     {
-        ExpressionDelegate::setEditorData(editor, index);
+        MemoryBlockDelegate::setEditorData(editor, index);
     }
 }
 
@@ -137,7 +125,7 @@ void MemoryMapDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
     }
     else 
     {
-        ExpressionDelegate::setModelData(editor, model, index);
+        MemoryBlockDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -146,8 +134,8 @@ void MemoryMapDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 //-----------------------------------------------------------------------------
 bool MemoryMapDelegate::columnAcceptsExpression(int column) const
 {
-    return column == MemoryMapColumns::BASE_COLUMN || column == MemoryMapColumns::RANGE_COLUMN ||
-        column == MemoryMapColumns::WIDTH_COLUMN || column == MemoryMapColumns::IS_PRESENT;
+    return MemoryBlockDelegate::columnAcceptsExpression(column) ||
+        column == MemoryMapColumns::RANGE_COLUMN || column == MemoryMapColumns::WIDTH_COLUMN;
 }
 
 //-----------------------------------------------------------------------------
@@ -159,31 +147,25 @@ int MemoryMapDelegate::descriptionColumn() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapDelegate::commitAndCloseEditor()
+// Function: memorymapdelegate::nameColumn()
 //-----------------------------------------------------------------------------
-void MemoryMapDelegate::commitAndCloseEditor()
+int MemoryMapDelegate::nameColumn() const
 {
-	QWidget* editor = qobject_cast<QWidget*>(sender());
-	Q_ASSERT(editor);
-
-	emit commitData(editor);
-	emit closeEditor(editor);
+    return MemoryMapColumns::NAME_COLUMN;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapDelegate::createNameEditor()
+// Function: memorymapdelegate::baseAddressColumn()
 //-----------------------------------------------------------------------------
-QWidget* MemoryMapDelegate::createNameEditor(QWidget* parent, QStyleOptionViewItem const& option, 
-    QModelIndex const& index) const
+int MemoryMapDelegate::baseAddressColumn() const
 {
-    QWidget* nameEditor = QStyledItemDelegate::createEditor(parent, option, index);
+    return MemoryMapColumns::BASE_COLUMN;
+}
 
-    QLineEdit* lineEditor = qobject_cast<QLineEdit*>(nameEditor);
-    if (lineEditor)
-    {
-        lineEditor->setValidator(new NameValidator(lineEditor));
-    }
-
-    connect(nameEditor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-    return nameEditor;
+//-----------------------------------------------------------------------------
+// Function: memorymapdelegate::isPresentColumn()
+//-----------------------------------------------------------------------------
+int MemoryMapDelegate::isPresentColumn() const
+{
+    return MemoryMapColumns::IS_PRESENT;
 }

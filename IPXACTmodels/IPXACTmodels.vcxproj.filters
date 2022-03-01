@@ -1028,6 +1028,12 @@
     <ClCompile Include="Component\MemoryBlockBaseWriter.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\MemoryBlockValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\validators\SubspaceMapValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1575,6 +1581,12 @@
     </ClInclude>
     <ClInclude Include="Component\MemoryBlockBaseWriter.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\MemoryBlockValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\SubspaceMapValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

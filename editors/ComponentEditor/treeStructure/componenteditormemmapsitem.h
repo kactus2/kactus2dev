@@ -22,6 +22,8 @@ class ExpressionParser;
 class MemoryMap;
 class MemoryMapValidator;
 class MemoryMapInterface;
+class BusInterfaceInterface;
+class ParameterValidator;
 
 //-----------------------------------------------------------------------------
 //! The Memory maps-item in the component navigation tree.
@@ -157,6 +159,15 @@ private:
      *  Create the interfaces for memory maps.
      */
     void createMemoryMapInterface();
+
+    /*!
+     *  Create the interface for accessing bus interfaces.
+     *
+     *      @param [in] parameterValidator  Validator for parameters.
+     *
+     *      @return The interface for accessing bus interfaces.
+     */
+    BusInterfaceInterface* createInterfaceForBus(QSharedPointer<ParameterValidator> parameterValidator);
 
     //-----------------------------------------------------------------------------
     // Data.

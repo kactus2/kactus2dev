@@ -24,6 +24,7 @@
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
@@ -34,10 +35,6 @@
 #include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
 #include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
 #include <editors/ComponentEditor/parameters/ParametersInterface.h>
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
@@ -64,8 +61,8 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::createBusInterface(
     ParametersInterface* parameterInterface =
         createParameterInterface(parameterValidator, expressionParser, expressionFormatter);
 
-    MemoryMapInterface* mapInterface = createMapInterface(parameterFinder, expressionFormatter, expressionParser,
-        parameterValidator, component, parameterInterface);
+    MemoryMapInterface* mapInterface =
+        createMapInterface(parameterFinder, expressionFormatter, expressionParser, parameterValidator, component);
 
     AbstractionTypeInterface* abstractionInterface = createAbstractionTypeInterface(
         parameterFinder, expressionFormatter, expressionParser, portMapValidator, component, library);
@@ -78,8 +75,13 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::createBusInterface(
         component->getRemapStates(), portMapValidator, parameterValidator, library));
 
     BusInterfaceInterface* busInterface(new BusInterfaceInterface(busValidator, expressionParser,
-        expressionFormatter, fileSetInterface, mapInterface, abstractionInterface, bridgeInterface,
-        parameterInterface));
+        expressionFormatter));
+
+    busInterface->setFileSetInterface(fileSetInterface);
+    busInterface->setMemoryMapInterface(mapInterface);
+    busInterface->setAbstractionTypeInterface(abstractionInterface);
+    busInterface->setTransparentBridgeInterface(bridgeInterface);
+    busInterface->setParameterInterface(parameterInterface);
 
     busInterface->setBusInterfaces(component);
     return busInterface;
@@ -112,7 +114,7 @@ FileSetInterface* BusInterfaceInterfaceFactory::createFileSetInterface(
 MemoryMapInterface* BusInterfaceInterfaceFactory::createMapInterface(
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterValidator> parameterValidator,
-    QSharedPointer<Component> component, ParametersInterface* parameterInterface)
+    QSharedPointer<Component> component)
 {
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(expressionParser));
     QSharedPointer<FieldValidator> fieldValidator(
@@ -124,21 +126,17 @@ MemoryMapInterface* BusInterfaceInterfaceFactory::createMapInterface(
 
     QSharedPointer<AddressBlockValidator> blockValidator(
         new AddressBlockValidator(expressionParser, registerValidator, registerFileValidator, parameterValidator));
+
+    QSharedPointer<SubspaceMapValidator> subspaceValidator(
+        new SubspaceMapValidator(expressionParser, parameterValidator));
+
     QSharedPointer<MemoryMapValidator> memoryMapValidator(
-        new MemoryMapValidator(expressionParser, blockValidator, component->getRemapStates()));
+        new MemoryMapValidator(expressionParser, blockValidator, subspaceValidator, component));
 
-    memoryMapValidator->componentChange(component->getRemapStates(), component->getResetTypes());
-
-    ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser, expressionFormatter));
-    FieldInterface* fieldInterface(
-        new FieldInterface(fieldValidator, expressionParser, expressionFormatter, resetInterface));
-    RegisterInterface* registerInterface(
-        new RegisterInterface(registerValidator, expressionParser, expressionFormatter, fieldInterface));
-    AddressBlockInterface* blockInterface(new AddressBlockInterface(
-        blockValidator, expressionParser, expressionFormatter, registerInterface, parameterInterface));
+    memoryMapValidator->componentChange(component);
 
     MemoryMapInterface* mapInterface =
-        new MemoryMapInterface(memoryMapValidator, expressionParser, expressionFormatter, blockInterface);
+        new MemoryMapInterface(memoryMapValidator, expressionParser, expressionFormatter);
 
     mapInterface->setMemoryMaps(component);
 

@@ -13,6 +13,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Field.h>
@@ -41,9 +42,13 @@ availableResetTypes_()
 //-----------------------------------------------------------------------------
 // Function: FieldValidator::componentChange()
 //-----------------------------------------------------------------------------
-void FieldValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType>>> newResetTypes)
+void FieldValidator::componentChange(QSharedPointer<Component> newComponent)
 {
-    availableResetTypes_ = newResetTypes;
+    availableResetTypes_.clear();
+    if (newComponent)
+    {
+        availableResetTypes_ = newComponent->getResetTypes();
+    }
 }
 
 //-----------------------------------------------------------------------------

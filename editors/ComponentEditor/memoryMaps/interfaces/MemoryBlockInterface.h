@@ -22,7 +22,11 @@
 
 class MemoryBlockBase;
 class AddressSpace;
+class Segment;
 class ParametersInterface;
+class MemoryBlockValidator;
+class BusInterfaceInterface;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Parent interface for editing memory blocks.
@@ -37,10 +41,12 @@ public:
      *
      *      @param [in] expressionParser        Parser for expressions.
      *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
      *      @param [in] parameterInterface      Interface for accessing parameters.
      */
     MemoryBlockInterface(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        BusInterfaceInterface* busInterface,
         ParametersInterface* parameterInterface);
 	
 	/*!
@@ -54,6 +60,29 @@ public:
      *      @param [in] newMemoryBlocks     The new memory block data.
      */
     void setMemoryBlocks(QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > newMemoryBlocks);
+
+    /*!
+     *  Setup the sub interfaces.
+     *
+     *      @param [in] newComponent    Component containing the available items.
+     */
+    void setupSubInterfaces(QSharedPointer<Component> newComponent);
+
+    /*!
+     *  Get the interface for accessing bus interfaces.
+     *
+     *      @return Interface for accessing bus interfaces.
+     */
+    BusInterfaceInterface* getBusInterface() const;
+
+    /*!
+     *  Check if the selected memory block is accepted. 
+     *
+     *      @param [in] blockName   Name of the selected memory block.
+     *
+     *      @return True, if the memory block is accepted, false otherwise.
+     */
+    virtual bool acceptBlock(std::string const& blockName) const = 0;
 
     /*!
      *  Get index of the selected item.
@@ -200,7 +229,7 @@ public:
      *
      *      @return Calculated range value of the selected memory block.
      */
-    virtual std::string getRangeValue(std::string const& blockName, int const& baseNumber = 0) const = 0;
+    std::string getRangeValue(std::string const& blockName, int const& baseNumber = 0) const;
 
     /*!
      *  Calculate all the references to the selected ID in the selected item.
@@ -226,7 +255,7 @@ public:
      *
      *      @return True, if the name is valid, false otherwise.
      */
-    virtual bool itemHasValidName(std::string const& itemName) const override = 0;
+    bool itemHasValidName(std::string const& itemName) const;
 
     /*!
      *  Check if the selected memory block has a valid base address.
@@ -235,7 +264,7 @@ public:
      *
      *      @return True, if the base address is valid, false otherwise.
      */
-    virtual bool hasValidBaseAddress(std::string const& itemName) const = 0;
+    bool hasValidBaseAddress(std::string const& itemName) const;
 
     /*!
      *  Check if the selected memory block has a valid is present value.
@@ -244,7 +273,7 @@ public:
      *
      *      @return True, if the is present value is valid, false otherwise.
      */
-    virtual bool hasValidIsPresent(std::string const& itemName) const = 0;
+    bool hasValidIsPresent(std::string const& itemName) const;
 
     /*!
      *  Add a new memory block.
@@ -375,9 +404,43 @@ private:
      */
     virtual int countItems(QList<QSharedPointer<MemoryBlockBase> > itemList) const = 0;
 
+    /*!
+     *  Get the memory block validator.
+     *
+     *      @return The memory block validator.
+     */
+    virtual QSharedPointer<MemoryBlockValidator> getValidator() const = 0;
+
+    /*!
+     *  Get the address space within the selected bus interface.
+     *
+     *      @param [in] masterBusReference  Name of the selected bus interface.
+     *
+     *      @return Address space within the selected bus interface.
+     */
+    QSharedPointer<AddressSpace> getReferencedAddressSpace(QString const& masterBusReference) const;
+
+    /*!
+     *  Get the segment referenced by the selected subspace map.
+     *
+     *      @param [in] referencedSpace     Address space within the master bus interface referenced by the
+     *                                      selected subspace map.
+     *      @param [in] segmentReference    Name of the selected segment.
+     *
+     *      @return Segment referenced by the selected subspace map.
+     */
+    QSharedPointer<Segment> getReferencedSegment(QSharedPointer<AddressSpace> referencedSpace,
+        QString const& segmentReference) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! List of available address spaces.
+    QSharedPointer<QList<QSharedPointer<AddressSpace> > > availableAddressSpaces_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterfaceInterface_;
 
     //! List of the contained memory blocks.
     QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blockData_;
