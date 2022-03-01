@@ -50,6 +50,7 @@ containingMap_(containingMap),
 expressionParser_(expressionParser)
 {
     subspaceInterface_->setMemoryBlocks(containingMap_->getMemoryBlocks());
+    subspaceInterface_->setupSubInterfaces(component);
 
     constructComboBoxes();
 
@@ -134,7 +135,7 @@ void SingleSubspaceMapEditor::showEvent(QShowEvent* event)
 void SingleSubspaceMapEditor::refresh()
 {
     subspaceInterface_->setMemoryBlocks(containingMap_->getMemoryBlocks());
-    subspaceInterface_->getBusInterface()->setBusInterfaces(component());
+    subspaceInterface_->setupSubInterfaces(component());
 
     nameEditor_.refresh();
 
