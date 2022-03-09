@@ -258,6 +258,13 @@ signals:
      */
     void invalidateOtherFilter();
 
+    /*!
+     *  Informs of addressing changes in child items.
+     *
+     *      @param [in]     Index of the selected address block.
+     */
+    void childAddressingChanged(int);
+
 private:
 	
     //! No copying.	No assignment.

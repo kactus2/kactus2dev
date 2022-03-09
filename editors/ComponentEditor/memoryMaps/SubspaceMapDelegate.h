@@ -100,11 +100,11 @@ private:
     /*!
      *  Get the list of available segments.
      *
-     *      @param [in] subspaceRow     Index of the selected subspace map.
+     *      @param [in] index   Index of the selected subspace map.
      *
      *      @return List of available segments.
      */
-    QStringList getSegmentNames(int subspaceRow) const;
+    QStringList getSegmentNames(QModelIndex const& index) const;
 
     /*!
      *  Get the address space of the selected bus interface.

@@ -144,6 +144,9 @@ ItemEditor* MemoryRemapItem::editor()
         connect(editor_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
             this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 
+        connect(editor_, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)),
+            this, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
         connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
             editor_, SLOT(onMemoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
         connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
@@ -219,7 +222,7 @@ void MemoryRemapItem::createChild( int index )
                 expressionParser_, memoryMapValidator_->getSubspaceValidator(),
                 mapInterface_->getSubspaceMapInterface(), this));
 
-            connect(this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+            connect(this, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)),
                 subspaceItem.data(), SIGNAL(subspaceNameChanged(QString const&, QString const&)),
                 Qt::UniqueConnection);
 
@@ -232,13 +235,11 @@ void MemoryRemapItem::createChild( int index )
             {
                 subspaceItem->setVisualizer(visualizer_);
 
-/*
-                auto childItem = static_cast<MemoryVisualizationItem*>(addrBlockItem->getGraphicsItem());
+                auto childItem = dynamic_cast<MemoryVisualizationItem*>(subspaceItem->getGraphicsItem());
                 Q_ASSERT(childItem);
 
                 graphItem_->addChild(childItem);
                 childItem->setParent(graphItem_);
-*/
 
                 onAddressingChanged();
             }
@@ -293,6 +294,17 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 
             auto childGraphicItem = static_cast<MemoryVisualizationItem*>(addrItem->getGraphicsItem());
             graphItem_->addChild(childGraphicItem);
+        }
+        else
+        {
+            auto subspaceItem = item.dynamicCast<SubspaceMapItem>();
+            if (subspaceItem)
+            {
+                subspaceItem->setVisualizer(visualizer_);
+
+                auto childGraphicItem = static_cast<MemoryVisualizationItem*>(subspaceItem->getGraphicsItem());
+                graphItem_->addChild(childGraphicItem);
+            }
         }
 	}
 
@@ -376,6 +388,16 @@ void MemoryRemapItem::onChildAddressingChanged(int index)
             childBlock->updateGraphics();
             childBlock->onAddressingChanged();
         }
+        else
+        {
+            auto childSubspace = childItems_.at(index).dynamicCast<SubspaceMapItem>();
+
+            if (childSubspace)
+            {
+                childSubspace->updateGraphics();
+                childSubspace->onAddressingChanged();
+            }
+        }
     }
 }
 
@@ -394,6 +416,16 @@ void MemoryRemapItem::changeAdressUnitBitsOnAddressBlocks()
         {
             int newAddressUnitBits = expressionParser_->parseExpression(addressUnitBits).toInt();
             castChildItem->addressUnitBitsChanged(newAddressUnitBits);
+        }
+        else
+        {
+            QSharedPointer<SubspaceMapItem> castSubspaceItem =
+                qobject_cast<QSharedPointer<SubspaceMapItem>>(childItem);
+            if (castSubspaceItem)
+            {
+                int newAddressUnitBits = expressionParser_->parseExpression(addressUnitBits).toInt();
+                castSubspaceItem->addressUnitBitsChanged(newAddressUnitBits);
+            }
         }
     }
 

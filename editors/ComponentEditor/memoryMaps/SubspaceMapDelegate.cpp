@@ -54,7 +54,7 @@ QWidget* SubspaceMapDelegate::createEditor(QWidget* parent, QStyleOptionViewItem
         }
         else if (index.column() == SubspaceMapColumns::SEGMENTREFERENCE)
         {
-            comboBox->addItems(getSegmentNames(index.row()));
+            comboBox->addItems(getSegmentNames(index));
         }
         
         return comboBox;
@@ -86,12 +86,12 @@ QStringList SubspaceMapDelegate::getMasterInterfaceNames() const
 //-----------------------------------------------------------------------------
 // Function: SubspaceMapDelegate::getSegmentNames()
 //-----------------------------------------------------------------------------
-QStringList SubspaceMapDelegate::getSegmentNames(int subspaceRow) const
+QStringList SubspaceMapDelegate::getSegmentNames(QModelIndex const& index) const
 {
     QStringList segmentNames;
 
-    std::string subspaceName = subspaceInterface_->getIndexedItemName(subspaceRow);
-    QString masterReference = QString::fromStdString(subspaceInterface_->getMasterReference(subspaceName));
+    QModelIndex masterIndex = index.sibling(index.row(), SubspaceMapColumns::MASTERREFERENCE);
+    QString masterReference = masterIndex.data().toString();
     if (!masterReference.isEmpty())
     {
         QSharedPointer<AddressSpace> space = getAddressSpace(masterReference);

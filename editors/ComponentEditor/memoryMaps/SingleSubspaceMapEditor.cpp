@@ -180,6 +180,10 @@ void SingleSubspaceMapEditor::onIsPresentEdited()
 
     subspaceInterface_->setIsPresent(subspaceName_, isPresentEditor_->getExpression().toStdString());
     isPresentEditor_->setToolTip(QString::fromStdString(subspaceInterface_->getIsPresentValue(subspaceName_)));
+
+    emit contentChanged();
+    emit graphicsChanged();
+    emit addressingChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -244,8 +248,6 @@ void SingleSubspaceMapEditor::connectSignals() const
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onSubspaceNameChanged()), Qt::UniqueConnection);
 }
@@ -275,7 +277,10 @@ void SingleSubspaceMapEditor::onSubspaceNameChanged(QString const& oldName, QStr
 //-----------------------------------------------------------------------------
 void SingleSubspaceMapEditor::onSubspaceNameChanged()
 {
-    subspaceName_= nameEditor_.name().toStdString();
+    QString oldName = QString::fromStdString(subspaceName_);
+    subspaceName_ = nameEditor_.name().toStdString();
+
+    emit thisEditorNameChange(oldName, QString::fromStdString(subspaceName_));
 }
 
 //-----------------------------------------------------------------------------
@@ -293,6 +298,7 @@ void SingleSubspaceMapEditor::onMasterSelected(QString const& newMasterReference
     }
 
     emit contentChanged();
+    emit graphicsChanged();
     emit addressingChanged();
 }
 
@@ -304,5 +310,6 @@ void SingleSubspaceMapEditor::onSegmentSelected(QString const& newSegment)
     subspaceInterface_->setSegmentReference(subspaceName_, newSegment.toStdString());
 
     emit contentChanged();
+    emit graphicsChanged();
     emit addressingChanged();
 }

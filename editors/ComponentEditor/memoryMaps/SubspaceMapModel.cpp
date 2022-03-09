@@ -152,6 +152,12 @@ bool SubspaceMapModel::setData(QModelIndex const& index, QVariant const& value, 
             return MemoryBlockModel::setData(index, value, role);
         }
 
+        if (index.column() == SubspaceMapColumns::MASTERREFERENCE ||
+            index.column() == SubspaceMapColumns::SEGMENTREFERENCE)
+        {
+            emit childAddressingChanged(index.row());
+        }
+
         emit dataChanged(index, index);
         emit contentChanged();
         return true;

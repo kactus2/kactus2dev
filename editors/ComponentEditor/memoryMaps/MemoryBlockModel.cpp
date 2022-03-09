@@ -204,6 +204,11 @@ bool MemoryBlockModel::setData(QModelIndex const& index, QVariant const& value, 
             emit graphicsChanged(index.row());
         }
 
+        if (index.column() == baseAddressColumn() || index.column() == isPresentColumn())
+        {
+            emit childAddressingChanged(index.row());
+        }
+
         emit dataChanged(index, index);
         emit contentChanged();
         return true;

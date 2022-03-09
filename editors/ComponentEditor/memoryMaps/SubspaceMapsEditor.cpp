@@ -99,6 +99,9 @@ component_(component)
 
     connect(model_, SIGNAL(invalidateOtherFilter()), this, SIGNAL(invalidateOtherFilter()), Qt::UniqueConnection);
 
+    connect(model_, SIGNAL(childAddressingChanged(int)),
+        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+
     connect(this, SIGNAL(invalidateThisFilter()), proxy, SLOT(invalidate()), Qt::UniqueConnection);
 }
 

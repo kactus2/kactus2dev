@@ -142,6 +142,13 @@ signals:
      */
     void childRemoved(int index);
 
+    /*!
+     *  Informs of a change in item addressing.
+     *
+     *      @param [in] index   Index of the item whose addressing is changed.
+     */
+    void childAddressingChanged(int index);
+
 private:
 	
     //! No copying.	No assignment.

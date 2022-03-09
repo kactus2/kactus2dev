@@ -361,6 +361,15 @@ protected:
      */
     QString getAddressUnitBits() const;
 
+    /*!
+     *  Get the address space within the selected bus interface.
+     *
+     *      @param [in] masterBusReference  Name of the selected bus interface.
+     *
+     *      @return Address space within the selected bus interface.
+     */
+    QSharedPointer<AddressSpace> getReferencedAddressSpace(QString const& masterBusReference) const;
+
 private:
 
     /*!
@@ -410,15 +419,6 @@ private:
      *      @return The memory block validator.
      */
     virtual QSharedPointer<MemoryBlockValidator> getValidator() const = 0;
-
-    /*!
-     *  Get the address space within the selected bus interface.
-     *
-     *      @param [in] masterBusReference  Name of the selected bus interface.
-     *
-     *      @return Address space within the selected bus interface.
-     */
-    QSharedPointer<AddressSpace> getReferencedAddressSpace(QString const& masterBusReference) const;
 
     /*!
      *  Get the segment referenced by the selected subspace map.

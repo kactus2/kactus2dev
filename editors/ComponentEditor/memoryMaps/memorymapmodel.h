@@ -143,15 +143,6 @@ protected:
      */
     virtual QVariant valueForIndex(QModelIndex const& index) const override final;
 
-signals:
-
-    /*!
-     *  Informs of addressing changes in child items.
-     *
-     *      @param [in]     Index of the selected address block.
-     */
-    void childAddressingChanged(int);
-
 private:
 	
     //! No copying.	No assignment.

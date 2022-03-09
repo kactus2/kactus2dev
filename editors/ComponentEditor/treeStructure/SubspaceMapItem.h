@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.h>
+
 #include <IPXACTmodels/Component/SubSpaceMap.h>
 
 #include <QFont>
@@ -113,6 +115,13 @@ public:
 	 */
 	void setVisualizer(MemoryMapsVisualizer* visualizer);
 
+    /*!
+     *  Get the visualizer graphics item for the address block.
+	 *
+	 *      @return QGraphicsItem* The graphics item.
+	 */
+	virtual QGraphicsItem* getGraphicsItem() override final;
+
 	/*!
      *  Update the graphics item of the address block.
 	 */
@@ -171,7 +180,7 @@ private:
 	MemoryMapsVisualizer* visualizer_;
 
 	//! The graph item which visualizes the address block.
-// 	AddressBlockGraphItem* graphItem_;
+    SubspaceMapGraphItem* graphItem_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

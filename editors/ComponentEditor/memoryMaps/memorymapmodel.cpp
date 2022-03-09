@@ -177,7 +177,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
             emit graphicsChanged(index.row());
         }
 
-        if (index.column() == MemoryMapColumns::BASE_COLUMN || index.column() == MemoryMapColumns::RANGE_COLUMN)
+        if (index.column() == MemoryMapColumns::RANGE_COLUMN)
         {
             emit childAddressingChanged(index.row());
         }

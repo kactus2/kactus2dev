@@ -145,6 +145,21 @@ bool SubspaceMapInterface::setSegmentReference(std::string const& itemName, std:
 }
 
 //-----------------------------------------------------------------------------
+// Function: SubspaceMapInterface::getWidthValue()
+//-----------------------------------------------------------------------------
+std::string SubspaceMapInterface::getWidthValue(std::string const& subspaceName, int const& baseNumber) const
+{
+    QSharedPointer<AddressSpace> space =
+        getReferencedAddressSpace(QString::fromStdString(getMasterReference(subspaceName)));
+    if (space)
+    {
+        return parseExpressionToBaseNumber(space->getWidth(), baseNumber).toStdString();
+    }
+
+    return std::string("");
+}
+
+//-----------------------------------------------------------------------------
 // Function: SubspaceMapInterface::validateItems()
 //-----------------------------------------------------------------------------
 bool SubspaceMapInterface::validateItems() const

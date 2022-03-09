@@ -101,6 +101,16 @@ public:
     bool setSegmentReference(std::string const& itemName, std::string const& newSegmentReference);
 
     /*!
+     *  Get the calculated width value of the selected address block.
+     *
+     *      @param [in] blockName   Name of the selected address block.
+     *      @param [in] baseNumber  Base for displaying the value.
+     *
+     *      @return Calculated width value of the selected address block.
+     */
+    std::string getWidthValue(std::string const& subspaceName, int const& baseNumber = 0) const;
+
+    /*!
      *  Validates the contained items.
      *
      *      @return True, if all the ports are valid, false otherwise.

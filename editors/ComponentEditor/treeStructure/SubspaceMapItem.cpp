@@ -31,12 +31,15 @@ ComponentEditorItem(model, libHandler, component, parent),
 containingMap_(containingMap),
 subspaceMap_(subspace),
 visualizer_(NULL),
-// graphItem_(NULL),
+graphItem_(NULL),
 expressionParser_(expressionParser),
 addressUnitBits_(0),
 subspaceValidator_(subspaceValidator),
 subspaceInterface_(subspaceInterface)
 {
+    subspaceInterface_->setMemoryBlocks(containingMap_->getMemoryBlocks());
+    subspaceInterface_->setupSubInterfaces(component_);
+
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -80,12 +83,16 @@ ItemEditor* SubspaceMapItem::editor()
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+
         connect(editor_, SIGNAL(errorMessage(const QString&)),
             this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
         
         connect(this, SIGNAL(subspaceNameChanged(QString const&, QString const&)),
             editor_, SLOT(onSubspaceNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+        connect(editor_, SIGNAL(thisEditorNameChange(QString const&, QString const&)),
+            graphItem_, SLOT(onNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
 	}
@@ -97,12 +104,10 @@ ItemEditor* SubspaceMapItem::editor()
 //-----------------------------------------------------------------------------
 void SubspaceMapItem::onGraphicsChanged()
 {
-/*
     if (graphItem_)
     {
         graphItem_->updateDisplay();
     }
-*/
 }
 
 //-----------------------------------------------------------------------------
@@ -110,19 +115,10 @@ void SubspaceMapItem::onGraphicsChanged()
 //-----------------------------------------------------------------------------
 void SubspaceMapItem::onAddressingChanged()
 {
-/*
     if (graphItem_ != nullptr)
     {
-        graphItem_->redoChildLayout();
-
-        for (auto child : childItems_)
-        {
-            child->updateGraphics();
-        }
-
         emit addressingChanged();
     }
-*/
 }
 
 //-----------------------------------------------------------------------------
@@ -145,33 +141,21 @@ void SubspaceMapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	Q_ASSERT(parentItem);
 
 	// create the graph item for the address block
-/*
-	graphItem_ = new AddressBlockGraphItem(addrBlock_, expressionParser_, parentItem);
+
+    graphItem_ = new SubspaceMapGraphItem(subspaceInterface_, subspaceMap_->name(), expressionParser_, parentItem);
     graphItem_->setAddressableUnitBits(addressUnitBits_);
 
-	// update the visualizers for register items
-	for (auto child : childItems_)
-    {        
-        auto regItem = child.dynamicCast<ComponentEditorRegisterItem>();
-        auto regFileItem = child.dynamicCast<ComponentEditorRegisterFileItem>();
-
-        if (regItem)
-        {
-          regItem->setVisualizer(visualizer_);
-        }
-        else if (regFileItem)
-        {
-          regFileItem->setVisualizer(visualizer_);
-        }
-   
-        auto childGraphicItem = static_cast<MemoryVisualizationItem*>(child->getGraphicsItem());
-        graphItem_->addChild(childGraphicItem);
-	}
-
-    graphItem_->redoChildLayout();
-
 	connect(graphItem_, SIGNAL(selectEditor()),	this, SLOT(onSelectRequest()), Qt::UniqueConnection);
-*/
+    connect(this, SIGNAL(subspaceNameChanged(QString const&, QString const&)),
+        graphItem_, SLOT(onNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubspaceMapItem::getGraphicsItem()
+//-----------------------------------------------------------------------------
+QGraphicsItem* SubspaceMapItem::getGraphicsItem()
+{
+    return graphItem_;
 }
 
 //-----------------------------------------------------------------------------
@@ -179,12 +163,13 @@ void SubspaceMapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 //-----------------------------------------------------------------------------
 void SubspaceMapItem::updateGraphics()
 {
-/*
+    subspaceInterface_->setMemoryBlocks(containingMap_->getMemoryBlocks());
+    subspaceInterface_->setupSubInterfaces(component_);
+
 	if (graphItem_)
     {
 		graphItem_->updateDisplay();
 	}
-*/
 }
 
 //-----------------------------------------------------------------------------
@@ -192,7 +177,6 @@ void SubspaceMapItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void SubspaceMapItem::removeGraphicsItem()
 {
-/*
 	if (graphItem_)
     {
 		// get the graphics item for the memory map
@@ -211,7 +195,6 @@ void SubspaceMapItem::removeGraphicsItem()
 		delete graphItem_;
 		graphItem_ = nullptr;
 	}
-*/
 }
 
 //-----------------------------------------------------------------------------
@@ -221,14 +204,9 @@ void SubspaceMapItem::addressUnitBitsChanged(int newAddressUnitBits)
 {
     addressUnitBits_ = newAddressUnitBits;
 
-/*
     if (graphItem_)
     {
         graphItem_->setAddressableUnitBits(newAddressUnitBits);
         graphItem_->updateDisplay();
-        graphItem_->redoChildLayout();
     }
-
-    emit changeInAddressUnitBits(newAddressUnitBits);
-*/
 }

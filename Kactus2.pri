@@ -897,7 +897,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/treeStructure/SubspaceMapItem.h \
     ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.h \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.h \
-    ./common/widgets/segmentComboBox/SegmentComboBox.h
+    ./common/widgets/segmentComboBox/SegmentComboBox.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAPI.cpp \
@@ -1680,5 +1682,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/treeStructure/SubspaceMapItem.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.cpp \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
-    ./common/widgets/segmentComboBox/SegmentComboBox.cpp
+    ./common/widgets/segmentComboBox/SegmentComboBox.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.cpp
 RESOURCES += kactus.qrc

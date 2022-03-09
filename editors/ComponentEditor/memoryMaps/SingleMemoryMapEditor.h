@@ -150,6 +150,14 @@ signals:
     void addressBlockNameChanged(QString const& oldName, QString const& newName);
 
     /*!
+     *  Informs of subspace map name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void subspaceMapNameChanged(QString const& oldName, QString const& newName);
+
+    /*!
      *  Informs change in child addressing.
      *
      *      @param [in]
@@ -192,7 +200,7 @@ private:
 	NameGroupEditor nameEditor_;
 
     //! The editor for the address blocks.
-    MemoryMapEditor* memoryMapEditor_;
+    MemoryMapEditor* addressBlockEditor_;
 
     //! Editor for subspace maps.
     SubspaceMapsEditor* subspaceMapEditor_;
