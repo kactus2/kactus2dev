@@ -20,6 +20,8 @@
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/APISupport.h>
 
+#include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUDetails.h>
+
 class FileSet;
 
 #include <QObject>
@@ -174,12 +176,15 @@ private:
     /*!
      *  Generate the device tree.
      *
-     *      @param [in] component   The selected top component.
-     *      @param [in] activeView  View of the selected top component.
-     *      @param [in] filePath    Path for the device tree file.
+     *      @param [in] component           The selected top component.
+     *      @param [in] activeView          View of the selected top component.
+     *      @param [in] folderPath          Folder path for the device tree files.
+     *      @param [in] writeBlocks         Flag for writing address block data.
+     *      @param [in] acceptedContainers  List of CPU containers to be written.
      */
     void generateDeviceTree(QSharedPointer<Component> component, QString const& activeView,
-        QString const& filePath);
+        QString const& folderPath, bool writeBlocks,
+        QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > acceptedContainers);
 
     //-----------------------------------------------------------------------------
     // Data.

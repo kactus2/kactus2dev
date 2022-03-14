@@ -12,9 +12,8 @@
 #ifndef MEMORYMAPMODEL_H
 #define MEMORYMAPMODEL_H
 
-#include <editors/ComponentEditor/common/ParameterizableTable.h>
-#include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/memoryMaps/MemoryBlockModel.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -25,7 +24,7 @@ class AddressBlockInterface;
 //-----------------------------------------------------------------------------
 //! The model to manage the details of a single memory map.
 //-----------------------------------------------------------------------------
-class MemoryMapModel : public ReferencingTableModel, public ParameterizableTable
+class MemoryMapModel : public MemoryBlockModel
 {
 	Q_OBJECT
 
@@ -50,15 +49,6 @@ public:
 	virtual ~MemoryMapModel() = default;
 
 	/*!
-     *  Get the number of rows an item contains.
-	 *
-	 *      @param [in] parent  Identifies the parent that's row count is requested.
-	 *
-	 *      @return Number of rows the item has.
-	 */
-	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
-
-	/*!
      *  Get the number of columns the item has to be displayed.
 	 *
 	 *      @param [in] parent  Identifies the parent that's column count is requested.
@@ -66,15 +56,6 @@ public:
 	 *      @return The number of columns to be displayed.
 	 */
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
-
-	/*!
-     *  Get the item flags that defines the possible operations for the item.
-	 *
-	 *      @param [in] index   Model index that identifies the item.
-	 *
-	 *      @return Qt::ItemFlags specify the possible operations for the item.
-	 */
-	Qt::ItemFlags flags(QModelIndex const& index) const;
 
 	/*!
      *  Get the header data for specified header.
@@ -113,42 +94,7 @@ public:
      *
      *      @return The list of acceptable mime types.
      */
-    virtual QStringList mimeTypes() const;
-
-public slots:
-
-	/*!
-     *  Add a new item to the given index.
-	 *
-	 *      @param [in] index   The index identifying the position for new item.
-	 */
-	virtual void onAddItem(QModelIndex const& index);
-
-	/*!
-     *  Remove the item in the given index.
-	 *
-	 *      @param [in] index   The index identifying the item to remove.
-	 */
-	virtual void onRemoveItem(QModelIndex const& index);
-
-    /*!
-     *  Change the current address unit bits.
-     *
-     *      @param [in] newAddressUnitBits  The new address unit bits.
-     */
-    void addressUnitBitsUpdated(QString const& newAddressUnitBits);
-
-    /*!
-     *  Copy the items in the selected rows.
-     *
-     *      @param [in] indexList   List of indexes pointing to the selected rows.
-     */
-    void onCopyRows(QModelIndexList indexList);
-
-    /*!
-     *  Paste the copied items.
-     */
-    void onPasteRows();
+    virtual QStringList mimeTypes() const override final;
 
 protected:
 
@@ -159,16 +105,7 @@ protected:
      *
      *      @return True, if the column can have expressions, otherwise false.
      */
-    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
-
-    /*!
-     *  Gets the expression for the given index, or plain value if there is no expression.
-     *
-     *      @param [in] index   The index of the target data.
-     *
-     *      @return Expression or plain value in the given index.
-     */
-    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const override final;
 
     /*!
      *  validates the data in the column.
@@ -177,51 +114,7 @@ protected:
      *
      *      @return True, if the data is valid, otherwise false.
      */
-    virtual bool validateIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Gets the number of all the references made on the selected row to the selected parameter.
-     *
-     *      @param [in] row         The row of the selected item.
-     *      @param [in] valueID     The referenced parameter.
-     *
-     *      @return The number of references made to the parameter on the selected row.
-     */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const;
-
-signals:
-
-	//! Emitted when the contents of the model change.
-	void contentChanged();
-
-    /*!
-     *  Informs of a need to redraw the visualization.
-     */
-    void graphicsChanged(int index);
-
-    void childAddressingChanged(int);
-
-	//! Emitted when a new memory map item is added to the given index.
-	void itemAdded(int index);
-
-	//! Emitted when a memory map item is removed from the given index.
-	void itemRemoved(int index);
-
-    /*
-     *  Informs of address block name change.
-     *
-     *      @param [in] oldName     The old name.
-     *      @param [in] newName     The new name.
-     */
-    void addressBlockNameChanged(QString const& oldName, QString const& newName);
-
-private:
-	
-	//! No copying.
-	MemoryMapModel(const MemoryMapModel& other);
-
-	//! No assignment.
-	MemoryMapModel& operator=(const MemoryMapModel& other);
+    virtual bool validateIndex(QModelIndex const& index) const override final;
 
     /*!
      *  Get the formatted value of an expression in the selected index.
@@ -230,7 +123,7 @@ private:
      *
      *      @return The formatted value of an expression in the selected index.
      */
-    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const;
+    virtual QVariant formattedExpressionForIndex(QModelIndex const& index) const override final;
 
     /*!
      *  Get the expression of the selected index.
@@ -239,7 +132,7 @@ private:
      *
      *      @return The expression of the selected index.
      */
-    virtual QVariant expressionForIndex(QModelIndex const& index) const;
+    virtual QVariant expressionForIndex(QModelIndex const& index) const override final;
 
     /*!
      *  Gets the value for the given index.
@@ -248,21 +141,48 @@ private:
      *
      *      @return The data in the given index.
      */
-    QVariant valueForIndex(QModelIndex const& index) const;
+    virtual QVariant valueForIndex(QModelIndex const& index) const override final;
+
+private:
+	
+    //! No copying.	No assignment.
+	MemoryMapModel(const MemoryMapModel& other);
+	MemoryMapModel& operator=(const MemoryMapModel& other);
 
     /*!
-     *  Increase the number of references made in the selected expressions.
+     *  Get the index of the name column.
      *
-     *      @param [in] expressionList  List of expressions.
+     *      @return Index of the name column.
      */
-    void increaseReferencesInPastedExpressions(QStringList const& expressionList);
+    virtual int nameColumn() const override final;
+
+    /*!
+     *  Get the index of the base address column.
+     *
+     *      @return Index of the base address column.
+     */
+    virtual int baseAddressColumn() const override final;
+
+    /*!
+     *  Get the index of the is present column.
+     *
+     *      @return Index of the is present column.
+     */
+    virtual int isPresentColumn() const override final;
+
+    /*!
+     *  Get the index of the description column.
+     *
+     *      @return Index of the description column.
+     */
+    virtual int descriptionColumn() const override final;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Interface for address blocks.
-    AddressBlockInterface* blockInterface_;
+    AddressBlockInterface* localBlockInterface_;
 };
 
 #endif // MEMORYMAPMODEL_H

@@ -18,14 +18,6 @@
 
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
 
-#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
-#include <editors/MemoryDesigner/ConnectivityConnection.h>
-#include <editors/MemoryDesigner/ConnectivityGraph.h>
-#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
-#include <editors/MemoryDesigner/ConnectivityInterface.h>
-#include <editors/MemoryDesigner/ConnectivityComponent.h>
-#include <editors/MemoryDesigner/MemoryItem.h>
-
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUEditor.h>
 
 #include <QDialogButtonBox>
@@ -144,87 +136,8 @@ void CPUSelectionDialog::setupCPUSelection()
 
     QString activeView = viewSelection_->currentText();
 
-    QSharedPointer<ConnectivityGraph> graph = graphFactory_.createConnectivityGraph(component_, activeView);
-    MasterSlavePathSearch searchAlgorithm;
-    QVector<QVector<QSharedPointer<const ConnectivityInterface>>> masterRoutes =
-        searchAlgorithm.findMasterSlavePaths(graph);
-
-    for (auto masterRoute : masterRoutes)
-    {
-        QSharedPointer<const ConnectivityInterface> master = masterRoute.first();
-        if (interfacedCpuExists(master))
-        {
-            QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> checkInterface =
-                getMatchingCpuContainer(master);
-            checkInterface->routes_.append(masterRoute);
-        }
-        else
-        {
-            QSharedPointer<const ConnectivityComponent> routeComponent = master->getInstance();
-            QSharedPointer<const Component> interfaceComponent =
-                ConnectivityGraphUtilities::getInterfacedComponent(library_, routeComponent);
-            if (interfaceComponent)
-            {
-                QSharedPointer<Cpu> interfaceCPU =
-                    ConnectivityGraphUtilities::getInterfacedCPU(interfaceComponent, master);
-                if (interfaceCPU)
-                {
-                    QString checkBoxText = interfaceCPU->name() + " [" + routeComponent->getName() + "]";
-                    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuInterface(
-                        new ConnectivityGraphUtilities::cpuDetailRoutes());
-                    cpuInterface->cpuName_ = checkBoxText;
-                    cpuInterface->cpuID_ = checkBoxText;
-                    cpuInterface->cpuInterface_ = master;
-                    cpuInterface->routes_.append(masterRoute);
-
-                    cpuInterface->createFile_ = true;
-                    cpuInterface->revision_ = QString();
-                    cpuInterface->endian_ = QString();
-                    cpuInterface->mpuPresent_ = false;
-                    cpuInterface->fpuPresent_ = false;
-                    cpuInterface->nvicPrioBits_ = QString();
-                    cpuInterface->vendorSystickConfig_ = false;
-
-                    cpuSelection_.append(cpuInterface);
-                }
-            }
-        }
-    }
-
+    cpuSelection_ = ConnectivityGraphUtilities::getDefaultCPUs(library_, component_, activeView);
     cpuDetailEditor_->setupCPUDetails(cpuSelection_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUSelectionDialog::interfacedCpuExists()
-//-----------------------------------------------------------------------------
-bool CPUSelectionDialog::interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master)
-{
-    for (auto checkInterface : cpuSelection_)
-    {
-        if (checkInterface->cpuInterface_ == master)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUSelectionDialog::getMatchingCheckInterface()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> CPUSelectionDialog::getMatchingCpuContainer(
-    QSharedPointer<const ConnectivityInterface> master)
-{
-    for (auto checkInterface : cpuSelection_)
-    {
-        if (checkInterface->cpuInterface_ == master)
-        {
-            return checkInterface;
-        }
-    }
-
-    return QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes>();
 }
 
 //-----------------------------------------------------------------------------

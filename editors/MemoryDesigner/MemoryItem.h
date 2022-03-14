@@ -234,6 +234,20 @@ public:
      */
     void setResetMask(QString const& newResetMask);
 
+    /*!
+     *  Get the is present of the memory item.
+     *
+     *      @return The is present of the memory item.
+     */
+    QString getIsPresent() const;
+
+    /*!
+     *  Set a new is present for the memory item.
+     *
+     *      @param [in] newIsPresent    The new is present.
+     */
+    void setIsPresent(QString const& newIsPresent);
+
 private:
 
 	// Disable copying.
@@ -280,6 +294,9 @@ private:
 
     //! Reset mask of the memory item.
     QString resetMask_;
+
+    //! Presence of the memory item.
+    QString isPresent_;
 
     //! The sub-elements of the memory.
     QVector<QSharedPointer<MemoryItem> > childItems_;

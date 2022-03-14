@@ -60,7 +60,7 @@ blockInterface_(blockInterface),
 containingMap_(containingMap),
 expressionParser_(expressionParser)
 {
-    blockInterface_->setAddressBlocks(containingMap_->getMemoryBlocks());
+    blockInterface_->setMemoryBlocks(containingMap_->getMemoryBlocks());
 
     baseAddressEditor_->setFixedHeight(20);
     rangeEditor_->setFixedHeight(20);
@@ -110,7 +110,7 @@ void SingleAddressBlockEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void SingleAddressBlockEditor::refresh()
 {
-    blockInterface_->setAddressBlocks(containingMap_->getMemoryBlocks());
+    blockInterface_->setMemoryBlocks(containingMap_->getMemoryBlocks());
 
     nameEditor_.refresh();
     registersEditor_->refresh();

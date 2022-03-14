@@ -31,6 +31,8 @@ class PortsDelegate;
 class PortsFilter;
 class PortsEditorConstructor;
 class PortsInterface;
+class BusInterfaceInterface;
+class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Master editor for component ports.
@@ -47,17 +49,26 @@ public:
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] handler             The instance that manages the library.
      *      @param [in] portsInterface      Interface for accessing the component ports.
+     *      @param [in] signalInterface     Interface for accessing logical ports.
      *      @param [in] editorConstructor   Constructor for required modules.
      *      @param [in] parameterFinder     Locates the different parameters of the containing component.
      *      @param [in] portValidator       Validator used for ports.
      *      @param [in] parameterCompleter  Completer for expressions.
      *      @param [in] defaultPath         The default import / export path.
+     *      @param [in] busInterface        Interface for accessing bus interfaces.
 	 *      @param [in] parent              The owner of this widget.
 	 */
-    MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-        QSharedPointer<PortsInterface> portsInterface, PortsEditorConstructor* editorConstructor,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortValidator> portValidator,
-        ParameterCompleter* parameterCompleter, QString const& defaultPath, QWidget *parent = 0);
+    MasterPortsEditor(QSharedPointer<Component> component,
+        LibraryInterface* handler,
+        QSharedPointer<PortsInterface> portsInterface,
+        QSharedPointer<PortAbstractionInterface> signalInterface,
+        PortsEditorConstructor* editorConstructor,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<PortValidator> portValidator,
+        ParameterCompleter* parameterCompleter,
+        QString const& defaultPath,
+        BusInterfaceInterface* busInterface,
+        QWidget *parent = 0);
 
 	/*!
      *  The destructor.
@@ -148,6 +159,16 @@ signals:
      */
     void portCountChanged();
 
+private slots:
+
+    /*!
+     *  Handle port creation from the selected abstraction definition of a bus interface.
+     *
+     *      @param [in] busName             Name of the selected bus interface.
+     *      @param [in] abstractionString   VLNV string of the abstraction definition.
+     */
+    void onCreatePortsFromAbstraction(std::string const& busName, QString const& abstractionString);
+
 private:
 
     /*!
@@ -173,6 +194,9 @@ private:
 
     //! Interface for accessing ports.
     QSharedPointer<PortsInterface> portInterface_;
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_;
 };
 
 #endif // MASTERPORTSEDITOR_H

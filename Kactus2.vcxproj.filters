@@ -1031,6 +1031,24 @@
     <Filter Include="Source Files\editors\common\FileHandler">
       <UniqueIdentifier>{dbbab44d-61c3-4e98-8091-f4654fcdbc6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\HWDesign\interfaces">
+      <UniqueIdentifier>{8ff47ee3-a8ad-4457-af2f-38e47da9402b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\HWDesign\interfaces">
+      <UniqueIdentifier>{968fe741-7d53-4209-9dc2-3274b9a45ebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\busReferenceCombobBox">
+      <UniqueIdentifier>{084c78a3-2712-4e3a-801e-01620648f90e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\busReferenceComboBox">
+      <UniqueIdentifier>{11e5ccc3-455c-4182-9589-806d8fd32b5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\segmentComboBox">
+      <UniqueIdentifier>{d805a9dc-f141-4c79-aa66-3571837ec3ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\segmentComboBox">
+      <UniqueIdentifier>{0701fe02-73ac-47fd-9e97-b661dd63045c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -5032,6 +5050,96 @@
     <ClCompile Include="PythonAPI\extensions\IOCatcher.cpp">
       <Filter>Source Files\PythonAPI\extensions</Filter>
     </ClCompile>
+    <ClCompile Include="editors\HWDesign\interfaces\ComponentInstanceInterface.cpp">
+      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\interfaces\InterconnectionInterface.cpp">
+      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\interfaces\AdHocConnectionInterface.cpp">
+      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\WarningSymbol.cpp">
+      <Filter>Source Files\editors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\SubspaceMapInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryBlockInterface.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SubspaceMapsEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SubspaceMapModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryBlockModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryBlockModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryBlockDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryBlockDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SubspaceMapDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryBlockFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryBlockFilter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SubspaceMapItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SubspaceMapItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\SingleSubspaceMapEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SingleSubspaceMapEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\busReferenceComboBox\BusReferenceComboBox.cpp">
+      <Filter>Source Files\common\widgets\busReferenceComboBox</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusReferenceComboBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SegmentComboBox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\segmentComboBox\SegmentComboBox.cpp">
+      <Filter>Source Files\common\widgets\segmentComboBox</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\SubspaceMapGraphItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_SubspaceMapGraphItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\MemoryBlockGraphItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryBlockGraphItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5061,7 +5169,6 @@
     <CustomBuild Include="Help\kactus2help.qhp">
       <Filter>Help Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="appicon.ico" />
     <CustomBuild Include="Kactus2.pri" />
     <CustomBuild Include="Kactus2.pro" />
     <CustomBuild Include="common\delegates\ComboDelegate\combodelegate.h">
@@ -6843,6 +6950,45 @@
     <CustomBuild Include="PythonAPI\WriteChannel.h">
       <Filter>Header Files\PythonAPI</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\HWDesign\WarningSymbol.h">
+      <Filter>Header Files\editors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SubspaceMapsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SubspaceMapModel.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\MemoryBlockModel.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\MemoryBlockDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SubspaceMapDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\MemoryBlockFilter.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\treeStructure\SubspaceMapItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\SingleSubspaceMapEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\busReferenceComboBox\BusReferenceComboBox.h">
+      <Filter>Header Files\common\widgets\busReferenceCombobBox</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\segmentComboBox\SegmentComboBox.h">
+      <Filter>Header Files\common\widgets\segmentComboBox</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\SubspaceMapGraphItem.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\MemoryBlockGraphItem.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7703,6 +7849,27 @@
     <ClInclude Include="PythonAPI\extensions\IOCatcher.h">
       <Filter>Header Files\PythonAPI\extensions</Filter>
     </ClInclude>
+    <ClInclude Include="editors\HWDesign\interfaces\ComponentInstanceInterface.h">
+      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\HWDesign\interfaces\InterconnectionInterface.h">
+      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\HWDesign\interfaces\AdHocConnectionInterface.h">
+      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\SubspaceMapInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryBlockInterface.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\SubspaceMapColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -7711,5 +7878,11 @@
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Kactus21.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="appicon.ico" />
   </ItemGroup>
 </Project>

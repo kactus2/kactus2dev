@@ -33,20 +33,27 @@ AddressBlockValidator::AddressBlockValidator(QSharedPointer<ExpressionParser> ex
     QSharedPointer<RegisterValidator> registerValidator,
     QSharedPointer<RegisterFileValidator> registerFileValidator,
     QSharedPointer<ParameterValidator> parameterValidator):
-expressionParser_(expressionParser),
+MemoryBlockValidator(expressionParser, parameterValidator),
 registerValidator_(registerValidator),
-  registerFileValidator_(registerFileValidator),
-parameterValidator_(parameterValidator)
+registerFileValidator_(registerFileValidator)
 {
 
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::getBlockType()
+//-----------------------------------------------------------------------------
+QString AddressBlockValidator::getBlockType() const
+{
+    return QStringLiteral("address block");
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::componentChange()
 //-----------------------------------------------------------------------------
-void AddressBlockValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType>>> newResetTypes)
+void AddressBlockValidator::componentChange(QSharedPointer<Component> newComponent)
 {
-    registerValidator_->componentChange(newResetTypes);
+    registerValidator_->componentChange(newComponent);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,66 +77,11 @@ QSharedPointer<RegisterFileValidator> AddressBlockValidator::getRegisterFileVali
 bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits)
     const
 {
-    return  hasValidName(addressBlock) &&
-            hasValidIsPresent(addressBlock) &&
-            hasValidBaseAddress(addressBlock) &&
-            hasValidRange(addressBlock) &&
-            hasValidWidth(addressBlock) &&
-            hasValidParameters(addressBlock) &&
-            hasValidRegisterData(addressBlock, addressUnitBits) &&
-            hasValidUsage(addressBlock);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasValidName()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidName(QSharedPointer<AddressBlock> addressBlock) const
-{
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(addressBlock->name());
-
-    if (addressBlock->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasValidIsPresent()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidIsPresent(QSharedPointer<AddressBlock> addressBlock) const
-{
-    if (!addressBlock->getIsPresent().isEmpty())
-    {
-        QString solvedValue = expressionParser_->parseExpression(addressBlock->getIsPresent());
-
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-
-        if (!toIntOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasValidBaseAddress()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidBaseAddress(QSharedPointer<AddressBlock> addressBlock) const
-{
-    bool toIntOk = true;
-
-    QString parsedBaseAddress = addressBlock->getBaseAddress();
-
-    expressionParser_->parseExpression(addressBlock->getBaseAddress()).toULongLong(&toIntOk);
-
-    return toIntOk;
+    return MemoryBlockValidator::validate(addressBlock) &&
+        hasValidRange(addressBlock) &&
+        hasValidWidth(addressBlock) &&
+        hasValidRegisterData(addressBlock, addressUnitBits) &&
+        hasValidUsage(addressBlock);
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +90,7 @@ bool AddressBlockValidator::hasValidBaseAddress(QSharedPointer<AddressBlock> add
 bool AddressBlockValidator::hasValidRange(QSharedPointer<AddressBlock> addressBlock) const
 {
     bool toIntOk = true;
-    quint64 range = expressionParser_->parseExpression(addressBlock->getRange()).toULongLong(&toIntOk);
+    quint64 range = getExpressionParser()->parseExpression(addressBlock->getRange()).toULongLong(&toIntOk);
 
     return toIntOk && range > 0;
 }
@@ -149,33 +101,9 @@ bool AddressBlockValidator::hasValidRange(QSharedPointer<AddressBlock> addressBl
 bool AddressBlockValidator::hasValidWidth(QSharedPointer<AddressBlock> addressBlock) const
 {
     bool toIntOk = true;
-    expressionParser_->parseExpression(addressBlock->getWidth()).toULongLong(&toIntOk);
+    getExpressionParser()->parseExpression(addressBlock->getWidth()).toULongLong(&toIntOk);
 
     return toIntOk;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasValidParameters()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidParameters(QSharedPointer<AddressBlock> addressBlock) const
-{
-    if (!addressBlock->getParameters()->isEmpty())
-    {
-        QStringList parameterNames;
-        for (QSharedPointer<Parameter> const& parameter : *addressBlock->getParameters())
-        {
-            if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
-            {
-                return false;
-            }
-            else
-            {
-                parameterNames.append(parameter->name());
-            }
-        }
-    }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -192,8 +120,8 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
         MemoryReserve reservedArea;
 
         bool aubChangeOk = true;
-        qint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
-        qint64 addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toLongLong();
+        qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
+        qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
 
         for (QSharedPointer<RegisterBase> registerData : *addressBlock->getRegisterData())
         {
@@ -225,8 +153,8 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
                     {
                         qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
 
-                        qint64 registerBegin =
-                            expressionParser_->parseExpression(targetRegister->getAddressOffset()).toLongLong();
+                        qint64 registerBegin = getExpressionParser()->parseExpression(
+                            targetRegister->getAddressOffset()).toLongLong();
 
                         qint64 registerEnd = registerBegin + registerSize - 1;
 
@@ -237,7 +165,7 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
 
 
                         if(targetRegister->getIsPresent().isEmpty() || 
-                            expressionParser_->parseExpression(targetRegister->getIsPresent()).toInt())
+                            getExpressionParser()->parseExpression(targetRegister->getIsPresent()).toInt())
                         {
                           reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
                         }
@@ -261,8 +189,8 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
 bool AddressBlockValidator::registerSizeIsNotWithinBlockWidth(QSharedPointer<Register> targetRegister,
     QSharedPointer<AddressBlock> addressBlock) const
 {
-    int registerSize = expressionParser_->parseExpression(targetRegister->getSize()).toInt();
-    int addressBlockWidth = expressionParser_->parseExpression(addressBlock->getWidth()).toInt();
+    int registerSize = getExpressionParser()->parseExpression(targetRegister->getSize()).toInt();
+    int addressBlockWidth = getExpressionParser()->parseExpression(addressBlock->getWidth()).toInt();
 
     return registerSize > addressBlockWidth;
 }
@@ -372,7 +300,7 @@ bool AddressBlockValidator::hasValidUsage(QSharedPointer<AddressBlock> addressBl
 void AddressBlockValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
     QString const& addressUnitBits, QString const& context) const
 {
-    QString addressBlockContext = QStringLiteral("addressBlock ") + addressBlock->name();
+    QString addressBlockContext = getBlockType() + QStringLiteral(" ") + addressBlock->name();
 
     findErrorsInName(errors, addressBlock, context);
     findErrorsInIsPresent(errors, addressBlock, context);
@@ -382,45 +310,6 @@ void AddressBlockValidator::findErrorsIn(QVector<QString>& errors, QSharedPointe
     findErrorsInUsage(errors, addressBlock, context);
     findErrorsInParameters(errors, addressBlock, addressBlockContext);
     findErrorsInRegisterData(errors, addressBlock, addressUnitBits, addressBlockContext);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::findErrorsInName()
-//-----------------------------------------------------------------------------
-void AddressBlockValidator::findErrorsInName(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-    QString const& context) const
-{
-    if (!hasValidName(addressBlock))
-    {
-        errors.append(
-            QObject::tr("Invalid name specified for address block %1 within %2").arg(addressBlock->name(),
-            context));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::findErrorsInIsPresent()
-//-----------------------------------------------------------------------------
-void AddressBlockValidator::findErrorsInIsPresent(QVector<QString>& errors,
-    QSharedPointer<AddressBlock> addressBlock, QString const& context) const
-{
-    if (!hasValidIsPresent(addressBlock))
-    {
-        errors.append(QObject::tr("Invalid isPresent set for address block %1 within %2").arg(addressBlock->name())
-            .arg(context));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::findErrorsInBaseAddress()
-//-----------------------------------------------------------------------------
-void AddressBlockValidator::findErrorsInBaseAddress(QVector<QString>& errors,
-    QSharedPointer<AddressBlock> addressBlock, QString const& context) const
-{
-    if (!hasValidBaseAddress(addressBlock))
-    {
-        errors.append(QObject::tr("Invalid baseAddress set for address block %1 within %2").arg(addressBlock->name(), context));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -480,32 +369,6 @@ void AddressBlockValidator::findErrorsInUsage(QVector<QString>& errors, QSharedP
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::findErrorsInParameters()
-//-----------------------------------------------------------------------------
-void AddressBlockValidator::findErrorsInParameters(QVector<QString>&errors,
-    QSharedPointer<AddressBlock> addressBlock, QString const& context) const
-{
-    if (!addressBlock->getParameters()->isEmpty())
-    {
-        QStringList parameterNames;
-        for (QSharedPointer<Parameter> const& parameter : *addressBlock->getParameters())
-        {
-            if (parameterNames.contains(parameter->name()))
-            {
-                errors.append(QObject::tr("Name %1 of parameters in %2 is not unique.").arg(parameter->name()).
-                    arg(context));
-            }
-            else
-            {
-                parameterNames.append(parameter->name());
-            }
-
-            parameterValidator_->findErrorsIn(errors, parameter, context);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::findErrorsInRegisterData()
 //-----------------------------------------------------------------------------
 void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
@@ -519,8 +382,8 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
 
         MemoryReserve reservedArea;
         bool aubChangeOk = true;
-        qint64 aubInt = expressionParser_->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
-        qint64 addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toLongLong();
+        qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
+        qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
 
         for (QSharedPointer<RegisterBase> const& registerData : *addressBlock->getRegisterData())
         {
@@ -568,8 +431,8 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
 
                 if (!hasValidAccessWithRegister(addressBlock, targetRegister))
                 {
-                    errors.append(QObject::tr("Access cannot be set to %1 in register %2, where containing address "
-                        "block %3 has access %4")
+                    errors.append(QObject::tr(
+                        "Access cannot be set to %1 in register %2, where containing address block %3 has access %4")
                         .arg(AccessTypes::access2Str(targetRegister->getAccess()))
                         .arg(targetRegister->name())
                         .arg(addressBlock->name())
@@ -580,12 +443,13 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
                 {
                     qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
 
-                    qint64 registerBegin = expressionParser_->parseExpression(targetRegister->getAddressOffset()).
-                        toLongLong();
+                    qint64 registerBegin =
+                        getExpressionParser()->parseExpression(targetRegister->getAddressOffset()).toLongLong();
 
                     qint64 registerEnd = registerBegin + registerSize - 1;
 
-                    if(targetRegister->getIsPresent().isEmpty() || expressionParser_->parseExpression(targetRegister->getIsPresent()).toInt())
+                    if(targetRegister->getIsPresent().isEmpty() ||
+                        getExpressionParser()->parseExpression(targetRegister->getIsPresent()).toInt())
                     {
                       reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
                     }
@@ -609,8 +473,8 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
 qint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, int addressUnitBits)
     const
 {
-    qint64 size = expressionParser_->parseExpression(targetRegister->getSize()).toLongLong();
-    qint64 registerDimension = expressionParser_->parseExpression(targetRegister->getDimension()).toLongLong();
+    qint64 size = getExpressionParser()->parseExpression(targetRegister->getSize()).toLongLong();
+    qint64 registerDimension = getExpressionParser()->parseExpression(targetRegister->getDimension()).toLongLong();
 
     if (registerDimension == 0)
     {

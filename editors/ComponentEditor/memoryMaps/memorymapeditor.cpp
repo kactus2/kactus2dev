@@ -11,7 +11,6 @@
 
 #include "memorymapeditor.h"
 
-#include "ExpressionProxyModel.h"
 #include "memorymapmodel.h"
 #include "memorymapdelegate.h"
 #include "MemoryMapColumns.h"
@@ -21,6 +20,7 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
 
 #include <library/LibraryInterface.h>
@@ -40,9 +40,12 @@ QGroupBox(tr("Address blocks summary"), parent),
 view_(new EditableTableView(this)),
 model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this)),
 interface_(blockInterface),
-blocks_(blocks)
+blocks_(blocks),
+component_(component),
+proxy_()
 {
-    interface_->setAddressBlocks(blocks_);
+    interface_->setMemoryBlocks(blocks_);
+    interface_->setupSubInterfaces(component_);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
@@ -53,16 +56,16 @@ blocks_(blocks)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
-    ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
-    proxy->setColumnToAcceptExpressions(MemoryMapColumns::BASE_COLUMN);
-    proxy->setColumnToAcceptExpressions(MemoryMapColumns::RANGE_COLUMN);
-    proxy->setColumnToAcceptExpressions(MemoryMapColumns::WIDTH_COLUMN);
-    proxy->setColumnToAcceptExpressions(MemoryMapColumns::IS_PRESENT);
+    proxy_ = new MemoryBlockFilter(expressionParser, blockInterface, this);
+    proxy_->setColumnToAcceptExpressions(MemoryMapColumns::BASE_COLUMN);
+    proxy_->setColumnToAcceptExpressions(MemoryMapColumns::RANGE_COLUMN);
+    proxy_->setColumnToAcceptExpressions(MemoryMapColumns::WIDTH_COLUMN);
+    proxy_->setColumnToAcceptExpressions(MemoryMapColumns::IS_PRESENT);
 
-	proxy->setSourceModel(model_);
-	view_->setModel(proxy);
+	proxy_->setSourceModel(model_);
+	view_->setModel(proxy_);
 
-	//! \brief Enable import/export csv file
+	//! Enable import/export csv file
     const QString compPath = handler->getDirectoryPath(component->getVlnv());
 	QString defPath = QString("%1/addrBlockList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
@@ -107,8 +110,12 @@ blocks_(blocks)
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
         model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
 
-    connect(model_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+    connect(model_, SIGNAL(blockNameChanged(QString const&, QString const&)),
         this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(invalidateOtherFilter()), this, SIGNAL(invalidateOtherFilter()), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(invalidateThisFilter()), proxy_, SLOT(invalidate()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,5 +132,6 @@ void MemoryMapEditor::refresh()
 {
 	view_->update();
 
-    interface_->setAddressBlocks(blocks_);
+    interface_->setMemoryBlocks(blocks_);
+    interface_->setupSubInterfaces(component_);
 }

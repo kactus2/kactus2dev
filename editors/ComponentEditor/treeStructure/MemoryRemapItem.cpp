@@ -12,12 +12,12 @@
 #include "MemoryRemapItem.h"
 #include "componenteditoraddrblockitem.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
-
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/treeStructure/SubspaceMapItem.h>
 
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
@@ -144,6 +144,9 @@ ItemEditor* MemoryRemapItem::editor()
         connect(editor_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
             this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
 
+        connect(editor_, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)),
+            this, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
         connect(this, SIGNAL(memoryMapNameChanged(QString const&, QString const&)),
             editor_, SLOT(onMemoryMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
         connect(this, SIGNAL(memoryRemapNameChanged(QString const&, QString const&, QString const&)),
@@ -177,10 +180,10 @@ void MemoryRemapItem::createChild( int index )
 	QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index).dynamicCast<AddressBlock>();
 	if (addrBlock)
     {
-		QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem (new ComponentEditorAddrBlockItem(
+        QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(new ComponentEditorAddrBlockItem(
             memoryRemap_, addrBlock, model_, libHandler_, component_, referenceCounter_, parameterFinder_,
             expressionFormatter_, expressionParser_, memoryMapValidator_->getAddressBlockValidator(),
-            mapInterface_->getSubInterface(), this));
+            mapInterface_->getAddressBlockInterface(), this));
 
         connect(this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
             addrBlockItem.data(), SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
@@ -209,6 +212,44 @@ void MemoryRemapItem::createChild( int index )
 
 		childItems_.insert(index, addrBlockItem);
 	}
+    else
+    {
+        QSharedPointer<SubSpaceMap> subspace = memoryBlocks_->at(index).dynamicCast<SubSpaceMap>();
+        if (subspace)
+        {
+            QSharedPointer<SubspaceMapItem> subspaceItem(new SubspaceMapItem(memoryRemap_, subspace, model_,
+                libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
+                expressionParser_, memoryMapValidator_->getSubspaceValidator(),
+                mapInterface_->getSubspaceMapInterface(), this));
+
+            connect(this, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)),
+                subspaceItem.data(), SIGNAL(subspaceNameChanged(QString const&, QString const&)),
+                Qt::UniqueConnection);
+
+            subspaceItem->setLocked(locked_);
+
+            int addressUnitBits = expressionParser_->parseExpression(parentMemoryMap_->getAddressUnitBits()).toInt();
+            subspaceItem->addressUnitBitsChanged(addressUnitBits);
+
+            if (visualizer_)
+            {
+                subspaceItem->setVisualizer(visualizer_);
+
+                auto childItem = dynamic_cast<MemoryVisualizationItem*>(subspaceItem->getGraphicsItem());
+                Q_ASSERT(childItem);
+
+                graphItem_->addChild(childItem);
+                childItem->setParent(graphItem_);
+
+                onAddressingChanged();
+            }
+
+            connect(subspaceItem.data(), SIGNAL(addressingChanged()),
+                this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
+
+            childItems_.insert(index, subspaceItem);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -245,11 +286,26 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	// update the visualizers of address block items
 	for (auto item : childItems_)
     {
-		auto addrItem = item.staticCast<ComponentEditorAddrBlockItem>();
-		addrItem->setVisualizer(visualizer_);
+// 		auto addrItem = item.staticCast<ComponentEditorAddrBlockItem>();
+        auto addrItem = item.dynamicCast<ComponentEditorAddrBlockItem>();
+        if (addrItem)
+        {
+            addrItem->setVisualizer(visualizer_);
 
-        auto childGraphicItem = static_cast<MemoryVisualizationItem*>(addrItem->getGraphicsItem());
-        graphItem_->addChild(childGraphicItem);
+            auto childGraphicItem = static_cast<MemoryVisualizationItem*>(addrItem->getGraphicsItem());
+            graphItem_->addChild(childGraphicItem);
+        }
+        else
+        {
+            auto subspaceItem = item.dynamicCast<SubspaceMapItem>();
+            if (subspaceItem)
+            {
+                subspaceItem->setVisualizer(visualizer_);
+
+                auto childGraphicItem = static_cast<MemoryVisualizationItem*>(subspaceItem->getGraphicsItem());
+                graphItem_->addChild(childGraphicItem);
+            }
+        }
 	}
 
     graphItem_->redoChildLayout();
@@ -332,6 +388,16 @@ void MemoryRemapItem::onChildAddressingChanged(int index)
             childBlock->updateGraphics();
             childBlock->onAddressingChanged();
         }
+        else
+        {
+            auto childSubspace = childItems_.at(index).dynamicCast<SubspaceMapItem>();
+
+            if (childSubspace)
+            {
+                childSubspace->updateGraphics();
+                childSubspace->onAddressingChanged();
+            }
+        }
     }
 }
 
@@ -346,9 +412,21 @@ void MemoryRemapItem::changeAdressUnitBitsOnAddressBlocks()
     {
         QSharedPointer<ComponentEditorAddrBlockItem> castChildItem = 
             qobject_cast<QSharedPointer<ComponentEditorAddrBlockItem> >(childItem);
-
-        int newAddressUnitBits = expressionParser_->parseExpression(addressUnitBits).toInt();
-        castChildItem->addressUnitBitsChanged(newAddressUnitBits);
+        if (castChildItem)
+        {
+            int newAddressUnitBits = expressionParser_->parseExpression(addressUnitBits).toInt();
+            castChildItem->addressUnitBitsChanged(newAddressUnitBits);
+        }
+        else
+        {
+            QSharedPointer<SubspaceMapItem> castSubspaceItem =
+                qobject_cast<QSharedPointer<SubspaceMapItem>>(childItem);
+            if (castSubspaceItem)
+            {
+                int newAddressUnitBits = expressionParser_->parseExpression(addressUnitBits).toInt();
+                castSubspaceItem->addressUnitBitsChanged(newAddressUnitBits);
+            }
+        }
     }
 
     if (editor_)

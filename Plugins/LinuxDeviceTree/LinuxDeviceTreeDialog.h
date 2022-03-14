@@ -17,6 +17,12 @@ class View;
 class VLNV;
 class Component;
 class Design;
+class LinuxDeviceTreeCPUEditor;
+
+#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
+#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
+
+#include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUDetails.h>
 
 #include <QDialog>
 #include <QComboBox>
@@ -24,6 +30,7 @@ class Design;
 #include <QLineEdit>
 #include <QLabel>
 #include <QSharedPointer>
+#include <QCheckBox>
 
 //-----------------------------------------------------------------------------
 //! Dialog for setting linux device tree generation options.
@@ -39,10 +46,11 @@ public:
      *		@param [in]	defaultPath     The default path for the Linux Device Tree file.
      *		@param [in]	component       The top component of the selected design.
      *		@param [in]	design          The selected design.
+     *      @param [in] library         The library interface.
      *		@param [in]	parent          Parent item for the dialog.
      */
     LinuxDeviceTreeDialog(QString const& defaultPath, QSharedPointer<Component> component,
-        QSharedPointer<Design> design, QWidget* parent);
+        QSharedPointer<Design> design, LibraryInterface* library, QWidget* parent);
 
 	/*!
      *  The destructor.
@@ -77,6 +85,20 @@ public:
      */
     QString getTargetFileSet() const;
 
+    /*!
+     *  Check if address blocks should be written.
+     *
+     *      @return True, if address blocks should be written, false otherwise.
+     */
+    bool allowAddressBlocks() const;
+
+    /*!
+     *  Get the list of the selected CPU containers.
+     *
+     *      @return List of the selected CPU containers.
+     */
+    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > getAcceptedContainers() const;
+
 public slots:
 
     /*!
@@ -90,6 +112,13 @@ private slots:
      *	Handles the target file browsing.
      */
     void onBrowse();
+
+    /*!
+     *  Setup the CPU editor.
+     *
+     *      @param [in] view    Name of the active view.
+     */
+    void setupCPUEditor(QString const& view);
 
 private:
 
@@ -113,6 +142,14 @@ private:
     void setupFileSetSelector(QSharedPointer<QList<QSharedPointer<FileSet> > > componentFileSets);
 
     /*!
+     *  Get the name of the design referenced by the currently active view.
+     *
+     *
+     *      @return 
+     */
+    QString getDesignName();
+
+    /*!
      *	Setup the dialog layout.
      */
     void setupLayout();
@@ -120,6 +157,12 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The library interface.
+    LibraryInterface* library_;
+
+    //! The component from which the linux device tree is created from.
+    QSharedPointer<Component> topComponent_;
 
     //! Selects the target view.
     QComboBox* viewSelector_;
@@ -132,6 +175,18 @@ private:
 
     //! Editor for selecting the path for the device tree file.
     QLineEdit* fileEditor_;
+
+    //! Check box for writing address blocks.
+    QCheckBox* writeBlocks_;
+
+    //! Editor for CPU details.
+    LinuxDeviceTreeCPUEditor* cpuEditor_;
+
+    //! Factory for creating connectivity graphs.
+    ConnectivityGraphFactory graphFactory_;
+
+    //! Master slave search algorithm for connectivity graphs.
+    MasterSlavePathSearch searchAlgorithm_;
 };
 
 #endif // LINUXDEVICETREEDIALOG_H

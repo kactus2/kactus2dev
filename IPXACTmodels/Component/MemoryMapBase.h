@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/Component/SubSpaceMap.h>
 
 #include <QList>
 #include <QString>
@@ -96,6 +97,13 @@ public:
      *      @return True, if the memory map contains sub items, false otherwise.
      */
     bool hasMemoryBlocks() const;
+
+    /*!
+     *  Check if the memory map contains any subspace maps.
+     *
+     *      @return True, if the memory map contains subspace items, false otherwise.
+     */
+    bool hasSubSpaceMaps() const;
 
 private:
 

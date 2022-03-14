@@ -11,12 +11,12 @@
 
 #include "portseditor.h"
 
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 #include <editors/ComponentEditor/ports/MasterPortsEditor.h>
 #include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
@@ -46,14 +46,16 @@ namespace
 //-----------------------------------------------------------------------------
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<PortValidator> portValidator, QWidget *parent):
+    QSharedPointer<PortValidator> portValidator, BusInterfaceInterface* busInterface,
+    QWidget *parent):
 ItemEditor(component, handler, parent),
 component_(component),
 handler_(handler),
 wireEditor_(0),
 transactionalEditor_(0),
 portTabs_(new QTabWidget(this)),
-portsInterface_()
+portsInterface_(),
+busInterface_(busInterface)
 {
 	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
 	QString defaultPath = QString("%1/portListing.csv").arg(componentPath);
@@ -70,11 +72,14 @@ portsInterface_()
         QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressionParser, expressionFormatter));
     portsInterface_->setPorts(component);
 
-    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, new WirePortsEditorConstructor(),
-        parameterFinder, portValidator, parameterCompleter, defaultPath, this);
-    transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_,
+    QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
+
+    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
+        new WirePortsEditorConstructor(), parameterFinder, portValidator, parameterCompleter, defaultPath,
+        busInterface, this);
+    transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
         new TransactionalPortsEditorConstructor(), parameterFinder, portValidator, parameterCompleter, defaultPath,
-        this);
+        busInterface, this);
 
     connectSignals();
 
@@ -155,21 +160,19 @@ QString PortsEditor::getTabNameWithPortCount(QString const& tabName, int const& 
 //-----------------------------------------------------------------------------
 void PortsEditor::redefineTabText()
 {
-    int portCount = 0;
-    QString tabText("");
-
-    if (portTabs_->currentWidget() == wireEditor_)
+    for (int i = 0; i < portTabs_->count(); ++i)
     {
-        tabText = WIREPORTS;
-        portCount = wireEditor_->getAmountOfPorts();
+        if (portTabs_->widget(i) == wireEditor_)
+        {
+            int portCount = wireEditor_->getAmountOfPorts();
+            portTabs_->setTabText(i, getTabNameWithPortCount(WIREPORTS, portCount));
+        }
+        else if (portTabs_->widget(i) == transactionalEditor_)
+        {
+            int portCount = transactionalEditor_->getAmountOfPorts();
+            portTabs_->setTabText(i, getTabNameWithPortCount(TRANSACTIONALPORTS, portCount));
+        }
     }
-    else if (portTabs_->currentWidget() == transactionalEditor_)
-    {
-        tabText = TRANSACTIONALPORTS;
-        portCount = transactionalEditor_->getAmountOfPorts();
-    }
-
-    portTabs_->setTabText(portTabs_->currentIndex(), getTabNameWithPortCount(tabText, portCount));
 }
 
 //-----------------------------------------------------------------------------
@@ -187,6 +190,7 @@ void PortsEditor::refresh()
 {
     wireEditor_->refresh();
     transactionalEditor_->refresh();
+    busInterface_->setBusInterfaces(component_);
 }
 
 //-----------------------------------------------------------------------------

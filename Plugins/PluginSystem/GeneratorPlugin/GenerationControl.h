@@ -104,6 +104,15 @@ public:
      */
     static QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(GenerationTuple input);
 
+    /*!
+     *  Reconfigure the selected file.
+     *
+     *      @param [in] fileIndex   Index of the selected file.
+     *
+     *      @return The reconfigured file output.
+     */
+    QSharedPointer<GenerationOutput> setupRenamedSelection(int const& fileIndex);
+
 protected:
 
     /*!
@@ -116,6 +125,27 @@ protected:
     QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<const Component> targetComponent) const;
 
 private:
+
+    /*!
+     *  Initialize the generation documents.
+     */
+    void initializeDocuments();
+
+    /*!
+     *  Re-initialize the generation documents.
+     *
+     *      @param [in] generationOutputs   Current documents.
+     */
+    void reInitializeDocuments(QSharedPointer<QList<QSharedPointer<GenerationOutput> > > generationOutputs);
+
+    /*!
+     *  Get the existing generation output matching the selected generation output.
+     *
+     *      @param [in] output  The selected generation output.
+     *
+     *      @return The matching generation output.
+     */
+    QSharedPointer<GenerationOutput> getMatchingMetaDesignOutput(QSharedPointer<GenerationOutput> output) const;
 
     /*!
      *  Returns the default output path.     

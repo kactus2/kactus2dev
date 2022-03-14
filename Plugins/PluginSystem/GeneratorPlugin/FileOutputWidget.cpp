@@ -37,10 +37,10 @@ namespace
 // Function: FileOutputWidget::FileOutputWidget()
 //-----------------------------------------------------------------------------
 FileOutputWidget::FileOutputWidget(QSharedPointer<OutputControl> configuration) : 
-    model_(configuration),
-    pathEditor_(new QLineEdit(this)),
-    generalWarningLabel_(new QLabel),
-    fileTable_(new QTableWidget)
+model_(configuration),
+pathEditor_(new QLineEdit(this)),
+generalWarningLabel_(new QLabel),
+fileTable_(new QTableWidget)
 {
     // Layout for path selection widgets.
     QHBoxLayout* pathSelectionLayout = new QHBoxLayout();
@@ -214,12 +214,14 @@ void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
     }
 
     // Inform the change to the model.
-    QSharedPointer<GenerationOutput> affectedFile = model_->changeFileName(item->row(), item->text());
+    QString newName = item->text();
+    QSharedPointer<GenerationOutput> affectedFile = model_->changeFileName(item->row(), newName);
 
     if (affectedFile)
     {
+        emit fileNameChanged(item->row());
+
         // A name of a file changed -> emit signal and update existence status.
-        emit selectedFileChanged(affectedFile);
         checkExistence();
     }
 }

@@ -59,6 +59,13 @@ public slots:
 
 private slots:
 
+    /*!
+     *  Handle the file name change.
+     *
+     *      @param [in] itemIndex   Index of the changed file.
+     */
+    void onFileNameChanged(int const& itemIndex);
+
     void onSelectedFileChanged(QSharedPointer<GenerationOutput> newSelection);
 
     void onOutputPathChanged();

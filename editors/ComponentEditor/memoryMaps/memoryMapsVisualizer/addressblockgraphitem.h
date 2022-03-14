@@ -12,18 +12,20 @@
 #ifndef ADDRESSBLOCKGRAPHITEM_H
 #define ADDRESSBLOCKGRAPHITEM_H
 
-#include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <QGraphicsItem>
 #include <QSharedPointer>
+#include <QColor>
 
 class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! The graphical item that represents one address block.
 //-----------------------------------------------------------------------------
-class AddressBlockGraphItem : public MemoryVisualizationItem
+class AddressBlockGraphItem : public MemoryBlockGraphItem
 {
 	Q_OBJECT
 
@@ -43,14 +45,9 @@ public:
 	//! The destructor
 	virtual ~AddressBlockGraphItem() = default;
 
-    //! No copying.
+    //! No copying. No assignment.
     AddressBlockGraphItem(const AddressBlockGraphItem& other) = delete;
-
-    //! No assignment.
     AddressBlockGraphItem& operator=(const AddressBlockGraphItem& other) = delete;
-
-    //! Updates the labels and tooltip for the item.
-    virtual void updateDisplay() override final;
 
 	/*!
      *  Get the offset of the item. 
@@ -60,32 +57,11 @@ public:
 	virtual quint64 getOffset() const override final;
 
 	/*!
-     *  Get the last address contained in the item.
-	 *
-	 *      @return The last address.
-	 */
-	virtual quint64 getLastAddress() const override final;
-
-	/*!
      *  Get the bit width of the item.
 	 * 
 	 *      @return The bit width of the item.
 	 */
 	virtual int getBitWidth() const override final;
-
-    /*!
-     *  Sets the addressable unit size.
-     *
-     *      @param [in] addressableUnitBits   The number of bits per address unit.
-     */
-    void setAddressableUnitBits(int addressableUnitBits);
-
-	/*!
-     *  Get number of bits the addressable unit contains.
-	 *
-	 *      @return The size of least addressable unit.
-	 */
-	virtual unsigned int getAddressUnitSize() const override final;
            
     /*!
      *  Checks if the item is to be used in the visualization.
@@ -95,12 +71,27 @@ public:
     virtual bool isPresent() const override final;
 
 private:
-		
+
+    /*!
+     *  Get the name of the memory block.
+     *
+     *      @return Name of the memory block.
+     */
+    virtual QString getName() const override final;
+
+    /*!
+     *  Get the range of the memory block.
+     *
+     *      @return Range of the memory block.
+     */
+    virtual quint64 getRange() const override final;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! Pointer to the address block being displayed.
 	QSharedPointer<AddressBlock> addrBlock_;
-
-    //! The number of bits in an address unit.
-    int addrssableUnitBits_ = 0;
 };
 
 #endif // ADDRESSBLOCKGRAPHITEM_H

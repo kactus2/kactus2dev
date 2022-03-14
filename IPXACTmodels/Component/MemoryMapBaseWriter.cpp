@@ -11,11 +11,12 @@
 
 #include "MemoryMapBaseWriter.h"
 #include "MemoryMapBase.h"
-
 #include "AddressBlock.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
+#include <IPXACTmodels/Component/SubSpaceMap.h>
 #include <IPXACTmodels/Component/AddressBlockWriter.h>
+#include <IPXACTmodels/Component/SubSpaceMapWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::MemoryMapBaseWriter()
@@ -62,6 +63,7 @@ void MemoryMapBaseWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPoi
     if (!MemoryMapBase->getMemoryBlocks()->isEmpty())
     {
         AddressBlockWriter addressBlockWriter;
+        SubSpaceMapWriter subspaceMapWriter;
 
         foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *MemoryMapBase->getMemoryBlocks())
         {
@@ -69,6 +71,12 @@ void MemoryMapBaseWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPoi
             if (addressBlock)
             {
                 addressBlockWriter.writeAddressBlock(writer, addressBlock);
+            }
+
+            QSharedPointer<SubSpaceMap> subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>();
+            if (subspaceMap)
+            {
+                subspaceMapWriter.writeSubSpaceMap(writer, subspaceMap);
             }
         }
     }

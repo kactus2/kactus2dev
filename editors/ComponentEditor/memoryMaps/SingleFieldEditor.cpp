@@ -197,7 +197,7 @@ void SingleFieldEditor::refresh()
             QString::fromStdString(fieldInterface_->getWriteConstraintMaximumValue(fieldName_)));
     }
 
-    fieldValidator_->componentChange(component()->getResetTypes());
+    fieldValidator_->componentChange(component());
 
     changeExpressionEditorSignalBlockStatus(false);
 

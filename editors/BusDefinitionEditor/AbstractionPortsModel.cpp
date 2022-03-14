@@ -38,7 +38,6 @@ namespace {
         LogicalPortColumns::NAME,
         LogicalPortColumns::MODE,
         LogicalPortColumns::QUALIFIER,
-        LogicalPortColumns::DESCRIPTION,
         LogicalPortColumns::DIRECTION,
         LogicalPortColumns::INITIATIVE,
         LogicalPortColumns::KIND,
@@ -770,6 +769,8 @@ void AbstractionPortsModel::extendWireMode(std::string const& port, General::Int
             {
                 portInterface_->addModeSpecificWireSignal(port, mode);
             }
+
+            portInterface_->setDescription(port, extendInterface_->getDescription(port));
         }
 
         int index = portInterface_->getItemIndex(port, mode, systemGroup);
@@ -801,6 +802,8 @@ void AbstractionPortsModel::extendTransactionalMode(std::string const& port, Gen
             {
                 portInterface_->addModeSpecificTransactionalSignal(port, mode);
             }
+
+            portInterface_->setDescription(port, extendInterface_->getDescription(port));
         }
 
         int index = portInterface_->getItemIndex(port, mode, systemGroup);

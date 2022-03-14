@@ -258,6 +258,8 @@
     <ClCompile Include="Component\InstantiationsWriter.cpp" />
     <ClCompile Include="Component\MasterInterface.cpp" />
     <ClCompile Include="Component\MemoryBlockBase.cpp" />
+    <ClCompile Include="Component\MemoryBlockBaseReader.cpp" />
+    <ClCompile Include="Component\MemoryBlockBaseWriter.cpp" />
     <ClCompile Include="Component\MemoryMap.cpp" />
     <ClCompile Include="Component\MemoryMapBase.cpp" />
     <ClCompile Include="Component\MemoryMapBaseReader.cpp" />
@@ -287,6 +289,9 @@
     <ClCompile Include="Component\RemapStateWriter.cpp" />
     <ClCompile Include="Component\Segment.cpp" />
     <ClCompile Include="Component\SlaveInterface.cpp" />
+    <ClCompile Include="Component\SubSpaceMap.cpp" />
+    <ClCompile Include="Component\SubspaceMapReader.cpp" />
+    <ClCompile Include="Component\SubSpaceMapWriter.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\TransparentBridge.cpp" />
     <ClCompile Include="Component\validators\AbstractionTypeValidator.cpp" />
@@ -304,6 +309,7 @@
     <ClCompile Include="Component\validators\FileValidator.cpp" />
     <ClCompile Include="Component\validators\IndirectInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
+    <ClCompile Include="Component\validators\MemoryBlockValidator.cpp" />
     <ClCompile Include="Component\validators\PortMapValidator.cpp" />
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
     <ClCompile Include="Component\validators\PortTypeValidator.cpp" />
@@ -315,6 +321,7 @@
     <ClCompile Include="Component\validators\MemoryMapValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryReserve.cpp" />
     <ClCompile Include="Component\validators\RegisterValidator.cpp" />
+    <ClCompile Include="Component\validators\SubspaceMapValidator.cpp" />
     <ClCompile Include="Component\validators\ViewValidator.cpp" />
     <ClCompile Include="Component\View.cpp" />
     <ClCompile Include="Component\ViewReader.cpp" />
@@ -556,8 +563,15 @@
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="Component\FieldReset.h" />
+    <ClInclude Include="Component\MemoryBlockBaseReader.h" />
+    <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
+    <ClInclude Include="Component\SubSpaceMap.h" />
+    <ClInclude Include="Component\SubspaceMapReader.h" />
+    <ClInclude Include="Component\SubSpaceMapWriter.h" />
+    <ClInclude Include="Component\validators\MemoryBlockValidator.h" />
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
     <ClInclude Include="Component\validators\RegisterFileValidator.h" />
+    <ClInclude Include="Component\validators\SubspaceMapValidator.h" />
     <ClInclude Include="utilities\BusDefinitionUtils.h" />
     <ClInclude Include="utilities\XmlUtils.h" />
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">

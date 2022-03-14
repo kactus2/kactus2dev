@@ -27,8 +27,8 @@ namespace
     const QRegularExpression GENERICS_BEGIN_EXP = QRegularExpression("(GENERIC)\\s*[(]", 
         QRegularExpression::CaseInsensitiveOption);    
 
-    const QRegularExpression GENERICS_END_EXP = QRegularExpression("[)]\\s*[;](?=(?:\\s*(" + VHDLSyntax::COMMENT +
-        ")\\s*)*(END|BEGIN|PORT))*", QRegularExpression::CaseInsensitiveOption);   
+    const QRegularExpression GENERICS_END_EXP = QRegularExpression("[)]\\s*[;](?=(?:(\\s*" + VHDLSyntax::COMMENT +
+        ")\\s*)*\\s*(END|BEGIN|PORT|GENERIC))", QRegularExpression::CaseInsensitiveOption);   
 
     const QString GENERIC_TYPE = "(\\w+)(?:\\s+range\\s+\\d+\\s+to\\s+\\d+)?";
 

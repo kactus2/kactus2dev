@@ -41,7 +41,7 @@ public:
     /*!
      *  Write a memory map to an XML file.
      *
-     *      @param [in] writer      The used XML writer.
+     *      @param [in] writer          The used XML writer.
      *      @param [in] MemoryMapBase   The memory map to be written.
      */
     void writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const;
@@ -51,7 +51,7 @@ protected:
     /*!
      *  Write the name group.
      *
-     *      @param [in] writer          Used XML writer.
+     *      @param [in] writer              Used XML writer.
      *      @param [in] MemoryMapBaseBase   The selected memory map base.
      */
     void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const;
@@ -59,7 +59,7 @@ protected:
     /*!
      *  Write the memory blocks.
      *
-     *      @param [in] writer          Used XML writer.
+     *      @param [in] writer              Used XML writer.
      *      @param [in] MemoryMapBaseBase   The selected memory map base.
      */
     void writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const;

@@ -16,9 +16,9 @@
 // Function: ImportWizardImportPage::ImportWizardImportPage()
 //-----------------------------------------------------------------------------
 ImportWizardImportPage::ImportWizardImportPage(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer <ComponentParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget* parent):
-ComponentWizardImportPage(component, handler, parameterFinder, expressionFormatter, parent)
+    QSharedPointer<ComponentParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, BusInterfaceInterface* busInterface, QWidget* parent):
+ComponentWizardImportPage(component, handler, parameterFinder, expressionFormatter, busInterface, parent)
 {
     setFinalPage(false);
 }

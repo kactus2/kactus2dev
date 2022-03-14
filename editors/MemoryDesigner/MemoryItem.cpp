@@ -26,7 +26,8 @@ size_(),
 offset_(),
 childItems_(),
 usage_(General::USAGE_COUNT),
-value_()
+value_(),
+isPresent_("1")
 {
 
 }
@@ -261,4 +262,20 @@ QString MemoryItem::getResetMask() const
 void MemoryItem::setResetMask(QString const& newResetMask)
 {
     resetMask_ = newResetMask;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getIsPresent()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getIsPresent() const
+{
+    return isPresent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setIsPresent()
+//-----------------------------------------------------------------------------
+void MemoryItem::setIsPresent(QString const& newIsPresent)
+{
+    isPresent_ = newIsPresent;
 }

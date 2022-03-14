@@ -29,6 +29,7 @@ class ExpressionParser;
 class Component;
 class AddressBlockInterface;
 class AddressBlock;
+class MemoryBlockFilter;
 
 //-----------------------------------------------------------------------------
 //! The editor to edit the address blocks of a single memory map.
@@ -137,12 +138,21 @@ signals:
      */
     void addressBlockNameChanged(QString const& oldName, QString const& newName);
 
+    /*!
+     *  Inform the other memory block editor to invalidate the filter.
+     */
+    void invalidateOtherFilter();
+
+    /*!
+     *  Inform this editor to invalidate the filter.
+     */
+    void invalidateThisFilter();
+
+
 private:
 	
-	//! No copying.
+    //! No copying.	No assignment.
 	MemoryMapEditor(const MemoryMapEditor& other);
-
-	//! No assignment.
 	MemoryMapEditor& operator=(const MemoryMapEditor& other);
 
 	//! The view to show the details of a memory map.
@@ -156,6 +166,12 @@ private:
 
     //! Pointer to the available address blocks.
     QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blocks_;
+
+    //! The containing component.
+    QSharedPointer<Component> component_;
+
+    //! Filter fro address blocks.
+    MemoryBlockFilter* proxy_;
 };
 
 #endif // MEMORYMAPEDITOR_H

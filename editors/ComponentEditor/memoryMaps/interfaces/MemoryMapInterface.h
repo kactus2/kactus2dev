@@ -23,6 +23,7 @@ class MemoryRemap;
 
 class MemoryMapValidator;
 class AddressBlockInterface;
+class SubspaceMapInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing memory maps and remaps.
@@ -38,17 +39,29 @@ public:
      *      @param [in] mapValidator            Validator for memory maps.
      *      @param [in] expressionParser        Parser for expressions.
      *      @param [in] expressionFormatter     Formatter for expressions.
-     *      @param [in] subInterface            Interface for accessing address blocks.
      */
     MemoryMapInterface(QSharedPointer<MemoryMapValidator> mapValidator,
         QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        AddressBlockInterface* subInterface);
-	
+        QSharedPointer<ExpressionFormatter> expressionFormatter);
+
 	/*!
      *  The destructor.
      */
     virtual ~MemoryMapInterface() = default;
+
+    /*!
+     *  Set a new address block interface.
+     *
+     *      @param [in] blockInterface  The new address block interface.
+     */
+    void setAddressBlockInterface(AddressBlockInterface* blockInterface);
+
+    /*!
+     *  Set a new subspace map interface.
+     *
+     *      @param [in] submapInterface     The new subspace map interface.
+     */
+    void setSubspaceMapInterface(SubspaceMapInterface* submapInterface);
 
     /*!
      *  Set available memory maps.
@@ -438,11 +451,18 @@ public:
     std::vector<std::string> pasteMemoryRemaps(std::string const& memoryMapName);
 
     /*!
-     *  Get the sub interface.
+     *  Get the address block interface.
      *
      *      @return Interface for accessing address blocks.
      */
-    AddressBlockInterface* getSubInterface() const;
+    AddressBlockInterface* getAddressBlockInterface() const;
+
+    /*!
+     *  Get the subspace map interface.
+     *
+     *      @return Interface for accessing subspace maps.
+     */
+    SubspaceMapInterface* getSubspaceMapInterface() const;
 
     /*!
      *  Get a pointer to the selected memory map (for index construction).
@@ -539,7 +559,10 @@ private:
     QSharedPointer<MemoryMapValidator> validator_;
 
     //! Interface for accessing address blocks.
-    AddressBlockInterface* subInterface_;
+    AddressBlockInterface* addressBlockInterface_;
+
+    //! Interface for accessing subspace maps.
+    SubspaceMapInterface* subspaceInterface_;
 };
 
 #endif // MEMORYMAPINTERFACE_H

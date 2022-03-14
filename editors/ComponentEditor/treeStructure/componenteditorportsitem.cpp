@@ -24,9 +24,11 @@
 ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent):
+    QSharedPointer<ExpressionParser> expressionParser, BusInterfaceInterface* busInterface,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-portValidator_(new PortValidator(expressionParser, component->getViews()))
+portValidator_(new PortValidator(expressionParser, component->getViews())),
+busInterface_(busInterface)
 {
     setReferenceCounter(refCounter);
     setParameterFinder(parameterFinder);
@@ -84,7 +86,8 @@ ItemEditor* ComponentEditorPortsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new PortsEditor(component_, libHandler_, parameterFinder_, expressionFormatter_, portValidator_);
+		editor_ = new PortsEditor(
+            component_, libHandler_, parameterFinder_, expressionFormatter_, portValidator_, busInterface_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

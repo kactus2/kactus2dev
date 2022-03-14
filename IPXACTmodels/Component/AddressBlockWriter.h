@@ -13,7 +13,8 @@
 #define ADDRESSBLOCKWRITER_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/common/CommonItemsWriter.h>
+
+#include <IPXACTmodels/Component/MemoryBlockBaseWriter.h>
 
 #include <QXmlStreamWriter>
 #include <QObject>
@@ -24,17 +25,19 @@ class AddressBlock;
 //-----------------------------------------------------------------------------
 //! Writer class for ipxact:addressBlock element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AddressBlockWriter : public CommonItemsWriter
+class IPXACTMODELS_EXPORT AddressBlockWriter : public MemoryBlockBaseWriter
 {
 public:
 
-    //! The constructor.
+    /*!
+     *  The constructor.
+     */
     AddressBlockWriter();
 
     /*!
      *  The destructor.
      */
-    ~AddressBlockWriter();
+    ~AddressBlockWriter() = default;
 
     /*!
      *  Write an address block to an XML file.
@@ -49,14 +52,6 @@ private:
     //! No copying allowed.
     AddressBlockWriter(AddressBlockWriter const& rhs);
     AddressBlockWriter& operator=(AddressBlockWriter const& rhs);
-
-    /*!
-     *  Write the name group.
-     *
-     *      @param [in] writer          Used XML writer.
-     *      @param [in] addressBlock    Selected address block.
-     */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
      *  Write the type identifier.

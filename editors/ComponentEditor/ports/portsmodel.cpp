@@ -13,9 +13,11 @@
 
 #include <common/KactusColors.h>
 
+#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/TransactionalTypes.h>
 
 #include <QString>
 #include <QStringList>
@@ -27,10 +29,12 @@ using namespace std;
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------
 PortsModel::PortsModel(QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortsInterface> portInterface, QSortFilterProxyModel* filter, QObject *parent):
+    QSharedPointer<PortsInterface> portInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
+    QSortFilterProxyModel* filter, QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 portsInterface_(portInterface),
+signalInterface_(signalInterface),
 lockedIndexes_(),
 filter_(filter)
 {
@@ -707,4 +711,121 @@ QString PortsModel::getIconPath(int const& portIndex) const
     std::string portName = getInterface()->getIndexedItemName(portIndex);
     std::string iconPath = getInterface()->getIconPathForPort(portName);
     return QString::fromStdString(iconPath);
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::onCreatePortsFromAbstraction()
+//-----------------------------------------------------------------------------
+void PortsModel::onCreatePortsFromAbstraction(QSharedPointer<const AbstractionDefinition> abstraction,
+    General::InterfaceMode const& busMode, General::InterfaceMode const& busMonitorMode,
+    QString const& systemGroup)
+{
+    beginResetModel();
+
+    signalInterface_->setAbsDef(abstraction);
+    General::InterfaceMode busInterfaceMode = busMode;
+    if (busInterfaceMode == General::MONITOR)
+    {
+        busInterfaceMode = busMonitorMode;
+    }
+
+    for (int signalIndex = 0; signalIndex < signalInterface_->itemCount(); ++signalIndex)
+    {
+        if (modesMatch(busInterfaceMode, systemGroup, signalInterface_->getMode(signalIndex),
+            QString::fromStdString(signalInterface_->getSystemGroup(signalIndex))))
+        {
+            std::string portName = signalInterface_->getIndexedItemName(signalIndex);
+
+            if (signalInterface_->portIsWire(portName))
+            {
+                portsInterface_->addWirePort(portName);
+
+                int portIndex = portsInterface_->itemCount() - 1;
+                portName = portsInterface_->getIndexedItemName(portIndex);
+
+                portsInterface_->setDirection(portName, DirectionTypes::direction2Str(getDirectionFromSignal(
+                    busInterfaceMode, signalInterface_->getDirection(signalIndex))).toStdString());
+
+                quint64 leftBound = 0;
+                bool signalIntegerOk = false;
+                quint64 signalWidth =
+                    QString::fromStdString(signalInterface_->getWidth(signalIndex)).toULongLong(&signalIntegerOk);
+                if (signalIntegerOk == true && signalWidth > 0)
+                {
+                    leftBound = signalWidth - 1;
+                }
+
+                portsInterface_->setLeftBound(portName, QString::number(leftBound).toStdString());
+                portsInterface_->setRightBound(portName, "0");
+
+                portsInterface_->setDefaultValue(portName, signalInterface_->getDefaultValue(signalIndex));
+            }
+            else if (signalInterface_->portIsTransactional(portName))
+            {
+                portsInterface_->addTransactionalPort(portName);
+
+                int portIndex = portsInterface_->itemCount() - 1;
+                portName = portsInterface_->getIndexedItemName(portIndex);
+
+                portsInterface_->setInitiative(portName, getInitiativeFromSignal(busInterfaceMode,
+                    QString::fromStdString(signalInterface_->getInitiative(signalIndex))).toStdString());
+                portsInterface_->setKind(portName, signalInterface_->getKind(signalIndex));
+                portsInterface_->setBusWidth(portName, signalInterface_->getBusWidthValue(signalIndex));
+            }
+
+            portsInterface_->setDescription(portName, signalInterface_->getDescription(portName));
+        }
+    }
+
+    endResetModel();
+
+    emit invalidateOtherFilter();
+    emit portCountChanged();
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::modesMatch()
+//-----------------------------------------------------------------------------
+bool PortsModel::modesMatch(General::InterfaceMode const& busMode, QString const& busSystemGroup,
+    General::InterfaceMode const& signalMode, QString const& signalSystemGroup) const
+{
+    return ((busMode == General::MASTER || busMode == General::MIRROREDMASTER) && signalMode == General::MASTER) ||
+        ((busMode == General::SLAVE || busMode == General::MIRROREDSLAVE) && signalMode == General::SLAVE) ||
+        ((busMode == General::SYSTEM || busMode == General::MIRROREDSYSTEM) && signalMode == General::SYSTEM &&
+            busSystemGroup == signalSystemGroup);
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::getSignalDirection()
+//-----------------------------------------------------------------------------
+DirectionTypes::Direction PortsModel::getDirectionFromSignal(General::InterfaceMode const& busMode,
+    DirectionTypes::Direction const& signalDirection) const
+{
+    if (busMode == General::MIRROREDMASTER || busMode == General::MIRROREDSLAVE ||
+        busMode == General::MIRROREDSYSTEM)
+    {
+        return DirectionTypes::convert2Mirrored(signalDirection);
+    }
+    else
+    {
+        return signalDirection;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portsmodel::getInitiativeFromSignal()
+//-----------------------------------------------------------------------------
+QString PortsModel::getInitiativeFromSignal(General::InterfaceMode const& busMode, QString const& signalInitiative)
+const
+{
+    if (busMode == General::MIRROREDMASTER || busMode == General::MIRROREDSLAVE ||
+        busMode == General::MIRROREDSYSTEM)
+    {
+        return TransactionalTypes::initiativeToString(TransactionalTypes::convertToMirrored(signalInitiative));
+    }
+    else
+    {
+        return signalInitiative;
+    }
 }

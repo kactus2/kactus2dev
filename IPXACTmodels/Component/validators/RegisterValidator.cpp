@@ -24,7 +24,6 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 
-
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
@@ -41,9 +40,9 @@ RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expression
 //-----------------------------------------------------------------------------
 // Function: RegisterValidator::componentChange()
 //-----------------------------------------------------------------------------
-void RegisterValidator::componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes)
+void RegisterValidator::componentChange(QSharedPointer<Component> newComponent)
 {
-    fieldValidator_->componentChange(newResetTypes);
+    fieldValidator_->componentChange(newComponent);
 }
 
 //-----------------------------------------------------------------------------

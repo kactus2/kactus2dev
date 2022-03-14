@@ -15,18 +15,20 @@
 #include "ImportWizardImportPage.h"
 
 #include <wizards/ComponentWizard/ComponentWizardConclusionPage.h>
-
 #include <wizards/ImportWizard/ImportWizardInstancesPage.h>
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: ImportWizard::ImportWizard()
 //-----------------------------------------------------------------------------
-ImportWizard::ImportWizard(QSharedPointer<const Component> component, LibraryInterface* handler, QWidget* parent):
+ImportWizard::ImportWizard(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent):
 QWizard(parent),
 workingComponent_(new Component(*component)),
 updatingFinder_(new ComponentParameterFinder(workingComponent_)),
@@ -48,8 +50,13 @@ referenceCounter_(new ParameterReferenceCounter(updatingFinder_))
     QSharedPointer<ExpressionFormatter> singleExpressionFormatter(new ExpressionFormatter(updatingFinder_));
     QSharedPointer<ExpressionFormatter> multipleExpressionFormatter(new ExpressionFormatter(multiFinder));
 
+    QSharedPointer<ExpressionParser> parser(new IPXactSystemVerilogParser(multiFinder));
+
+    BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
+        multiFinder, multipleExpressionFormatter, parser, component, handler);
+
     ImportWizardImportPage* importPage = new ImportWizardImportPage(workingComponent_, handler, 
-        updatingFinder_, singleExpressionFormatter, this);
+        updatingFinder_, singleExpressionFormatter, busInterface, this);
 
     ImportWizardInstancesPage* importInstancesPage =
         new ImportWizardInstancesPage(workingComponent_, handler, this);

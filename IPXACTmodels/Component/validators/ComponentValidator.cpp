@@ -42,6 +42,7 @@
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
@@ -113,14 +114,16 @@ assertionValidator_()
     QSharedPointer<AddressBlockValidator> addressBlockValidator(new AddressBlockValidator(
         parser, registerValidator, registerFileValidator, parameterValidator_));
 
-    QSharedPointer<MemoryMapBaseValidator> localMapValidator (new MemoryMapBaseValidator(
-        parser, addressBlockValidator));
+    QSharedPointer<SubspaceMapValidator> subspaceValidator(new SubspaceMapValidator(parser, parameterValidator_));
+
+    QSharedPointer<MemoryMapBaseValidator> localMapValidator(new MemoryMapBaseValidator(
+        parser, addressBlockValidator, subspaceValidator));
 
     addressSpaceValidator_ = QSharedPointer<AddressSpaceValidator>
         (new AddressSpaceValidator(parser, localMapValidator, parameterValidator_));
 
     memoryMapValidator_ = QSharedPointer<MemoryMapValidator>(new MemoryMapValidator(
-        parser, addressBlockValidator, QSharedPointer<QList<QSharedPointer<RemapState> > > ()));
+        parser, addressBlockValidator, subspaceValidator, QSharedPointer<Component>()));
 
     viewValidator_ = QSharedPointer<ViewValidator>(new ViewValidator(parser, QSharedPointer<Model> ()));
 
@@ -1236,7 +1239,7 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         parameterValidator_->componentChange(newComponent->getChoices());
         channelValidator_->componentChange(newComponent->getBusInterfaces());
         remapStateValidator_->componentChange(newComponent->getPorts());
-        memoryMapValidator_->componentChange(newComponent->getRemapStates(), newComponent->getResetTypes());
+        memoryMapValidator_->componentChange(newComponent);
         viewValidator_->componentChange(newComponent->getModel());
         instantiationsValidator_->componentChange(newComponent->getFileSets());
         portValidator_->componentChange(newComponent->getViews());

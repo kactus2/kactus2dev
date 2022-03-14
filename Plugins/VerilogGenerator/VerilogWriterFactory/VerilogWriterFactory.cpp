@@ -55,6 +55,7 @@ QSharedPointer<GenerationOutput> VerilogWriterFactory::prepareComponent(QString 
 
     document->fileName_ = fileName;
     document->vlnv_ = component->getComponent()->getVlnv().toString();
+    document->metaComponent_ = component;
 
     // Try to find an implementation from the file.
     if (!readImplementation(document, filePath))
@@ -88,6 +89,7 @@ QList<QSharedPointer<GenerationOutput> > VerilogWriterFactory::prepareDesign(QLi
         initializeComponentWriters(document, mDesign->getTopInstance());
         document->fileName_ = mDesign->getTopInstance()->getModuleName() + ".v";
         document->vlnv_ = mDesign->getTopInstance()->getComponent()->getVlnv().toString();
+        document->metaDesign_ = mDesign;
 
         initializeDesignWriters(document, mDesign);
 

@@ -18,6 +18,9 @@
 #include <QSharedPointer>
 
 class IPluginUtility;
+class Component;
+class Design;
+class DesignConfiguration;
 
 //-----------------------------------------------------------------------------
 //! Interface for enabling plugin run using the command line arguments.

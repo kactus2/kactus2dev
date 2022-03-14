@@ -23,6 +23,7 @@
 class Component;
 class LibraryInterface;
 class ImportEditor;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Import wizard page for importing elements from a file.
@@ -38,12 +39,14 @@ public:
      *      @param [in] handler                 The library handle.
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
      *      @param [in] parent                  The parent wizard.
      */
     ImportWizardImportPage(QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer <ComponentParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        BusInterfaceInterface* busInterface,
         QWidget* parent);
 
     //! The destructor.

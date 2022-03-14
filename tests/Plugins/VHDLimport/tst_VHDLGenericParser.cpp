@@ -36,6 +36,8 @@ private slots:
     
     void testModelParametersAreNotParsedOutsideEntity();
 
+    void testCommentedSemicolonIsIgnored();
+
 private:
         
     void runParser(QString const& fileContent);
@@ -288,6 +290,45 @@ void tst_VHDLGenericParser::testModelParametersAreNotParsedOutsideEntity()
 
     QCOMPARE(importComponentInstantiation_->getModuleParameters()->count(), 0);
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_VHDLGenericParser::testCommentedSemicolonIsIgnored()
+//-----------------------------------------------------------------------------
+void tst_VHDLGenericParser::testCommentedSemicolonIsIgnored()
+{
+    QString fileContent(
+        "entity test is\n"
+        "   generic (\n"
+        "       dataWidth_g : integer := 16;\n"
+        "       num_bits : integer := 2**dataWidth_g; -- dataWidth_g(15);\n"
+        "       byteWidth_g : integer := dataWidth_g / 8"
+        "   );\n"
+        "end test;"
+    );
+
+    runParser(fileContent);
+
+    QCOMPARE(importComponentInstantiation_->getModuleParameters()->count(), 3);
+    QCOMPARE(importComponent_->getParameters()->count(), 3);
+
+    QSharedPointer<ModuleParameter> bitParameter =
+        importComponentInstantiation_->getModuleParameters()->at(1);
+
+    QCOMPARE(bitParameter->name(), QString("num_bits"));
+    QCOMPARE(bitParameter->getDataType(), QString("integer"));
+    QCOMPARE(bitParameter->getType(), QString("int"));
+    QCOMPARE(bitParameter->description(), QString("dataWidth_g(15);"));
+
+
+    QSharedPointer<ModuleParameter> byteParameter =
+        importComponentInstantiation_->getModuleParameters()->last();
+ 
+    QCOMPARE(byteParameter->name(), QString("byteWidth_g"));
+    QCOMPARE(byteParameter->getDataType(), QString("integer"));
+    QCOMPARE(byteParameter->getType(), QString("int"));
+    
+ }
+
 
 QTEST_APPLESS_MAIN(tst_VHDLGenericParser)
 

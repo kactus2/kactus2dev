@@ -44,6 +44,13 @@ signals:
     // Emitted when the output path is changed.
     void outputPathChanged() const;
 
+    /*!
+     *  Informs of filename change.
+     *
+     *      @param [in] fileIndex   Index of the changed file.
+     */
+    void fileNameChanged(int const& fileIndex);
+
 public slots:
 
     // Informs that the output files have changes. Will query new ones from the model and reconstruct the table.

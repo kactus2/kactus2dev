@@ -36,7 +36,7 @@ class ParametersInterface;
 //-----------------------------------------------------------------------------
 //! Interface for accessing bus interfaces.
 //-----------------------------------------------------------------------------
-class BusInterfaceInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API BusInterfaceInterface : public ParameterizableInterface, public NameGroupInterface
 {
 public:
 
@@ -46,25 +46,50 @@ public:
      *      @param [in] busValidator                Validator for bus interfaces.
      *      @param [in] expressionParser            Parser for expressions.
      *      @param [in] expressionFormatter         Formatter for expressions.
-     *      @param [in] fileSetInterface            Interface for accessing file sets.
-     *      @param [in] mapInterface                Interface for accessing memory maps.
-     *      @param [in] abstractionTypeInterface    Interface for accessing abstraction types.
-     *      @param [in] bridgeInterface             Interface for accessing bridges.
-     *      @param [in] parameterInterface          Interface for accessing parameters.
      */
     BusInterfaceInterface(QSharedPointer<BusInterfaceValidator> busValidator,
         QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        FileSetInterface* fileSetInterface,
-        MemoryMapInterface* mapInterface,
-        AbstractionTypeInterface* abstractionTypeInterface,
-        TransparentBridgeInterface* bridgeInterface,
-        ParametersInterface* parameterInterface);
+        QSharedPointer<ExpressionFormatter> expressionFormatter);
 
     /*!
      *  The destructor.
      */
     virtual ~BusInterfaceInterface() = default;
+
+    /*!
+     *  Set a new file set interface.
+     *
+     *      @param [in] newFileSetInterface     The new file set interface.
+     */
+    void setFileSetInterface(FileSetInterface* newFileSetInterface);
+    
+    /*!
+     *  Set a new memory map interface.
+     *
+     *      @param [in] newMapInterface     The new memory map interface.
+     */
+    void setMemoryMapInterface(MemoryMapInterface* newMapInterface);
+    
+    /*!
+     *  Set a new abstraction type interface.
+     *
+     *      @param [in] newAbstractionTypeInterface     The new abstraction type interface.
+     */
+    void setAbstractionTypeInterface(AbstractionTypeInterface* newAbstractionTypeInterface);
+    
+    /*!
+     *  Set a new transparent bridge interface.
+     *
+     *      @param [in] newBridgeInterface  The new transparent bridge interface.
+     */
+    void setTransparentBridgeInterface(TransparentBridgeInterface* newBridgeInterface);
+    
+    /*!
+     *  Set a new parameter interface.
+     *
+     *      @param [in] newParameterInterface     The new parameter interface.
+     */
+    void setParameterInterface(ParametersInterface* newParameterInterface);
 
     /*!
      *  Setup the bus interfaces.
@@ -632,6 +657,15 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool removeBusInterface(std::string const& busName);
+
+    /*!
+     *  Check if the selected bus interface exists.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return True, if the bus interface exists, false otherwise.
+     */
+    bool busInterfaceExists(std::string const& busName) const;
 
     /*!
      *  Get the interface for accessing transparent bridges.

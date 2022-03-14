@@ -14,8 +14,7 @@
 
 #include <common/Global.h>
 
-#include <editors/ComponentEditor/common/interfaces/ParameterizableInterface.h>
-#include <editors/ComponentEditor/common/interfaces/NameGroupInterface.h>
+#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/AccessTypes.h>
@@ -23,8 +22,8 @@
 class AddressBlock;
 class MemoryBlockBase;
 class AddressBlockValidator;
-
 class RegisterInterface;
+class BusInterfaceInterface;
 
 #include <QVector>
 #include <QMap>
@@ -32,7 +31,7 @@ class RegisterInterface;
 //-----------------------------------------------------------------------------
 //! Interface for editing address blocks.
 //-----------------------------------------------------------------------------
-class KACTUS2_API AddressBlockInterface : public ParameterizableInterface, public NameGroupInterface
+class KACTUS2_API AddressBlockInterface : public MemoryBlockInterface
 {
 
 public:
@@ -43,12 +42,16 @@ public:
      *      @param [in] blockValidator          Validator for address blocks.
      *      @param [in] expressionParser        Parser for expressions.
      *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
      *      @param [in] subInterface            Interface for accessing registers.
+     *      @param [in] parameterInterface      Interface for accessing parameters.
      */
     AddressBlockInterface(QSharedPointer<AddressBlockValidator> blockValidator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        RegisterInterface* subInterface);
+        BusInterfaceInterface* busInterface,
+        RegisterInterface* subInterface,
+        ParametersInterface* parameterInterface);
 	
 	/*!
      *  The destructor.
@@ -56,158 +59,13 @@ public:
     virtual ~AddressBlockInterface() = default;
 
     /*!
-     *  Set available memory blocks.
+     *  Check if the selected memory block is an address block.
      *
-     *      @param [in] newRegisterData     The new register data.
+     *      @param [in] blockName   Name of the selected memory block.
+     *
+     *      @return True, if the memory block is an address block, false otherwise.
      */
-    void setAddressBlocks(QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > newAddressBlocks);
-
-    /*!
-     *  Get index of the selected item.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return Index of the selected item.
-     */
-    virtual int getItemIndex(std::string const& itemName) const override final;
-
-    /*!
-     *  Get name of the indexed item.
-     *
-     *      @param [in] itemIndex   Index of the selected item.
-     *
-     *      @return Name of the selected item.
-     */
-    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
-
-    /*!
-     *  Get the number of available items.
-     *
-     *      @return Number of available items.
-     */
-    virtual int itemCount() const override final;
-
-    /*!
-     *  Get the names of the available items.
-     *
-     *      @return Names of the available items.
-     */
-    virtual std::vector<std::string> getItemNames() const override final;
-
-    /*!
-     *  Set a new name for the selected item.
-     *
-     *      @param [in] currentName     Name of the selected item.
-     *      @param [in] newName         New name for the item.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setName(std::string const& currentName, std::string const& newName) override final;
-
-    /*!
-     *  Get the description of the selected item.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return Description of the selected item.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
-     *  Set a new description for the selected item.
-     *
-     *      @param [in] itemName        Name of the selected item.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
-     *  Get the calculated base address value of the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *      @param [in] baseNumber  Base for displaying the value.
-     *
-     *      @return Calculated base address value of the selected address block.
-     */
-    std::string getBaseAddressValue(std::string const& blockName, int const& baseNumber = 0) const;
-
-    /*!
-     *  Get the formatted base address expression of the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *
-     *      @return Formatted base address expression of the selected address block.
-     */
-    std::string getBaseAddressFormattedExpression(std::string const& blockName) const;
-
-    /*!
-     *  Get the base address expression of the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *
-     *      @return Base address expression of the selected address block.
-     */
-    std::string getBaseAddressExpression(std::string const& blockName) const;
-
-    /*!
-     *  Set a new base address value for the selected address block.
-     *
-     *      @param [in] blockName       Name of the selected address block.
-     *      @param [in] newBaseAddress  New base address value.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    bool setBaseAddress(std::string const& blockName, std::string const& newBaseAdress) const;
-    
-    /*!
-     *  Get the calculated is present value of the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *      @param [in] baseNumber  Base for displaying the value.
-     *
-     *      @return Calculated is present value of the selected address block.
-     */
-    std::string getIsPresentValue(std::string const& blockName, int const& baseNumber = 0) const;
-
-    /*!
-     *  Get the formatted is present expression of the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *
-     *      @return Formatted is present expression of the selected address block.
-     */
-    std::string getIsPresentFormattedExpression(std::string const& blockName) const;
-
-    /*!
-     *  Get the is present expression of the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *
-     *      @return Is present expression of the selected address block.
-     */
-    std::string getIsPresentExpression(std::string const& blockName) const;
-
-    /*!
-     *  Set a new is present value for the selected address block.
-     *
-     *      @param [in] blockName       Name of the selected address block.
-     *      @param [in] newIsPresent    New is present value.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    bool setIsPresent(std::string const& blockName, std::string const& newIsPresent) const;
-
-    /*!
-     *  Get the calculated range value of the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *      @param [in] baseNumber  Base for displaying the value.
-     *
-     *      @return Calculated range value of the selected address block.
-     */
-    std::string getRangeValue(std::string const& blockName, int const& baseNumber = 0) const;
+    virtual bool acceptBlock(std::string const& blockName) const override final;
 
     /*!
      *  Get the formatted range expression of the selected address block.
@@ -379,24 +237,6 @@ public:
     virtual bool validateItems() const override final;
 
     /*!
-     *  Check if the selected item has a valid name.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return True, if the name is valid, false otherwise.
-     */
-    virtual bool itemHasValidName(std::string const& itemName) const override final;
-
-    /*!
-     *  Check if the selected address block has a valid base address.
-     *
-     *      @param [in] itemName    Name of the selected address block.
-     *
-     *      @return True, if the base address is valid, false otherwise.
-     */
-    bool hasValidBaseAddress(std::string const& itemName) const;
-
-    /*!
      *  Check if the selected address block has a valid range.
      *
      *      @param [in] itemName    Name of the selected address block.
@@ -415,15 +255,6 @@ public:
     bool hasValidWidth(std::string const& itemName) const;
 
     /*!
-     *  Check if the selected address block has a valid is present value.
-     *
-     *      @param [in] itemName    Name of the selected address block.
-     *
-     *      @return True, if the is present value is valid, false otherwise.
-     */
-    bool hasValidIsPresent(std::string const& itemName) const;
-
-    /*!
      *  Check if the selected address block has a valid usage.
      *
      *      @param [in] itemName    Name of the selected address block.
@@ -438,37 +269,7 @@ public:
      *      @param [in] row             Row of the new address block.
      *      @param [in] newBlockName    Name of the new address block.
      */
-    void addBlock(int const& row, std::string const& newBlockName = std::string(""));
-
-    /*!
-     *  Remove the selected address block.
-     *
-     *      @param [in] blockName   Name of the selected address block.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    bool removeBlock(std::string const& blockName);
-
-    /*!
-     *  Copy the selected items.
-     *
-     *      @param [in] selectedRows    Indexes of the selected items.
-     */
-    void copyRows(std::vector<int> selectedRows);
-
-    /*!
-     *  Paste the selected items.
-     *
-     *      @return Names of the pasted items.
-     */
-    std::vector<std::string> pasteRows();
-
-    /*!
-     *  Get the number of pasted items.
-     *
-     *      @return Number of the pasted items.
-     */
-    int getPasteRowCount() const;
+    virtual void addBlock(int const& row, std::string const& newBlockName = std::string("")) override final;
 
     /*!
      *  Get the expressions in the selected items.
@@ -477,14 +278,8 @@ public:
      *
      *      @return The expressions of the selected items.
      */
-    std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> itemNames) const;
-
-    /*!
-     *  Change the value for address unit bits.
-     *
-     *      @param [in] newAddressUnitbits  The new value for address unit bits.
-     */
-    void setAddressUnitBits(std::string const& newAddressUnitbits);
+    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> itemNames) const
+        override final;
 
     /*!
      *  Get the sub interface.
@@ -511,23 +306,67 @@ private:
      *
      *      @return The selected address block.
      */
-    QSharedPointer<AddressBlock> getBlock(std::string const& itemName) const;
+    QSharedPointer<AddressBlock> getAddressBlock(std::string const& itemName) const;
+
+    /*!
+     *  Get the default name for an address block.
+     *
+     *      @return Default name for an address block.
+     */
+    virtual std::string getDefaultName() const override final;
+
+    /*!
+     *  Get a list of the copied address blocks.
+     *
+     *      @param [in] selectedRows    Rows of the copied address blocks.
+     *
+     *      @return List of the copied memory blocks.
+     */
+    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> selectedRows) const override
+        final;
+
+    /*!
+     *  Get the mime type of the address block.
+     *
+     *      @return The mime type of the address block.
+     */
+    virtual QString getMimeType() const override final;
+
+    /*!
+     *  Create a copy of the selected address block.
+     *
+     *      @param [in] copiedItem  The selected address block-
+     *
+     *      @return Copy of the selected address block.
+     */
+    virtual QSharedPointer<MemoryBlockBase> createCopyBlock(QSharedPointer<MemoryBlockBase> copiedItem) const
+        override final;
+
+    /*!
+     *  Count the address block items in the selected list.
+     *
+     *      @param [in] itemList    List of address block items.
+     *
+     *      @return Number of address block items in the selected list.
+     */
+    virtual int countItems(QList<QSharedPointer<MemoryBlockBase> > itemList) const override final;
+
+    /*!
+     *  Get the address block validator.
+     *
+     *      @return The address block validator.
+     */
+    virtual QSharedPointer<MemoryBlockValidator> getValidator() const override final;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! List of the contained registers.
-    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blockData_;
 
     //! Validator for registers.
     QSharedPointer<AddressBlockValidator> validator_;
 
     //! Interface for accessing registers.
     RegisterInterface* subInterface_;
-
-    //! The address unit bits of the memory map.
-    QString addressUnitBits_;
 };
 
 #endif // ADDRESSBLOCKINTERFACE_H

@@ -38,21 +38,58 @@ namespace
 // Function: BusInterfaceInterface::BusInterfaceInterface()
 //-----------------------------------------------------------------------------
 BusInterfaceInterface::BusInterfaceInterface(QSharedPointer<BusInterfaceValidator> busValidator,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    FileSetInterface* fileSetInterface, MemoryMapInterface* mapInterface,
-    AbstractionTypeInterface* abstractionTypeInterface, TransparentBridgeInterface* bridgeInterface,
-    ParametersInterface* parameterInterface):
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
 ParameterizableInterface(expressionParser, expressionFormatter),
 NameGroupInterface(),
 busInterfaces_(0),
 busValidator_(busValidator),
-bridgeInterface_(bridgeInterface),
-fileSetInterface_(fileSetInterface),
-mapInterface_(mapInterface),
-abstractionTypeInterface_(abstractionTypeInterface),
-parameterInterface_(parameterInterface)
+bridgeInterface_(0),
+fileSetInterface_(0),
+mapInterface_(0),
+abstractionTypeInterface_(0),
+parameterInterface_(0)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::setFileSetInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::setFileSetInterface(FileSetInterface* newFileSetInterface)
+{
+    fileSetInterface_ = newFileSetInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::setMemoryMapInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::setMemoryMapInterface(MemoryMapInterface* newMapInterface)
+{
+    mapInterface_ = newMapInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::setAbstractionTypeInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::setAbstractionTypeInterface(AbstractionTypeInterface* newAbstractionTypeInterface)
+{
+    abstractionTypeInterface_ = newAbstractionTypeInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::setTransparentBridgeInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::setTransparentBridgeInterface(TransparentBridgeInterface* newBridgeInterface)
+{
+    bridgeInterface_ = newBridgeInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::setParameterInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceInterface::setParameterInterface(ParametersInterface* newParameterInterface)
+{
+    parameterInterface_ = newParameterInterface;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,8 +99,18 @@ void BusInterfaceInterface::setBusInterfaces(QSharedPointer<Component> newCompon
 {
     busInterfaces_ = newComponent->getBusInterfaces();
 
-    fileSetInterface_->setFileSets(newComponent->getFileSets());
-    mapInterface_->setMemoryMaps(newComponent);
+    if (fileSetInterface_ != NULL)
+    {
+        fileSetInterface_->setFileSets(newComponent->getFileSets());
+    }
+    if (mapInterface_ != NULL)
+    {
+        mapInterface_->setMemoryMaps(newComponent);
+    }
+
+    busValidator_->componentChange(newComponent->getChoices(), newComponent->getViews(), newComponent->getPorts(),
+        newComponent->getAddressSpaces(), newComponent->getMemoryMaps(), busInterfaces_,
+        newComponent->getFileSets(), newComponent->getRemapStates());
 }
 
 //-----------------------------------------------------------------------------
@@ -679,6 +726,22 @@ bool BusInterfaceInterface::removeBusInterface(std::string const& busName)
     }
 
     return busInterfaces_->removeOne(removedItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::busInterfaceExists()
+//-----------------------------------------------------------------------------
+bool BusInterfaceInterface::busInterfaceExists(std::string const& busName) const
+{
+    for (auto name : getItemNames())
+    {
+        if (name == busName)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

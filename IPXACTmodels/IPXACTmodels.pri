@@ -139,6 +139,11 @@ HEADERS += ./generaldeclarations.h \
     ./Design/validator/DesignValidator.h \
     ./Design/validator/InterconnectionValidator.h \
     ./Component/FieldReset.h \
+    ./Component/MemoryBlockBaseReader.h \
+    ./Component/MemoryBlockBaseWriter.h \
+    ./Component/SubSpaceMap.h \
+    ./Component/SubspaceMapReader.h \
+    ./Component/SubSpaceMapWriter.h \
     ./Component/AddressBlock.h \
     ./Component/AddressSpace.h \
     ./Component/AlternateRegister.h \
@@ -258,7 +263,9 @@ HEADERS += ./generaldeclarations.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
     ./utilities/BusDefinitionUtils.h \
-    ./utilities/XmlUtils.h
+    ./utilities/XmlUtils.h \
+    ./Component/validators/MemoryBlockValidator.h \
+    ./Component/validators/SubspaceMapValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -437,6 +444,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/InstantiationsWriter.cpp \
     ./Component/MasterInterface.cpp \
     ./Component/MemoryBlockBase.cpp \
+    ./Component/MemoryBlockBaseReader.cpp \
+    ./Component/MemoryBlockBaseWriter.cpp \
     ./Component/MemoryMap.cpp \
     ./Component/MemoryMapBase.cpp \
     ./Component/MemoryMapBaseReader.cpp \
@@ -466,6 +475,9 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/RemapStateWriter.cpp \
     ./Component/Segment.cpp \
     ./Component/SlaveInterface.cpp \
+    ./Component/SubSpaceMap.cpp \
+    ./Component/SubspaceMapReader.cpp \
+    ./Component/SubSpaceMapWriter.cpp \
     ./Component/Transactional.cpp \
     ./Component/TransparentBridge.cpp \
     ./Component/View.cpp \
@@ -507,4 +519,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/IpxactFile.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
     ./utilities/BusDefinitionUtils.cpp \
-    ./utilities/XmlUtils.cpp
+    ./utilities/XmlUtils.cpp \
+    ./Component/validators/MemoryBlockValidator.cpp \
+    ./Component/validators/SubspaceMapValidator.cpp

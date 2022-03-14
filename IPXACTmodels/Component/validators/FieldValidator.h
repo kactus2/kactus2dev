@@ -25,6 +25,7 @@ class FieldReset;
 class ResetType;
 class ParameterValidator;
 class EnumeratedValueValidator;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Field.
@@ -52,9 +53,9 @@ public:
     /*!
      *  Change the containing component.
      *
-     *      @param [in] newResetTypes   Reset types of the selected component.
+     *      @param [in] newComponent    The selected component.
      */
-    void componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
+    void componentChange(QSharedPointer<Component> newComponent);
 
     /*!
      *  Get the validator used for enumerated values.

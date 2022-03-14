@@ -8,6 +8,28 @@
               * Changed or Information
 ===============================================================================
 
+19/01/2022 3.9.171
+----------------------------------------------------
+- Fixed inclusion of plugins to installer
+- Fixed rare crashing in adding memory remaps
+
+07/12/2021 3.9.168
+----------------------------------------------------
++ Embedded Python 3.8 to Kactus2
++ Added SVD generation to Python interpreter
++ Updated Verilog generator path selection and file renaming
++ Ports can be created from bus interface abstraction definition
++ Added basic design handling to Python interpreter
+	* Component instances can be added and removed
+	* Interconnections can be created between bus interfaces
+	* Ad hoc connections can be created between ports
++ Updated Linux Device Tree Generator
+	* Added channels
+	* Added address blocks
+	* Added calculation for address and size cells
+	* Generates files for each found CPU
++ Added warning symbols for bus interfaces without connected port maps in HW design
+
 24/06/2021 3.9.0
 ----------------------------------------------------
 

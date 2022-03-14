@@ -19,8 +19,13 @@
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <QSortFilterProxyModel>
 
+class AbstractionDefinition;
+class PortAbstractionInterface;
 class PortsInterface;
 
 //-----------------------------------------------------------------------------
@@ -36,11 +41,14 @@ public:
      *  The constructor.
 	 *
      *      @param [in] parameterFinder     Pointer to the parameter finder.
-     *      @param [in] portsInterface      Interface for accessing the component ports.
+     *      @param [in] portInterface       Interface for accessing the component ports.
+     *      @param [in] signalInterface     Interface for accessing abstraction signals.
      *      @param [in] filter              Filter used for ports.
 	 *      @param [in] parent              Pointer to the owner of this model.
      */
-    PortsModel(QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortsInterface> portInterface,
+    PortsModel(QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<PortsInterface> portInterface,
+        QSharedPointer<PortAbstractionInterface> signalInterface,
         QSortFilterProxyModel* filter, QObject *parent);
 
 	/*!
@@ -118,6 +126,19 @@ public:
      *  Sets the edited model and locks all current ports.
      */
     void resetModelAndLockCurrentPorts();
+
+    /*!
+     *  Handle port creation from abstraction definition signals.
+     *
+     *      @param [in] abstraction     The selected abstraction definition.
+     *      @param [in] busMode         Interface mode of the selected bus interface.
+     *      @param [in] busMonitorMode  Monitored bus interface of the selected bus interface.
+     *      @param [in] systemGroup     System group of the selected bus interface.
+     */
+    void onCreatePortsFromAbstraction(QSharedPointer<const AbstractionDefinition> abstraction,
+        General::InterfaceMode const& busMode,
+        General::InterfaceMode const& busMonitorMode,
+        QString const& systemGroup);
 
     //! No copying. No assignment.
     PortsModel(const PortsModel& other) = delete;
@@ -415,12 +436,49 @@ private:
      */
     bool rowIsLocked(int row);
 
+    /*!
+     *  Check if the selected interface modes match.
+     *
+     *      @param [in] busMode             Interface mode of the selected bus interface.
+     *      @param [in] busSystemGroup      System group of the selected bus interface.
+     *      @param [in] signalMode          Interface mode of the selected signal.
+     *      @param [in] signalSystemGroup   System group of the selected signal.
+     *
+     *      @return True, if the interface modes match, false otherwise.
+     */
+    bool modesMatch(General::InterfaceMode const& busMode, QString const& busSystemGroup,
+        General::InterfaceMode const& signalMode, QString const& signalSystemGroup) const;
+
+    /*!
+     *  Get the direction for a port created from a signal.
+     *
+     *      @param [in] busMode             Interface mode of the selected bus interface.
+     *      @param [in] signalDirection     Direction of the selected signal.
+     *
+     *      @return Direction for the port created from the selected signal.
+     */
+    DirectionTypes::Direction getDirectionFromSignal(General::InterfaceMode const& busMode,
+        DirectionTypes::Direction const& signalDirection) const;
+
+    /*!
+     *  Get the initiative for a port created from a signal.
+     *
+     *      @param [in] busMode             Interface mode of the selected bus interface.
+     *      @param [in] signalInitiative    Initiative of the selected signal.
+     *
+     *      @return Initiative for the port created from the selected signal.
+     */
+    QString getInitiativeFromSignal(General::InterfaceMode const& busMode, QString const& signalInitiative) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Interface for accessing the component ports.
     QSharedPointer<PortsInterface> portsInterface_;
+
+    //! Interface for accessing abstraction signals.
+    QSharedPointer<PortAbstractionInterface> signalInterface_;
 
     //! The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;

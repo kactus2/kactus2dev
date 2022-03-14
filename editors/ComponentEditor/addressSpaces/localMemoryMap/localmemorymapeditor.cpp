@@ -57,12 +57,13 @@ handler_(handler)
         localMemoryMap_ = QSharedPointer<MemoryMapBase>(new MemoryMapBase());
     }
 
-    blockInterface->setAddressBlocks(localMemoryMap_->getMemoryBlocks());
+    blockInterface->setMemoryBlocks(localMemoryMap_->getMemoryBlocks());
 
     nameEditor_ = (new NameGroupEditor(localMemoryMap_, this));
 
     setCheckable(true);
     setChecked(hasLocalMemoryMap && !localMemoryMap_->getMemoryBlocks()->isEmpty());
+//     setChecked(hasLocalMemoryMap);
 
     nameEditor_->setTitle(tr("Memory map name and description"));
 

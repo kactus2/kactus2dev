@@ -28,6 +28,7 @@ class MemoryMapBase;
 class ExpressionEditor;
 class ExpressionParser;
 class MemoryMapInterface;
+class SubspaceMapsEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single memory map.
@@ -148,17 +149,38 @@ signals:
      */
     void addressBlockNameChanged(QString const& oldName, QString const& newName);
 
+    /*!
+     *  Informs of subspace map name change.
+     *
+     *      @param [in] oldName     The old name.
+     *      @param [in] newName     The new name.
+     */
+    void subspaceMapNameChanged(QString const& oldName, QString const& newName);
+
+    /*!
+     *  Informs change in child addressing.
+     *
+     *      @param [in]
+     */
     void childAddressingChanged(int);
 
+    /*!
+     *  Informs change in child graphics.
+     *
+     *      @param [in]
+     */
     void childGraphicsChanged(int);
 
 private:
 
-	//! No copying
+    //! No copying. No assignment.
     SingleMemoryMapEditor(const SingleMemoryMapEditor& other);
-
-	//! No assignment
     SingleMemoryMapEditor& operator=(const SingleMemoryMapEditor& other);
+
+    /*!
+     *  Connect the editor signals.
+     */
+    void connectSignals();
 
 	/*!
 	 *  Set up the layout for the editor.
@@ -178,7 +200,10 @@ private:
 	NameGroupEditor nameEditor_;
 
     //! The editor for the address blocks.
-    MemoryMapEditor* memoryMapEditor_;
+    MemoryMapEditor* addressBlockEditor_;
+
+    //! Editor for subspace maps.
+    SubspaceMapsEditor* subspaceMapEditor_;
 
     //! The editor for the memory maps address unit bits [AUB].
     QLineEdit* addressUnitBitsEditor_;

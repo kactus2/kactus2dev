@@ -48,13 +48,17 @@ public:
      *
      *      @param [in] parameterFinder     Locates the different parameters of the containing component.
      *      @param [in] portsInterface      Interface for accessing the component ports.
+     *      @param [in] signalInterface     Interface for accessing abstraction signals.
      *      @param [in] filter              Filter for ports model.
      *      @param [in] parent              The owner of the constructed model.
      *
      *      @return The created ports model.
      */
     virtual PortsModel* constructModel(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortsInterface> portsInterface, QSortFilterProxyModel* filter, QObject* parent = 0)
+        QSharedPointer<PortsInterface> portsInterface,
+        QSharedPointer<PortAbstractionInterface> signalInterface,
+        QSortFilterProxyModel* filter,
+        QObject* parent = 0)
         const override final;
 
     /*!
@@ -72,11 +76,14 @@ public:
      *  Construct a view.
      *
      *      @param [in] defaultPath     Default import / export path.
+     *      @param [in] busInterface    Interface for accessing bus interfaces.
      *      @param [in] parent          Owner of the view.
      *
      *      @return The created view.
      */
-    virtual PortsView* constructView(QString const& defaultPath, QWidget* parent) const override final;
+    virtual PortsView* constructView(QString const& defaultPath,
+        BusInterfaceInterface* busInterface,
+        QWidget* parent) const override final;
 
     /*!
      *  Construct a delegate.

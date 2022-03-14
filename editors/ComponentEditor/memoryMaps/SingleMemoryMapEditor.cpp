@@ -15,6 +15,7 @@
 #include <QLabel>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -35,8 +36,10 @@ SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component
     MemoryMapInterface* mapInterface, bool isMemoryRemap, QWidget* parent):
 ItemEditor(component, libHandler, parent),
 nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
-memoryMapEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, expressionParser,
-    mapInterface->getSubInterface(), memoryRemap->getMemoryBlocks(), this)),
+addressBlockEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, expressionParser,
+    mapInterface->getAddressBlockInterface(), memoryRemap->getMemoryBlocks(), this)),
+subspaceMapEditor_(new SubspaceMapsEditor(component, parameterFinder, expressionParser,
+    mapInterface->getSubspaceMapInterface() , memoryRemap->getMemoryBlocks(), this)),
 addressUnitBitsEditor_(new QLineEdit(parent)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 slaveInterfaceLabel_(new QLabel(this)),
@@ -65,25 +68,66 @@ isMemoryRemap_(isMemoryRemap)
 
     remapStateSelector_->setProperty("mandatoryField", true);
 
-    connect(memoryMapEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(memoryMapEditor_, SIGNAL(increaseReferences(QString)),
+    connectSignals();
+
+    setupLayout();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleMemoryMapEditor::connectSignals()
+//-----------------------------------------------------------------------------
+void SingleMemoryMapEditor::connectSignals()
+{
+    connect(addressBlockEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(addressBlockEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(memoryMapEditor_, SIGNAL(decreaseReferences(QString)),
+    connect(addressBlockEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(memoryMapEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-    connect(memoryMapEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
-    connect(memoryMapEditor_, SIGNAL(childAddressingChanged(int)), 
+    connect(addressBlockEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+    connect(addressBlockEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+    connect(addressBlockEditor_, SIGNAL(childAddressingChanged(int)),
         this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+
+    connect(addressBlockEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        addressBlockEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
+
+    connect(addressBlockEditor_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
+        this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(subspaceMapEditor_, SIGNAL(childAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
+    connect(subspaceMapEditor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+
+    connect(subspaceMapEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(subspaceMapEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(subspaceMapEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(subspaceMapEditor_, SIGNAL(childAddressingChanged(int)),
+        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+    connect(subspaceMapEditor_, SIGNAL(graphicsChanged(int)),
+        this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        subspaceMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
+
+    connect(subspaceMapEditor_, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)),
+        this, SIGNAL(subspaceMapNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(subspaceMapEditor_, SIGNAL(invalidateOtherFilter()),
+        addressBlockEditor_, SIGNAL(invalidateThisFilter()), Qt::UniqueConnection);
+    connect(addressBlockEditor_, SIGNAL(invalidateOtherFilter()),
+        subspaceMapEditor_, SIGNAL(invalidateThisFilter()), Qt::UniqueConnection);
+
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SLOT(refreshSlaveBinding()), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
-    connect(memoryMapEditor_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
-    
 
     connect(addressUnitBitsEditor_, SIGNAL(editingFinished()),
         this, SLOT(updateAddressUnitBits()), Qt::UniqueConnection);
-    
+
     connect(isPresentEditor_, SIGNAL(increaseReference(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(decreaseReference(QString const&)),
@@ -93,15 +137,7 @@ isMemoryRemap_(isMemoryRemap)
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
-    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
-        memoryMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
-
-    connect(memoryMapEditor_, SIGNAL(addressBlockNameChanged(QString const&, QString const&)),
-        this, SIGNAL(addressBlockNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
-
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onNameChange()), Qt::UniqueConnection);
-
-    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +148,9 @@ void SingleMemoryMapEditor::refresh()
     mapInterface_->setMemoryMaps(component());
 
     nameEditor_.refresh();
-    memoryMapEditor_->refresh();
+    addressBlockEditor_->refresh();
+    subspaceMapEditor_->refresh();
+
     refreshSlaveBinding();
     addressUnitBitsEditor_->setText(QString::fromStdString(mapInterface_->getAddressUnitBits(parentMapName_)));
 
@@ -171,22 +209,26 @@ void SingleMemoryMapEditor::setupLayout()
     QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
     verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     verticalSplitter->addWidget(topOfPageWidget);
-    verticalSplitter->addWidget(memoryMapEditor_);
+    verticalSplitter->addWidget(addressBlockEditor_);
+    verticalSplitter->addWidget(subspaceMapEditor_);
 
     verticalSplitter->setStretchFactor(1,1);
 
-    QSplitterHandle* handle = verticalSplitter->handle(1);
+    for (int i = 1; i <= verticalSplitter->count(); ++i)
+    {
+        QSplitterHandle* handle = verticalSplitter->handle(i);
 
-    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
-    handleLayout->setSpacing(0);
-    handleLayout->setMargin(0);
+        QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+        handleLayout->setSpacing(0);
+        handleLayout->setMargin(0);
 
-    QFrame* line = new QFrame(handle);
-    line->setLineWidth(2);
-    line->setMidLineWidth(2);
-    line->setFrameShape(QFrame::HLine);
-    line->setFrameShadow(QFrame::Sunken);
-    handleLayout->addWidget(line);
+        QFrame* line = new QFrame(handle);
+        line->setLineWidth(2);
+        line->setMidLineWidth(2);
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        handleLayout->addWidget(line);
+    }
 
     verticalSplitter->setHandleWidth(10);
 

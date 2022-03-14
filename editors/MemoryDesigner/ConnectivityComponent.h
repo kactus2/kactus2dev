@@ -100,6 +100,18 @@ public:
      */
     QVector<QSharedPointer<MemoryItem> > getMemories() const;
 
+    /*!
+     *  Marks the component as a channel.
+     */
+    void setChanneled();
+
+    /*!
+     *  Checks if the component is a channel.
+     *
+     *      @return True, if the component is a channel, otherwise false.
+     */
+    bool isChanneled() const;
+
 private:
 
 	// Disable copying.
@@ -117,6 +129,9 @@ private:
 
     //! The name of the active view of the instance.
     QString activeView_;
+
+    //! Whether the component is a channel or not.
+    bool channeled_;
 
     //! Memories associated with the instance.
     QVector<QSharedPointer<MemoryItem> > memories_;

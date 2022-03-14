@@ -229,6 +229,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_SVDCPUDelegate.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MessagePasser.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MessagePasser.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="SVDGeneratorPlugin.h">
@@ -257,6 +266,9 @@
     </CustomBuild>
     <CustomBuild Include="CPUDialog\SVDCPUDelegate.h">
       <Filter>Header Files\CPUDialog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
+      <Filter>Header Files\GenerationControl</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

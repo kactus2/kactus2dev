@@ -18,15 +18,8 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockWriter::AddressBlockWriter()
 //-----------------------------------------------------------------------------
-AddressBlockWriter::AddressBlockWriter(): CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockWriter::~AddressBlockWriter()
-//-----------------------------------------------------------------------------
-AddressBlockWriter::~AddressBlockWriter()
+AddressBlockWriter::AddressBlockWriter():
+MemoryBlockBaseWriter()
 {
 
 }
@@ -43,7 +36,7 @@ void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPoin
 
     writeIsPresent(writer, addressBlock->getIsPresent());
 
-    writer.writeTextElement(QStringLiteral("ipxact:baseAddress"), addressBlock->getBaseAddress());
+    writeBaseAddress(writer, addressBlock);
 
     writeTypeIdentifier(writer, addressBlock);
 
@@ -64,15 +57,6 @@ void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPoin
     writeVendorExtensions(writer, addressBlock);
 
     writer.writeEndElement(); // ipxact:addressBlock
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockWriter::writeNameGroup()
-//-----------------------------------------------------------------------------
-void AddressBlockWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock) const
-{
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, addressBlock);
 }
 
 //-----------------------------------------------------------------------------

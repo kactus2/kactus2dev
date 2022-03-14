@@ -14,14 +14,17 @@
 #include <QMenu>
 #include <QHeaderView>
 
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: PortsView::PortsView()
 //-----------------------------------------------------------------------------
-PortsView::PortsView(int const& nameColumn, QWidget *parent):
+PortsView::PortsView(int const& nameColumn, BusInterfaceInterface* busInterface, QWidget *parent):
 EditableTableView(parent),
 createBus_(tr("Create new bus definition"), this),
 createExistingBus_(tr("Use existing bus definition"), this),
-nameColumn_(nameColumn)
+nameColumn_(nameColumn),
+busInterface_(busInterface)
 {
     verticalHeader()->show();
     verticalHeader()->setMaximumWidth(300);
@@ -106,6 +109,39 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
         createMenu->addAction(&createExistingBus_);           
     }
 
+    if (busInterface_->itemCount() > 0)
+    {
+        menu.addSeparator();
+
+        QMenu* portsFromBusMenu = menu.addMenu(tr("Create ports from..."));
+        for (auto name : busInterface_->getItemNames())
+        {
+            QString busName = QString::fromStdString(name);
+            std::vector<std::string> busAbstractions =
+                busInterface_->getAbstractionReferences(busName.toStdString());
+            if (busAbstractions.empty() || busAbstractions.size() == 1)
+            {
+                QAction* busAction(new QAction(busName, this));
+                portsFromBusMenu->addAction(busAction);
+
+                connect(busAction, SIGNAL(triggered()), this, SLOT(onCreatePortsFromBus()), Qt::UniqueConnection);
+            }
+            else
+            {
+                QMenu* selectAbstractionMenu = portsFromBusMenu->addMenu(busName);
+                for (auto abstraction : busAbstractions)
+                {
+                    QAction* abstractionAction(new QAction(QString::fromStdString(abstraction), this));
+                    abstractionAction->setData(QVariant(busName));
+
+                    selectAbstractionMenu->addAction(abstractionAction);
+                    connect(abstractionAction, SIGNAL(triggered()),
+                        this, SLOT(onCreatePortsFromAbstraction()), Qt::UniqueConnection);
+                }
+            }
+        }
+    }
+
     if (importExportAllowed())
     {
         menu.addSeparator();
@@ -116,6 +152,37 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
     menu.exec(event->globalPos());
 
     event->accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsView::onCreatePortsFromBus()
+//-----------------------------------------------------------------------------
+void PortsView::onCreatePortsFromBus()
+{
+    QAction* senderAction = dynamic_cast<QAction*>(QObject::sender());
+    if (senderAction)
+    {
+        std::string busName = senderAction->text().toStdString();
+        QString abstractionVLNV =
+            QString::fromStdString(busInterface_->getAbstractionReferenceString(busName));
+
+        emit createPortsFromAbstraction(busName, abstractionVLNV);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsView::onCreatePortsFromAbstraction()
+//-----------------------------------------------------------------------------
+void PortsView::onCreatePortsFromAbstraction()
+{
+    QAction* senderAction = dynamic_cast<QAction*>(QObject::sender());
+    if (senderAction)
+    {
+        std::string busName = senderAction->data().toString().toStdString();
+        QString abstractionVLNV = senderAction->text();
+
+        emit createPortsFromAbstraction(busName, abstractionVLNV);
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -3661,7 +3661,7 @@ void MainWindow::onRunImportWizard()
     }
 
     VLNV vlnv = doc->getIdentifyingVLNV();
-    QSharedPointer<const Component> component = libraryHandler_->getModelReadOnly(vlnv).dynamicCast<const Component>();
+    QSharedPointer<Component> component = libraryHandler_->getModel(vlnv).dynamicCast<Component>();
 
     if (component)
     {

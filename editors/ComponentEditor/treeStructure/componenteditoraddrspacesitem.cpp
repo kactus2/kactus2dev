@@ -19,6 +19,9 @@
 #include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+
+#include <editors/ComponentEditor/parameters/ParametersInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
@@ -26,10 +29,13 @@
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
@@ -154,8 +160,12 @@ void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
 
     QSharedPointer<AddressBlockValidator> blockValidator(
         new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator));
+    QSharedPointer<SubspaceMapValidator> subspaceValidator(
+        new SubspaceMapValidator(expressionParser_, parameterValidator));
+
     QSharedPointer<MemoryMapBaseValidator> localMapValidator(
-        new MemoryMapBaseValidator(expressionParser_, blockValidator));
+        new MemoryMapBaseValidator(expressionParser_, blockValidator, subspaceValidator));
+
     QSharedPointer<AddressSpaceValidator> addressSpaceValidator(
         new AddressSpaceValidator(expressionParser_, localMapValidator, parameterValidator));
 
@@ -186,12 +196,41 @@ void ComponentEditorAddrSpacesItem::createAddressBlockInterface()
     QSharedPointer<RegisterValidator> registerValidator = blockValidator->getRegisterValidator();
     QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
 
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser_,
+        component_->getChoices()));
+
+    ParametersInterface* parameterInterface(
+        new ParametersInterface(parameterValidator, expressionParser_, expressionFormatter_));
+
     ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
 
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
-    blockInterface_ =
-        new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_, registerInterface);
+
+    BusInterfaceInterface* busInterface = createInterfaceForBus(parameterValidator);
+
+    blockInterface_ = new AddressBlockInterface(blockValidator, expressionParser_, expressionFormatter_,
+        busInterface, registerInterface, parameterInterface);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::createInterfaceForBus()
+//-----------------------------------------------------------------------------
+BusInterfaceInterface* ComponentEditorAddrSpacesItem::createInterfaceForBus(
+    QSharedPointer<ParameterValidator> parameterValidator)
+{
+    QSharedPointer<PortMapValidator> portMapValidator(
+        new PortMapValidator(expressionParser_, component_->getPorts(), libHandler_));
+    QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser_,
+        component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
+        component_->getMemoryMaps(), component_->getBusInterfaces(), component_->getFileSets(),
+        component_->getRemapStates(), portMapValidator, parameterValidator, libHandler_));
+
+    BusInterfaceInterface* busInterface(
+        new BusInterfaceInterface(busValidator, expressionParser_, expressionFormatter_));
+
+    return busInterface;
 }

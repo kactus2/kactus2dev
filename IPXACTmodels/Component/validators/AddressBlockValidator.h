@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/Component/validators/MemoryBlockValidator.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -21,14 +23,15 @@ class ExpressionParser;
 class AddressBlock;
 class Register;
 class ResetType;
-
+class Component;
 class RegisterValidator;
 class RegisterFileValidator;
 class ParameterValidator;
+
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:addressBlock.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AddressBlockValidator
+class IPXACTMODELS_EXPORT AddressBlockValidator : public MemoryBlockValidator
 {
 public:
 
@@ -50,9 +53,9 @@ public:
     /*!
      *  Change the containing component.
      *
-     *      @param [in] newResetTypes   The reset types of the selected component.
+     *      @param [in] newComponent    The selected component.
      */
-    void componentChange(QSharedPointer<QList<QSharedPointer<ResetType> > > newResetTypes);
+    void componentChange(QSharedPointer<Component> newComponent);
 
     /*!
      *  Get the used register validator.
@@ -79,33 +82,6 @@ public:
     bool validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits) const;
 
     /*!
-     *  Check if the address block contains a valid name.
-     *
-     *      @param [in] addressBlock    The selected address block.
-     *
-     *      @return True, if the name is valid, otherwise false.
-     */
-    bool hasValidName(QSharedPointer<AddressBlock> addressBlock) const;
-
-    /*!
-     *  Check if the address block contains a valid isPresent value.
-     *
-     *      @param [in] addressBlock    The selected address block.
-     *
-     *      @return True, if the isPresent is valid, otherwise false.
-     */
-    bool hasValidIsPresent(QSharedPointer<AddressBlock> addressBlock) const;
-
-    /*!
-     *  Check if the address block contains a valid base address.
-     *
-     *      @param [in] addressBlock    The selected address block.
-     *
-     *      @return True, if the base address is valid, otherwise false.
-     */
-    bool hasValidBaseAddress(QSharedPointer<AddressBlock> addressBlock) const;
-
-    /*!
      *  Check if the address block contains a valid range.
      *
      *      @param [in] addressBlock    The selected address block.
@@ -122,15 +98,6 @@ public:
      *      @return True, if the width is valid, otherwise false.
      */
     bool hasValidWidth(QSharedPointer<AddressBlock> addressBlock) const;
-
-    /*!
-     *  Check if the address block contains valid parameters.
-     *
-     *      @param [in] addressBlock    The selected address block.
-     *
-     *      @return True, if the parameters are valid, otherwise false.
-     */
-    bool hasValidParameters(QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
      *  Check if the address block contains valid register data.
@@ -191,6 +158,13 @@ private:
 	AddressBlockValidator& operator=(AddressBlockValidator const& rhs);
 
     /*!
+     *  Get the type of the memory block.
+     *
+     *      @return Identification type of the memory block.
+     */
+    virtual QString getBlockType() const override final;
+
+    /*!
      *  Check if the contained registers have similar register definitions.
      *
      *      @param [in] targetRegister              The selected register.
@@ -224,36 +198,6 @@ private:
     qint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, int addressUnitBits) const;
 
     /*!
-     *  Find errors within a name.
-     *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] addressBlock    The selected addressBlock.
-     *      @param [in] context         Context to help locate the error.
-     */
-    void findErrorsInName(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-        QString const& context) const;
-
-    /*!
-     *  Find errors within a isPresent.
-     *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] addressBlock    The selected addressBlock.
-     *      @param [in] context         Context to help locate the error.
-     */
-    void findErrorsInIsPresent(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-        QString const& context) const;
-
-    /*!
-     *  Find errors within the base address.
-     *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] addressBlock    The selected addressBlock.
-     *      @param [in] context         Context to help locate the error.
-     */
-    void findErrorsInBaseAddress(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-        QString const& context) const;
-
-    /*!
      *  Find errors within the address block range.
      *
      *      @param [in] errors          List of found errors.
@@ -284,16 +228,6 @@ private:
         QString const& context) const;
 
     /*!
-     *  Find errors within address block parameters.
-     *
-     *      @param [in] errors          List of found errors.
-     *      @param [in] addressBlock    The selected addressBlock.
-     *      @param [in] context         Context to help locate the error.
-     */
-    void findErrorsInParameters(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
-        QString const& context) const;
-
-    /*!
      *  Find errors within register data.
      *
      *      @param [in] errors              List of found errors.
@@ -308,16 +242,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The expression parser to use.
-    QSharedPointer<ExpressionParser> expressionParser_;
-
     //! The validator used for registers.
     QSharedPointer<RegisterValidator> registerValidator_;
 
     //! The validator used for register files.
     QSharedPointer<RegisterFileValidator> registerFileValidator_;
-    //! The validator used for parameters.
-    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // ADDRESSBLOCKVALIDATOR_H

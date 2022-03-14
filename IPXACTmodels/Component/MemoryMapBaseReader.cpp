@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/Component/AddressBlockReader.h>
+#include <IPXACTmodels/Component/SubspaceMapReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseReader::MemoryMapBaseReader()
@@ -74,22 +75,29 @@ void MemoryMapBaseReader::parsePresence(QDomNode const& MemoryMapBaseBaseNode,
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseReader::parseMemoryBlocks()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseReader::parseMemoryBlocks(QDomNode const& MemoryMapBaseBaseNode,
-    QSharedPointer<MemoryMapBase> newMemoryMapBaseBase) const
+void MemoryMapBaseReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
+    QSharedPointer<MemoryMapBase> newMemoryMapBase) const
 {
-    QDomNodeList childNodes = MemoryMapBaseBaseNode.childNodes();
+    QDomNodeList childNodes = memoryMapBaseNode.childNodes();
 
     AddressBlockReader addressBlockReader;
+    SubspaceMapReader subspaceMapReader;
 
     for (int childIndex = 0; childIndex < childNodes.count(); ++childIndex)
     {
-        QDomNode addressBlockNode = childNodes.at(childIndex);
-        if (addressBlockNode.nodeName() == QLatin1String("ipxact:addressBlock"))
+        QDomNode blockBaseNode = childNodes.at(childIndex);
+        if (blockBaseNode.nodeName() == QLatin1String("ipxact:addressBlock"))
         {
             QSharedPointer<AddressBlock> newAddressBlock =
-                addressBlockReader.createAddressBlockFrom(addressBlockNode);
+                addressBlockReader.createAddressBlockFrom(blockBaseNode);
 
-            newMemoryMapBaseBase->getMemoryBlocks()->append(newAddressBlock);
+            newMemoryMapBase->getMemoryBlocks()->append(newAddressBlock);
+        }
+        else if (blockBaseNode.nodeName() == QLatin1String("ipxact:subspaceMap"))
+        {
+            QSharedPointer<SubSpaceMap> newSubSpaceMap = subspaceMapReader.createSubspaceMapFrom(blockBaseNode);
+
+            newMemoryMapBase->getMemoryBlocks()->append(newSubSpaceMap);
         }
     }
 }

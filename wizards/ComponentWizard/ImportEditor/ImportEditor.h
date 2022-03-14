@@ -30,6 +30,7 @@ class ImportRunner;
 class LibraryInterface;
 class PortsEditor;
 class View;
+class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
 //! Used to parse source files and generating IP-XACT packages of them.
@@ -47,12 +48,14 @@ public:
 	 *      @param [in] handler                 The instance which manages the library.
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] busInterface            Interface for accessing bus interfaces.
 	 *      @param [in] parent                  The owner of this widget.
 	 */
 	ImportEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer <ComponentParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        BusInterfaceInterface* busInterface,
         QWidget *parent);
 	
 	//! The destructor.
