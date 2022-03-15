@@ -50,11 +50,6 @@ SOURCES += ../../editors/common/ComponentInstanceParameterFinder.cpp \
     ../../editors/MemoryDesigner/MemoryDesignerConstants.cpp \
     ../../editors/MemoryDesigner/MemoryItem.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
-    ./GeneratedFiles/moc_ComponentInstanceParameterFinder.cpp \
-    ./GeneratedFiles/moc_LinuxDeviceTreeDialog.cpp \
-    ./GeneratedFiles/moc_LinuxDeviceTreePlugin.cpp \
-    ./GeneratedFiles/moc_ParameterCache.cpp \
-    ./GeneratedFiles/qrc_LinuxDeviceTree.cpp \
     ./LinuxDeviceTreeDialog.cpp \
     ./LinuxDeviceTreeGenerator.cpp \
     ./LinuxDeviceTreePlugin.cpp \
