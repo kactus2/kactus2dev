@@ -3,11 +3,11 @@
 # ------------------------------------------------------
 
 TEMPLATE = lib
-TARGET = VerilogGeneratorPlugin
+TARGET = SVDGeneratorPlugin
 
 QT += core xml widgets gui
 CONFIG += c++11 release
-DEFINES += VERILOGGENERATORPLUGIN_LIB
+DEFINES += SVDGENERATORPLUGIN_LIB
 
 INCLUDEPATH += ./generatedFiles \
     ./../.. \
@@ -25,7 +25,7 @@ OBJECTS_DIR += debug
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
 
-include(VerilogGeneratorPlugin.pri)
+include(SVDGeneratorPlugin.pri)
 
 target.path = $$plugin_path
 INSTALLS += target
