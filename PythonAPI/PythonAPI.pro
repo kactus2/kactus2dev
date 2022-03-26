@@ -9,8 +9,8 @@ CONFIG += c++11 release dll
 DEFINES += PYTHONAPI_LIB
 QT += core gui widgets xml
 LIBS += -L"$(SolutionDir)x64/executable" \
-    -L$$(PWD)/../executable -lIPXACTmodels \
-    -L$$(PWD)/../executable -lKactus2
+    -L$$(PWD)/../executable -lIPXACTmodels
+
 DEPENDPATH += ..
 INCLUDEPATH += ..
 MOC_DIR += ./GeneratedFiles

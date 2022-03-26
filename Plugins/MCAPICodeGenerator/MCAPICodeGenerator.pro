@@ -17,7 +17,7 @@ INCLUDEPATH += ./../.. \
     $(QTDIR)/../qttools/include 
 
 LIBS += -L"./../../executable" \
-    -lIPXACTmodels -lKactus2
+    -lIPXACTmodels
 
 DESTDIR = ../../executable/Plugins
 

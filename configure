@@ -22,7 +22,7 @@ print_success() {
 # Generate compressed help files.
 echo "Generating compressed help files..."
 ${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
-${QTBIN_PATH}qcollectiongenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
+${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
 
 if command -v ${QTBIN_PATH}qtchooser >/dev/null 2>&1; then
    #Run qmake using qtchooser.
