@@ -13,6 +13,7 @@ HEADERS += ./SVDGenerator.h \
     ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
+    ../PluginSystem/GeneratorPlugin/MessagePasser.h \
     ../common/HDLParser/MetaComponent.h \
     ../common/HDLParser/MetaDesign.h \
     ../common/HDLParser/MetaInstance.h \
@@ -39,11 +40,12 @@ HEADERS += ./SVDGenerator.h \
     ./CPUDialog/SVDCPUEditor.h \
     ./CPUDialog/SVDCPUModel.h \
     ./CPUDialog/SVDCPUDelegate.h \
-    ../PluginSystem/GeneratorPlugin/MessagePasser.h
+    ../../editors/common/DesignParameterFinder.h
 SOURCES += ./ConnectivityGraphUtilities.cpp \
     ./SVDGenerator.cpp \
     ./SVDGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
+    ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
     ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../common/HDLParser/MetaComponent.cpp \
@@ -71,5 +73,5 @@ SOURCES += ./ConnectivityGraphUtilities.cpp \
     ./CPUDialog/SVDCPUDelegate.cpp \
     ./CPUDialog/SVDCPUEditor.cpp \
     ./CPUDialog/SVDCPUModel.cpp \
-    ../PluginSystem/GeneratorPlugin/MessagePasser.cpp
+    ../../editors/common/DesignParameterFinder.cpp
 RESOURCES += SVDGenerator.qrc

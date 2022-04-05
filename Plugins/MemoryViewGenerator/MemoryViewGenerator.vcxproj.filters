@@ -154,6 +154,9 @@
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editors\common\DesignParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryViewGenerator.h">
@@ -226,6 +229,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\common\DesignParameterFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

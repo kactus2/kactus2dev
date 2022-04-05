@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\editors\common\ComponentInstanceParameterFinder.cpp" />
+    <ClCompile Include="..\..\editors\common\DesignParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
@@ -308,6 +309,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DSVDGENERATORPLUGIN_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -D%(PreprocessorDefinitions)  "-I.\GeneratedFiles" "-I.\..\.." "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtXml"</Command>
     </CustomBuild>
+    <ClInclude Include="..\..\editors\common\DesignParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />

@@ -127,6 +127,9 @@
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUDetails.cpp">
       <Filter>Source Files\CPUSelection</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editors\common\DesignParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinuxDeviceTreeGenerator_global.h">
@@ -185,6 +188,9 @@
     </ClInclude>
     <ClInclude Include="CPUSelection\LinuxDeviceTreeCPUDetails.h">
       <Filter>Header Files\CPUSelection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\common\DesignParameterFinder.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

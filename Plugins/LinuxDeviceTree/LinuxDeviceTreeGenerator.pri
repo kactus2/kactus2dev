@@ -28,11 +28,12 @@ HEADERS += ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ParameterCache.h \
     ./LinuxDeviceTreeDialog.h \
     ./LinuxDeviceTreePlugin.h \
-    ./CPUSelection/LinuxDeviceTreeCPUModel.h \
     ./CPUSelection/LinuxDeviceTreeCPUColumns.h \
+    ./CPUSelection/LinuxDeviceTreeCPUDetails.h \
+    ./CPUSelection/LinuxDeviceTreeCPUModel.h \
     ./CPUSelection/LinuxDeviceTreeCPUDelegate.h \
     ./CPUSelection/LinuxDeviceTreeCPUEditor.h \
-    ./CPUSelection/LinuxDeviceTreeCPUDetails.h
+    ../../editors/common/DesignParameterFinder.h
 SOURCES += ../../editors/common/ComponentInstanceParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
@@ -50,11 +51,17 @@ SOURCES += ../../editors/common/ComponentInstanceParameterFinder.cpp \
     ../../editors/MemoryDesigner/MemoryDesignerConstants.cpp \
     ../../editors/MemoryDesigner/MemoryItem.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
+    ./GeneratedFiles/moc_ComponentInstanceParameterFinder.cpp \
+    ./GeneratedFiles/moc_LinuxDeviceTreeDialog.cpp \
+    ./GeneratedFiles/moc_LinuxDeviceTreePlugin.cpp \
+    ./GeneratedFiles/moc_ParameterCache.cpp \
+    ./GeneratedFiles/qrc_LinuxDeviceTree.cpp \
     ./LinuxDeviceTreeDialog.cpp \
     ./LinuxDeviceTreeGenerator.cpp \
     ./LinuxDeviceTreePlugin.cpp \
     ./CPUSelection/LinuxDeviceTreeCPUDelegate.cpp \
+    ./CPUSelection/LinuxDeviceTreeCPUDetails.cpp \
     ./CPUSelection/LinuxDeviceTreeCPUEditor.cpp \
     ./CPUSelection/LinuxDeviceTreeCPUModel.cpp \
-    ./CPUSelection/LinuxDeviceTreeCPUDetails.cpp
+    ../../editors/common/DesignParameterFinder.cpp
 RESOURCES += LinuxDeviceTree.qrc
