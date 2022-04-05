@@ -5140,6 +5140,9 @@
     <ClCompile Include="GeneratedFiles\moc_MemoryBlockGraphItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\DesignParameterFinder.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6988,6 +6991,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\MemoryBlockGraphItem.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\common\DesignParameterFinder.h">
+      <Filter>Header Files\editors\common</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

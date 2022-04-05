@@ -23,6 +23,7 @@ class Component;
 class ComponentInstance;
 class Design;
 class DesignConfiguration;
+class DesignInstantiation;
 
 class Interconnection;
 class AddressSpace;
@@ -84,16 +85,18 @@ private:
     /*!
      *  Creates graph elements from the given design and configuration.
      *
+     *      @param [in] designInstantiation     The design instantiation used in the top component.
      *      @param [in] design                  The design to analyze and transform into graph.
      *      @param [in] designConfiguration     The design configuration to analyze and transform into graph.
      *      @param [in] topInterfaces           The top-level component interfaces available for connections.
      *      @param [in/out] graph               The graph to add elements into.
      */
-    void analyzeDesign(QSharedPointer<const Design> design,
+    void analyzeDesign(QSharedPointer<DesignInstantiation> designInstantiation,
+        QSharedPointer<const Design> design,
         QSharedPointer<const DesignConfiguration> designConfiguration,
         QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces,
         QSharedPointer<ConnectivityGraph> graph) const;
-   
+
     /*!
      *  Creates a component instance representation for a component instance.
      *
@@ -346,6 +349,17 @@ private:
      */
     void createConnectionsForDesign(QSharedPointer<const Component> instancedComponent, QString const& activeView,
         QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces, QSharedPointer<ConnectivityGraph> graph) const;
+
+    /*!
+     *  Get the design instantiation for the selected view from the selected component.
+     *
+     *      @param [in] instancedComponent  The selected component.
+     *      @param [in] activeView          The selected view.
+     *
+     *      @return The design instantiation for the selected view from the selected component.
+     */
+    QSharedPointer<DesignInstantiation> getDesignInstantiation(
+        QSharedPointer<const Component> instancedComponent, QSharedPointer<View> activeView) const;
 
     /*!
      *  Creates graph edges for the given design interconnection.

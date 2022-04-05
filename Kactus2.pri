@@ -75,6 +75,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/tagEditor/TagDisplay.h \
     ./common/widgets/tagEditor/TagSelectorContainer.h \
     ./common/widgets/tagEditor/TagSelector.h \
+    ./common/widgets/busReferenceComboBox/BusReferenceComboBox.h \
+    ./common/widgets/segmentComboBox/SegmentComboBox.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -471,6 +473,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/treeStructure/ParameterizableItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorregisterfileitem.h \
     ./editors/ComponentEditor/treeStructure/ResetTypesItem.h \
+    ./editors/ComponentEditor/treeStructure/SubspaceMapItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
@@ -608,6 +611,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/ResetsModel.h \
     ./editors/ComponentEditor/memoryMaps/ResetsDelegate.h \
     ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h \
+    ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.h \
     ./editors/ComponentEditor/memoryMaps/SubspaceMapModel.h \
     ./editors/ComponentEditor/memoryMaps/SubspaceMapDelegate.h \
     ./editors/ComponentEditor/memoryMaps/memorymapdelegate.h \
@@ -626,6 +630,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/enumeratedvaluemodel.h \
     ./editors/ComponentEditor/memoryMaps/fieldeditor.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h \
@@ -894,12 +900,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/treeStructure/SubspaceMapItem.h \
-    ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.h \
-    ./common/widgets/busReferenceComboBox/BusReferenceComboBox.h \
-    ./common/widgets/segmentComboBox/SegmentComboBox.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h
+    ./editors/common/DesignParameterFinder.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAPI.cpp \
@@ -973,6 +974,8 @@ SOURCES += ./VersionHelper.cpp \
     ./common/widgets/tagEditor/TagManager.cpp \
     ./common/widgets/tagEditor/TagSelector.cpp \
     ./common/widgets/tagEditor/TagSelectorContainer.cpp \
+    ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
+    ./common/widgets/segmentComboBox/SegmentComboBox.cpp \
     ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
@@ -1305,18 +1308,21 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/SubspaceMapDelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/SubspaceMapModel.cpp \
     ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapscene.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
+    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.cpp \
@@ -1382,6 +1388,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.cpp \
+    ./editors/ComponentEditor/treeStructure/SubspaceMapItem.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ./editors/ComponentEditor/visualization/memorygapitem.cpp \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
@@ -1679,10 +1686,5 @@ SOURCES += ./VersionHelper.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/treeStructure/SubspaceMapItem.cpp \
-    ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.cpp \
-    ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
-    ./common/widgets/segmentComboBox/SegmentComboBox.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.cpp
+    ./editors/common/DesignParameterFinder.cpp
 RESOURCES += kactus.qrc

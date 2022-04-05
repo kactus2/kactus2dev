@@ -24,6 +24,7 @@
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/common/ComponentInstanceParameterFinder.h>
+#include <editors/common/DesignParameterFinder.h>
 
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 
@@ -52,8 +53,9 @@
 // Function: ConnectivityGraphFactory::ConnectivityGraphFactory()
 //-----------------------------------------------------------------------------
 ConnectivityGraphFactory::ConnectivityGraphFactory(LibraryInterface* library):
-library_(library), parameterFinder_(new MultipleParameterFinder()), 
-    expressionParser_(new IPXactSystemVerilogParser(parameterFinder_))
+library_(library),
+parameterFinder_(new MultipleParameterFinder()), 
+expressionParser_(new IPXactSystemVerilogParser(parameterFinder_))
 {
 
 }
@@ -93,12 +95,12 @@ QSharedPointer<ConnectivityGraph> ConnectivityGraphFactory::createConnectivityGr
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::analyzeDesign()
 //-----------------------------------------------------------------------------
-void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design,
-    QSharedPointer<const DesignConfiguration> designConfiguration,
-    QVector<QSharedPointer<ConnectivityInterface> > const& topInterfaces, QSharedPointer<ConnectivityGraph> graph)
+void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<DesignInstantiation> designInstantiation,
+    QSharedPointer<const Design> design, QSharedPointer<const DesignConfiguration> designConfiguration,
+    QVector<QSharedPointer<ConnectivityInterface>> const& topInterfaces, QSharedPointer<ConnectivityGraph> graph)
     const
 {
-    QSharedPointer<ListParameterFinder> designParameterFinder(new ListParameterFinder());
+    QSharedPointer<DesignParameterFinder> designParameterFinder(new DesignParameterFinder(designInstantiation));
     designParameterFinder->setParameterList(design->getParameters());
 
     parameterFinder_->addFinder(designParameterFinder);
@@ -857,9 +859,30 @@ void ConnectivityGraphFactory::createConnectionsForDesign(QSharedPointer<const C
                 topInterface->setHierarchical();
             }
 
-            analyzeDesign(hierarchicalDesign, hierarchicalConfiguration, instanceInterfaces, graph);
+            QSharedPointer<DesignInstantiation> designInstantiation =
+                getDesignInstantiation(instancedComponent, activeComponentView);
+            analyzeDesign(designInstantiation, hierarchicalDesign, hierarchicalConfiguration, instanceInterfaces,
+                graph);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::getDesignInstantiation()
+//-----------------------------------------------------------------------------
+QSharedPointer<DesignInstantiation> ConnectivityGraphFactory::getDesignInstantiation(
+    QSharedPointer<const Component> instancedComponent, QSharedPointer<View> activeView) const
+{
+    QString designInstantiationReference = activeView->getDesignInstantiationRef();
+    for (auto instantiation : *instancedComponent->getDesignInstantiations())
+    {
+        if (instantiation->name() == designInstantiationReference)
+        {
+            return instantiation;
+        }
+    }
+
+    return QSharedPointer<DesignInstantiation>();
 }
 
 //-----------------------------------------------------------------------------
