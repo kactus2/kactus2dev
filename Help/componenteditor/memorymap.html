@@ -37,7 +37,7 @@
         is byte addressable (8 bits). E.g. if AUB=8, then 32-bit registers are at addresses
         0x0, 0x4, 0x8... If AUB=32, they are in addresses 0x0, 0x1, 0x2... AUB is the unit
         for base addresses and ranges within the address map.</p><p>
-	
+
 		<p>
         <b>Is present</b> is optional and allows enabling/disabling of a <i>memory map</i>
         presence in a <i>component</i>. Value 1 indicates that the <i>memory map</i>
@@ -45,14 +45,14 @@
         treated as if it does not exist. Is present can be given as a SystemVerilog expression,
         but it must evaluate to 1 or 0.</p>
 		<p>
-	
+
         <b>Remap state</b> identifies the name of the <i>remap state</i> for which the optional
         <i>memory map</i> elements are active. <i>Memory maps</i> are labeled with a default remap
         state, while <i>memory remaps</i> must be given a <i>remap state</i>. For more information
         on the <i>remap states</i>, see the remap states editor.
     </p>
     <p>
-		
+
         <b>Slave interface binding</b> shows which slave <i>bus interfaces</i> are used to access
         the <i>memory map</i>. The binding can only be set in the bus interface editor, but is
         shown here for convenience.
@@ -71,14 +71,14 @@
     </p>
     <p>
         <b>Base address</b> is mandatory and specifies the starting address for the <i>address block</i>.
-        It is expressed as address unit bits as defined in the containing <i>memory map</i>, 
+        It is expressed as address unit bits as defined in the containing <i>memory map</i>,
 		e.g. 8 or 32 bits.</p><p>
 
         <b>Range</b> is mandatory and specifies the size of the block in address unit bits.
     </p>
     <p>
 
-        <b>Width</b> is mandatory and specifies the data width in bits of a row in the 
+        <b>Width</b> is mandatory and specifies the data width in bits of a row in the
 		<i>address block</i>. It sets the
         maximum allowed size of a single transfer and also defines the maximum size of a
         single register. Register can be smaller but not wider than the value.
@@ -88,14 +88,14 @@
         possible values are:
     </p>
     <ul>
-        <li><b>Memory</b> specifies the <i>address block</i> as memory. 
+        <li><b>Memory</b> specifies the <i>address block</i> as memory.
 		A memory <i>address block</i> cannot contain registers.</li>
         <li><b>Register</b> specifies the entire <i>address block</i> to contain registers.</li>
-        <li><b>Reserved</b> specifies the entire <i>address block</i> as reserved for usage 
+        <li><b>Reserved</b> specifies the entire <i>address block</i> as reserved for usage
 		that is unknown to IP-XACT. A reserved <i>address block</i> cannot include registers.</li>
     </ul>
     <p>
-        <b>Access</b> is optional and is used to specify the accessibility of the <i>address block</i>. 
+        <b>Access</b> is optional and is used to specify the accessibility of the <i>address block</i>.
 		The possible values are:
     </p>
     <ul>
@@ -113,7 +113,7 @@
         write operation. For example, the timer value gets updated automatically and master
         must always issue a read to get the latest value.
     </p>
-	
+
 	<p>
         <b>Is present</b> is optional and allows enabling/disabling of a <i>address block</i>
         presence in a <i>memory map</i>. Value 1 indicates that the <i>address block</i>
@@ -121,13 +121,42 @@
         treated as if it does not exist. Is present can be given as a SystemVerilog expression,
         but it must evaluate to 1 or 0.</p>
 	<p>
-		
+
     <p>
         <b>Description</b> is an optional field for textual description of the <i>address block</i>.
     </p>
+
+    <h3>Subspace maps table</h3>
+
+    <p>
+    <b>Name</b> is a mandatory identifier for the <i>subspace map</i>.
+  </p>
+  <p>
+      <b>Base address</b> is mandatory and specifies the starting address for the <i>subspace
+          map</i> in address unit bits. The range is equal to the referenced <i>address
+          space</i> or <i>segment</i>.
+  </p>
+    <p>
+        <b>Master interface</b> is a mandatory identifier for the bridged master <i>bus interface</i>
+        that is accessed by the subspace map.
+    </p>
+    <p>
+        <b>Segment</b> is an optional reference to a <i>segment</i> within the
+          referenced master <i>bus interface</i>. If a <i>segment</i> is defined,
+          the access is limited to the specified segment instead of the whole
+          <i>address space</i>.
+    </p>
+  <p>
+        <b>Is present</b> is optional and allows enabling/disabling of a <i>subspace map</i>
+        presence in a <i>memory map</i>. Value 1 indicates that the <i>subspace map</i>
+        is present in the <i>memory map</i> whereas value 0 marks the subspace map to be
+        treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+        but it must evaluate to 1 or 0.
+      </p>
+
     <hr>
     <p>
-        EXAMPLE. A simple IP could have 1 memory map, 1 address block inside it, and three
+        EXAMPLE 1. A simple IP could have 1 memory map, 1 address block inside it, and three
         32-bit registers: ctrl, data_in, and data_out. Ctrl allows both read and write accesses,
         data_in is write-only, and data_out is read-only. The lower part of ctrl register
         is divided into two 8-bit fields and designer can describe how they are used. The
@@ -140,7 +169,27 @@
         it reserves the (byte) addresses 0x100-0x10B. It is good to set the width of the
         address block 32 b so that full register can be accessed at once. Smaller accesses
         (e.g. 1 byte at a time) are also allowed.
+        <br>
         <img src="../images/mem_map_visualization.png" alt="screen_cap_of_mem_map_visualization">
+    </p>
+
+    <p>
+        EXAMPLE 2. An opaque bridge provides access from a slave interface
+        to a master interface through a specific memory region i.e. a subspace map.
+        The address space and any memory maps connected to the master interface
+        remain obscured (opaque) behind the subspace map.
+        <br>
+        <br>
+        The slave bus interface accessIF provides access to memory map MM0 which contains
+        an address block ab0 and a subspace map ssm0. The subspace map refers master bus
+        interface outIF indicating that any access to memory locations within ssm0 are redirected
+        out of bus interface outIF. The subspace map size will match the address space AS0 range
+        (or segment range, if segment is specified) referenced in master interface outIF.
+        Any interface connected to accessIF will have visibility only to ab0 and ssm0 within the
+        memory map MM0 and no visibility to AS0 while still being able to transfer data to
+        components connected to outIF.
+        <br>
+        <img src="../images/subspace_map.png" alt="subspace map visual">
     </p>
 </body>
 </html>

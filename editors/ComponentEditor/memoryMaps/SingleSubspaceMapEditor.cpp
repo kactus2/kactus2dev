@@ -39,7 +39,7 @@ SingleSubspaceMapEditor::SingleSubspaceMapEditor(SubspaceMapInterface* subspaceI
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
-nameEditor_(subspaceMap, this, tr("Address block name and description")),
+nameEditor_(subspaceMap, this, tr("Subspace map name and description")),
 baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 masterSelector_(),
@@ -126,7 +126,7 @@ QSharedPointer<AddressSpace> SingleSubspaceMapEditor::getSpace(QString const& bu
 void SingleSubspaceMapEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-//     emit helpUrlRequested("componenteditor/addressblock.html");
+    emit helpUrlRequested("componenteditor/subspacemap.html");
 }
 
 //-----------------------------------------------------------------------------
@@ -203,10 +203,10 @@ void SingleSubspaceMapEditor::setupLayout()
     QFormLayout* subspaceDefinitionLayout = new QFormLayout(subspaceDefinitionGroup);
 
     subspaceDefinitionLayout->addRow(tr("Base Address [AUB], f(x):"), baseAddressEditor_);
-    subspaceDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
-
+    
     subspaceDefinitionLayout->addRow(tr("Master bus interface reference:"), masterSelector_);
     subspaceDefinitionLayout->addRow(tr("Segment reference:"), segmentSelector_);
+    subspaceDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
     topOfPageLayout->addWidget(&nameEditor_, 0);
