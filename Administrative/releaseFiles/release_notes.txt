@@ -8,6 +8,11 @@
               * Changed or Information
 ===============================================================================
 
+06/04/2022 3.9.333
+----------------------------------------------------
++ Added subspace maps to memory maps
+- Fixed configurable element value usage in design instantiations
+
 19/01/2022 3.9.171
 ----------------------------------------------------
 - Fixed inclusion of plugins to installer
