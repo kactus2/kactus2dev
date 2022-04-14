@@ -19,10 +19,27 @@ print_success() {
     fi
 }
 
+# Auto search QTBIN_PATH when empty and qmake already installed.
+if [ -z ${QTBIN_PATH} ]; then
+    if command -v qmake >/dev/null 2>&1; then
+        # qmake exists on the vast majority of linux distributions.
+        QTBIN_PATH=$(qmake -query QT_INSTALL_BINS)/
+    elif command -v qmake5 >/dev/null 2>&1; then
+        # qmake5, or future qmake6, will exist on some linux distributions.
+        QTBIN_PATH=$(qmake5 -query QT_INSTALL_BINS)/
+    fi
+fi
+
 # Generate compressed help files.
 echo "Generating compressed help files..."
-${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
-${QTBIN_PATH}qcollectiongenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
+if command -v ${QTBIN_PATH}qhelpgenerator >/dev/null 2>&1; then
+    ${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
+    # Generate collection config files.
+    # The "qcollectiongenerator" tool is deprecated, use "qhelpgenerator" instead.
+    ${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
+else
+    echo "Qhelpgenerator not found. Please set variable QTBIN_PATH to Qt binary files."
+fi
 
 if command -v ${QTBIN_PATH}qtchooser >/dev/null 2>&1; then
    #Run qmake using qtchooser.
@@ -33,6 +50,11 @@ elif command -v ${QTBIN_PATH}qmake >/dev/null 2>&1; then
    #Run qmake directly.
    echo "Qtchooser not found. Running qmake directly..."
    ${QTBIN_PATH}qmake Kactus2_Solution.pro
+   print_success
+elif command -v ${QTBIN_PATH}qmake5 >/dev/null 2>&1; then
+   #Run qmake directly.
+   echo "Qtchooser not found. Running qmake5 directly..."
+   ${QTBIN_PATH}qmake5 Kactus2_Solution.pro
    print_success
 else
     echo "Qmake not found. Please set variable QTBIN_PATH to Qt binary files."
