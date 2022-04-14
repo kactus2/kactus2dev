@@ -21,25 +21,28 @@
 bool BusInterfaceUtilities::hasMatchingBusDefinitions(QSharedPointer<const BusDefinition> firstDefinition,
     VLNV const& secondDefinitionVLNV, LibraryInterface* library)
 {
-    QSharedPointer<const BusDefinition> comparisonDefinition =
-        library->getModelReadOnly(secondDefinitionVLNV).dynamicCast<const BusDefinition>();
-    if (comparisonDefinition)
+    if (firstDefinition)
     {
-        if (firstDefinition == comparisonDefinition)
+        QSharedPointer<const BusDefinition> comparisonDefinition =
+            library->getModelReadOnly(secondDefinitionVLNV).dynamicCast<const BusDefinition>();
+        if (comparisonDefinition)
         {
-            return true;
-        }
-        else
-        {
-            VLNV comparisonExtendVLNV = comparisonDefinition->getExtends();
-            VLNV firstExtendVLNV = firstDefinition->getExtends();
-
-            if ((comparisonExtendVLNV.isValid() &&
-                hasMatchingBusDefinitions(firstDefinition, comparisonExtendVLNV, library)) ||
-                (firstExtendVLNV.isValid() &&
-                    hasMatchingBusDefinitions(comparisonDefinition, firstExtendVLNV, library)))
+            if (firstDefinition == comparisonDefinition)
             {
                 return true;
+            }
+            else
+            {
+                VLNV comparisonExtendVLNV = comparisonDefinition->getExtends();
+                VLNV firstExtendVLNV = firstDefinition->getExtends();
+
+                if ((comparisonExtendVLNV.isValid() &&
+                    hasMatchingBusDefinitions(firstDefinition, comparisonExtendVLNV, library)) ||
+                    (firstExtendVLNV.isValid() &&
+                        hasMatchingBusDefinitions(comparisonDefinition, firstExtendVLNV, library)))
+                {
+                    return true;
+                }
             }
         }
     }

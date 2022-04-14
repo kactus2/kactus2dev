@@ -105,16 +105,19 @@ bool ActiveBusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* oth
         // Otherwise make sure that the bus and abstraction definitions are of the same type.
         QSharedPointer<const BusDefinition> busDefinition = getLibraryAccess()->getModelReadOnly(
             getBusInterface()->getBusType()).dynamicCast<const BusDefinition>();
-        if (BusInterfaceUtilities::hasMatchingBusDefinitions(
-            busDefinition, otherInterface->getBusType(), getLibraryAccess()))
+        if (busDefinition)
         {
-            QList<General::InterfaceMode> compatibleModes = getOpposingModes(getBusInterface());
-            compatibleModes.append(General::SYSTEM);
+            if (BusInterfaceUtilities::hasMatchingBusDefinitions(
+                busDefinition, otherInterface->getBusType(), getLibraryAccess()))
+            {
+                QList<General::InterfaceMode> compatibleModes = getOpposingModes(getBusInterface());
+                compatibleModes.append(General::SYSTEM);
 
-            General::InterfaceMode otherMode = otherInterface->getInterfaceMode();
+                General::InterfaceMode otherMode = otherInterface->getInterfaceMode();
 
-            return getBusInterface()->getInterfaceMode() !=
-                General::MONITOR && compatibleModes.contains(otherMode);
+                return getBusInterface()->getInterfaceMode() !=
+                    General::MONITOR && compatibleModes.contains(otherMode);
+            }
         }
     }
 
