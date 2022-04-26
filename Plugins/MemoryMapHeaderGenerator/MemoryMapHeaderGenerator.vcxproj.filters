@@ -103,15 +103,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_filesavedialogview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -125,9 +116,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BaseMemoryMapHeaderWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\common\widgets\viewSelector\viewselector.cpp">
@@ -144,18 +132,6 @@
     <ClInclude Include="memorymapheadergenerator_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SystemMemoryMapHeaderWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -166,12 +142,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BaseMemoryMapHeaderWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -62,7 +62,7 @@ QString LinuxDeviceTreePlugin::getName() const
 //-----------------------------------------------------------------------------
 QString LinuxDeviceTreePlugin::getVersion() const
 {
-    return "0.1";
+    return "0.2";
 }
 
 //-----------------------------------------------------------------------------

@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsModel.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsDelegate.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
+#include <KactusAPI/include/ResetInterface.h>
 
 #include <QVBoxLayout>
 

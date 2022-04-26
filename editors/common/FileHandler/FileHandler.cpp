@@ -21,12 +21,12 @@ QMap<QString, QString> FileHandler::constructFileSuffixTable()
     QMap<QString, QString> fileSuffixTable;
 
     QSettings settings;
-    settings.beginGroup("FileTypes");
+    settings.beginGroup(QStringLiteral("FileTypes"));
     foreach(QString const& fileType, settings.childGroups())
     {
         settings.beginGroup(fileType);
 
-        QStringList fileTypeExtensions = settings.value("Extensions").toString().split(';');
+        QStringList fileTypeExtensions = settings.value(QStringLiteral("Extensions")).toString().split(QLatin1Char(';'));
         foreach(QString const& extension, fileTypeExtensions)
         {
             fileSuffixTable.insertMulti(extension, fileType);
@@ -55,5 +55,5 @@ QString FileHandler::getFileTypeForSuffix(QMap<QString, QString> const& fileSuff
         }
     }
 
-    return QString("");
+    return QString();
 }

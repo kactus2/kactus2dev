@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
 #include <editors/ComponentEditor/parameters/ParameterEditorHeaderView.h>
 #include <editors/ComponentEditor/parameters/parametersmodel.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>

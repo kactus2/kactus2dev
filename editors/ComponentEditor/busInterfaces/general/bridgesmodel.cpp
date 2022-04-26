@@ -14,7 +14,7 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h>
+#include <KactusAPI/include/TransparentBridgeInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: BridgesModel::BridgesModel()

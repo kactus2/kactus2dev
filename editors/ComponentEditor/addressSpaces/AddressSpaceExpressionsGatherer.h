@@ -15,13 +15,15 @@
 #include <QSharedPointer>
 #include <QStringList>
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 class AddressSpace;
 class Segment;
 
 //-----------------------------------------------------------------------------
 //! Gathers expressions from an address space and its memory maps.
 //-----------------------------------------------------------------------------
-class AddressSpaceExpressionGatherer
+class KACTUS2_API AddressSpaceExpressionGatherer
 {
 
 public:

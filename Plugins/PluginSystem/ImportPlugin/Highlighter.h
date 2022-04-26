@@ -29,7 +29,7 @@ public:
      *      @param [in] highlightColor  The color of the highlight.
      *      @param [in] subSection      Subsection where the text is located.
      */
-    virtual void applyHighlight(QString const& text, QColor const& highlightColor, QString const& subSection = "") = 0;
+    virtual void applyHighlight(QString const& text, QColor const& highlightColor, QString const& subSection = QString()) = 0;
 
     /*!
      *  Called when a section should be highlighted with the given color.

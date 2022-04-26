@@ -11,7 +11,7 @@
 
 #include "filenameeditor.h"
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <KactusAPI/include/FileInterface.h>
 
 #include <IPXACTmodels/Component/File.h>
 

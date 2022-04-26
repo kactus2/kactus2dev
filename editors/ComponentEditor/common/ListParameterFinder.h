@@ -16,13 +16,15 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 #include <QSharedPointer>
 #include <QList>
 
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters from a list with the correct ID.
 //-----------------------------------------------------------------------------
-class ListParameterFinder : public ParameterFinder
+class KACTUS2_API ListParameterFinder : public ParameterFinder
 {
 
 public:

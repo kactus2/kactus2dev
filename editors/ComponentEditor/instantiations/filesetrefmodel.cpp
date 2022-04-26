@@ -15,7 +15,7 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: filesetrefmodel::FileSetRefModel()

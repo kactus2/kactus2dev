@@ -21,7 +21,7 @@
 #include <common/ui/ConsoleMediator.h>
 #include <common/ui/GraphicalMessageMediator.h>
 
-#include <common/KactusAPI.h>
+#include <KactusAPI/KactusAPI.h>
 
 #include <VersionHelper.h>
 

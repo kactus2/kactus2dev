@@ -34,7 +34,7 @@
 #include <IPXACTmodels/Component/RemapPort.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
 
-#include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
+#include <KactusAPI/include/AbstractParameterInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterReferenceCounter::ComponentParameterReferenceCounter()

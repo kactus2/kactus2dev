@@ -18,7 +18,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
 
 #include <QApplication>
 #include <QFile>

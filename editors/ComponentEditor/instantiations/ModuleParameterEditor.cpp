@@ -24,7 +24,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ParametersView.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
+#include <KactusAPI/include/ModuleParameterInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 

@@ -12,7 +12,7 @@
 #include "ResetsModel.h"
 
 #include <editors/ComponentEditor/memoryMaps/ResetColumns.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
+#include <KactusAPI/include/ResetInterface.h>
 
 #include <common/KactusColors.h>
 

@@ -14,7 +14,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
-#include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
+#include <KactusAPI/include/AbstractParameterInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterReferenceCounter::ParameterReferenceCounter()

@@ -13,7 +13,7 @@
 #include "FileBuilderColumns.h"
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <KactusAPI/include/FileBuilderInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <IPXACTmodels/common/FileBuilder.h>

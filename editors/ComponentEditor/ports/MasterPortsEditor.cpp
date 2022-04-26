@@ -11,14 +11,14 @@
 
 #include "MasterPortsEditor.h"
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <editors/ComponentEditor/ports/portsmodel.h>
 #include <editors/ComponentEditor/ports/PortsView.h>
 #include <editors/ComponentEditor/ports/PortsFilter.h>
 #include <editors/ComponentEditor/ports/PortsEditorConstructor.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 

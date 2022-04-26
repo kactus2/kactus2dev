@@ -51,7 +51,7 @@ QString VerilogImporter::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogImporter::getVersion() const
 {
-    return "1.2";
+    return "1.3";
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ QString VerilogImporter::getDescription() const
 //-----------------------------------------------------------------------------
 QString VerilogImporter::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------

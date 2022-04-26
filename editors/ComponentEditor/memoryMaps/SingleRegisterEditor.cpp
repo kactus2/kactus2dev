@@ -21,7 +21,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/AddressBlock.h>

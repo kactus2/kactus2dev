@@ -11,7 +11,7 @@
 
 #include "BusReferenceComboBox.h"
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusReferenceComboBox::BusReferenceComboBox()

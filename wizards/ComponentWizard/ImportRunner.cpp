@@ -200,7 +200,7 @@ void ImportRunner::importIncludes(QString const& filePath, QString const& compon
     }
 
     QList<FileDependencyDesc> dependencies;
-    QString componentPath = QFileInfo(componentXmlPath).absolutePath() + "/";
+    QString componentPath = QFileInfo(componentXmlPath).absolutePath() + QStringLiteral("/");
     QStringList filetypes = filetypesOf(filePath, *importComponent->getFileSets().data());
 
     for (ISourceAnalyzerPlugin* analyzer : analyzerPluginsForFileTypes(filetypes))
@@ -212,11 +212,12 @@ void ImportRunner::importIncludes(QString const& filePath, QString const& compon
     }
 
     QList<ImportPlugin*> importPlugins = includeImportPluginsForFileTypes(filetypes);
-    QString basePath = QFileInfo(General::getAbsolutePath(componentXmlPath, filePath)).absolutePath() + "/";
+    QString basePath = QFileInfo(General::getAbsolutePath(componentXmlPath, filePath)).absolutePath() + 
+        QStringLiteral("/");
 
     for (FileDependencyDesc const& dependency : dependencies)
     {        
-        importFile(QString(""), dependency.filename, basePath, importPlugins, importComponent);
+        importFile(QString(), dependency.filename, basePath, importPlugins, importComponent);
     }
 }
 
@@ -228,7 +229,7 @@ QStringList ImportRunner::filetypesOf(QString const& fileName, QList<QSharedPoin
 {
     QStringList fileTypes;
 
-    QRegularExpression filePattern("(?:^|[\\\\/])" + fileName + "$");
+    QRegularExpression filePattern(QStringLiteral("(?:^|[\\\\/])") + fileName + QStringLiteral("$"));
 
     for (auto const& fileSet : fileSets)
     {
@@ -318,8 +319,8 @@ void ImportRunner::importFile(QString const& componentName, QString const& fileP
             parser->import(fileContent, componentDeclaration, importComponent);
         }
     }
-    compatibilityWarnings.removeAll("");
-    emit noticeMessage(compatibilityWarnings.join("\n"));
+    compatibilityWarnings.removeAll(QString());
+    emit noticeMessage(compatibilityWarnings.join(QStringLiteral("\n")));
 
 
     if (displayTabs_ != nullptr)
@@ -357,13 +358,13 @@ QPlainTextEdit* ImportRunner::createSourceDisplayForFile(QString const& filePath
 {
     QPlainTextEdit* sourceDisplay = new QPlainTextEdit(displayTabs_);
 
-    QFont font("Courier");
+    QFont font(QStringLiteral("Courier"));
     font.setStyleHint(QFont::Monospace);
     font.setFixedPitch(true);
     font.setPointSize(9);
 
     sourceDisplay->setFont(font);
-    sourceDisplay->setTabStopWidth(4 * sourceDisplay->fontMetrics().width(' '));
+    sourceDisplay->setTabStopWidth(4 * sourceDisplay->fontMetrics().width(QLatin1Char(' ')));
     sourceDisplay->setReadOnly(true);
     sourceDisplay->setCursorWidth(0);
 
@@ -377,7 +378,7 @@ QPlainTextEdit* ImportRunner::createSourceDisplayForFile(QString const& filePath
 //-----------------------------------------------------------------------------
 QString ImportRunner::readInputFile(QString const& relativePath, QString const& basePath) const
 {
-    QString fileContent = "";
+    QString fileContent = QString();
 
     QString absoluteFilePath = General::getAbsolutePath(basePath, relativePath);
     QFile importedFile(absoluteFilePath);
@@ -385,7 +386,7 @@ QString ImportRunner::readInputFile(QString const& relativePath, QString const& 
     {
         QTextStream stream(&importedFile);
         fileContent = stream.readAll();
-        fileContent.replace("\r\n", "\n");
+        fileContent.replace(QStringLiteral("\r\n"), QStringLiteral("\n"));
 
         importedFile.close();
     }

@@ -1,6 +1,8 @@
 #ifndef REGISTERFILEEXPRESSIONGATHERER_H
 #define REGISTERFILEEXPRESSIONGATHERER_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <QSharedPointer>
 #include <QStringList>
 
@@ -9,7 +11,7 @@ class RegisterFile;
 //-----------------------------------------------------------------------------
 //! Gathers expressions from a register file and its registers
 //-----------------------------------------------------------------------------
-class RegisterFileExpressionsGatherer
+class KACTUS2_API RegisterFileExpressionsGatherer
 {
 
 public:

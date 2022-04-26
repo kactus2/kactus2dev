@@ -36,7 +36,7 @@ QString CppSourceAnalyzer::getName() const
 //-----------------------------------------------------------------------------
 QString CppSourceAnalyzer::getVersion() const
 {
-    return "1.0";
+    return "1.1";
 }
 
 //-----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ QString CppSourceAnalyzer::getDescription() const
 //-----------------------------------------------------------------------------
 QString CppSourceAnalyzer::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------

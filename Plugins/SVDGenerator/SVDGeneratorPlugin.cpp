@@ -51,7 +51,7 @@ QString SVDGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString SVDGeneratorPlugin::getVersion() const
 {
-    return "0.1";
+    return "0.2";
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ QString SVDGeneratorPlugin::getDescription() const
 //-----------------------------------------------------------------------------
 QString SVDGeneratorPlugin::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------

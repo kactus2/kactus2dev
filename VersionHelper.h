@@ -12,6 +12,8 @@
 #ifndef VERSIONHELPER_H
 #define VERSIONHELPER_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include "QString"
 
 namespace VersionHelper
@@ -19,17 +21,17 @@ namespace VersionHelper
     /*!
      *  Returns a formatted full version info including the bit information of the build.
      */
-    QString createVersionString();
+    KACTUS2_API QString createVersionString();
 
     /*!
      *  Returns full version info, separated by dots.
      */
-    QString versionFull();
+    KACTUS2_API QString versionFull();
 
     /*!
     *  Returns full version info, separated by commas.
      */
-    QString versionFileStr();
+    KACTUS2_API QString versionFileStr();
 }
 
 #endif // VERSIONHELPER_H

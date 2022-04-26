@@ -12,6 +12,8 @@
 #ifndef COMPONENTANDINSTANTIATIONSPARAMETERFINDER_H
 #define COMPONENTANDINSTANTIATIONSPARAMETERFINDER_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
 class Component;
@@ -19,7 +21,7 @@ class Component;
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters from the full component with the correct ID.
 //-----------------------------------------------------------------------------
-class ComponentAndInstantiationsParameterFinder : public ComponentParameterFinder
+class KACTUS2_API ComponentAndInstantiationsParameterFinder : public ComponentParameterFinder
 {
 
 public:

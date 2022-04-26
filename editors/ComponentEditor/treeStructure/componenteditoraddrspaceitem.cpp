@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
 #include <IPXACTmodels/Component/Component.h>

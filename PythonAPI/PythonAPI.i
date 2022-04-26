@@ -13,10 +13,10 @@
 #define Q_DECL_EXPORT __declspec(dllexport)
 #define Q_DECL_IMPORT __declspec(dllimport)
 
-%include "../common/Global.h"
+%include "../KactusAPI/KactusAPIGlobal.h"
 
 %{
-#include "../common/Global.h"
+#include "../KactusAPI/KactusAPIGlobal.h"
 #include "PythonAPI.h"
 #include "../editors/ComponentEditor/common/interfaces/CommonInterface.h"
 #include "../editors/ComponentEditor/common/interfaces/NameGroupInterface.h"

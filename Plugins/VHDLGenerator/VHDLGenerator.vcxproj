@@ -94,7 +94,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>../../x64/executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5Widgetsd.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5Widgetsd.lib;IPXACTmodelsd.lib;KactusAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
     </Link>
@@ -137,13 +137,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\utils.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp" />
@@ -214,15 +207,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\utils.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatterFactory.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />

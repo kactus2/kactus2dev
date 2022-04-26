@@ -19,12 +19,12 @@
 #include "ComponentWizardViewsPage.h"
 #include "ComponentWizardConclusionPage.h"
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
+#include <KactusAPI/include/FileInterface.h>
+#include <KactusAPI/include/FileBuilderInterface.h>
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
 #include <IPXACTmodels/Component/Component.h>

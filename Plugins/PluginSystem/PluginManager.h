@@ -16,12 +16,14 @@
 #include <QList>
 #include <QObject>
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 class IPlugin;
 
 //-----------------------------------------------------------------------------
 //! Plugin manager which manages loaded plugins.
 //-----------------------------------------------------------------------------
-class PluginManager
+class KACTUS2_API PluginManager
 {
 public:
 

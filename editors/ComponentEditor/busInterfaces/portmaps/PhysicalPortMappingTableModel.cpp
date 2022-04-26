@@ -13,7 +13,7 @@
 #include "PortMappingColumns.h"
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/common/DirectionTypes.h>

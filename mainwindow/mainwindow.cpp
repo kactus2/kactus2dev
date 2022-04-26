@@ -42,7 +42,8 @@
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnConstants.h>
-#include <common/KactusAPI.h>
+
+#include <KactusAPI/KactusAPI.h>
 
 #include <editors/common/DesignWidgetFactoryImplementation.h>
 #include <editors/HWDesign/HWDesignWidget.h>

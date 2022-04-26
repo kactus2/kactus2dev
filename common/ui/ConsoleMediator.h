@@ -12,11 +12,13 @@
 #ifndef CONSOLEMEDIATOR_H
 #define CONSOLEMEDIATOR_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include "MessageMediator.h"
 //-----------------------------------------------------------------------------
 //! Console output for user messages.
 //-----------------------------------------------------------------------------
-class ConsoleMediator: public MessageMediator
+class KACTUS2_API ConsoleMediator: public MessageMediator
 {
 public:
 

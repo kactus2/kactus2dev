@@ -67,7 +67,7 @@ QString ComponentParameterFinder::nameForId(QString const& id) const
         return targetParameter->name();
     }
 
-    return "";
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ QString ComponentParameterFinder::valueForId(QString const& id) const
         return targetParameter->getValue();
     }
 
-    return "";
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ QStringList ComponentParameterFinder::getAllParameterIds() const
         }
     }
 
-    allParameterIds.removeAll("");
+    allParameterIds.removeAll(QString());
     return allParameterIds;
 }
 

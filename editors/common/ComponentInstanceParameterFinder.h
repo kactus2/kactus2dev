@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/common/ParameterCache.h>
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <QSharedPointer>
 
 class Component;
@@ -23,7 +25,7 @@ class Parameter;
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters for component instance.
 //-----------------------------------------------------------------------------
-class ComponentInstanceParameterFinder : public ParameterCache
+class KACTUS2_API ComponentInstanceParameterFinder : public ParameterCache
 {
     Q_OBJECT
 

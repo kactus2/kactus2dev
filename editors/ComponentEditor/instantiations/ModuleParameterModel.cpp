@@ -15,7 +15,7 @@
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
 
 #include <common/KactusColors.h>
 

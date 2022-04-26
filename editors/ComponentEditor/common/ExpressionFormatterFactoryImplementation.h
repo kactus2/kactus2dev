@@ -12,6 +12,8 @@
 #ifndef EXPRESSIONFORMATTERFACTORYIMPLEMENTATION_H
 #define EXPRESSIONFORMATTERFACTORYIMPLEMENTATION_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include "ExpressionFormatterFactory.h"
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -19,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! Class for constructing expression formatters.
 //-----------------------------------------------------------------------------
-class ExpressionFormatterFactoryImplementation : public ExpressionFormatterFactory
+class KACTUS2_API ExpressionFormatterFactoryImplementation : public ExpressionFormatterFactory
 {
 
 public:

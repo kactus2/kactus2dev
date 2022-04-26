@@ -59,8 +59,8 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 
 #include <QMessageBox>
 #include <QFileDialog>

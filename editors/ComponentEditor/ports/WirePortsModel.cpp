@@ -11,7 +11,7 @@
 
 #include "WirePortsModel.h"
 
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
 #include <editors/ComponentEditor/ports/WirePortColumns.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>

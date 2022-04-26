@@ -41,24 +41,6 @@
     <Filter Include="Header Files\Parsing">
       <UniqueIdentifier>{0ac476ff-d2d4-46f6-8081-d4d1cd560f7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors">
-      <UniqueIdentifier>{c677cc95-d118-4ae9-a824-a0122988bbd0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor">
-      <UniqueIdentifier>{02b9fd13-3cf0-4339-baf1-ce4c7450f9d9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\common">
-      <UniqueIdentifier>{3b4a1264-9319-4ab5-a86c-744ca346d1b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors">
-      <UniqueIdentifier>{212cf195-a989-48d2-8d6d-2f91a4752a0c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor">
-      <UniqueIdentifier>{830aa71a-ec37-4b45-94cc-b89cc1c0f134}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\common">
-      <UniqueIdentifier>{5f45605e-d8ff-4960-9de7-7f7e393899b2}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoryViewGeneratorPlugin.cpp">
@@ -73,32 +55,14 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MemoryViewGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\qrc_MemoryViewGenerator.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ParameterCache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_ParameterCache.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_ParameterCache.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
       <Filter>Source Files\GenerationControl</Filter>
@@ -112,17 +76,11 @@
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp">
       <Filter>Source Files\Parsing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\common\ComponentInstanceParameterFinder.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceParameterFinder.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -162,24 +120,6 @@
     <ClInclude Include="memoryviewgenerator_global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h">
       <Filter>Header Files\GenerationControl</Filter>
     </ClInclude>
@@ -191,9 +131,6 @@
     </ClInclude>
     <ClInclude Include="..\common\HDLParser\MetaComponent.h">
       <Filter>Header Files\Parsing</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\HDLParser\MetaDesign.h">
       <Filter>Header Files\Parsing</Filter>
@@ -235,12 +172,6 @@
     </CustomBuild>
     <CustomBuild Include="MemoryViewGenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\editors\common\ComponentInstanceParameterFinder.h">
-      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

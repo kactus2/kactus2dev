@@ -28,7 +28,7 @@ QString VersionHelper::createVersionString()
     int bits = 32;
 #endif
 
-    return QString("%1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
+    return QStringLiteral("%1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
         QString::number(VERSION_MINOR),
         QString::number(VERSION_BUILDNO),
         QString::number(bits));
@@ -39,7 +39,7 @@ QString VersionHelper::createVersionString()
 //-----------------------------------------------------------------------------
 QString VersionHelper::versionFull()
 {
-    return TOSTRING(VERSION_FULL);
+    return QStringLiteral(TOSTRING(VERSION_FULL));
 }
 
 //-----------------------------------------------------------------------------
@@ -47,5 +47,5 @@ QString VersionHelper::versionFull()
 //-----------------------------------------------------------------------------
 QString VersionHelper::versionFileStr()
 {
-    return VERSION_FILESTR;
+    return QStringLiteral(VERSION_FILESTR);
 }

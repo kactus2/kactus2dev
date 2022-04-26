@@ -12,6 +12,8 @@
 #ifndef FILEHANDLER_H
 #define FILEHANDLER_H
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 #include <QMap>
 #include <QString>
 
@@ -25,7 +27,7 @@ namespace FileHandler
      *
      *      @return Table with file extension as key and file type as value.
      */
-    QMap<QString, QString> constructFileSuffixTable();
+    KACTUS2_API QMap<QString, QString> constructFileSuffixTable();
 
     /*!
      *  Get a file type for the selected file extension.
@@ -35,7 +37,7 @@ namespace FileHandler
      *
      *      @return File type matching the selected extension.
      */
-    QString getFileTypeForSuffix(QMap<QString, QString> const& fileSuffixTable, QString const& suffix);
+    KACTUS2_API QString getFileTypeForSuffix(QMap<QString, QString> const& fileSuffixTable, QString const& suffix);
 };
 
 #endif // FILEHANDLER_H

@@ -16,7 +16,7 @@
 #include <editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h>
 #include <editors/ComponentEditor/memoryMaps/fieldeditor.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsEditor.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>

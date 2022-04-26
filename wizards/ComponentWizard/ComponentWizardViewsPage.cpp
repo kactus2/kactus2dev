@@ -28,7 +28,7 @@
 
 #include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
+#include <KactusAPI/include/ModuleParameterInterface.h>
 
 #include <QPushButton>
 #include <QVBoxLayout>

@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <KactusAPI/include/FileBuilderInterface.h>
 
 #include <IPXACTmodels/common/FileBuilder.h>
 

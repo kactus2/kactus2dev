@@ -14,6 +14,8 @@
 
 #include "SystemVerilogExpressionParser.h"
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -23,7 +25,7 @@ class ParameterFinder;
 //-----------------------------------------------------------------------------
 // Parser for SystemVerilog expressions with parameter references.
 //-----------------------------------------------------------------------------
-class IPXactSystemVerilogParser : public SystemVerilogExpressionParser
+class KACTUS2_API IPXactSystemVerilogParser : public SystemVerilogExpressionParser
 {
 public:
 

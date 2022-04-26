@@ -15,11 +15,13 @@
 #include <QSharedPointer>
 #include <QStringList>
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 class MemoryMapBase;
 //-----------------------------------------------------------------------------
 //! Gathers expressions from a memory remap and its address blocks.
 //-----------------------------------------------------------------------------
-class MemoryRemapExpressionGatherer
+class KACTUS2_API MemoryRemapExpressionGatherer
 {
 
 public:

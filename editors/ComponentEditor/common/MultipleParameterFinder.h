@@ -16,10 +16,12 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 //-----------------------------------------------------------------------------
 //! Parameter finder of multiple components.
 //-----------------------------------------------------------------------------
-class MultipleParameterFinder : public ParameterFinder
+class KACTUS2_API MultipleParameterFinder : public ParameterFinder
 {
 
 public:

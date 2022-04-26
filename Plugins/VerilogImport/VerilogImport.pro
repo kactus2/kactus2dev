@@ -15,7 +15,8 @@ INCLUDEPATH += ./../.. \
     . \
     ./generatedFiles/Debug
 LIBS += -L"./../../executable" \
-    -lIPXACTmodels
+    -lIPXACTmodels \
+	-lKactusAPI
 
 DESTDIR = ../../executable/Plugins
 

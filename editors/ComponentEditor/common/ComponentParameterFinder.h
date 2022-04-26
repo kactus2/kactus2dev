@@ -14,13 +14,15 @@
 
 #include "ParameterFinder.h"
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 class AbstractParameterModel;
 class Component;
 
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters with the correct ID.
 //-----------------------------------------------------------------------------
-class ComponentParameterFinder : public ParameterFinder
+class KACTUS2_API ComponentParameterFinder : public ParameterFinder
 {
 
 public:

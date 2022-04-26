@@ -49,7 +49,7 @@ QString MemoryMapHeaderGenerator::getName() const
 //-----------------------------------------------------------------------------
 QString MemoryMapHeaderGenerator::getVersion() const
 {
-	return tr("1.0");
+	return tr("1.1");
 }
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ QString MemoryMapHeaderGenerator::getDescription() const
 //-----------------------------------------------------------------------------
 QString MemoryMapHeaderGenerator::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------

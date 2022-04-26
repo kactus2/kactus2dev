@@ -14,6 +14,8 @@
 
 #include "ParameterFinder.h"
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 #include <QSharedPointer>
 
 class ExpressionParser;
@@ -21,7 +23,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Expression formatter.
 //-----------------------------------------------------------------------------
-class ExpressionFormatter
+class KACTUS2_API ExpressionFormatter
 {
 
 public:

@@ -22,7 +22,7 @@
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <common/KactusColors.h>

@@ -12,6 +12,8 @@
 #ifndef PARAMETERCACHE_H
 #define PARAMETERCACHE_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include "ParameterFinder.h"
 #include "ComponentParameterFinder.h"
 
@@ -23,7 +25,7 @@ class Parameter;
 //-----------------------------------------------------------------------------
 //! The cached implementation for finding parameters with the correct ID.
 //-----------------------------------------------------------------------------
-class ParameterCache : public QObject, public ComponentParameterFinder
+class KACTUS2_API ParameterCache : public QObject, public ComponentParameterFinder
 {
     Q_OBJECT
 public:

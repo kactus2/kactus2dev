@@ -12,8 +12,8 @@
 #include "SubspaceMapDelegate.h"
 
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapColumns.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/SubspaceMapInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>

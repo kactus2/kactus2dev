@@ -17,7 +17,7 @@
 
 #include <library/LibraryInterface.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <KactusAPI/include/FileInterface.h>
 
 #include <QScrollArea>
 #include <QVBoxLayout>

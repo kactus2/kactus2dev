@@ -14,13 +14,15 @@
 
 #include "ExpressionParser.h"
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 #include <QString>
 #include <QMap>
 
 //-----------------------------------------------------------------------------
 //! Parser for SystemVerilog expressions.
 //-----------------------------------------------------------------------------
-class SystemVerilogExpressionParser : public ExpressionParser
+class KACTUS2_API SystemVerilogExpressionParser : public ExpressionParser
 {
 public:
 

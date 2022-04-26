@@ -11,7 +11,7 @@
 
 #include "AbstractParameterModel.h"
 
-#include <editors/ComponentEditor/parameters/AbstractParameterInterface.h>
+#include <KactusAPI/include/AbstractParameterInterface.h>
 
 #include <common/KactusColors.h>
 

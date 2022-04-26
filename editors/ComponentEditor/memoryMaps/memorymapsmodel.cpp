@@ -14,7 +14,7 @@
 #include "MemoryMapsColumns.h"
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
+#include <KactusAPI/include/MemoryMapInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>

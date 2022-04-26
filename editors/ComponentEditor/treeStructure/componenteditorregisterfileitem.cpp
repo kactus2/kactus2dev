@@ -16,7 +16,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.h>
 

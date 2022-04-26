@@ -12,6 +12,8 @@
 #ifndef IMPORTRUNNER_H
 #define IMPORTRUNNER_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <Plugins/PluginSystem/PluginManager.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
@@ -32,7 +34,7 @@ class ISourceAnalyzerPlugin;
 //-----------------------------------------------------------------------------
 //! Runs import plugins for a given file and component.
 //-----------------------------------------------------------------------------
-class ImportRunner : public QObject
+class KACTUS2_API ImportRunner : public QObject
 {
     Q_OBJECT
 public:

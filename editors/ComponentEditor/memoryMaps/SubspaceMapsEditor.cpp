@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapColumns.h>
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapModel.h>
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapDelegate.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
+#include <KactusAPI/include/SubspaceMapInterface.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <IPXACTmodels/Component/Component.h>

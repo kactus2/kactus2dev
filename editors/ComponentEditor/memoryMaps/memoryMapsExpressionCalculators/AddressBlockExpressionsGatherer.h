@@ -14,13 +14,15 @@
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 #include <QSharedPointer>
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
 //! Gathers expressions from an address block and its registers.
 //-----------------------------------------------------------------------------
-class AddressBlockExpressionGatherer
+class KACTUS2_API AddressBlockExpressionGatherer
 {
 
 public:

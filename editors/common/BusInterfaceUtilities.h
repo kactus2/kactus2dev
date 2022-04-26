@@ -12,11 +12,12 @@
 #ifndef BUSINTERFACECOMPATIBILITIES_H
 #define BUSINTERFACECOMPATIBILITIES_H
 
-#include <common/Global.h>
+#include <KactusAPI/KactusAPIGlobal.h>
 
 #include <QSharedPointer>
 
 #include <IPXACTmodels/generaldeclarations.h>
+
 
 class BusDefinition;
 class VLNV;
@@ -35,7 +36,7 @@ namespace BusInterfaceUtilities
      *
      *      @return True, if the bus definitions match, false otherwise.
      */
-    bool hasMatchingBusDefinitions(QSharedPointer<const BusDefinition> firstDefinition,
+    KACTUS2_API bool hasMatchingBusDefinitions(QSharedPointer<const BusDefinition> firstDefinition,
         VLNV const& secondDefinitionVLNV, LibraryInterface* library);
 
     /*!
@@ -57,7 +58,7 @@ namespace BusInterfaceUtilities
      *
      *      @return Path for the bus interface mode icon.
      */
-    QString getIconPath(General::InterfaceMode busMode);
+    KACTUS2_API QString getIconPath(General::InterfaceMode busMode);
 }
 
 //-----------------------------------------------------------------------------

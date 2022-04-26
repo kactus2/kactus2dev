@@ -22,7 +22,7 @@
 #include <editors/ComponentEditor/memoryMaps/memorymapdelegate.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapmodel.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 

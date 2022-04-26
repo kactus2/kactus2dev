@@ -31,7 +31,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
 
 #include <editors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h>
 #include <editors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h>

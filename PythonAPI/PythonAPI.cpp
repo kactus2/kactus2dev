@@ -13,7 +13,7 @@
 
 #include <library/LibraryHandler.h>
 
-#include <common/KactusAPI.h>
+#include <KactusAPI/KactusAPI.h>
 
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
@@ -24,19 +24,19 @@
 #include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/PortsInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
+#include <KactusAPI/include/ResetInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
+#include <KactusAPI/include/MemoryMapInterface.h>
+#include <KactusAPI/include/SubspaceMapInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
+#include <KactusAPI/include/FileInterface.h>
+#include <KactusAPI/include/FileBuilderInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 
 #include <editors/HWDesign/interfaces/ComponentInstanceInterface.h>
 #include <editors/HWDesign/interfaces/InterconnectionInterface.h>

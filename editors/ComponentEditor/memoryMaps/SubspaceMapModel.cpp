@@ -12,7 +12,7 @@
 #include "SubspaceMapModel.h"
 
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapColumns.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
+#include <KactusAPI/include/SubspaceMapInterface.h>
 
 #include <common/KactusColors.h>
 

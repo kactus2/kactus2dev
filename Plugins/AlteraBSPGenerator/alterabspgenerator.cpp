@@ -53,7 +53,7 @@ QString AlteraBSPGenerator::getDescription() const
 //-----------------------------------------------------------------------------
 QString AlteraBSPGenerator::getVendor() const
 {
-    static QString vendor(tr("TUT"));
+    static QString vendor(tr("Tampere University (tuni.fi)"));
     return vendor;
 }
 

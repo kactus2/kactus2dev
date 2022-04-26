@@ -16,7 +16,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
+#include <KactusAPI/include/MemoryMapInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>

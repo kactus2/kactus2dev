@@ -44,7 +44,7 @@ QString ModelSimGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString ModelSimGeneratorPlugin::getVersion() const
 {
-    return "2.1";
+    return "2.2";
 }
 
 //-----------------------------------------------------------------------------

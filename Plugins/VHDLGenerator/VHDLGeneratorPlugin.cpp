@@ -50,7 +50,7 @@ QString VHDLGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VHDLGeneratorPlugin::getVersion() const
 {
-    return "1.3";
+    return "1.4";
 }
 
 //-----------------------------------------------------------------------------

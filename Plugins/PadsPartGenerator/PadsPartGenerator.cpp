@@ -99,7 +99,7 @@ QString PadsPartGenerator::getName() const
 //-----------------------------------------------------------------------------
 QString PadsPartGenerator::getVersion() const
 {
-    return tr("1.0");
+    return tr("1.1");
 }
 
 //-----------------------------------------------------------------------------
@@ -115,7 +115,7 @@ QString PadsPartGenerator::getDescription() const
 //-----------------------------------------------------------------------------
 QString PadsPartGenerator::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------
