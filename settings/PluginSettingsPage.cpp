@@ -15,8 +15,8 @@
 #include <KactusAPI/include/IGeneratorPlugin.h>
 #include <KactusAPI/include/ISourceAnalyzerPlugin.h>
 #include <KactusAPI/include/ImportPlugin.h>
-#include <Plugins/PluginSystem/PluginInfoWidget.h>
-#include <Plugins/PluginSystem/NewPluginsDialog.h>
+#include <settings/PluginInfoWidget.h>
+#include <settings/NewPluginsDialog.h>
 
 #include <IPXACTmodels/utilities/XmlUtils.h>
 

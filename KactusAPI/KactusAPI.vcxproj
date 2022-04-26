@@ -105,11 +105,17 @@
     </QtMoc>
     <ClInclude Include="include\CLIGenerator.h" />
     <ClInclude Include="include\ComponentInstantiationInterface.h" />
+    <ClInclude Include="include\ExpressionSupport.h" />
+    <ClInclude Include="include\Highlighter.h" />
+    <ClInclude Include="include\HighlightSource.h" />
     <ClInclude Include="include\IGeneratorPlugin.h" />
+    <ClInclude Include="include\ImportColors.h" />
     <ClInclude Include="include\ImportPlugin.h" />
     <ClInclude Include="include\IncludeImportPlugin.h" />
     <ClInclude Include="include\IPlugin.h" />
     <ClInclude Include="include\IPluginUtility.h" />
+    <ClInclude Include="include\ModelParameterSource.h" />
+    <ClInclude Include="include\ModelParameterVisualizer.h" />
     <ClInclude Include="include\ModuleParameterInterface.h" />
     <ClInclude Include="include\ParameterizableInterface.h" />
     <ClInclude Include="include\PluginManager.h" />

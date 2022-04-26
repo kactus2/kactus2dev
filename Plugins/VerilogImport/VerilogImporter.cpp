@@ -14,8 +14,10 @@
 #include "VerilogSyntax.h"
 
 #include <IPXACTmodels/Component/Component.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+
 #include <common/NameGenerationPolicy.h>
+
+#include <KactusAPI/include/ImportColors.h>
 
 #include <QString>
 

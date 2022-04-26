@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/HighlightSource.h>
 
 #include <QSharedPointer>
 #include <QString>

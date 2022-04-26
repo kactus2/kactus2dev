@@ -11,7 +11,7 @@
 
 #include "ImportHighlighter.h"
 
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/HighlightSource.h>
 
 //-----------------------------------------------------------------------------
 // Function: VHDLHighlighter::VHDLHighlighter()

@@ -9,10 +9,10 @@
 // Source file highlighter for import files.
 //-----------------------------------------------------------------------------
 
-#ifndef VHDLHIGHLIGHTER_H
-#define VHDLHIGHLIGHTER_H
+#ifndef IMPORTHIGHLIGHTER_H
+#define IMPORTHIGHLIGHTER_H
 
-#include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
+#include <Highlighter.h>
 
 #include <QObject>
 #include <QTextCharFormat>
@@ -74,4 +74,4 @@ private:
     QPlainTextEdit* display_;
 };
 
-#endif // VHDLHIGHLIGHTER_H
+#endif // IMPORTHIGHLIGHTER_H

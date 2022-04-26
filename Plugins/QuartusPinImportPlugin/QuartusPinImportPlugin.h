@@ -16,7 +16,7 @@
 
 #include <KactusAPI/include/IPlugin.h>
 #include <KactusAPI/include/ImportPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/HighlightSource.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 

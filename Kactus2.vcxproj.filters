@@ -383,14 +383,8 @@
     <Filter Include="Header Files\Plugins">
       <UniqueIdentifier>{8d955ae9-b301-48c4-ae1e-9bb92a65f3d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Plugins\PluginSystem">
-      <UniqueIdentifier>{c981759c-6aff-442a-a7a4-88d85d58a770}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Plugins">
       <UniqueIdentifier>{85e8249e-7bf8-4c41-b66f-1a5255b75589}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Plugins\PluginSystem">
-      <UniqueIdentifier>{20e3b635-b2b3-4dbc-a204-fc6773166d05}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\library">
       <UniqueIdentifier>{700d0d99-bb8f-470d-a447-fb12cee9e11e}</UniqueIdentifier>
@@ -595,9 +589,6 @@
     </Filter>
     <Filter Include="Source Files\editors\CSourceEditor">
       <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Plugins\PluginSystem\ImportPlugin">
-      <UniqueIdentifier>{5b9bbccb-bfbc-422d-8af7-bb4584e68f58}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\wizards\ComponentWizard\ImportEditor">
       <UniqueIdentifier>{ae90d55b-cb79-493b-afc2-530d57060ce5}</UniqueIdentifier>
@@ -1560,15 +1551,6 @@
     </ClCompile>
     <ClCompile Include="Help\HelpSystem\HelpWindow.cpp">
       <Filter>Source Files\Help\HelpSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\PluginSystem\NewPluginsDialog.cpp">
-      <Filter>Source Files\Plugins\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\PluginSystem\PluginInfoWidget.cpp">
-      <Filter>Source Files\Plugins\PluginSystem</Filter>
     </ClCompile>
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizard.cpp">
       <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
@@ -4942,6 +4924,15 @@
     <ClCompile Include="GeneratedFiles\moc_MemoryBlockGraphItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="settings\NewPluginsDialog.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="settings\PluginInfoWidget.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5209,9 +5200,6 @@
     </CustomBuild>
     <CustomBuild Include="Help\HelpSystem\HelpSearchWidget.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Plugins\PluginSystem\NewPluginsDialog.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardConclusionPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
@@ -6761,6 +6749,9 @@
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\MemoryBlockGraphItem.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </CustomBuild>
+    <CustomBuild Include="settings\NewPluginsDialog.h">
+      <Filter>Header Files\settings</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6856,9 +6847,6 @@
     <ClInclude Include="Help\HelpSystem\HelpWindow.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\PluginInfoWidget.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </ClInclude>
@@ -6867,21 +6855,6 @@
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardPages.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\Highlighter.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\HighlightSource.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterSource.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterVisualizer.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ImportColors.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ImportWizard\ImportWizardPages.h">
       <Filter>Header Files\wizards\ImportWizard</Filter>
@@ -6930,9 +6903,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\NullParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ExpressionSupport.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
@@ -7050,9 +7020,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\BridgeColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\PluginSettingsModel.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\instantiations\ModuleParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
@@ -7482,6 +7449,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\SubspaceMapColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="settings\PluginInfoWidget.h">
+      <Filter>Header Files\settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

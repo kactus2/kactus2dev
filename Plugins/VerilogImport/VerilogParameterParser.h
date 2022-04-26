@@ -18,7 +18,8 @@
 #include <QString>
 #include <IPXACTmodels/common/ModuleParameter.h>
 
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/HighlightSource.h>
+
 #include "IPXACTmodels/Component/ComponentInstantiation.h"
 
 class Component;

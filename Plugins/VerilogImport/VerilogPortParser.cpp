@@ -13,7 +13,7 @@
 
 #include "VerilogSyntax.h"
 
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <KactusAPI/include//ImportColors.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/NullParser.h>

@@ -16,8 +16,8 @@
 #include <ImportPlugin.h>
 #include <IncludeImportPlugin.h>
 
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-#include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
+#include <KactusAPI/include/HighlightSource.h>
+#include <KactusAPI/include/ExpressionSupport.h>
 
 #include <editors/common/FileHandler/FileHandler.h>
 #include <editors/ComponentEditor/common/NullParser.h>
