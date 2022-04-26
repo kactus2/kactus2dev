@@ -38,9 +38,9 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 
-#include <editors/HWDesign/interfaces/ComponentInstanceInterface.h>
-#include <editors/HWDesign/interfaces/InterconnectionInterface.h>
-#include <editors/HWDesign/interfaces/AdHocConnectionInterface.h>
+#include <KactusAPI/include/ComponentInstanceInterface.h>
+#include <KactusAPI/include/InterconnectionInterface.h>
+#include <KactusAPI/include/AdHocConnectionInterface.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>

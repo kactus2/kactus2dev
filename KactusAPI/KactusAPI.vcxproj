@@ -122,6 +122,7 @@
     </QtMoc>
     <ClInclude Include="include\ComponentInstantiationInterface.h" />
     <ClInclude Include="include\ModuleParameterInterface.h" />
+    <ClInclude Include="include\ParameterizableInterface.h" />
     <ClInclude Include="include\ResetInterface.h" />
     <ClInclude Include="include\SubspaceMapInterface.h" />
     <ClInclude Include="interfaces\bus\AbstractionTypeInterface.h" />
@@ -260,8 +261,13 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(SolutionDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(SolutionDir);$(ProjectDir)include/</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPXACTmodels.lib;%(AdditionalDependencies);$(Qt_LIBS_)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -294,7 +300,7 @@
       <DebugInformationFormat>None</DebugInformationFormat>
       <Optimization>MaxSpeed</Optimization>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>KACTUS2_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN64;KACTUS2_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
