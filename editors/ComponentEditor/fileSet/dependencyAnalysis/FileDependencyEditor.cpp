@@ -25,8 +25,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
-#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
+#include <KactusAPI/include/PluginManager.h>
+#include <KactusAPI/include/ISourceAnalyzerPlugin.h>
 
 #include <QApplication>
 #include <QVBoxLayout>

@@ -14,7 +14,7 @@
 
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/SVDGenerator/CPUDialog/CPUSelectionDialog.h>

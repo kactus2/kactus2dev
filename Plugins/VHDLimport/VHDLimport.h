@@ -14,8 +14,8 @@
 
 #include "vhdlimport_global.h"
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 

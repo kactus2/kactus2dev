@@ -20,7 +20,7 @@
 #include <Plugins/common/LanguageHighlighter.h>
 #include <Plugins/common/HDLParser/HDLCommandLineParser.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
 
 #include <IPXACTmodels/Design/Design.h>

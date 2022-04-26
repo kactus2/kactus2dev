@@ -24,8 +24,8 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>

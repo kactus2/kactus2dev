@@ -13,8 +13,8 @@
 #define PADSPARTGENERATOR_H
 
 #include "PadsPartGeneratorDialog.h"
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/IPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/IPlugin.h>
 
 #include <QtPlugin>
 #include <QObject>

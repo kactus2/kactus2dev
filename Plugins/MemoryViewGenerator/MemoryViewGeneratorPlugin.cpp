@@ -12,7 +12,7 @@
 #include "MemoryViewGeneratorPlugin.h"
 
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 #include <library/LibraryInterface.h>

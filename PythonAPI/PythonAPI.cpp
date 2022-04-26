@@ -15,9 +15,9 @@
 
 #include <KactusAPI/KactusAPI.h>
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/APISupport.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/CLIGenerator.h>
 
 #include <editors/common/BusInterfaceUtilities.h>
 
@@ -201,7 +201,7 @@ void PythonAPI::generate(std::string const& format, std::string const& vlnv, std
     IGeneratorPlugin* generator = nullptr;
     for (auto plugin : KactusAPI::getPlugins())
     {
-        APISupport* runnable = dynamic_cast<APISupport*>(plugin);
+        CLIGenerator* runnable = dynamic_cast<CLIGenerator*>(plugin);
         if (runnable != 0)
         {
             if (runnable->getOutputFormat().toLower() == fileFormat)

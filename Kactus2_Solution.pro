@@ -6,6 +6,7 @@ TEMPLATE = subdirs
 
 SUBDIRS = \
     IPXACTmodels \
+	KactusAPI\
     Kactus2 \
     PythonAPI \
     MCAPICodeGenerator \

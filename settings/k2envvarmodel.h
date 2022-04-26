@@ -12,7 +12,7 @@
 #ifndef K2ENVVARMODEL_H
 #define K2ENVVARMODEL_H
 
-#include <Plugins/PluginSystem/PluginManager.h>
+#include <KactusAPI/include/PluginManager.h>
 
 #include <QAbstractTableModel>
 #include <QSettings>

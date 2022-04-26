@@ -7,7 +7,7 @@
 
 #include "memorymapheadergenerator.h"
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 #include <Plugins/MemoryMapHeaderGenerator/LocalMemoryMapHeaderWriter.h>
 #include <Plugins/MemoryMapHeaderGenerator/GlobalMemoryMapHeaderWriter.h>

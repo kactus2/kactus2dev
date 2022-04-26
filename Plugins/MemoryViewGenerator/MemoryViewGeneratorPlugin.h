@@ -14,8 +14,8 @@
 
 #include "memoryviewgenerator_global.h"
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
 
 //-----------------------------------------------------------------------------
 //! Plugin for creating a CSV listing of all slave memories within a design hierarchy.

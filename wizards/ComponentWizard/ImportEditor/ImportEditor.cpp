@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/ports/portseditor.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
+#include <KactusAPI/include/PluginManager.h>
 
 #include <wizards/ComponentWizard/ImportRunner.h>
 

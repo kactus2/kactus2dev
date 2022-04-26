@@ -74,23 +74,6 @@
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h" />
     <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h" />
-    <ClInclude Include="..\Plugins\PluginSystem\PluginManager.h" />
-    <CustomBuild Include="..\Plugins\PluginSystem\PluginUtilityAdapter.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-    </CustomBuild>
     <ClInclude Include="..\VersionHelper.h" />
     <QtMoc Include="..\wizards\ComponentWizard\ImportRunner.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -120,9 +103,18 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </Command>
     </QtMoc>
+    <ClInclude Include="include\CLIGenerator.h" />
     <ClInclude Include="include\ComponentInstantiationInterface.h" />
+    <ClInclude Include="include\IGeneratorPlugin.h" />
+    <ClInclude Include="include\ImportPlugin.h" />
+    <ClInclude Include="include\IncludeImportPlugin.h" />
+    <ClInclude Include="include\IPlugin.h" />
+    <ClInclude Include="include\IPluginUtility.h" />
     <ClInclude Include="include\ModuleParameterInterface.h" />
     <ClInclude Include="include\ParameterizableInterface.h" />
+    <ClInclude Include="include\PluginManager.h" />
+    <ClInclude Include="include\PluginSettingsModel.h" />
+    <ClInclude Include="include\PluginUtilityAdapter.h" />
     <ClInclude Include="include\ResetInterface.h" />
     <ClInclude Include="include\SubspaceMapInterface.h" />
     <ClInclude Include="interfaces\bus\AbstractionTypeInterface.h" />
@@ -174,8 +166,6 @@
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp" />
-    <ClCompile Include="..\Plugins\PluginSystem\PluginManager.cpp" />
-    <ClCompile Include="..\Plugins\PluginSystem\PluginUtilityAdapter.cpp" />
     <ClCompile Include="..\VersionHelper.cpp" />
     <ClCompile Include="..\wizards\ComponentWizard\ImportEditor\ImportHighlighter.cpp" />
     <ClCompile Include="..\wizards\ComponentWizard\ImportRunner.cpp" />
@@ -208,6 +198,8 @@
     <ClCompile Include="interfaces\design\ComponentInstanceInterface.cpp" />
     <ClCompile Include="interfaces\design\InterconnectionInterface.cpp" />
     <ClCompile Include="KactusAPI.cpp" />
+    <ClCompile Include="plugins\PluginManager.cpp" />
+    <ClCompile Include="plugins\PluginUtilityAdapter.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3B9FF5B3-3B2B-4294-B6E3-D8E9885B6B8A}</ProjectGuid>

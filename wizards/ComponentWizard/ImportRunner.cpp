@@ -11,10 +11,11 @@
 
 #include "ImportRunner.h"
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h>
+#include <IPlugin.h>
+#include <ISourceAnalyzerPlugin.h>
+#include <ImportPlugin.h>
+#include <IncludeImportPlugin.h>
+
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
 

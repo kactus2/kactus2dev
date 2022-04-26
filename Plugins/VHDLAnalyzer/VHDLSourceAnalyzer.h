@@ -12,7 +12,7 @@
 #ifndef VHDLSOURCEANALYZER_H
 #define VHDLSOURCEANALYZER_H
 
-#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
+#include <KactusAPI/include/ISourceAnalyzerPlugin.h>
 
 #include <QFile>
 

@@ -12,7 +12,7 @@
 #ifndef IGENERATORPLUGIN_H
 #define IGENERATORPLUGIN_H
 
-#include "../IPlugin.h"
+#include "IPlugin.h"
 
 #include <QSharedPointer>
 #include <QIcon>

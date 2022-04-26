@@ -14,12 +14,12 @@
 
 #include "modelsimgenerator_global.h"
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
-#include <Plugins/PluginSystem/APISupport.h>
+#include <KactusAPI/include/CLIGenerator.h>
 
 class MODELSIMGENERATOR_EXPORT ModelSimGeneratorPlugin : public QObject, public IGeneratorPlugin,
-    public APISupport
+    public CLIGenerator
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.modelSimGenerator" FILE "modelSimGenerator.json")

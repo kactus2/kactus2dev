@@ -15,7 +15,7 @@
 #include "MakefileParser.h"
 #include "MakeCommon.h"
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 class MakefileGenerator
 {

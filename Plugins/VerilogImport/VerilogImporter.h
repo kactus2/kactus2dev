@@ -19,7 +19,7 @@
 #include "Plugins/VerilogImport/VerilogInstanceParser.h"
 
 #include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
+#include <KactusAPI/include/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
 
 #include <QSharedPointer>

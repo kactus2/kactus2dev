@@ -27,8 +27,8 @@
 
 #include <library/LibraryHandler.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <KactusAPI/include/PluginManager.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
 
 #include <settings/SettingsUpdater.h>
 

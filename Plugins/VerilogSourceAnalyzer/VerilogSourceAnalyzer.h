@@ -14,7 +14,7 @@
 
 #include "verilogsourceanalyzer_global.h"
 
-#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
+#include <KactusAPI/include/ISourceAnalyzerPlugin.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>

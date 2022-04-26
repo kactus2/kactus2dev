@@ -61,8 +61,8 @@
 #include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
 #include <editors/ConfigurationTools/ViewConfigurer.h>
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
 // #include <Plugins/PluginSystem/ConsolePluginUtility.h>
 
 #include <settings/SettingsDialog.h>

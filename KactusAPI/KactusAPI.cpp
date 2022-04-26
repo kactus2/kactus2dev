@@ -20,10 +20,10 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
-#include <Plugins/PluginSystem/APISupport.h>
+#include <IPlugin.h>
+#include <IGeneratorPlugin.h>
+#include <PluginUtilityAdapter.h>
+#include <CLIGenerator.h>
 
 #include <wizards/ComponentWizard/ImportRunner.h>
 
@@ -240,7 +240,7 @@ void KactusAPI::runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV
 
     PluginUtilityAdapter adapter(library_, messageChannel_, VersionHelper::createVersionString(), parentWidget);
 
-    APISupport* cliRunnable = dynamic_cast<APISupport*>(plugin);
+    CLIGenerator* cliRunnable = dynamic_cast<CLIGenerator*>(plugin);
     if (parentWidget == nullptr && cliRunnable)
     {
         cliRunnable->runGenerator(&adapter, component, design, designConfiguration, viewName, outputDirectory);

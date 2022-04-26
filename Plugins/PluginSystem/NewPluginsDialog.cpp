@@ -11,11 +11,13 @@
 
 #include "NewPluginsDialog.h"
 
-#include "GeneratorPlugin/IGeneratorPlugin.h"
-#include "IPlugin.h"
+
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/ISourceAnalyzerPlugin.h>
+#include <KactusAPI/include/ImportPlugin.h>
+
 #include "PluginInfoWidget.h"
-#include "ISourceAnalyzerPlugin.h"
-#include "ImportPlugin/ImportPlugin.h"
 
 #include <QPushButton>
 #include <QVBoxLayout>

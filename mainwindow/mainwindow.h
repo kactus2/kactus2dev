@@ -12,7 +12,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <Plugins/PluginSystem/PluginManager.h>
+#include <KactusAPI/include/PluginManager.h>
 
 #include <common/widgets/tabDocument/TabDocument.h>
 

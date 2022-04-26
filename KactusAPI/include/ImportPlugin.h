@@ -14,7 +14,7 @@
 #ifndef IMPORTPARSER_H
 #define IMPORTPARSER_H
 
-#include <Plugins/PluginSystem/IPlugin.h>
+#include <KactusAPI/include/IPlugin.h>
 
 #include <QSharedPointer>
 #include <QtPlugin>

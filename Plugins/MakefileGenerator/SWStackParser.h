@@ -26,7 +26,7 @@
 
 #include <library/LibraryInterface.h>
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
 
 #include "MakeCommon.h"
 

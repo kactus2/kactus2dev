@@ -14,7 +14,7 @@
 
 #include <KactusAPI/KactusAPIGlobal.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
+#include <PluginManager.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 

@@ -13,7 +13,7 @@
 
 #include <library/LibraryInterface.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>

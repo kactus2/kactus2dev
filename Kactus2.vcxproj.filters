@@ -6272,9 +6272,6 @@
     <CustomBuild Include="common\graphicsItems\GraphicsColumnConstants.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
-    <CustomBuild Include="Plugins\PluginSystem\IPluginUtility.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsEditor.h">
       <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
@@ -6698,9 +6695,6 @@
     <CustomBuild Include="common\widgets\tagEditor\TagSelector.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="Plugins\PluginSystem\ImportPlugin\ImportPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsModel.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
@@ -6862,12 +6856,6 @@
     <ClInclude Include="Help\HelpSystem\HelpWindow.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\IPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ISourceAnalyzerPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\PluginInfoWidget.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
@@ -6958,9 +6946,6 @@
     <ClInclude Include="wizards\common\ParameterComparator\ParameterComparator.h">
       <Filter>Header Files\wizards\common\ParameterComparator</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\IncludeImportPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\remapStates\RemapConditionColumns.h">
       <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
     </ClInclude>
@@ -7050,9 +7035,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\instantiations\DesignInstantiationColumns.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h">
-      <Filter>Header Files\Plugins</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMappingColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
@@ -7486,9 +7468,6 @@
     <ClInclude Include="mainwindow\ScriptingConsole\ScriptingSideArea.h">
       <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\APISupport.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
@@ -7501,9 +7480,6 @@
     <ClInclude Include="PythonAPI\extensions\IOCatcher.h">
       <Filter>Header Files\PythonAPI\extensions</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\SubspaceMapColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
@@ -7515,9 +7491,6 @@
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Kactus21.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="appicon.ico" />

@@ -18,7 +18,7 @@
 
 #include <library/LibraryInterface.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
+#include <KactusAPI/include/PluginManager.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

@@ -17,7 +17,7 @@
 #include <IPXACTmodels/Design/Design.h>
 
 #include <Plugins/common/HDLParser/HDLCommandLineParser.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeDialog.h>
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>

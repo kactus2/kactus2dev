@@ -6,9 +6,13 @@
 */
 
 #include "alterabspgenerator.h"
+
 #include <library/LibraryInterface.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+
+#include <KactusAPI/include/IPluginUtility.h>
+
 #include <IPXACTmodels/Component/Component.h>
+
 #include "alterabspgeneratordialog.h"
 
 #include <QDir>

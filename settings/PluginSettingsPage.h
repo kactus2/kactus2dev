@@ -15,7 +15,7 @@
 #include "SettingsPage.h"
 
 #include <common/widgets/DirectoryListSelector/DirectoryListSelector.h>
-#include <Plugins/PluginSystem/PluginManager.h>
+#include <KactusAPI/include/PluginManager.h>
 
 #include <QTreeWidget>
 #include <QPlainTextEdit>
