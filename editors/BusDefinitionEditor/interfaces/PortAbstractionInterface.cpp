@@ -42,14 +42,15 @@ signals_()
 void PortAbstractionInterface::setAbsDef(QSharedPointer<AbstractionDefinition const> absDef)
 {
     signals_.clear();
+    ports_.clear();
     if (absDef.isNull())
     {
         return;
     }
- 
+
     ports_ = absDef->getLogicalPorts();
 
-    for(auto port : *ports_)
+    for (auto port : *ports_)
     {
         if (port->hasWire())
         {

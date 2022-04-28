@@ -32,6 +32,7 @@ namespace
     std::string const PORTMAP_TYPE = "portMap";
 
     QString const MULTIPLE_SELECTED = "[multiple]";
+    QString const UNKNOWN_PORT = "Unknown";
 };
 
 //-----------------------------------------------------------------------------
@@ -73,7 +74,7 @@ void PortMapInterface::setPortMaps(QSharedPointer<AbstractionDefinition const> a
     portMappings_.clear();
 
     QSharedPointer<PortAbstraction> unconnectedPort(new PortAbstraction());
-    unconnectedPort->setLogicalName("Unknown");
+    unconnectedPort->setLogicalName(UNKNOWN_PORT);
 
     QSharedPointer<PortMapping> unconnectedMapping(new PortMapping());
     unconnectedMapping->logicalPort_ = unconnectedPort;
@@ -107,24 +108,13 @@ void PortMapInterface::setPortMaps(QSharedPointer<AbstractionDefinition const> a
                 {
                     portMappings_[mappingIndex]->portMaps_.append(currentMap);
                     logicalPortFound = true;
-                    break;;
+                    break;
                 }
             }
 
             if (!logicalPortFound)
             {
-                if (currentMap->getLogicalPort() && !currentMap->getLogicalPort()->name_.isEmpty())
-                {
-                    QSharedPointer<PortMapping> newMapping(new PortMapping());
-                    newMapping->logicalPortName_ = currentMap->getLogicalPort()->name_;
-                    newMapping->portMaps_.append(currentMap);
-
-                    portMappings_.append(newMapping);
-                }
-                else
-                {
-                    unconnectedMapping->portMaps_.append(currentMap);
-                }
+                unconnectedMapping->portMaps_.append(currentMap);
             }
         }
     }
@@ -239,14 +229,22 @@ std::string PortMapInterface::getLogicalPortName(std::string const& logicalPortN
     if (portMapIndex >= 0)
     {
         QSharedPointer<PortMap> portMap = getPortMap(logicalPortName, portMapIndex);
-        if ((portMap && !portMap->getLogicalPort()) ||
-            (portMap->getLogicalPort() && logicalPortfinishedName.isEmpty()))
+        if (portMap)
         {
-            logicalPortfinishedName = "Undefined";
-        }
+            if (logicalPortfinishedName != portMap->getLogicalPort()->name_)
+            {
+                logicalPortfinishedName = portMap->getLogicalPort()->name_;
+            }
 
-        QString numberText = " (" + QString::number(portMapIndex) + ")";
-        logicalPortfinishedName.append(numberText);
+            if ((portMap && !portMap->getLogicalPort()) ||
+                (portMap->getLogicalPort() && logicalPortfinishedName.isEmpty()))
+            {
+                logicalPortfinishedName = "Undefined";
+            }
+
+            QString numberText = " (" + QString::number(portMapIndex) + ")";
+            logicalPortfinishedName.append(numberText);
+        }
     }
 
     return logicalPortfinishedName.toStdString();
@@ -258,7 +256,7 @@ std::string PortMapInterface::getLogicalPortName(std::string const& logicalPortN
 bool PortMapInterface::hasLogicalPort(std::string const& logicalPortName) const
 {
     QSharedPointer<PortMapInterface::PortMapping> mapping = getPortMapping(logicalPortName);
-    if (mapping && !mapping->logicalPortName_.isEmpty())
+    if (mapping && mapping->logicalPortName_ != UNKNOWN_PORT && !mapping->logicalPortName_.isEmpty())
     {
         return logicalPortInterface_->portHasMode(
             logicalPortName, General::interfaceMode2Str(interfaceMode_).toStdString(), systemGroup_.toStdString());
@@ -1190,7 +1188,9 @@ bool PortMapInterface::setPhysicalRightBound(std::string const& logicalPortName,
 //-----------------------------------------------------------------------------
 std::string PortMapInterface::getLogicalPortIconPath(std::string const& logicalPortName) const
 {
-    std::string mappingPath = "";
+    QString missingPath = QLatin1String(":icons/common/graphics/cross.png");
+    std::string mappingPath = missingPath.toStdString();
+
     std::string busMode = General::interfaceMode2Str(interfaceMode_).toStdString();
     std::string systemGroup = systemGroup_.toStdString();
     if (logicalPortInterface_->portHasMode(logicalPortName, busMode, systemGroup))

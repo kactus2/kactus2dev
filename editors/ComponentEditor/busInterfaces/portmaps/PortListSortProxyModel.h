@@ -21,6 +21,7 @@ class Component;
 class AbstractionType;
 class PortsInterface;
 class AbstractionTypeInterface;
+class PortMapInterface;
 
 //! The port types.
 namespace PortTypes
@@ -53,12 +54,12 @@ public:
       *  Constructor.
       *
       *     @param [in] abstractionIndex        Index of the containing abstraction type.
-      *     @param [in] portInterface           Interface for accessing physical ports.
+      *     @param [in] portMapInterface        Interface for accessing port maps.
       *     @param [in] abstractionInterface    Interface for accessing abstraction types.
       *     @param [in] parent                  The parent object.
       */
     PortListSortProxyModel(int const& abstractionIndex,
-        PortsInterface* portInterface,
+        PortMapInterface* portMapInterface,
         AbstractionTypeInterface* abstractionInterface,
         QObject *parent = 0);
 
@@ -210,6 +211,9 @@ private:
 
     //! The currently visible port type.
     QString visibleType_;
+
+    //! Interface for accessing port maps.
+    PortMapInterface* portMapInterface_;
 
     //! Interface for accessing ports.
     PortsInterface* portInterface_;

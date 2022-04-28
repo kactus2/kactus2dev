@@ -13,6 +13,7 @@
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 
 #include <IPXACTmodels/Component/PortMap.h>
 
@@ -22,14 +23,17 @@
 #include <QApplication>
 #include <QDropEvent>
 #include <QMimeData>
+#include <QVariant>
+#include <QSortFilterProxyModel>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeView::PortMapTreeView()
 //-----------------------------------------------------------------------------
-PortMapTreeView::PortMapTreeView(QWidget* parent):
+PortMapTreeView::PortMapTreeView(PortMapInterface* portMapInterface, QWidget* parent):
 EditableTreeView(false, QString(""), QString(tr("Add port map")), QString(tr("Remove port map")),
     QString(tr("Remove all port maps")), parent),
-autoConnectAction_(tr("Auto connect"), this)
+autoConnectAction_(tr("Auto connect"), this),
+mapInterface_(portMapInterface)
 {
     header()->setSectionResizeMode(QHeaderView::Interactive);
     header()->setStretchLastSection(true);
@@ -106,7 +110,26 @@ void PortMapTreeView::contextMenuEvent(QContextMenuEvent* event)
 
     if (contextMenuIndex.isValid())
     {
-        contextMenu.addAction(getAddSubItemAction());
+        QSortFilterProxyModel* proxyModel = dynamic_cast<QSortFilterProxyModel*>(model());
+        if (proxyModel)
+        {
+            contextMenuIndex = proxyModel->mapToSource(contextMenuIndex);
+        }
+
+        std::string abstractPortName = "";
+        if (!contextMenuIndex.parent().isValid())
+        {
+            abstractPortName = mapInterface_->getIndexedItemName(contextMenuIndex.row());
+        }
+        else
+        {
+            abstractPortName = mapInterface_->getIndexedItemName(contextMenuIndex.parent().row());
+        }
+
+        if (mapInterface_->logicalPortExists(abstractPortName))
+        {
+            contextMenu.addAction(getAddSubItemAction());
+        }
 
         if (!contextMenuIndex.parent().isValid())
         {

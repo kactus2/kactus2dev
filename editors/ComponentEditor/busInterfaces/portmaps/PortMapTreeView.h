@@ -21,6 +21,7 @@
 #include <QAction>
 
 class PortMapsTreeModel;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! A tree view for the port map tree model.
@@ -34,9 +35,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The parent widget.
+     *      @param [in] portMapInterface    Interface for accessing port maps.
+     *      @param [in] parent              The parent widget.
      */
-    PortMapTreeView(QWidget* parent);
+    PortMapTreeView(PortMapInterface* portMapInterface, QWidget* parent);
 
     /*!
      *  The destructor.
@@ -99,6 +101,9 @@ private:
 
     //! The action for automatically connecting logical signals to physical ports.
     QAction autoConnectAction_;
+
+    //! Interface for accessing port maps.
+    PortMapInterface* mapInterface_;
 };
 
 //-----------------------------------------------------------------------------

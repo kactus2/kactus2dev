@@ -462,8 +462,6 @@ QVariant PortMapTreeModel::expressionForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeModel::valueForIndex()
 //-----------------------------------------------------------------------------
-// QVariant PortMapTreeModel::valueForIndex(QModelIndex const& index, QSharedPointer<PortAbstraction> logicalPort,
-//     QSharedPointer<PortMap> portMap) const
 QVariant PortMapTreeModel::valueForIndex(QModelIndex const& index) const
 {
     QPair<std::string, int> combinedIndex = getPortNamePortMapIndex(index);
@@ -703,14 +701,27 @@ Qt::ItemFlags PortMapTreeModel::flags(QModelIndex const& index) const
         return Qt::NoItemFlags;
     }
 
-    Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
+    Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+    QModelIndex parentIndex = index;
+    if (index.parent().isValid())
+    {
+        parentIndex = index.parent();
+    }
+
+    std::string portName = portMapInterface_->getIndexedItemName(parentIndex.row());
+    bool logicalPortExists = portMapInterface_->logicalPortExists(portName);
+    if (logicalPortExists)
+    {
+        itemFlags |= Qt::ItemIsDropEnabled;
+    }
 
     if ((index.column() == PortMapsColumns::INVERT || index.column() == PortMapsColumns::ISINFORMATIVE)
         && index.parent().isValid())
     {
         itemFlags |= Qt::ItemIsUserCheckable;
     }
-    else if (index.column() == PortMapsColumns::PHYSICAL_PORT ||
+    else if ((index.column() == PortMapsColumns::PHYSICAL_PORT && logicalPortExists) ||
         (index.parent().isValid() && index.column() != PortMapsColumns::LOGICAL_PRESENCE))
     {
         itemFlags |= Qt::ItemIsEditable;
@@ -780,7 +791,11 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
     }
 
     portMapInterface_->changeValidatorAbstractionDefinition();
-    if (!portMapInterface_->hasLogicalPort(abstractPortName) || !index.parent().isValid() || portMapIndex < 0)
+    if (index.column() == PortMapsColumns::LOGICAL_PORT && !portMapInterface_->logicalPortExists(abstractPortName))
+    {
+        return false;
+    }
+    else if (!index.parent().isValid() || portMapIndex < 0)
     {
         return true;
     }
@@ -992,6 +1007,12 @@ bool PortMapTreeModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     if (parent.parent().isValid())
     {
         physicalIndex = parent.parent();
+    }
+
+    std::string portName = portMapInterface_->getIndexedItemName(physicalIndex.row());
+    if (!portMapInterface_->logicalPortExists(portName))
+    {
+        return false;
     }
 
     if (physicalIndex.column() != PortMapsColumns::PHYSICAL_PORT)

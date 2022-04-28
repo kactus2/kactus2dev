@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel()
 //-----------------------------------------------------------------------------
-PortListSortProxyModel::PortListSortProxyModel(int const& abstractionIndex, PortsInterface* portInterface,
+PortListSortProxyModel::PortListSortProxyModel(int const& abstractionIndex, PortMapInterface* portMapInterface,
     AbstractionTypeInterface* abstractionInterface, QObject *parent):
 QSortFilterProxyModel(parent),
 filterDirection_(DirectionFilter::ANY),
@@ -34,7 +34,8 @@ hideConnected_(true),
 connectedPorts_(),
 filterPorts_(),
 visibleType_(PortTypes::WIRETYPE),
-portInterface_(portInterface),
+portMapInterface_(portMapInterface),
+portInterface_(portMapInterface_->getPhysicalPortInterface()),
 abstractionIndex_(abstractionIndex),
 abstractionInterface_(abstractionInterface)
 {
@@ -280,7 +281,18 @@ void PortListSortProxyModel::onPortConnected(QString const& portName)
 //-----------------------------------------------------------------------------
 void PortListSortProxyModel::onPortDisconnected(QString const& portName)
 {
-    if (connectedPorts_.contains(portName))
+    QStringList connectedPhysicalPorts;
+    for (auto logicalPortName : portMapInterface_->getItemNames())
+    {
+        for (int i = 0; i < portMapInterface_->portMapCount(logicalPortName); i++)
+        {
+            QString physicalPortName =
+                QString::fromStdString(portMapInterface_->getPhysicalPortName(logicalPortName, i));
+            connectedPhysicalPorts.append(physicalPortName);
+        }
+    }
+
+    if (!connectedPhysicalPorts.contains(portName))
     {
         connectedPorts_.removeAll(portName);
         invalidateFilter();

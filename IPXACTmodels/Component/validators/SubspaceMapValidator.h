@@ -43,7 +43,7 @@ public:
 	/*!
      *  The destructor.
      */
-    ~SubspaceMapValidator() = default;
+    virtual ~SubspaceMapValidator() = default;
     
     /*!
      *  Change the containing component.
