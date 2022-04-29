@@ -63,7 +63,7 @@ mapInterface_(mapInterface)
     const int childCount = memoryMap_->getMemoryRemaps()->count();
     for (int i = 0; i < childCount; ++i)
     {
-        ComponentEditorMemMapItem::createChild(i);
+        ComponentEditorMemMapItem::createChild(i + 1);
     }
 
 	Q_ASSERT(memoryMap_);
