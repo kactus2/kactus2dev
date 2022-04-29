@@ -13,7 +13,7 @@
 #define REMAPCONDITIONDELEGATE_H
 
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QCompleter>
 

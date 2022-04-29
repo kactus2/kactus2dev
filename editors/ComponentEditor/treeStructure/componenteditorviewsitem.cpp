@@ -18,11 +18,11 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 
-#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <KactusAPI/include/ComponentInstantiationParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
 #include <KactusAPI/include/ModuleParameterInterface.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorviewsitem::ComponentEditorViewsItem()

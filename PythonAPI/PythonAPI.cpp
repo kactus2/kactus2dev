@@ -21,9 +21,9 @@
 
 #include <editors/common/BusInterfaceUtilities.h>
 
-#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/PortsInterface.h>
 #include <KactusAPI/include/ParametersInterface.h>
 #include <KactusAPI/include/RegisterInterface.h>

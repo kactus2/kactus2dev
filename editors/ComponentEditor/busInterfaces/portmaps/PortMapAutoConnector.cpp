@@ -14,7 +14,7 @@
 #include "JaroWinklerAlgorithm.h"
 
 #include <KactusAPI/include/PortMapInterface.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/PortsInterface.h>
 
 #include <library/LibraryInterface.h>

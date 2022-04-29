@@ -27,8 +27,8 @@
 #include <KactusAPI/include/IPlugin.h>
 #include <KactusAPI/include/IPluginUtility.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <QDate>
 #include <QDialog>

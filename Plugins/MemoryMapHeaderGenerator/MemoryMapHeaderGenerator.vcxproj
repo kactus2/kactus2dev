@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\widgets\viewSelector\viewselector.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="BaseMemoryMapHeaderWriter.cpp" />
     <ClCompile Include="fileSaveDialog\filesavedialog.cpp" />
     <ClCompile Include="fileSaveDialog\filesavedialogview.cpp" />

@@ -12,7 +12,7 @@
 #ifndef COMPONENTINSTANCECONFIGURABLEELEMENTSMODEL_H
 #define COMPONENTINSTANCECONFIGURABLEELEMENTSMODEL_H
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>

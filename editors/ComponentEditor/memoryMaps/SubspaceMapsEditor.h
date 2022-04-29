@@ -12,7 +12,7 @@
 #ifndef SUBSPACEMAPEDITOR_H
 #define SUBSPACEMAPEDITOR_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 

@@ -19,10 +19,10 @@
 #include "MemoryItem.h"
 #include "ConnectivityGraph.h"
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterCache.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ParameterCache.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
 #include <editors/common/ComponentInstanceParameterFinder.h>
 
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>

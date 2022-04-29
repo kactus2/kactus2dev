@@ -11,7 +11,7 @@
 
 #include "ComponentEditorChoicesItem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/choices/ChoicesEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>

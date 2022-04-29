@@ -103,9 +103,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_filesavedialogview.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SystemMemoryMapHeaderWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

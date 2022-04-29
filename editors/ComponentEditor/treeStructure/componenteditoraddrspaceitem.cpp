@@ -12,7 +12,7 @@
 #include "componenteditoraddrspaceitem.h"
 #include "componenteditoraddrblockitem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/addressSpaces/localMemoryMap/localmemorymapgraphitem.h>
 #include <editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.h>
 #include <KactusAPI/include/AddressBlockInterface.h>

@@ -15,9 +15,9 @@
 #include "DesignInstantiationsItem.h"
 #include "DesignConfigurationInstantiationsItem.h"
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/ComponentInstantiationParameterFinder.h>
 #include <KactusAPI/include/ParametersInterface.h>
 #include <KactusAPI/include/FileBuilderInterface.h>
 #include <KactusAPI/include/FileSetInterface.h>

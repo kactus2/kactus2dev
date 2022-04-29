@@ -13,7 +13,7 @@
 #define MEMORYMAPEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 

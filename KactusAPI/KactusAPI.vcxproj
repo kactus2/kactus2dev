@@ -27,53 +27,6 @@
       </Command>
     </QtMoc>
     <ClInclude Include="..\editors\common\BusInterfaceUtilities.h" />
-    <ClInclude Include="..\editors\common\FileHandler\FileHandler.h" />
-    <CustomBuild Include="..\editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-    </CustomBuild>
-    <ClInclude Include="..\editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatterFactory.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionParser.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ListParameterFinder.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\MultipleParameterFinder.h" />
-    <QtMoc Include="..\editors\ComponentEditor\common\ParameterCache.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-    </QtMoc>
-    <ClInclude Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h" />
     <ClInclude Include="..\VersionHelper.h" />
     <QtMoc Include="..\wizards\ComponentWizard\ImportRunner.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -103,9 +56,19 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </Command>
     </QtMoc>
+    <ClInclude Include="include\AddressBlockExpressionsGatherer.h" />
+    <ClInclude Include="include\AddressSpaceExpressionsGatherer.h" />
     <ClInclude Include="include\CLIGenerator.h" />
+    <ClInclude Include="include\ComponentAndInstantiationsParameterFinder.h" />
     <ClInclude Include="include\ComponentInstantiationInterface.h" />
+    <ClInclude Include="include\ComponentInstantiationParameterFinder.h" />
+    <ClInclude Include="include\ComponentParameterFinder.h" />
+    <ClInclude Include="include\ExpressionFormatter.h" />
+    <ClInclude Include="include\ExpressionFormatterFactory.h" />
+    <ClInclude Include="include\ExpressionFormatterFactoryImplementation.h" />
+    <ClInclude Include="include\ExpressionParser.h" />
     <ClInclude Include="include\ExpressionSupport.h" />
+    <ClInclude Include="include\FileHandler.h" />
     <ClInclude Include="include\Highlighter.h" />
     <ClInclude Include="include\HighlightSource.h" />
     <ClInclude Include="include\IGeneratorPlugin.h" />
@@ -114,15 +77,26 @@
     <ClInclude Include="include\IncludeImportPlugin.h" />
     <ClInclude Include="include\IPlugin.h" />
     <ClInclude Include="include\IPluginUtility.h" />
+    <ClInclude Include="include\IPXactSystemVerilogParser.h" />
+    <ClInclude Include="include\ListParameterFinder.h" />
+    <ClInclude Include="include\MemoryMapExpressionsGatherer.h" />
+    <ClInclude Include="include\MemoryRemapExpressionGatherer.h" />
     <ClInclude Include="include\ModelParameterSource.h" />
     <ClInclude Include="include\ModelParameterVisualizer.h" />
     <ClInclude Include="include\ModuleParameterInterface.h" />
+    <ClInclude Include="include\MultipleParameterFinder.h" />
+    <QtMoc Include="include\ParameterCache.h" />
+    <ClInclude Include="include\ParameterFinder.h" />
     <ClInclude Include="include\ParameterizableInterface.h" />
     <ClInclude Include="include\PluginManager.h" />
     <ClInclude Include="include\PluginSettingsModel.h" />
     <ClInclude Include="include\PluginUtilityAdapter.h" />
+    <ClInclude Include="include\RegisterExpressionsGatherer.h" />
+    <ClInclude Include="include\RegisterFileExpressionsGatherer.h" />
     <ClInclude Include="include\ResetInterface.h" />
     <ClInclude Include="include\SubspaceMapInterface.h" />
+    <ClInclude Include="include\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="include\SystemVerilogSyntax.h" />
     <ClInclude Include="interfaces\bus\AbstractionTypeInterface.h" />
     <ClInclude Include="interfaces\bus\PortAbstractionInterface.h" />
     <ClInclude Include="interfaces\common\AbstractParameterInterface.h" />
@@ -154,27 +128,27 @@
     <ClCompile Include="..\common\ui\ConsoleMediator.cpp" />
     <ClCompile Include="..\editors\common\BusInterfaceUtilities.cpp" />
     <ClCompile Include="..\editors\common\ComponentInstanceParameterFinder.cpp" />
-    <ClCompile Include="..\editors\common\FileHandler\FileHandler.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
     <ClCompile Include="..\editors\ComponentEditor\common\NullParser.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp" />
     <ClCompile Include="..\VersionHelper.cpp" />
     <ClCompile Include="..\wizards\ComponentWizard\ImportEditor\ImportHighlighter.cpp" />
     <ClCompile Include="..\wizards\ComponentWizard\ImportRunner.cpp" />
+    <ClCompile Include="expressions\AddressBlockExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\AddressSpaceExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\ComponentAndInstantiationsParameterFinder.cpp" />
+    <ClCompile Include="expressions\ComponentInstantiationParameterFinder.cpp" />
+    <ClCompile Include="expressions\ComponentParameterFinder.cpp" />
+    <ClCompile Include="expressions\ExpressionFormatter.cpp" />
+    <ClCompile Include="expressions\ExpressionFormatterFactoryImplementation.cpp" />
+    <ClCompile Include="expressions\FieldExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\IPXactSystemVerilogParser.cpp" />
+    <ClCompile Include="expressions\ListParameterFinder.cpp" />
+    <ClCompile Include="expressions\MemoryMapExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\MemoryRemapExpressionGatherer.cpp" />
+    <ClCompile Include="expressions\MultipleParameterFinder.cpp" />
+    <ClCompile Include="expressions\ParameterCache.cpp" />
+    <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="interfaces\bus\AbstractionTypeInterface.cpp" />
     <ClCompile Include="interfaces\bus\PortAbstractionInterface.cpp" />
     <ClCompile Include="interfaces\common\AbstractParameterInterface.cpp" />
@@ -206,6 +180,7 @@
     <ClCompile Include="KactusAPI.cpp" />
     <ClCompile Include="plugins\PluginManager.cpp" />
     <ClCompile Include="plugins\PluginUtilityAdapter.cpp" />
+    <ClCompile Include="utilities\FileHandler.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3B9FF5B3-3B2B-4294-B6E3-D8E9885B6B8A}</ProjectGuid>

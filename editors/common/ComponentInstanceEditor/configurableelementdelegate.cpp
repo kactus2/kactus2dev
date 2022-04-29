@@ -13,7 +13,7 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayView.h>
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>

@@ -14,8 +14,8 @@
 
 #include <kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatterFactory.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatterFactory.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <editors/common/DesignWidgetFactory.h>
 

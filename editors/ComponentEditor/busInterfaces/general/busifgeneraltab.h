@@ -19,9 +19,9 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <QWidget>
 #include <QSharedPointer>

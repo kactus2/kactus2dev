@@ -23,8 +23,8 @@
 
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Design/Design.h>

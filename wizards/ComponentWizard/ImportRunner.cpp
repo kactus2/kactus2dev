@@ -19,7 +19,7 @@
 #include <KactusAPI/include/HighlightSource.h>
 #include <KactusAPI/include/ExpressionSupport.h>
 
-#include <editors/common/FileHandler/FileHandler.h>
+#include <FileHandler.h>
 #include <editors/ComponentEditor/common/NullParser.h>
 
 #include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>

@@ -12,7 +12,7 @@
 #ifndef NULLPARSER_H
 #define NULLPARSER_H
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 //-----------------------------------------------------------------------------
 //! Expression parser implementation that does nothing.

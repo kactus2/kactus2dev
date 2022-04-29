@@ -17,7 +17,7 @@
 
 #include <common/utils.h>
 
-#include <editors/common/FileHandler/FileHandler.h>
+#include <KactusAPI/include/FileHandler.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>

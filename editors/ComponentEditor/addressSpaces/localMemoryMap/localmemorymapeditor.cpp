@@ -15,7 +15,7 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/ComponentEditor/memoryMaps/MemoryMapColumns.h>

@@ -15,7 +15,7 @@
 
 #include <KactusAPI/include//ImportColors.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/common/NullParser.h>
 
 #include <IPXACTmodels/Component/Component.h>

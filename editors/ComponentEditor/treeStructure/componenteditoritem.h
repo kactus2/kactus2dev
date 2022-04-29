@@ -13,8 +13,8 @@
 #define COMPONENTEDITORITEM_H
 
 #include <editors/ComponentEditor/referenceCounter/ReferenceCounter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QAction>
 #include <QObject>

@@ -21,8 +21,8 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/ViewSelection.h>
 #include <Plugins/common/HDLParser/HDLCommandLineParser.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <QCoreApplication>
 #include <QFileDialog>

@@ -11,7 +11,7 @@
 
 #include "AbstractionTypeValidator.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 

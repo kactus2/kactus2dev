@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 
 #include <FieldInterface.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h>
+#include <RegisterExpressionsGatherer.h>
 
 #include <QMimeData>
 #include <QApplication>

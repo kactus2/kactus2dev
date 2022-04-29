@@ -11,7 +11,7 @@
 
 #include "RegisterBaseValidator.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/common/Parameter.h>

@@ -12,7 +12,10 @@
 #ifndef COMPONENTINSTANTIATIONPARAMETERFINDER_H
 #define COMPONENTINSTANTIATIONPARAMETERFINDER_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include "ParameterFinder.h"
+
 
 class AbstractParameterModel;
 class ComponentInstantiation;
@@ -20,7 +23,7 @@ class ComponentInstantiation;
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters with the correct ID.
 //-----------------------------------------------------------------------------
-class ComponentInstantiationParameterFinder : public ParameterFinder
+class KACTUS2_API ComponentInstantiationParameterFinder : public ParameterFinder
 {
 
 public:

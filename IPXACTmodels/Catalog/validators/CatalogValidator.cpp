@@ -13,7 +13,7 @@
 
 #include <library/LibraryInterface.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Catalog/Catalog.h>
 #include <IPXACTmodels/Catalog/IpxactFile.h>

@@ -15,7 +15,7 @@
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
 #include <editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h>

@@ -13,9 +13,9 @@
 
 #include "AddressSpaceColumns.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
-#include <editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h>
+#include <KactusAPI/include/AddressSpaceExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <IPXACTmodels/Component/Component.h>

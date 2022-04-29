@@ -11,9 +11,9 @@
 
 #include "ExpressionFormatterFactoryImplementation.h"
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include "ComponentParameterFinder.h"
+#include "ListParameterFinder.h"
+#include "MultipleParameterFinder.h"
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionFormatterFactoryImplementation::ExpressionFormatterFactoryImplementation()

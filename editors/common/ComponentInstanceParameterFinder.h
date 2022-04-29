@@ -12,7 +12,7 @@
 #ifndef COMPONENTINSTANCEPARAMETERFINDER_H
 #define COMPONENTINSTANCEPARAMETERFINDER_H
 
-#include <editors/ComponentEditor/common/ParameterCache.h>
+#include <KactusAPI/include/ParameterCache.h>
 
 #include <KactusAPI/KactusAPIGlobal.h>
 

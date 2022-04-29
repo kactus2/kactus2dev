@@ -12,7 +12,7 @@
 #ifndef LOCALMEMORYMAPEDITOR_H
 #define LOCALMEMORYMAPEDITOR_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <QGroupBox>
 #include <QSharedPointer>

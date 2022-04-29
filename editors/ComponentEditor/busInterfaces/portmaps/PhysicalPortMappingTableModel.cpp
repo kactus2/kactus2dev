@@ -12,7 +12,7 @@
 #include "PhysicalPortMappingTableModel.h"
 #include "PortMappingColumns.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/PortsInterface.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>

@@ -11,7 +11,7 @@
 
 #include "componenteditorparametersitem.h"
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/parameterseditor.h>
 #include <KactusAPI/include/ParametersInterface.h>
 

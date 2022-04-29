@@ -16,7 +16,7 @@
 
 #include <PluginManager.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <ComponentParameterFinder.h>
 
 #include <QObject>
 #include <QSharedPointer>

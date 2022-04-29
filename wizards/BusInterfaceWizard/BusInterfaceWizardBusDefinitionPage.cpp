@@ -16,7 +16,7 @@
 #include <editors/BusDefinitionEditor/absdefgroup.h>
 #include <editors/BusDefinitionEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <library/LibraryInterface.h>
 

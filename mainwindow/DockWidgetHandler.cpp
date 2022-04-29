@@ -27,9 +27,9 @@
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
 #include <editors/ComponentEditor/componenteditor.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
 #include <KactusAPI/include/ParametersInterface.h>
 

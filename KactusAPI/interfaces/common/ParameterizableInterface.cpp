@@ -11,8 +11,8 @@
 
 #include <ParameterizableInterface.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 

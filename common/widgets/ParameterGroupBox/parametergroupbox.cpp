@@ -20,12 +20,12 @@
 #include <editors/ComponentEditor/parameters/parametersmodel.h>
 #include <KactusAPI/include/ParametersInterface.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 

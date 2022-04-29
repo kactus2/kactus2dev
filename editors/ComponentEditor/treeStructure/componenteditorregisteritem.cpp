@@ -12,7 +12,7 @@
 #include "componenteditorregisteritem.h"
 #include "componenteditorfielditem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h>
 #include <KactusAPI/include/FieldInterface.h>

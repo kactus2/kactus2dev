@@ -11,7 +11,7 @@
 
 #include "ExpressionProxyModel.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionProxyModel::ExpressionProxyModel()

@@ -13,7 +13,7 @@
 
 #include "componenteditorregisteritem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <editors/ComponentEditor/memoryMaps/SingleRegisterFileEditor.h>
 #include <KactusAPI/include/RegisterInterface.h>

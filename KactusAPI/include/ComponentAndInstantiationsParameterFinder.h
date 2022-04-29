@@ -14,7 +14,7 @@
 
 #include <KactusAPI/KactusAPIGlobal.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include "ComponentParameterFinder.h"
 
 class Component;
 

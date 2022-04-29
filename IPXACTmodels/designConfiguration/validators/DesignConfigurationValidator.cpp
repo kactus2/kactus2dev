@@ -23,7 +23,7 @@
 #include <IPXACTmodels/designConfiguration/validators/InterconnectionConfigurationValidator.h>
 #include <IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <library/LibraryInterface.h>
 

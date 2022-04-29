@@ -58,7 +58,7 @@
 #include <editors/CatalogEditor/CatalogEditor.h>
 #include <editors/ComponentEditor/componenteditor.h>
 #include <editors/CSourceEditor/CSourceWidget.h>
-#include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
+#include <KactusAPI/include/ExpressionFormatterFactoryImplementation.h>
 #include <editors/ConfigurationTools/ViewConfigurer.h>
 
 #include <KactusAPI/include/IGeneratorPlugin.h>

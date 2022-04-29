@@ -43,9 +43,9 @@
 
 #include <editors/ComponentEditor/general/generaleditor.h>
 
-#include <editors/ComponentEditor/common/ParameterCache.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
+#include <KactusAPI/include/ParameterCache.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>

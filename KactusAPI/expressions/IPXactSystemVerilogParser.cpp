@@ -11,7 +11,7 @@
 
 #include "IPXactSystemVerilogParser.h"
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include "ParameterFinder.h"
 
 //-----------------------------------------------------------------------------
 // Function: IPXactSystemVerilogParser::IPXactSystemVerilogParser()

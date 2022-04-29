@@ -14,7 +14,7 @@
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 
-#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
+#include "ComponentInstantiationParameterFinder.h"
 
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterInterface::ModuleParameterInterface()

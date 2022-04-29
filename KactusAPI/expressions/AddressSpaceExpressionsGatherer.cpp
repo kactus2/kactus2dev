@@ -11,7 +11,7 @@
 
 #include "AddressSpaceExpressionsGatherer.h"
 
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h>
+#include <MemoryMapExpressionsGatherer.h>
 
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/MemoryMap.h>

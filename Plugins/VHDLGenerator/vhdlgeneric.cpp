@@ -9,7 +9,7 @@
 
 #include <IPXACTmodels/common/ModuleParameter.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QChar>
 

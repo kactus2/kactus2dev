@@ -13,7 +13,7 @@
 
 #include <library/LibraryInterface.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <editors/MemoryDesigner/ConnectivityConnection.h>
 #include <editors/MemoryDesigner/ConnectivityGraph.h>

@@ -17,8 +17,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <Plugins/common/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/common/Writer.h>

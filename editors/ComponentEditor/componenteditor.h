@@ -19,8 +19,8 @@
 #include <editors/ComponentEditor/treeStructure/componenteditorgroupslot.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 #include <editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 

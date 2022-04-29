@@ -12,7 +12,7 @@
 #ifndef TOPCOMPONENTPARAMETERFINDER_H
 #define TOPCOMPONENTPARAMETERFINDER_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 class Component;
 class View;

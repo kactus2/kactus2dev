@@ -11,8 +11,8 @@
 
 #include <MemoryMapInterface.h>
 
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h>
+#include <MemoryMapExpressionsGatherer.h>
+#include <MemoryRemapExpressionGatherer.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMap.h>

@@ -11,7 +11,7 @@
 
 #include "AddressBlockInterface.h"
 
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h>
+#include <AddressBlockExpressionsGatherer.h>
 
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>

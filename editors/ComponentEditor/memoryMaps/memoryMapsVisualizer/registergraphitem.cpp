@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 #include <editors/ComponentEditor/visualization/fieldgapitem.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <common/KactusColors.h>
 #include <common/graphicsItems/visualizeritem.h>

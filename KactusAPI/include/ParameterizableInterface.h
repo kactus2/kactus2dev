@@ -14,8 +14,8 @@
 
 #include <KactusAPI/KactusAPIGlobal.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 class ExpressionFormatter;
 class ValueFormatter;

@@ -21,7 +21,7 @@
 
 #include <KactusAPI/include/ImportColors.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <common/expressions/utilities.h>
 

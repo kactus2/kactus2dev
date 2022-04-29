@@ -16,7 +16,7 @@
 #include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.h>
 
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Channel.h>

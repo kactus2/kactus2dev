@@ -944,20 +944,11 @@
     <Filter Include="Header Files\common\widgets\tagEditor">
       <UniqueIdentifier>{1b390fb1-0cfa-4143-b40e-95a7467acb7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\common\FileHandler">
-      <UniqueIdentifier>{b9cac80c-ac4f-4d6c-8f6a-9e7c82788bf3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\common\FileHandler">
-      <UniqueIdentifier>{9899fde0-87e9-463c-882a-86b05a20ba6f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\memoryMaps\interfaces">
       <UniqueIdentifier>{c34883a7-39da-429d-a472-68966f4183c3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\interfaces">
       <UniqueIdentifier>{214bede0-fbd8-4fa3-8988-455278b915e3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\common\interfaces">
-      <UniqueIdentifier>{8907f090-54b3-49ac-bd20-cdd212c82ac2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\fileSet\interfaces">
       <UniqueIdentifier>{87070864-35d7-43b4-b521-35c12ad9742a}</UniqueIdentifier>
@@ -3495,9 +3486,6 @@
     </ClCompile>
     <ClCompile Include="common\NameGenerationPolicy.cpp">
       <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>

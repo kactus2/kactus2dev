@@ -19,7 +19,7 @@
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <library/LibraryInterface.h>

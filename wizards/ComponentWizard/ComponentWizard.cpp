@@ -21,7 +21,7 @@
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/FileSetInterface.h>
 #include <KactusAPI/include/FileInterface.h>
 #include <KactusAPI/include/FileBuilderInterface.h>

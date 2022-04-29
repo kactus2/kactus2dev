@@ -12,7 +12,7 @@
 #include "segmentsmodel.h"
 #include "SegmentColumns.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>

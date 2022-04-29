@@ -12,8 +12,8 @@
 #ifndef COMPONENTWIZARD_H
 #define COMPONENTWIZARD_H
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QWizard>
 

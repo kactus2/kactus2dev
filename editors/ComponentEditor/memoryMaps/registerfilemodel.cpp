@@ -12,8 +12,8 @@
 #include "registerfilemodel.h"
 
 #include "RegisterFileColumns.h"
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h>
+#include <KactusAPI/include/RegisterFileExpressionsGatherer.h>
+#include <KactusAPI/include//RegisterExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <IPXACTmodels/Component/Register.h>

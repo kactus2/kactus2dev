@@ -1,42 +1,47 @@
 //-----------------------------------------------------------------------------
-// File: ExpressionFormatterFactory.h
+// File: ExpressionFormatterFactoryImplementation.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
 // Date: 16.02.2015
 //
 // Description:
-// Interface for expression formatter factory.
+// Class for expression formatter factory.
 //-----------------------------------------------------------------------------
 
-#ifndef EXPRESSIONFORMATTERFACTORY_H
-#define EXPRESSIONFORMATTERFACTORY_H
+#ifndef EXPRESSIONFORMATTERFACTORYIMPLEMENTATION_H
+#define EXPRESSIONFORMATTERFACTORYIMPLEMENTATION_H
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/KactusAPIGlobal.h>
 
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Design/Design.h>
+#include "ExpressionFormatterFactory.h"
+
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 //-----------------------------------------------------------------------------
-//! Interface for constructing design widgets.
+//! Class for constructing expression formatters.
 //-----------------------------------------------------------------------------
-class ExpressionFormatterFactory
+class KACTUS2_API ExpressionFormatterFactoryImplementation : public ExpressionFormatterFactory
 {
 
 public:
+    /*!
+     *  Constructor.
+     */
+    ExpressionFormatterFactoryImplementation();
 
     /*!
      *  Destructor.
      */
-    virtual ~ExpressionFormatterFactory() {};
+    ~ExpressionFormatterFactoryImplementation();
 
     /*!
      *  Create an expression formatter using the given component.
      *
      *      @param [in] component   Pointer to the component, whose parameters are used in the formatter.
      */
-    virtual ExpressionFormatter* makeExpressionFormatter(QSharedPointer<Component> component) = 0;
-
+    virtual ExpressionFormatter* makeExpressionFormatter(QSharedPointer<Component> component);
+    
     /*!
      *  Create an expression formatter for a component instance within a design.
      *
@@ -44,7 +49,12 @@ public:
      *      @param [in] design      Design containing the component instance.
      */
     virtual ExpressionFormatter* createDesignInstanceFormatter(QSharedPointer<Component> component,
-        QSharedPointer<Design> design) = 0;
+        QSharedPointer<Design> design);
+
+private:
+    // Disable copying.
+    ExpressionFormatterFactoryImplementation(ExpressionFormatterFactoryImplementation const& rhs);
+    ExpressionFormatterFactoryImplementation& operator=(ExpressionFormatterFactoryImplementation const& rhs);
 };
 
-#endif // EXPRESSIONFORMATTERFACTORY_H
+#endif // DESIGNWIDGETFACTORYIMPLEMENTATION_H

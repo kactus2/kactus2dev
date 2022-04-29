@@ -14,7 +14,7 @@
 
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QWizardPage>
 #include <QLabel>
