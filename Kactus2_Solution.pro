@@ -36,7 +36,7 @@ CONFIG(test) {
 IPXACTmodels.subdir = IPXACTmodels
 
 Kactus2.file = Kactus2.pro
-Kactus2.depends = IPXACTmodels
+Kactus2.depends = IPXACTmodels KactusAPI
 Kactus2.makefile = Makefile.Kactus2
 
 KactusAPI.subdir = KactusAPI

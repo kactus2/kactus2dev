@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 HEADERS += ../../common/NameGenerationPolicy.h \
-    ../../editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ./MakeCommon.h \
     ./MakefileGenerator.h \

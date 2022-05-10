@@ -13,7 +13,7 @@ DEFINES += VERILOGINCLUDEIMPORT_LIB
 INCLUDEPATH += ./../.. \
     ./generatedFiles \
     . \
-    ./generatedFiles/Release
+    ./generatedFiles/release
 
 LIBS += -L"./../../executable" \
     -lIPXACTmodels
@@ -21,8 +21,8 @@ LIBS += -L"./../../executable" \
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/debug
-OBJECTS_DIR += debug
+MOC_DIR += ./generatedFiles/release
+OBJECTS_DIR += release
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
 

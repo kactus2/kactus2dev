@@ -7,7 +7,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./common/NameGenerationPolicy.h \
-    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -117,7 +116,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
     ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
     ./common/ui/GraphicalMessageMediator.h \
-    ./common/ui/MessageMediator.h \
     ./common/expressions/utilities.h \
     ./mainwindow/CommandLineParser.h \
     ./mainwindow/SplashScreen.h \
@@ -475,11 +473,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
-    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
-    ./editors/ComponentEditor/common/ParameterFinder.h \
-    ./editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/ComponentEditor/common/CompleterPopupTable.h \
     ./editors/ComponentEditor/common/ExpressionDelegate.h \

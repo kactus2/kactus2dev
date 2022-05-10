@@ -9,7 +9,7 @@
 // Utilities for bus interface mode compatibilities.
 //-----------------------------------------------------------------------------
 
-#include "BusInterfaceUtilities.h"
+#include <KactusAPI/include/BusInterfaceUtilities.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 

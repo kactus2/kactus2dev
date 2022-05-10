@@ -9,7 +9,7 @@
 // Console output for user messages.
 //-----------------------------------------------------------------------------
 
-#include "ConsoleMediator.h"
+#include <KactusAPI/include/ConsoleMediator.h>
 
 #include <iostream>
 

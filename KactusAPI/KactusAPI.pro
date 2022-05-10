@@ -6,13 +6,21 @@ TEMPLATE = lib
 TARGET = KactusAPI
 DESTDIR = ../executable
 CONFIG += release
+QT += xml widgets
 DEFINES +=  KACTUS2_EXPORTS
 LIBS += -L"./executable" \
     -lIPXACTmodels 
 	
+INCLUDEPATH += ./.. \
+  ./include
+
 DEPENDPATH += .
 MOC_DIR += .
 OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(KactusAPI.pri)
+
+
+target.path = $$lib_path
+INSTALLS += target
