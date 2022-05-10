@@ -14,7 +14,6 @@
 
 #include "memoryviewgenerator_global.h"
 
-#include <KactusAPI/include/IPlugin.h>
 #include <KactusAPI/include/IGeneratorPlugin.h>
 
 //-----------------------------------------------------------------------------

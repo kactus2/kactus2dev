@@ -7,133 +7,133 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./include/ComponentAndInstantiationsParameterFinder.h \
-    ./include/SystemVerilogSyntax.h \
-    ../common/ui/ConsoleMediator.h \
-    ./include/ParameterFinder.h \
+HEADERS += ./include/NullParser.h \
+    ./include/ConsoleMediator.h \
+    ./include/ComponentInstanceParameterFinder.h \
+    ./include/VersionHelper.h \
+    ./include/ComponentAndInstantiationsParameterFinder.h \
+    ./include/ComponentParameterFinder.h \
+    ./include/ExpressionFormatter.h \
+    ./include/ExpressionFormatterFactory.h \
+    ./include/ExpressionFormatterFactoryImplementation.h \
+    ./include/ExpressionParser.h \
+    ./include/FileHandler.h \
+    ./include/IPXactSystemVerilogParser.h \
+    ./include/ListParameterFinder.h \
     ./include/MultipleParameterFinder.h \
+    ./include/ParameterFinder.h \
+    ./include/AddressBlockInterface.h \
     ./include/SystemVerilogExpressionParser.h \
-    ./include/PluginUtilityAdapter.h \
-    ../VersionHelper.h \
     ./KactusAPI.h \
     ./KactusAPIGlobal.h \
-    ./include/PluginManager.h \
-    ../wizards/ComponentWizard/ImportRunner.h \
-    ../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
-    ./interfaces/design/InterconnectionInterface.h \
-    ./interfaces/design/AdHocConnectionInterface.h \
-    ./interfaces/component/RegisterInterface.h \
-    ./interfaces/bus/PortAbstractionInterface.h \
-    ./interfaces/design/ComponentInstanceInterface.h \
-    ./interfaces/component/PortsInterface.h \
-    ./interfaces/component/BusInterfaceInterfaceFactory.h \
-    ./interfaces/component/BusInterfaceInterface.h \
-    ./interfaces/component/MemoryBlockInterface.h \
-    ./interfaces/component/MasterPortInterface.h \
-    ./interfaces/component/FileSetInterface.h \
-    ./interfaces/component/AddressBlockInterface.h \
-    ./interfaces/component/FileBuilderInterface.h \
-    ./interfaces/common/AbstractParameterInterface.h \
-    ./interfaces/common/CommonInterface.h \
-    ./include/SubspaceMapInterface.h \
-    ./interfaces/component/MemoryMapInterface.h \
-    ./interfaces/component/FieldInterface.h \
-    ./include/ComponentInstantiationInterface.h \
-    ./interfaces/common/ParametersInterface.h \
-    ./interfaces/common/ParameterizableInterface.h \
-    ./interfaces/bus/AbstractionTypeInterface.h \
-    ./interfaces/common/NameGroupInterface.h \
-    ./interfaces/component/TransparentBridgeInterface.h \
-    ./include/ExpressionFormatter.h \
-    ./include/ComponentParameterFinder.h \
-    ./include/ComponentInstantiationParameterFinder.h \
-    ./include/ExpressionFormatterFactory.h \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
-    ./include/ListParameterFinder.h \
-    ./include/IPXactSystemVerilogParser.h \
-    ./include/ResetInterface.h \
-    ./include/ModuleParameterInterface.h \
-    ./interfaces/component/FileInterface.h \
-    ../editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h \
-    ../editors/common/ComponentInstanceParameterFinder.h \
-    ./include/ParameterCache.h \
-    ./include/ExpressionFormatterFactoryImplementation.h \
-    ../editors/common/BusInterfaceUtilities.h \
-    ./interfaces/component/PortMapInterface.h \
-    ./include/ParameterizableInterface.h \
-    ./include/IPlugin.h \
-    ./include/IPluginUtility.h \
-    ./include/IGeneratorPlugin.h \
-    ./include/PluginSettingsModel.h \
-    ./include/ImportPlugin.h \
-    ./include/IncludeImportPlugin.h \
+    ./include/BusInterfaceUtilities.h \
+    ./include/ImportRunner.h \
+    ./include/ImportHighlighter.h \
+    ./include/AddressBlockExpressionsGatherer.h \
+    ./include/AddressSpaceExpressionsGatherer.h \
     ./include/CLIGenerator.h \
+    ./include/InterconnectionInterface.h \
+    ./include/ComponentInstantiationParameterFinder.h \
+    ./include/ExpressionSupport.h \
     ./include/Highlighter.h \
     ./include/HighlightSource.h \
+    ./include/IGeneratorPlugin.h \
     ./include/ImportColors.h \
+    ./include/ImportPlugin.h \
+    ./include/IncludeImportPlugin.h \
+    ./include/IPlugin.h \
+    ./include/IPluginUtility.h \
+    ./include/MemoryMapExpressionsGatherer.h \
+    ./include/MemoryRemapExpressionGatherer.h \
     ./include/ModelParameterSource.h \
     ./include/ModelParameterVisualizer.h \
-    ./include/ExpressionSupport.h \
-    ./include/FileHandler.h \
-    ./include/ExpressionParser.h
-SOURCES += ../common/ui/ConsoleMediator.cpp \
-    ./expressions/ComponentInstantiationParameterFinder.cpp \
-    ./expressions/MultipleParameterFinder.cpp \
-    ../editors/ComponentEditor/common/NullParser.cpp \
-    ./plugins/PluginUtilityAdapter.cpp \
-    ./plugins/PluginManager.cpp \
-    ../VersionHelper.cpp \
-    ../wizards/ComponentWizard/ImportRunner.cpp \
+    ./include/BusInterfaceInterface.h \
+    ./include/PluginManager.h \
+    ./include/PluginSettingsModel.h \
+    ./include/PluginUtilityAdapter.h \
+    ./include/RegisterExpressionsGatherer.h \
+    ./include/RegisterFileExpressionsGatherer.h \
+    ./include/PortMapInterface.h \
+    ./include/PortsInterface.h \
+    ./include/SystemVerilogSyntax.h \
+    ./include/ParameterizableInterface.h \
+    ./include/AbstractionTypeInterface.h \
+    ./include/NameGroupInterface.h \
+    ./include/MemoryBlockInterface.h \
+    ./include/AdHocConnectionInterface.h \
+    ./include/AbstractParameterInterface.h \
+    ./include/ModuleParameterInterface.h \
+    ./include/MessageMediator.h \
+    ./include/BusInterfaceInterfaceFactory.h \
+    ./include/FileSetInterface.h \
+    ./include/FileInterface.h \
+    ./include/FileBuilderInterface.h \
+    ./include/ComponentInstantiationInterface.h \
+    ./include/ComponentInstanceInterface.h \
+    ./include/CommonInterface.h \
+    ./include/TransparentBridgeInterface.h \
+    ./include/SubspaceMapInterface.h \
+    ./include/ResetInterface.h \
+    ./include/RegisterInterface.h \
+    ./include/MemoryMapInterface.h \
+    ./include/MasterPortInterface.h \
+    ./include/FieldInterface.h \
+    ./include/ParameterCache.h \
+    ./include/ParametersInterface.h \
+    ./include/PortAbstractionInterface.h
+SOURCES += ./utilities/ConsoleMediator.cpp \
+    ./interfaces/component/BusInterfaceUtilities.cpp \
+    ./utilities/VersionHelper.cpp \
+    ./plugins/ImportRunner.cpp \
+    ./plugins/ImportHighlighter.cpp \
     ./KactusAPI.cpp \
-    ./expressions/ComponentParameterFinder.cpp \
-    ../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
-    ./interfaces/common/NameGroupInterface.cpp \
-    ./interfaces/component/MemoryMapInterface.cpp \
-    ./interfaces/component/AddressBlockInterface.cpp \
-    ./interfaces/component/RegisterInterface.cpp \
-    ./interfaces/component/MasterPortInterface.cpp \
-    ./interfaces/component/BusInterfaceInterfaceFactory.cpp \
-    ./interfaces/component/BusInterfaceInterface.cpp \
     ./interfaces/bus/AbstractionTypeInterface.cpp \
     ./interfaces/bus/PortAbstractionInterface.cpp \
-    ./interfaces/component/FileBuilderInterface.cpp \
-    ./interfaces/component/FileSetInterface.cpp \
-    ./interfaces/component/FileInterface.cpp \
-    ./interfaces/common/CommonInterface.cpp \
-    ./interfaces/component/ComponentInstantiationInterface.cpp \
-    ./interfaces/common/ParameterizableInterface.cpp \
-    ./interfaces/component/TransparentBridgeInterface.cpp \
-    ./interfaces/design/InterconnectionInterface.cpp \
-    ./interfaces/component/ModuleParameterInterface.cpp \
-    ./interfaces/component/ResetInterface.cpp \
-    ./interfaces/common/ParametersInterface.cpp \
     ./interfaces/common/AbstractParameterInterface.cpp \
-    ./interfaces/design/ComponentInstanceInterface.cpp \
-    ./expressions/ExpressionFormatterFactoryImplementation.cpp \
-    ./expressions/ExpressionFormatter.cpp \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.cpp \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.cpp \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.cpp \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
-    ../editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
-    ./expressions/ListParameterFinder.cpp \
-    ./expressions/IPXactSystemVerilogParser.cpp \
-    ./interfaces/component/PortsInterface.cpp \
-    ./interfaces/component/MemoryBlockInterface.cpp \
+    ./interfaces/common/CommonInterface.cpp \
+    ./interfaces/common/NameGroupInterface.cpp \
+    ./interfaces/common/ParameterizableInterface.cpp \
+    ./interfaces/common/ParametersInterface.cpp \
+    ./interfaces/component/AddressBlockInterface.cpp \
+    ./interfaces/component/BusInterfaceInterface.cpp \
+    ./interfaces/component/BusInterfaceInterfaceFactory.cpp \
+    ./interfaces/component/ComponentInstantiationInterface.cpp \
     ./interfaces/component/FieldInterface.cpp \
-    ../editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.cpp \
-    ../editors/common/ComponentInstanceParameterFinder.cpp \
-    ./expressions/ParameterCache.cpp \
-    ./expressions/ComponentAndInstantiationsParameterFinder.cpp \
-    ../editors/common/BusInterfaceUtilities.cpp \
-    ./interfaces/design/AdHocConnectionInterface.cpp \
+    ./interfaces/component/FileBuilderInterface.cpp \
+    ./interfaces/component/FileInterface.cpp \
+    ./interfaces/component/FileSetInterface.cpp \
+    ./interfaces/component/MasterPortInterface.cpp \
+    ./interfaces/component/MemoryBlockInterface.cpp \
+    ./interfaces/component/MemoryMapInterface.cpp \
+    ./interfaces/component/ModuleParameterInterface.cpp \
     ./interfaces/component/PortMapInterface.cpp \
+    ./interfaces/component/PortsInterface.cpp \
+    ./interfaces/component/RegisterInterface.cpp \
+    ./interfaces/component/ResetInterface.cpp \
     ./interfaces/component/SubspaceMapInterface.cpp \
+    ./interfaces/component/TransparentBridgeInterface.cpp \
+    ./interfaces/design/AdHocConnectionInterface.cpp \
+    ./interfaces/design/ComponentInstanceInterface.cpp \
+    ./interfaces/design/InterconnectionInterface.cpp \
+    ./plugins/PluginManager.cpp \
+    ./plugins/PluginUtilityAdapter.cpp \
     ./utilities/FileHandler.cpp \
-    ./expressions/SystemVerilogExpressionParser.cpp
+    ./expressions/ComponentInstantiationParameterFinder.cpp \
+    ./expressions/AddressBlockExpressionsGatherer.cpp \
+    ./expressions/AddressSpaceExpressionsGatherer.cpp \
+    ./expressions/ComponentAndInstantiationsParameterFinder.cpp \
+    ./expressions/ComponentInstanceParameterFinder.cpp \
+    ./expressions/ComponentParameterFinder.cpp \
+    ./expressions/ExpressionFormatter.cpp \
+    ./expressions/ExpressionFormatterFactoryImplementation.cpp \
+    ./expressions/FieldExpressionsGatherer.cpp \
+    ./expressions/IPXactSystemVerilogParser.cpp \
+    ./expressions/ListParameterFinder.cpp \
+    ./expressions/MemoryMapExpressionsGatherer.cpp \
+    ./expressions/MemoryRemapExpressionGatherer.cpp \
+    ./expressions/MultipleParameterFinder.cpp \
+    ./expressions/ParameterCache.cpp \
+    ./expressions/RegisterExpressionsGatherer.cpp \
+    ./expressions/RegisterFileExpressionsGatherer.cpp \
+    ./expressions/SystemVerilogExpressionParser.cpp \
+    ./expressions/NullParser.cpp

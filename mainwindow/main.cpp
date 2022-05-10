@@ -17,13 +17,13 @@
 #include "CommandLineParser.h"
 #include "SplashScreen.h"
 
-#include <common/ui/MessageMediator.h>
-#include <common/ui/ConsoleMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
+#include <KactusAPI/include/ConsoleMediator.h>
 #include <common/ui/GraphicalMessageMediator.h>
 
 #include <KactusAPI/KactusAPI.h>
 
-#include <VersionHelper.h>
+#include <KactusAPI/include/VersionHelper.h>
 
 #include <library/LibraryHandler.h>
 

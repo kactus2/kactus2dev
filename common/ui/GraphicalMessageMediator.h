@@ -12,7 +12,7 @@
 #ifndef GRAPHICALMESSAGEMEDIATOR_H
 #define GRAPHICALMESSAGEMEDIATOR_H
 
-#include "MessageMediator.h"
+#include <KactusAPI/include/MessageMediator.h>
 
 #include <QStatusBar>
 

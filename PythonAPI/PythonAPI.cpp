@@ -19,7 +19,7 @@
 #include <KactusAPI/include/IGeneratorPlugin.h>
 #include <KactusAPI/include/CLIGenerator.h>
 
-#include <editors/common/BusInterfaceUtilities.h>
+#include <KactusAPI/include/BusInterfaceUtilities.h>
 
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>

@@ -11,7 +11,7 @@
 
 #include "HierarchicalBusInterfaceItemMatcher.h"
 
-#include <editors/common/BusInterfaceUtilities.h>
+#include <KactusAPI/include/BusInterfaceUtilities.h>
 
 //-----------------------------------------------------------------------------
 // Function: HierarchicalBusInterfaceItemMatcher::HierarchicalBusInterfaceItemMatcher()

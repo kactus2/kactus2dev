@@ -21,7 +21,7 @@
 #include <editors/common/diagramgrid.h>
 #include <editors/common/NamelabelWidth.h>
 #include <editors/common/GraphicsItemLabel.h>
-#include <editors/common/BusInterfaceUtilities.h>
+#include <KactusAPI/include/BusInterfaceUtilities.h>
 
 #include <library/LibraryInterface.h>
 

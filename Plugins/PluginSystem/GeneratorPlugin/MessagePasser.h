@@ -12,7 +12,7 @@
 #ifndef MESSAGEPASSER_H
 #define MESSAGEPASSER_H
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 
 #include <QString>
 #include <QObject>

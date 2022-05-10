@@ -14,10 +14,12 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
+#include "KactusAPI/KactusAPIGlobal.h"
+
 //-----------------------------------------------------------------------------
 //! Expression parser implementation that does nothing.
 //-----------------------------------------------------------------------------
-class NullParser : public ExpressionParser
+class KACTUS2_API NullParser : public ExpressionParser
 {
 public:
 

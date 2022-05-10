@@ -11,8 +11,8 @@
 
 #include "KactusAPI.h"
 
-#include <VersionHelper.h>
-#include <common/ui/ConsoleMediator.h>
+#include <KactusAPI/include/VersionHelper.h>
+#include <KactusAPI/include/ConsoleMediator.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -25,7 +25,7 @@
 #include <PluginUtilityAdapter.h>
 #include <CLIGenerator.h>
 
-#include <wizards/ComponentWizard/ImportRunner.h>
+#include <KactusAPI/include/ImportRunner.h>
 
 #include <QFileInfo>
 

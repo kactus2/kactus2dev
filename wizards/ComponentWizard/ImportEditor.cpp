@@ -20,7 +20,7 @@
 
 #include <KactusAPI/include/PluginManager.h>
 
-#include <wizards/ComponentWizard/ImportRunner.h>
+#include <KactusAPI/include/ImportRunner.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>

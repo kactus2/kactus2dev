@@ -23,7 +23,7 @@
 #include <KactusAPI/include/ParameterCache.h>
 #include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/MultipleParameterFinder.h>
-#include <editors/common/ComponentInstanceParameterFinder.h>
+#include <KactusAPI/include/ComponentInstanceParameterFinder.h>
 
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 

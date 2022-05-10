@@ -43,7 +43,7 @@
 #include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 
 #include <QObject>
 #include <QDomElement>

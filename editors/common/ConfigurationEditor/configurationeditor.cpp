@@ -11,7 +11,7 @@
 
 #include "configurationeditor.h"
 
-#include <VersionHelper.h>
+#include <KactusAPI/include/VersionHelper.h>
 
 #include <common/dialogs/createConfigurationDialog/createconfigurationdialog.h>
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>

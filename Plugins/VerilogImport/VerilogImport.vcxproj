@@ -138,7 +138,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\common\expressions\utilities.cpp" />
     <ClCompile Include="..\..\common\NameGenerationPolicy.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\NullParser.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_VerilogImporter.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -156,7 +155,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\common\expressions\utilities.h" />
     <ClInclude Include="..\..\common\NameGenerationPolicy.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\NullParser.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="..\..\wizards\ComponentWizard\InstanceData.h" />
     <ClInclude Include="..\common\HDLmath.h" />

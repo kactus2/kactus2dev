@@ -11,7 +11,7 @@
 
 #include "SettingsUpdater.h"
 
-#include <VersionHelper.h>
+#include <KactusAPI/include/VersionHelper.h>
 
 #include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 

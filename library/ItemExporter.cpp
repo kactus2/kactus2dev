@@ -11,7 +11,7 @@
 
 #include "ItemExporter.h"
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 #include <common/dialogs/ObjectExportDialog/ObjectExportDialog.h>
 
 #include <library/LibraryItemSelectionFactory.h>

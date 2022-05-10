@@ -11,130 +11,86 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\common\ui\ConsoleMediator.h" />
-    <QtMoc Include="..\editors\common\ComponentInstanceParameterFinder.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-    </QtMoc>
-    <ClInclude Include="..\editors\common\BusInterfaceUtilities.h" />
-    <ClInclude Include="..\VersionHelper.h" />
-    <QtMoc Include="..\wizards\ComponentWizard\ImportRunner.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-    </QtMoc>
-    <QtMoc Include="..\wizards\ComponentWizard\ImportEditor\ImportHighlighter.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-    </QtMoc>
+    <ClInclude Include="include\AbstractionTypeInterface.h" />
+    <ClInclude Include="include\AbstractParameterInterface.h" />
     <ClInclude Include="include\AddressBlockExpressionsGatherer.h" />
+    <ClInclude Include="include\AddressBlockInterface.h" />
     <ClInclude Include="include\AddressSpaceExpressionsGatherer.h" />
+    <ClInclude Include="include\AdHocConnectionInterface.h" />
+    <ClInclude Include="include\BusInterfaceInterface.h" />
+    <ClInclude Include="include\BusInterfaceInterfaceFactory.h" />
+    <ClInclude Include="include\BusInterfaceUtilities.h" />
     <ClInclude Include="include\CLIGenerator.h" />
+    <ClInclude Include="include\CommonInterface.h" />
     <ClInclude Include="include\ComponentAndInstantiationsParameterFinder.h" />
+    <QtMoc Include="include\ComponentInstanceParameterFinder.h" />
+    <ClInclude Include="include\ComponentInstanceInterface.h" />
     <ClInclude Include="include\ComponentInstantiationInterface.h" />
     <ClInclude Include="include\ComponentInstantiationParameterFinder.h" />
     <ClInclude Include="include\ComponentParameterFinder.h" />
+    <ClInclude Include="include\ConsoleMediator.h" />
     <ClInclude Include="include\ExpressionFormatter.h" />
     <ClInclude Include="include\ExpressionFormatterFactory.h" />
     <ClInclude Include="include\ExpressionFormatterFactoryImplementation.h" />
     <ClInclude Include="include\ExpressionParser.h" />
     <ClInclude Include="include\ExpressionSupport.h" />
+    <ClInclude Include="include\FieldInterface.h" />
+    <ClInclude Include="include\FileBuilderInterface.h" />
     <ClInclude Include="include\FileHandler.h" />
+    <ClInclude Include="include\FileInterface.h" />
+    <ClInclude Include="include\FileSetInterface.h" />
     <ClInclude Include="include\Highlighter.h" />
     <ClInclude Include="include\HighlightSource.h" />
     <ClInclude Include="include\IGeneratorPlugin.h" />
     <ClInclude Include="include\ImportColors.h" />
+    <QtMoc Include="include\ImportHighlighter.h" />
     <ClInclude Include="include\ImportPlugin.h" />
+    <QtMoc Include="include\ImportRunner.h" />
     <ClInclude Include="include\IncludeImportPlugin.h" />
+    <ClInclude Include="include\InterconnectionInterface.h" />
     <ClInclude Include="include\IPlugin.h" />
     <ClInclude Include="include\IPluginUtility.h" />
     <ClInclude Include="include\IPXactSystemVerilogParser.h" />
     <ClInclude Include="include\ListParameterFinder.h" />
+    <ClInclude Include="include\MasterPortInterface.h" />
+    <ClInclude Include="include\MemoryBlockInterface.h" />
     <ClInclude Include="include\MemoryMapExpressionsGatherer.h" />
+    <ClInclude Include="include\MemoryMapInterface.h" />
     <ClInclude Include="include\MemoryRemapExpressionGatherer.h" />
+    <ClInclude Include="include\MessageMediator.h" />
     <ClInclude Include="include\ModelParameterSource.h" />
     <ClInclude Include="include\ModelParameterVisualizer.h" />
     <ClInclude Include="include\ModuleParameterInterface.h" />
     <ClInclude Include="include\MultipleParameterFinder.h" />
     <QtMoc Include="include\ParameterCache.h" />
+    <ClInclude Include="include\NameGroupInterface.h" />
+    <ClInclude Include="include\NullParser.h" />
     <ClInclude Include="include\ParameterFinder.h" />
     <ClInclude Include="include\ParameterizableInterface.h" />
+    <ClInclude Include="include\ParametersInterface.h" />
     <ClInclude Include="include\PluginManager.h" />
     <ClInclude Include="include\PluginSettingsModel.h" />
     <ClInclude Include="include\PluginUtilityAdapter.h" />
+    <ClInclude Include="include\PortAbstractionInterface.h" />
+    <ClInclude Include="include\PortMapInterface.h" />
+    <ClInclude Include="include\PortsInterface.h" />
     <ClInclude Include="include\RegisterExpressionsGatherer.h" />
     <ClInclude Include="include\RegisterFileExpressionsGatherer.h" />
+    <ClInclude Include="include\RegisterInterface.h" />
     <ClInclude Include="include\ResetInterface.h" />
     <ClInclude Include="include\SubspaceMapInterface.h" />
     <ClInclude Include="include\SystemVerilogExpressionParser.h" />
     <ClInclude Include="include\SystemVerilogSyntax.h" />
-    <ClInclude Include="interfaces\bus\AbstractionTypeInterface.h" />
-    <ClInclude Include="interfaces\bus\PortAbstractionInterface.h" />
-    <ClInclude Include="interfaces\common\AbstractParameterInterface.h" />
-    <ClInclude Include="interfaces\common\CommonInterface.h" />
-    <ClInclude Include="interfaces\common\NameGroupInterface.h" />
-    <ClInclude Include="interfaces\common\ParameterizableInterface.h" />
-    <ClInclude Include="interfaces\common\ParametersInterface.h" />
-    <ClInclude Include="interfaces\component\AddressBlockInterface.h" />
-    <ClInclude Include="interfaces\component\BusInterfaceInterface.h" />
-    <ClInclude Include="interfaces\component\BusInterfaceInterfaceFactory.h" />
-    <ClInclude Include="interfaces\component\FieldInterface.h" />
-    <ClInclude Include="interfaces\component\FileBuilderInterface.h" />
-    <ClInclude Include="interfaces\component\FileInterface.h" />
-    <ClInclude Include="interfaces\component\FileSetInterface.h" />
-    <ClInclude Include="interfaces\component\MasterPortInterface.h" />
-    <ClInclude Include="interfaces\component\MemoryBlockInterface.h" />
-    <ClInclude Include="interfaces\component\MemoryMapInterface.h" />
-    <ClInclude Include="interfaces\component\PortMapInterface.h" />
-    <ClInclude Include="interfaces\component\PortsInterface.h" />
-    <ClInclude Include="interfaces\component\RegisterInterface.h" />
-    <ClInclude Include="interfaces\component\TransparentBridgeInterface.h" />
-    <ClInclude Include="interfaces\design\AdHocConnectionInterface.h" />
-    <ClInclude Include="interfaces\design\ComponentInstanceInterface.h" />
-    <ClInclude Include="interfaces\design\InterconnectionInterface.h" />
+    <ClInclude Include="include\TransparentBridgeInterface.h" />
+    <ClInclude Include="include\VersionHelper.h" />
     <ClInclude Include="KactusAPI.h" />
     <ClInclude Include="KactusAPIGlobal.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\common\ui\ConsoleMediator.cpp" />
-    <ClCompile Include="..\editors\common\BusInterfaceUtilities.cpp" />
-    <ClCompile Include="..\editors\common\ComponentInstanceParameterFinder.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\NullParser.cpp" />
-    <ClCompile Include="..\VersionHelper.cpp" />
-    <ClCompile Include="..\wizards\ComponentWizard\ImportEditor\ImportHighlighter.cpp" />
-    <ClCompile Include="..\wizards\ComponentWizard\ImportRunner.cpp" />
     <ClCompile Include="expressions\AddressBlockExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\AddressSpaceExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\ComponentAndInstantiationsParameterFinder.cpp" />
+    <ClCompile Include="expressions\ComponentInstanceParameterFinder.cpp" />
     <ClCompile Include="expressions\ComponentInstantiationParameterFinder.cpp" />
     <ClCompile Include="expressions\ComponentParameterFinder.cpp" />
     <ClCompile Include="expressions\ExpressionFormatter.cpp" />
@@ -145,6 +101,7 @@
     <ClCompile Include="expressions\MemoryMapExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\MemoryRemapExpressionGatherer.cpp" />
     <ClCompile Include="expressions\MultipleParameterFinder.cpp" />
+    <ClCompile Include="expressions\NullParser.cpp" />
     <ClCompile Include="expressions\ParameterCache.cpp" />
     <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp" />
@@ -159,6 +116,7 @@
     <ClCompile Include="interfaces\component\AddressBlockInterface.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceInterface.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceInterfaceFactory.cpp" />
+    <ClCompile Include="interfaces\component\BusInterfaceUtilities.cpp" />
     <ClCompile Include="interfaces\component\ComponentInstantiationInterface.cpp" />
     <ClCompile Include="interfaces\component\FieldInterface.cpp" />
     <ClCompile Include="interfaces\component\FileBuilderInterface.cpp" />
@@ -178,9 +136,13 @@
     <ClCompile Include="interfaces\design\ComponentInstanceInterface.cpp" />
     <ClCompile Include="interfaces\design\InterconnectionInterface.cpp" />
     <ClCompile Include="KactusAPI.cpp" />
+    <ClCompile Include="plugins\ImportHighlighter.cpp" />
+    <ClCompile Include="plugins\ImportRunner.cpp" />
     <ClCompile Include="plugins\PluginManager.cpp" />
     <ClCompile Include="plugins\PluginUtilityAdapter.cpp" />
+    <ClCompile Include="utilities\ConsoleMediator.cpp" />
     <ClCompile Include="utilities\FileHandler.cpp" />
+    <ClCompile Include="utilities\VersionHelper.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3B9FF5B3-3B2B-4294-B6E3-D8E9885B6B8A}</ProjectGuid>

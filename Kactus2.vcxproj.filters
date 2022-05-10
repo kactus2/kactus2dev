@@ -590,12 +590,6 @@
     <Filter Include="Source Files\editors\CSourceEditor">
       <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\wizards\ComponentWizard\ImportEditor">
-      <UniqueIdentifier>{ae90d55b-cb79-493b-afc2-530d57060ce5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\wizards\ComponentWizard\ImportEditor">
-      <UniqueIdentifier>{9ecb70ee-8042-4071-8310-8ec61afc3be9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\wizards\ImportWizard">
       <UniqueIdentifier>{79e351da-6711-4900-a6e8-9c4458cf05b6}</UniqueIdentifier>
     </Filter>
@@ -2574,12 +2568,6 @@
     </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardImportPage.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ImportEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportEditor.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ComponentWizardImportPage.cpp">
       <Filter>Generated Files</Filter>
@@ -4921,6 +4909,12 @@
     <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="wizards\ComponentWizard\ImportEditor.cpp">
+      <Filter>Source Files\wizards\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ImportEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5704,9 +5698,6 @@
     </CustomBuild>
     <CustomBuild Include="settings\SettingsPage.h">
       <Filter>Header Files\settings</Filter>
-    </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\ImportEditor\ImportEditor.h">
-      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\ComponentWizardImportPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
@@ -6500,9 +6491,6 @@
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
       <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
     </CustomBuild>
@@ -6740,6 +6728,9 @@
     <CustomBuild Include="settings\NewPluginsDialog.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
+    <CustomBuild Include="wizards\ComponentWizard\ImportEditor.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6888,9 +6879,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\AddressBlockColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\NullParser.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>

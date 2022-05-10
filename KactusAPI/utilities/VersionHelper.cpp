@@ -9,8 +9,8 @@
 // A module that returns variations of version number as QStrings.
 //-----------------------------------------------------------------------------
 
-#include "version.h"
-#include "VersionHelper.h"
+#include <version.h>
+#include <KactusAPI/include/VersionHelper.h>
 
 // Used to convert defined values to string.
 // Double stringize is required to expand possible macros in str.

@@ -20,9 +20,9 @@
 #include <KactusAPI/include/ExpressionSupport.h>
 
 #include <FileHandler.h>
-#include <editors/ComponentEditor/common/NullParser.h>
+#include <KactusAPI/include/NullParser.h>
 
-#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
+#include <KactusAPI/include/ImportHighlighter.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
