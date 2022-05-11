@@ -32,5 +32,6 @@ jobs:
         version: 5.12.7
     - name: Build sources
       run: |
+        $Env:PYTHON_DIR = $Env:RUNNER_TOOL_CACHE/Python/
         $Env:QTDIR = $Env:Qt5_Dir
         msbuild -m:4 -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln
