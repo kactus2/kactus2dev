@@ -11,7 +11,7 @@
 
 #include "ParameterReferenceTreeWindow.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h>
 
 #include <IPXACTmodels/Component/Component.h>

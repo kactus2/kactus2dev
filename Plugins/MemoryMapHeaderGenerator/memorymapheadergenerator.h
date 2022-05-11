@@ -14,7 +14,7 @@
 #include "globalheadersavemodel.h"
 #include "systemheadersavemodel.h"
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

@@ -14,8 +14,8 @@
 
 #include <wizards/ComponentWizard/ComponentWizardImportPage.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QWizardPage>
 #include <QSharedPointer>

@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 #include <common/KactusColors.h>
 

@@ -6,9 +6,13 @@
 */
 
 #include "alterabspgenerator.h"
+
 #include <library/LibraryInterface.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+
+#include <KactusAPI/include/IPluginUtility.h>
+
 #include <IPXACTmodels/Component/Component.h>
+
 #include "alterabspgeneratordialog.h"
 
 #include <QDir>
@@ -53,7 +57,7 @@ QString AlteraBSPGenerator::getDescription() const
 //-----------------------------------------------------------------------------
 QString AlteraBSPGenerator::getVendor() const
 {
-    static QString vendor(tr("TUT"));
+    static QString vendor(tr("Tampere University (tuni.fi)"));
     return vendor;
 }
 

@@ -20,10 +20,10 @@
 
 #include <library/LibraryInterface.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
 
 #include <QVBoxLayout>
 #include <QHeaderView>

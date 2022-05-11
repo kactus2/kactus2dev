@@ -35,12 +35,6 @@
     <Filter Include="Source Files\Parsing">
       <UniqueIdentifier>{8bfc3890-9aa1-40f3-a4b4-55445b974b81}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Common">
-      <UniqueIdentifier>{ce3d2326-04ea-4b0c-b5fc-12793ca57d5a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Common">
-      <UniqueIdentifier>{f7decd9b-fb93-4d33-bf86-6a049de37b44}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\GenerationControl">
       <UniqueIdentifier>{ebb899ad-7b28-44ae-92f5-a44282cb51fb}</UniqueIdentifier>
     </Filter>
@@ -81,24 +75,6 @@
     </ClCompile>
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp">
       <Filter>Source Files\Parsing</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_FileOutputWidget.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -212,24 +188,6 @@
     <ClInclude Include="..\common\HDLParser\MetaInstance.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h">
       <Filter>Header Files\GenerationControl</Filter>
     </ClInclude>
@@ -250,9 +208,6 @@
     </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\IWriterFactory.h">
       <Filter>Header Files\ModelSimWriterFactory</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h">
-      <Filter>Header Files\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">
       <Filter>Header Files</Filter>

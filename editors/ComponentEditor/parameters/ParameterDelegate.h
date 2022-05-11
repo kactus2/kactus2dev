@@ -13,7 +13,7 @@
 #define PARAMETERDELEGATE_H
 
 #include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QCompleter>
 

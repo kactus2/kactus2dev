@@ -13,34 +13,34 @@
 
 #include <library/LibraryHandler.h>
 
-#include <common/KactusAPI.h>
+#include <KactusAPI/KactusAPI.h>
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/APISupport.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/CLIGenerator.h>
 
-#include <editors/common/BusInterfaceUtilities.h>
+#include <KactusAPI/include/BusInterfaceUtilities.h>
 
-#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/PortsInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
+#include <KactusAPI/include/ResetInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
+#include <KactusAPI/include/MemoryMapInterface.h>
+#include <KactusAPI/include/SubspaceMapInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
+#include <KactusAPI/include/FileInterface.h>
+#include <KactusAPI/include/FileBuilderInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 
-#include <editors/HWDesign/interfaces/ComponentInstanceInterface.h>
-#include <editors/HWDesign/interfaces/InterconnectionInterface.h>
-#include <editors/HWDesign/interfaces/AdHocConnectionInterface.h>
+#include <KactusAPI/include/ComponentInstanceInterface.h>
+#include <KactusAPI/include/InterconnectionInterface.h>
+#include <KactusAPI/include/AdHocConnectionInterface.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -201,7 +201,7 @@ void PythonAPI::generate(std::string const& format, std::string const& vlnv, std
     IGeneratorPlugin* generator = nullptr;
     for (auto plugin : KactusAPI::getPlugins())
     {
-        APISupport* runnable = dynamic_cast<APISupport*>(plugin);
+        CLIGenerator* runnable = dynamic_cast<CLIGenerator*>(plugin);
         if (runnable != 0)
         {
             if (runnable->getOutputFormat().toLower() == fileFormat)

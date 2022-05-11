@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Design/AdHocConnection.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <library/LibraryInterface.h>
 

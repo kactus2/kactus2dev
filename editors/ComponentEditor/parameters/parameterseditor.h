@@ -14,8 +14,8 @@
 
 #include <editors/ComponentEditor/ParameterItemEditor.h>
 #include <editors/ComponentEditor/parameters/parametersmodel.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>

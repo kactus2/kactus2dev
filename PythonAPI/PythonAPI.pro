@@ -10,9 +10,11 @@ DEFINES += PYTHONAPI_LIB
 QT += core gui widgets xml
 LIBS += -L"$(SolutionDir)x64/executable" \
     -L$$(PWD)/../executable -lIPXACTmodels \
-    -L$$(PWD)/../executable -lKactus2
+    -L$$(PWD)/../executable -lKactusAPI
 DEPENDPATH += ..
-INCLUDEPATH += ..
+INCLUDEPATH += ..\
+    ../KactusAPI/include 
+
 MOC_DIR += ./GeneratedFiles
 OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles

@@ -16,7 +16,7 @@
 #include "localaddrblockgraphitem.h"
 #include "AddressSpaceConflictedItem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>

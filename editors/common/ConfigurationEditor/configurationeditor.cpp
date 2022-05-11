@@ -11,7 +11,7 @@
 
 #include "configurationeditor.h"
 
-#include <VersionHelper.h>
+#include <KactusAPI/include/VersionHelper.h>
 
 #include <common/dialogs/createConfigurationDialog/createconfigurationdialog.h>
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
@@ -23,8 +23,8 @@
 
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Design/Design.h>

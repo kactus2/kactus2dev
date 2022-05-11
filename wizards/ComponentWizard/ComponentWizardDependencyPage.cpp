@@ -14,7 +14,7 @@
 #include "ComponentWizardPages.h"
 
 #include <editors/ComponentEditor/fileSet/filesetsdelegate.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/Component/Component.h>

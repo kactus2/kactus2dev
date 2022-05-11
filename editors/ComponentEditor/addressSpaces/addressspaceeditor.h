@@ -18,8 +18,8 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <editors/ComponentEditor/itemeditor.h>
 

@@ -14,15 +14,15 @@
 
 #include "veriloggeneratorplugin_global.h"
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/APISupport.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/CLIGenerator.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 //-----------------------------------------------------------------------------
 //! Plugin for structural Verilog generation.
 //-----------------------------------------------------------------------------
 class VERILOGGENERATORPLUGIN_EXPORT VerilogGeneratorPlugin : public QObject, public IGeneratorPlugin, 
-    public APISupport
+    public CLIGenerator
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.veriloggeneratorplugin" FILE "veriloggeneratorplugin.json")

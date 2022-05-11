@@ -14,9 +14,9 @@
 
 #include <library/LibraryInterface.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 

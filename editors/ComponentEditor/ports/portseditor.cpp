@@ -11,13 +11,13 @@
 
 #include "portseditor.h"
 
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
 #include <editors/ComponentEditor/ports/MasterPortsEditor.h>
 #include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.h>

@@ -13,7 +13,7 @@
 #define SUBSPACEMAPGRAPHITEM_H
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
+#include <KactusAPI/include/SubspaceMapInterface.h>
 
 #include <QGraphicsItem>
 #include <QSharedPointer>

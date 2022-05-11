@@ -9,7 +9,7 @@
 
 #include "vhdlgeneral.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/Port.h>
 

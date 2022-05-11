@@ -11,12 +11,12 @@
 
 #include "PluginSettingsPage.h"
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
-#include <Plugins/PluginSystem/PluginInfoWidget.h>
-#include <Plugins/PluginSystem/NewPluginsDialog.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/ISourceAnalyzerPlugin.h>
+#include <KactusAPI/include/ImportPlugin.h>
+#include <settings/PluginInfoWidget.h>
+#include <settings/NewPluginsDialog.h>
 
 #include <IPXACTmodels/utilities/XmlUtils.h>
 

@@ -11,11 +11,11 @@
 
 #include "DocumentValidator.h"
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCache.h>
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ParameterCache.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>

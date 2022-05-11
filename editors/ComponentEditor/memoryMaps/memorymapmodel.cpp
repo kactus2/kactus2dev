@@ -13,7 +13,7 @@
 
 #include "MemoryMapColumns.h"
 
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <common/KactusColors.h>

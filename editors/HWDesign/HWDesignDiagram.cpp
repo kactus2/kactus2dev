@@ -36,8 +36,8 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
 
 #include <editors/common/DiagramUtil.h>
 #include <editors/common/diagramgrid.h>

@@ -15,7 +15,7 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 
-#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
+#include <KactusAPI/include/ComponentInstantiationInterface.h>
 
 #include <QGridLayout>
 #include <QFormLayout>

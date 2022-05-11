@@ -14,7 +14,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: InterfaceSelector::InterfaceSelector()

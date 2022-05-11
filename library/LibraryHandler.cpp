@@ -18,7 +18,7 @@
 
 #include <library/ItemExporter.h>
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>

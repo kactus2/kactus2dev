@@ -96,7 +96,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\x64\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Xmld.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Xmld.lib;IPXACTmodelsd.lib;KactusAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,17 +130,11 @@
       <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\x64\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Xml.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Xml.lib;IPXACTmodels.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\editors\common\TopComponentParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp" />
     <ClCompile Include="..\common\HDLParser\HDLCommandLineParser.cpp" />
@@ -243,13 +237,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editors\common\TopComponentParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <CustomBuild Include="..\..\mainwindow\MessageConsole\messageconsole.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing messageconsole.h...</Message>

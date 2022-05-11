@@ -12,7 +12,7 @@
 #ifndef PARAMETERREFERENCETREE_H
 #define PARAMETERREFERENCETREE_H
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QTreeWidget>
 #include <QSharedPointer>

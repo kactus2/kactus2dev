@@ -12,7 +12,7 @@
 #ifndef SUBSPACEMAPMODEL_H
 #define SUBSPACEMAPMODEL_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockModel.h>
 
 #include <QAbstractTableModel>

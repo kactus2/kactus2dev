@@ -14,8 +14,8 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: interfacemodestack::InterfaceModeStack()

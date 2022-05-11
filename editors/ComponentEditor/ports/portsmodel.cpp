@@ -13,8 +13,8 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/TransactionalTypes.h>

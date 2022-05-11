@@ -13,7 +13,7 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 //-----------------------------------------------------------------------------

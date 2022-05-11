@@ -13,9 +13,9 @@
 
 #include "ComponentEditorSystemViewItem.h"
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <KactusAPI/include/FileInterface.h>
+#include <KactusAPI/include/FileBuilderInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
 #include <editors/ComponentEditor/software/systemView/SystemViewsEditor.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>

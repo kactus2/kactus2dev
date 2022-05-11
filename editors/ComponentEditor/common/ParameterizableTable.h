@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <QAbstractTableModel>
 

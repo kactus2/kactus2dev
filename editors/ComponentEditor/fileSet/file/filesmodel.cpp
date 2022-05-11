@@ -21,7 +21,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <KactusAPI/include/FileInterface.h>
 
 #include <QFileInfo>
 #include <QMimeData>

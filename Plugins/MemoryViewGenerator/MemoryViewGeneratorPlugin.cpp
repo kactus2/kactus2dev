@@ -12,7 +12,7 @@
 #include "MemoryViewGeneratorPlugin.h"
 
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 #include <library/LibraryInterface.h>
@@ -55,7 +55,7 @@ QString MemoryViewGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString MemoryViewGeneratorPlugin::getVersion() const
 {
-    return tr("0.1");
+    return tr("0.2");
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ QString MemoryViewGeneratorPlugin::getDescription() const
 //-----------------------------------------------------------------------------
 QString MemoryViewGeneratorPlugin::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------

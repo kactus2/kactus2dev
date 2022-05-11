@@ -14,7 +14,7 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <QRectF>
 #include <QPen>

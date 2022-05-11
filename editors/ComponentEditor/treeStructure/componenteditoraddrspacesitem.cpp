@@ -15,13 +15,13 @@
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/addressSpaces/addressspaceseditor.h>
 
-#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/ResetInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>

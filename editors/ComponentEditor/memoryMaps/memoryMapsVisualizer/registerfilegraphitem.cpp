@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 #include "registerfilegraphitem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
 #include <common/KactusColors.h>

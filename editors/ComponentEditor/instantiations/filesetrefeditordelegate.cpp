@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
 
 #include <QComboBox>
 #include <QLineEdit>

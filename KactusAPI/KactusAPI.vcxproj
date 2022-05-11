@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\AbstractionTypeInterface.h" />
+    <ClInclude Include="include\AbstractParameterInterface.h" />
+    <ClInclude Include="include\AddressBlockExpressionsGatherer.h" />
+    <ClInclude Include="include\AddressBlockInterface.h" />
+    <ClInclude Include="include\AddressSpaceExpressionsGatherer.h" />
+    <ClInclude Include="include\AdHocConnectionInterface.h" />
+    <ClInclude Include="include\BusInterfaceInterface.h" />
+    <ClInclude Include="include\BusInterfaceInterfaceFactory.h" />
+    <ClInclude Include="include\BusInterfaceUtilities.h" />
+    <ClInclude Include="include\CLIGenerator.h" />
+    <ClInclude Include="include\CommonInterface.h" />
+    <ClInclude Include="include\ComponentAndInstantiationsParameterFinder.h" />
+    <QtMoc Include="include\ComponentInstanceParameterFinder.h" />
+    <ClInclude Include="include\ComponentInstanceInterface.h" />
+    <ClInclude Include="include\ComponentInstantiationInterface.h" />
+    <ClInclude Include="include\ComponentInstantiationParameterFinder.h" />
+    <ClInclude Include="include\ComponentParameterFinder.h" />
+    <ClInclude Include="include\ConsoleMediator.h" />
+    <ClInclude Include="include\DesignParameterFinder.h" />
+    <ClInclude Include="include\ExpressionFormatter.h" />
+    <ClInclude Include="include\ExpressionFormatterFactory.h" />
+    <ClInclude Include="include\ExpressionFormatterFactoryImplementation.h" />
+    <ClInclude Include="include\ExpressionParser.h" />
+    <ClInclude Include="include\ExpressionSupport.h" />
+    <ClInclude Include="include\FieldInterface.h" />
+    <ClInclude Include="include\FileBuilderInterface.h" />
+    <ClInclude Include="include\FileHandler.h" />
+    <ClInclude Include="include\FileInterface.h" />
+    <ClInclude Include="include\FileSetInterface.h" />
+    <ClInclude Include="include\Highlighter.h" />
+    <ClInclude Include="include\HighlightSource.h" />
+    <ClInclude Include="include\IGeneratorPlugin.h" />
+    <ClInclude Include="include\ImportColors.h" />
+    <QtMoc Include="include\ImportHighlighter.h" />
+    <ClInclude Include="include\ImportPlugin.h" />
+    <QtMoc Include="include\ImportRunner.h" />
+    <ClInclude Include="include\IncludeImportPlugin.h" />
+    <ClInclude Include="include\InterconnectionInterface.h" />
+    <ClInclude Include="include\IPlugin.h" />
+    <ClInclude Include="include\IPluginUtility.h" />
+    <ClInclude Include="include\IPXactSystemVerilogParser.h" />
+    <ClInclude Include="include\ListParameterFinder.h" />
+    <ClInclude Include="include\MasterPortInterface.h" />
+    <ClInclude Include="include\MemoryBlockInterface.h" />
+    <ClInclude Include="include\MemoryMapExpressionsGatherer.h" />
+    <ClInclude Include="include\MemoryMapInterface.h" />
+    <ClInclude Include="include\MemoryRemapExpressionGatherer.h" />
+    <ClInclude Include="include\MessageMediator.h" />
+    <ClInclude Include="include\ModelParameterSource.h" />
+    <ClInclude Include="include\ModelParameterVisualizer.h" />
+    <ClInclude Include="include\ModuleParameterInterface.h" />
+    <ClInclude Include="include\MultipleParameterFinder.h" />
+    <QtMoc Include="include\ParameterCache.h" />
+    <ClInclude Include="include\NameGroupInterface.h" />
+    <ClInclude Include="include\NullParser.h" />
+    <ClInclude Include="include\ParameterFinder.h" />
+    <ClInclude Include="include\ParameterizableInterface.h" />
+    <ClInclude Include="include\ParametersInterface.h" />
+    <ClInclude Include="include\PluginManager.h" />
+    <ClInclude Include="include\PluginSettingsModel.h" />
+    <ClInclude Include="include\PluginUtilityAdapter.h" />
+    <ClInclude Include="include\PortAbstractionInterface.h" />
+    <ClInclude Include="include\PortMapInterface.h" />
+    <ClInclude Include="include\PortsInterface.h" />
+    <ClInclude Include="include\RegisterExpressionsGatherer.h" />
+    <ClInclude Include="include\RegisterFileExpressionsGatherer.h" />
+    <ClInclude Include="include\RegisterInterface.h" />
+    <ClInclude Include="include\ResetInterface.h" />
+    <ClInclude Include="include\SubspaceMapInterface.h" />
+    <ClInclude Include="include\SystemVerilogExpressionParser.h" />
+    <ClInclude Include="include\SystemVerilogSyntax.h" />
+    <ClInclude Include="include\TransparentBridgeInterface.h" />
+    <ClInclude Include="include\VersionHelper.h" />
+    <ClInclude Include="KactusAPI.h" />
+    <ClInclude Include="KactusAPIGlobal.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="expressions\AddressBlockExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\AddressSpaceExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\ComponentAndInstantiationsParameterFinder.cpp" />
+    <ClCompile Include="expressions\ComponentInstanceParameterFinder.cpp" />
+    <ClCompile Include="expressions\ComponentInstantiationParameterFinder.cpp" />
+    <ClCompile Include="expressions\ComponentParameterFinder.cpp" />
+    <ClCompile Include="expressions\DesignParameterFinder.cpp" />
+    <ClCompile Include="expressions\ExpressionFormatter.cpp" />
+    <ClCompile Include="expressions\ExpressionFormatterFactoryImplementation.cpp" />
+    <ClCompile Include="expressions\FieldExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\IPXactSystemVerilogParser.cpp" />
+    <ClCompile Include="expressions\ListParameterFinder.cpp" />
+    <ClCompile Include="expressions\MemoryMapExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\MemoryRemapExpressionGatherer.cpp" />
+    <ClCompile Include="expressions\MultipleParameterFinder.cpp" />
+    <ClCompile Include="expressions\NullParser.cpp" />
+    <ClCompile Include="expressions\ParameterCache.cpp" />
+    <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp" />
+    <ClCompile Include="expressions\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="interfaces\bus\AbstractionTypeInterface.cpp" />
+    <ClCompile Include="interfaces\bus\PortAbstractionInterface.cpp" />
+    <ClCompile Include="interfaces\common\AbstractParameterInterface.cpp" />
+    <ClCompile Include="interfaces\common\CommonInterface.cpp" />
+    <ClCompile Include="interfaces\common\NameGroupInterface.cpp" />
+    <ClCompile Include="interfaces\common\ParameterizableInterface.cpp" />
+    <ClCompile Include="interfaces\common\ParametersInterface.cpp" />
+    <ClCompile Include="interfaces\component\AddressBlockInterface.cpp" />
+    <ClCompile Include="interfaces\component\BusInterfaceInterface.cpp" />
+    <ClCompile Include="interfaces\component\BusInterfaceInterfaceFactory.cpp" />
+    <ClCompile Include="interfaces\component\BusInterfaceUtilities.cpp" />
+    <ClCompile Include="interfaces\component\ComponentInstantiationInterface.cpp" />
+    <ClCompile Include="interfaces\component\FieldInterface.cpp" />
+    <ClCompile Include="interfaces\component\FileBuilderInterface.cpp" />
+    <ClCompile Include="interfaces\component\FileInterface.cpp" />
+    <ClCompile Include="interfaces\component\FileSetInterface.cpp" />
+    <ClCompile Include="interfaces\component\MasterPortInterface.cpp" />
+    <ClCompile Include="interfaces\component\MemoryBlockInterface.cpp" />
+    <ClCompile Include="interfaces\component\MemoryMapInterface.cpp" />
+    <ClCompile Include="interfaces\component\ModuleParameterInterface.cpp" />
+    <ClCompile Include="interfaces\component\PortMapInterface.cpp" />
+    <ClCompile Include="interfaces\component\PortsInterface.cpp" />
+    <ClCompile Include="interfaces\component\RegisterInterface.cpp" />
+    <ClCompile Include="interfaces\component\ResetInterface.cpp" />
+    <ClCompile Include="interfaces\component\SubspaceMapInterface.cpp" />
+    <ClCompile Include="interfaces\component\TransparentBridgeInterface.cpp" />
+    <ClCompile Include="interfaces\design\AdHocConnectionInterface.cpp" />
+    <ClCompile Include="interfaces\design\ComponentInstanceInterface.cpp" />
+    <ClCompile Include="interfaces\design\InterconnectionInterface.cpp" />
+    <ClCompile Include="KactusAPI.cpp" />
+    <ClCompile Include="plugins\ImportHighlighter.cpp" />
+    <ClCompile Include="plugins\ImportRunner.cpp" />
+    <ClCompile Include="plugins\PluginManager.cpp" />
+    <ClCompile Include="plugins\PluginUtilityAdapter.cpp" />
+    <ClCompile Include="utilities\ConsoleMediator.cpp" />
+    <ClCompile Include="utilities\FileHandler.cpp" />
+    <ClCompile Include="utilities\VersionHelper.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{3B9FF5B3-3B2B-4294-B6E3-D8E9885B6B8A}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>5.10.1</QtInstall>
+    <QtModules>core;xml;xmlpatterns;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>5.10.1</QtInstall>
+    <QtModules>core;xml;xmlpatterns;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <OutDir>$(SolutionDir)x64\executable\</OutDir>
+    <TargetName>$(ProjectName)d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutDir>$(SolutionDir)x64\executable\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(SolutionDir);$(ProjectDir)include/</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable</AdditionalLibraryDirectories>
+      <AdditionalDependencies>IPXACTmodels.lib;%(AdditionalDependencies);$(Qt_LIBS_)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(SolutionDir);$(ProjectDir)include/</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)\$(ProjectName)d.dll</OutputFile>
+      <AdditionalDependencies>IPXACTmodelsd.lib;%(AdditionalDependencies);$(Qt_LIBS_)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;UNICODE;WIN64;KACTUS2_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN64;KACTUS2_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

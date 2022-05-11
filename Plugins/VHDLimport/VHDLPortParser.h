@@ -12,7 +12,7 @@
 #ifndef VHDLPORTPARSER_H
 #define VHDLPORTPARSER_H
 
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/HighlightSource.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 

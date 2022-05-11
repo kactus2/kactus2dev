@@ -11,10 +11,10 @@
 
 #include "PortListSortProxyModel.h"
 
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>

@@ -15,7 +15,7 @@
 
 #include "alterabspgenerator_global.h"
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
 
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Component/FileSet.h>

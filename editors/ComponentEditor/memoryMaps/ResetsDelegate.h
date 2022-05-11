@@ -15,7 +15,7 @@
 #include <QStyledItemDelegate>
 #include <QEvent>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 class ResetType;

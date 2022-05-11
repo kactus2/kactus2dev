@@ -27,7 +27,7 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <common/Global.h>
+
 
 #include <QString>
 #include <QStringList>
@@ -51,7 +51,7 @@ class ItemExporter;
 //-----------------------------------------------------------------------------
 //! LibraryHandler is the class that implements the services to manage the IP-XACT library.
 //-----------------------------------------------------------------------------
-class KACTUS2_API LibraryHandler : public QObject, public LibraryInterface
+class LibraryHandler : public QObject, public LibraryInterface
 {
     Q_OBJECT
 

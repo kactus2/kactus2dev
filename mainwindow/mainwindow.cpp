@@ -42,7 +42,8 @@
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnConstants.h>
-#include <common/KactusAPI.h>
+
+#include <KactusAPI/KactusAPI.h>
 
 #include <editors/common/DesignWidgetFactoryImplementation.h>
 #include <editors/HWDesign/HWDesignWidget.h>
@@ -57,11 +58,11 @@
 #include <editors/CatalogEditor/CatalogEditor.h>
 #include <editors/ComponentEditor/componenteditor.h>
 #include <editors/CSourceEditor/CSourceWidget.h>
-#include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
+#include <KactusAPI/include/ExpressionFormatterFactoryImplementation.h>
 #include <editors/ConfigurationTools/ViewConfigurer.h>
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
 // #include <Plugins/PluginSystem/ConsolePluginUtility.h>
 
 #include <settings/SettingsDialog.h>

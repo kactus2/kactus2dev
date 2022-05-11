@@ -3,10 +3,6 @@
 # ------------------------------------------------------
 
 HEADERS += ../../common/NameGenerationPolicy.h \
-    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../editors/ComponentEditor/common/ListParameterFinder.h \
-    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ./MakeCommon.h \
     ./MakefileGenerator.h \
@@ -18,9 +14,6 @@ HEADERS += ../../common/NameGenerationPolicy.h \
     ./MakeParametersDialog.h \
     ./MakefileGeneratorPlugin.h
 SOURCES += ../../common/NameGenerationPolicy.cpp \
-    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
-    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
     ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
     ./MakeConfiguration.cpp \

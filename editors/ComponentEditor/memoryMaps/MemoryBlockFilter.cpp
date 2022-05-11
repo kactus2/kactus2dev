@@ -11,7 +11,7 @@
 
 #include "MemoryBlockFilter.h"
 
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.h>
+#include <KactusAPI/include/MemoryBlockInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortsFilter::PortsFilter()

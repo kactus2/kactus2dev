@@ -14,8 +14,10 @@
 #include "VerilogSyntax.h"
 
 #include <IPXACTmodels/Component/Component.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+
 #include <common/NameGenerationPolicy.h>
+
+#include <KactusAPI/include/ImportColors.h>
 
 #include <QString>
 
@@ -51,7 +53,7 @@ QString VerilogImporter::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogImporter::getVersion() const
 {
-    return "1.2";
+    return "1.3";
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +69,7 @@ QString VerilogImporter::getDescription() const
 //-----------------------------------------------------------------------------
 QString VerilogImporter::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------

@@ -14,8 +14,8 @@
 #include <common/utils.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>

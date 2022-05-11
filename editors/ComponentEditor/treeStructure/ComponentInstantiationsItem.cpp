@@ -13,11 +13,11 @@
 #include "SingleComponentInstantiationItem.h"
 
 #include <editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.h>
-#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <KactusAPI/include/ComponentInstantiationParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>

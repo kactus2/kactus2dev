@@ -15,10 +15,10 @@
 
 #include <library/LibraryInterface.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
 

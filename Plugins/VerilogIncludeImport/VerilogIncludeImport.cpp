@@ -12,7 +12,7 @@
 #include "VerilogIncludeImport.h"
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <KactusAPI/include/ImportColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/Parameter.h>

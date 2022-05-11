@@ -22,32 +22,14 @@
     <Filter Include="Source Files\common">
       <UniqueIdentifier>{a4643d2f-976e-41db-b8c3-dcebe194ff08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\expressionParser">
-      <UniqueIdentifier>{df97d1b4-0bae-479e-be0a-cc06210d3566}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common">
       <UniqueIdentifier>{99f1e110-e88d-439c-af55-b7c05e07fcf3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\expressionParser">
-      <UniqueIdentifier>{627d01cc-73d8-4f84-ad5b-e6b1f23ea67e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\validators">
       <UniqueIdentifier>{8b35980a-477a-49b6-992e-6dbe8b13886e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\validators">
       <UniqueIdentifier>{6eff49bd-1383-4976-b8a1-fed439e34c7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\versionHelper">
-      <UniqueIdentifier>{0126d46a-be63-41be-92a9-b2bcd640ea46}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\versionHelper">
-      <UniqueIdentifier>{b833d652-10f3-412f-8458-c70aed4b2768}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\expressionParser\MemoryMaps">
-      <UniqueIdentifier>{8fb2d398-f203-4203-91f4-8a8fbb5d9381}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\expressionParser\MemoryMaps">
-      <UniqueIdentifier>{a52270f7-3878-432f-a519-1327e42f5b09}</UniqueIdentifier>
     </Filter>
     <Filter Include="Generated Files">
       <UniqueIdentifier>{b161e93c-7d11-4c2a-b62d-0cf5561abd20}</UniqueIdentifier>
@@ -57,50 +39,8 @@
     <ClCompile Include="PythonAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files\common\expressionParser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files\common\expressionParser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\ListParameterFinder.cpp">
-      <Filter>Source Files\common\expressionParser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp">
-      <Filter>Source Files\common\expressionParser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
-      <Filter>Source Files\common\expressionParser</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\validators\LibraryPathValidator\librarypathvalidator.cpp">
       <Filter>Source Files\common\validators</Filter>
-    </ClCompile>
-    <ClCompile Include="..\VersionHelper.cpp">
-      <Filter>Source Files\versionHelper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
-      <Filter>Source Files\common\expressionParser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
-      <Filter>Source Files\common\expressionParser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp">
-      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp">
-      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp">
-      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp">
-      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp">
-      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp">
-      <Filter>Source Files\common\expressionParser\MemoryMaps</Filter>
     </ClCompile>
     <ClCompile Include="PythonAPI_wrap.cxx">
       <Filter>Generated Files</Filter>
@@ -110,45 +50,6 @@
     <ClInclude Include="PythonAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files\common\expressionParser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files\common\expressionParser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\ListParameterFinder.h">
-      <Filter>Header Files\common\expressionParser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files\common\expressionParser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\VersionHelper.h">
-      <Filter>Header Files\versionHelper</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h">
-      <Filter>Header Files\common\expressionParser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
-      <Filter>Header Files\common\expressionParser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h">
-      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h">
-      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h">
-      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h">
-      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h">
-      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h">
-      <Filter>Header Files\common\expressionParser\MemoryMaps</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pythonapi_global.h">
@@ -156,9 +57,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="..\editors\ComponentEditor\common\ParameterCache.h">
-      <Filter>Header Files\common\expressionParser</Filter>
-    </QtMoc>
     <QtMoc Include="..\common\validators\LibraryPathValidator\librarypathvalidator.h">
       <Filter>Header Files\common\validators</Filter>
     </QtMoc>

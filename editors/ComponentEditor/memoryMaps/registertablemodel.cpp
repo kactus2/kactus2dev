@@ -14,9 +14,9 @@
 
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h>
+#include <KactusAPI/include//FieldExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
 
 #include <common/KactusColors.h>
 

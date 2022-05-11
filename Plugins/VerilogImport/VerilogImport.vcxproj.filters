@@ -46,15 +46,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VerilogImporter.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\NullParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VerilogSyntax.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -82,18 +73,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VerilogSyntax.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\NullParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\common\NameGenerationPolicy.h">

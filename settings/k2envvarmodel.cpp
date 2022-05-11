@@ -10,8 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include "k2envvarmodel.h"
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/PluginManager.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/PluginManager.h>
 
 #include <common/KactusColors.h>
 

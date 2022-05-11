@@ -13,7 +13,8 @@
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <IPXACTmodels/Component/PortMap.h>
 

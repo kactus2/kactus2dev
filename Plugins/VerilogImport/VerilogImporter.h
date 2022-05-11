@@ -18,9 +18,9 @@
 #include "VerilogParameterParser.h"
 #include "Plugins/VerilogImport/VerilogInstanceParser.h"
 
-#include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/ExpressionSupport.h>
+#include <KactusAPI/include/ImportPlugin.h>
+#include <KactusAPI/include/HighlightSource.h>
 
 #include <QSharedPointer>
 #include <QString>

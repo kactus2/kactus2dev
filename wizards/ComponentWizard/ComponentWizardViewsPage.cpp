@@ -15,7 +15,7 @@
 #include "ViewListModel.h"
 
 #include <editors/ComponentEditor/views/vieweditor.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <library/LibraryInterface.h>
 
@@ -26,9 +26,9 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 
-#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
+#include <KactusAPI/include/ComponentInstantiationParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/ModuleParameterInterface.h>
 
 #include <QPushButton>
 #include <QVBoxLayout>

@@ -17,8 +17,8 @@
 #include <QTabWidget>
 #include <QListView>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 

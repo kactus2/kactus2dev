@@ -12,11 +12,11 @@
 #include "MemoryRemapItem.h"
 #include "componenteditoraddrblockitem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
+#include <KactusAPI/include/MemoryMapInterface.h>
 #include <editors/ComponentEditor/treeStructure/SubspaceMapItem.h>
 
 #include <IPXACTmodels/Component/MemoryMapBase.h>

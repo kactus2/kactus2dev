@@ -17,10 +17,10 @@
 
 #include <IPXACTmodels/common/validators/namevalidator.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>

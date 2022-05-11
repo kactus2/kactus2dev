@@ -13,7 +13,7 @@
 
 #include <kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatterFactory.h>
+#include <KactusAPI/include/ExpressionFormatterFactory.h>
 
 //-----------------------------------------------------------------------------
 // Function: GeneralDocumentGenerator::GeneralDocumentGenerator()

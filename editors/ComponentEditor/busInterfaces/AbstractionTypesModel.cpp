@@ -14,7 +14,7 @@
 #include <common/KactusColors.h>
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesConstants.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/AbstractionType.h>

@@ -14,15 +14,15 @@
 
 #include "svdgeneratorplugin_global.h"
 
-#include <Plugins/PluginSystem/APISupport.h>
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <KactusAPI/include/CLIGenerator.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
 #include <Plugins/SVDGenerator/ConnectivityGraphUtilities.h>
 
 //-----------------------------------------------------------------------------
 //! Plugin for creating a CMSIS System View Description listing.
 //-----------------------------------------------------------------------------
-class SVDGENERATORPLUGIN_EXPORT SVDGeneratorPlugin : public QObject, public IGeneratorPlugin, public APISupport
+class SVDGENERATORPLUGIN_EXPORT SVDGeneratorPlugin : public QObject, public IGeneratorPlugin, public CLIGenerator
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.svdgeneratorplugin" FILE "svdgeneratorplugin.json")

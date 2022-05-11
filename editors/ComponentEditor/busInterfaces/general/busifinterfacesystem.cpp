@@ -19,7 +19,7 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 #include <QFormLayout>
 #include <QStringList>

@@ -13,7 +13,7 @@
 #define CONFIGURABLEELEMENTSMODEL_H
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
 #include <editors/common/ComponentInstanceEditor/EditorConfigurableElement.h>

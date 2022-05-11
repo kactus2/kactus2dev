@@ -12,7 +12,7 @@
 #include "addressblockmodel.h"
 
 #include <editors/ComponentEditor/memoryMaps/AddressBlockColumns.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <common/KactusColors.h>

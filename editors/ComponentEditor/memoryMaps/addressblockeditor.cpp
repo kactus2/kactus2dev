@@ -17,9 +17,9 @@
 #include "AddressBlockColumns.h"
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
 
 #include <common/views/EditableTableView/editabletableview.h>
 

@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <QAbstractItemModel>
 #include <QSharedPointer>

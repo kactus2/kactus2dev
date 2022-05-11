@@ -11,13 +11,13 @@
 
 #include "componenteditorfielditem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <editors/ComponentEditor/memoryMaps/SingleFieldEditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
+#include <KactusAPI/include/ResetInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
 
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 

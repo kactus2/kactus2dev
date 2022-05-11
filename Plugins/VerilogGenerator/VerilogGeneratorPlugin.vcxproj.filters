@@ -80,20 +80,8 @@
     <Filter Include="Source Files\editors">
       <UniqueIdentifier>{4b5799d6-c1dd-45f6-96ae-d78b1137dec0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor">
-      <UniqueIdentifier>{a10df104-4046-4ef2-b7b0-b07545f33657}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\common">
-      <UniqueIdentifier>{1a7c464d-92b2-459b-b2ff-2f674db470c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors">
       <UniqueIdentifier>{33366b37-96ed-4c9f-843f-9881ab444642}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor">
-      <UniqueIdentifier>{26c9c12a-8361-4c6f-804f-b4516c9b5d6f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\common">
-      <UniqueIdentifier>{4ecb9ded-e8e7-4d23-b0ea-cd658ee15fbe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\TextBodyWrite">
       <UniqueIdentifier>{087779c9-1f4e-4c00-89b6-05295736929e}</UniqueIdentifier>
@@ -172,12 +160,6 @@
     <ClCompile Include="GeneratedFiles\qrc_VerilogGenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="VerilogGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -187,15 +169,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VerilogGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="TextBodyWriter\TextBodyWriter.cpp">
       <Filter>Source Files\TextBodyWrite</Filter>
     </ClCompile>
@@ -204,9 +177,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_ViewSelectionWidget.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="..\common\PortSorter\InterfaceDirectionNameSorter.cpp">
       <Filter>Source Files\PortSorter</Filter>
@@ -342,29 +312,8 @@
     <ClInclude Include="common\WriterGroup.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="TextBodyWriter\TextBodyWriter.h">
       <Filter>Header Files\TextBodyWrite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\PortSorter\InterfaceDirectionNameSorter.h">
       <Filter>Header Files\PortSorter</Filter>

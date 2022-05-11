@@ -12,7 +12,7 @@
 #include "FileSetValidator.h"
 #include "FileValidator.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>

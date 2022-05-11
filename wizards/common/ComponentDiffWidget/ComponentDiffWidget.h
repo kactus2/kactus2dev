@@ -16,7 +16,7 @@
 
 #include <wizards/common/IPXactDiff.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 class Component;
 

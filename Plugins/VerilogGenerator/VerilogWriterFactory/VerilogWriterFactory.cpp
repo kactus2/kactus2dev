@@ -11,7 +11,7 @@
 
 #include "VerilogWriterFactory.h"
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 
 #include <library/LibraryInterface.h>
 

@@ -14,7 +14,7 @@
 #include <QMenu>
 #include <QHeaderView>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortsView::PortsView()

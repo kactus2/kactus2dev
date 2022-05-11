@@ -12,7 +12,7 @@
 #ifndef IMPORTWIZARD_H
 #define IMPORTWIZARD_H
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
 #include <QWizard>

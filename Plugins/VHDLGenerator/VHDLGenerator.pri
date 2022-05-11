@@ -3,15 +3,6 @@
 # ------------------------------------------------------
 
 HEADERS += ../../common/utils.h \
-    ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
-    ../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../editors/ComponentEditor/common/ExpressionFormatterFactory.h \
-    ../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
-    ../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../editors/ComponentEditor/common/ListParameterFinder.h \
-    ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
     ../../IPXACTmodels/utilities/Search.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
@@ -26,22 +17,13 @@ HEADERS += ../../common/utils.h \
     ./vhdlsignal.h \
     ./VhdlTypedObject.h \
     ./VHDLGenerator_global.h \
-    ../LinuxDeviceTree/LinuxDeviceTreeDialog.h \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
     ./VHDLGeneratorDialog.h \
     ./VHDLGeneratorPlugin.h \
     ./vhdlgenerator2.h \
     ./vhdlcomponentinstance.h
 SOURCES += ../../common/utils.cpp \
-    ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
-    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
-    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
-    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../IPXACTmodels/utilities/ComponentSearch.cpp \
-    ../LinuxDeviceTree/LinuxDeviceTreeDialog.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ./vhdlcomponentdeclaration.cpp \

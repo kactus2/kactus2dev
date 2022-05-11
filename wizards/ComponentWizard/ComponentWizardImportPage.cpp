@@ -12,7 +12,7 @@
 #include "ComponentWizardImportPage.h"
 #include "ComponentWizardPages.h"
 
-#include <wizards/ComponentWizard/ImportEditor/ImportEditor.h>
+#include <wizards/ComponentWizard/ImportEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

@@ -17,7 +17,7 @@
 #include <common/KactusColors.h>
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
-#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
+#include <KactusAPI/include/ComponentInstantiationInterface.h>
 
 #include <QStringList>
 #include <QRegularExpression>

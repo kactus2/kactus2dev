@@ -15,8 +15,8 @@
 #include <common/IEditProvider.h>
 
 #include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QWidget>
 #include <QSize>

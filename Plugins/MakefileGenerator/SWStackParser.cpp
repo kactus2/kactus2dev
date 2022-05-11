@@ -18,8 +18,8 @@
 
 #include <common/NameGenerationPolicy.h>
 
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 //-----------------------------------------------------------------------------
 // Function: SWStackParser::MakefileParser()
