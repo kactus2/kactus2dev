@@ -33,4 +33,4 @@ jobs:
     - name: Build sources
       run: |
         $Env:QTDIR = $Env:Qt5_Dir
-        msbuild -m:4 -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln      
+        msbuild -m:4 -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln

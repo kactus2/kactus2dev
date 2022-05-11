@@ -8,7 +8,7 @@ DESTDIR = ../executable
 CONFIG += release
 QT += xml widgets
 DEFINES +=  KACTUS2_EXPORTS
-LIBS += -L"./executable" \
+LIBS += -L"../executable" \
     -lIPXACTmodels 
 	
 INCLUDEPATH += ./.. \
