@@ -6796,9 +6796,6 @@
     <ClInclude Include="common\widgets\vlnvEditor\VLNVDataTree.h">
       <Filter>Header Files\common\widgets\vlnvEditor</Filter>
     </ClInclude>
-    <ClInclude Include="common\Global.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="common\KactusColors.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -6867,12 +6864,6 @@
     </ClInclude>
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h">
       <Filter>Header Files\mainwindow\Ribbon</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
@@ -7027,9 +7018,6 @@
     <ClInclude Include="common\NameGenerationPolicy.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
@@ -7067,9 +7055,6 @@
       <Filter>Header Files\mainwindow</Filter>
     </ClInclude>
     <ClInclude Include="common\ui\GraphicalMessageMediator.h">
-      <Filter>Header Files\common\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="common\ui\MessageMediator.h">
       <Filter>Header Files\common\ui</Filter>
     </ClInclude>
     <ClInclude Include="editors\common\Association\Associable.h">
@@ -7416,9 +7401,6 @@
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="PythonAPI\ReadChannel.h">
-      <Filter>Header Files\PythonAPI</Filter>
     </ClInclude>
     <ClInclude Include="PythonAPI\extensions\IOCatcher.h">
       <Filter>Header Files\PythonAPI\extensions</Filter>
