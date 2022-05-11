@@ -17,7 +17,7 @@ INCLUDEPATH += ./generatedFiles \
     ./generatedFiles/Release
 LIBS += -L"./../../executable" \
     -lIPXACTmodels \
-	-lKactusAPI
+    -lKactusAPI
 
 DEPENDPATH += . \
     ./../../.. \
