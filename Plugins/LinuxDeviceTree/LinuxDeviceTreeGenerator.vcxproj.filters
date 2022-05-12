@@ -70,12 +70,6 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceParameterFinder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ParameterCache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUDelegate.cpp">
       <Filter>Source Files\CPUSelection</Filter>
     </ClCompile>

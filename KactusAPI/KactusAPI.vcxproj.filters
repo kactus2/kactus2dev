@@ -1,0 +1,460 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;moc;h;def;odl;idl;res;</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\expressions">
+      <UniqueIdentifier>{947bd3dc-0c42-47cd-a131-bf7a49768ec5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces">
+      <UniqueIdentifier>{15e65c51-6431-43f1-8553-72c5fd7e5863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\plugins">
+      <UniqueIdentifier>{307dabcd-0561-44e2-ad25-0aa874141166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utilities">
+      <UniqueIdentifier>{9804f280-29ab-4524-88bf-7d3f8086ce49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces\bus">
+      <UniqueIdentifier>{09ed363a-e5b7-41fb-a43d-78ab6adb73ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces\component">
+      <UniqueIdentifier>{500c5bf6-7d3f-484f-abdb-31f4fe709406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces\common">
+      <UniqueIdentifier>{3dd93eea-434d-41e0-a572-2b3cb85a646c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\interfaces\design">
+      <UniqueIdentifier>{07fda30c-154a-4b8f-8df3-3b6aff999620}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\include">
+      <UniqueIdentifier>{79331bd6-220b-4437-96c9-ac82f0a2ee64}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\AbstractionTypeInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AbstractParameterInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AddressBlockExpressionsGatherer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AddressBlockInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AddressSpaceExpressionsGatherer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AdHocConnectionInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BusInterfaceInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BusInterfaceInterfaceFactory.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BusInterfaceUtilities.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CLIGenerator.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CommonInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ComponentAndInstantiationsParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ComponentInstantiationInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ComponentInstantiationParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ComponentParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ConsoleMediator.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DesignParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ExpressionFormatter.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ExpressionFormatterFactory.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ExpressionFormatterFactoryImplementation.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ExpressionParser.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ExpressionSupport.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FieldInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileBuilderInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileHandler.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileSetInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Highlighter.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HighlightSource.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IGeneratorPlugin.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImportColors.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImportPlugin.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IncludeImportPlugin.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InterconnectionInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IPlugin.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IPluginUtility.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IPXactSystemVerilogParser.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ListParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MasterPortInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MemoryBlockInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MemoryMapExpressionsGatherer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MemoryMapInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MemoryRemapExpressionGatherer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MessageMediator.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModelParameterSource.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModelParameterVisualizer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModuleParameterInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MultipleParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NameGroupInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParameterizableInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParametersInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PluginManager.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PluginSettingsModel.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PluginUtilityAdapter.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PortAbstractionInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PortMapInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PortsInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RegisterExpressionsGatherer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RegisterFileExpressionsGatherer.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RegisterInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ResetInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SubspaceMapInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SystemVerilogExpressionParser.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SystemVerilogSyntax.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TransparentBridgeInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VersionHelper.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="KactusAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="KactusAPIGlobal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="utilities\ConsoleMediator.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities\FileHandler.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities\VersionHelper.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\ImportRunner.cpp">
+      <Filter>Source Files\plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\PluginManager.cpp">
+      <Filter>Source Files\plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\PluginUtilityAdapter.cpp">
+      <Filter>Source Files\plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="plugins\ImportHighlighter.cpp">
+      <Filter>Source Files\plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\bus\PortAbstractionInterface.cpp">
+      <Filter>Source Files\interfaces\bus</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\bus\AbstractionTypeInterface.cpp">
+      <Filter>Source Files\interfaces\bus</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\common\CommonInterface.cpp">
+      <Filter>Source Files\interfaces\common</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\common\NameGroupInterface.cpp">
+      <Filter>Source Files\interfaces\common</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\common\ParameterizableInterface.cpp">
+      <Filter>Source Files\interfaces\common</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\common\ParametersInterface.cpp">
+      <Filter>Source Files\interfaces\common</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\common\AbstractParameterInterface.cpp">
+      <Filter>Source Files\interfaces\common</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\ComponentInstantiationInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\FieldInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\FileBuilderInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\FileInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\FileSetInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\MasterPortInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\MemoryBlockInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\MemoryMapInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\ModuleParameterInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\PortMapInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\PortsInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\RegisterInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\ResetInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\SubspaceMapInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\TransparentBridgeInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\AddressBlockInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\BusInterfaceInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\BusInterfaceInterfaceFactory.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\BusInterfaceUtilities.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\AddressBlockExpressionsGatherer.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\AddressSpaceExpressionsGatherer.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ComponentAndInstantiationsParameterFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ComponentInstanceParameterFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ComponentInstantiationParameterFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ComponentParameterFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\DesignParameterFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ExpressionFormatter.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ExpressionFormatterFactoryImplementation.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\FieldExpressionsGatherer.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\IPXactSystemVerilogParser.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ListParameterFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\MemoryMapExpressionsGatherer.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\MemoryRemapExpressionGatherer.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\MultipleParameterFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\NullParser.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ParameterCache.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\SystemVerilogExpressionParser.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
+    <ClCompile Include="KactusAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\design\AdHocConnectionInterface.cpp">
+      <Filter>Source Files\interfaces\design</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\design\ComponentInstanceInterface.cpp">
+      <Filter>Source Files\interfaces\design</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\design\InterconnectionInterface.cpp">
+      <Filter>Source Files\interfaces\design</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ComponentInstanceInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NullParser.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="include\ComponentInstanceParameterFinder.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ImportHighlighter.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ImportRunner.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ParameterCache.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+  </ItemGroup>
+</Project>

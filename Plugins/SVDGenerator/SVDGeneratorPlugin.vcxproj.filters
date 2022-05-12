@@ -88,18 +88,6 @@
     <ClCompile Include="SVDGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ParameterCache.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ParameterCache.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceParameterFinder.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ComponentInstanceParameterFinder.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
@@ -196,9 +184,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MessagePasser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\common\DesignParameterFinder.cpp">
-      <Filter>Source Files\Editors\common</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="SVDGeneratorPlugin.h">
@@ -285,9 +270,6 @@
     </ClInclude>
     <ClInclude Include="CPUDialog\SVDCPUColumns.h">
       <Filter>Header Files\CPUDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\common\DesignParameterFinder.h">
-      <Filter>Header Files\Editors\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
