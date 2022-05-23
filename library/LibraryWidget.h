@@ -20,6 +20,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include "TableViewDialog.h"
+
 class LibraryHandler;
 
 class VLNVDialer;
@@ -44,7 +46,7 @@ public:
     LibraryWidget(LibraryHandler* library, MessageMediator* messageChannel, QWidget* parent = 0);
 
     //! The destructor.
-    virtual ~LibraryWidget();
+    virtual ~LibraryWidget() = default;
 
     /*! Gets the handle for library access.
      *
@@ -70,6 +72,20 @@ public:
      *      @param [in] componentVLNV   The VLVN to select.
      */
     void selectComponent(VLNV const& componentVLNV) const;
+
+public slots:
+
+    /*!
+     *  Shows errors about the library item with the given VLNV.
+     *
+     *      @param [in] vlnv The VLNV of the library item.
+     */
+    void onShowErrors(VLNV const& vlnv);
+
+    //!  Shows a report of all errors within the library items.
+    void onGenerateIntegrityReport();
+
+    void onCloseIntegrityReport();
 
 private slots:
 
@@ -106,6 +122,9 @@ private:
 
     //! The widget containing the library items in a tree-like view.
     LibraryTreeWidget* treeWidget_;
+
+    //! Widget for showing integrity report on-demand.
+    TableViewDialog* integrityWidget_;
 
     QStatusBar* statusBar_;
 

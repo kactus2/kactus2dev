@@ -11,7 +11,7 @@
 
 #include "dialerwidget.h"
 
-#include <library/LibraryItem.h>
+#include <KactusAPI/include/LibraryItem.h>
 
 #include <QCompleter>
 #include <QFormLayout>

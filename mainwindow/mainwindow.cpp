@@ -532,7 +532,7 @@ void MainWindow::setupActions()
     actCheckIntegrity_ = new QAction(QIcon(":/icons/common/graphics/checkIntegrity.png"),
         tr("View Library Integrity Report"), this);
     connect(actCheckIntegrity_, SIGNAL(triggered()),
-        libraryHandler_, SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(generateIntegrityReport()), Qt::UniqueConnection);
 
     // initialize the action to generate documentation for the component/design
     actGenDocumentation_ = new QAction(QIcon(":icons/common/graphics/documentation.png"),

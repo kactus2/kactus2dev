@@ -285,6 +285,8 @@ signals:
      */
     void adjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show);
 
+    void generateIntegrityReport();
+
 private slots:
 
     /*!

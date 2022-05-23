@@ -79,6 +79,7 @@
     <ClInclude Include="include\NullParser.h" />
     <QtMoc Include="include\ObjectSelectionDialog.h" />
     <QtMoc Include="include\ObjectExportDialog.h" />
+    <QtMoc Include="include\objectremovedialog.h" />
     <ClInclude Include="include\ObjectSelectionListItem.h" />
     <ClInclude Include="include\ParameterFinder.h" />
     <ClInclude Include="include\ParameterizableInterface.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="library\LibraryLoader.cpp" />
     <ClCompile Include="library\LibraryTreeModel.cpp" />
     <ClCompile Include="library\ObjectExportDialog.cpp" />
+    <ClCompile Include="library\objectremovedialog.cpp" />
     <ClCompile Include="library\ObjectSelectionDialog.cpp" />
     <ClCompile Include="library\ObjectSelectionListItem.cpp" />
     <ClCompile Include="library\TagManager.cpp" />

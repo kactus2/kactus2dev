@@ -506,6 +506,9 @@
     <ClCompile Include="library\TagManager.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
+    <ClCompile Include="library\objectremovedialog.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentInstanceInterface.h">
@@ -550,6 +553,9 @@
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\objectremovedialog.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>

@@ -13,6 +13,8 @@
 
 #include <common/ui/GraphicalMessageMediator.h>
 
+#include "LibraryErrorModel.h"
+
 #include "LibraryTreeWidget.h"
 #include "LibraryHandler.h"
 #include <KactusAPI/include/hierarchymodel.h>
@@ -32,6 +34,7 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     library_(library),
     hierarchyWidget_(new HierarchyWidget(library_, library_->getHierarchyModel(), this)),
     treeWidget_(new LibraryTreeWidget(library_, library_->getTreeModel(), this)),
+    integrityWidget_(nullptr),
     statusBar_(new QStatusBar(this))
 {
     GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel);
@@ -51,20 +54,18 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
 
     connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
+    
+    connect(library_->getHierarchyModel(), SIGNAL(showErrors(const VLNV)),
+        this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
 
     connect(treeWidget_, SIGNAL(itemSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
+    connect(library_->getTreeModel(), SIGNAL(showErrors(const VLNV)),
+        this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
+
     setupLayout();
 } 
-
-//-----------------------------------------------------------------------------
-// Function: LibraryWidget::~LibraryWidget()
-//-----------------------------------------------------------------------------
-LibraryWidget::~LibraryWidget()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::getLibraryHandler()
@@ -105,6 +106,74 @@ void LibraryWidget::selectComponent(VLNV const& componentVLNV) const
 void LibraryWidget::statusMessage(QString const& message)
 {
     statusBar_->showMessage(message);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryWidget::onShowErrors()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onShowErrors(VLNV const& vlnv)
+{
+    if (vlnv.isValid() == false || library_->contains(vlnv) == false)
+    {
+        return;
+    }
+
+    QSharedPointer<Document> document = library_->getModel(vlnv);
+
+    // Show error list in a dialog.
+    TableViewDialog* dialog = new TableViewDialog(this);
+    dialog->setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
+    dialog->setDescription(tr("<b>Integrity check</b><br>The following errors were found."));
+    dialog->resize(700, 350);
+
+    LibraryErrorModel* model = new LibraryErrorModel(dialog);
+    model->addErrors(library_->findErrorsInDocument(document, library_->getPath(vlnv)), vlnv.toString());
+
+    dialog->show();
+
+    dialog->setModel(model);
+
+    connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryWidget::onGenerateIntegrityReport()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onGenerateIntegrityReport()
+{
+    if (!integrityWidget_)
+     {
+         integrityWidget_ = new TableViewDialog(this);
+         integrityWidget_->setWindowTitle(tr("Library Integrity Report"));
+         integrityWidget_->setDescription(tr("<b>Integrity check</b><br>The following errors were found."));
+         integrityWidget_->resize(1000, 800);
+
+         LibraryErrorModel* model = new LibraryErrorModel(integrityWidget_);
+
+         for (auto vlnv : library_->getAllVLNVs())
+         {
+             if (library_->isValid(vlnv) == false)
+             {
+                 model->addErrors(library_->findErrorsInDocument(library_->getModel(vlnv), library_->getPath(vlnv)), vlnv.toString());
+             }
+         }
+
+         integrityWidget_->setModel(model);
+
+         integrityWidget_->show();
+
+         connect(integrityWidget_, SIGNAL(finished(int)), this, SLOT(onCloseIntegrityReport()));
+     }
+
+     integrityWidget_->raise();
+}
+//-----------------------------------------------------------------------------
+// Function: LibraryWidget::closeIntegrityReport()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onCloseIntegrityReport()
+{
+      integrityWidget_->deleteLater();
+      integrityWidget_ = 0;
 }
 
 //-----------------------------------------------------------------------------

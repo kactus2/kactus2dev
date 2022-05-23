@@ -93,7 +93,8 @@ HEADERS += ./KactusAPI.h \
     ./include/ObjectExportDialog.h \
     ./include/LibraryItemSelectionFactory.h \
     ./include/TagManager.h \
-    ./include/LibraryItem.h
+    ./include/LibraryItem.h \
+    ./include/objectremovedialog.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -165,4 +166,5 @@ SOURCES += ./KactusAPI.cpp \
     ./library/ObjectSelectionDialog.cpp \
     ./library/ObjectExportDialog.cpp \
     ./library/LibraryItemSelectionFactory.cpp \
-    ./library/TagManager.cpp
+    ./library/TagManager.cpp \
+    ./library/objectremovedialog.cpp

@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 class ObjectRemoveDialog : public ObjectSelectionDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 

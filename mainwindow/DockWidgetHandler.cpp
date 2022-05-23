@@ -216,6 +216,9 @@ void DockWidgetHandler::setupLibraryDock()
     // create a container widget for dialer and library display
     libraryWidget_ = new LibraryWidget(libraryHandler_, messageChannel_, mainWindow_);
 
+    connect(this, SIGNAL(generateIntegrityReport()), libraryWidget_,
+        SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
+
     libraryDock_->setWidget(libraryWidget_);
 
     mainWindow_->addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);

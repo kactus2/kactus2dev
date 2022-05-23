@@ -4,7 +4,6 @@
 
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
-    ./version.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./common/NameGenerationPolicy.h \
@@ -103,7 +102,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
     ./common/dialogs/newObjectDialog/newobjectdialog.h \
-    ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h \
@@ -811,7 +809,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageView.cpp \
     ./common/dialogs/newObjectDialog/newobjectdialog.cpp \
-    ./common/dialogs/ObjectRemoveDialog/objectremovedialog.cpp \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \

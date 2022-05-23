@@ -39,7 +39,6 @@
 class Document;
 class LibraryItem;
 class MessageMediator;
-class TableViewDialog;
 
 class ObjectSelectionDialog;
 class ObjectSelectionListItem;
@@ -258,6 +257,17 @@ public:
 
     LibraryTreeModel* getTreeModel();
 
+
+    /*!
+     *  Find errors in the given document.
+     *
+     *      @param [in] document           The document to check.
+     *      @param [in] documentPath       The path to the document file on disk.
+     *
+     *      @return List of errors in the document.
+     */
+    QVector<QString> findErrorsInDocument(QSharedPointer<Document> document, QString const& path);
+
 public slots:
 
     /*! Check the library items for validity
@@ -273,16 +283,6 @@ public slots:
      *
     */
     virtual void onEditItem(VLNV const& vlnv) override final;
-
-    /*!
-     *  Shows errors about the library item with the given VLNV.
-     *
-     *      @param [in] vlnv The VLNV of the library item.
-     */
-    void onShowErrors(VLNV const& vlnv);
-
-    //!  Shows a report of all errors within the library items.
-    void onGenerateIntegrityReport();
 
     /*! Open the specified component design
      *
@@ -477,9 +477,6 @@ private slots:
     */
     void onItemSaved(VLNV const& vlnv);
 
-    //! Closes the integrity report widget.
-    void onCloseIntegrityReport();
-
     /*! Called when an IP-XACT file has changed on disk.
     *
     *      @param [in] path Path to the changed file.
@@ -587,15 +584,6 @@ private:
      */
     bool validateDocument(QSharedPointer<Document> document, QString const& documentPath);
 
-    /*!
-     *  Find errors in the given document.
-     *
-     *      @param [in] document           The document to check.
-     *      @param [in] documentPath       The path to the document file on disk.
-     *
-     *      @return List of errors in the document.
-     */
-    QVector<QString> findErrorsInDocument(QSharedPointer<Document> document,  QString const& path);
 
     /*! Check the validity of VLNV references within a document.
      *
@@ -687,9 +675,6 @@ private:
 
     //! The model for the hierarchy view
     HierarchyModel* hierarchyModel_;
-
-    //! Widget for showing integrity report on-demand.
-    TableViewDialog* integrityWidget_;
 
     //! If true then items are being saved and library is not refreshed
     bool saveInProgress_;

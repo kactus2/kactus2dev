@@ -20,9 +20,6 @@
     <Filter Include="Source Files\common\dialogs\newObjectDialog">
       <UniqueIdentifier>{537c1c46-d688-4418-81d8-9b93df040ad7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\dialogs\ObjectRemoveDialog">
-      <UniqueIdentifier>{46f28371-bc07-4130-bd82-9fc91719cb2a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\dialogs\createConfigurationDialog">
       <UniqueIdentifier>{010cadd1-66f5-471c-9703-9704e3644b33}</UniqueIdentifier>
     </Filter>
@@ -260,9 +257,6 @@
     </Filter>
     <Filter Include="Header Files\common\dialogs\newObjectDialog">
       <UniqueIdentifier>{d72f5ab7-c217-4da3-9cf1-426c8ecd81ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\dialogs\ObjectRemoveDialog">
-      <UniqueIdentifier>{f4de80ed-86f5-4ce9-a816-fc7b091dfb67}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\dialogs\listSelectDialog">
       <UniqueIdentifier>{b0e0cdc7-b4f9-4aa8-b8f7-64a71cb6361b}</UniqueIdentifier>
@@ -1024,9 +1018,6 @@
     <ClCompile Include="common\dialogs\newObjectDialog\newobjectdialog.cpp">
       <Filter>Source Files\common\dialogs\newObjectDialog</Filter>
     </ClCompile>
-    <ClCompile Include="common\dialogs\ObjectRemoveDialog\objectremovedialog.cpp">
-      <Filter>Source Files\common\dialogs\ObjectRemoveDialog</Filter>
-    </ClCompile>
     <ClCompile Include="common\dialogs\createConfigurationDialog\createconfigurationdialog.cpp">
       <Filter>Source Files\common\dialogs\createConfigurationDialog</Filter>
     </ClCompile>
@@ -1259,9 +1250,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PropertyPageDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_objectremovedialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NewWorkspaceDialog.cpp">
@@ -4891,9 +4879,6 @@
     </CustomBuild>
     <CustomBuild Include="common\dialogs\newObjectDialog\newobjectdialog.h">
       <Filter>Header Files\common\dialogs\newObjectDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\ObjectRemoveDialog\objectremovedialog.h">
-      <Filter>Header Files\common\dialogs\ObjectRemoveDialog</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\propertyPageDialog\PropertyPageDialog.h">
       <Filter>Header Files\common\dialogs\propertyPageDialog</Filter>
