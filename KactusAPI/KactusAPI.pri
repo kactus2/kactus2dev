@@ -22,6 +22,7 @@ HEADERS += ./KactusAPI.h \
     ./include/ComponentInstantiationParameterFinder.h \
     ./include/ComponentParameterFinder.h \
     ./include/ConsoleMediator.h \
+    ./include/DesignParameterFinder.h \
     ./include/ExpressionFormatter.h \
     ./include/ExpressionFormatterFactory.h \
     ./include/ExpressionFormatterFactoryImplementation.h \
@@ -77,15 +78,45 @@ HEADERS += ./KactusAPI.h \
     ./include/ImportHighlighter.h \
     ./include/ImportRunner.h \
     ./include/ParameterCache.h \
-    ./include/DesignParameterFinder.h
+    ./include/LibraryHandler.h \
+    ./include/LibraryInterface.h \
+    ./include/LibraryLoader.h \
+    ./include/DocumentFileAccess.h \
+    ./include/DocumentValidator.h \
+    ./include/utils.h \
+    ./include/hierarchyitem.h \
+    ./include/hierarchymodel.h \
+    ./include/LibraryTreeModel.h \
+    ./include/ItemExporter.h \
+    ./include/ObjectSelectionListItem.h \
+    ./include/ObjectSelectionDialog.h \
+    ./include/ObjectExportDialog.h \
+    ./include/LibraryItemSelectionFactory.h \
+    ./include/TagManager.h \
+    ./include/LibraryItem.h
 SOURCES += ./KactusAPI.cpp \
+    ./expressions/AddressBlockExpressionsGatherer.cpp \
+    ./expressions/AddressSpaceExpressionsGatherer.cpp \
+    ./expressions/ComponentAndInstantiationsParameterFinder.cpp \
+    ./expressions/ComponentInstanceParameterFinder.cpp \
+    ./expressions/ComponentInstantiationParameterFinder.cpp \
+    ./expressions/ComponentParameterFinder.cpp \
+    ./expressions/DesignParameterFinder.cpp \
+    ./expressions/ExpressionFormatter.cpp \
+    ./expressions/ExpressionFormatterFactoryImplementation.cpp \
+    ./expressions/FieldExpressionsGatherer.cpp \
+    ./expressions/IPXactSystemVerilogParser.cpp \
+    ./expressions/ListParameterFinder.cpp \
+    ./expressions/MemoryMapExpressionsGatherer.cpp \
+    ./expressions/MemoryRemapExpressionGatherer.cpp \
+    ./expressions/MultipleParameterFinder.cpp \
+    ./expressions/NullParser.cpp \
+    ./expressions/ParameterCache.cpp \
+    ./expressions/RegisterExpressionsGatherer.cpp \
+    ./expressions/RegisterFileExpressionsGatherer.cpp \
+    ./expressions/SystemVerilogExpressionParser.cpp \
     ./interfaces/bus/AbstractionTypeInterface.cpp \
     ./interfaces/bus/PortAbstractionInterface.cpp \
-    ./interfaces/common/AbstractParameterInterface.cpp \
-    ./interfaces/common/CommonInterface.cpp \
-    ./interfaces/common/NameGroupInterface.cpp \
-    ./interfaces/common/ParameterizableInterface.cpp \
-    ./interfaces/common/ParametersInterface.cpp \
     ./interfaces/component/AddressBlockInterface.cpp \
     ./interfaces/component/BusInterfaceInterface.cpp \
     ./interfaces/component/BusInterfaceInterfaceFactory.cpp \
@@ -105,6 +136,11 @@ SOURCES += ./KactusAPI.cpp \
     ./interfaces/component/ResetInterface.cpp \
     ./interfaces/component/SubspaceMapInterface.cpp \
     ./interfaces/component/TransparentBridgeInterface.cpp \
+    ./interfaces/common/AbstractParameterInterface.cpp \
+    ./interfaces/common/CommonInterface.cpp \
+    ./interfaces/common/NameGroupInterface.cpp \
+    ./interfaces/common/ParameterizableInterface.cpp \
+    ./interfaces/common/ParametersInterface.cpp \
     ./interfaces/design/AdHocConnectionInterface.cpp \
     ./interfaces/design/ComponentInstanceInterface.cpp \
     ./interfaces/design/InterconnectionInterface.cpp \
@@ -115,23 +151,18 @@ SOURCES += ./KactusAPI.cpp \
     ./utilities/ConsoleMediator.cpp \
     ./utilities/FileHandler.cpp \
     ./utilities/VersionHelper.cpp \
-    ./expressions/AddressBlockExpressionsGatherer.cpp \
-    ./expressions/AddressSpaceExpressionsGatherer.cpp \
-    ./expressions/ComponentAndInstantiationsParameterFinder.cpp \
-    ./expressions/ComponentInstanceParameterFinder.cpp \
-    ./expressions/ComponentInstantiationParameterFinder.cpp \
-    ./expressions/ComponentParameterFinder.cpp \
-    ./expressions/ExpressionFormatter.cpp \
-    ./expressions/ExpressionFormatterFactoryImplementation.cpp \
-    ./expressions/FieldExpressionsGatherer.cpp \
-    ./expressions/IPXactSystemVerilogParser.cpp \
-    ./expressions/ListParameterFinder.cpp \
-    ./expressions/MemoryMapExpressionsGatherer.cpp \
-    ./expressions/MemoryRemapExpressionGatherer.cpp \
-    ./expressions/MultipleParameterFinder.cpp \
-    ./expressions/NullParser.cpp \
-    ./expressions/ParameterCache.cpp \
-    ./expressions/RegisterExpressionsGatherer.cpp \
-    ./expressions/RegisterFileExpressionsGatherer.cpp \
-    ./expressions/SystemVerilogExpressionParser.cpp \
-    ./expressions/DesignParameterFinder.cpp
+    ./library/LibraryHandler.cpp \
+    ./library/LibraryLoader.cpp \
+    ./library/DocumentFileAccess.cpp \
+    ./library/DocumentValidator.cpp \
+    ./utilities/utils.cpp \
+    ./library/hierarchymodel.cpp \
+    ./library/LibraryItem.cpp \
+    ./library/LibraryTreeModel.cpp \
+    ./library/hierarchyitem.cpp \
+    ./library/ItemExporter.cpp \
+    ./library/ObjectSelectionListItem.cpp \
+    ./library/ObjectSelectionDialog.cpp \
+    ./library/ObjectExportDialog.cpp \
+    ./library/LibraryItemSelectionFactory.cpp \
+    ./library/TagManager.cpp

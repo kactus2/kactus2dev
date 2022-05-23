@@ -4,12 +4,12 @@
 
 
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+    ./version.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./common/NameGenerationPolicy.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
-    ./common/utils.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
     ./common/widgets/listManager/dirlistmanagermodel.h \
@@ -57,7 +57,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
-    ./common/widgets/tagEditor/TagManager.h \
     ./common/widgets/tagEditor/TagLabel.h \
     ./common/widgets/tagEditor/FlowLayout.h \
     ./common/widgets/tagEditor/TagContainer.h \
@@ -112,9 +111,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
-    ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
-    ./common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
-    ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
     ./common/ui/GraphicalMessageMediator.h \
     ./common/expressions/utilities.h \
     ./mainwindow/CommandLineParser.h \
@@ -205,22 +201,14 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Help/HelpSystem/HelpSearchWidget.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
-    ./library/DocumentFileAccess.h \
-    ./library/DocumentValidator.h \
     ./library/LibraryInterface.h \
-    ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
     ./library/TableViewDialog.h \
     ./library/LibraryFilter.h \
-    ./library/LibraryHandler.h \
     ./library/LibraryErrorModel.h \
-    ./library/ItemExporter.h \
-    ./library/LibraryItem.h \
     ./library/LibraryTreeFilter.h \
-    ./library/LibraryTreeModel.h \
     ./library/LibraryTreeWidget.h \
     ./library/LibraryTreeView.h \
-    ./library/LibraryLoader.h \
     ./library/LibraryWidget.h \
     ./library/VLNVDialer/dialerwidget.h \
     ./library/VLNVDialer/filterwidget.h \
@@ -232,8 +220,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./library/HierarchyView/hierarchywidget.h \
     ./library/HierarchyView/hierarchyview.h \
     ./library/HierarchyView/hierarchyfilter.h \
-    ./library/HierarchyView/hierarchyitem.h \
-    ./library/HierarchyView/hierarchymodel.h \
     ./editors/ApiDefinitionEditor/ApiFunctionColumns.h \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
@@ -821,7 +807,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
-    ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageView.cpp \
@@ -833,9 +818,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
-    ./common/dialogs/ObjectExportDialog/ObjectExportDialog.cpp \
-    ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.cpp \
-    ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
@@ -886,7 +868,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/tagEditor/TagEditor.cpp \
     ./common/widgets/tagEditor/TagEditorContainer.cpp \
     ./common/widgets/tagEditor/TagLabel.cpp \
-    ./common/widgets/tagEditor/TagManager.cpp \
     ./common/widgets/tagEditor/TagSelector.cpp \
     ./common/widgets/tagEditor/TagSelectorContainer.cpp \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
@@ -994,17 +975,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
-    ./library/DocumentFileAccess.cpp \
-    ./library/DocumentValidator.cpp \
-    ./library/ItemExporter.cpp \
     ./library/LibraryErrorModel.cpp \
     ./library/LibraryFilter.cpp \
-    ./library/LibraryHandler.cpp \
-    ./library/LibraryItem.cpp \
-    ./library/LibraryItemSelectionFactory.cpp \
-    ./library/LibraryLoader.cpp \
     ./library/LibraryTreeFilter.cpp \
-    ./library/LibraryTreeModel.cpp \
     ./library/LibraryTreeView.cpp \
     ./library/LibraryTreeWidget.cpp \
     ./library/LibraryUtils.cpp \
@@ -1018,8 +991,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./library/VLNVDialer/typegroup.cpp \
     ./library/VLNVDialer/vlnvdialer.cpp \
     ./library/HierarchyView/hierarchyfilter.cpp \
-    ./library/HierarchyView/hierarchyitem.cpp \
-    ./library/HierarchyView/hierarchymodel.cpp \
     ./library/HierarchyView/hierarchyview.cpp \
     ./library/HierarchyView/hierarchywidget.cpp \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
