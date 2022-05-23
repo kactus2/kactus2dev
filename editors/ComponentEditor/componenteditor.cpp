@@ -132,6 +132,8 @@ parameterReferenceWindow_()
     {
         setDocumentType(tr("Unmapped System"));
     }
+    
+    setDocumentPath(libHandler_->getPath(component_->getVlnv()));
 
     addRelatedVLNV(component_->getVlnv());
 

@@ -90,15 +90,12 @@ QObject(parent),
     treeModel_(new LibraryTreeModel(this, this)),
     hierarchyModel_(new HierarchyModel(this, this)),
     saveInProgress_(false),
-    fileWatch_(this),
     itemExporter_(new ItemExporter(messageChannel, this, fileAccess_, parentWidget, this)),
     checkResults_(),
     updatedPaths_()
 {
     // create the connections between models and library handler
     syncronizeModels();
-    connect(&fileWatch_, SIGNAL(fileChanged(QString const&)),
-            this, SLOT(onFileChangedOnDisk(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -641,7 +638,7 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
     }
 
     QString path = documentCache_.find(vlnv)->path;
-    fileWatch_.removePath(path);
+
     documentCache_.remove(vlnv);
 
     treeModel_->onRemoveVLNV(vlnv);
@@ -821,49 +818,6 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryHandler::onFileChangedOnDisk()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onFileChangedOnDisk(QString const& path)
-{
-    // Add timer to skip the time it takes to remove the file and rewrite it on save.
-    updatedPaths_.append(path);
-    QTimer::singleShot(100, Qt::CoarseTimer, this, SLOT(handleFileChange()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::handleFileChange()
-//-----------------------------------------------------------------------------
-void LibraryHandler::handleFileChange()
-{
-    VLNV vlnv;
-    QString path = updatedPaths_.takeFirst();
-    
-    if (QFile::exists(path))
-    {
-        // File updated on disk.
-        QSharedPointer<Document> model = fileAccess_.readDocument(path);
-        vlnv = model->getVlnv();
-        documentCache_.insert(vlnv, DocumentInfo(path, model, validateDocument(model, path)));
-
-        emit updatedVLNV(vlnv);
-    }
-    else
-    {
-        // File removed.
-        auto changedDocument = std::find_if(documentCache_.begin(), documentCache_.end(),
-            [path](const DocumentInfo& item) { return item.path.compare(path) == 0; });
-
-        if (changedDocument != documentCache_.end() && changedDocument.key().isValid())
-        {
-            vlnv = changedDocument.key();
-            documentCache_.erase(changedDocument);
-
-            emit removeVLNV(vlnv);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryHandler::syncronizeModels()
 //-----------------------------------------------------------------------------
 void LibraryHandler::syncronizeModels()
@@ -996,9 +950,7 @@ bool LibraryHandler::addObject(QSharedPointer<Document> model, QString const& fi
         targetPath = pathInfo.symLinkTarget();
     }
 
-    fileWatch_.removePath(targetPath);
     fileAccess_.writeDocument(model, targetPath);
-    fileWatch_.addPath(targetPath);
 
     TagManager::getInstance().addNewTags(model->getTags());
 
@@ -1012,11 +964,7 @@ bool LibraryHandler::addObject(QSharedPointer<Document> model, QString const& fi
 //-----------------------------------------------------------------------------
 void LibraryHandler::clearCache()
 {
-    if (!documentCache_.isEmpty())
-    {
-        fileWatch_.removePaths(fileWatch_.files());
-        documentCache_.clear();
-    }
+    documentCache_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -1038,7 +986,6 @@ void LibraryHandler::loadAvailableVLNVs()
         else
         {
             documentCache_.insert(target.vlnv, DocumentInfo(target.path));
-            fileWatch_.addPath(target.path);
         }
     }
     messageChannel_->showStatusMessage(tr("Ready."));

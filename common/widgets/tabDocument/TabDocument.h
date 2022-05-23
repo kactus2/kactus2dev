@@ -18,6 +18,7 @@
 #include <common/IEditProvider.h>
 
 #include <QWidget>
+#include <QFileSystemWatcher>
 #include <QFocusEvent>
 #include <QString>
 #include <QSettings>
@@ -285,7 +286,7 @@ public slots:
     void requestRefresh();
 
 
-    virtual void onDocumentUpdated(VLNV const& vlnv);
+    virtual void onDocumentUpdated();
 
 signals:
 	//! \brief Emitted when contents of the widget change
@@ -359,6 +360,13 @@ protected:
     void addVisibilityControl(QString const& name, bool state);
     
     /*!
+     * Set the document path to be monitored for changes.
+     *
+     *     @param [in] path  Path to the document.
+     */
+     void setDocumentPath(QString const& path);
+
+    /*!
      *  Shows the document and asks to refresh it if refresh was requested.
      */
     virtual void showEvent(QShowEvent* event);
@@ -431,6 +439,8 @@ private:
 
     //! If true, the document must be refreshed when shown the next time.
     bool refreshRequested_;
+
+    QFileSystemWatcher fileWatch_;
 
     bool changedOnDisk_;
 };

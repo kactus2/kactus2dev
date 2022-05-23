@@ -50,6 +50,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     VLNV const vlnv = comDef_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     setDocumentType(tr("COM Definition"));
+    setDocumentPath(libHandler_->getPath(vlnv));
 
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv.getVersion() != "draft");

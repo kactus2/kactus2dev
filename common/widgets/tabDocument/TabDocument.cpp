@@ -34,9 +34,11 @@ TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, 
     previouslyUnlocked_(false),
     relatedVLNVs_(),
     refreshRequested_(false),
+    fileWatch_(),
     changedOnDisk_(false)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
+    connect(&fileWatch_, SIGNAL(fileChanged(QString const&)), this, SLOT(onDocumentUpdated()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -359,6 +361,14 @@ void TabDocument::addVisibilityControl(QString const& name, bool state)
 }
 
 //-----------------------------------------------------------------------------
+// Function: TabDocument::setDocumentPath()
+//-----------------------------------------------------------------------------
+void TabDocument::setDocumentPath(QString const& path)
+{
+    fileWatch_.addPath(path);
+}
+
+//-----------------------------------------------------------------------------
 // Function: TabDocument::getVisibilityControls()
 //-----------------------------------------------------------------------------
 QMap<QString, bool> const& TabDocument::getVisibilityControls() const
@@ -419,19 +429,16 @@ void TabDocument::requestRefresh()
 //-----------------------------------------------------------------------------
 // Function: TabDocument::onDocumentUpdated()
 //-----------------------------------------------------------------------------
-void TabDocument::onDocumentUpdated(VLNV const& vlnv)
+void TabDocument::onDocumentUpdated()
 {
-    if (getDocumentVLNV() == vlnv)
+    if (!changedOnDisk_ && isVisible())
     {
-        if (!changedOnDisk_ && isVisible())
-        {
-            changedOnDisk_ = true;
-            handleChangeOnDisk();
-        }
-        else
-        {
-            changedOnDisk_ = true;
-        }
+        changedOnDisk_ = true;
+        handleChangeOnDisk();
+    }
+    else
+    {
+        changedOnDisk_ = true;
     }
 }
 

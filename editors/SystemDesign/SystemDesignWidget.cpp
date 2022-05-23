@@ -119,6 +119,8 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
         setDocumentType("System Design");
     }
 
+    setDocumentPath(getLibraryInterface()->getPath(vlnv));
+
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv.getVersion() != "draft");
 

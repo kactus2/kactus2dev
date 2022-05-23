@@ -477,14 +477,6 @@ private slots:
     */
     void onItemSaved(VLNV const& vlnv);
 
-    /*! Called when an IP-XACT file has changed on disk.
-    *
-    *      @param [in] path Path to the changed file.
-    */
-    void onFileChangedOnDisk(QString const& path);
-
-    void handleFileChange();
-
 private:
 
     //! All relevant data about an IP-XACT document is stored in DocumentInfo.
@@ -678,9 +670,6 @@ private:
 
     //! If true then items are being saved and library is not refreshed
     bool saveInProgress_;
-
-    //! Watch for changes in the IP-XACT files.
-    QFileSystemWatcher fileWatch_;
 
     //! Item exporter.
     ItemExporter* itemExporter_;
