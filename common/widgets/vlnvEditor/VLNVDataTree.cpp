@@ -12,7 +12,7 @@
 #include "VLNVDataTree.h"
 
 #include <KactusAPI/include/LibraryInterface.h>
-#include <library/LibraryItem.h>
+#include <KactusAPI/include//LibraryItem.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
