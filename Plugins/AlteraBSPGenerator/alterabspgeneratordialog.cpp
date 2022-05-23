@@ -6,7 +6,7 @@
 */
 
 #include "alterabspgeneratordialog.h"
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QFormLayout>

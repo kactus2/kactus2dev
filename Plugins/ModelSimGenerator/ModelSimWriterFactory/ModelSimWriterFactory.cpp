@@ -12,7 +12,7 @@
 #include "ModelSimWriterFactory.h"
 #include "ModelSimWriter.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 

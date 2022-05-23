@@ -12,7 +12,7 @@
 #ifndef OBJECTREMOVEDIALOG_H
 #define OBJECTREMOVEDIALOG_H
 
-#include <common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h>
+#include "ObjectSelectionDialog.h"
 
 //-----------------------------------------------------------------------------
 //! Dialog for selecting items to be removed.

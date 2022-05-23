@@ -12,7 +12,7 @@
 #ifndef FILTERWIDGET_H
 #define FILTERWIDGET_H
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include "firmnessgroup.h"
 #include "implementationgroup.h"

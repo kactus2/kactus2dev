@@ -20,6 +20,8 @@
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
+#include <KactusAPI/include/LibraryHandler.h>
+
 #include <IPlugin.h>
 #include <IGeneratorPlugin.h>
 #include <PluginUtilityAdapter.h>
@@ -54,6 +56,11 @@ KactusAPI::KactusAPI(LibraryInterface* library, MessageMediator* messageChannel)
 //-----------------------------------------------------------------------------
 LibraryInterface* KactusAPI::getLibrary()
 {
+    if (library_ == nullptr)
+    {
+        library_ = LibraryHandler::getInstance();
+    }
+
     Q_ASSERT(library_ != nullptr);
     return library_;
 }

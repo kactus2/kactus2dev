@@ -19,7 +19,7 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QVBoxLayout>
 #include <QLabel>

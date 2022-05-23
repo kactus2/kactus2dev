@@ -12,7 +12,7 @@
 #ifndef TYPEGROUP_H
 #define TYPEGROUP_H
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
 #include <QCheckBox>

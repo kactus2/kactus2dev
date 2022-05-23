@@ -15,7 +15,7 @@
 #include "SWComponentItem.h"
 #include "SWPortItem.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>

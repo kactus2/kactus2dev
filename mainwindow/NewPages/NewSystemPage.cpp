@@ -12,7 +12,7 @@
 #include "NewSystemPage.h"
 
 #include <library/LibraryItem.h>
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 

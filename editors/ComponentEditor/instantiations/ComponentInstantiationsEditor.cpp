@@ -19,7 +19,7 @@
 
 #include <KactusAPI/include/ComponentInstantiationInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QVBoxLayout>
 

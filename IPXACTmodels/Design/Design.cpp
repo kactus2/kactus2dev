@@ -15,7 +15,7 @@
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: Design::Design()

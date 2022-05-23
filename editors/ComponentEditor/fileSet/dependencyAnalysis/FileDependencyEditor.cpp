@@ -15,7 +15,7 @@
 #include "FileDependencyItem.h"
 #include "FileDependencyDelegate.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <KactusAPI/include/FileHandler.h>
 

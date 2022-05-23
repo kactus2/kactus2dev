@@ -15,7 +15,7 @@
 
 #include <common/widgets/colorBox/ColorBox.h>
 #include <common/widgets/tagEditor/TagLabel.h>
-#include <common/widgets/tagEditor/TagManager.h>
+#include <KactusAPI/include/TagManager.h>
 #include <common/widgets/tagEditor/TagCompleterModel.h>
 
 #include <QHBoxLayout>

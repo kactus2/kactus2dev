@@ -11,6 +11,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <QRegularExpression>
 #include <QObject>
 
@@ -32,7 +34,7 @@ namespace Utils
          *
          * Constructs struct with all options set to true.
         */
-        ImplementationOptions();
+        KACTUS2_API ImplementationOptions();
     };
 
     //! Contains the search settings for hierarchy.
@@ -60,7 +62,7 @@ namespace Utils
          *
          * Constructs struct with all options set to true.
         */
-        HierarchyOptions();
+        KACTUS2_API HierarchyOptions();
     };
 
     //! Contains the Re-usability search filters.
@@ -79,7 +81,7 @@ namespace Utils
          *
          * Constructs struct with all options set to true
         */
-        FirmnessOptions();
+        KACTUS2_API FirmnessOptions();
     };
 
     //! Contains the search options for document types.
@@ -104,7 +106,7 @@ namespace Utils
          *
          * Constructs struct with all options set to true.
         */
-        TypeOptions();
+        KACTUS2_API TypeOptions();
     };
 
     struct FilterOptions
@@ -125,7 +127,7 @@ namespace Utils
          *
          * Constructs struct with all options set to true.
         */
-        FilterOptions() : type(), implementation(), hierarchy(), firmness() {};
+        KACTUS2_API FilterOptions() : type(), implementation(), hierarchy(), firmness() {};
     };
 
 
@@ -137,7 +139,7 @@ namespace Utils
     /*!
      *  Retrieves and returns the name of the current user.
      */
-    QString getCurrentUser();
+    KACTUS2_API QString getCurrentUser();
 }
 
 #endif // UTILS_H

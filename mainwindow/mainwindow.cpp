@@ -73,7 +73,7 @@
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 #include <library/LibraryUtils.h>
 
 #include <IPXACTmodels/common/VLNV.h>

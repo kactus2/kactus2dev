@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <QDialog>
 #include <QPushButton>
 #include <QLineEdit>
@@ -30,7 +32,7 @@ class ObjectSelectionListItem;
 //-----------------------------------------------------------------------------
 //! Dialog for selecting the items.
 //-----------------------------------------------------------------------------
-class ObjectSelectionDialog : public QDialog
+class KACTUS2_API ObjectSelectionDialog : public QDialog
 {
 	Q_OBJECT
 

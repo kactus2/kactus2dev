@@ -14,7 +14,7 @@
 #include "PadsAsciiSyntax.h"
 #include "PadsPartGeneratorDialog.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 

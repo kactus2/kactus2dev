@@ -11,7 +11,7 @@
 
 #include "hierarchygroup.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QGridLayout>
 

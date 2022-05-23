@@ -11,7 +11,7 @@
 
 #include "NewDesignPage.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>

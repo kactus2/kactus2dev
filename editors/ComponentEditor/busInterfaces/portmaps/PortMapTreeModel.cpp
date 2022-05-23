@@ -12,7 +12,7 @@
 #include "PortMapTreeModel.h"
 #include "PortMapsColumns.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/ExpressionFormatter.h>

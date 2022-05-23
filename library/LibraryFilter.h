@@ -12,7 +12,7 @@
 #ifndef LIBRARYFILTER_H
 #define LIBRARYFILTER_H
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <IPXACTmodels/common/TagData.h>
 #include <IPXACTmodels/Component/Component.h>

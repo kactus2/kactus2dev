@@ -24,7 +24,7 @@
 #include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>

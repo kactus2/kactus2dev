@@ -12,7 +12,7 @@
 #ifndef IMPLEMENTATIONGROUP_H
 #define IMPLEMENTATIONGROUP_H
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
 #include <QCheckBox>

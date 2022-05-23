@@ -11,7 +11,7 @@
 
 #include "busifgeneraltab.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesEditor.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>

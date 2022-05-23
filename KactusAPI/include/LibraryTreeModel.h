@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
@@ -27,7 +29,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! The model that contains the LibraryItems to display library hierarchically.
 //-----------------------------------------------------------------------------
-class LibraryTreeModel : public QAbstractItemModel
+class KACTUS2_API LibraryTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 

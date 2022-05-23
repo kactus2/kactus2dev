@@ -14,6 +14,8 @@
 
 #include "hierarchyitem.h"
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <QAbstractItemModel>
 #include <QSharedPointer>
 
@@ -23,7 +25,7 @@ class LibraryData;
 //-----------------------------------------------------------------------------
 //! Contains the items to display the library component hierarchy to user.
 //-----------------------------------------------------------------------------
-class HierarchyModel : public QAbstractItemModel
+class KACTUS2_API HierarchyModel : public QAbstractItemModel
 {
     Q_OBJECT
 

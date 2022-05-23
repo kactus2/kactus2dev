@@ -14,12 +14,14 @@
 
 #include <IPXACTmodels/common/TagData.h>
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <QVector>
 
 //-----------------------------------------------------------------------------
 //! Manager for loaded tags.
 //-----------------------------------------------------------------------------
-class TagManager
+class KACTUS2_API TagManager
 {
 public:
 

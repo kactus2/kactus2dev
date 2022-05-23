@@ -26,7 +26,7 @@
 #include <editors/MemoryDesigner/MasterSlavePathSearch.h>
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QCoreApplication>
 #include <QFileInfo>

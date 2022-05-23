@@ -21,7 +21,7 @@
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
 #include <KactusAPI/include/PortMapInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>

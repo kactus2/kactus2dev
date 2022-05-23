@@ -23,7 +23,7 @@
 #include <KactusAPI/include/ListParameterFinder.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>

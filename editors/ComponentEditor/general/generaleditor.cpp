@@ -17,7 +17,7 @@
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

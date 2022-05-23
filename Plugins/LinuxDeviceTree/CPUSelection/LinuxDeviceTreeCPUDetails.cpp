@@ -20,7 +20,7 @@
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/MemoryConnectionAddressCalculator.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeCPUDetails::getCPUContainers()

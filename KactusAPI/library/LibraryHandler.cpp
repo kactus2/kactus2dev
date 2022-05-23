@@ -11,20 +11,22 @@
 
 #include "LibraryHandler.h"
 
-#include "LibraryFilter.h"
+/*
 #include "LibraryErrorModel.h"
 #include "TableViewDialog.h"
-#include "LibraryItemSelectionFactory.h"
+#include "LibraryItemSelectionFactory.h"*/
 
-#include <library/ItemExporter.h>
+#include "ItemExporter.h"
 
-#include <KactusAPI/include/MessageMediator.h>
+#include "MessageMediator.h"
+
+#include "utils.h"
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
-#include <common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h>
+#include"ObjectSelectionListItem.h"
 
-#include <common/widgets/tagEditor/TagManager.h>
+#include "TagManager.h"
 
 #include <IPXACTmodels/common/Document.h>
 
@@ -557,7 +559,7 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
     QSharedPointer<Document> document = getModel(vlnv);
 
     // Show error list in a dialog.
-    TableViewDialog* dialog = new TableViewDialog(parentWidget_);
+    /*TableViewDialog* dialog = new TableViewDialog(parentWidget_);
     dialog->setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
     dialog->setDescription(tr("<b>Integrity check</b><br>The following errors were found."));
     dialog->resize(700, 350);
@@ -569,7 +571,7 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
 
     dialog->setModel(model);
 
-    connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
+    connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));*/
 }
 
 //-----------------------------------------------------------------------------
@@ -577,7 +579,7 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onGenerateIntegrityReport()
 {
-    if (!integrityWidget_)
+   /* if (!integrityWidget_)
     {
         integrityWidget_ = new TableViewDialog(parentWidget_);
         integrityWidget_->setWindowTitle(tr("Library Integrity Report"));
@@ -602,7 +604,7 @@ void LibraryHandler::onGenerateIntegrityReport()
         connect(integrityWidget_, SIGNAL(finished(int)), this, SLOT(onCloseIntegrityReport()));
     }
 
-    integrityWidget_->raise();
+    integrityWidget_->raise();*/
 }
 
 //-----------------------------------------------------------------------------
@@ -744,7 +746,7 @@ void LibraryHandler::endSave()
 void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
 {
     //TODO: Move function.
-    VLNV::IPXactType documentType = vlnv.getType();
+   /* VLNV::IPXactType documentType = vlnv.getType();
 
     bool showAttributes = (documentType == VLNV::COMPONENT);
     NewObjectDialog newDesignDialog(this, vlnv.getType(), showAttributes, parentWidget_);
@@ -811,7 +813,7 @@ void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
     else
     {
         emit noticeMessage(tr("The item type is not supported"));
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -850,7 +852,7 @@ void LibraryHandler::onCreateAbsDef(VLNV const& busDefVLNV)
 void LibraryHandler::onRemoveVLNV(QList<VLNV> const& vlnvs)
 {
     // create the dialog to select which items to remove
-    ObjectRemoveDialog* removeDialog = new ObjectRemoveDialog(parentWidget_);
+  /*  ObjectRemoveDialog* removeDialog = new ObjectRemoveDialog(parentWidget_);
     LibraryItemSelectionFactory::constructItemsForSelectionDialog(this, removeDialog, vlnvs);
 
     if (removeDialog->exec() == QDialog::Rejected)
@@ -860,7 +862,7 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const& vlnvs)
 
     DocumentStatistics removeStatistics = removeSelectedObjects(removeDialog->getSelectedItems());
 
-    emit noticeMessage(createDeleteMessage(removeStatistics));
+    emit noticeMessage(createDeleteMessage(removeStatistics));*/
 }
 
 //-----------------------------------------------------------------------------
@@ -889,8 +891,8 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onCloseIntegrityReport()
 {
-    integrityWidget_->deleteLater();
-    integrityWidget_ = 0;
+  /*  integrityWidget_->deleteLater();
+    integrityWidget_ = 0;*/
 }
 
 //-----------------------------------------------------------------------------
@@ -1157,7 +1159,7 @@ LibraryHandler::DocumentStatistics LibraryHandler::removeSelectedObjects(
     QVector<ObjectSelectionListItem *> const& removedItems)
 {
     DocumentStatistics removeStatistics;
-
+    /*
     QStringList changedDirectories;
     for (ObjectSelectionListItem* removedItem : removedItems)
     {
@@ -1183,7 +1185,7 @@ LibraryHandler::DocumentStatistics LibraryHandler::removeSelectedObjects(
 
     changedDirectories.removeDuplicates();
     loader_.clean(changedDirectories);
-
+    */
     return removeStatistics;
 }
 

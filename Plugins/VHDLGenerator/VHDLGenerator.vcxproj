@@ -136,7 +136,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\common\utils.cpp" />
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp" />
@@ -206,7 +205,6 @@
     <ClCompile Include="VhdlTypedObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\common\utils.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />

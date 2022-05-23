@@ -3,7 +3,7 @@
 
 #include "LibraryInterface.h"
 
-#include <common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h>
+#include <KactusAPI/include/ObjectSelectionDialog.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 

@@ -16,7 +16,7 @@
 #include <QStatusBar>
 #include <QProgressBar>
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 

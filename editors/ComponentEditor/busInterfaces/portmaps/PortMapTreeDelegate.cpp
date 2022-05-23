@@ -13,7 +13,7 @@
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/common/DirectionTypes.h>

@@ -14,20 +14,17 @@
 
 #include "LibraryInterface.h"
 #include "LibraryLoader.h"
-#include "LibraryTreeWidget.h"
 #include "LibraryTreeModel.h"
+#include "hierarchymodel.h"
 
 #include "DocumentFileAccess.h"
 #include "DocumentValidator.h"
-
-#include "HierarchyView/hierarchymodel.h"
-#include "HierarchyView/hierarchywidget.h"
 
 #include <IPXACTmodels/common/TagData.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-
+#include <KactusAPI/KactusAPIGlobal.h>
 
 #include <QString>
 #include <QStringList>
@@ -51,7 +48,7 @@ class ItemExporter;
 //-----------------------------------------------------------------------------
 //! LibraryHandler is the class that implements the services to manage the IP-XACT library.
 //-----------------------------------------------------------------------------
-class LibraryHandler : public QObject, public LibraryInterface
+class KACTUS2_API LibraryHandler : public QObject, public LibraryInterface
 {
     Q_OBJECT
 

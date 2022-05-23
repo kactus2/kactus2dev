@@ -12,7 +12,7 @@
 #ifndef OBJECTEXPORTDIALOG_H
 #define OBJECTEXPORTDIALOG_H
 
-#include <common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h>
+#include "ObjectSelectionDialog.h"
 
 #include <QPushButton>
 #include <QLineEdit>

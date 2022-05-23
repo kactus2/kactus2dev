@@ -11,7 +11,7 @@
 
 #include "SystemViewConfigurationValidator.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 

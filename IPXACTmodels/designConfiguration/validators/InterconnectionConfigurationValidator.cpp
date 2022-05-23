@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/Interconnection.h>

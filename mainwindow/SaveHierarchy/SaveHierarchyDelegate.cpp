@@ -12,7 +12,7 @@
 #include "SaveHierarchyDelegate.h"
 #include "HierarchicalSaveColumns.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/KactusColors.h>

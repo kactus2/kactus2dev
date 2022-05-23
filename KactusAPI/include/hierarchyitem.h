@@ -23,6 +23,8 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QList>
@@ -33,7 +35,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! Represents a single component in the library in hierarchy view.
 //-----------------------------------------------------------------------------
-class HierarchyItem : public QObject
+class KACTUS2_API HierarchyItem : public QObject
 {
 	Q_OBJECT
 

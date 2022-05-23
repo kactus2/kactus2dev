@@ -11,7 +11,7 @@
 
 #include "ConnectivityGraphFactory.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include "ConnectivityConnection.h"
 #include "ConnectivityInterface.h"

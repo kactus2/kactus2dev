@@ -24,7 +24,7 @@
 #include <IPXACTmodels/Component/BuildCommand.h>
 #include <IPXACTmodels/Component/View.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <KactusAPI/include/IGeneratorPlugin.h>
 

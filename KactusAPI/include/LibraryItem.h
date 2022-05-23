@@ -18,10 +18,12 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <KactusAPI/KactusAPIGlobal.h>
+
 //-----------------------------------------------------------------------------
 //! LibraryItem class is used to create the hierarchical structure of IP library.
 //-----------------------------------------------------------------------------
-class LibraryItem : public QObject
+class KACTUS2_API LibraryItem : public QObject
 {
 	Q_OBJECT
 

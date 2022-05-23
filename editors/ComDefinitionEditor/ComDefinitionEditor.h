@@ -19,7 +19,7 @@
 #include <common/widgets/listManager/listmanager.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QSharedPointer>
 #include <QPushButton>

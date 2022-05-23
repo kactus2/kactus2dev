@@ -24,7 +24,7 @@
 
 #include <IPXACTmodels/Design/PortReference.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 
 //-----------------------------------------------------------------------------

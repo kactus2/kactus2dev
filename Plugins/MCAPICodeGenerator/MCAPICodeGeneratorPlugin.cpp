@@ -17,7 +17,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::MCAPICodeGeneratorPlugin()

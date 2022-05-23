@@ -11,7 +11,7 @@
 
 #include "MemoryDesignerDiagram.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 

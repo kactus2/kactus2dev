@@ -15,7 +15,7 @@
 
 #include "VerilogWriterFactory/VerilogWriterFactory.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <Plugins/common/LanguageHighlighter.h>
 #include <Plugins/common/HDLParser/HDLCommandLineParser.h>

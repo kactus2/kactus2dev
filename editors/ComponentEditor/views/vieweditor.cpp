@@ -13,7 +13,7 @@
 
 #include "envidentifiereditor.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/NameGenerationPolicy.h>
 

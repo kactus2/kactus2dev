@@ -70,7 +70,7 @@
 #include <editors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
 #include <editors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PartSelect.h>

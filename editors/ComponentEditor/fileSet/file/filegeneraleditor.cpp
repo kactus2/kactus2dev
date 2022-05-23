@@ -11,7 +11,7 @@
 
 #include "filegeneraleditor.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <IPXACTmodels/Component/File.h>
 

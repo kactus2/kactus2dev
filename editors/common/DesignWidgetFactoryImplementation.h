@@ -16,7 +16,7 @@
 
 #include <editors/common/DesignWidget.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 class MultipleParameterFinder;
 class ListParameterFinder;

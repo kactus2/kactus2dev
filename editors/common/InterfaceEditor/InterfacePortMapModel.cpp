@@ -12,7 +12,7 @@
 #include "InterfacePortMapModel.h"
 #include "InterfacePortMapColumns.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <KactusAPI/include/ComponentParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>

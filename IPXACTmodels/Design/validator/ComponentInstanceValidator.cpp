@@ -17,7 +17,7 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QRegularExpression>
 

@@ -15,7 +15,7 @@
 
 #include "LibraryTreeWidget.h"
 #include "LibraryHandler.h"
-#include "HierarchyView/hierarchymodel.h"
+#include <KactusAPI/include/hierarchymodel.h>
 #include "HierarchyView/hierarchywidget.h"
 
 #include "VLNVDialer/vlnvdialer.h"

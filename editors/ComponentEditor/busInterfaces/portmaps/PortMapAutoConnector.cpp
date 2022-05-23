@@ -17,7 +17,7 @@
 #include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/PortsInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>

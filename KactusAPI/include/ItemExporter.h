@@ -12,9 +12,9 @@
 #ifndef ITEMEXPORTER_H
 #define ITEMEXPORTER_H
 
-#include <library/DocumentFileAccess.h>
+#include "DocumentFileAccess.h"
 
-#include <common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h>
+#include "ObjectSelectionListItem.h"
 
 #include <IPXACTmodels/common/VLNV.h>
 

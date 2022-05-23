@@ -11,7 +11,7 @@
 
 #include "componenteditor.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/treeStructure/componenteditorrootitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorgeneralitem.h>

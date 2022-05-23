@@ -11,7 +11,7 @@
 
 #include "addressspacegeneraleditor.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/ExpressionParser.h>

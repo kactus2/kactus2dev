@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceUtilities::hasMatchingBusDefinitions()

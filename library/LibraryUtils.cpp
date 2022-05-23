@@ -17,7 +17,7 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: getDesign()

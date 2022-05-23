@@ -13,7 +13,7 @@
 
 #include <common/widgets/FileSelector/fileselector.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/ports/portseditor.h>

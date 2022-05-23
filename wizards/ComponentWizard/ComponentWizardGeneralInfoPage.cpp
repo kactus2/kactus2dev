@@ -17,7 +17,7 @@
 #include <QFormLayout>
 #include <QSettings>
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage()

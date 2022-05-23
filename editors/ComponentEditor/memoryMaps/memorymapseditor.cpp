@@ -21,7 +21,7 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/MemoryMapInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMap.h>

@@ -11,7 +11,7 @@
 
 #include "PythonAPI.h"
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <KactusAPI/KactusAPI.h>
 

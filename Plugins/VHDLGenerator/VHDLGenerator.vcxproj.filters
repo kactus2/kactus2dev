@@ -112,9 +112,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VHDLGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -154,9 +151,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\common\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">

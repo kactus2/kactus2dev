@@ -12,7 +12,7 @@
 #ifndef DOCKWIDGETHANDLER_H
 #define DOCKWIDGETHANDLER_H
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 #include <common/widgets/tabDocument/TabDocument.h>
 
 class LibraryHandler;

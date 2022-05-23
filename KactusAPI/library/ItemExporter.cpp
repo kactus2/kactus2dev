@@ -11,10 +11,10 @@
 
 #include "ItemExporter.h"
 
-#include <KactusAPI/include/MessageMediator.h>
-#include <common/dialogs/ObjectExportDialog/ObjectExportDialog.h>
+#include "MessageMediator.h"
+#include "ObjectExportDialog.h"
 
-#include <library/LibraryItemSelectionFactory.h>
+#include "LibraryItemSelectionFactory.h"
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>

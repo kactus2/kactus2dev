@@ -18,7 +18,7 @@
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 
 #include <library/LibraryWidget.h>
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <common/ui/GraphicalMessageMediator.h>
 

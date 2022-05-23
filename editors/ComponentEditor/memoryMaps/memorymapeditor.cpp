@@ -23,7 +23,7 @@
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h>
 #include <KactusAPI/include/AddressBlockInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

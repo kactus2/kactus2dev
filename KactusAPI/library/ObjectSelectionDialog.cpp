@@ -11,7 +11,7 @@
 
 #include "ObjectSelectionDialog.h"
 
-#include <common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h>
+#include "ObjectSelectionListItem.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

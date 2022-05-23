@@ -19,7 +19,7 @@
 #include <editors/common/DesignWidget.h>
 #include <editors/common/DesignDiagram.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 

@@ -23,7 +23,7 @@
 #include <editors/common/GraphicsItemLabel.h>
 #include <KactusAPI/include/BusInterfaceUtilities.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>

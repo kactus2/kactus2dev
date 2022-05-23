@@ -11,7 +11,7 @@
 
 #include "SingleFieldEditor.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h>
 #include <editors/ComponentEditor/memoryMaps/fieldeditor.h>

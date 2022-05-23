@@ -25,7 +25,7 @@
 
 #include <mainwindow/mainwindow.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Component/Component.h>

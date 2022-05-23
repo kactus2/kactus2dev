@@ -25,7 +25,7 @@
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <wizards/BusInterfaceWizard/BusInterfaceWizard.h>
 

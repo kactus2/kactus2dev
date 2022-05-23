@@ -17,7 +17,7 @@
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionValidator::BusDefinitionValidator()

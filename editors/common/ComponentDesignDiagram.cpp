@@ -26,7 +26,7 @@
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
 #include <editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <QGraphicsSceneMouseEvent>
 #include <QString>

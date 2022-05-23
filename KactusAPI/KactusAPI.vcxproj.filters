@@ -52,6 +52,9 @@
     <Filter Include="Header Files\include">
       <UniqueIdentifier>{79331bd6-220b-4437-96c9-ac82f0a2ee64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\library">
+      <UniqueIdentifier>{2f4a90c3-f66c-4301-bbde-ec7309e674bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AbstractionTypeInterface.h">
@@ -261,6 +264,30 @@
     <ClInclude Include="KactusAPIGlobal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\LibraryInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LibraryLoader.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DocumentFileAccess.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DocumentValidator.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utils.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ObjectSelectionListItem.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LibraryItemSelectionFactory.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TagManager.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -434,6 +461,51 @@
     <ClCompile Include="interfaces\design\InterconnectionInterface.cpp">
       <Filter>Source Files\interfaces\design</Filter>
     </ClCompile>
+    <ClCompile Include="library\LibraryHandler.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryLoader.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\DocumentFileAccess.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\DocumentValidator.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities\utils.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="library\hierarchymodel.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryItem.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryTreeModel.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\hierarchyitem.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ItemExporter.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectSelectionListItem.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectSelectionDialog.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectExportDialog.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryItemSelectionFactory.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\TagManager.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentInstanceInterface.h">
@@ -454,6 +526,30 @@
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\ParameterCache.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\LibraryHandler.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\hierarchyitem.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\hierarchymodel.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\LibraryTreeModel.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ItemExporter.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ObjectSelectionDialog.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ObjectExportDialog.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\LibraryItem.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>

@@ -14,7 +14,7 @@
 
 #include "../LibraryFilter.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QSharedPointer>
 #include <QString>

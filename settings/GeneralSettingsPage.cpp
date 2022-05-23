@@ -11,7 +11,7 @@
 
 #include "GeneralSettingsPage.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QCoreApplication>
 #include <QFormLayout>

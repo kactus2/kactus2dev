@@ -11,7 +11,7 @@
 
 #include "BaseMemoryMapHeaderWriter.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <KactusAPI/include/IPluginUtility.h>
 

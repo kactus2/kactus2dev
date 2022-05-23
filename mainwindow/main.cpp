@@ -25,7 +25,7 @@
 
 #include <KactusAPI/include/VersionHelper.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <KactusAPI/include/PluginManager.h>
 #include <KactusAPI/include/PluginUtilityAdapter.h>

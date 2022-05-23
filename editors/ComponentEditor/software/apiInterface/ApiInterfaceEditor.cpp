@@ -11,7 +11,7 @@
 
 #include "ApiInterfaceEditor.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <mainwindow/mainwindow.h>

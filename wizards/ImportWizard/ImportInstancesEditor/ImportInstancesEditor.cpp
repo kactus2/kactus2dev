@@ -13,7 +13,7 @@
 
 #include <common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <wizards/ImportWizard/ImportInstancesEditor/ImportInstancesColumns.h>
 #include <wizards/ImportWizard/ImportInstancesEditor/ImportInstancesDelegate.h>

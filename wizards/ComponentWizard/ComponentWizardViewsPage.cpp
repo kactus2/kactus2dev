@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/views/vieweditor.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>

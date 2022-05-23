@@ -13,7 +13,7 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <wizards/common/ComponentDiffWidget/ComponentDiffWidget.h>
 #include <wizards/common/ComponentComparator/ComponentComparator.h>

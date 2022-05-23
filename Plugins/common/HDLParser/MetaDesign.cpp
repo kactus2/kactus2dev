@@ -13,7 +13,7 @@
 
 #include <KactusAPI/include/MessageMediator.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/utilities/ComponentSearch.h>
 

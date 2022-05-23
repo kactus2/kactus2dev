@@ -26,7 +26,7 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Component.h>

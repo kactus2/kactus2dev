@@ -12,7 +12,7 @@
 #ifndef FIRMNESSGROUP_H
 #define FIRMNESSGROUP_H
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
 #include <QCheckBox>

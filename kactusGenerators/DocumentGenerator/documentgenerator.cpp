@@ -11,7 +11,7 @@
 
 #include "documentgenerator.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
 #include <kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h>
