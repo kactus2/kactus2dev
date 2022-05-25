@@ -962,14 +962,9 @@ void MainWindow::setupAndConnectLibraryHandler()
     connect(libraryHandler_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(openMemoryDesign(const VLNV&, const QString&)));
 
-    connect(libraryHandler_, SIGNAL(createBus(const VLNV&, const QString&)),
-        this, SLOT(createBus(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(createAbsDef(const VLNV&, const QString&, bool)),
         this, SLOT(createAbsDef(const VLNV&, const QString&, bool)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createComDef(const VLNV&, const QString&)),
-        this, SLOT(createComDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createApiDef(const VLNV&, const QString&)),
-        this, SLOT(createApiDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
+  
     connect(libraryHandler_, SIGNAL(createSWDesign(const VLNV&)),
         this, SLOT(createSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(createSystemDesign(const VLNV&)),
@@ -991,10 +986,7 @@ void MainWindow::setupAndConnectLibraryHandler()
     connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
         this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 
-    connect(libraryHandler_, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,KactusAttribute::Firmness,
-            QVector<TagData>, const VLNV&, const QString&)),
-        this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData>,
-            const VLNV&, const QString&)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------

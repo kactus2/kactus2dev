@@ -355,16 +355,6 @@ public slots:
     */
     virtual void endSave();
 
-    /*! Create a new item for given vlnv.
-     *
-     * The type of the vlnv defines the type of the object to create.
-     * After creating the object an editor for it is opened.
-     *
-     *      @param [in] vlnv Identifies the object to create
-     *
-    */
-    void onCreateNewItem(VLNV const& vlnv);
-
 signals:
 
     //! Emit an error message to be printed to user.
@@ -406,11 +396,11 @@ signals:
     void openApiDefinition(VLNV const& vlnv);
 
     //! Signal that user wants to create a new bus with given vlnv
-    void createBus(VLNV const& vlnv, const QString& directory);
+    //void createBus(VLNV const& vlnv, const QString& directory);
 
     //! Signal that user wants to create a new component with given vlnv
-    void createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData> tags,
-        VLNV const& vlnv, const QString& directory);
+    //void createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData> tags,
+    //    VLNV const& vlnv, const QString& directory);
 
     //! Signal that user wants to create a new design for the given component.
     void createDesignForExistingComponent(VLNV const& vlnv);
@@ -425,10 +415,10 @@ signals:
     void createAbsDef(VLNV const& busDefVLNV, const QString& directory, bool disableBusDef);
 
     //! Signal that user wants to create a new COM definition with given vlnv
-    void createComDef(VLNV const& vlnv, const QString& directory);
+    //void createComDef(VLNV const& vlnv, const QString& directory);
 
     //! Signal that user wants to create a new API definition with given vlnv
-    void createApiDef(VLNV const& vlnv, const QString& directory);
+    //void createApiDef(VLNV const& vlnv, const QString& directory);
 
     //! Signal that library has changed and VLNVDialer should be refreshed.
     void refreshDialer();

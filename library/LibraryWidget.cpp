@@ -24,6 +24,8 @@
 #include "ObjectSelectionListItem.h"
 #include "LibraryItemSelectionFactory.h"
 
+#include <common/dialogs/newObjectDialog/newobjectdialog.h>
+
 #include "HierarchyView/hierarchywidget.h"
 
 #include "VLNVDialer/vlnvdialer.h"
@@ -72,6 +74,16 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     connect(treeModel, SIGNAL(showErrors(const VLNV)),
         this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
 
+    connect(treeModel, SIGNAL(createBus(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel, SIGNAL(createComDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel, SIGNAL(createApiDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel, SIGNAL(createComponent(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+
+
     connect(treeModel, SIGNAL(removeVLNV(const QList<VLNV>)),
         this, SLOT(onRemoveVLNV(const QList<VLNV>)), Qt::UniqueConnection);
     connect(treeModel, SIGNAL(exportItems(const QList<VLNV>)),
@@ -80,6 +92,18 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     auto hierarchyModel = library_->getHierarchyModel();
     connect(hierarchyModel, SIGNAL(removeVLNV(QList<VLNV>)),
         this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
+
+
+    connect(hierarchyModel, SIGNAL(createBusDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel, SIGNAL(createComponent(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel, SIGNAL(createBus(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel, SIGNAL(createComDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel, SIGNAL(createApiDef(const VLNV&)),
+        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 
     connect(hierarchyModel, SIGNAL(exportItem(VLNV const&)),
          &itemExporter_, SLOT(onExportItem(VLNV const&)), Qt::UniqueConnection);
@@ -160,6 +184,81 @@ void LibraryWidget::onShowErrors(VLNV const& vlnv)
     dialog->setModel(model);
 
     connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryWidget::onCreateNewItem()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onCreateNewItem(VLNV const& vlnv)
+{
+    VLNV::IPXactType documentType = vlnv.getType();
+
+    bool showAttributes = (documentType == VLNV::COMPONENT);
+    NewObjectDialog newDesignDialog(library_, vlnv.getType(), showAttributes, this);
+
+    if (library_->contains(vlnv) && library_->getDocumentType(vlnv) == VLNV::COMPONENT)
+    {
+        QSharedPointer<const Document> document = library_->getModelReadOnly(vlnv);
+        QSharedPointer<const Component> component = document.staticCast<const Component>();
+
+        KactusAttribute::ProductHierarchy prodHier = component->getHierarchy();
+        KactusAttribute::Firmness firmness = component->getFirmness();
+        QVector<TagData> tags = component->getTags();
+
+        newDesignDialog.setKactusAttributes(prodHier, firmness, tags);
+    }
+
+    newDesignDialog.setVLNV(vlnv);
+
+    if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION)
+    {
+        newDesignDialog.setWindowTitle("New Bus");
+    }
+    else if (documentType == VLNV::COMPONENT)
+    {
+        newDesignDialog.setWindowTitle("New Component");
+    }
+    else if (documentType == VLNV::APIDEFINITION)
+    {
+        newDesignDialog.setWindowTitle(tr("New API Definition"));
+    }
+    else if (documentType == VLNV::COMDEFINITION)
+    {
+        newDesignDialog.setWindowTitle(tr("New COM Definition"));
+    }
+
+    newDesignDialog.exec();
+
+    if (newDesignDialog.result() == QDialog::Rejected)
+    {
+        return;
+    }
+
+    VLNV newVlnv = newDesignDialog.getVLNV();
+    QString directory = newDesignDialog.getPath();
+
+    // create an object of correct type
+    if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION)
+    {
+        emit createBus(newVlnv, directory);
+    }
+    else if (documentType == VLNV::COMPONENT)
+    {
+        emit createComponent(newDesignDialog.getProductHierarchy(), newDesignDialog.getFirmness(),
+            newDesignDialog.getTags(), newVlnv, directory);
+    }
+    else if (documentType == VLNV::APIDEFINITION)
+    {
+        emit createApiDef(newVlnv, directory);
+    }
+    else if (documentType == VLNV::COMDEFINITION)
+    {
+        emit createComDef(newVlnv, directory);
+    }
+    else
+    {
+        emit noticeMessage(tr("The item type is not supported"));
+    }
 }
 
 //-----------------------------------------------------------------------------

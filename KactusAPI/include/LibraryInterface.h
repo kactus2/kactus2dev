@@ -252,14 +252,6 @@ public slots:
     */
     virtual void onOpenDesign(VLNV const& vlnv, QString const& viewName) = 0;
 
-    /*! Create a new item for given vlnv.
-     * 
-     * The type of the vlnv defines the type of the object to create.
-     * After creating the object an editor for it is opened.
-     *
-     *      @param [in] vlnv Identifies the object to create
-    */
-    virtual void onCreateNewItem(VLNV const& vlnv) = 0;
 
     /*! Create new design with given vlnv.
      *
@@ -316,12 +308,6 @@ signals:
 
     //! Signal that user wants to open specified component for editing
     void openComponent(VLNV const& vlnv);
-
-    //! Signal that user wants to create a new bus with given vlnv
-    void createBus(VLNV const& vlnv, QString const& directory);
-
-    //! Signal that user wants to create a new component with given vlnv
-    void createComponent(VLNV const& vlnv, QString const& directory);
 
     //! Signal that user wants to create a new abstraction definition for given bus definition.
     void createAbsDef(VLNV const& busDefVLNV, QString const& directory, bool disableBusDef);

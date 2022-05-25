@@ -15,8 +15,6 @@
 
 #include "utils.h"
 
-#include <common/dialogs/newObjectDialog/newobjectdialog.h>
-
 
 #include "TagManager.h"
 
@@ -678,82 +676,6 @@ void LibraryHandler::endSave()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryHandler::onCreateNewItem()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
-{
-    //TODO: Move function.
-    /*VLNV::IPXactType documentType = vlnv.getType();
-
-    bool showAttributes = (documentType == VLNV::COMPONENT);
-    NewObjectDialog newDesignDialog(this, vlnv.getType(), showAttributes, parentWidget_);
-
-    if (contains(vlnv) && getDocumentType(vlnv) == VLNV::COMPONENT)
-    {
-        QSharedPointer<const Document> document = getModelReadOnly(vlnv);
-        QSharedPointer<const Component> component = document.staticCast<const Component>();
-
-        KactusAttribute::ProductHierarchy prodHier = component->getHierarchy();
-        KactusAttribute::Firmness firmness = component->getFirmness();
-        QVector<TagData> tags = component->getTags();
-
-        newDesignDialog.setKactusAttributes(prodHier, firmness, tags);
-    }
-
-    newDesignDialog.setVLNV(vlnv);
-
-    if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION)
-    {
-        newDesignDialog.setWindowTitle("New Bus");
-    }
-    else if (documentType == VLNV::COMPONENT)
-    {
-        newDesignDialog.setWindowTitle("New Component");
-    }
-    else if (documentType == VLNV::APIDEFINITION)
-    {
-        newDesignDialog.setWindowTitle(tr("New API Definition"));
-    }
-    else if (documentType == VLNV::COMDEFINITION)
-    {
-        newDesignDialog.setWindowTitle(tr("New COM Definition"));
-    }
-
-    newDesignDialog.exec();
-
-    if (newDesignDialog.result() == QDialog::Rejected)
-    {
-        return;
-    }
-
-    VLNV newVlnv = newDesignDialog.getVLNV();
-    QString directory = newDesignDialog.getPath();
-
-    // create an object of correct type
-    if (documentType == VLNV::ABSTRACTIONDEFINITION || documentType == VLNV::BUSDEFINITION)
-    {
-        emit createBus(newVlnv, directory);
-    }
-    else if (documentType == VLNV::COMPONENT)
-    {
-        emit createComponent(newDesignDialog.getProductHierarchy(), newDesignDialog.getFirmness(),
-            newDesignDialog.getTags(), newVlnv, directory);
-    }
-    else if (documentType == VLNV::APIDEFINITION)
-    {
-        emit createApiDef(newVlnv, directory);
-    }
-    else if (documentType == VLNV::COMDEFINITION)
-    {
-        emit createComDef(newVlnv, directory);
-    }
-    else
-    {
-        emit noticeMessage(tr("The item type is not supported"));
-    }*/
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryHandler::onCreateAbsDef()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onCreateAbsDef(VLNV const& busDefVLNV)
@@ -846,16 +768,9 @@ void LibraryHandler::syncronizeModels()
         this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(createBus(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+
     connect(treeModel_, SIGNAL(createAbsDef(const VLNV&)),
         this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(createComDef(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(createApiDef(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(createComponent(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(createDesign(const VLNV&)),
         this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(createSWDesign(const VLNV&)),
@@ -884,18 +799,8 @@ void LibraryHandler::syncronizeModels()
     connect(hierarchyModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_, SIGNAL(createBusDef(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_, SIGNAL(createComponent(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_, SIGNAL(createBus(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
     connect(hierarchyModel_, SIGNAL(createAbsDef(const VLNV&)),
         this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_, SIGNAL(createComDef(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_, SIGNAL(createApiDef(const VLNV&)),
-        this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
 
     connect(hierarchyModel_, SIGNAL(createDesign(const VLNV&)),
         this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);

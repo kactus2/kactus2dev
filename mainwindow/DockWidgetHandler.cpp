@@ -219,6 +219,19 @@ void DockWidgetHandler::setupLibraryDock()
     connect(this, SIGNAL(generateIntegrityReport()), libraryWidget_,
         SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
 
+
+    connect(libraryWidget_, SIGNAL(createBus(const VLNV&, const QString&)),
+        mainWindow_, SLOT(createBus(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(libraryWidget_, SIGNAL(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
+        QVector<TagData>, const VLNV&, const QString&)),
+        mainWindow_, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData>,
+            const VLNV&, const QString&)), Qt::UniqueConnection);
+
+    connect(libraryWidget_, SIGNAL(createComDef(const VLNV&, const QString&)),
+        mainWindow_, SLOT(createComDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(libraryWidget_, SIGNAL(createApiDef(const VLNV&, const QString&)),
+        mainWindow_, SLOT(createApiDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
+
     libraryDock_->setWidget(libraryWidget_);
 
     mainWindow_->addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);

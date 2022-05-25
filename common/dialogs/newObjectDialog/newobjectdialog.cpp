@@ -285,5 +285,5 @@ void NewObjectDialog::setupLayout()
     mainLayout->addStretch(1);
 
     setFixedHeight(sizeHint().height());
-    resize(400, sizeHint().height());
+    resize(421, sizeHint().height());
 }

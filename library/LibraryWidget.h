@@ -19,6 +19,8 @@
 #include <KactusAPI/include/utils.h>
 
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/TagData.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include "TableViewDialog.h"
 
@@ -84,6 +86,20 @@ signals:
     void errorMessage(const QString& message);
 
 
+    //! Signal that user wants to create a new bus with given vlnv
+    void createBus(VLNV const& vlnv, const QString& directory);
+    
+    //! Signal that user wants to create a new component with given vlnv
+    void createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData> tags,
+        VLNV const& vlnv, const QString& directory);
+
+    //! Signal that user wants to create a new API definition with given vlnv
+    void createApiDef(VLNV const& vlnv, const QString& directory);
+
+    //! Signal that user wants to create a new COM definition with given vlnv
+    void createComDef(VLNV const& vlnv, const QString& directory);
+
+    
 public slots:
 
     /*!
@@ -92,6 +108,16 @@ public slots:
      *      @param [in] vlnv The VLNV of the library item.
      */
     void onShowErrors(VLNV const& vlnv);
+
+    /*! Create a new item for given vlnv.
+ *
+ * The type of the vlnv defines the type of the object to create.
+ * After creating the object an editor for it is opened.
+ *
+ *      @param [in] vlnv Identifies the object to create
+ *
+*/
+    void onCreateNewItem(VLNV const& vlnv);
 
     //!  Shows a report of all errors within the library items.
     void onGenerateIntegrityReport();
