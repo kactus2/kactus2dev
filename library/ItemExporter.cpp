@@ -16,6 +16,8 @@
 
 #include "LibraryItemSelectionFactory.h"
 
+#include <KactusAPI/include/DocumentFileAccess.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
@@ -25,12 +27,10 @@
 //-----------------------------------------------------------------------------
 // Function: ItemExporter::ItemExporter()
 //-----------------------------------------------------------------------------
-ItemExporter::ItemExporter(MessageMediator* messageChannel, LibraryInterface* libraryAccess,
-    DocumentFileAccess& fileAccess, QWidget* dialogParentWidget, QObject* parent):
+ItemExporter::ItemExporter(LibraryInterface* libraryAccess,
+    QWidget* dialogParentWidget, QObject* parent):
 QObject(parent),
-messageChannel_(messageChannel),
 libraryAccess_(libraryAccess),
-fileAccess_(fileAccess),
 dialogParentWidget_(dialogParentWidget)
 {
 
@@ -187,7 +187,7 @@ bool ItemExporter::exportComponent(QSharedPointer<Component> component,
     QString directoryPath = component->getVlnv().toString("/");
     if (!vlnvTargetDirectory.mkpath(directoryPath))
     {
-        messageChannel_->showError(tr("Could not create directory structure, aborting."));
+        emit errorMessage(tr("Could not create directory structure, aborting."));
         QDir::setCurrent(savedWorkingDir.absolutePath());
         return false;
     }
@@ -240,7 +240,8 @@ bool ItemExporter::exportComponent(QSharedPointer<Component> component,
 
     if (createCloneComponent)
     {
-        fileAccess_.writeDocument(cloneComponent, cloneFileName);
+        // Bypass library since exported items are not stored in library.
+        DocumentFileAccess::writeDocument(cloneComponent, cloneFileName);
     }
 
     QDir::setCurrent(savedWorkingDir.absolutePath());
@@ -291,7 +292,7 @@ bool ItemExporter::exportObject(QDir const& destinationFolder, VLNV const& vlnv,
     QString directoryPath = vlnv.toString("/");
     if (!vlnvTargetDirectory.mkpath(directoryPath))
     {
-        messageChannel_->showError(tr("Could not create directory structure, aborting."));
+        emit errorMessage(tr("Could not create directory structure, aborting."));
         QDir::setCurrent(savedWorkingDir.absolutePath());
         return false;
     }
@@ -321,13 +322,13 @@ bool ItemExporter::copyFile(ObjectSelectionListItem::ItemType itemType, QFileInf
 
     if (source.exists() == false)
     {
-        QString errorMessage(tr("Could not find file: %1").arg(source.fileName()));
+        QString message(tr("Could not find file: %1").arg(source.fileName()));
         if (itemType == ObjectSelectionListItem::FILE)
         {
-            errorMessage += QStringLiteral(" in component ") + containingVLNV.toString();
+            message += QStringLiteral(" in component ") + containingVLNV.toString();
         }
 
-        messageChannel_->showError(errorMessage);
+        emit errorMessage(message);
         return false;
     }
 
@@ -352,7 +353,7 @@ bool ItemExporter::copyFile(ObjectSelectionListItem::ItemType itemType, QFileInf
 
     if (!sourceFile.copy(targetFileName))
     {
-        messageChannel_->showError(tr("File %1 couldn't be copied").arg(source.fileName()));
+        emit errorMessage(tr("File %1 couldn't be copied").arg(source.fileName()));
     }
 
     // restore the current directory to the state it was before this function

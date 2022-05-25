@@ -4,6 +4,7 @@
 
 
 HEADERS += ./library/objectremovedialog.h \
+    ./library/ObjectExportDialog.h \
     ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
@@ -112,6 +113,7 @@ HEADERS += ./library/objectremovedialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
+    ./library/ItemExporter.h \
     ./common/ui/GraphicalMessageMediator.h \
     ./common/expressions/utilities.h \
     ./mainwindow/CommandLineParser.h \
@@ -820,6 +822,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
+    ./library/ObjectExportDialog.cpp \
+    ./library/ItemExporter.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \

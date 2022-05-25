@@ -13,8 +13,6 @@
 
 #include "MessageMediator.h"
 
-//#include "ItemExporter.h"
-
 #include "utils.h"
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
@@ -80,7 +78,6 @@ LibraryHandler::LibraryHandler(QWidget* parentWidget, MessageMediator* messageCh
 QObject(parent),
     parentWidget_(parentWidget),
     messageChannel_(messageChannel),
-    fileAccess_(messageChannel),
     loader_(messageChannel),
     documentCache_(),
     urlTester_(Utils::URL_VALIDITY_REG_EXP, this),
@@ -88,7 +85,6 @@ QObject(parent),
     treeModel_(new LibraryTreeModel(this, this)),
     hierarchyModel_(new HierarchyModel(this, this)),
     saveInProgress_(false),
- //   itemExporter_(new ItemExporter(messageChannel, this, fileAccess_, parentWidget, this)),
     checkResults_(),
     updatedPaths_()
 {
@@ -111,7 +107,7 @@ QSharedPointer<Document> LibraryHandler::getModel(VLNV const& vlnv)
     // If object has not already been parsed, read it from the disk.
     if (info->document.isNull())
     {
-        info->document = fileAccess_.readDocument(info->path);
+        info->document = DocumentFileAccess::readDocument(info->path);
     }
 
     QSharedPointer<Document> copy;
@@ -136,7 +132,7 @@ QSharedPointer<Document const> LibraryHandler::getModelReadOnly(VLNV const& vlnv
 
     if (info->document.isNull())
     {
-        info->document = fileAccess_.readDocument(info->path);
+        info->document = DocumentFileAccess::readDocument(info->path);
     }
 
     return info->document;
@@ -428,7 +424,7 @@ void LibraryHandler::onCheckLibraryIntegrity()
         QSharedPointer<Document> model = it->document;
         if (model.isNull())
         {
-            model = fileAccess_.readDocument(it->path);
+            model = DocumentFileAccess::readDocument(it->path);
             it->document = model;
         }           
 
@@ -830,8 +826,6 @@ void LibraryHandler::syncronizeModels()
     connect(this, SIGNAL(updatedVLNV(VLNV const&)),
             hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
-  /*  connect(itemExporter_, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);*/
 
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
@@ -868,8 +862,7 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
- /*   connect(treeModel_, SIGNAL(exportItems(const QList<VLNV>)),
-        itemExporter_, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);*/
+
     connect(treeModel_, SIGNAL(refreshDialer()),
         this, SIGNAL(refreshDialer()), Qt::UniqueConnection);
 
@@ -910,11 +903,6 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(hierarchyModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
-
-   /* connect(hierarchyModel_, SIGNAL(exportItem(VLNV const&)),
-        itemExporter_, SLOT(onExportItem(VLNV const&)), Qt::UniqueConnection);*/
-
-
 }
 
 //-----------------------------------------------------------------------------
@@ -938,7 +926,7 @@ bool LibraryHandler::addObject(QSharedPointer<Document> model, QString const& fi
         targetPath = pathInfo.symLinkTarget();
     }
 
-    fileAccess_.writeDocument(model, targetPath);
+    DocumentFileAccess::writeDocument(model, targetPath);
 
     TagManager::getInstance().addNewTags(model->getTags());
 

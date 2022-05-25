@@ -17,6 +17,7 @@
 
 #include "LibraryTreeWidget.h"
 #include "LibraryHandler.h"
+
 #include <KactusAPI/include/hierarchymodel.h>
 
 #include "objectremovedialog.h"
@@ -37,6 +38,7 @@
 LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageChannel, QWidget *parent): QWidget(parent),
     dialer_(new VLNVDialer(this)),
     library_(library),
+    itemExporter_(library_, this, this),
     hierarchyWidget_(new HierarchyWidget(library_, library_->getHierarchyModel(), this)),
     treeWidget_(new LibraryTreeWidget(library_, library_->getTreeModel(), this)),
     integrityWidget_(nullptr),
@@ -72,10 +74,21 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
 
     connect(treeModel, SIGNAL(removeVLNV(const QList<VLNV>)),
         this, SLOT(onRemoveVLNV(const QList<VLNV>)), Qt::UniqueConnection);
+    connect(treeModel, SIGNAL(exportItems(const QList<VLNV>)),
+       &itemExporter_, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);
 
     auto hierarchyModel = library_->getHierarchyModel();
     connect(hierarchyModel, SIGNAL(removeVLNV(QList<VLNV>)),
         this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
+
+    connect(hierarchyModel, SIGNAL(exportItem(VLNV const&)),
+         &itemExporter_, SLOT(onExportItem(VLNV const&)), Qt::UniqueConnection);
+
+     connect(&itemExporter_, SIGNAL(noticeMessage(const QString&)),
+          this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+
+     connect(&itemExporter_, SIGNAL(errorMessage(const QString&)),
+         this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
 
     setupLayout();
 } 
@@ -228,7 +241,7 @@ void LibraryWidget::onRemoveVLNV(const QList<VLNV> vlnvs)
         QFile file(path);
         if (file.remove() == false)
         {
-           // emit errorMessage(tr("File %1 could not be removed from the file system.").arg(path));
+           emit errorMessage(tr("File %1 could not be removed from the file system.").arg(path));
         }
     }
 }

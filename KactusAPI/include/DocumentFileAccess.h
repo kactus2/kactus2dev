@@ -12,9 +12,11 @@
 #ifndef DOCUMENTFILEACCESS_H
 #define DOCUMENTFILEACCESS_H
 
+#include <KactusAPI/KactusAPIGlobal.h>
 
 #include <QSharedPointer>
 #include <QString>
+
 
 class Document;
 class MessageMediator;
@@ -22,30 +24,14 @@ class MessageMediator;
 //-----------------------------------------------------------------------------
 //! Reading and writing of IP-XACT documents using a standard file system.
 //-----------------------------------------------------------------------------
-class DocumentFileAccess 
+namespace DocumentFileAccess 
 {
-public:
-
-	//! The constructor.
-	explicit DocumentFileAccess(MessageMediator* messageChannel);
-
-	//! The destructor.
-	~DocumentFileAccess() = default;
-
-    //! Disable copying.
-    DocumentFileAccess(DocumentFileAccess const& rhs) = delete;
-    DocumentFileAccess& operator=(DocumentFileAccess const& rhs) = delete;
-
     //! Reads the document from given path.
-    QSharedPointer<Document> readDocument(QString const& path);
+    KACTUS2_API QSharedPointer<Document> readDocument(QString const& path);
 
     //! Writes to document model to the given path.
-    bool writeDocument(QSharedPointer<Document> model, QString const& path);
-    
-private:
+    KACTUS2_API bool writeDocument(QSharedPointer<Document> model, QString const& path);
 
-    //! Channel for messages concerning file access.
-    MessageMediator* messageChannel_;
 };
 
 #endif // DOCUMENTFILEACCESS_H

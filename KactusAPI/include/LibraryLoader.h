@@ -84,9 +84,6 @@ private:
 
     //! Channel for user notifications.
     MessageMediator* messageChannel_;
-
-    //! Utilities for file access.
-    DocumentFileAccess fileAccess_;
 };
 
 Q_DECLARE_TYPEINFO(LibraryLoader::LoadTarget, Q_MOVABLE_TYPE);

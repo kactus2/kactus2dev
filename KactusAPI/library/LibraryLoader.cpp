@@ -21,8 +21,7 @@
 // Function: LibraryLoader::LibraryLoader()
 //-----------------------------------------------------------------------------
 LibraryLoader::LibraryLoader(MessageMediator* messageChannel) : 
-    messageChannel_(messageChannel),
-    fileAccess_(messageChannel)
+    messageChannel_(messageChannel)
 {
 
 }

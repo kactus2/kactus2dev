@@ -22,6 +22,8 @@
 
 #include "TableViewDialog.h"
 
+#include "ItemExporter.h"
+
 class LibraryHandler;
 
 class VLNVDialer;
@@ -73,6 +75,15 @@ public:
      */
     void selectComponent(VLNV const& componentVLNV) const;
 
+signals:
+
+    //! Emit a notice message to be printed to user.
+    void noticeMessage(const QString& message);
+
+    //! Emit an error message to be printed to user.
+    void errorMessage(const QString& message);
+
+
 public slots:
 
     /*!
@@ -118,6 +129,8 @@ private:
 
     //! The instance to manage library access.
     LibraryHandler* library_;
+
+    ItemExporter itemExporter_;
 
     //! The widget that contains the GUI items for the hierarchy tab.
     HierarchyWidget* hierarchyWidget_;

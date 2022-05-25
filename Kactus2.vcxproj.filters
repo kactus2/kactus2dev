@@ -4846,6 +4846,18 @@
     <ClCompile Include="GeneratedFiles\moc_ObjectSelectionDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ItemExporter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ItemExporter.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectExportDialog.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ObjectExportDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6636,6 +6648,12 @@
       <Filter>Header Files\library</Filter>
     </CustomBuild>
     <CustomBuild Include="library\ObjectSelectionDialog.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\ItemExporter.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\ObjectExportDialog.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
   </ItemGroup>

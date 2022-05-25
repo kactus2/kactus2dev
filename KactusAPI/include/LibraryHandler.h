@@ -617,9 +617,6 @@ private:
     //! Message channel for errors/informations.
     MessageMediator* messageChannel_;
 
-    //! Reads/writes IP-XACT document to/from disk.
-    DocumentFileAccess fileAccess_;
-
     //! Loads the library content.
     LibraryLoader loader_;
 
