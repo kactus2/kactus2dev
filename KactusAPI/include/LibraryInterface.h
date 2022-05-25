@@ -312,9 +312,6 @@ signals:
     //! Signal that user wants to create a new abstraction definition for given bus definition.
     void createAbsDef(VLNV const& busDefVLNV, QString const& directory, bool disableBusDef);
 
-    //! Signal that library has changed and VLNVDialer should be refreshed.
-    void refreshDialer();
-
     //! Signal that the library item specified by vlnv is selected in one of the views.
     void itemSelected(VLNV const& vlnv);
 

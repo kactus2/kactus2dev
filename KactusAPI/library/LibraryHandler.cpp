@@ -15,7 +15,6 @@
 
 #include "utils.h"
 
-
 #include "TagManager.h"
 
 #include <IPXACTmodels/common/Document.h>
@@ -38,7 +37,6 @@
 #include <QSharedPointer>
 #include <QList>
 #include <QMap>
-#include <QMessageBox>
 #include <QString>
 #include <QStringList>
 #include <QTimer>
@@ -52,7 +50,7 @@ LibraryHandler* LibraryHandler::getInstance()
 {
     if (instance_ == nullptr)
     {
-        initialize(nullptr, nullptr, nullptr);
+        initialize(nullptr, nullptr);
     }
 
     return LibraryHandler::instance_;
@@ -61,20 +59,19 @@ LibraryHandler* LibraryHandler::getInstance()
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::initialize()
 //-----------------------------------------------------------------------------
-void LibraryHandler::initialize(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent)
+void LibraryHandler::initialize(MessageMediator* messageChannel, QObject* parent)
 {
     if (instance_ == nullptr)
     {
-        LibraryHandler::instance_ = new LibraryHandler(parentWidget, messageChannel, parent);
+        LibraryHandler::instance_ = new LibraryHandler(messageChannel, parent);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::LibraryHandler()
 //-----------------------------------------------------------------------------
-LibraryHandler::LibraryHandler(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent):
+LibraryHandler::LibraryHandler(MessageMediator* messageChannel, QObject* parent):
 QObject(parent),
-    parentWidget_(parentWidget),
     messageChannel_(messageChannel),
     loader_(messageChannel),
     documentCache_(),
@@ -777,9 +774,6 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
-
-    connect(treeModel_, SIGNAL(refreshDialer()),
-        this, SIGNAL(refreshDialer()), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the hierarchy model

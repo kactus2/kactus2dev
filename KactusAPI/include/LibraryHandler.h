@@ -54,7 +54,7 @@ public:
 
     static LibraryHandler* getInstance();
 
-    static void initialize(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent);
+    static void initialize(MessageMediator* messageChannel, QObject* parent = nullptr);
 
     //! No copying
     LibraryHandler(const LibraryHandler &other) = delete;
@@ -420,9 +420,6 @@ signals:
     //! Signal that user wants to create a new API definition with given vlnv
     //void createApiDef(VLNV const& vlnv, const QString& directory);
 
-    //! Signal that library has changed and VLNVDialer should be refreshed.
-    void refreshDialer();
-
     //! Signal that the library item specified by vlnv is selected in one of the views.
     void itemSelected(VLNV const& vlnv);
 
@@ -497,7 +494,7 @@ private:
  *      @param [in] dialer  The dialer that provides search options.
  *      @param [in] parent  The parent widget of this instance.
  */
-    LibraryHandler(QWidget* parentWidget, MessageMediator* messageChannel, QObject* parent = nullptr);
+    LibraryHandler(MessageMediator* messageChannel, QObject* parent = nullptr);
 
 
     //! Connect the signals and slots that keep the data models synchronized.
@@ -600,9 +597,6 @@ private:
 
 
     static LibraryHandler* instance_;
-
-    //! Widget to parent open dialogs.
-    QWidget* parentWidget_;
     
     //! Message channel for errors/informations.
     MessageMediator* messageChannel_;
@@ -631,9 +625,6 @@ private:
 
     //! If true then items are being saved and library is not refreshed
     bool saveInProgress_;
-
-    //! Item exporter.
-    // ItemExporter* itemExporter_;
 
     //! Statistics for library integrity check.
     DocumentStatistics checkResults_;

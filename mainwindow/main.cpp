@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 
     loadPlugins(settings);
 
-    LibraryHandler::initialize(0, mediator.data(), 0);
+    LibraryHandler::initialize(mediator.data());
     QScopedPointer<LibraryHandler> library(LibraryHandler::getInstance());
 
     QScopedPointer<KactusAPI> coreAPI(new KactusAPI(library.data(), mediator.data()));
