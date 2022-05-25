@@ -76,6 +76,11 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     auto treeModel = library_->getTreeModel();
     connect(treeModel, SIGNAL(refreshDialer()), dialer_, SLOT(refreshLibrary()), Qt::UniqueConnection);
 
+    connect(treeModel, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(treeModel, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
     connect(treeModel, SIGNAL(showErrors(const VLNV)),
         this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
 
@@ -103,6 +108,8 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
        &itemExporter_, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);
 
     auto hierarchyModel = library_->getHierarchyModel();
+    connect(hierarchyModel, SIGNAL(errorMessage(const QString&)),
+        this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
     connect(hierarchyModel, SIGNAL(removeVLNV(QList<VLNV>)),
         this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
 

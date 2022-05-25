@@ -32,6 +32,7 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QSharedPointer>
@@ -39,8 +40,8 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
-#include <QTimer>
 
+// Singleton instance.
 LibraryHandler* LibraryHandler::instance_ = nullptr;
 
 //-----------------------------------------------------------------------------
@@ -80,8 +81,7 @@ QObject(parent),
     treeModel_(new LibraryTreeModel(this, this)),
     hierarchyModel_(new HierarchyModel(this, this)),
     saveInProgress_(false),
-    checkResults_(),
-    updatedPaths_()
+    checkResults_()
 {
     // create the connections between models and library handler
     syncronizeModels();
@@ -663,7 +663,6 @@ void LibraryHandler::endSave()
     saveInProgress_ = false;
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onItemSaved()
 //-----------------------------------------------------------------------------
@@ -691,32 +690,13 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
 void LibraryHandler::syncronizeModels()
 {
     // connect the signals from the data model
-    connect(this, SIGNAL(removeVLNV(const VLNV&)),
-        treeModel_, SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
-    connect(this, SIGNAL(removeVLNV(const VLNV&)),
-        hierarchyModel_, SLOT(onRemoveVLNV(const VLNV&)), Qt::UniqueConnection);
-
-    connect(this, SIGNAL(addVLNV(const VLNV&)),
-        treeModel_, SLOT(onAddVLNV(const VLNV&)), Qt::UniqueConnection);
-
-    connect(this, SIGNAL(updatedVLNV(VLNV const&)),
-        this, SLOT(onItemSaved(VLNV const&)), Qt::UniqueConnection);
-
-    connect(this, SIGNAL(updatedVLNV(VLNV const&)),
-            treeModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
-    connect(this, SIGNAL(updatedVLNV(VLNV const&)),
-            hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
-
 
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
     //-----------------------------------------------------------------------------
 
     // signals from tree model to library handler
-    connect(treeModel_, SIGNAL(errorMessage(const QString&)),
-        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+ 
     connect(treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)),
         this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)),

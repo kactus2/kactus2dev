@@ -20,6 +20,7 @@
 #include "DocumentFileAccess.h"
 #include "DocumentValidator.h"
 
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/TagData.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
@@ -28,20 +29,12 @@
 
 #include <QString>
 #include <QStringList>
-#include <QDir>
 #include <QList>
-#include <QFileInfo>
-#include <QFileSystemWatcher>
 #include <QSharedPointer>
-#include <QHash>
 #include <QObject>
 
-class Document;
 class LibraryItem;
 class MessageMediator;
-
-class ObjectSelectionListItem;
-class ItemExporter;
 
 //-----------------------------------------------------------------------------
 //! LibraryHandler is the class that implements the services to manage the IP-XACT library.
@@ -256,7 +249,6 @@ public:
 
     LibraryTreeModel* getTreeModel();
 
-
     /*!
      *  Find errors in the given document.
      *
@@ -388,8 +380,6 @@ signals:
 
     //! Signal that user wants to open specified API definition for editing
     void openApiDefinition(VLNV const& vlnv);
-
-
 
     //! Signal that the library item specified by vlnv is selected in one of the views.
     void itemSelected(VLNV const& vlnv);
@@ -593,8 +583,6 @@ private:
     //! Statistics for library integrity check.
     DocumentStatistics checkResults_;
 
-    //! Queue for files updated on disk.
-    QVector<QString> updatedPaths_;
 };
 
 #endif // LIBRARYHANDLER_H
