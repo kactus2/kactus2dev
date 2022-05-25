@@ -3,7 +3,8 @@
 # ------------------------------------------------------
 
 
-HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+HEADERS += ./library/objectremovedialog.h \
+    ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./common/NameGenerationPolicy.h \
@@ -56,6 +57,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
+    ./library/ObjectSelectionListItem.h \
     ./common/widgets/tagEditor/TagLabel.h \
     ./common/widgets/tagEditor/FlowLayout.h \
     ./common/widgets/tagEditor/TagContainer.h \
@@ -102,6 +104,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
     ./common/dialogs/newObjectDialog/newobjectdialog.h \
+    ./library/ObjectSelectionDialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h \
@@ -801,10 +804,12 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./library/LibraryItemSelectionFactory.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
+    ./library/ObjectSelectionListItem.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageView.cpp \
@@ -865,6 +870,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/tagEditor/TagEditor.cpp \
     ./common/widgets/tagEditor/TagEditorContainer.cpp \
     ./common/widgets/tagEditor/TagLabel.cpp \
+    ./library/ObjectSelectionDialog.cpp \
     ./common/widgets/tagEditor/TagSelector.cpp \
     ./common/widgets/tagEditor/TagSelectorContainer.cpp \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
@@ -1514,5 +1520,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./library/LibraryItemSelectionFactory.cpp \
+    ./library/objectremovedialog.cpp
 RESOURCES += kactus.qrc

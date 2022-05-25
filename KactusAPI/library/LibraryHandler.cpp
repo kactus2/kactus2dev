@@ -13,14 +13,12 @@
 
 #include "MessageMediator.h"
 
-#include "ItemExporter.h"
+//#include "ItemExporter.h"
 
 #include "utils.h"
-#include "LibraryItemSelectionFactory.h"
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
-#include "objectremovedialog.h"
-#include "ObjectSelectionListItem.h"
+
 
 #include "TagManager.h"
 
@@ -90,7 +88,7 @@ QObject(parent),
     treeModel_(new LibraryTreeModel(this, this)),
     hierarchyModel_(new HierarchyModel(this, this)),
     saveInProgress_(false),
-    itemExporter_(new ItemExporter(messageChannel, this, fileAccess_, parentWidget, this)),
+ //   itemExporter_(new ItemExporter(messageChannel, this, fileAccess_, parentWidget, this)),
     checkResults_(),
     updatedPaths_()
 {
@@ -652,7 +650,19 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::removeObjects(QList<VLNV> const& vlnvList)
 {
-    onRemoveVLNV(vlnvList);
+    QStringList changedDirectories;
+    for (auto const& removedItem : vlnvList)
+    {
+        changedDirectories.append(QFileInfo(getPath(removedItem)).absolutePath());
+        removeObject(removedItem);
+    }
+
+    changedDirectories.removeDuplicates();
+    loader_.clean(changedDirectories);
+
+    QString removeMessage = QString("Deleted %1 VLNV item(s).").arg(QString::number(vlnvList.count()));
+
+    messageChannel_->showMessage(removeMessage);
 }
 
 //-----------------------------------------------------------------------------
@@ -677,7 +687,7 @@ void LibraryHandler::endSave()
 void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
 {
     //TODO: Move function.
-   /* VLNV::IPXactType documentType = vlnv.getType();
+    /*VLNV::IPXactType documentType = vlnv.getType();
 
     bool showAttributes = (documentType == VLNV::COMPONENT);
     NewObjectDialog newDesignDialog(this, vlnv.getType(), showAttributes, parentWidget_);
@@ -778,25 +788,6 @@ void LibraryHandler::onCreateAbsDef(VLNV const& busDefVLNV)
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryHandler::onRemoveVLNV()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onRemoveVLNV(QList<VLNV> const& vlnvs)
-{
-    // create the dialog to select which items to remove
-    ObjectRemoveDialog* removeDialog = new ObjectRemoveDialog(parentWidget_);
-    LibraryItemSelectionFactory::constructItemsForSelectionDialog(this, removeDialog, vlnvs);
-
-    if (removeDialog->exec() == QDialog::Rejected)
-    {
-        return;
-    }
-
-    DocumentStatistics removeStatistics = removeSelectedObjects(removeDialog->getSelectedItems());
-
-    emit noticeMessage(createDeleteMessage(removeStatistics));
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryHandler::onItemSaved()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onItemSaved(VLNV const& vlnv) 
@@ -839,14 +830,12 @@ void LibraryHandler::syncronizeModels()
     connect(this, SIGNAL(updatedVLNV(VLNV const&)),
             hierarchyModel_, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
-    connect(itemExporter_, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+  /*  connect(itemExporter_, SIGNAL(noticeMessage(const QString&)),
+        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);*/
 
     //-----------------------------------------------------------------------------
     // connect the signals from the tree model
     //-----------------------------------------------------------------------------
-    connect(treeModel_, SIGNAL(removeVLNV(const QList<VLNV>)),
-        this, SLOT(onRemoveVLNV(const QList<VLNV>)), Qt::UniqueConnection);
 
     // signals from tree model to library handler
     connect(treeModel_, SIGNAL(errorMessage(const QString&)),
@@ -879,8 +868,8 @@ void LibraryHandler::syncronizeModels()
         this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(exportItems(const QList<VLNV>)),
-        itemExporter_, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);
+ /*   connect(treeModel_, SIGNAL(exportItems(const QList<VLNV>)),
+        itemExporter_, SLOT(onExportItems(const QList<VLNV>)), Qt::UniqueConnection);*/
     connect(treeModel_, SIGNAL(refreshDialer()),
         this, SIGNAL(refreshDialer()), Qt::UniqueConnection);
 
@@ -922,11 +911,10 @@ void LibraryHandler::syncronizeModels()
     connect(hierarchyModel_, SIGNAL(createSystemDesign(const VLNV&)),
         this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_, SIGNAL(exportItem(VLNV const&)),
-        itemExporter_, SLOT(onExportItem(VLNV const&)), Qt::UniqueConnection);
+   /* connect(hierarchyModel_, SIGNAL(exportItem(VLNV const&)),
+        itemExporter_, SLOT(onExportItem(VLNV const&)), Qt::UniqueConnection);*/
 
-    connect(hierarchyModel_, SIGNAL(removeVLNV(QList<VLNV>)),
-        this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1019,43 +1007,6 @@ void LibraryHandler::showIntegrityResults() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryHandler::removeSelectedObjects()
-//-----------------------------------------------------------------------------
-LibraryHandler::DocumentStatistics LibraryHandler::removeSelectedObjects(
-    QVector<ObjectSelectionListItem *> const& removedItems)
-{
-    DocumentStatistics removeStatistics;
-    
-    QStringList changedDirectories;
-    for (ObjectSelectionListItem const* removedItem : removedItems)
-    {
-        if (removedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
-        {
-            changedDirectories.append(QFileInfo(getPath(removedItem->getVLNV())).absolutePath());
-            removeObject(removedItem->getVLNV());
-            removeStatistics.documentCount++;
-        }
-        else if (removedItem->getType() == ObjectSelectionListItem::FILE)
-        {
-            QFileInfo fileInfo(removedItem->getPath());
-            if (fileInfo.exists())
-            {
-                changedDirectories.append(fileInfo.absolutePath());
-                if (removeFile(removedItem->getPath()))
-                {
-                    removeStatistics.fileCount++;
-                }
-            }
-        }
-    }
-
-    changedDirectories.removeDuplicates();
-    loader_.clean(changedDirectories);
-    
-    return removeStatistics;
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryData::removeFile()
 //-----------------------------------------------------------------------------
 bool LibraryHandler::removeFile(QString const& filePath) const
@@ -1068,23 +1019,6 @@ bool LibraryHandler::removeFile(QString const& filePath) const
     }
 
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::createDeleteMessage()
-//-----------------------------------------------------------------------------
-QString LibraryHandler::createDeleteMessage(DocumentStatistics const& statistics) const
-{
-    QString removeMessage = QString("Deleted %1 VLNV item(s)").arg(QString::number(statistics.documentCount));
-
-    if (statistics.fileCount > 0)
-    {
-        removeMessage = removeMessage + QString(" and %1 file(s)").arg(QString::number(statistics.fileCount));
-    }
-
-    removeMessage.append('.');
-
-    return removeMessage;
 }
 
 //-----------------------------------------------------------------------------

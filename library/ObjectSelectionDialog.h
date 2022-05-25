@@ -32,9 +32,9 @@ class ObjectSelectionListItem;
 //-----------------------------------------------------------------------------
 //! Dialog for selecting the items.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ObjectSelectionDialog : public QDialog
+class ObjectSelectionDialog : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 

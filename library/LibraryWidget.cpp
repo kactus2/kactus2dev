@@ -18,6 +18,11 @@
 #include "LibraryTreeWidget.h"
 #include "LibraryHandler.h"
 #include <KactusAPI/include/hierarchymodel.h>
+
+#include "objectremovedialog.h"
+#include "ObjectSelectionListItem.h"
+#include "LibraryItemSelectionFactory.h"
+
 #include "HierarchyView/hierarchywidget.h"
 
 #include "VLNVDialer/vlnvdialer.h"
@@ -61,8 +66,16 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     connect(treeWidget_, SIGNAL(itemSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
 
-    connect(library_->getTreeModel(), SIGNAL(showErrors(const VLNV)),
+    auto treeModel = library_->getTreeModel();
+    connect(treeModel, SIGNAL(showErrors(const VLNV)),
         this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
+
+    connect(treeModel, SIGNAL(removeVLNV(const QList<VLNV>)),
+        this, SLOT(onRemoveVLNV(const QList<VLNV>)), Qt::UniqueConnection);
+
+    auto hierarchyModel = library_->getHierarchyModel();
+    connect(hierarchyModel, SIGNAL(removeVLNV(QList<VLNV>)),
+        this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
 
     setupLayout();
 } 
@@ -174,6 +187,50 @@ void LibraryWidget::onCloseIntegrityReport()
 {
       integrityWidget_->deleteLater();
       integrityWidget_ = 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryWidget::onRemoveVLNV()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onRemoveVLNV(const QList<VLNV> vlnvs)
+{
+    // create the dialog to select which items to remove
+    ObjectRemoveDialog* removeDialog = new ObjectRemoveDialog(this);
+    LibraryItemSelectionFactory::constructItemsForSelectionDialog(library_, removeDialog, vlnvs);
+
+    if (removeDialog->exec() == QDialog::Rejected)
+    {
+        return;
+    }
+
+    QList<VLNV> removedVLNVs;
+    QStringList removedFilePaths;
+    for (ObjectSelectionListItem const* removedItem : removeDialog->getSelectedItems())
+    {
+        if (removedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
+        {
+            removedVLNVs.append(removedItem->getVLNV());
+        }
+        else if (removedItem->getType() == ObjectSelectionListItem::FILE)
+        {
+            QFileInfo fileInfo(removedItem->getPath());
+            if (fileInfo.exists())
+            {
+                removedFilePaths.append(removedItem->getPath());
+            }
+        }
+    }
+
+    library_->removeObjects(removedVLNVs);
+
+    for (auto const& path : removedFilePaths)
+    {
+        QFile file(path);
+        if (file.remove() == false)
+        {
+           // emit errorMessage(tr("File %1 could not be removed from the file system.").arg(path));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

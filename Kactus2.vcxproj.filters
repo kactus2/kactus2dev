@@ -4828,6 +4828,24 @@
     <ClCompile Include="GeneratedFiles\moc_ImportEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="library\objectremovedialog.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectSelectionDialog.cpp">
+      <Filter>Source Files\library\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectSelectionListItem.cpp">
+      <Filter>Source Files\library\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryItemSelectionFactory.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_objectremovedialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ObjectSelectionDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6614,6 +6632,12 @@
     <CustomBuild Include="wizards\ComponentWizard\ImportEditor.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
+    <CustomBuild Include="library\objectremovedialog.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\ObjectSelectionDialog.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7272,6 +7296,12 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\SubspaceMapColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="library\ObjectSelectionListItem.h">
+      <Filter>Header Files\library</Filter>
+    </ClInclude>
+    <ClInclude Include="library\LibraryItemSelectionFactory.h">
+      <Filter>Header Files\library</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

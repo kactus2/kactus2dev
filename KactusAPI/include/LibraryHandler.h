@@ -40,7 +40,6 @@ class Document;
 class LibraryItem;
 class MessageMediator;
 
-class ObjectSelectionDialog;
 class ObjectSelectionListItem;
 class ItemExporter;
 
@@ -459,13 +458,6 @@ private slots:
     */
     void onCreateAbsDef(VLNV const& busDefVLNV);
 
-    /*! Remove the item with specified vlnv from the library.
-     *
-     *      @param [in] vlnv Identifies the library object to remove.
-     *
-    */
-    void onRemoveVLNV(QList<VLNV> const& vlnvs);
-
     /*! This function should be called every time an object is written to disk.
     * 
     * This function makes sure that the library object is displayed correctly 
@@ -539,14 +531,6 @@ private:
     //! Shows the results of the library integrity check.
     void showIntegrityResults() const;
 
-    /*! Removes all the given objects.
-    *
-    *      @param [in] removedItems The objects to remove.
-    *
-    *      @return Statistics of the removed items.
-    */
-    DocumentStatistics removeSelectedObjects(QVector<ObjectSelectionListItem*> const& removedItems);
-
     /*!
      * Removes the given file from the file system.
      *
@@ -555,16 +539,6 @@ private:
      *     @return True, if the file was successfully removed, otherwise false.
      */
      bool removeFile(QString const& filePath) const;
-
-    /*!
-     *  Create the delete message.
-     *
-     *      @param [in] vlnvCount   The amount of deleted VLNV items.
-     *      @param [in] fileCount   The amount of deleted files.
-     *
-     *      @return The constructed delete message.
-     */
-    QString createDeleteMessage(DocumentStatistics const& statistics) const;
 
     /*!
      *  Check if the given document is valid IP-XACT.
@@ -672,7 +646,7 @@ private:
     bool saveInProgress_;
 
     //! Item exporter.
-    ItemExporter* itemExporter_;
+    // ItemExporter* itemExporter_;
 
     //! Statistics for library integrity check.
     DocumentStatistics checkResults_;

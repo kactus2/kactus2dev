@@ -87,6 +87,8 @@ public slots:
 
     void onCloseIntegrityReport();
 
+    void onRemoveVLNV(const QList<VLNV>);
+
 private slots:
 
     void statusMessage(QString const& message);

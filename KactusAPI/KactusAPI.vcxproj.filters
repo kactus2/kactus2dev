@@ -279,12 +279,6 @@
     <ClInclude Include="include\utils.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\ObjectSelectionListItem.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\LibraryItemSelectionFactory.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
     <ClInclude Include="include\TagManager.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
@@ -488,25 +482,7 @@
     <ClCompile Include="library\hierarchyitem.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
-    <ClCompile Include="library\ItemExporter.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\ObjectSelectionListItem.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\ObjectSelectionDialog.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\ObjectExportDialog.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\LibraryItemSelectionFactory.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="library\TagManager.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\objectremovedialog.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
   </ItemGroup>
@@ -543,19 +519,7 @@
     <QtMoc Include="include\LibraryTreeModel.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
-    <QtMoc Include="include\ItemExporter.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
-    <QtMoc Include="include\ObjectSelectionDialog.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
-    <QtMoc Include="include\ObjectExportDialog.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
-    <QtMoc Include="include\objectremovedialog.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>
