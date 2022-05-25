@@ -353,9 +353,13 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
         {
             return QIcon(QStringLiteral(":/icons/common/graphics/abs-def.png"));
         }
-        else
+        else if (item->type() == HierarchyItem::BUSDEFINITION)
         {
             return QIcon(QStringLiteral(":/icons/common/graphics/bus-def.png"));
+        }
+        else
+        {
+            return QIcon(QStringLiteral(":/icons/common/graphics/cross.png"));
         }
     }
 
