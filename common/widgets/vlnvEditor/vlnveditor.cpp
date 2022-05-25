@@ -260,9 +260,6 @@ void VLNVEditor::initConnections()
         this, SLOT(updateNameMatcherItem()), Qt::UniqueConnection);
     connect(nameEdit_, SIGNAL(textChanged(QString const&)),
         this, SLOT(updateVersionMatcherItem()), Qt::UniqueConnection);
-
-    connect(static_cast<LibraryHandler*>(handler_), SIGNAL(refreshDialer()),
-            this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
