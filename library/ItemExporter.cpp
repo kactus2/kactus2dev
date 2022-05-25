@@ -241,7 +241,11 @@ bool ItemExporter::exportComponent(QSharedPointer<Component> component,
     if (createCloneComponent)
     {
         // Bypass library since exported items are not stored in library.
-        DocumentFileAccess::writeDocument(cloneComponent, cloneFileName);
+
+        if (DocumentFileAccess::writeDocument(cloneComponent, cloneFileName) == false)
+        {
+            emit errorMessage(QObject::tr("Could not open file %1 for writing.").arg(cloneFileName));
+        }
     }
 
     QDir::setCurrent(savedWorkingDir.absolutePath());

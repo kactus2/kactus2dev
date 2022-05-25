@@ -61,8 +61,7 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     QDomDocument doc;
     if (!doc.setContent(&file))
     {
-        file.close();
-        //messageChannel_->showError(QObject::tr("Could not open file %1 for reading.").arg(path));        
+        file.close();        
         return QSharedPointer<Document>();
     }
     file.close();
@@ -113,7 +112,6 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     }
     else
     {
-       // messageChannel_->showMessage(QObject::tr("File '%1' was not supported type").arg(path));
         return QSharedPointer<Document>();
     }
 }
@@ -125,8 +123,7 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
 {
     QFile targetFile(path);
     if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
-    {
-       // messageChannel_->showError(QObject::tr("Could not open file %1 for writing.").arg(path));
+    {      
         return false;
     }
 

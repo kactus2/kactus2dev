@@ -926,7 +926,10 @@ bool LibraryHandler::addObject(QSharedPointer<Document> model, QString const& fi
         targetPath = pathInfo.symLinkTarget();
     }
 
-    DocumentFileAccess::writeDocument(model, targetPath);
+    if (DocumentFileAccess::writeDocument(model, targetPath) == false)
+    {
+        messageChannel_->showError(QObject::tr("Could not open file %1 for writing.").arg(filePath));
+    }
 
     TagManager::getInstance().addNewTags(model->getTags());
 
