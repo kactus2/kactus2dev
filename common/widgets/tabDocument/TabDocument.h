@@ -285,9 +285,6 @@ public slots:
      */
     void requestRefresh();
 
-
-    virtual void onDocumentUpdated();
-
 signals:
 	//! \brief Emitted when contents of the widget change
 	void contentChanged();
@@ -358,13 +355,6 @@ protected:
      *      @param [in] state  The initial state of the visibility control.
      */
     void addVisibilityControl(QString const& name, bool state);
-    
-    /*!
-     * Set the document path to be monitored for changes.
-     *
-     *     @param [in] path  Path to the document.
-     */
-     void setDocumentPath(QString const& path);
 
     /*!
      *  Shows the document and asks to refresh it if refresh was requested.
@@ -376,10 +366,10 @@ protected:
 
 
 private slots:
+
     //! Handles the refresh request.
     void handleRefreshRequest();
 
-    void handleChangeOnDisk();
 private:
     // Disable copying.
     TabDocument(TabDocument const& rhs);
@@ -439,10 +429,6 @@ private:
 
     //! If true, the document must be refreshed when shown the next time.
     bool refreshRequested_;
-
-    QFileSystemWatcher fileWatch_;
-
-    bool changedOnDisk_;
 };
 
 //-----------------------------------------------------------------------------

@@ -47,7 +47,6 @@ busDefinitionSaved_(false)
     if (absDef_)
     {
         absDefGroup_.setAbsDef(absDef_);
-        setDocumentPath(libHandler_->getPath(absDef_->getVlnv()));
 
     }
 	else
@@ -69,7 +68,6 @@ busDefinitionSaved_(false)
     {
         VLNV vlnv = busDef_->getVlnv();
         setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
-        setDocumentPath(libHandler_->getPath(vlnv));
 
         // Open in unlocked mode by default only if the version is draft.
         setProtection(vlnv.getVersion() != "draft");

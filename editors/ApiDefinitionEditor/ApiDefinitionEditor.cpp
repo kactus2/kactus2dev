@@ -65,7 +65,6 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     VLNV vlnv = apiDef_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     setDocumentType(tr("API Definition"));
-    setDocumentPath(libHandler_->getPath(vlnv));
 
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv.getVersion() != "draft");

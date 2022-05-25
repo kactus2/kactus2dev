@@ -155,7 +155,6 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	
 	setDocumentType("HW Design");
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
-    setDocumentPath(getLibraryInterface()->getPath(vlnv));
 
 	emit clearItemSelection();
 
