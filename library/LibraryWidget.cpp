@@ -57,6 +57,9 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
 
+
+    connect(dialer_, SIGNAL(refreshDialer()),
+        this, SLOT(refresh()), Qt::UniqueConnection);
     
     connect(library_, SIGNAL(statusMessage(QString const&)), statusBar_, SLOT(showMessage(QString const&)), 
         Qt::UniqueConnection);
@@ -84,7 +87,15 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel, SIGNAL(createComponent(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel, SIGNAL(createAbsDef(const VLNV&)),
+        this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel, SIGNAL(createDesign(const VLNV&)),
+        this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
 
+    connect(treeModel, SIGNAL(createSWDesign(const VLNV&)),
+        this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel, SIGNAL(createSystemDesign(const VLNV&)),
+        this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
     connect(treeModel, SIGNAL(removeVLNV(const QList<VLNV>)),
         this, SLOT(onRemoveVLNV(const QList<VLNV>)), Qt::UniqueConnection);
@@ -106,6 +117,15 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
     connect(hierarchyModel, SIGNAL(createApiDef(const VLNV&)),
         this, SLOT(onCreateNewItem(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel, SIGNAL(createAbsDef(const VLNV&)),
+        this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel, SIGNAL(createDesign(const VLNV&)),
+        this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
+
+    connect(hierarchyModel, SIGNAL(createSWDesign(const VLNV&)),
+        this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(hierarchyModel, SIGNAL(createSystemDesign(const VLNV&)),
+        this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
     connect(hierarchyModel, SIGNAL(exportItem(VLNV const&)),
          &itemExporter_, SLOT(onExportItem(VLNV const&)), Qt::UniqueConnection);
@@ -261,6 +281,44 @@ void LibraryWidget::onCreateNewItem(VLNV const& vlnv)
     {
         emit noticeMessage(tr("The item type is not supported"));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryWidget::onCreateAbsDef()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onCreateAbsDef(VLNV const& busDefVLNV)
+{
+    if (busDefVLNV.isValid() == false)
+    {
+        return;
+    }
+
+    Q_ASSERT(library_->getDocumentType(busDefVLNV) == VLNV::BUSDEFINITION);
+    Q_ASSERT(library_->contains(busDefVLNV));
+
+    QFileInfo busDefInfo(library_->getPath(busDefVLNV));
+    QString directory = busDefInfo.absolutePath();
+
+    QList<VLNV> absDefVLNVs;
+    library_->getHierarchyModel()->getChildren(absDefVLNVs, busDefVLNV);
+
+    // if theres no previous abstraction definition for given bus def
+    if (absDefVLNVs.isEmpty())
+    {
+        emit createAbsDef(busDefVLNV, directory, false);
+    }
+    else // the abstraction definition can not be identified by the bus definition.
+    {
+        emit createAbsDef(busDefVLNV, directory, true);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryWidget::onCreateDesign()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onCreateDesign(VLNV const& vlnv)
+{
+    emit createDesignForExistingComponent(vlnv);
 }
 
 //-----------------------------------------------------------------------------

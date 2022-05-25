@@ -313,12 +313,6 @@ public slots:
     */
     void onOpenSystemDesign(VLNV const& vlnv);
 
-    /*! Create new design with given vlnv.
-     *
-     *      @param [in] vlnv The vlnv that identifies the design.
-     *
-    */
-    virtual void onCreateDesign(VLNV const& vlnv) override final;
 
     /*! Remove the specified library object from the library and file system.
      * 
@@ -395,30 +389,7 @@ signals:
     //! Signal that user wants to open specified API definition for editing
     void openApiDefinition(VLNV const& vlnv);
 
-    //! Signal that user wants to create a new bus with given vlnv
-    //void createBus(VLNV const& vlnv, const QString& directory);
 
-    //! Signal that user wants to create a new component with given vlnv
-    //void createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData> tags,
-    //    VLNV const& vlnv, const QString& directory);
-
-    //! Signal that user wants to create a new design for the given component.
-    void createDesignForExistingComponent(VLNV const& vlnv);
-
-    //! Signal that user wants to create a new SW design for the given component.
-    void createSWDesign(VLNV const& vlnv);
-
-    //! Signal that user wants to create a new system design for the given component.
-    void createSystemDesign(VLNV const& vlnv);
-
-    //! Signal that user wants to create a new abstraction definition for given bus definition.
-    void createAbsDef(VLNV const& busDefVLNV, const QString& directory, bool disableBusDef);
-
-    //! Signal that user wants to create a new COM definition with given vlnv
-    //void createComDef(VLNV const& vlnv, const QString& directory);
-
-    //! Signal that user wants to create a new API definition with given vlnv
-    //void createApiDef(VLNV const& vlnv, const QString& directory);
 
     //! Signal that the library item specified by vlnv is selected in one of the views.
     void itemSelected(VLNV const& vlnv);
@@ -438,13 +409,6 @@ signals:
 
 private slots:
     
-    /*! Create a new abstraction definition for given bus definition.
-     *
-     *      @param [in] busDefVLNV Identifies the bus definition to create the abs def for.
-     *
-    */
-    void onCreateAbsDef(VLNV const& busDefVLNV);
-
     /*! This function should be called every time an object is written to disk.
     * 
     * This function makes sure that the library object is displayed correctly 

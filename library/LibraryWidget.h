@@ -85,6 +85,8 @@ signals:
     //! Emit an error message to be printed to user.
     void errorMessage(const QString& message);
 
+    //! Signal that user wants to create a new abstraction definition for given bus definition.
+    void createAbsDef(VLNV const& busDefVLNV, const QString& directory, bool disableBusDef);
 
     //! Signal that user wants to create a new bus with given vlnv
     void createBus(VLNV const& vlnv, const QString& directory);
@@ -93,13 +95,21 @@ signals:
     void createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData> tags,
         VLNV const& vlnv, const QString& directory);
 
+    //! Signal that user wants to create a new design for the given component.
+    void createDesignForExistingComponent(VLNV const& vlnv);
+
     //! Signal that user wants to create a new API definition with given vlnv
     void createApiDef(VLNV const& vlnv, const QString& directory);
 
     //! Signal that user wants to create a new COM definition with given vlnv
     void createComDef(VLNV const& vlnv, const QString& directory);
 
-    
+    //! Signal that user wants to create a new SW design for the given component.
+    void createSWDesign(VLNV const& vlnv);
+
+    //! Signal that user wants to create a new system design for the given component.
+    void createSystemDesign(VLNV const& vlnv);
+
 public slots:
 
     /*!
@@ -118,6 +128,20 @@ public slots:
  *
 */
     void onCreateNewItem(VLNV const& vlnv);
+    
+    /*! Create a new abstraction definition for given bus definition.
+ *
+ *      @param [in] busDefVLNV Identifies the bus definition to create the abs def for.
+ *
+*/
+    void onCreateAbsDef(VLNV const& busDefVLNV);
+
+    /*! Create new design with given vlnv.
+     *
+     *      @param [in] vlnv The vlnv that identifies the design.
+     *
+    */
+    void onCreateDesign(VLNV const& vlnv);
 
     //!  Shows a report of all errors within the library items.
     void onGenerateIntegrityReport();

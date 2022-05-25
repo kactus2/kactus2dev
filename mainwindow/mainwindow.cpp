@@ -962,15 +962,8 @@ void MainWindow::setupAndConnectLibraryHandler()
     connect(libraryHandler_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(openMemoryDesign(const VLNV&, const QString&)));
 
-    connect(libraryHandler_, SIGNAL(createAbsDef(const VLNV&, const QString&, bool)),
-        this, SLOT(createAbsDef(const VLNV&, const QString&, bool)), Qt::UniqueConnection);
-  
-    connect(libraryHandler_, SIGNAL(createSWDesign(const VLNV&)),
-        this, SLOT(createSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createSystemDesign(const VLNV&)),
-        this, SLOT(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createDesignForExistingComponent(const VLNV&)),
-        this, SLOT(createDesignForExistingComponent(const VLNV&)), Qt::UniqueConnection);
+
+
     connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(openCatalog(const VLNV&)),

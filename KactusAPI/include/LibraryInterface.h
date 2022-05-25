@@ -252,13 +252,6 @@ public slots:
     */
     virtual void onOpenDesign(VLNV const& vlnv, QString const& viewName) = 0;
 
-
-    /*! Create new design with given vlnv.
-     *
-     *      @param [in] vlnv The vlnv that identifies the design.
-    */
-    virtual void onCreateDesign(VLNV const& vlnv) = 0;
-
     /*! Remove the specified library object from the library and file system.
      * 
      * This function does not ask user to verify the deletion, it just removes the object and

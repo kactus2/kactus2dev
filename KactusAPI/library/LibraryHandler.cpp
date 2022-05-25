@@ -607,15 +607,6 @@ void LibraryHandler::onOpenSystemDesign(VLNV const& vlnv)
     }
 }
 
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::onCreateDesign()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onCreateDesign(VLNV const& vlnv)
-{
-    emit createDesignForExistingComponent(vlnv);
-}
-
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::removeObject()
 //-----------------------------------------------------------------------------
@@ -672,35 +663,6 @@ void LibraryHandler::endSave()
     saveInProgress_ = false;
 }
 
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::onCreateAbsDef()
-//-----------------------------------------------------------------------------
-void LibraryHandler::onCreateAbsDef(VLNV const& busDefVLNV)
-{
-    if (busDefVLNV.isValid() == false)
-    {
-        return;
-    }
-
-    Q_ASSERT(getDocumentType(busDefVLNV) == VLNV::BUSDEFINITION);
-    Q_ASSERT(contains(busDefVLNV));
-
-    QFileInfo busDefInfo(getPath(busDefVLNV));
-    QString directory = busDefInfo.absolutePath();
-
-    QList<VLNV> absDefVLNVs;
-    hierarchyModel_->getChildren(absDefVLNVs, busDefVLNV);
-
-    // if theres no previous abstraction definition for given bus def
-    if (absDefVLNVs.isEmpty())
-    {
-        emit createAbsDef(busDefVLNV, directory, false);
-    }
-    else // the abstraction definition can not be identified by the bus definition.
-    {
-        emit createAbsDef(busDefVLNV, directory, true);
-    }
-}
 
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::onItemSaved()
@@ -766,14 +728,6 @@ void LibraryHandler::syncronizeModels()
     connect(treeModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
-    connect(treeModel_, SIGNAL(createAbsDef(const VLNV&)),
-        this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(createDesign(const VLNV&)),
-        this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(createSWDesign(const VLNV&)),
-        this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(createSystemDesign(const VLNV&)),
-        this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the hierarchy model
@@ -792,16 +746,6 @@ void LibraryHandler::syncronizeModels()
 
     connect(hierarchyModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
-
-    connect(hierarchyModel_, SIGNAL(createAbsDef(const VLNV&)),
-        this, SLOT(onCreateAbsDef(const VLNV&)), Qt::UniqueConnection);
-
-    connect(hierarchyModel_, SIGNAL(createDesign(const VLNV&)),
-        this, SLOT(onCreateDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_, SIGNAL(createSWDesign(const VLNV&)),
-        this, SIGNAL(createSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(hierarchyModel_, SIGNAL(createSystemDesign(const VLNV&)),
-        this, SIGNAL(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
