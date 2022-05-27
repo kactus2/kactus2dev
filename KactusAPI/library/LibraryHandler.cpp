@@ -858,6 +858,17 @@ QVector<QString> LibraryHandler::findErrorsInDocument(QSharedPointer<Document> d
     QVector<QString> errorList;
     if (document.isNull())
     {
+        if (path.isEmpty() == false)
+        {
+            auto it = std::find_if(documentCache_.cbegin(), documentCache_.cend(),
+                [path](DocumentInfo const& info) { return info.path == path;  });
+            
+            if (it != documentCache_.cend())
+            {
+                errorList.append(tr("File %1 could not be read.").arg(path));
+            }
+        }
+
         return errorList;
     }
 

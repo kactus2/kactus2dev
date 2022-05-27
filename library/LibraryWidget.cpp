@@ -66,7 +66,7 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
 
     connect(treeWidget_, SIGNAL(itemSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
-
+    
     auto treeModel = library_->getTreeModel();
     connect(treeModel, SIGNAL(refreshDialer()), dialer_, SLOT(refreshLibrary()), Qt::UniqueConnection);
 

@@ -370,85 +370,88 @@ void HierarchyView::contextMenuEvent(QContextMenuEvent* event)
 
         QMenu* menuNew = 0;
 
-        // if component
-        if (item->type() == HierarchyItem::COMPONENT)
+        if (libComp)
         {
-            QSharedPointer<Component const> component = libComp.staticCast<Component const>();
-
-            // depending on the type of the component
-            if (component->getImplementation() == KactusAttribute::SYSTEM)
+            // if component
+            if (item->type() == HierarchyItem::COMPONENT)
             {
-                menu.addAction(openComponentAction_);
-            }
+                QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
-            else if (component->getImplementation() == KactusAttribute::SW)
-            {
-                menu.addAction(openComponentAction_);
-
-                menu.addSeparator();
-
-                if (indexes.size() == 1)
+                // depending on the type of the component
+                if (component->getImplementation() == KactusAttribute::SYSTEM)
                 {
-                    menuNew = menu.addMenu(tr("Add"));
-                    menuNew->addAction(createNewSWDesignAction_);
+                    menu.addAction(openComponentAction_);
                 }
-            }
 
-            else
-            {
-                menu.addAction(openComponentAction_);
-                menu.addSeparator();
-
-                // Add create actions if only one object is selected.
-                if (indexes.size() == 1)
+                else if (component->getImplementation() == KactusAttribute::SW)
                 {
-                    menuNew = menu.addMenu(tr("Add"));
-                    menuNew->addAction(createNewDesignAction_);
-                    menuNew->addAction(createNewSWDesignAction_);
+                    menu.addAction(openComponentAction_);
 
-                    // Add New System Design action only if the component contains hierarchical HW views.
-                    if (!component->getHierViews().isEmpty())
+                    menu.addSeparator();
+
+                    if (indexes.size() == 1)
                     {
-                        menuNew->addAction(createNewSystemDesignAction_);
+                        menuNew = menu.addMenu(tr("Add"));
+                        menuNew->addAction(createNewSWDesignAction_);
+                    }
+                }
+
+                else
+                {
+                    menu.addAction(openComponentAction_);
+                    menu.addSeparator();
+
+                    // Add create actions if only one object is selected.
+                    if (indexes.size() == 1)
+                    {
+                        menuNew = menu.addMenu(tr("Add"));
+                        menuNew->addAction(createNewDesignAction_);
+                        menuNew->addAction(createNewSWDesignAction_);
+
+                        // Add New System Design action only if the component contains hierarchical HW views.
+                        if (!component->getHierViews().isEmpty())
+                        {
+                            menuNew->addAction(createNewSystemDesignAction_);
+                        }
                     }
                 }
             }
-		}
-        else if (item->type() == HierarchyItem::CATALOG)
-        {
-            menu.addAction(openCatalogAction_);
+            else if (item->type() == HierarchyItem::CATALOG)
+            {
+                menu.addAction(openCatalogAction_);
+            }
+            else if (item->type() == HierarchyItem::BUSDEFINITION)
+            {
+                menu.addAction(openBusAction_);
+                menuNew = menu.addMenu(tr("Add"));
+                menuNew->addAction(addSignalsAction_);
+            }
+            else if (item->type() == HierarchyItem::ABSDEFINITION)
+            {
+                menu.addAction(openBusAction_);
+            }
+            else if (item->type() == HierarchyItem::COMDEFINITION)
+            {
+                menu.addAction(openComDefAction_);
+            }
+            else if (item->type() == HierarchyItem::APIDEFINITION)
+            {
+                menu.addAction(openApiDefAction_);
+            }
+            else if (item->type() == HierarchyItem::HW_DESIGN)
+            {
+                menu.addAction(openDesignAction_);
+                menu.addAction(openMemoryDesignAction_);
+            }
+            else if (item->type() == HierarchyItem::SW_DESIGN)
+            {
+                menu.addAction(openSWDesignAction_);
+            }
+            else if (item->type() == HierarchyItem::SYS_DESIGN)
+            {
+                menu.addAction(openSystemAction_);
+            }
         }
-		else if (item->type() == HierarchyItem::BUSDEFINITION)
-        {
-            menu.addAction(openBusAction_);
-            menuNew = menu.addMenu(tr("Add"));
-            menuNew->addAction(addSignalsAction_);
-		}
-		else if (item->type() == HierarchyItem::ABSDEFINITION)
-        {
-			menu.addAction(openBusAction_);
-		}
-        else if (item->type() == HierarchyItem::COMDEFINITION)
-        {
-            menu.addAction(openComDefAction_);
-        }
-        else if (item->type() == HierarchyItem::APIDEFINITION)
-        {
-            menu.addAction(openApiDefAction_);
-        }
-		else if (item->type() == HierarchyItem::HW_DESIGN)
-        {
-			menu.addAction(openDesignAction_);
-            menu.addAction(openMemoryDesignAction_);
-		}
-		else if (item->type() == HierarchyItem::SW_DESIGN)
-        {
-			menu.addAction(openSWDesignAction_);
-		}
-		else if (item->type() == HierarchyItem::SYS_DESIGN)
-        {
-			menu.addAction(openSystemAction_);
-		}
 
         // Insert the New menu to the popup menu if it was created.
         if (menuNew != 0)

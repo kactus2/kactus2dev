@@ -426,13 +426,6 @@ private:
         int documentCount = 0;
     };
 
-    //! Struct for holding user selection.
-    struct InputSelection
-    {
-        bool yesToAll = false;
-        bool noToAll = false;
-    };
-
     //-----------------------------------------------------------------------------
     // The private functions used by public class methods
     //-----------------------------------------------------------------------------

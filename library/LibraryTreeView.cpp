@@ -109,124 +109,122 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 	if (vlnv.isValid())
     {
 		QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
-		if (!document)
+
+        if (document)
         {
-			emit errorMessage(tr("Item not found in the library"));
-			return;
-		}
-
-        VLNV::IPXactType documentType = document->getVlnv().getType();
-        if (documentType == VLNV::COMPONENT)
-        {
-            QSharedPointer<Component const> component = document.staticCast<Component const>();
-
-            menu.addAction(openComponentAction_);  
-
-            // depending on the type of the component
-            if (component->getImplementation() == KactusAttribute::SYSTEM)
+            VLNV::IPXactType documentType = handler_->getDocumentType(vlnv);
+            if (documentType == VLNV::COMPONENT)
             {
-                if (component->hasSystemViews())
+                QSharedPointer<Component const> component = document.staticCast<Component const>();
+
+                menu.addAction(openComponentAction_);
+
+                // depending on the type of the component
+                if (component->getImplementation() == KactusAttribute::SYSTEM)
                 {
-                    menu.addAction(openSystemAction_);
-                }
-            }
-            else 
-            {
-                QMenu* menuNew = menu.addMenu(tr("Add"));
-
-                if (component->getImplementation() == KactusAttribute::HW)
-                {
-                    QStringList hierarchicalViewNames = component->getHierViews();
-                    if (!hierarchicalViewNames.isEmpty())
-                    {
-                        openHWDesignMenu_->clear();
-                        openMemoryDesignMenu_->clear();
-                        
-                        for (QString const& viewName : hierarchicalViewNames)
-                        {
-                            openHWDesignMenu_->addAction(new QAction(viewName, openHWDesignMenu_));
-                            openMemoryDesignMenu_->addAction(new QAction(viewName, openMemoryDesignMenu_));
-                        }
-
-                        if (hierarchicalViewNames.count() == 1)
-                        {
-                            menu.addAction(openHWDesignAction_);
-                            connect(openHWDesignAction_, SIGNAL(triggered()), 
-                                openHWDesignMenu_->actions().first(), SLOT(trigger()));
-
-                            menu.addAction(openMemoryDesignAction_);
-                            connect(openMemoryDesignAction_, SIGNAL(triggered()),
-                                openMemoryDesignMenu_->actions().first(), SLOT(trigger()));
-                        }
-                        else
-                        {
-                            menu.addMenu(openHWDesignMenu_);
-                            menu.addMenu(openMemoryDesignMenu_);
-                        }
-                    }
-
                     if (component->hasSystemViews())
                     {
                         menu.addAction(openSystemAction_);
                     }
-                    
-                    menuNew->addAction(createNewDesignAction_);
-
-                    // Add New System Design action only if the component contains hierarchical HW views.
-                    if (!component->getHierViews().isEmpty())
-                    {
-                        menuNew->addAction(createNewSystemDesignAction_);
-                    }
                 }
-
-                for (QSharedPointer<View> view : *component->getViews())
+                else
                 {
-                    VLNV reference = component->getModel()->getHierRef(view->name());
+                    QMenu* menuNew = menu.addMenu(tr("Add"));
 
-                    QSharedPointer<const Document> document = handler_->getModelReadOnly(reference);
-
-                    if (document && document->getImplementation() == KactusAttribute::SW)
+                    if (component->getImplementation() == KactusAttribute::HW)
                     {
-                        menu.addAction(openSWDesignAction_);
-                        break;
+                        QStringList hierarchicalViewNames = component->getHierViews();
+                        if (!hierarchicalViewNames.isEmpty())
+                        {
+                            openHWDesignMenu_->clear();
+                            openMemoryDesignMenu_->clear();
+
+                            for (QString const& viewName : hierarchicalViewNames)
+                            {
+                                openHWDesignMenu_->addAction(new QAction(viewName, openHWDesignMenu_));
+                                openMemoryDesignMenu_->addAction(new QAction(viewName, openMemoryDesignMenu_));
+                            }
+
+                            if (hierarchicalViewNames.count() == 1)
+                            {
+                                menu.addAction(openHWDesignAction_);
+                                connect(openHWDesignAction_, SIGNAL(triggered()),
+                                    openHWDesignMenu_->actions().first(), SLOT(trigger()));
+
+                                menu.addAction(openMemoryDesignAction_);
+                                connect(openMemoryDesignAction_, SIGNAL(triggered()),
+                                    openMemoryDesignMenu_->actions().first(), SLOT(trigger()));
+                            }
+                            else
+                            {
+                                menu.addMenu(openHWDesignMenu_);
+                                menu.addMenu(openMemoryDesignMenu_);
+                            }
+                        }
+
+                        if (component->hasSystemViews())
+                        {
+                            menu.addAction(openSystemAction_);
+                        }
+
+                        menuNew->addAction(createNewDesignAction_);
+
+                        // Add New System Design action only if the component contains hierarchical HW views.
+                        if (!component->getHierViews().isEmpty())
+                        {
+                            menuNew->addAction(createNewSystemDesignAction_);
+                        }
                     }
+
+                    for (QSharedPointer<View> view : *component->getViews())
+                    {
+                        VLNV reference = component->getModel()->getHierRef(view->name());
+
+                        QSharedPointer<const Document> document = handler_->getModelReadOnly(reference);
+
+                        if (document && document->getImplementation() == KactusAttribute::SW)
+                        {
+                            menu.addAction(openSWDesignAction_);
+                            break;
+                        }
+                    }
+
+                    menu.addSeparator();
+
+                    menuNew->addAction(createNewSWDesignAction_);
+                    menu.addMenu(menuNew);
                 }
-            
+            }
+
+            else if (documentType == VLNV::ABSTRACTIONDEFINITION)
+            {
+                menu.addAction(openBusAction_);
+            }
+
+            else if (documentType == VLNV::BUSDEFINITION)
+            {
+                menu.addAction(openBusAction_);
                 menu.addSeparator();
 
-                menuNew->addAction(createNewSWDesignAction_);
+                QMenu* menuNew = menu.addMenu(tr("Add"));
+                menuNew->addAction(addSignalsAction_);
                 menu.addMenu(menuNew);
             }
-        }
 
-        else if (documentType == VLNV::ABSTRACTIONDEFINITION)
-        {
-            menu.addAction(openBusAction_);
-        }
+            else if (documentType == VLNV::CATALOG)
+            {
+                menu.addAction(openCatalogAction_);
+            }
 
-        else if (documentType == VLNV::BUSDEFINITION)
-        {
-            menu.addAction(openBusAction_);
-            menu.addSeparator();
+            else if (documentType == VLNV::COMDEFINITION)
+            {
+                menu.addAction(openComDefAction_);
+            }
 
-            QMenu* menuNew = menu.addMenu(tr("Add"));
-            menuNew->addAction(addSignalsAction_);
-            menu.addMenu(menuNew);
-        }
-
-        else if (documentType == VLNV::CATALOG)
-        {
-            menu.addAction(openCatalogAction_);
-        }
-
-        else if (documentType == VLNV::COMDEFINITION)
-        {
-            menu.addAction(openComDefAction_);
-        }
-
-        else if (documentType == VLNV::APIDEFINITION)
-        {
-            menu.addAction(openApiDefAction_);
+            else if (documentType == VLNV::APIDEFINITION)
+            {
+                menu.addAction(openApiDefAction_);
+            }
         }
 
         menu.addSeparator();

@@ -2529,7 +2529,7 @@ void MainWindow::openCatalog(const VLNV& vlnv)
     QSharedPointer<Catalog> catalog = libraryHandler_->getModel(vlnv).dynamicCast<Catalog>();
     if (catalog == 0)
     {
-        emit errorMessage(tr("Document type did not match Catalog"));
+        emit errorMessage(tr("Document could not be opened for Catalog"));
         return;
     }
 
@@ -2872,7 +2872,7 @@ void MainWindow::openComponent(VLNV const& vlnv)
 
     if (!component)
     {
-        emit errorMessage(tr("Document type did not match Component"));
+        emit errorMessage(tr("Document could not be opened for Component"));
         QApplication::restoreOverrideCursor();
         return;
     }
@@ -2922,7 +2922,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv)
 
     if (comDef == 0)
     {
-        emit errorMessage(tr("Document type did not match COM Definition"));
+        emit errorMessage(tr("Document could not be opened for COM Definition"));
         return;
     }
 
@@ -2957,7 +2957,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv)
 
     if (apiDef == 0)
     {
-        emit errorMessage(tr("Document type did not match API Definition"));
+        emit errorMessage(tr("Document could not be opened for API Definition"));
         return;
     }
 

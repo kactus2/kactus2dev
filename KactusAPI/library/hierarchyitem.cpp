@@ -475,6 +475,10 @@ void HierarchyItem::clear()
 bool HierarchyItem::isHierarchical() const
 {
 	Q_ASSERT(component_);
+    if (component_.isNull())
+    {
+        return false;
+    }
 
     if (component_->getImplementation() == KactusAttribute::SW)
     {
@@ -492,7 +496,14 @@ bool HierarchyItem::isHierarchical() const
 KactusAttribute::Implementation HierarchyItem::getImplementation() const
 {
     Q_ASSERT(component_);
-    return component_->getImplementation();
+    if (component_)
+    {
+        return component_->getImplementation();
+    }
+    else
+    {
+        return KactusAttribute::KTS_IMPLEMENTATION_COUNT;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -590,9 +601,13 @@ void HierarchyItem::parseComponent(VLNV const& vlnv)
 {
     type_ = HierarchyItem::COMPONENT;
     component_ = library_->getModelReadOnly<Component>(vlnv);
-    Q_ASSERT(component_);
-
     isValid_ = library_->isValid(vlnv);
+    
+    Q_ASSERT(component_);
+    if (component_.isNull())
+    {
+        return;
+    }
 
     for (QSharedPointer<View> view : *component_->getViews())
     {
