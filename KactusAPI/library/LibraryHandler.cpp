@@ -351,7 +351,7 @@ VLNV LibraryHandler::getDesignVLNV(VLNV const& hierarchyRef)
     }
     else
     {
-        emit errorMessage(tr("VLNV: %1 was not valid hierarchical reference.").arg(hierarchyRef.toString()));
+        messageChannel_->showError(tr("VLNV: %1 was not valid hierarchical reference.").arg(hierarchyRef.toString()));
         return VLNV();
     }
 }
@@ -534,7 +534,7 @@ void LibraryHandler::onOpenDesign(VLNV const& vlnv, QString const& viewName)
 {
     if (contains(vlnv) == false)
     {
-        emit errorMessage(tr("Component was not found"));
+        messageChannel_->showError(tr("Component was not found"));
         return;
     }
 
@@ -552,7 +552,7 @@ void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv, QString const& activeV
     QSharedPointer<const Component> component = getModelReadOnly(vlnv).dynamicCast<const Component>();
     if (component.isNull())
     {
-        emit errorMessage(tr("Component was not found"));
+        messageChannel_->showError(tr("Component was not found"));
         return;
     }
        
@@ -570,7 +570,7 @@ void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
     QSharedPointer<const Component> component = getModelReadOnly(vlnv).dynamicCast<const Component>();
     if (component.isNull())
     {
-        emit errorMessage(tr("Component was not found"));
+        messageChannel_->showError(tr("Component was not found"));
         return;
     }
 
@@ -596,7 +596,7 @@ void LibraryHandler::onOpenSystemDesign(VLNV const& vlnv)
     QSharedPointer<const Component> component = getModelReadOnly(vlnv).dynamicCast<const Component>();
     if (component.isNull())
     {
-        emit errorMessage(tr("Component was not found"));
+        messageChannel_->showError(tr("Component was not found"));
         return;
     }
 
@@ -689,12 +689,6 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::syncronizeModels()
 {
-    // connect the signals from the data model
-
-    //-----------------------------------------------------------------------------
-    // connect the signals from the tree model
-    //-----------------------------------------------------------------------------
-
     // signals from tree model to library handler
  
     connect(treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)),
@@ -708,6 +702,8 @@ void LibraryHandler::syncronizeModels()
     connect(treeModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(resetModel()),
+        treeModel_, SLOT(onResetModel()), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the hierarchy model
@@ -726,6 +722,10 @@ void LibraryHandler::syncronizeModels()
 
     connect(hierarchyModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
+
+
+    connect(this, SIGNAL(resetModel()),
+        hierarchyModel_, SLOT(onResetModel()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -749,10 +749,7 @@ bool LibraryHandler::addObject(QSharedPointer<Document> model, QString const& fi
         targetPath = pathInfo.symLinkTarget();
     }
 
-    if (DocumentFileAccess::writeDocument(model, targetPath) == false)
-    {
-        messageChannel_->showError(QObject::tr("Could not open file %1 for writing.").arg(filePath));
-    }
+    DocumentFileAccess::writeDocument(model, targetPath);
 
     TagManager::getInstance().addNewTags(model->getTags());
 
@@ -799,8 +796,9 @@ void LibraryHandler::loadAvailableVLNVs()
 void LibraryHandler::resetModels()
 {
     messageChannel_->showStatusMessage(tr("Updating library view. Please wait..."));
-    hierarchyModel_->onResetModel();
-    treeModel_->onResetModel();
+
+    emit resetModel();
+
     messageChannel_->showStatusMessage(tr("Ready."));
 }
 

@@ -134,8 +134,7 @@ std::vector<std::string> PythonAPI::getLibraryPaths() const
 {
     QStringList locations = KactusAPI::getLibraryPaths();
 
-
-    std::vector<std::string> paths(locations.count());
+    std::vector<std::string> paths;
     for (auto const& path : locations)
     {
         paths.push_back(path.toStdString());

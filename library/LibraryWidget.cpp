@@ -48,8 +48,8 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
 {
     GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel);
     if (guiChannel)
-    {
-        guiChannel->setStatusBar(statusBar_);
+    {        
+        connect(guiChannel, SIGNAL(statusMessage(QString const&)), statusBar_, SLOT(showMessage(QString const&)));
     }
 
     dialer_->setRootItem(library_->getTreeRoot());
@@ -57,12 +57,6 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
 
-
-    connect(dialer_, SIGNAL(refreshDialer()),
-        this, SLOT(refresh()), Qt::UniqueConnection);
-    
-    connect(library_, SIGNAL(statusMessage(QString const&)), statusBar_, SLOT(showMessage(QString const&)), 
-        Qt::UniqueConnection);
 
     connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
@@ -374,17 +368,17 @@ void LibraryWidget::onCloseIntegrityReport()
 void LibraryWidget::onRemoveVLNV(const QList<VLNV> vlnvs)
 {
     // create the dialog to select which items to remove
-    ObjectRemoveDialog* removeDialog = new ObjectRemoveDialog(this);
-    LibraryItemSelectionFactory::constructItemsForSelectionDialog(library_, removeDialog, vlnvs);
+    ObjectRemoveDialog removeDialog(this);
+    LibraryItemSelectionFactory::constructItemsForSelectionDialog(library_, &removeDialog, vlnvs);
 
-    if (removeDialog->exec() == QDialog::Rejected)
+    if (removeDialog.exec() == QDialog::Rejected)
     {
         return;
     }
 
     QList<VLNV> removedVLNVs;
     QStringList removedFilePaths;
-    for (ObjectSelectionListItem const* removedItem : removeDialog->getSelectedItems())
+    for (ObjectSelectionListItem const* removedItem : removeDialog.getSelectedItems())
     {
         if (removedItem->getType() == ObjectSelectionListItem::VLNVOJBECT)
         {

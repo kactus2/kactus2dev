@@ -4858,6 +4858,12 @@
     <ClCompile Include="GeneratedFiles\moc_ObjectExportDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileChannel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_GraphicalMessageMediator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6656,6 +6662,12 @@
     <CustomBuild Include="library\ObjectExportDialog.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
+    <CustomBuild Include="PythonAPI\FileChannel.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\ui\GraphicalMessageMediator.h">
+      <Filter>Header Files\common\ui</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6966,9 +6978,6 @@
     </ClInclude>
     <ClInclude Include="mainwindow\CommandLineParser.h">
       <Filter>Header Files\mainwindow</Filter>
-    </ClInclude>
-    <ClInclude Include="common\ui\GraphicalMessageMediator.h">
-      <Filter>Header Files\common\ui</Filter>
     </ClInclude>
     <ClInclude Include="editors\common\Association\Associable.h">
       <Filter>Header Files\editors\common\Association</Filter>
@@ -7296,9 +7305,6 @@
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="PythonAPI\FileChannel.h">
-      <Filter>Header Files\PythonAPI</Filter>
     </ClInclude>
     <ClInclude Include="mainwindow\ScriptingConsole\ScriptingSideArea.h">
       <Filter>Header Files\mainwindow\ScriptingConsole</Filter>

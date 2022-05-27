@@ -144,7 +144,10 @@ void DockWidgetHandler::setupMessageConsole()
     GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel_);
     if (guiChannel)
     {
-        guiChannel->setMessageConsole(console_);
+        connect(guiChannel, SIGNAL(noticeMessage(QString const&)),
+            console_, SLOT(onNoticeMessage(QString const&)), Qt::UniqueConnection);
+        connect(guiChannel, SIGNAL(errorMessage(QString const&)),
+            console_, SLOT(onErrorMessage(QString const&)), Qt::UniqueConnection);
     }
 
     connect(this, SIGNAL(errorMessage(const QString&)),

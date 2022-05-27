@@ -102,9 +102,6 @@
     <ClInclude Include="include\ComponentParameterFinder.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\ConsoleMediator.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
     <ClInclude Include="include\DesignParameterFinder.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
@@ -267,9 +264,6 @@
     <ClInclude Include="include\LibraryInterface.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
-    <ClInclude Include="include\LibraryLoader.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
     <ClInclude Include="include\DocumentFileAccess.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
@@ -280,6 +274,9 @@
       <Filter>Header Files\include</Filter>
     </ClInclude>
     <ClInclude Include="include\TagManager.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ConsoleMediator.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -520,6 +517,9 @@
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\LibraryLoader.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>

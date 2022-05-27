@@ -287,12 +287,6 @@ public slots:
 
 signals:
 
-    //! Emit an error message to be printed to user.
-    void errorMessage(QString const& message);
-
-    //! Emit a notice message to be printed to user.
-    void noticeMessage(QString const& message);
-
     //! Signal that user wants to open the specified component for editing.
     void openDesign(VLNV const& vlnv, QString const& viewName);
 

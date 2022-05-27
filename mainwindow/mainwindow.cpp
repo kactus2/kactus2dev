@@ -952,10 +952,6 @@ void MainWindow::connectDockHandler()
 //-----------------------------------------------------------------------------
 void MainWindow::setupAndConnectLibraryHandler()
 {
-    connect(libraryHandler_, SIGNAL(errorMessage(const QString&)),
-        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     connect(libraryHandler_, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SLOT(openDesign(const VLNV&, const QString&)));

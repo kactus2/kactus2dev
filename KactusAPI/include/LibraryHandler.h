@@ -343,14 +343,6 @@ public slots:
 
 signals:
 
-    //! Emit an error message to be printed to user.
-    void errorMessage(const QString& message);
-
-    //! Emit a notice message to be printed to user.
-    void noticeMessage(const QString& message);
-
-    //! Emit a change in the library status e.g. loading.
-    void statusMessage(QString const& message);
 
     void progressStatus();
 
@@ -396,6 +388,8 @@ signals:
     //! Inform tree model that a vlnv is to be removed from the tree.
     void removeVLNV(VLNV const& vlnv);
 
+    //! Inform both models that the content must be reset.
+    void resetModel();
 
 private slots:
     
