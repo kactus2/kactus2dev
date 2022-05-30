@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 
+
 HEADERS += ./KactusAPI.h \
     ./KactusAPIGlobal.h \
     ./include/AbstractionTypeInterface.h \
@@ -23,6 +24,8 @@ HEADERS += ./KactusAPI.h \
     ./include/ComponentParameterFinder.h \
     ./include/ConsoleMediator.h \
     ./include/DesignParameterFinder.h \
+    ./include/DocumentFileAccess.h \
+    ./include/DocumentValidator.h \
     ./include/ExpressionFormatter.h \
     ./include/ExpressionFormatterFactory.h \
     ./include/ExpressionFormatterFactoryImplementation.h \
@@ -43,6 +46,7 @@ HEADERS += ./KactusAPI.h \
     ./include/IPlugin.h \
     ./include/IPluginUtility.h \
     ./include/IPXactSystemVerilogParser.h \
+    ./include/LibraryInterface.h \
     ./include/ListParameterFinder.h \
     ./include/MasterPortInterface.h \
     ./include/MemoryBlockInterface.h \
@@ -72,23 +76,20 @@ HEADERS += ./KactusAPI.h \
     ./include/SubspaceMapInterface.h \
     ./include/SystemVerilogExpressionParser.h \
     ./include/SystemVerilogSyntax.h \
+    ./include/TagManager.h \
     ./include/TransparentBridgeInterface.h \
+    ./include/utils.h \
     ./include/VersionHelper.h \
     ./include/ComponentInstanceParameterFinder.h \
-    ./include/ImportHighlighter.h \
-    ./include/ImportRunner.h \
-    ./include/ParameterCache.h \
-    ./include/LibraryHandler.h \
-    ./include/LibraryInterface.h \
-    ./include/LibraryLoader.h \
-    ./include/DocumentFileAccess.h \
-    ./include/DocumentValidator.h \
-    ./include/utils.h \
     ./include/hierarchyitem.h \
     ./include/hierarchymodel.h \
+    ./include/ImportHighlighter.h \
+    ./include/ImportRunner.h \
+    ./include/LibraryHandler.h \
+    ./include/LibraryItem.h \
+    ./include/LibraryLoader.h \
     ./include/LibraryTreeModel.h \
-    ./include/TagManager.h \
-    ./include/LibraryItem.h
+    ./include/ParameterCache.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -145,14 +146,14 @@ SOURCES += ./KactusAPI.cpp \
     ./plugins/PluginUtilityAdapter.cpp \
     ./utilities/ConsoleMediator.cpp \
     ./utilities/FileHandler.cpp \
+    ./utilities/utils.cpp \
     ./utilities/VersionHelper.cpp \
-    ./library/LibraryHandler.cpp \
-    ./library/LibraryLoader.cpp \
     ./library/DocumentFileAccess.cpp \
     ./library/DocumentValidator.cpp \
-    ./utilities/utils.cpp \
-    ./library/hierarchymodel.cpp \
-    ./library/LibraryItem.cpp \
-    ./library/LibraryTreeModel.cpp \
     ./library/hierarchyitem.cpp \
+    ./library/hierarchymodel.cpp \
+    ./library/LibraryHandler.cpp \
+    ./library/LibraryItem.cpp \
+    ./library/LibraryLoader.cpp \
+    ./library/LibraryTreeModel.cpp \
     ./library/TagManager.cpp

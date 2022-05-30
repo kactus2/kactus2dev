@@ -3,9 +3,8 @@
 # ------------------------------------------------------
 
 
-HEADERS += ./library/objectremovedialog.h \
-    ./library/ObjectExportDialog.h \
-    ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
+
+HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
     ./common/NameGenerationPolicy.h \
@@ -58,7 +57,6 @@ HEADERS += ./library/objectremovedialog.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
-    ./library/ObjectSelectionListItem.h \
     ./common/widgets/tagEditor/TagLabel.h \
     ./common/widgets/tagEditor/FlowLayout.h \
     ./common/widgets/tagEditor/TagContainer.h \
@@ -105,7 +103,6 @@ HEADERS += ./library/objectremovedialog.h \
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
     ./common/dialogs/newObjectDialog/newobjectdialog.h \
-    ./library/ObjectSelectionDialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h \
@@ -113,7 +110,6 @@ HEADERS += ./library/objectremovedialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
-    ./library/ItemExporter.h \
     ./common/ui/GraphicalMessageMediator.h \
     ./common/expressions/utilities.h \
     ./mainwindow/CommandLineParser.h \
@@ -205,14 +201,20 @@ HEADERS += ./library/objectremovedialog.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./library/LibraryInterface.h \
+    ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
+    ./library/ObjectSelectionListItem.h \
     ./library/TableViewDialog.h \
     ./library/LibraryFilter.h \
     ./library/LibraryErrorModel.h \
+    ./library/ItemExporter.h \
     ./library/LibraryTreeFilter.h \
     ./library/LibraryTreeWidget.h \
     ./library/LibraryTreeView.h \
     ./library/LibraryWidget.h \
+    ./library/objectremovedialog.h \
+    ./library/ObjectSelectionDialog.h \
+    ./library/ObjectExportDialog.h \
     ./library/VLNVDialer/dialerwidget.h \
     ./library/VLNVDialer/filterwidget.h \
     ./library/VLNVDialer/firmnessgroup.h \
@@ -801,17 +803,15 @@ HEADERS += ./library/objectremovedialog.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./PythonAPI/FileChannel.h \
     ./PythonAPI/ChannelRelay.h \
+    ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
-    ./PythonAPI/extensions/IOCatcher.h \
-    ./library/LibraryItemSelectionFactory.h
+    ./PythonAPI/extensions/IOCatcher.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
-    ./library/ObjectSelectionListItem.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageView.cpp \
@@ -822,8 +822,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
-    ./library/ObjectExportDialog.cpp \
-    ./library/ItemExporter.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
@@ -874,7 +872,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/tagEditor/TagEditor.cpp \
     ./common/widgets/tagEditor/TagEditorContainer.cpp \
     ./common/widgets/tagEditor/TagLabel.cpp \
-    ./library/ObjectSelectionDialog.cpp \
     ./common/widgets/tagEditor/TagSelector.cpp \
     ./common/widgets/tagEditor/TagSelectorContainer.cpp \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
@@ -982,14 +979,20 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
+    ./library/ItemExporter.cpp \
     ./library/LibraryErrorModel.cpp \
     ./library/LibraryFilter.cpp \
+    ./library/LibraryItemSelectionFactory.cpp \
     ./library/LibraryTreeFilter.cpp \
     ./library/LibraryTreeView.cpp \
     ./library/LibraryTreeWidget.cpp \
     ./library/LibraryUtils.cpp \
     ./library/LibraryWidget.cpp \
+    ./library/ObjectExportDialog.cpp \
+    ./library/objectremovedialog.cpp \
     ./library/TableViewDialog.cpp \
+    ./library/ObjectSelectionDialog.cpp \
+    ./library/ObjectSelectionListItem.cpp \
     ./library/VLNVDialer/dialerwidget.cpp \
     ./library/VLNVDialer/filterwidget.cpp \
     ./library/VLNVDialer/firmnessgroup.cpp \
@@ -1524,7 +1527,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp \
-    ./library/LibraryItemSelectionFactory.cpp \
-    ./library/objectremovedialog.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp
 RESOURCES += kactus.qrc
