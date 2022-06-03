@@ -250,7 +250,7 @@ void HWDesignDiagram::updateHierComponent()
     QList<QSharedPointer<BusInterface> > busIfs;
 
     // Search all graphics items in the scene.
-    foreach (QGraphicsItem *item, items())
+    for (QGraphicsItem *item : items())
     {
         // Check if the item is a diagram interface and its bus interface is defined.
         HierarchicalBusInterfaceItem* diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item);
@@ -260,8 +260,25 @@ void HWDesignDiagram::updateHierComponent()
         }
     }
 
-    getEditedComponent()->getBusInterfaces()->clear();
-    getEditedComponent()->getBusInterfaces()->append(busIfs);
+    auto componentInterfaces = getEditedComponent()->getBusInterfaces();
+
+    // Add any new interfaces in the component.
+    for (auto diagramInterface : busIfs)
+    {
+        if (componentInterfaces->contains(diagramInterface) == false)
+        {
+            componentInterfaces->append(diagramInterface);
+        }
+    }
+
+    // Remove interfaces deleted in the design from the component.
+    for (auto componentInterface : *componentInterfaces)
+    {
+        if (busIfs.contains(componentInterface) == false)
+        {
+            componentInterfaces->removeAll(componentInterface);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
