@@ -40,9 +40,6 @@ class MemoryItem;
 class Register;
 class Cpu;
 class MemoryMap;
-class AddressBlock;
-class Register;
-class Field;
 class EnumeratedValue;
 
 //-----------------------------------------------------------------------------
@@ -57,12 +54,16 @@ public:
      *
      *      @param [in] library     Interface for accessing libraries.
      */
-    SVDGenerator(LibraryInterface* library);
+    explicit SVDGenerator(LibraryInterface* library);
 
     /*!
      *  The destructor.
      */
     ~SVDGenerator() = default;
+
+    // Disable copying.
+    SVDGenerator(SVDGenerator const& rhs) = delete;
+    SVDGenerator& operator=(SVDGenerator const& rhs) = delete;
 
     /*!
      *  Generates slave memory listing for the given component.
@@ -79,13 +80,10 @@ public:
      *
      *      @return The generated files.
      */
-    QStringList getGeneratedFiles();
+    QStringList getGeneratedFiles() const;
 
 private:
 
-    // Disable copying.
-    SVDGenerator(SVDGenerator const& rhs);
-    SVDGenerator& operator=(SVDGenerator const& rhs);
 
     /*!
      *  Writes the CPU listing into a given file.
@@ -239,6 +237,14 @@ private:
         QSharedPointer<Register> realRegister);
 
     /*!
+     * Write the selected reset element.
+     *
+     *     @param [in] writer       The xml stream writer.
+     *     @param [in] resetItem    The selecter reset item.
+     */
+     void writeReset(QXmlStreamWriter& writer, QSharedPointer<MemoryItem> resetItem) const;
+
+    /*!
      *  Get the field items of the selected register item in ascending offset order.
      *
      *      @param [in] registerItem    The selected register item.
@@ -263,10 +269,9 @@ private:
      *
      *      @param [in] writer              The xml stream writer.
      *      @param [in] containingRegister  The selected register.
-     *      @param [in] registerOffset      Offset of the register.
      *      @param [in] fieldItems          Ordered field items.
      */
-    void writeFields(QXmlStreamWriter& writer, QSharedPointer<Register> containingRegister, quint64 registerOffset,
+    void writeFields(QXmlStreamWriter& writer, QSharedPointer<Register> containingRegister,
         QMap<quint64, QSharedPointer<MemoryItem> > fieldItems);
 
     /*!
