@@ -48,7 +48,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~LinuxDeviceTreePlugin();
+    virtual ~LinuxDeviceTreePlugin() = default;
 
     /*!
      *  Returns the name of the plugin.

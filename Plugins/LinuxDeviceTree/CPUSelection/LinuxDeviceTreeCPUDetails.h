@@ -14,6 +14,7 @@
 
 #include <QVector>
 #include <QSharedPointer>
+#include <QMultiMap>
 
 class Cpu;
 class ConnectivityInterface;

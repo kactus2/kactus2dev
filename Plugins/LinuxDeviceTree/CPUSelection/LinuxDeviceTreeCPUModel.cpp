@@ -260,7 +260,7 @@ QVariant LinuxDeviceTreeCPUModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == LinuxDeviceTreeCPUColumns::CONTAINING_COMPONENT)
     {
-        if (indexedContainer->rootInterfaces_.size() > 0)
+        if (indexedContainer->rootInterfaces_.isEmpty() == false)
         {
             return indexedContainer->rootInterfaces_.first()->getInstance()->getVlnv();
         }

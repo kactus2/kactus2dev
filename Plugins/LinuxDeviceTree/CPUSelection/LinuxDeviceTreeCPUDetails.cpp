@@ -22,6 +22,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeCPUDetails::getCPUContainers()
 //-----------------------------------------------------------------------------
@@ -92,8 +93,6 @@ getCPUInterfacePairs(QVector<QSharedPointer<ConnectivityInterface>> roots,
 
     for (auto interfaceNode : roots)
     {
-        QString nodeName = interfaceNode->getName();
-
         if (!visitedInterfaces.contains(interfaceNode))
         {
             visitedInterfaces.append(interfaceNode);
@@ -102,26 +101,23 @@ getCPUInterfacePairs(QVector<QSharedPointer<ConnectivityInterface>> roots,
             if (component)
             {
                 QVector<QSharedPointer<const Cpu> > cpus = getInterfacedCPUs(component, interfaceNode);
-                if (!cpus.isEmpty())
+
+                for (auto singleCPU : cpus)
                 {
-                    for (auto singleCPU : cpus)
-                    {
-                        cpuNodes.insert(singleCPU, interfaceNode);
-                    }
+                    cpuNodes.insert(singleCPU, interfaceNode);
                 }
+
             }
 
             QMultiMap<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > childCPUNodes =
                 getCPUInterfacePairs(interfaceNode->getChildInterfaceNodes(), visitedInterfaces, library);
-            if (!childCPUNodes.isEmpty())
+
+            QMapIterator<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> >
+                childIterator(childCPUNodes);
+            while (childIterator.hasNext())
             {
-                QMapIterator<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> >
-                    childIterator(childCPUNodes);
-                while (childIterator.hasNext())
-                {
-                    childIterator.next();
-                    cpuNodes.insert(childIterator.key(), childIterator.value());
-                }
+                childIterator.next();
+                cpuNodes.insert(childIterator.key(), childIterator.value());
             }
         }
     }
