@@ -54,6 +54,13 @@ public:
     void setPorts(QSharedPointer<Component> component);
 
     /*!
+     *  Check if the there are any available ports.
+     *
+     *      @return True, if there are available ports, false otherwise.
+     */
+    bool hasPorts() const;
+
+    /*!
      *  Get index of the selected port.
      *
      *      @param [in] portName    Name of the selected port.

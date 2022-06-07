@@ -13,8 +13,8 @@
 
 #include "JaroWinklerAlgorithm.h"
 
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 #include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
 
 #include <library/LibraryInterface.h>
@@ -158,9 +158,10 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<Port
 //-----------------------------------------------------------------------------
 bool PortMapAutoConnector::logicalPortHasReferencingPortMap(QString const& logicalName) const
 {
-    for(auto mappingName : portMapInterface_->getItemNames())
+    for (int i = 0; i < portMapInterface_->itemCount(); ++i)
     {
-        if (QString::fromStdString(mappingName).compare(logicalName) == 0 && portMapInterface_->portMapCount(mappingName) > 0)
+        QString logicalPort = QString::fromStdString(portMapInterface_->getLogicalPortName(i));
+        if (logicalPort == logicalName)
         {
             return true;
         }

@@ -25,8 +25,8 @@ def constructComponent(api, vendor, library, name, version):
 
 	# Set available address blocks for the address block interface.
 	api.setBlocksForInterface(mapName)
-	blockInterface = mapInterface.getSubInterface()
-	blockName = "PP_Address_Block"
+	blockInterface = mapInterface.getAddressBlockInterface()
+	blockName = "Address_Block"
 	blockInterface.addBlock(0, blockName)
 	blockInterface.setDescription(blockName, "Peripheral address block")
 	blockInterface.setBaseAddress(blockName, "'h0")

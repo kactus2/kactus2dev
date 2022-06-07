@@ -35,6 +35,9 @@
 #include "../editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h"
 #include "../editors/ComponentEditor/fileSet/interfaces/FileInterface.h"
 #include "../editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h"
+#include "../editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h"
+#include "../editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h"
+#include "../editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h"
 %}
 
 
@@ -65,3 +68,7 @@ namespace std {
 %include "../editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h"
 %include "../editors/ComponentEditor/fileSet/interfaces/FileInterface.h"
 %include "../editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h"
+%include "../editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h"
+%include "../editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h"
+%include "../editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h"
+

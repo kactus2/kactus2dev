@@ -110,7 +110,11 @@ bool BusInterfaceWizardGeneralOptionsPage::mandatoryFieldsAreFilledIn() const
 bool BusInterfaceWizardGeneralOptionsPage::abstractionReferenceIsFound() const
 {
     AbstractionTypeInterface* abstractionInterface = busInterface_->getAbstractionTypeInterface();
-    abstractionInterface->setAbstractionTypes(busIf_->getAbstractionTypes());
+
+    General::InterfaceMode busMode = busInterface_->getActiveMode(busIf_->name().toStdString());
+    QString systemGroup = busInterface_->getActiveSystemGroup(busIf_->name().toStdString());
+
+    abstractionInterface->setAbstractionTypes(busIf_->getAbstractionTypes(), busMode, systemGroup);
 
     if (abstractionInterface->itemCount() > 0)
     {

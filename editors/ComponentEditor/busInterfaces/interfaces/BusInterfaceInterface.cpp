@@ -130,9 +130,41 @@ void BusInterfaceInterface::setupSubInterfaces(std::string const& busName)
             bridgeInterface_->setBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > >());
         }
 
-        abstractionTypeInterface_->setAbstractionTypes(selectedBus->getAbstractionTypes());
+        General::InterfaceMode busMode = getActiveMode(busName);
+        QString systemGroup = getActiveSystemGroup(busName);
+
+        abstractionTypeInterface_->setAbstractionTypes(selectedBus->getAbstractionTypes(), busMode, systemGroup);
         parameterInterface_->setParameters(selectedBus->getParameters());
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::getActiveMode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode BusInterfaceInterface::getActiveMode(std::string const& busName) const
+{
+    General::InterfaceMode busMode = getMode(busName);
+    if (busMode == General::MONITOR)
+    {
+        busMode = getMonitorMode(busName);
+    }
+
+    return busMode;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::getActiveSystemGroup()
+//-----------------------------------------------------------------------------
+QString BusInterfaceInterface::getActiveSystemGroup(std::string const& busName) const
+{
+    std::string systemGroup = getSystemGroup(busName);
+    General::InterfaceMode busMode = getMode(busName);
+    if (busMode == General::MONITOR)
+    {
+        systemGroup = getMonitorGroup(busName);
+    }
+
+    return QString::fromStdString(systemGroup);
 }
 
 //-----------------------------------------------------------------------------
@@ -519,6 +551,8 @@ bool BusInterfaceInterface::setMode(std::string const& busName, std::string cons
         General::str2Interfacemode(QString::fromStdString(newMode), General::INTERFACE_MODE_COUNT);
     selectedBus->setInterfaceMode(newInterfaceMode);
 
+    abstractionTypeInterface_->setBusMode(newInterfaceMode);
+
     return true;
 }
 
@@ -548,7 +582,12 @@ bool BusInterfaceInterface::setSystemGroup(std::string const& busName, std::stri
         return false;
     }
 
-    selectedBus->setSystem(QString::fromStdString(newSystem));
+    QString newSystemQ = QString::fromStdString(newSystem);
+
+    selectedBus->setSystem(newSystemQ);
+
+    abstractionTypeInterface_->setSystemGroup(newSystemQ);
+
     return true;
 }
 
@@ -1025,7 +1064,10 @@ std::string BusInterfaceInterface::getAbstractionReferenceString(std::string con
     QSharedPointer<BusInterface> busInterface = getBusInterface(busName);
     if (busInterface)
     {
-        abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes());
+        General::InterfaceMode busMode = getActiveMode(busName);
+        QString systemGroup = getActiveSystemGroup(busName);
+
+        abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes(), busMode, systemGroup);
         return abstractionTypeInterface_->getAbstractionReferenceString();
     }
 
@@ -1042,7 +1084,10 @@ std::vector<std::string> BusInterfaceInterface::getAbstractionReferences(std::st
     QSharedPointer<BusInterface> busInterface = getBusInterface(busName);
     if (busInterface)
     {
-        abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes());
+        General::InterfaceMode busMode = getActiveMode(busName);
+        QString systemGroup = getActiveSystemGroup(busName);
+
+        abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes(), busMode, systemGroup);
         references = abstractionTypeInterface_->getAbstractionReferences();
     }
 
@@ -1061,7 +1106,10 @@ bool BusInterfaceInterface::addAbstractionType(std::string const& busName, std::
         return false;
     }
 
-    abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes());
+    General::InterfaceMode busMode = getActiveMode(busName);
+    QString systemGroup = getActiveSystemGroup(busName);
+
+    abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes(), busMode, systemGroup);
     abstractionTypeInterface_->addAbstractionType(newVendor, newLibrary, newName, newVersion);
 
     return true;
@@ -1078,7 +1126,10 @@ bool BusInterfaceInterface::removeAbstractionTypes(std::string const& busName)
         return false;
     }
 
-    abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes());
+    General::InterfaceMode busMode = getActiveMode(busName);
+    QString systemGroup = getActiveSystemGroup(busName);
+
+    abstractionTypeInterface_->setAbstractionTypes(busInterface->getAbstractionTypes(), busMode, systemGroup);
     for (int i = abstractionTypeInterface_->itemCount(); i >= 0; i--)
     {
         abstractionTypeInterface_->removeAbstraction(i);
@@ -1233,6 +1284,9 @@ bool BusInterfaceInterface::setMonitorMode(std::string const& busName, std::stri
     General::InterfaceMode newInterfaceMode =
         General::str2Interfacemode(QString::fromStdString(newMode), General::INTERFACE_MODE_COUNT);
     selectedMonitor->interfaceMode_ = newInterfaceMode;
+
+    abstractionTypeInterface_->setBusMode(newInterfaceMode);
+
     return true;
 }
 
@@ -1261,7 +1315,12 @@ bool BusInterfaceInterface::setMonitorGroup(std::string const& busName, std::str
         return false;
     }
 
-    selectedMonitor->group_ = QString::fromStdString(newGroup);
+    QString newGroupQ = QString::fromStdString(newGroup);
+
+    selectedMonitor->group_ = newGroupQ;
+
+    abstractionTypeInterface_->setSystemGroup(newGroupQ);
+
     return true;
 }
 

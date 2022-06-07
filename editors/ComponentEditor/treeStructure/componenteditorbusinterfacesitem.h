@@ -19,6 +19,7 @@ class BusInterfaceValidator;
 class ExpressionParser;
 class PortMapInterface;
 class BusInterfaceInterface;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The Bus interfaces-item in the component editor's navigation tree.
@@ -33,7 +34,8 @@ public:
 	 *  The constructor.
 	 *
      *      @param [in] busInterface            Interface for accessing bus interfaces.
-	 *      @param [in] model                   The model that owns the items.
+     *      @param [in] portMapInterface        Interface for accessing port maps.
+     *      @param [in] model                   The model that owns the items.
 	 *      @param [in] libHandler              The instance that manages the library.
 	 *      @param [in] component               The component being edited.
 	 *      @param [in] referenceCounter        The reference counter.
@@ -43,7 +45,9 @@ public:
 	 *      @param [in] parent                  The owner of this item.
 	 *      @param [in] parentWnd               The parent window.
 	 */
-	ComponentEditorBusInterfacesItem(BusInterfaceInterface* busInterface,
+	ComponentEditorBusInterfacesItem(
+        BusInterfaceInterface* busInterface,
+        PortMapInterface* portMapInterface,
         ComponentEditorTreeModel* model,
         LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
@@ -129,6 +133,9 @@ private:
 
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_;
+
+    //! Interface for accessing port maps.
+    PortMapInterface* portMapInterface_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACESITEM_H

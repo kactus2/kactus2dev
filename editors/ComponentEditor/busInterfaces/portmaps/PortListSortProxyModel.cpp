@@ -281,22 +281,17 @@ void PortListSortProxyModel::onPortConnected(QString const& portName)
 //-----------------------------------------------------------------------------
 void PortListSortProxyModel::onPortDisconnected(QString const& portName)
 {
-    QStringList connectedPhysicalPorts;
-    for (auto logicalPortName : portMapInterface_->getItemNames())
+    for (int i = 0; i < portMapInterface_->itemCount(); ++i)
     {
-        for (int i = 0; i < portMapInterface_->portMapCount(logicalPortName); i++)
+        QString physicalPortName = QString::fromStdString(portMapInterface_->getPhysicalPortName(i));
+        if (physicalPortName == portName)
         {
-            QString physicalPortName =
-                QString::fromStdString(portMapInterface_->getPhysicalPortName(logicalPortName, i));
-            connectedPhysicalPorts.append(physicalPortName);
+            return;
         }
     }
 
-    if (!connectedPhysicalPorts.contains(portName))
-    {
-        connectedPorts_.removeAll(portName);
-        invalidateFilter();
-    }
+    connectedPorts_.removeAll(portName);
+    invalidateFilter();
 }
 
 //-----------------------------------------------------------------------------

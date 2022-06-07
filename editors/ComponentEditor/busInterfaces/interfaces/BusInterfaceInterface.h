@@ -219,6 +219,16 @@ public:
     General::InterfaceMode getMode(std::string const& busName) const;
 
     /*!
+     *  Get the active / monitored bus interface mode of the selected bus interface.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return Active / monitored bus interface mode of the seleced bus interface.
+     */
+    General::InterfaceMode getActiveMode(std::string const& busName) const;
+
+
+    /*!
      *  Get the interface mode of the selected bus interface in string form.
      *
      *      @param [in] busName     Name of the selected bus interface.
@@ -245,6 +255,15 @@ public:
      *      @return System group of the selected bus interface.
      */
     std::string getSystemGroup(std::string const& busName) const;
+
+    /*!
+     *  Get the active / monitored system group of the selected bus interface.
+     *
+     *      @param [in] busName     Name of the selected bus interface.
+     *
+     *      @return Active / monitored system group of the seleced bus interface.
+     */
+    QString getActiveSystemGroup(std::string const& busName) const;
 
     /*!
      *  Set the system group for the selected bus interface.
@@ -594,15 +613,6 @@ public:
      *      @return Monitor interface mode of the selected bus interface.
      */
     General::InterfaceMode getMonitorMode(std::string const& busName) const;
-
-    /*!
-     *  Check if the selected bus interface is a monitor interface.
-     *
-     *      @param [in] busName     Name of the selected bus interface.
-     *
-     *      @return True, if the bus interface contains monitor interface, false otherwise.
-     */
-    bool hasMonitorInterface(std::string const& busName) const;
 
     /*!
      *  Set the monitor interface mode for the selected bus interface.

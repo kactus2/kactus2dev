@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
 #include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
@@ -57,10 +57,10 @@ typeFilter_(this),
 directionFilter_(this),
 hideConnectedPortsBox_(this),
 physicalPrefixEditor_(new QLineEdit(this)),
-portMapsModel_(component, libHandler, finder, portMapInterface, this),
-portMapsSorter_(this),
-portMapsView_(portMapInterface, this),
-portMapsDelegate_(0),
+portMapModel_(finder, portMapInterface, this),
+portMapSorter_(portMapInterface, this),
+portMapView_(portMapInterface, this),
+portMapDelegate_(0),
 autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
 removeAllMappingsButton_(QIcon(":/icons/common/graphics/cross.png"), "Remove all", this),
 autoConnector_(component, expressionParser, portMapInterface, libHandler, this),
@@ -71,9 +71,9 @@ abstractionSelector_(new QComboBox(this))
     physicalPortSorter_.setSourceModel(&physicalPortModel_);
     physicalPortView_.setModel(&physicalPortSorter_);
 
-    portMapsSorter_.setSourceModel(&portMapsModel_);
-    portMapsView_.setModel(&portMapsSorter_);
-    portMapsSorter_.sort(PortMapsColumns::LOGICAL_PORT);
+    portMapSorter_.setSourceModel(&portMapModel_);
+    portMapView_.setModel(&portMapSorter_);
+    portMapView_.sortByColumn(PortMapsColumns::LOGICAL_PORT, Qt::AscendingOrder);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(finder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -83,23 +83,15 @@ abstractionSelector_(new QComboBox(this))
 
     QStringList portNames = component_->getPortNames();
 
-    portMapsDelegate_ =
-        new PortMapTreeDelegate(component_, parameterCompleter, finder, portNames, libHandler_, this);
+    portMapDelegate_ = new PortMapDelegate(parameterCompleter, finder, portMapInterface, this);
 
-    connect(portMapsDelegate_, SIGNAL(increaseReferences(QString)),
+    connect(portMapDelegate_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(portMapsDelegate_, SIGNAL(decreaseReferences(QString)),
+    connect(portMapDelegate_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    PortMapHeaderView* portMapHorizontalHeader = new PortMapHeaderView(Qt::Horizontal, this);
-    portMapHorizontalHeader->setStretchLastSection(true);
-    portMapsView_.setHeader(portMapHorizontalHeader);
-    portMapsView_.setItemDelegate(portMapsDelegate_);
-
-    for (int i = 0; i < PortMapsColumns::COLUMN_COUNT; ++i)
-    {
-        portMapsView_.resizeColumnToContents(i);
-    }
+    portMapView_.setItemDelegate(portMapDelegate_);
+    portMapView_.resizeColumnsToContents();
 
 	setupLayout();
 
@@ -167,7 +159,7 @@ void BusInterfacePortMapTab::refresh()
     busInterface_->setupSubInterfaces(busName_);
 
     physicalPortModel_.refresh();
-    portMapsModel_.refresh();
+    portMapModel_.refresh();
 
     physicalPortSorter_.onConnectionsReset();
 }
@@ -263,10 +255,16 @@ void BusInterfacePortMapTab::setAbsType(int const& abstractionIndex)
         QSharedPointer<AbstractionDefinition const> abstractionDefinition =
             absDefDocument.dynamicCast<AbstractionDefinition const>();
 
-        abstractionInterface->setupPortMapInterface(
-            abstractionDefinition, abstractionIndex, busMode, systemGroup.toStdString(), component_);
+        PortMapInterface* portMapInterface = abstractionInterface->getPortMapInterface();
+        portMapInterface->setupAbstractionDefinition(abstractionDefinition);
+        portMapInterface->setupPortMaps(abstractionInterface->getAbstraction(abstractionIndex));
+        portMapInterface->setupBusMode(busMode);
+        portMapInterface->setupSystemGroup(systemGroup);
+        portMapInterface->setupPhysicalPorts(component_);
 
-        portMapsDelegate_->updateLogicalPortNames(definitionVLNV, busMode, systemGroup);
+        portMapDelegate_->setBusMode(busMode);
+        portMapDelegate_->setSystemGroup(systemGroup);
+
         autoConnector_.setAbstractionDefinition(definitionVLNV, busMode, systemGroup);
     }
 }
@@ -326,7 +324,7 @@ void BusInterfacePortMapTab::setupLayout()
 
     QVBoxLayout* portMapsLayout = new QVBoxLayout();
     portMapsLayout->addLayout(abstractionLayout, 0);
-    portMapsLayout->addWidget(&portMapsView_);
+    portMapsLayout->addWidget(&portMapView_);
     portMapsLayout->addWidget(&removeAllMappingsButton_, 0, Qt::AlignLeft);
 
     QGroupBox* portMapsGroupBox = new QGroupBox(tr("Port Maps"), this);
@@ -359,40 +357,31 @@ void BusInterfacePortMapTab::connectItems()
     connect(&directionFilter_, SIGNAL(currentIndexChanged(QString const&)),
         this, SLOT(onDirectionFilterChanged(QString const&)), Qt::UniqueConnection);
 
-    connect(&portMapsModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&portMapsModel_, SIGNAL(portConnected(QString const&)),
+    connect(&portMapModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&portMapModel_, SIGNAL(portConnected(QString const&)),
         this, SLOT(onPortConnected(QString const&)), Qt::UniqueConnection);
-    connect(&portMapsModel_, SIGNAL(portDisconnected(QString const&)),
+    connect(&portMapModel_, SIGNAL(portDisconnected(QString const&)),
         this, SLOT(onPortDisconnected(QString const&)), Qt::UniqueConnection);
 
-    connect(&portMapsView_, SIGNAL(addSubItem(QModelIndexList const&)),
-        &portMapsSorter_, SLOT(onAddSubItem(QModelIndexList const&)), Qt::UniqueConnection);
-    connect(&portMapsSorter_, SIGNAL(addSubItem(QModelIndex const&)),
-        &portMapsModel_, SLOT(onAddPortMap(QModelIndex const&)), Qt::UniqueConnection);
+    connect(&portMapView_, SIGNAL(addItem(const QModelIndex&)),
+        &portMapModel_, SLOT(onAddPortMap(const QModelIndex&)), Qt::UniqueConnection);
 
-    connect(&portMapsView_, SIGNAL(removeSelectedItems(QModelIndexList const&)),
-        &portMapsSorter_, SLOT(onRemoveSelectedRows(QModelIndexList const&)), Qt::UniqueConnection);
-    connect(&portMapsSorter_, SIGNAL(removeItem(QModelIndex const&)),
-        &portMapsModel_, SLOT(onRemovePort(QModelIndex const&)), Qt::UniqueConnection);
-
-    connect(&portMapsView_, SIGNAL(removeAllSubItems(QModelIndexList const&)),
-        &portMapsSorter_, SLOT(onRemoveAllSubItemsFromIndexes(QModelIndexList const&)), Qt::UniqueConnection);
-    connect(&portMapsSorter_, SIGNAL(removeAllSubItemsFromIndex(QModelIndex const&)),
-        &portMapsModel_, SLOT(onRemoveAllChildItemsFrom(QModelIndex const&)), Qt::UniqueConnection);
+    connect(&portMapView_, SIGNAL(removeItem(const QModelIndex&)),
+        &portMapModel_, SLOT(onRemovePortMap(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(&hideConnectedPortsBox_, SIGNAL(toggled(bool)),
         &physicalPortSorter_, SLOT(setFilterHideConnected(bool)), Qt::UniqueConnection);
 
     connect(&removeAllMappingsButton_, SIGNAL(clicked(bool)),
-        &portMapsModel_, SLOT(onRemoveAllPortMappings()), Qt::UniqueConnection);
+        &portMapModel_, SLOT(onRemoveAllPortMappings()), Qt::UniqueConnection);
 
     connect(physicalPrefixEditor_, SIGNAL(textChanged(QString const&)), 
         &autoConnector_, SLOT(setPrefix(QString const&)), Qt::UniqueConnection);
     connect(&autoConnectButton_, SIGNAL(clicked()), &autoConnector_, SLOT(onAutoConnect()), Qt::UniqueConnection);
 
     connect(&autoConnector_, SIGNAL(portMapsAutoConnected(QVector<QString>)),
-        &portMapsModel_, SLOT(onAddAutoConnectedPortMaps(QVector<QString>)), Qt::UniqueConnection);
-    connect(&portMapsView_, SIGNAL(autoConnecteLogicalSignals(QStringList const&)),
+        &portMapModel_, SLOT(onAddAutoConnectedPortMaps(QVector<QString>)), Qt::UniqueConnection);
+    connect(&portMapView_, SIGNAL(autoConnecteLogicalSignals(QStringList const&)),
         &autoConnector_, SLOT(onAutoConnectLogicalSignals(QStringList const&)), Qt::UniqueConnection);
 
     connect(abstractionSelector_, SIGNAL(currentIndexChanged(int)),

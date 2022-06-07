@@ -14,10 +14,10 @@ namespace PortMapsColumns
     //! The editable columns in the port maps editor.
     enum columns
     {
-        LOGICAL_PORT = 0,
+        LOGICAL_PRESENCE = 0,
         LOGICAL_LEFT,
         LOGICAL_RIGHT,
-        LOGICAL_PRESENCE,
+        LOGICAL_PORT,
         PHYSICAL_PORT,
         PHYSICAL_LEFT,
         PHYSICAL_RIGHT,

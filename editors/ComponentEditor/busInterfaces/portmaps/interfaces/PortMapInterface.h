@@ -30,7 +30,7 @@ class PortAbstractionInterface;
 //-----------------------------------------------------------------------------
 //! Interface for editing port maps.
 //-----------------------------------------------------------------------------
-class PortMapInterface : public ParameterizableInterface, public CommonInterface
+class KACTUS2_API PortMapInterface : public ParameterizableInterface, public CommonInterface
 {
 
 public:
@@ -56,17 +56,39 @@ public:
     virtual ~PortMapInterface() = default;
 
     /*!
-     *  Set available port maps.
+     *  Setup the abstraction definition.
      *
-     *      @param [in] absDef              The used new abstraction definition.
-     *      @param [in] abstraction         The selected abstraction type.
-     *      @param [in] newInterfaceMode    The selected interface mode.
-     *      @param [in] systemGroup         The selected system group.
-     *      @param [in] component           Component containing the port maps.
+     *      @param [in] absDef  The new abstraction definition.
      */
-    void setPortMaps(QSharedPointer<AbstractionDefinition const> absDef,
-        QSharedPointer<AbstractionType> abstraction, General::InterfaceMode newInterfaceMode,
-        std::string systemGroup, QSharedPointer<Component> component);
+    void setupAbstractionDefinition(QSharedPointer<AbstractionDefinition const> absDef);
+
+    /*!
+     *  Setup the available physical ports.
+     *
+     *      @param [in] component   Component containing the selected ports.
+     */
+    void setupPhysicalPorts(QSharedPointer<Component> component);
+
+    /*!
+     *  Setup the available port maps.
+     *
+     *      @param [in] abstractionType     Abstraction type containing the available port maps.
+     */
+    virtual void setupPortMaps(QSharedPointer<AbstractionType> abstractionType);
+
+    /*!
+     *  Setup the bus interface mode.
+     *
+     *      @param [in] busMode     The new bus interface mode.
+     */
+    void setupBusMode(General::InterfaceMode busMode);
+
+    /*!
+     *  Setup the system group.
+     *
+     *      @param [in] systemGroup     The new system group.
+     */
+    void setupSystemGroup(QString const& systemGroup);
 
     /*!
      *  Get name of the indexed logical port.
@@ -75,7 +97,7 @@ public:
      *
      *      @return Name of the selected logical port.
      */
-    std::string getIndexedItemName(int const& itemIndex) const;
+    virtual std::string getIndexedItemName(int const& itemIndex) const;
 
     /*!
      *  Get the number of available port maps.
@@ -83,31 +105,6 @@ public:
      *      @return Number of available port maps.
      */
     virtual int itemCount() const override final;
-
-    /*!
-     *  Get the amount of port maps connected to the selected logical port.
-     *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *
-     *      @return Number of port maps connected to the selected logical port.
-     */
-    int portMapCount(std::string const& logicalPortName) const;
-
-    /*!
-     *  Get the number of logical ports in the current abstraction definition.
-     *
-     *      @return Number of logical ports in the current abstraction definition.
-     */
-    int logicalPortCount() const;
-
-    /*!
-     *  Get the index of the selected logical port mapping.
-     *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *
-     *      @return Index of the selected logical port mapping.
-     */
-    int mappingIndex(std::string const& logicalPortName) const;
 
     /*!
      *  Get the names of the available logical ports.
@@ -119,64 +116,58 @@ public:
     /*!
      *  Get the logical port name modified by the port map index.
      *
-     *      @param [in] logicalPortName     The current logical port name.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Modified logical port name.
      */
-    std::string getLogicalPortName(std::string const& logicalPortName, int const& portMapIndex = -1) const;
-
-    /*!
-     *  Check if the selected logical port exists.
-     *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *
-     *      @return True, if the logical port exists, false otherwise.
-     */
-    bool hasLogicalPort(std::string const& logicalPortName) const;
+    std::string getLogicalPortName(int const& portMapIndex) const;
 
     /*!
      *  Set a new name for the selected logical port.
      *
-     *      @param [in] currentName     Name of the selected logical port.
      *      @param [in] portMapIndex    Index of the selected port map.
      *      @param [in] newName         New name for the item.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setLogicalPort(std::string const& currentName, int const& portMapIndex, std::string const& newName);
+    bool setLogicalPort(int const& portMapIndex, std::string const& newName);
 
     /*!
      *  Check if the selected port map has a connected physical port.
      *
-     *      @param [in] logicalPortName     Name of the connected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return True, if the selected port map is connected to a logical port, false otherwise.
      */
-    bool hasPhysicalPort(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool hasPhysicalPort(int const& portMapIndex) const;
 
     /*!
      *  Get the name of the connected physical port in the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the connected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Name of the connected physical port in the selected port map.
      */
-    std::string getPhysicalPortName(std::string const& logicalPortName, int const& portMapIndex = -1) const;
+    std::string getPhysicalPortName(int const& portMapIndex) const;
 
     /*!
      *  Set a new name for the connected physical port in the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the connected logical port.
      *      @param [in] portMapIndex        Index of the selected port map.
      *      @param [in] newPhysicalName     New name for the physical port.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setPhysicalPort(std::string const& logicalName, int const& portMapIndex,
-        std::string const& newPhysicalName);
+    bool setPhysicalPort(int const& portMapIndex, std::string const& newPhysicalName);
+
+    /*!
+     *  Get the logical presence of the logical port in the selected port map.
+     *
+     *      @param [in] portMapIndex    Index of the selected port map.
+     *
+     *      @return Logical presence.
+     */
+    std::string getLogicalPresence(int const& portMapIndex);
 
     /*!
      *  Get the logical presence of the selected logical port.
@@ -185,321 +176,288 @@ public:
      *
      *      @return Logical presence of the selected logical port.
      */
-    std::string getLogicalPresence(std::string const& logicalPortName);
+    std::string getLogicalPresenceWithLogicalPort(std::string const& logicalName);
 
     /*!
-     *  Get the invert value of the selected logical port in string form.
+     *  Get the invert value of the logical port  of the selected port map in string form.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Invert value of the selected logical port in string form.
      */
-    std::string getInvertString(std::string const& logicalPortName, int const& portMapIndex) const;
+    std::string getInvertString(int const& portMapIndex) const;
 
     /*!
-     *  Get the invert value of the selected logical port.
+     *  Get the invert value of the logical port  of the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
-     *      @return Invert value of the selected logical port.
+     *      @return Invert value.
      */
-    bool getInvertValue(std::string const& logicalPortName, int const& portMapIndex) const;
+    BooleanValue getInvertValue(int const& portMapIndex) const;
+
+    /*!
+     *  Get the invert value of the logical port  of the selected port map.
+     *
+     *      @param [in] portMapIndex    Index of the selected port map.
+     *
+     *      @return Invert value.
+     */
+    bool getInvertBool(int const& portMapIndex) const;
 
     /*!
      *  Set a new invert value for the selected logical port.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
-     *      @param [in] newInvertValue      The new invert value.
+     *      @param [in] portMapIndex    Index of the selected port map.
+     *      @param [in] newInvertValue  The new invert value.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setInvertValue(std::string const& logicalPortName, int const& portMapIndex, bool newInvertValue) const;
+    bool setInvertValue(int const& portMapIndex, bool newInvertValue) const;
 
     /*!
      *  Get the is informative value of the selected port map in string form.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Is informative value of the selected port map in string form.
      */
-    std::string getIsInformativeString(std::string const& logicalPortName, int const& portMapIndex) const;
+    std::string getIsInformativeString(int const& portMapIndex) const;
 
     /*!
      *  Get the is informative value of the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Is informative value of the selected port map.
      */
-    bool getIsInformativeValue(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool getIsInformativeValue(int const& portMapIndex) const;
 
     /*!
-     *  Get the is informative value of the selected port map.
+     *  Set a new is informative value for the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
      *      @param [in] portMapIndex        Index of the selected port map.
      *
-     *      @return Is informative value of the selected port map.
+     *      @return True, if successful, false otherwise.
      */
-    bool setIsInformativeValue(std::string const& logicalPortName, int const& portMapIndex,
-        bool newIsInformativeValue) const;
+    bool setIsInformativeValue(int const& portMapIndex, bool newIsInformativeValue) const;
 
     /*!
      *  Get the calculated logical tie off of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
      *      @param [in] portMapIndex        Index of the selected port map.
      *      @param [in] baseNumber          Base for displaying the value.
      *
      *      @return Calculated logical tie off value of the selected item.
      */
-    std::string getLogicalTieOffValue(std::string const& logicalPortName, int const& portMapIndex,
-        int const& baseNumber = 0) const;
+    std::string getLogicalTieOffValue(int const& portMapIndex, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted logical tie off expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Formatted logical tie off expression of the selected item.
      */
-    std::string getLogicalTieOffFormattedExpression(std::string const& logicalPortName, int const& portMapIndex)
-        const;
+    std::string getLogicalTieOffFormattedExpression(int const& portMapIndex) const;
 
     /*!
      *  Get the logical tie off expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Logical tie off expression of the selected item.
      */
-    std::string getLogicalTieOffExpression(std::string const& logicalPortName, int const& portMapIndex) const;
+    std::string getLogicalTieOffExpression(int const& portMapIndex) const;
 
     /*!
      *  Set a new logical tie off value for the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
-     *      @param [in] newTieOff           New logical tie off value.
+     *      @param [in] portMapIndex    Index of the selected port map.
+     *      @param [in] newTieOff       New logical tie off value.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setLogicalTieOff(std::string const& logicalPortName, int const& portMapIndex,
-        std::string const& newTieOff);
+    bool setLogicalTieOff(int const& portMapIndex, std::string const& newTieOff);
 
     /*!
      *  Get the calculated logical left bound of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
-     *      @param [in] baseNumber          Base for displaying the value.
+     *      @param [in] portMapIndex    Index of the selected port map.
+     *      @param [in] baseNumber      Base for displaying the value.
      *
      *      @return Calculated logical left bound value of the selected item.
      */
-    std::string getLogicalLeftBoundValue(std::string const& logicalPortName, int const& portMapIndex,
-        int const& baseNumber = 0) const;
+    std::string getLogicalLeftBoundValue(int const& portMapIndex, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted logical left bound expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Formatted logical left bound expression of the selected item.
      */
-    std::string getLogicalLeftBoundFormattedExpression(std::string const& logicalPortName, int const& portMapIndex)
-        const;
+    std::string getLogicalLeftBoundFormattedExpression(int const& portMapIndex) const;
 
     /*!
      *  Get the logical left bound expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Logical left bound expression of the selected item.
      */
-    std::string getLogicalLeftBoundExpression(std::string const& logicalPortName, int const& portMapIndex) const;
+    std::string getLogicalLeftBoundExpression(int const& portMapIndex) const;
 
     /*!
      *  Set a new logical left value for the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
      *      @param [in] portMapIndex        Index of the selected port map.
      *      @param [in] newLogicalLeft      New logical left value.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setLogicalLeftBound(std::string const& logicalPortName, int const& portMapIndex,
-        std::string const& newLogicalLeft);
+    bool setLogicalLeftBound(int const& portMapIndex, std::string const& newLogicalLeft);
 
     /*!
      *  Get the calculated logical right bound of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
-     *      @param [in] baseNumber          Base for displaying the value.
+     *      @param [in] portMapIndex    Index of the selected port map.
+     *      @param [in] baseNumber      Base for displaying the value.
      *
      *      @return Calculated logical right bound value of the selected item.
      */
-    std::string getLogicalRightBoundValue(std::string const& logicalPortName, int const& portMapIndex,
-        int const& baseNumber = 0) const;
+    std::string getLogicalRightBoundValue(int const& portMapIndex, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted logical right bound expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Formatted logical right bound expression of the selected item.
      */
-    std::string getLogicalRightBoundFormattedExpression(std::string const& logicalPortName,
-        int const& portMapIndex) const;
+    std::string getLogicalRightBoundFormattedExpression(int const& portMapIndex) const;
 
     /*!
      *  Get the logical right bound expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Logical right bound expression of the selected item.
      */
-    std::string getLogicalRightBoundExpression(std::string const& logicalPortName, int const& portMapIndex) const;
-    
+    std::string getLogicalRightBoundExpression(int const& portMapIndex) const;
+
     /*!
      *  Set a new logical right value for the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
      *      @param [in] portMapIndex        Index of the selected port map.
      *      @param [in] newLogicalRight     New logical right value.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setLogicalRightBound(std::string const& logicalPortName, int const& portMapIndex,
-        std::string const& newLogicalRight);
+    bool setLogicalRightBound(int const& portMapIndex, std::string const& newLogicalRight);
 
     /*!
      *  Get the calculated physical left bound of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
-     *      @param [in] baseNumber          Base for displaying the value.
+     *      @param [in] portMapIndex    Index of the selected port map.
+     *      @param [in] baseNumber      Base for displaying the value.
      *
      *      @return Calculated physical left bound value of the selected item.
      */
-    std::string getPhysicalLeftBoundValue(std::string const& logicalPortName, int const& portMapIndex,
-        int const& baseNumber = 0) const;
+    std::string getPhysicalLeftBoundValue(int const& portMapIndex, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted physical left bound expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Formatted physical left bound expression of the selected item.
      */
-    std::string getPhysicalLeftBoundFormattedExpression(std::string const& logicalPortName,
-        int const& portMapIndex) const;
+    std::string getPhysicalLeftBoundFormattedExpression(int const& portMapIndex) const;
 
     /*!
      *  Get the physical left bound expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Physical left bound expression of the selected item.
      */
-    std::string getPhysicalLeftBoundExpression(std::string const& logicalPortName, int const& portMapIndex) const;
-    
+    std::string getPhysicalLeftBoundExpression(int const& portMapIndex) const;
+
     /*!
      *  Set a new physical left bound value for the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
      *      @param [in] portMapIndex        Index of the selected port map.
      *      @param [in] newPhysicalLeft     New physical left value.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setPhysicalLeftBound(std::string const& logicalPortName, int const& portMapIndex,
-        std::string const& newPhysicalLeft);
+    bool setPhysicalLeftBound(int const& portMapIndex, std::string const& newPhysicalLeft);
 
     /*!
      *  Get the calculated physical right bound of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
-     *      @param [in] baseNumber          Base for displaying the value.
+     *      @param [in] portMapIndex    Index of the selected port map.
+     *      @param [in] baseNumber      Base for displaying the value.
      *
      *      @return Calculated physical right bound value of the selected item.
      */
-    std::string getPhysicalRightBoundValue(std::string const& logicalPortName, int const& portMapIndex,
-        int const& baseNumber = 0) const;
+    std::string getPhysicalRightBoundValue(int const& portMapIndex, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted physical right bound expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Formatted physical right bound expression of the selected item.
      */
-    std::string getPhysicalRightBoundFormattedExpression(std::string const& logicalPortName,
-        int const& portMapIndex) const;
+    std::string getPhysicalRightBoundFormattedExpression(int const& portMapIndex) const;
 
     /*!
      *  Get the physical right bound expression of the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Physical right bound expression of the selected item.
      */
-    std::string getPhysicalRightBoundExpression(std::string const& logicalPortName, int const& portMapIndex) const;
+    std::string getPhysicalRightBoundExpression(int const& portMapIndex) const;
 
     /*!
      *  Set a new physical right bound value for the selected item.
      *
-     *      @param [in] logicalPortName     Name of the logical port of the port map.
      *      @param [in] portMapIndex        Index of the selected port map.
      *      @param [in] newPhysicalRight    New physical right value.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setPhysicalRightBound(std::string const& logicalPortName, int const& portMapIndex,
-        std::string const& newPhysicalRight);
+    bool setPhysicalRightBound(int const& portMapIndex, std::string const& newPhysicalRight);
 
     /*!
-     *  Get the icon path for the selected logical port.
+     *  Get the icon path for the logical port of the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
-     *      @return Icon path for the selected logical port.
+     *      @return Icon path.
      */
-    std::string getLogicalPortIconPath(std::string const& logicalPortName) const;
+    std::string getLogicalPortIconPath(int const& portMapIndex) const;
 
     /*!
-     *  Get the icon path for the physical port in the selected port map.
+     *  Get the icon path for the physical port of the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Icon path for the physical port in the selected port map.
      */
-    std::string getPhysicalPortIconPath(std::string const& logicalPortName, int const& portMapIndex) const;
+    std::string getPhysicalPortIconPath(int const& portMapIndex) const;
 
     /*!
-     *  Check if the selected logical port exists.
+     *  Check if the logical port of the selected port map exists.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return True, if the logical port exists, false otherwise.
      */
-    bool logicalPortExists(std::string const& logicalPortName) const;
+    bool logicalPortExists(int const& portMapIndex) const;
 
     /*!
      *  Calculate all the references to the selected ID in the selected item.
@@ -515,18 +473,11 @@ public:
     /*!
      *  Get the expressions in the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Expressions in the selected component instantiations.
      */
-    std::vector<std::string> getExpressionsInSelectedPortMap(std::string logicalPortName, int const& portMapIndex)
-        const;
-
-    /*!
-     *  Change the abstraction definition for the port map validator.
-     */
-    void changeValidatorAbstractionDefinition();
+    std::vector<std::string> getExpressionsInSelectedPortMap(int const& portMapIndex) const;
 
     /*!
      *  Validates the contained items.
@@ -536,94 +487,85 @@ public:
     virtual bool validateItems() const override final;
 
     /*!
-     *  Check if the selected logical port is valid
+     *  Check if the logical port of the selected port map is valid.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
-     *      @return True, if the selected logical port is valid, false otherwise.
+     *      @return True, if the logical port is valid, false otherwise.
      */
-    bool logicalPortIsValid(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool logicalPortIsValid(int const& portMapIndex) const;
 
     /*!
      *  Check if the physical port of the selected port map is valid
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
-     *      @return True, if the physical port of the selected port map is valid, false otherwise.
+     *      @return True, if the physical port is valid, false otherwise.
      */
-    bool physicalPortIsValid(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool physicalPortIsValid(int const& portMapIndex) const;
 
     /*!
-     *  Check if the physical port of the selected port map is valid
+     *  Check if the physical mapping of the selected port map is valid
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
-     *      @return True, if the physical port of the selected port map is valid, false otherwise.
+     *      @return True, if the physical mapping is valid, false otherwise.
      */
-    bool physicalMappingIsValid(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool physicalMappingIsValid(int const& portMapIndex) const;
 
     /*!
-     *  Check if the port map has a valid physical port or a valid tie off.
+     *  Check if the mapped ports have valid port types.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
-     *      @return True, if the physical mapping is valid, otherwise false.
+     *      @return True, if the mapped ports have valid types, otherwise false.
      */
-    bool connectedPortsHaveValidPortTypes(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool connectedPortsHaveValidPortTypes(int const& portMapIndex) const;
 
     /*!
      *  Check if the connected ports of the selected port map have valid directions.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return True, if the directions are valid, otherwise false.
      */
-    bool connectedPortsHaveValidDirections(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool connectedPortsHaveValidDirections(int const& portMapIndex) const;
 
     /*!
      *  Check if the connected ports of the selected port map have valid initiatives.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return True, if the initiatives are valid, otherwise false.
      */
-    bool connectedPortsHaveValidInitiatives(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool connectedPortsHaveValidInitiatives(int const& portMapIndex) const;
 
     /*!
      *  Check if the connected ports of the selected port map have the same range.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return True, if the connected ports have the same range, otherwise false.
      */
-    bool connectedPortsHaveSameRange(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool connectedPortsHaveSameRange(int const& portMapIndex) const;
 
     /*!
      *  Check if the tie off value of the selected port map is valid.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return True, if the tie off value of the selected port map is valid, otherwise false.
      */
-    bool tieOffIsValid(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool tieOffIsValid(int const& portMapIndex) const;
 
     /*!
      * Checks if the logical port of the selected port map has a valid range.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return True, if the range is valid, otherwise false.
      */
-    bool logicalPortHasValidRange(std::string const& logicalPortName, int const& portMapIndex) const;
+    bool logicalPortHasValidRange(int const& portMapIndex) const;
 
     /*!
      *  Connect the selected logical port to the selected physical port.
@@ -638,20 +580,18 @@ public:
     /*!
      *  Add a new port map.
      *
-     *      @param [in] row                 Row of the new port map.
-     *      @param [in] nweLogicalPortName  Name of the new logical port in the port map.
+     *      @param [in] row     Row of the new port map.
      */
-    void addPortMap(int const& row, std::string const& newLogicalPortName = std::string(""));
+    void addPortMap(int const& row);
 
     /*!
      *  Remove the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool removePortMap(std::string const& logicalPortName, int const& portMapIndex);
+    bool removePortMap(int const& portMapIndex);
 
     /*!
      *  Remove all the port maps from the selected logical port.
@@ -665,21 +605,11 @@ public:
     /*!
      *  Get a pointer to the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return Pointer to the selected port map.
      */
-    PortMap* getPortMapPointer(std::string const& logicalPortName, int const& portMapIndex) const;
-
-    /*!
-     *  Get a pointer to the selected logical port.
-     *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *
-     *      @return Pointer to the selected logical port.
-     */
-    PortAbstraction* getLogicalPortPointer(std::string const& logicalPortName) const;
+    PortMap* getPortMapPointer(int const& portMapIndex) const;
 
     /*!
      *  Get the interface for accessing physical ports.
@@ -697,71 +627,30 @@ public:
 
 private:
 
-    //! Container for a port mapping.
-    struct PortMapping
-    {
-        //! The logical port of the port maps.
-        QSharedPointer<PortAbstraction> logicalPort_;
-
-        //! Name of the contained logical port.
-        QString logicalPortName_;
-
-        //! A list of port maps with the same logical port.
-        QList<QSharedPointer<PortMap> > portMaps_;
-    };
-
-    /*!
-     *  Get the selected port mapping.
-     *
-     *      @param [in] logicalPortName     Name of the selected port mapping.
-     *
-     *      @return The selected port mapping.
-     */
-    QSharedPointer<PortMapping> getPortMapping(std::string const& logicalPortName) const;
-
     /*!
      *  Get the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return The selected port map.
      */
-    QSharedPointer<PortMap> getPortMap(std::string const& logicalPortName, int const& portMapIndex) const;
+    QSharedPointer<PortMap> getPortMap(int const& portMapIndex) const;
 
     /*!
-     *  Get the combined tie off for display on the logical row.
+     *  Remove an empty logical port from the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the logical port.
+     *      @param [in] editedPortMap   The selected port map.
      *
-     *      @return The combined tie off for display on the logical row.
+     *      @return True, if the logical port was removed, false otherwise.
      */
-    QString getTieOffForLogicalRow(std::string const& logicalPortName) const;
-
-    /*!
-     *  Get the combined logical left bound value for display on the logical row.
-     *
-     *      @param [in] logicalPortName     Name of the logical port.
-     *
-     *      @return The combined logical left bound value for display on the logical row.
-     */
-    QString getLogicalLeftForLogicalPort(std::string const& logicalPortName) const;
+    bool removeEmptyLogicalPort(QSharedPointer<PortMap> editedPortMap);
 
     /*!
      *  Remove an empty range container from the selected logical port.
      *
      *      @param [in] editedPortLogical   The selected logical port.
      */
-    void removeEmptyRange(QSharedPointer<PortMap::LogicalPort> editedPortLogical);
-
-    /*!
-     *  Create a new port map connecting the selected logical port.
-     *
-     *      @param [in] logicalPortName     The selected logical port.
-     *
-     *      @return The created port map.
-     */
-    QSharedPointer<PortMap> createNewPortMap(QString const& logicalPortName);
+    bool removeEmptyRange(QSharedPointer<PortMap::LogicalPort> editedPortLogical);
 
     /*!
      *  Remove an empty physical port container from the selected port map.
@@ -784,29 +673,24 @@ private:
     /*!
      *  Create a part select container for the physical port in the selected port map.
      *
-     *      @param [in] logicalPortName     Name of the selected logical port.
-     *      @param [in] portMapIndex        Index of the selected port map.
+     *      @param [in] portMapIndex    Index of the selected port map.
      *
      *      @return The created part select.
      */
-    QSharedPointer<PartSelect> createPhysicalPartSelect(std::string const& logicalPortName,
-        int const& portMapIndex);
+    QSharedPointer<PartSelect> getPhysicalPartSelect(int const& portMapIndex);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! List of the contained port mappings.
-    QList<QSharedPointer<PortMapping> > portMappings_;
-
-    //! The current abstraction type.
-    QSharedPointer<AbstractionType> abstraction_;
+    //! List of the contained port maps.
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
 
     //! Specifies the currently active interface mode.
     General::InterfaceMode interfaceMode_;
 
     //! The system group name in case of system mode.
-    QString systemGroup_;
+    std::string systemGroup_;
 
     //! The abstraction definition referenced by the abstraction type.
     QSharedPointer<AbstractionDefinition const> abstractionDef_;
@@ -814,10 +698,10 @@ private:
     //! Validator for port maps.
     QSharedPointer<PortMapValidator> validator_;
 
-    //! Interface for accessing phyiscal ports.
+    //! Interface for accessing physical ports.
     PortsInterface* physicalPortInterface_;
 
-    //! Interface for accessign logical ports.
+    //! Interface for accessing logical ports.
     PortAbstractionInterface* logicalPortInterface_;
 };
 

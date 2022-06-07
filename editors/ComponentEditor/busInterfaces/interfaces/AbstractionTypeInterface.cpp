@@ -11,11 +11,15 @@
 
 #include "AbstractionTypeInterface.h"
 
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/Component/AbstractionType.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+
+#include <library/LibraryInterface.h>
 
 namespace
 {
@@ -26,10 +30,11 @@ namespace
 // Function: AbstractionTypeInterface::AbstractionTypeInterface()
 //-----------------------------------------------------------------------------
 AbstractionTypeInterface::AbstractionTypeInterface(PortMapInterface* portMapInterface,
-    QSharedPointer<AbstractionTypeValidator> validator):
+    QSharedPointer<AbstractionTypeValidator> validator, LibraryInterface* library):
 abstractions_(),
 validator_(validator),
-portMapInterface_(portMapInterface)
+portMapInterface_(portMapInterface),
+library_(library)
 {
 
 }
@@ -38,24 +43,73 @@ portMapInterface_(portMapInterface)
 // Function: AbstractionTypeInterface::setAbstractionTypes()
 //-----------------------------------------------------------------------------
 void AbstractionTypeInterface::setAbstractionTypes(
-    QSharedPointer<QList<QSharedPointer<AbstractionType> > > newAbstractions)
+    QSharedPointer<QList<QSharedPointer<AbstractionType>>> newAbstractions, General::InterfaceMode busMode,
+    QString const& systemGroup)
 {
     abstractions_ = newAbstractions;
+
+    portMapInterface_->setupBusMode(busMode);
+    portMapInterface_->setupSystemGroup(systemGroup);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTypeInterface::setupPortMapInterface()
+// Function: AbstractionTypeInterface::setBusMode()
 //-----------------------------------------------------------------------------
-void AbstractionTypeInterface::setupPortMapInterface(
-    QSharedPointer<const AbstractionDefinition> abstractionDefinition, int const& abstractionTypeIndex,
-    General::InterfaceMode const& busMode, std::string const& systemGroup, QSharedPointer<Component> component)
+void AbstractionTypeInterface::setBusMode(General::InterfaceMode busMode)
 {
-    QSharedPointer<AbstractionType> selectedAbstraction = getAbstraction(abstractionTypeIndex);
-    if (selectedAbstraction)
+    portMapInterface_->setupBusMode(busMode);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypeInterface::()
+//-----------------------------------------------------------------------------
+void AbstractionTypeInterface::setSystemGroup(QString const& systemGroup)
+{
+    portMapInterface_->setupSystemGroup(systemGroup);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypeInterface::setupAbstractionForPortMapInterface()
+//-----------------------------------------------------------------------------
+bool AbstractionTypeInterface::setupAbstractionTypeForPortMapInterface(int const& abstractionTypeIndex,
+    General::InterfaceMode busMode, QString const& systemGroup)
+{
+    QSharedPointer<AbstractionType> abstraction = getAbstraction(abstractionTypeIndex);
+    if (abstraction)
     {
-        portMapInterface_->setPortMaps(
-            abstractionDefinition, selectedAbstraction, busMode, systemGroup, component);
+        portMapInterface_->setupPortMaps(abstraction);
+        portMapInterface_->setupBusMode(busMode);
+        portMapInterface_->setupSystemGroup(systemGroup);
+
+        return true;
     }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypeInterface::setupAbstractionDefinitionForPortMapInterface()
+//-----------------------------------------------------------------------------
+bool AbstractionTypeInterface::setupAbstractionDefinitionForPortMapInterface(int const& abstractionTypeIndex)
+{
+    QSharedPointer<ConfigurableVLNVReference> absDefReference = getAbstractionReference(abstractionTypeIndex);
+    if (absDefReference)
+    {
+        QSharedPointer<const Document> absDefDocument = library_->getModelReadOnly(*absDefReference.data());
+        if (absDefDocument)
+        {
+            QSharedPointer<const AbstractionDefinition> absDef =
+                absDefDocument.dynamicCast<const AbstractionDefinition>();
+
+            if (absDef)
+            {
+                portMapInterface_->setupAbstractionDefinition(absDef);
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

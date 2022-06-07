@@ -16,20 +16,20 @@
 
 #include <editors/ComponentEditor/common/interfaces/CommonInterface.h>
 
+#include <QSharedPointer>
+
 class AbstractionDefinition;
 class AbstractionType;
 class AbstractionTypeValidator;
 class Component;
 class ConfigurableVLNVReference;
-
 class PortMapInterface;
-
-#include <QSharedPointer>
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing abstraction types.
 //-----------------------------------------------------------------------------
-class AbstractionTypeInterface: public CommonInterface
+class KACTUS2_API AbstractionTypeInterface: public CommonInterface
 {
 public:
 
@@ -38,11 +38,10 @@ public:
      *
      *      @param [in] portMapInterface    Interface for accessing port maps.
      *      @param [in] validator           Validator for abstraction types.
-     *
-     *      @return 
+     *      @param [in] library             Interface for the VLNV library.
      */
     AbstractionTypeInterface(PortMapInterface* portMapInterface,
-        QSharedPointer<AbstractionTypeValidator> validator);
+        QSharedPointer<AbstractionTypeValidator> validator, LibraryInterface* library);
 
     /*!
      *  The destructor.
@@ -53,21 +52,55 @@ public:
      *  Setup the abstraction types.
      *
      *      @param [in] newAbstractions     The new abstraction types.
+     *      @param [in] busMode             The new bus interface mode.
+     *      @param [in] systemGroup         The new system group.
      */
-    void setAbstractionTypes(QSharedPointer<QList<QSharedPointer<AbstractionType> > > newAbstractions);
+    void setAbstractionTypes(QSharedPointer<QList<QSharedPointer<AbstractionType> > > newAbstractions,
+        General::InterfaceMode busMode, QString const& systemGroup);
+
+    /*!
+     *  Setup a new bus interface mode.
+     *
+     *      @param [in] busMode     The selected bus interface mode.
+     */
+    void setBusMode(General::InterfaceMode busMode);
+
+    /*!
+     *  Setup a new system group.
+     *
+     *      @param [in] systemGroup     The selected system group.
+     */
+    void setSystemGroup(QString const& systemGroup);
+
+    /*!
+     *  Get the selected abstraction type.
+     *
+     *      @param [in] abstractionIndex    Index of the selected abstraction type.
+     *
+     *      @return The selected abstraction type.
+     */
+    QSharedPointer<AbstractionType> getAbstraction(int const& abstractionIndex) const;
 
     /*!
      *  Setup the containing port map interface.
      *
-     *      @param [in] abstractionDefinition   Abstraction definition containing the logical ports.
      *      @param [in] abstractionTypeIndex    Index of the selected abstraction type.
      *      @param [in] busMode                 The selected interface mode.
      *      @param [in] systemGroup             The selected system group.
-     *      @param [in] component               The containing component.
+     *
+     *      @return True, if succesfull, false otherwise.
      */
-    void setupPortMapInterface(QSharedPointer<const AbstractionDefinition> abstractionDefinition,
-        int const& abstractionTypeIndex, General::InterfaceMode const& busMode, std::string const& systemGroup,
-        QSharedPointer<Component> component);
+    bool setupAbstractionTypeForPortMapInterface(int const& abstractionTypeIndex, General::InterfaceMode busMode,
+        QString const& systemGroup);
+
+    /*!
+     *  Setup the abstraction definition for port map interface.
+     *
+     *      @param [in] abstractionTypeIndex    Index of the selected abstraction definition.
+     *
+     *      @return True, if succesfull, false otherwise.
+     */
+    bool setupAbstractionDefinitionForPortMapInterface(int const& abstractionTypeIndex);
 
     /*!
      *  Get the abstraction reference string of the selected abstraction type.
@@ -240,15 +273,6 @@ public:
 
 private:
 
-    /*!
-     *  Get the selected abstraction type.
-     *
-     *      @param [in] abstractionIndex    Index of the selected abstraction type.
-     *
-     *      @return The selected abstraction type.
-     */
-    QSharedPointer<AbstractionType> getAbstraction(int const& abstractionIndex) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -261,6 +285,9 @@ private:
 
     //! Validator for abstraction types.
     QSharedPointer<AbstractionTypeValidator> validator_;
+
+    //! Interface for the VLNV library.
+    LibraryInterface* library_;
 };
 
 #endif // BUSINTERFACEINTERFACE_H

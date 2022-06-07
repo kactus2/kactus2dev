@@ -42,6 +42,21 @@ void PortsInterface::setPorts(QSharedPointer<Component> component)
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortsInterface::hasPorts()
+//-----------------------------------------------------------------------------
+bool PortsInterface::hasPorts() const
+{
+    if (ports_ && itemCount() > 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortsInterface::getPortIndex()
 //-----------------------------------------------------------------------------
 int PortsInterface::getItemIndex(string const& itemName) const
@@ -62,7 +77,7 @@ int PortsInterface::getItemIndex(string const& itemName) const
 //-----------------------------------------------------------------------------
 string PortsInterface::getIndexedItemName(int const& itemIndex) const
 {
-    string portName = "";
+    string portName("");
     if (itemIndex >= 0 && itemIndex < ports_->size())
     {
         portName = ports_->at(itemIndex)->name().toStdString();
@@ -123,7 +138,7 @@ bool PortsInterface::setName(string const& currentPortName, string const& newPor
         return false;
     }
 
-    QString uniqueNewName = getUniqueName(newPortName, "port");
+    QString uniqueNewName(getUniqueName(newPortName, "port"));
 
     editedPort->setName(uniqueNewName);
     return true;
@@ -179,7 +194,7 @@ string PortsInterface::getTypeName(string const& portName)
     {
         if (definitionList->count() > 1)
         {
-            string combinedType = "";
+            string combinedType("");
             foreach(QSharedPointer<WireTypeDef> typeDefinition, *definitionList)
             {
                 combinedType.append(typeDefinition->getTypeName().toStdString());
@@ -637,8 +652,8 @@ bool PortsInterface::hasExpressionInLeftOrRightBound(string const& portName) con
 {
     QSharedPointer<Port> port = getPort(portName);
 
-    QString left = QString::fromStdString(getLeftBoundValue(portName));
-    QString right = QString::fromStdString(getRightBoundValue(portName));
+    QString left(QString::fromStdString(getLeftBoundValue(portName)));
+    QString right(QString::fromStdString(getRightBoundValue(portName)));
 
     if (left.isEmpty() && right.isEmpty())
     {
@@ -673,8 +688,8 @@ void PortsInterface::setTypeNameAndDefinition(QSharedPointer<Port> port)
     // if port is not vectored but previous type was std_logic_vector
     else if (portWidth < 2 && port->getTypeName() == QString("std_logic_vector"))
     {
-        port->setTypeName("std_logic");
-        port->setTypeDefinition("std_logic", "IEEE.std_logic_1164.all");
+        port->setTypeName(QStringLiteral("std_logic"));
+        port->setTypeDefinition(QStringLiteral("std_logic"), "IEEE.std_logic_1164.all");
     }
 }
 
@@ -1035,7 +1050,7 @@ int PortsInterface::getAllReferencesToIdInItem(const string& itemName, string co
         return 0;
     }
 
-    QString idString = QString::fromStdString(valueID);
+    QString idString(QString::fromStdString(valueID));
 
     int referencesInArrayLeft = port->getArrayLeft().count(idString);
     int referencesInArrayRight = port->getArrayRight().count(idString);
@@ -1071,7 +1086,7 @@ int PortsInterface::getAllReferencesToIdInItem(const string& itemName, string co
 //-----------------------------------------------------------------------------
 void PortsInterface::addWirePort(string const& newPortName)
 {
-    QString portName = getUniqueName(newPortName, "port");
+    QString portName(getUniqueName(newPortName, "port"));
 
     QSharedPointer<Port> newPort(new Port(portName));
     newPort->setWire(QSharedPointer<Wire>(new Wire()));
@@ -1084,7 +1099,7 @@ void PortsInterface::addWirePort(string const& newPortName)
 //-----------------------------------------------------------------------------
 void PortsInterface::addTransactionalPort(string const& newPortName)
 {
-    QString portName = getUniqueName(newPortName, "port");
+    QString portName(getUniqueName(newPortName, "port"));
 
     QSharedPointer<Port> newPort(new Port(portName));
     newPort->setTransactional(QSharedPointer<Transactional>(new Transactional()));
@@ -1295,7 +1310,7 @@ bool PortsInterface::portHasValidMinConnections(string const& portName) const
 //-----------------------------------------------------------------------------
 std::string PortsInterface::getIconPathForPort(std::string const& portName) const
 {
-    std::string path = "";
+    std::string path("");
     QSharedPointer<Port> selectedPort = getPort(portName);
     if (!selectedPort)
     {

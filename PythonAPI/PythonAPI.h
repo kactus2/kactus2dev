@@ -77,6 +77,41 @@ public:
     std::vector<std::string> getLibraryPaths() const;
 
     /*!
+     *  Get the interface for accessing the component ports.
+     *
+     *      @return Interface for accessing the component ports.
+     */
+    PortsInterface* getPortsInterface() const;
+
+    /*!
+     *  Get the interface for accessing the component parameters.
+     *
+     *      @return Interface for accessing the component parameters.
+     */
+    ParametersInterface* getComponentParameterInterface() const;
+
+    /*!
+     *  Get the interface for accessing component memory maps.
+     *
+     *      @return Interface for accessing component memory maps.
+     */
+    MemoryMapInterface* getMapInterface();
+
+    /*!
+     *  Get the interface for accessing file sets.
+     *
+     *      @return Interface for accessing file sets.
+     */
+    FileSetInterface* getFileSetInterface();
+
+    /*!
+     *  Get the interface for accessing bus interfaces.
+     *
+     *      @return Interface for accessing bus interfaces.
+     */
+    BusInterfaceInterface* getBusInterface();
+
+    /*!
      * Gets the paths where IP-XACT files are stored.
      *
      *     @return The paths where IP-XACT files are stored.
@@ -227,26 +262,6 @@ public:
      */
     void saveComponent();
 
-    /*!
-     *  Get the interface for accessing the component ports.
-     *
-     *      @return Interface for accessing the component ports.
-     */
-    PortsInterface* getPortsInterface() const;
-
-    /*!
-     *  Get the interface for accessing the component parameters.
-     *
-     *      @return Interface for accessing the component parameters.
-     */
-    ParametersInterface* getComponentParameterInterface() const;
-
-    /*!
-     *  Get the interface for accessing component memory maps.
-     *
-     *      @return Interface for accessing component memory maps.
-     */
-    MemoryMapInterface* getMapInterface();
 
     /*!
      *  Set the available address blocks for the address block interface.
@@ -283,13 +298,6 @@ public:
      */
     void setResetsForInterface(std::string const& mapName, std::string const& blockName,
         std::string const& registerName, std::string const& fieldName);
-
-    /*!
-     *  Get the interface for accessing file sets.
-     *
-     *      @return Interface for accessing file sets.
-     */
-    FileSetInterface* getFileSetInterface();
 
     /*!
      *  Set the available files for the file interface.

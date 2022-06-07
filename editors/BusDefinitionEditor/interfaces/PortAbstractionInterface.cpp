@@ -22,7 +22,7 @@
 
 namespace
 {
-    QString const DEFAULT_NAME = QLatin1String("port");
+    std::string const DEFAULT_NAME("port");
 };
 
 //-----------------------------------------------------------------------------
@@ -141,7 +141,7 @@ void PortAbstractionInterface::createTransactionalSignal(QSharedPointer<PortAbst
 //-----------------------------------------------------------------------------
 QSharedPointer<PortAbstraction> PortAbstractionInterface::getPort(std::string const& portName) const
 {
-    QString portNameQ = QString::fromStdString(portName);
+    QString portNameQ(QString::fromStdString(portName));
     for (auto port : *ports_)
     {
         if (port->name() == portNameQ)
@@ -172,7 +172,7 @@ const
 //-----------------------------------------------------------------------------
 int PortAbstractionInterface::getItemIndex(std::string const& itemName) const
 {
-    QString itemNameQ = QString::fromStdString(itemName);
+    QString itemNameQ(QString::fromStdString(itemName));
     for (int i = 0; i < signals_.size(); ++i)
     {
         if (signals_.at(i)->abstraction_->name() == itemNameQ)
@@ -190,20 +190,21 @@ int PortAbstractionInterface::getItemIndex(std::string const& itemName) const
 int PortAbstractionInterface::getItemIndex(std::string const& itemName, General::InterfaceMode mode,
     std::string const& systemGroup) const
 {
-    QString itemNameQ = QString::fromStdString(itemName);
-    QString systemGroupQ = QString::fromStdString(systemGroup);
+    QString itemNameQ(QString::fromStdString(itemName));
+    QString systemGroupQ(QString::fromStdString(systemGroup));
     for (int i = 0; i < signals_.size(); ++i)
     {
-        if (signals_.at(i)->abstraction_->name() == itemNameQ && 
-            signals_.at(i)->mode_ == mode)
+        if (signals_.at(i)->abstraction_->name() == itemNameQ && signals_.at(i)->mode_ == mode)
         {
             if (mode == General::SYSTEM)
             {
-                if (signals_.at(i)->wire_ && signals_.at(i)->wire_->getSystemGroup() == systemGroupQ)
+                QSharedPointer<WirePort> wirePort = signals_.at(i)->wire_;
+                if (wirePort && wirePort->getSystemGroup() == systemGroupQ)
                 {
                     return i;
                 }
-                if (signals_.at(i)->transactional_ && signals_.at(i)->transactional_->getSystemGroup() == systemGroupQ)
+                QSharedPointer<TransactionalPort> transactional = signals_.at(i)->transactional_;
+                if (transactional && transactional->getSystemGroup() == systemGroupQ)
                 {
                     return i;
                 }
@@ -224,7 +225,7 @@ int PortAbstractionInterface::getItemIndex(std::string const& itemName, General:
 //-----------------------------------------------------------------------------
 std::string PortAbstractionInterface::getIndexedItemName(int const& itemIndex) const
 {
-    std::string portName = "";
+    std::string portName("");
     if (itemIndex >= 0 && itemIndex < signals_.size())
     {
         portName = signals_.at(itemIndex)->abstraction_->getLogicalName().toStdString();
@@ -247,7 +248,7 @@ int PortAbstractionInterface::itemCount() const
 int PortAbstractionInterface::signalCount(std::string const& portName) const
 {
     int portSignalCount = 0;
-    QString portNameQ = QString::fromStdString(portName);
+    QString portNameQ(QString::fromStdString(portName));
     for (auto currentSignal : signals_)
     {
         if (currentSignal->abstraction_->name() == portNameQ)
@@ -269,7 +270,7 @@ bool PortAbstractionInterface::portHasMultiplesOfMasterOrSlave(std::string const
         General::str2Interfacemode(QString::fromStdString(mode), General::INTERFACE_MODE_COUNT);
     if (actualMode == General::MASTER || actualMode == General::SLAVE)
     {
-        QString portNameQ = QString::fromStdString(portName);
+        QString portNameQ(QString::fromStdString(portName));
         int masterModes = 0;
         int slaveModes = 0;
         for (auto currentSignal : signals_)
@@ -305,19 +306,40 @@ bool PortAbstractionInterface::portHasMultiplesOfMasterOrSlave(std::string const
 //-----------------------------------------------------------------------------
 std::vector<std::string> PortAbstractionInterface::getItemNames() const
 {
-    QVector<QString> portNamesQ;
-    for (auto port : *ports_)
+    std::vector<std::string> portNames;
+    if (ports_)
     {
-        if (!portNamesQ.contains(port->name()))
+        for (auto port : *ports_)
         {
-            portNamesQ.append(port->name());
+            std::string currentPortName(port->name().toStdString());
+            if (std::find(portNames.cbegin(), portNames.cend(), currentPortName) == portNames.cend())
+            {
+                portNames.push_back(currentPortName);
+            }
         }
     }
 
+    return portNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getItemNamesWithModeAndGroup()
+//-----------------------------------------------------------------------------
+std::vector<std::string> PortAbstractionInterface::getItemNamesWithModeAndGroup(std::string const& busModeString,
+    std::string systemGroup) const
+{
     std::vector<std::string> portNames;
-    for (auto portName : portNamesQ)
+    if (ports_)
     {
-        portNames.push_back(portName.toStdString());
+        for (auto port : *ports_)
+        {
+            std::string currentPortName(port->name().toStdString());
+            if (std::find(portNames.cbegin(), portNames.cend(), currentPortName) == portNames.cend() &&
+                portHasMode(currentPortName, busModeString, systemGroup))
+            {
+                portNames.push_back(currentPortName);
+            }
+        }
     }
 
     return portNames;
@@ -334,7 +356,7 @@ bool PortAbstractionInterface::setName(std::string const& currentName, std::stri
         return false;
     }
 
-    QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
+    QString uniqueNewName(getUniqueName(newName, DEFAULT_NAME));
 
     editedPort->setLogicalName(uniqueNewName);
     return true;
@@ -434,7 +456,7 @@ bool PortAbstractionInterface::setMode(int const& portIndex, std::string const& 
 //-----------------------------------------------------------------------------
 std::string PortAbstractionInterface::getSystemGroup(int const& portIndex) const
 {
-    std::string signalSystem = "";
+    std::string signalSystem("");
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (selectedSignal)
     {
@@ -457,8 +479,7 @@ std::string PortAbstractionInterface::getSystemGroup(int const& portIndex) const
 std::vector<std::string> PortAbstractionInterface::getSystemGroupsForPort(std::string const& portName) const
 {
     std::vector<std::string> systemGroups;
-    QString portNameQ = QString::fromStdString(portName);
-    QVector<QString> systemGroupsQ;
+    QString portNameQ(QString::fromStdString(portName));
 
     for (auto currentSignal : signals_)
     {
@@ -466,21 +487,23 @@ std::vector<std::string> PortAbstractionInterface::getSystemGroupsForPort(std::s
         {
             QSharedPointer<WirePort> wire = currentSignal->wire_;
             QSharedPointer<TransactionalPort> transactional = currentSignal->transactional_;
-            if (wire && !wire->getSystemGroup().isEmpty() && !systemGroupsQ.contains(wire->getSystemGroup()))
+            if (wire && !wire->getSystemGroup().isEmpty())
             {
-                systemGroupsQ.append(wire->getSystemGroup());
+                std::string newSystemGroup(wire->getSystemGroup().toStdString());
+                if (std::find(systemGroups.cbegin(), systemGroups.cend(), newSystemGroup) == systemGroups.cend())
+                {
+                    systemGroups.push_back(newSystemGroup);
+                }
             }
-            if (transactional && !transactional->getSystemGroup().isEmpty() &&
-                !systemGroupsQ.contains(transactional->getSystemGroup()))
+            if (transactional && !transactional->getSystemGroup().isEmpty())
             {
-                systemGroupsQ.append(transactional->getSystemGroup());
+                std::string newSystemGroup(transactional->getSystemGroup().toStdString());
+                if (std::find(systemGroups.cbegin(), systemGroups.cend(), newSystemGroup) == systemGroups.cend())
+                {
+                    systemGroups.push_back(newSystemGroup);
+                }
             }
         }
-    }
-
-    for (auto currentSystem : systemGroupsQ)
-    {
-        systemGroups.push_back(currentSystem.toStdString());
     }
 
     return systemGroups;
@@ -536,23 +559,23 @@ QString PortAbstractionInterface::qualifierToString(Qualifier const& qualifier) 
 {
     if (qualifier.isData() && qualifier.isAddress())
     {
-        return "data/address";
+        return QStringLiteral("data/address");
     }
     else if (qualifier.isData())
     {
-        return "data";
+        return QStringLiteral("data");
     }
     else if (qualifier.isAddress())
     {
-        return "address";
+        return QStringLiteral("address");
     }
     else if (qualifier.isClock())
     {
-        return "clock";
+        return QStringLiteral("clock");
     }
     else if (qualifier.isReset())
     {
-        return "reset";
+        return QStringLiteral("reset");
     }
     else
     {
@@ -680,7 +703,7 @@ std::string PortAbstractionInterface::getWidth(int const& portIndex) const
 std::string PortAbstractionInterface::getWidth(std::string const& portName, std::string const& interfaceMode,
     std::string const& systemGroup) const
 {
-    QString signalWidth = "";
+    QString signalWidth("");
 
     QSharedPointer<PortAbstraction> port = getPort(portName);
     General::InterfaceMode busMode = General::str2Interfacemode(QString::fromStdString(interfaceMode),
@@ -774,7 +797,7 @@ std::string PortAbstractionInterface::getPresenceString(int const& portIndex) co
 std::string PortAbstractionInterface::getPresenceString(std::string const& portName,
     std::string const& interfaceMode, std::string const& systemGroup) const
 {
-    std::string presence = "";
+    std::string presence("");
 
     QSharedPointer<PortAbstraction> port = getPort(portName);
     General::InterfaceMode busMode = General::str2Interfacemode(QString::fromStdString(interfaceMode),
@@ -892,7 +915,7 @@ std::string PortAbstractionInterface::getBusWidthValue(int const& portIndex) con
 std::string PortAbstractionInterface::getBusWidthValue(std::string const& portName,
     std::string const& interfaceMode, std::string const& systemGroup) const
 {
-    QString signalWidth = "";
+    QString signalWidth("");
 
     QSharedPointer<PortAbstraction> port = getPort(portName);
     General::InterfaceMode busMode = General::str2Interfacemode(QString::fromStdString(interfaceMode),
@@ -916,7 +939,7 @@ bool PortAbstractionInterface::setBusWidth(int const& portIndex, std::string con
         return false;
     }
 
-    QString busWidthQ = QString::fromStdString(newBusWidth);
+    QString busWidthQ(QString::fromStdString(newBusWidth));
     selectedSignal->transactional_->setBusWidth(busWidthQ);
 
     return true;
@@ -950,17 +973,18 @@ std::string PortAbstractionInterface::getInitiative(int const& portIndex) const
 std::string PortAbstractionInterface::getInitiative(std::string const& portName, std::string const& interfaceMode,
     std::string const& systemGroup) const
 {
-    QString portInitiative = "";
+    std::string portInitiative("");
 
     QSharedPointer<PortAbstraction> port = getPort(portName);
     General::InterfaceMode busMode = General::str2Interfacemode(QString::fromStdString(interfaceMode),
         General::INTERFACE_MODE_COUNT);
     if (port && port->getTransactional() && busMode != General::INTERFACE_MODE_COUNT)
     {
-        portInitiative = port->getTransactional()->getInitiative(busMode, QString::fromStdString(systemGroup));
+        portInitiative =
+            port->getTransactional()->getInitiative(busMode, QString::fromStdString(systemGroup)).toStdString();
     }
 
-    return portInitiative.toStdString();
+    return portInitiative;
 }
 
 //-----------------------------------------------------------------------------
@@ -974,7 +998,7 @@ bool PortAbstractionInterface::setInitiative(int const& portIndex, std::string c
         return false;
     }
 
-    QString initiativeQ = QString::fromStdString(newInitiative);
+    QString initiativeQ(QString::fromStdString(newInitiative));
     if (initiativeQ.compare(QStringLiteral("requires/provides"), Qt::CaseInsensitive) == 0)
     {
         initiativeQ = QLatin1String("both");
@@ -1014,7 +1038,7 @@ bool PortAbstractionInterface::setKind(int const& portIndex, std::string const& 
         return false;
     }
 
-    QString kindQ = QString::fromStdString(newKind);
+    QString kindQ(QString::fromStdString(newKind));
     selectedSignal->transactional_->setKind(kindQ);
 
     return true;
@@ -1042,8 +1066,7 @@ std::string PortAbstractionInterface::getProtocolType(int const& portIndex) cons
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (selectedSignal && selectedSignal->transactional_ && selectedSignal->transactional_->getProtocol())
     {
-        QString protocolType = getProtocolTypeText(selectedSignal->transactional_->getProtocol());
-        return protocolType.toStdString();
+        return getProtocolTypeText(selectedSignal->transactional_->getProtocol()).toStdString();
     }
 
     return std::string("");
@@ -1054,8 +1077,8 @@ std::string PortAbstractionInterface::getProtocolType(int const& portIndex) cons
 //-----------------------------------------------------------------------------
 QString PortAbstractionInterface::getProtocolTypeText(QSharedPointer<Protocol> portProtocol) const
 {
-    QString protocolType = portProtocol->getProtocolType();
-    if (protocolType.compare("tlm", Qt::CaseSensitive) != 0)
+    QString protocolType(portProtocol->getProtocolType());
+    if (protocolType.compare(QLatin1String("tlm"), Qt::CaseSensitive) != 0)
     {
         protocolType = portProtocol->getCustomProtocolType();
     }
@@ -1123,7 +1146,7 @@ void PortAbstractionInterface::removeEmptyProtocol(int const& signalIndex, QShar
 bool PortAbstractionInterface::portProcotolTypeIsEmpty(QSharedPointer<Protocol> portProtocol) const
 {
     return portProtocol->getProtocolType().isEmpty() ||
-        (portProtocol->getProtocolType().compare("custom", Qt::CaseInsensitive) == 0 &&
+        (portProtocol->getProtocolType().compare(QLatin1String("custom"), Qt::CaseInsensitive) == 0 &&
             portProtocol->getCustomProtocolType().isEmpty());
 }
 
@@ -1188,9 +1211,9 @@ bool PortAbstractionInterface::setPayloadType(int const& portIndex, std::string 
     }
 
     QString payloadType = QString::fromStdString(newPayloadType);
-    if (payloadType.compare("none", Qt::CaseInsensitive) == 0)
+    if (payloadType.compare(QStringLiteral("none"), Qt::CaseInsensitive) == 0)
     {
-        payloadType = "";
+        payloadType = QStringLiteral("");
     }
     selectedProtocol->setPayloadType(payloadType);
     if (payloadType.isEmpty())
@@ -1241,7 +1264,7 @@ bool PortAbstractionInterface::setPayloadExtension(int const& portIndex, std::st
 //-----------------------------------------------------------------------------
 void PortAbstractionInterface::addWirePort(std::string const& newPortName)
 {
-    QString uniqueNewName = getUniqueName(newPortName, DEFAULT_NAME.toStdString());
+    QString uniqueNewName(getUniqueName(newPortName, DEFAULT_NAME));
 
     QSharedPointer<PortAbstractionInterface::SignalRow> newPort(
         new PortAbstractionInterface::SignalRow(true, false));
@@ -1259,7 +1282,7 @@ void PortAbstractionInterface::addWirePort(std::string const& newPortName)
 //-----------------------------------------------------------------------------
 void PortAbstractionInterface::addTransactionalPort(std::string const& newPortName)
 {
-    QString uniqueNewName = getUniqueName(newPortName, DEFAULT_NAME.toStdString());
+    QString uniqueNewName = getUniqueName(newPortName, DEFAULT_NAME);
 
     QSharedPointer<PortAbstractionInterface::SignalRow> newPort(
         new PortAbstractionInterface::SignalRow(false, true));
@@ -1517,7 +1540,7 @@ bool PortAbstractionInterface::portIsTransactional(std::string const& portName) 
 //-----------------------------------------------------------------------------
 std::string PortAbstractionInterface::getIconPathForSignal(int const& signalIndex) const
 {
-    std::string path = "";
+    std::string path("");
     QSharedPointer<SignalRow> selectedSignal = getSignal(signalIndex);
     if (!selectedSignal)
     {
@@ -1535,7 +1558,7 @@ std::string PortAbstractionInterface::getIconPathForSignal(int const& signalInde
         }
         else if (selectedSignal->transactional_)
         {
-            QString initiative = selectedSignal->transactional_->getInitiative();
+            QString initiative(selectedSignal->transactional_->getInitiative());
             if (!initiative.isEmpty())
             {
                 path = getIconPathForInitiative(initiative);
@@ -1552,7 +1575,7 @@ std::string PortAbstractionInterface::getIconPathForSignal(int const& signalInde
 std::string PortAbstractionInterface::getIconPathForSignal(std::string const& portName,
     std::string const& interfaceMode, std::string const& systemGroup) const
 {
-    std::string path = "";
+    std::string path("");
 
     QSharedPointer<PortAbstraction> port = getPort(portName);
     if (!port)

@@ -28,6 +28,7 @@ class ParameterFinder;
 class ExpressionFormatter;
 class PortMapInterface;
 class BusInterfaceInterface;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! Port map page for the bus interface wizard.
@@ -48,6 +49,7 @@ public:
      *      @param [in] expressionParser    The used expression parser.
      *      @param [in] parameterFinder     The used parameter finder.
      *      @param [in] busInterface        Interface for accessing bus interfaces.
+     *      @param [in] portMapInterface    Interface for accessing port maps.
      *      @param [in] parent              The parent wizard.
      */
     BusInterfaceWizardPortMapPage(QSharedPointer<Component> component,
@@ -57,6 +59,7 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         BusInterfaceInterface* busInterface,
+        PortMapInterface* portMapInterface,
         BusInterfaceWizard* parent);
 
     /*!

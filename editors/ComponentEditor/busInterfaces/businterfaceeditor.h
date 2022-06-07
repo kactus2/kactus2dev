@@ -29,6 +29,7 @@ class BusInterface;
 class Component;
 class LibraryInterface;
 class BusInterfaceInterface;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! Container for editors to edit a bus interface.
@@ -50,6 +51,7 @@ public:
      *      @param [in] expressionParser        The expression parser.
      *      @param [in] busInterfaceValidator   The validator for bus interfaces.
      *      @param [in] busInterface            Interface for accessing bus interfaces.
+     *      @param [in] portMapInterface        Interface for accessing port maps.
      *      @param [in] parent                  The owner of this container.
 	 *      @param [in] parentWnd               The parent window.
 	 */
@@ -61,6 +63,7 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<BusInterfaceValidator> busInterfaceValidator,
         BusInterfaceInterface* busInterface,
+        PortMapInterface* portMapInterface,
         QWidget* parent,
         QWidget* parentWnd);
 

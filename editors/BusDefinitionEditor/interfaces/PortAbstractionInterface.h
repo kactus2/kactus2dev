@@ -160,6 +160,17 @@ public:
     virtual std::vector<std::string> getItemNames() const override final;
 
     /*!
+     *  Get the list of logical ports with the selected bus interface mode and system group.
+     *
+     *      @param [in] busModeString   The selected bus interface mode in string form.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return A list of logical ports names.
+     */
+    std::vector<std::string> getItemNamesWithModeAndGroup(std::string const& busModeString,
+        std::string systemGroup) const;
+
+    /*!
      *  Get the interface mode of the selected signal.
      *
      *      @param [in] portIndex   Index of the selected signal.

@@ -348,10 +348,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h \
     ./editors/ComponentEditor/busInterfaces/general/BridgeColumns.h \
@@ -706,6 +702,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/DesignCompletionModel.h \
     ./editors/common/DesignDiagram.h \
     ./editors/common/DesignWidget.h \
+    ./editors/common/DesignParameterFinder.h \
     ./editors/common/Association/Associable.h \
     ./editors/common/Association/Association.h \
     ./editors/common/Association/AssociationAddCommand.h \
@@ -900,7 +897,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/common/DesignParameterFinder.h
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapView.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapSortFilter.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/KactusAPI.cpp \
@@ -1141,10 +1141,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.cpp \
     ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.cpp \
@@ -1497,6 +1493,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/DesignCompletionModel.cpp \
     ./editors/common/DesignDiagram.cpp \
     ./editors/common/DesignDiagramResolver.cpp \
+    ./editors/common/DesignParameterFinder.cpp \
     ./editors/common/DesignWidget.cpp \
     ./editors/common/DesignWidgetFactoryImplementation.cpp \
     ./editors/common/GraphicsItemLabel.cpp \
@@ -1686,5 +1683,8 @@ SOURCES += ./VersionHelper.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/common/DesignParameterFinder.cpp
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapView.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapSortFilter.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.cpp
 RESOURCES += kactus.qrc

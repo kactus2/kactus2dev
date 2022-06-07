@@ -34,7 +34,7 @@ def printMemoryMaps(api, mapInterface, vlnv):
 		print (indentation + mapName)
 		
 		api.setBlocksForInterface(mapName)
-		blockInterface = mapInterface.getSubInterface()
+		blockInterface = mapInterface.getAddressBlockInterface()
 		if (blockInterface.itemCount() > 0):
 			printAddressBlocks(api, mapName, blockInterface, indentation)
 

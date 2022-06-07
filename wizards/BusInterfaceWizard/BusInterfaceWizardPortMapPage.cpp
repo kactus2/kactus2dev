@@ -35,12 +35,12 @@
 BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh, QStringList physicalPorts,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    BusInterfaceInterface* busInterface, BusInterfaceWizard* parent):
+    BusInterfaceInterface* busInterface, PortMapInterface* portMapInterface, BusInterfaceWizard* parent):
 QWizardPage(parent),
 busIf_(busIf),
 handler_(lh),
 portMapTab_(handler_, component, busInterface, busIf_->name().toStdString(), expressionParser, parameterFinder,
-    busInterface->getAbstractionTypeInterface()->getPortMapInterface(), this),
+    portMapInterface, this),
 busInterface_(busInterface)
 {
     setTitle(tr("Port Maps"));

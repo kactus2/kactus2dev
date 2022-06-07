@@ -27,13 +27,13 @@ BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPoin
     QSharedPointer<BusInterface> busif, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<BusInterfaceValidator> busInterfaceValidator, BusInterfaceInterface* busInterface,
-    QWidget* parent, QWidget* parentWnd):
+    PortMapInterface* portMapInterface, QWidget* parent, QWidget* parentWnd):
 ParameterItemEditor(component, libHandler, parent),
 tabs_(this), 
 generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, busInterface,
     busif->name().toStdString(), &tabs_, parentWnd),
 portmapsEditor_(libHandler, component, busInterface, busif->name().toStdString(), expressionParser,
-    parameterFinder, busInterface->getAbstractionTypeInterface()->getPortMapInterface(), &tabs_)
+    parameterFinder, portMapInterface, &tabs_)
 {
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);
