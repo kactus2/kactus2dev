@@ -31,6 +31,7 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     QWidget(parent),
     outputChannel_(new ChannelRelay(this)),
     errorChannel_(new ChannelRelay(this)),
+    nameLabel_(tr("Transcript"), this),
     scriptEditor_(new ScriptInputEditor(this)),
     scriptView_(new ScriptViewEditor(this)),
     interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, true)),    
@@ -51,15 +52,22 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     bool enabled = interpreter_->initialize(false);
     scriptView_->setReadOnly(true);
 
+    QAction* runAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-open.png"), QString(),
+        this, SLOT(onOpenAction()));
+    runAction->setToolTip(QStringLiteral("Open script from file..."));
+    runAction->setEnabled(enabled);
+
     QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), 
         this, SLOT(onSaveAction()));
     saveAction->setToolTip(QStringLiteral("Save script"));
     saveAction->setEnabled(enabled);
 
-    QAction* runAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-open.png"), QString(),
-        this, SLOT(onRunAction()));
-    runAction->setToolTip(QStringLiteral("Run script from file"));
-    runAction->setEnabled(enabled);
+    QAction* saveAsAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save-as.png"), QString(),
+        this, SLOT(onSaveAsAction()));
+    saveAsAction->setToolTip(QStringLiteral("Save script as..."));
+    saveAsAction->setEnabled(enabled);
+
+    toolBar_->addSeparator();
 
     if (enabled == false)
     {
@@ -108,6 +116,8 @@ void PythonSourceEditor::onOpenAction()
         scriptEditor_->setPlainText(output.readAll());
 
         outputFile.close();
+
+        nameLabel_.setText(openFile_);
     }
 }
 
@@ -130,6 +140,8 @@ void PythonSourceEditor::onSaveAction()
         output << scriptEditor_->toPlainText();
 
         outputFile.close();
+
+        nameLabel_.setText(openFile_);
     }
 }
 
@@ -141,15 +153,8 @@ void PythonSourceEditor::onSaveAsAction()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), tr("Python File (*.py)"));
     if (fileName.isEmpty() == false)
     {
-        QFile outputFile(fileName);
-        outputFile.open(QFile::WriteOnly | QFile::Text);
-
-        QTextStream output(&outputFile);
-        output << scriptEditor_->toPlainText();
-
-        outputFile.close();
-
         openFile_ = fileName;
+        onSaveAction();
     }
 }
 
@@ -170,6 +175,8 @@ void PythonSourceEditor::onRunAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::setupLayout()
 {
+    nameLabel_.setAlignment(Qt::AlignCenter);
+
     toolBar_->setOrientation(Qt::Horizontal);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -178,11 +185,12 @@ void PythonSourceEditor::setupLayout()
     viewSplit->setOrientation(Qt::Vertical);
 
     QWidget* editorContainer = new QWidget(this);
-    editorContainer->setContentsMargins(0, 0, 0, 0);
 
-    QVBoxLayout* containerLayout = new QVBoxLayout(editorContainer);
+    QVBoxLayout* containerLayout = new QVBoxLayout(editorContainer);    
     containerLayout->addWidget(toolBar_);
+    containerLayout->addWidget(&nameLabel_);
     containerLayout->addWidget(scriptEditor_);
+    containerLayout->setContentsMargins(0, 0, 0, 0);
 
     viewSplit->addWidget(editorContainer);
     viewSplit->addWidget(scriptView_);

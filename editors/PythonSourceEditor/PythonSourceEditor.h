@@ -14,6 +14,7 @@
 
 #include <QWidget>
 
+#include <QLabel>
 #include <QPlainTextEdit>
 #include <QToolBar>
 #include <QListWidget>
@@ -68,6 +69,8 @@ private:
     ChannelRelay* errorChannel_;
 
     QString openFile_;
+
+    QLabel nameLabel_;
 
     //! Text editor for script writing and run.
     ScriptInputEditor* scriptEditor_;
