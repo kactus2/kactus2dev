@@ -14,8 +14,6 @@
 
 #include <QPlainTextEdit>
 
-#include <QAction>
-
 #include "ScriptingSideArea.h"
 
 //-----------------------------------------------------------------------------
@@ -63,10 +61,7 @@ public slots:
 protected:
 
     //! Event handler for key press handling.
-    virtual void keyPressEvent(QKeyEvent *e) override;
-
-    //! Event handler for context menu requests.
-    void contextMenuEvent(QContextMenuEvent* event);    
+    virtual void keyPressEvent(QKeyEvent *e) override;  
 
     void resizeEvent(QResizeEvent *event) override;
 
@@ -90,14 +85,9 @@ private:
     //! Side area for the widget.
     ScriptingSideArea* promtSideArea_;
 
-    //! Lock position in the text i.e. text before the position cannot be changed.
-    int textLockPosition_;
-
     //! The current prompt text.
     QString promptText_;
 
-    //! Copy the selected text to the clip board.
-    QAction copyAction_;
 
     //! Use tabs or spaces for indentation.
     bool useTabs_;

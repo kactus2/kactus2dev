@@ -1,18 +1,18 @@
 //-----------------------------------------------------------------------------
-// File: ScriptingConsole.cpp
+// File: PythonSourceEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 20.09.2019
 //
 // Description:
-// Widget for scripting.
+// Widget for Python scripting.
 //-----------------------------------------------------------------------------
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-#include "ScriptingConsole.h"
+#include "PythonSourceEditor.h"
 #include "ScriptingTextEditor.h"
 
 #include <QHBoxLayout>
@@ -25,9 +25,9 @@
 #include <PythonAPI/ChannelRelay.h>
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::ScriptingConsole()
+// Function: PythonSourceEditor::PythonSourceEditor()
 //-----------------------------------------------------------------------------
-ScriptingConsole::ScriptingConsole(QWidget* parent):
+PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     QWidget(parent),
     outputChannel_(new ChannelRelay(this)),
     errorChannel_(new ChannelRelay(this)),
@@ -49,7 +49,7 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
         interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
 
     bool enabled = interpreter_->initialize(false);
-
+    scriptView_->setReadOnly(true);
 
     QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), 
         this, SLOT(onSaveAction()));
@@ -76,26 +76,26 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::applySettings()
+// Function: PythonSourceEditor::applySettings()
 //-----------------------------------------------------------------------------
-ScriptingConsole::~ScriptingConsole()
+PythonSourceEditor::~PythonSourceEditor()
 {
     scriptThread_.quit();
     scriptThread_.wait();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::applySettings()
+// Function: PythonSourceEditor::applySettings()
 //-----------------------------------------------------------------------------
-void ScriptingConsole::applySettings()
+void PythonSourceEditor::applySettings()
 {
     scriptEditor_->applySettings();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::onOpenAction()
+// Function: PythonSourceEditor::onOpenAction()
 //-----------------------------------------------------------------------------
-void ScriptingConsole::onOpenAction()
+void PythonSourceEditor::onOpenAction()
 {
     openFile_ = QFileDialog::getOpenFileName(this, tr("Open"), QString(), tr("Python File (*.py)"));
 
@@ -112,9 +112,9 @@ void ScriptingConsole::onOpenAction()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::onSaveAction()
+// Function: PythonSourceEditor::onSaveAction()
 //-----------------------------------------------------------------------------
-void ScriptingConsole::onSaveAction()
+void PythonSourceEditor::onSaveAction()
 {
     if (openFile_.isEmpty())
     {
@@ -134,9 +134,9 @@ void ScriptingConsole::onSaveAction()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::onSaveAsAction()
+// Function: PythonSourceEditor::onSaveAsAction()
 //-----------------------------------------------------------------------------
-void ScriptingConsole::onSaveAsAction()
+void PythonSourceEditor::onSaveAsAction()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), tr("Python File (*.py)"));
     if (fileName.isEmpty() == false)
@@ -154,9 +154,9 @@ void ScriptingConsole::onSaveAsAction()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::onRunAction()
+// Function: PythonSourceEditor::onRunAction()
 //-----------------------------------------------------------------------------
-void ScriptingConsole::onRunAction()
+void PythonSourceEditor::onRunAction()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select file to run"), QString(), tr("Python File (*.py)"));
     if (fileName.isEmpty() == false)
@@ -166,9 +166,9 @@ void ScriptingConsole::onRunAction()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::setupLayout()
+// Function: PythonSourceEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void ScriptingConsole::setupLayout()
+void PythonSourceEditor::setupLayout()
 {
     toolBar_->setOrientation(Qt::Horizontal);
 

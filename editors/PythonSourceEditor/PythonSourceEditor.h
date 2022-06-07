@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: ScriptingConsole.h
+// File: PythonSourceEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 20.09.2019
 //
 // Description:
-// Widget for scripting.
+// Widget for Python scripting.
 //-----------------------------------------------------------------------------
 
 #ifndef SCRIPTING_CONSOLE_H
@@ -25,18 +25,18 @@ class ScriptingTextEditor;
 class PythonInterpreter;
 
 //-----------------------------------------------------------------------------
-//! Widget for scripting.
+//! Widget for Python scripting.
 //-----------------------------------------------------------------------------
-class ScriptingConsole : public QWidget
+class PythonSourceEditor : public QWidget
 {
     Q_OBJECT
 public:
 
     //! The constructor.
-    explicit ScriptingConsole(QWidget* parent);
+    explicit PythonSourceEditor(QWidget* parent);
     
     //! The destructor.
-    virtual ~ScriptingConsole();
+    virtual ~PythonSourceEditor();
 
     //! Apply the application settings.
     void applySettings();

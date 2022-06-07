@@ -28,23 +28,10 @@
 ScriptingTextEditor::ScriptingTextEditor(QWidget* parent):
     QPlainTextEdit(parent),
     promtSideArea_(new ScriptingSideArea(this)),
-    textLockPosition_(0), 
     promptText_(),
-    copyAction_(tr("Copy"), this),
     useTabs_(false)
 {       
-    setAcceptDrops(false);
-    setUndoRedoEnabled(false);
-    setWordWrapMode(QTextOption::NoWrap);
-
     applySettings();
-
-    copyAction_.setDisabled(true);
-
-    connect(&copyAction_, SIGNAL(triggered()), 
-        this, SLOT(copy()), Qt::UniqueConnection);
-    connect(this, SIGNAL(copyAvailable(bool)), 
-        &copyAction_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
     connect(this, SIGNAL(updateRequest(QRect const&, int)),
         this, SLOT(updateSideArea(QRect const&, int)), Qt::UniqueConnection);
@@ -99,7 +86,7 @@ void ScriptingTextEditor::print(QString const& input)
     format.setForeground(QBrush(Qt::black));
 
     cursor.insertText(input, format);
-    textLockPosition_ = cursor.position();
+
     promptText_ = cursor.block().text();
 
     format.setForeground(QBrush(Qt::black));
@@ -121,7 +108,7 @@ void ScriptingTextEditor::printError(QString const& input)
     format.setForeground(QBrush(Qt::red));
 
     cursor.insertText(input, format);
-    textLockPosition_ = cursor.position();
+
     promptText_ = cursor.block().text();
 
     format.setForeground(QBrush(Qt::black));
@@ -136,41 +123,18 @@ void ScriptingTextEditor::keyPressEvent(QKeyEvent *e)
 {
     QTextCursor cursor = textCursor();
 
-    // Do not allow removing locked section text.
-    if (e->key() == Qt::Key_Backspace && cursor.position() <= textLockPosition_ && !cursor.hasSelection())
-    {
-        return;
-    }
-
-    // Do not allow editing in the locked section, so move to end of the input.
-    if ((cursor.position() < textLockPosition_) &&
-        ((e->text().isEmpty() == false && !(e->modifiers() | Qt::ControlModifier))||
-         e->key() == Qt::Key_Backspace ||
-         e->key() == Qt::Key_Delete ||
-         e->key() == Qt::Key_Enter ||
-         e->key() == Qt::Key_Return))
-    {
-        cursor.movePosition(QTextCursor::End);
-        setTextCursor(cursor);
-    }
-
     if (e->key() == Qt::Key_Tab && useTabs_ == false)
     {
         insertPlainText("    ");
         return;
     }
 
-    if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)
+    if (e->modifiers() == Qt::ShiftModifier &&
+        (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return))
     {
-        cursor.setPosition(textLockPosition_);
-        cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+        cursor.movePosition(QTextCursor::StartOfLine);
+        cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
         QString command = cursor.selectedText();
-
-        cursor.movePosition(QTextCursor::End);
-        setTextCursor(cursor);
-        QPlainTextEdit::keyPressEvent(e);
-
-        textLockPosition_ = textCursor().position();
 
         emit write(command);
     }
@@ -180,30 +144,6 @@ void ScriptingTextEditor::keyPressEvent(QKeyEvent *e)
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: ScriptingTextEditor::contextMenuEvent()
-//-----------------------------------------------------------------------------
-void ScriptingTextEditor::contextMenuEvent(QContextMenuEvent* event)
-{
-    QMenu menu;
-    menu.addAction(&copyAction_);
-    QAction* paste = menu.addAction(QStringLiteral("Paste"), this, SLOT(paste()), QKeySequence::Paste);
-    menu.addAction(QStringLiteral("Select all"), this, SLOT(selectAll()), QKeySequence::SelectAll);
-    menu.addAction(QStringLiteral("Clear"), this, SLOT(onClear()));
-
-    paste->setEnabled(canPaste());
-
-    menu.exec(event->globalPos());
-}
-
-//-----------------------------------------------------------------------------
-// Function: ScriptingTextEditor::canPaste()
-//-----------------------------------------------------------------------------
-bool ScriptingTextEditor::canPaste() const
-{
-    QTextCursor cursor = textCursor();    
-    return (cursor.selectionStart() >= textLockPosition_ && cursor.selectionEnd() >= textLockPosition_);
-}
 
 //-----------------------------------------------------------------------------
 // Function: ScriptingTextEditor::onClear()
@@ -211,8 +151,6 @@ bool ScriptingTextEditor::canPaste() const
 void ScriptingTextEditor::onClear()
 {
     clear();
-    textLockPosition_ = 0;
-    print(promptText_);
 }
 
 //-----------------------------------------------------------------------------
@@ -258,7 +196,6 @@ void ScriptingTextEditor::sideAreaPaintEvent()
     QPainter painter(promtSideArea_);
 
     QTextCursor cursor = textCursor();
-    cursor.setPosition(textLockPosition_);
 
     QTextBlock lastBlock = cursor.block();
 
