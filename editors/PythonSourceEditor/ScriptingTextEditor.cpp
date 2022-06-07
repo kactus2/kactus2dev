@@ -11,8 +11,6 @@
 
 #include "ScriptingTextEditor.h"
 
-#include "ScriptingHistory.h"
-
 #include <QTextBlock>
 #include <QScrollBar>
 #include <QMenu>
@@ -27,17 +25,14 @@
 //-----------------------------------------------------------------------------
 // Function: ScriptingTextEditor::ScriptingTextEditor()
 //-----------------------------------------------------------------------------
-ScriptingTextEditor::ScriptingTextEditor(ScriptingHistory* history, QWidget* parent):
+ScriptingTextEditor::ScriptingTextEditor(QWidget* parent):
     QPlainTextEdit(parent),
     promtSideArea_(new ScriptingSideArea(this)),
-    history_(history),
     textLockPosition_(0), 
     promptText_(),
     copyAction_(tr("Copy"), this),
     useTabs_(false)
-{    
-    setContentsMargins(0, 0, 0, 0);
-   
+{       
     setAcceptDrops(false);
     setUndoRedoEnabled(false);
     setWordWrapMode(QTextOption::NoWrap);
@@ -165,17 +160,6 @@ void ScriptingTextEditor::keyPressEvent(QKeyEvent *e)
         return;
     }
 
-    if (textCursor().block().blockNumber() == blockCount() - 1 && e->key() == Qt::Key_Up)
-    {
-        insertInput(history_->previous());
-        return;
-    }
-    else if (textCursor().block().blockNumber() == blockCount() - 1 && e->key() == Qt::Key_Down)
-    {
-        insertInput(history_->next());
-        return;
-    }
-
     if (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)
     {
         cursor.setPosition(textLockPosition_);
@@ -189,8 +173,6 @@ void ScriptingTextEditor::keyPressEvent(QKeyEvent *e)
         textLockPosition_ = textCursor().position();
 
         emit write(command);
-
-        history_->push(command);
     }
     else
     {

@@ -14,11 +14,11 @@
 
 #include "ScriptingConsole.h"
 #include "ScriptingTextEditor.h"
-#include "ScriptingHistory.h"
 
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QSplitter>
 
 #include <PythonAPI/PythonInterpreter.h>
 
@@ -31,10 +31,9 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     QWidget(parent),
     outputChannel_(new ChannelRelay(this)),
     errorChannel_(new ChannelRelay(this)),
-    history_(new ScriptingHistory(this)),
-    scriptEditor_(new ScriptingTextEditor(history_, this)),
-    interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, true)),
-    historyListing_(new QListWidget(this)),
+    scriptEditor_(new ScriptingTextEditor(this)),
+    scriptView_(new ScriptingTextEditor(this)),
+    interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, true)),    
     toolBar_(new QToolBar(this)),
     scriptThread_(this)
 {    
@@ -42,22 +41,15 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
     connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
 
     connect(outputChannel_, SIGNAL(data(QString const&)),
-        scriptEditor_, SLOT(print(QString const&)), Qt::UniqueConnection);
+        scriptView_, SLOT(print(QString const&)), Qt::UniqueConnection);
     connect(errorChannel_, SIGNAL(data(QString const&)),
-        scriptEditor_, SLOT(printError(QString const&)), Qt::UniqueConnection);
+        scriptView_, SLOT(printError(QString const&)), Qt::UniqueConnection);
 
     connect(scriptEditor_, SIGNAL(write(QString const&)),
         interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
 
     bool enabled = interpreter_->initialize(false);
 
-    QAction* historyAction = toolBar_->addAction(QIcon(":/icons/common/graphics/history.png"), QString());
-    historyAction->setToolTip(QStringLiteral("Show history"));
-    historyAction->setCheckable(true);
-    historyAction->setEnabled(enabled);
-
-    connect(historyAction, SIGNAL(toggled(bool)), historyListing_, 
-        SLOT(setVisible(bool)), Qt::UniqueConnection);
 
     QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), 
         this, SLOT(onSaveAction()));
@@ -68,11 +60,6 @@ ScriptingConsole::ScriptingConsole(QWidget* parent):
         this, SLOT(onRunAction()));
     runAction->setToolTip(QStringLiteral("Run script from file"));
     runAction->setEnabled(enabled);
-
-    connect(history_, SIGNAL(commandAdded(QString const&)),
-        this, SLOT(onCommandInput(QString const&)), Qt::UniqueConnection);
-    connect(historyListing_, SIGNAL(itemClicked(QListWidgetItem*)),
-        this, SLOT(onHistoryItemClicked(QListWidgetItem*)), Qt::UniqueConnection);
 
     if (enabled == false)
     {
@@ -106,9 +93,50 @@ void ScriptingConsole::applySettings()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::onHistoryAction()
+// Function: ScriptingConsole::onOpenAction()
+//-----------------------------------------------------------------------------
+void ScriptingConsole::onOpenAction()
+{
+    openFile_ = QFileDialog::getOpenFileName(this, tr("Open"), QString(), tr("Python File (*.py)"));
+
+    if (openFile_.isEmpty() == false)
+    {
+        QFile outputFile(openFile_);
+        outputFile.open(QFile::ReadOnly | QFile::Text);
+
+        QTextStream output(&outputFile);
+        scriptEditor_->setPlainText(output.readAll());
+
+        outputFile.close();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptingConsole::onSaveAction()
 //-----------------------------------------------------------------------------
 void ScriptingConsole::onSaveAction()
+{
+    if (openFile_.isEmpty())
+    {
+        openFile_ = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), tr("Python File (*.py)"));
+    }
+
+    if (openFile_.isEmpty() == false)
+    {
+        QFile outputFile(openFile_);
+        outputFile.open(QFile::WriteOnly | QFile::Text);
+
+        QTextStream output(&outputFile);
+        output << scriptEditor_->toPlainText();
+
+        outputFile.close();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptingConsole::onSaveAsAction()
+//-----------------------------------------------------------------------------
+void ScriptingConsole::onSaveAsAction()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), tr("Python File (*.py)"));
     if (fileName.isEmpty() == false)
@@ -117,12 +145,11 @@ void ScriptingConsole::onSaveAction()
         outputFile.open(QFile::WriteOnly | QFile::Text);
 
         QTextStream output(&outputFile);
-        for (int i = 0; i < historyListing_->count(); ++i)
-        {
-            output << historyListing_->item(i)->text() << "\n";
-        }
+        output << scriptEditor_->toPlainText();
 
         outputFile.close();
+
+        openFile_ = fileName;
     }
 }
 
@@ -139,33 +166,28 @@ void ScriptingConsole::onRunAction()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptingConsole::onCommandInput()
-//-----------------------------------------------------------------------------
-void ScriptingConsole::onCommandInput(QString const& command)
-{
-    historyListing_->addItem(command);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ScriptingConsole::onHistoryItemClicked()
-//-----------------------------------------------------------------------------
-void ScriptingConsole::onHistoryItemClicked(QListWidgetItem* item)
-{
-    scriptEditor_->insertInput(item->text());
-}
-
-//-----------------------------------------------------------------------------
 // Function: ScriptingConsole::setupLayout()
 //-----------------------------------------------------------------------------
 void ScriptingConsole::setupLayout()
 {
-    toolBar_->setOrientation(Qt::Vertical);
+    toolBar_->setOrientation(Qt::Horizontal);
 
-    historyListing_->hide();
+    QVBoxLayout* layout = new QVBoxLayout(this);
 
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->addWidget(scriptEditor_);
-    layout->addWidget(historyListing_);
-    layout->addWidget(toolBar_);
-    layout->setContentsMargins(0, 0, 0, 2 );
+    QSplitter* viewSplit = new QSplitter(this);
+    viewSplit->setOrientation(Qt::Vertical);
+
+    QWidget* editorContainer = new QWidget(this);
+    editorContainer->setContentsMargins(0, 0, 0, 0);
+
+    QVBoxLayout* containerLayout = new QVBoxLayout(editorContainer);
+    containerLayout->addWidget(toolBar_);
+    containerLayout->addWidget(scriptEditor_);
+
+    viewSplit->addWidget(editorContainer);
+    viewSplit->addWidget(scriptView_);
+    viewSplit->setStretchFactor(0, 4);
+
+    layout->addWidget(viewSplit);
+    layout->setContentsMargins(0, 0, 2, 2);
 }

@@ -12,7 +12,7 @@
 #include "DockWidgetHandler.h"
 
 #include <mainwindow/MessageConsole/messageconsole.h>
-#include <mainwindow/ScriptingConsole/ScriptingConsole.h>
+#include <editors/PythonSourceEditor/ScriptingConsole.h>
 
 #include <Help/HelpSystem/HelpWindow.h>
 #include <Help/HelpSystem/ContextHelpBrowser.h>
@@ -466,7 +466,7 @@ void DockWidgetHandler::setupConsole()
     scriptConsole_ = new ScriptingConsole(scriptConsoleDock_);
     scriptConsoleDock_->setWidget(scriptConsole_);
 
-    mainWindow_->addDockWidget(Qt::BottomDockWidgetArea, scriptConsoleDock_);
+    mainWindow_->addDockWidget(Qt::RightDockWidgetArea, scriptConsoleDock_);
 }
 
 //-----------------------------------------------------------------------------

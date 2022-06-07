@@ -21,10 +21,8 @@
 
 #include <PythonAPI/ChannelRelay.h>
 
-class MessageConsole;
 class ScriptingTextEditor;
 class PythonInterpreter;
-class ScriptingHistory;
 
 //-----------------------------------------------------------------------------
 //! Widget for scripting.
@@ -45,18 +43,16 @@ public:
 
 private slots:
 
+
+    void onOpenAction();
+
     //! Handler for save button clicks.
     void onSaveAction();
 
+    void onSaveAsAction();
+
     //! Handler for run button clicks.
     void onRunAction();
-
-    //! Handler for registering user input commands.
-    void onCommandInput(QString const& command);
-
-    //! Handler for history button clicks.
-    void onHistoryItemClicked(QListWidgetItem* item);
-
 
 private:
 
@@ -69,16 +65,16 @@ private:
     //! Write channel for script error output.
     ChannelRelay* errorChannel_;
 
-    ScriptingHistory* history_;
+    QString openFile_;
 
     //! Text editor for script writing and run.
     ScriptingTextEditor* scriptEditor_;
 
+    //! Text editor for script writing and run.
+    ScriptingTextEditor* scriptView_;
+
     //! Interpreter instance for Python.
     PythonInterpreter* interpreter_;
-
-
-    QListWidget* historyListing_;
 
     QToolBar* toolBar_;
 

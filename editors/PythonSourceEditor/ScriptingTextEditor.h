@@ -18,8 +18,6 @@
 
 #include "ScriptingSideArea.h"
 
-class ScriptingHistory;
-
 //-----------------------------------------------------------------------------
 //! Text editor for script write and run.
 //-----------------------------------------------------------------------------
@@ -29,7 +27,7 @@ class ScriptingTextEditor : public QPlainTextEdit
 public:
 
     //! The constructor.
-    ScriptingTextEditor(ScriptingHistory* history, QWidget* parent = nullptr);
+    explicit ScriptingTextEditor(QWidget* parent = nullptr);
 
 
     //! The destructor.
@@ -91,9 +89,6 @@ private:
 
     //! Side area for the widget.
     ScriptingSideArea* promtSideArea_;
-
-    //! Command history.
-    ScriptingHistory* history_;
 
     //! Lock position in the text i.e. text before the position cannot be changed.
     int textLockPosition_;
