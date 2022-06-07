@@ -12,7 +12,7 @@
 #include "componenteditorportsitem.h"
 
 #include <editors/ComponentEditor/ports/portseditor.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

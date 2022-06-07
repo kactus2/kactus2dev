@@ -18,7 +18,7 @@
 #include <Help/HelpSystem/ContextHelpBrowser.h>
 
 #include <library/LibraryWidget.h>
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <common/ui/GraphicalMessageMediator.h>
 
@@ -27,11 +27,11 @@
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
 #include <editors/ComponentEditor/componenteditor.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
 
 #include <editors/common/DesignParameterReferenceTree/DesignParameterReferenceCounter.h>
 #include <editors/common/DesignParameterReferenceTree/DesignParameterReferenceTree.h>
@@ -144,7 +144,10 @@ void DockWidgetHandler::setupMessageConsole()
     GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel_);
     if (guiChannel)
     {
-        guiChannel->setMessageConsole(console_);
+        connect(guiChannel, SIGNAL(noticeMessage(QString const&)),
+            console_, SLOT(onNoticeMessage(QString const&)), Qt::UniqueConnection);
+        connect(guiChannel, SIGNAL(errorMessage(QString const&)),
+            console_, SLOT(onErrorMessage(QString const&)), Qt::UniqueConnection);
     }
 
     connect(this, SIGNAL(errorMessage(const QString&)),
@@ -215,6 +218,34 @@ void DockWidgetHandler::setupLibraryDock()
 
     // create a container widget for dialer and library display
     libraryWidget_ = new LibraryWidget(libraryHandler_, messageChannel_, mainWindow_);
+
+    connect(this, SIGNAL(generateIntegrityReport()), libraryWidget_,
+        SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
+
+
+    connect(libraryWidget_, SIGNAL(createBus(const VLNV&, const QString&)),
+        mainWindow_, SLOT(createBus(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(libraryWidget_, SIGNAL(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
+        QVector<TagData>, const VLNV&, const QString&)),
+        mainWindow_, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData>,
+            const VLNV&, const QString&)), Qt::UniqueConnection);
+    
+    connect(libraryWidget_, SIGNAL(createAbsDef(const VLNV&, const QString&, bool)),
+        mainWindow_, SLOT(createAbsDef(const VLNV&, const QString&, bool)), Qt::UniqueConnection);
+
+    connect(libraryWidget_, SIGNAL(createDesignForExistingComponent(const VLNV&)),
+        mainWindow_, SLOT(createDesignForExistingComponent(const VLNV&)), Qt::UniqueConnection);
+
+
+    connect(libraryWidget_, SIGNAL(createComDef(const VLNV&, const QString&)),
+        mainWindow_, SLOT(createComDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(libraryWidget_, SIGNAL(createApiDef(const VLNV&, const QString&)),
+        mainWindow_, SLOT(createApiDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
+
+    connect(libraryWidget_, SIGNAL(createSWDesign(const VLNV&)),
+        mainWindow_, SLOT(createSWDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(libraryWidget_, SIGNAL(createSystemDesign(const VLNV&)),
+        mainWindow_, SLOT(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
     libraryDock_->setWidget(libraryWidget_);
 

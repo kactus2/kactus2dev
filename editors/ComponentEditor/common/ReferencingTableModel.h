@@ -12,7 +12,7 @@
 #ifndef REFERENCINGTABLEMODEL_H
 #define REFERENCINGTABLEMODEL_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <QAbstractTableModel>
 

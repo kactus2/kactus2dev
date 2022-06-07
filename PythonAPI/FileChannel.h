@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: StdOutChannel.h
+// File: FileChannel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
@@ -17,8 +17,9 @@
 #include <QString>
 #include <QTextStream>
 
-class FileChannel: public WriteChannel
+class FileChannel: public QObject, public WriteChannel
 {
+    Q_OBJECT
 public:
 
     //! The constructor.
@@ -27,6 +28,9 @@ public:
     //! The destructor.
     ~FileChannel() = default;
 
+public slots:
+
+    // Called when text is written into the file.
     virtual void write(QString const& text) override final;
 
 private:

@@ -13,10 +13,10 @@
 
 #include "VerilogSyntax.h"
 
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <KactusAPI/include//ImportColors.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/NullParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/NullParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>

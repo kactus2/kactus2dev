@@ -11,7 +11,7 @@
 
 #include "SubspaceMapGraphItem.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <common/KactusColors.h>
 

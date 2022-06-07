@@ -11,7 +11,7 @@
 
 #include "MemoryMapValidator.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>

@@ -16,7 +16,8 @@ INCLUDEPATH += ./generatedFiles \
     $(QTDIR)/../qttools/include \
     ./generatedFiles/Release
 LIBS += -L"./../../executable" \
-    -lIPXACTmodels
+    -lIPXACTmodels \
+    -lKactusAPI
 
 DEPENDPATH += . \
     ./../../.. \

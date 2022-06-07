@@ -11,9 +11,9 @@
 
 #include "MetaDesign.h"
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/utilities/ComponentSearch.h>
 
@@ -23,8 +23,8 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <QVector>
 

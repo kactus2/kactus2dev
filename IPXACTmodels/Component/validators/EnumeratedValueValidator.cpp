@@ -11,7 +11,7 @@
 
 #include "EnumeratedValueValidator.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 

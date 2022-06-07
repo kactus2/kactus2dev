@@ -13,10 +13,10 @@
 #define BUSINTERFACEWIZARDGENERALOPTIONSPAGE_H
 
 #include <editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h>
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QWizardPage>
 

@@ -14,11 +14,11 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
+#include <KactusAPI/include/PluginManager.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

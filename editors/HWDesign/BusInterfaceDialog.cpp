@@ -13,7 +13,7 @@
 
 #include <QLabel>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceDialog::BusInterfaceDialog()

@@ -12,9 +12,9 @@
 #include "fileseditor.h"
 #include "filesdelegate.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <KactusAPI/include/FileInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

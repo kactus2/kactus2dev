@@ -15,16 +15,16 @@
 #include "DesignInstantiationsItem.h"
 #include "DesignConfigurationInstantiationsItem.h"
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/ComponentInstantiationParameterFinder.h>
+#include <KactusAPI/include/ParametersInterface.h>
+#include <KactusAPI/include/FileBuilderInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
+#include <KactusAPI/include/FileInterface.h>
 #include <editors/ComponentEditor/instantiations/InstantiationsEditor.h>
-#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
-#include <editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h>
+#include <KactusAPI/include/ComponentInstantiationInterface.h>
+#include <KactusAPI/include/ModuleParameterInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>

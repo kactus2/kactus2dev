@@ -15,7 +15,7 @@
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/itemvisualizer.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

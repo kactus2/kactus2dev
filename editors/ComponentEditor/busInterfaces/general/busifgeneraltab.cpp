@@ -11,11 +11,11 @@
 
 #include "busifgeneraltab.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesEditor.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>

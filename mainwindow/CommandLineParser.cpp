@@ -11,8 +11,8 @@
 
 #include "CommandLineParser.h"
 
-#include <common/ui/MessageMediator.h>
-#include <common/KactusAPI.h>
+#include <KactusAPI/include/MessageMediator.h>
+#include <KactusAPI/KactusAPI.h>
 
 #include <QCoreApplication>
 #include <QCommandLineParser>

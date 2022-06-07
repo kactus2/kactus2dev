@@ -12,16 +12,16 @@
 #include "filesmodel.h"
 #include "FileColumns.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 #include <common/KactusColors.h>
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <KactusAPI/include/FileInterface.h>
 
 #include <QFileInfo>
 #include <QMimeData>

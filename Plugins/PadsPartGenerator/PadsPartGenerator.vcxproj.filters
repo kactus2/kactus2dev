@@ -29,12 +29,6 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Header Files\common">
-      <UniqueIdentifier>{0996f9cb-d7c9-4940-8460-fb5231b25333}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common">
-      <UniqueIdentifier>{716b3f33-69c4-4adf-ad74-0b142829bdd9}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PadsPartGenerator.cpp">
@@ -58,15 +52,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_PadsPartGeneratorDialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="PadsPartGenerator.h">
@@ -88,21 +73,6 @@
   <ItemGroup>
     <ClInclude Include="PadsAsciiSyntax.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

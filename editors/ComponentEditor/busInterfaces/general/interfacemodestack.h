@@ -21,7 +21,7 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <QStackedWidget>
 #include <QSharedPointer>

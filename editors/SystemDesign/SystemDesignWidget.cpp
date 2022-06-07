@@ -36,7 +36,7 @@
 #include <editors/SystemDesign/UndoCommands/SystemDeleteCommands.h>
 #include <editors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 #include <library/LibraryUtils.h>
 
 #include <IPXACTmodels/Component/Component.h>

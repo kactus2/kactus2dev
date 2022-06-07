@@ -13,9 +13,9 @@
 
 #include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
 
-#include <library/LibraryInterface.h>
-#include <library/LibraryItem.h>
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/LibraryItem.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <IPXACTmodels/common/validators/namevalidator.h>
 #include <IPXACTmodels/common/validators/NMTokenValidator.h>
@@ -260,9 +260,6 @@ void VLNVEditor::initConnections()
         this, SLOT(updateNameMatcherItem()), Qt::UniqueConnection);
     connect(nameEdit_, SIGNAL(textChanged(QString const&)),
         this, SLOT(updateVersionMatcherItem()), Qt::UniqueConnection);
-
-    connect(static_cast<LibraryHandler*>(handler_), SIGNAL(refreshDialer()),
-            this, SLOT(refresh()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

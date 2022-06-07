@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/Interconnection.h>
@@ -23,7 +23,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <QRegularExpression>
 

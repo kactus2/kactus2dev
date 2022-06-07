@@ -15,9 +15,9 @@
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesModel.h>
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesDelegate.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QHeaderView>
 #include <QVBoxLayout>

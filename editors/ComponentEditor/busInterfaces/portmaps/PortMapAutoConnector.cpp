@@ -13,11 +13,11 @@
 
 #include "JaroWinklerAlgorithm.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/PortsInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>

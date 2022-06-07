@@ -33,8 +33,7 @@ TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, 
     docName_(""),
     previouslyUnlocked_(false),
     relatedVLNVs_(),
-    refreshRequested_(false),
-    changedOnDisk_(false)
+    refreshRequested_(false)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
 }
@@ -417,25 +416,6 @@ void TabDocument::requestRefresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: TabDocument::onDocumentUpdated()
-//-----------------------------------------------------------------------------
-void TabDocument::onDocumentUpdated(VLNV const& vlnv)
-{
-    if (getDocumentVLNV() == vlnv)
-    {
-        if (!changedOnDisk_ && isVisible())
-        {
-            changedOnDisk_ = true;
-            handleChangeOnDisk();
-        }
-        else
-        {
-            changedOnDisk_ = true;
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: TabDocument::showEvent()
 //-----------------------------------------------------------------------------
 void TabDocument::showEvent(QShowEvent* event)
@@ -446,10 +426,6 @@ void TabDocument::showEvent(QShowEvent* event)
     {
         refreshRequested_ = false;
         QTimer::singleShot(20, this, SLOT(handleRefreshRequest()));
-    }
-    else if (changedOnDisk_)
-    {
-        QTimer::singleShot(20, this, SLOT(handleChangeOnDisk()));
     }
 }
 
@@ -482,37 +458,5 @@ void TabDocument::handleRefreshRequest()
     else
     {
         refresh();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: TabDocument::handleChangeOnDisk()
-//-----------------------------------------------------------------------------
-void TabDocument::handleChangeOnDisk()
-{
-    if (isModified())
-    {
-        QMessageBox msgBox(QMessageBox::Warning, tr("File changed on disk"),
-                           tr("The current document has changed outside of Kactus2. "
-                              "Do you want to reload from the disk and lose your changes?"),
-                           QMessageBox::NoButton, this);
-
-        QPushButton* reloadButton = new QPushButton(tr("Reload"), &msgBox);
-        QPushButton* ignoreButton = new QPushButton(tr("Ignore"), &msgBox);
-        msgBox.addButton(reloadButton, QMessageBox::AcceptRole);
-        msgBox.addButton(ignoreButton, QMessageBox::RejectRole);
-
-        msgBox.exec();
-        if (msgBox.clickedButton() == reloadButton)
-        {
-            refresh();
-        }
-
-        changedOnDisk_ = false;
-    }
-    else
-    {
-        refresh();
-        changedOnDisk_ = false;
     }
 }

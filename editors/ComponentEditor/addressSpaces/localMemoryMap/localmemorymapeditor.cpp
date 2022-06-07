@@ -15,18 +15,18 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/ComponentEditor/memoryMaps/MemoryMapColumns.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapdelegate.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapmodel.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Component.h>

@@ -36,8 +36,8 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
 
 #include <editors/common/DiagramUtil.h>
 #include <editors/common/diagramgrid.h>
@@ -70,7 +70,7 @@
 #include <editors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
 #include <editors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PartSelect.h>

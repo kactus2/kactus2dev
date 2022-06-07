@@ -12,7 +12,7 @@
 #include "componenteditorviewitem.h"
 #include <editors/ComponentEditor/views/vieweditor.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>

@@ -15,7 +15,7 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <IPXACTmodels/common/PresenceTypes.h>
 

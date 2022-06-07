@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/TagData.h>
 
-#include <common/widgets/tagEditor/TagManager.h>
+#include <KactusAPI/include/TagManager.h>
 
 
 #include <QAbstractListModel>

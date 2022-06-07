@@ -17,7 +17,7 @@
 #include <IPXACTmodels/Design/Design.h>
 
 #include <Plugins/common/HDLParser/HDLCommandLineParser.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeDialog.h>
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>
@@ -26,7 +26,7 @@
 #include <editors/MemoryDesigner/MasterSlavePathSearch.h>
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -62,7 +62,7 @@ QString LinuxDeviceTreePlugin::getName() const
 //-----------------------------------------------------------------------------
 QString LinuxDeviceTreePlugin::getVersion() const
 {
-    return "0.1";
+    return "0.2";
 }
 
 //-----------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
 
 using namespace std;
 

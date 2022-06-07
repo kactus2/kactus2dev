@@ -14,7 +14,7 @@
 
 #include <common/expressions/utilities.h>
 
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <KactusAPI/include//ImportColors.h>
 
 #include <wizards/ComponentWizard/InstanceData.h>
 

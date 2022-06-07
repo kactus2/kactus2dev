@@ -14,7 +14,7 @@
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
 #include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsSortFilter::AbstractionWirePortsSortFilter()

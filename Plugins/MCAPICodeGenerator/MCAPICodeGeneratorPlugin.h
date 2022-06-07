@@ -12,7 +12,7 @@
 #ifndef MCAPICodeGeneratorPlugin_H
 #define MCAPICodeGeneratorPlugin_H
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
 
 //-----------------------------------------------------------------------------
 //! MCAPI code generator.

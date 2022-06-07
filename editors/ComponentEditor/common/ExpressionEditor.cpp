@@ -19,7 +19,7 @@
 #include <QRegularExpression>
 #include <QTextCursor>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
 #include "SystemVerilogSyntax.h"

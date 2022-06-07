@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "RegisterFileValidator.h"
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 

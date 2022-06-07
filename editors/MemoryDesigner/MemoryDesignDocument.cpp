@@ -15,7 +15,7 @@
 
 #include <editors/MemoryDesigner/MemoryDesignerDiagram.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Design/Design.h>

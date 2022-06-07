@@ -11,13 +11,13 @@
 
 #include "componenteditorfileitem.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <editors/ComponentEditor/fileSet/file/fileeditor.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 

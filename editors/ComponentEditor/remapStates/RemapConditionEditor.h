@@ -17,8 +17,8 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/RemapPort.h>

@@ -20,13 +20,13 @@
 #include "BusInterfaceWizardPortMapPage.h"
 #include "BusInterfaceWizardConclusionPage.h"
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>

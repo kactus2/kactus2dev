@@ -8,16 +8,19 @@ TARGET = kactus2
 QT += core xml widgets gui printsupport help svg
 CONFIG += c++11 release
 
-DEFINES += _WINDOWS QT_DLL QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2 KACTUS2_EXPORTS
+DEFINES += _WINDOWS QT_DLL QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2
 
 INCLUDEPATH += . \
     ./GeneratedFiles \
+    ./KactusAPI/include \
     $(QTDIR)/../qttools/include \
     $(QTDIR)/../qttools/include/QtHelp \
     $(QTDIR)/../qtxmlpatterns/include/QtXmlPatterns \
     $(QTDIR)/../qtxmlpatterns/include 
 LIBS += -L./executable \
     -lIPXACTmodels \
+    -L./executable \
+    -lKactusAPI \
     $$PYTHON_LIBS
 
 QMAKE_CXXFLAGS += $$PYTHON_C_FLAGS
@@ -34,10 +37,9 @@ include(Kactus2.pri)
 
 linux-g++*:QMAKE_CXXFLAGS += -fPIE
 linux-g++*:LIBS += -pie -rdynamic
-unix:QMAKE_POST_LINK = ln -f -s kactus2 executable/libKactus2.so; ./createhelp
+unix:QMAKE_POST_LINK = ./createhelp
 
 win32:RC_FILE = Kactus2.rc
-win32-g++*:LIBS += -Wl,--export-all-symbols,--out-implib,executable/libKactus2.a
 
 config.files = ./Administrative/releaseFiles/Kactus2.ini
 

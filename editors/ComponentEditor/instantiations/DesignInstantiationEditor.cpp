@@ -17,13 +17,13 @@
 
 #include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>

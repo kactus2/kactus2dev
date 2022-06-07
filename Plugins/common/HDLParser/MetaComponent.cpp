@@ -11,17 +11,17 @@
 
 #include "MetaComponent.h"
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 
 #include <IPXACTmodels/utilities/Search.h>
 
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 //-----------------------------------------------------------------------------
 // Function: MetaComponent::MetaComponent

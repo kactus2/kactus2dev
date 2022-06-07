@@ -12,7 +12,7 @@
 #ifndef VERILOGINSTANCEPARSER_H
 #define VERILOGINSTANCEPARSER_H
 
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/HighlightSource.h>
 
 #include <QSharedPointer>
 #include <QRegularExpressionMatchIterator>

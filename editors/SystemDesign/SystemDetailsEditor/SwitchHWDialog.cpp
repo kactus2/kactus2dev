@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/widgets/LineEditEx/LineEditEx.h>
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>

@@ -13,9 +13,9 @@
 
 #include "RemapConditionColumns.h"
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 

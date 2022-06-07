@@ -14,8 +14,8 @@
 
 #include "ReferenceCounter.h"
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 class ConfigurableElementValue;
 class AbstractParameterInterface;

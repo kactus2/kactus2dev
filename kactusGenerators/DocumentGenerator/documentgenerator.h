@@ -14,12 +14,12 @@
 
 #include <kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatterFactory.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionFormatterFactory.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <editors/common/DesignWidgetFactory.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>

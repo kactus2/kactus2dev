@@ -49,15 +49,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MakefileGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SWStackParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -105,16 +96,7 @@
     <ClInclude Include="MakefileParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogSyntax.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MakeCommon.h">

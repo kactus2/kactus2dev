@@ -16,9 +16,9 @@
 #include <editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 

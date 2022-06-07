@@ -16,8 +16,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/TransparentBridgeInterface.h>
 
 #include <QVBoxLayout>
 

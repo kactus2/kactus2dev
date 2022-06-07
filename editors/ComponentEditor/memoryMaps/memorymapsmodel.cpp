@@ -13,10 +13,10 @@
 
 #include "MemoryMapsColumns.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h>
-#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/MemoryMapInterface.h>
+#include <KactusAPI/include/MemoryMapExpressionsGatherer.h>
+#include <KactusAPI/include//MemoryRemapExpressionGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <IPXACTmodels/Component/Component.h>

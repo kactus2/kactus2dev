@@ -12,7 +12,7 @@
 #ifndef GRAPHICALMESSAGEMEDIATOR_H
 #define GRAPHICALMESSAGEMEDIATOR_H
 
-#include "MessageMediator.h"
+#include <KactusAPI/include/MessageMediator.h>
 
 #include <QStatusBar>
 
@@ -21,15 +21,20 @@ class MessageConsole;
 //-----------------------------------------------------------------------------
 //! Graphical output for user messages.
 //-----------------------------------------------------------------------------
-class GraphicalMessageMediator: public MessageMediator
+class GraphicalMessageMediator: public QObject, public MessageMediator
 {
+    Q_OBJECT
 public:
 
     //! The constructor.
-    GraphicalMessageMediator();
+    GraphicalMessageMediator(QObject* parent = nullptr);
 
     //! The destructor.
     virtual ~GraphicalMessageMediator() = default;
+
+    // Disable copying.
+    GraphicalMessageMediator(GraphicalMessageMediator const& rhs) = delete;
+    GraphicalMessageMediator& operator=(GraphicalMessageMediator const& rhs) = delete;
 
     //! Show the given message to the user.
     virtual void showMessage(QString const& message) const;
@@ -43,23 +48,16 @@ public:
     //! Show the given status to the user.
     virtual void showStatusMessage(QString const& status) const;
 
-    //! Set the status bar to show status.
-    void setMessageConsole(MessageConsole* console);
+signals:
 
-    //! Set the status bar to show status.
-    void setStatusBar(QStatusBar* statusBar);
+    //! Show the given message to the user.
+    void noticeMessage(QString const& message) const;
 
-private:
+    //! Show the given error to the user.
+    void errorMessage(QString const& error) const;
 
-    // Disable copying.
-    GraphicalMessageMediator(GraphicalMessageMediator const& rhs);
-    GraphicalMessageMediator& operator=(GraphicalMessageMediator const& rhs);
-
-    //! Graphical console for displaying messages.
-    MessageConsole* console_; 
-
-    //! Status bar for displaying status info.
-    QStatusBar* statusBar_;
+    //! Show the given status to the user.
+    void statusMessage(QString const& status) const;
 };
 
 #endif // GRAPHICALMESSAGEMEDIATOR_H

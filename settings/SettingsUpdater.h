@@ -12,7 +12,7 @@
 #ifndef SETTINGSUPDATER_H
 #define SETTINGSUPDATER_H
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 
 #include <QFile>
 #include <QVariant>

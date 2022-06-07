@@ -16,10 +16,10 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/TransparentBridgeInterface.h>
+#include <KactusAPI/include/MemoryMapInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
 
 #include <QFormLayout>
 #include <QVBoxLayout>

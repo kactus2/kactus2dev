@@ -14,7 +14,7 @@
 #include "ModelSimWriterFactory/ModelSimWriterFactory.h"
 
 #include <Plugins/common/LanguageHighlighter.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
 
@@ -44,7 +44,7 @@ QString ModelSimGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString ModelSimGeneratorPlugin::getVersion() const
 {
-    return "2.1";
+    return "2.2";
 }
 
 //-----------------------------------------------------------------------------

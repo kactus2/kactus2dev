@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7ED945F7-9538-4306-A770-4A186327F8BF}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -94,7 +94,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\x64\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5Widgetsd.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5Widgetsd.lib;IPXACTmodelsd.lib;KactusAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
     </Link>
@@ -130,16 +130,13 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\x64\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Xml.lib;Qt5Widgets.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Xml.lib;Qt5Widgets.lib;IPXACTmodels.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\common\NameGenerationPolicy.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_FileOutputWidget.cpp">
@@ -193,9 +190,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\NameGenerationPolicy.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogSyntax.h" />
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

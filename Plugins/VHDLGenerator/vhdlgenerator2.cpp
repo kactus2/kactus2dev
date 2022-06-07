@@ -19,7 +19,7 @@
 #include "vhdlgeneral.h"
 #include "vhdlportmap.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/PortAlignment.h>
@@ -42,13 +42,13 @@
 
 #include <IPXACTmodels/utilities/ComponentSearch.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatterFactoryImplementation.h>
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QFile>
 #include <QFileInfo>

@@ -15,7 +15,7 @@
 #include <editors/HWDesign/HWComponentItem.h>
 #include <editors/common/diagramgrid.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>

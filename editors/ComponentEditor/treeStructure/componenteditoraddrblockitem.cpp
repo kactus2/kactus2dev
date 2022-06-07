@@ -14,8 +14,8 @@
 #include "componenteditorregisterfileitem.h"
 
 #include <editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>

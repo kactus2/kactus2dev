@@ -14,7 +14,7 @@
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
@@ -285,5 +285,5 @@ void NewObjectDialog::setupLayout()
     mainLayout->addStretch(1);
 
     setFixedHeight(sizeHint().height());
-    resize(400, sizeHint().height());
+    resize(421, sizeHint().height());
 }

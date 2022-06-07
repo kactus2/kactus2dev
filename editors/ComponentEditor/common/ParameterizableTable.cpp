@@ -13,8 +13,8 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <QFont>
 

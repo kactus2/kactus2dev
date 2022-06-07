@@ -42,7 +42,8 @@
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnConstants.h>
-#include <common/KactusAPI.h>
+
+#include <KactusAPI/KactusAPI.h>
 
 #include <editors/common/DesignWidgetFactoryImplementation.h>
 #include <editors/HWDesign/HWDesignWidget.h>
@@ -57,11 +58,11 @@
 #include <editors/CatalogEditor/CatalogEditor.h>
 #include <editors/ComponentEditor/componenteditor.h>
 #include <editors/CSourceEditor/CSourceWidget.h>
-#include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
+#include <KactusAPI/include/ExpressionFormatterFactoryImplementation.h>
 #include <editors/ConfigurationTools/ViewConfigurer.h>
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
 // #include <Plugins/PluginSystem/ConsolePluginUtility.h>
 
 #include <settings/SettingsDialog.h>
@@ -72,7 +73,7 @@
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 #include <library/LibraryUtils.h>
 
 #include <IPXACTmodels/common/VLNV.h>
@@ -531,7 +532,7 @@ void MainWindow::setupActions()
     actCheckIntegrity_ = new QAction(QIcon(":/icons/common/graphics/checkIntegrity.png"),
         tr("View Library Integrity Report"), this);
     connect(actCheckIntegrity_, SIGNAL(triggered()),
-        libraryHandler_, SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
+        dockHandler_, SIGNAL(generateIntegrityReport()), Qt::UniqueConnection);
 
     // initialize the action to generate documentation for the component/design
     actGenDocumentation_ = new QAction(QIcon(":icons/common/graphics/documentation.png"),
@@ -951,30 +952,14 @@ void MainWindow::connectDockHandler()
 //-----------------------------------------------------------------------------
 void MainWindow::setupAndConnectLibraryHandler()
 {
-    connect(libraryHandler_, SIGNAL(errorMessage(const QString&)),
-        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(noticeMessage(const QString&)),
-        this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     connect(libraryHandler_, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SLOT(openDesign(const VLNV&, const QString&)));
     connect(libraryHandler_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(openMemoryDesign(const VLNV&, const QString&)));
 
-    connect(libraryHandler_, SIGNAL(createBus(const VLNV&, const QString&)),
-        this, SLOT(createBus(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createAbsDef(const VLNV&, const QString&, bool)),
-        this, SLOT(createAbsDef(const VLNV&, const QString&, bool)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createComDef(const VLNV&, const QString&)),
-        this, SLOT(createComDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createApiDef(const VLNV&, const QString&)),
-        this, SLOT(createApiDefinition(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createSWDesign(const VLNV&)),
-        this, SLOT(createSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createSystemDesign(const VLNV&)),
-        this, SLOT(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(createDesignForExistingComponent(const VLNV&)),
-        this, SLOT(createDesignForExistingComponent(const VLNV&)), Qt::UniqueConnection);
+
+
     connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(openCatalog(const VLNV&)),
@@ -990,10 +975,7 @@ void MainWindow::setupAndConnectLibraryHandler()
     connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
         this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 
-    connect(libraryHandler_, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,KactusAttribute::Firmness,
-            QVector<TagData>, const VLNV&, const QString&)),
-        this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData>,
-            const VLNV&, const QString&)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -2524,8 +2506,6 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
     }
 
     BusDefinitionEditor* editor = new BusDefinitionEditor(this, libraryHandler_, busDef, absDef, absDef && disableBusDef);
-    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
-        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     designTabs_->addAndOpenDocument(editor);
 }
@@ -2549,13 +2529,11 @@ void MainWindow::openCatalog(const VLNV& vlnv)
     QSharedPointer<Catalog> catalog = libraryHandler_->getModel(vlnv).dynamicCast<Catalog>();
     if (catalog == 0)
     {
-        emit errorMessage(tr("Document type did not match Catalog"));
+        emit errorMessage(tr("Document could not be opened for Catalog"));
         return;
     }
 
     CatalogEditor* editor = new CatalogEditor(libraryHandler_, catalog, this);
-    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
-        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     connect(editor, SIGNAL(openCatalog(const VLNV&)),
         this, SLOT(openCatalog(const VLNV&)), Qt::UniqueConnection);
@@ -2593,8 +2571,6 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
     DesignWidgetFactoryImplementation factory(libraryHandler_,
         dockHandler_->getDesignAndInstanceParameterFinder(), dockHandler_->getDesignParameterFinder());
     DesignWidget* designWidget = factory.makeHWDesignWidget(this);
-    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
-        designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     // open the design in the designWidget
     designWidget->setDesign(vlnv, viewName);
@@ -2755,9 +2731,6 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
 
     SystemDesignWidget* designWidget = new SystemDesignWidget(true, libraryHandler_, this);
 
-    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
-        designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
-
     connect(designWidget, SIGNAL(errorMessage(const QString&)),
         dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(noticeMessage(const QString&)),
@@ -2822,8 +2795,6 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     SystemDesignWidget* designWidget = new SystemDesignWidget(false, libraryHandler_, this);
-    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
-        designWidget, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(errorMessage(const QString&)),
         dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -2901,14 +2872,12 @@ void MainWindow::openComponent(VLNV const& vlnv)
 
     if (!component)
     {
-        emit errorMessage(tr("Document type did not match Component"));
+        emit errorMessage(tr("Document could not be opened for Component"));
         QApplication::restoreOverrideCursor();
         return;
     }
 
     ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
-    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
-        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
 
     connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
@@ -2953,13 +2922,12 @@ void MainWindow::openComDefinition(VLNV const& vlnv)
 
     if (comDef == 0)
     {
-        emit errorMessage(tr("Document type did not match COM Definition"));
+        emit errorMessage(tr("Document could not be opened for COM Definition"));
         return;
     }
 
     ComDefinitionEditor* editor = new ComDefinitionEditor(this, libraryHandler_, comDef);
-    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
-        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
+
     designTabs_->addAndOpenDocument(editor);
 }
 
@@ -2989,13 +2957,12 @@ void MainWindow::openApiDefinition(VLNV const& vlnv)
 
     if (apiDef == 0)
     {
-        emit errorMessage(tr("Document type did not match API Definition"));
+        emit errorMessage(tr("Document could not be opened for API Definition"));
         return;
     }
 
     ApiDefinitionEditor* editor = new ApiDefinitionEditor(this, libraryHandler_, apiDef);
-    connect(libraryHandler_, SIGNAL(updatedVLNV(VLNV const&)),
-        editor, SLOT(onDocumentUpdated(VLNV const&)), Qt::UniqueConnection);
+
     designTabs_->addAndOpenDocument(editor);
 }
 

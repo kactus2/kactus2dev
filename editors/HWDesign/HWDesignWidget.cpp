@@ -16,8 +16,8 @@
 #include "HWConnection.h"
 #include "AdHocConnectionItem.h"
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <editors/common/Association/Association.h>
 #include <editors/common/StickyNote/StickyNote.h>
@@ -43,7 +43,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/NameGenerationPolicy.h>
 

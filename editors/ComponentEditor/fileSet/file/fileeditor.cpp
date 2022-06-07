@@ -15,9 +15,9 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <KactusAPI/include/FileInterface.h>
 
 #include <QScrollArea>
 #include <QVBoxLayout>

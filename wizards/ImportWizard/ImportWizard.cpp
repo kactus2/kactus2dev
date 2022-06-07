@@ -17,11 +17,11 @@
 #include <wizards/ComponentWizard/ComponentWizardConclusionPage.h>
 #include <wizards/ImportWizard/ImportWizardInstancesPage.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

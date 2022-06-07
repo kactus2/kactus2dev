@@ -44,20 +44,8 @@
     <Filter Include="Source Files\Editors">
       <UniqueIdentifier>{8b7c8b51-97ee-4e83-bc23-6cbc7648e9dc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Editors\ComponentEditor">
-      <UniqueIdentifier>{9e814157-9ba8-43dc-b231-86275c97a5c7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Editors\ComponentEditor\Common">
-      <UniqueIdentifier>{e09feb1a-3b8a-47dd-b8a7-a395fc83c1e0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Editors">
       <UniqueIdentifier>{ad685249-6c92-4ba6-a283-2dbb9b4844a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Editors\ComponentEditor">
-      <UniqueIdentifier>{7687627c-d9ca-4a21-b1c1-e92f30dafcdd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Editors\ComponentEditor\Common">
-      <UniqueIdentifier>{9a7988fb-b9f4-4b8f-bbb6-850a98fd5724}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\IPXACTModels">
       <UniqueIdentifier>{5f2340a1-6cb0-46cc-93bf-67124d1c2f7f}</UniqueIdentifier>
@@ -70,12 +58,6 @@
     </Filter>
     <Filter Include="Source Files\IPXACTModels\utilities">
       <UniqueIdentifier>{bf39ed15-309f-4b4c-8595-d1afb6ed401c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Editors\common">
-      <UniqueIdentifier>{68aaaf76-0814-4ed2-8b27-cbaeab308908}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Editors\common">
-      <UniqueIdentifier>{4d97aad4-338a-442f-9067-0ea95c866587}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Editors\MemoryDesigner">
       <UniqueIdentifier>{5132b76e-10a7-494f-b1c3-ed8b39447b19}</UniqueIdentifier>
@@ -106,18 +88,6 @@
     <ClCompile Include="SVDGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ParameterCache.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ParameterCache.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceParameterFinder.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ComponentInstanceParameterFinder.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
@@ -130,9 +100,6 @@
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
-      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
@@ -141,12 +108,6 @@
     </ClCompile>
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
       <Filter>Source Files\IPXACTModels\utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\common\ComponentInstanceParameterFinder.cpp">
-      <Filter>Source Files\Editors\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp">
-      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp">
       <Filter>Source Files\Editors\MemoryDesigner</Filter>
@@ -163,26 +124,11 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp">
       <Filter>Source Files\Editors\MemoryDesigner</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
-      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp">
       <Filter>Source Files\Editors\MemoryDesigner</Filter>
     </ClCompile>
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
       <Filter>Source Files\Editors\MemoryDesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
-      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ParameterCache.cpp">
-      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files\Editors\ComponentEditor\Common</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_CPUSelectionDialog.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -238,9 +184,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MessagePasser.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\common\DesignParameterFinder.cpp">
-      <Filter>Source Files\Editors\common</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="SVDGeneratorPlugin.h">
@@ -248,12 +191,6 @@
     </CustomBuild>
     <CustomBuild Include="SVDGenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\editors\common\ComponentInstanceParameterFinder.h">
-      <Filter>Header Files\Editors\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
-      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
     </CustomBuild>
     <CustomBuild Include="ConnectivityGraphUtilities.h">
       <Filter>Header Files</Filter>
@@ -295,9 +232,6 @@
     <ClInclude Include="..\common\HDLParser\MetaComponent.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h">
-      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\HDLParser\MetaDesign.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
@@ -306,9 +240,6 @@
     </ClInclude>
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h">
       <Filter>Header Files\IPXACTModels\utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h">
       <Filter>Header Files\Editors\MemoryDesigner</Filter>
@@ -325,23 +256,11 @@
     <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h">
       <Filter>Header Files\Editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
-      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h">
       <Filter>Header Files\Editors\MemoryDesigner</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h">
       <Filter>Header Files\Editors\MemoryDesigner</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
-      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files\Editors\ComponentEditor\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.h">
       <Filter>Header Files\Editors\MemoryDesigner</Filter>
@@ -351,9 +270,6 @@
     </ClInclude>
     <ClInclude Include="CPUDialog\SVDCPUColumns.h">
       <Filter>Header Files\CPUDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\common\DesignParameterFinder.h">
-      <Filter>Header Files\Editors\common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

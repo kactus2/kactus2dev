@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E8D9DD36-B0CA-4043-9B08-CEA96BED5266}</ProjectGuid>
     <Keyword>QtVS_v302</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -38,6 +38,16 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>_pythonAPI_d</TargetName>
+    <TargetExt>.pyd</TargetExt>
+    <OutDir>$(SolutionDir)PythonAPI\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>_pythonAPI</TargetName>
+    <TargetExt>.pyd</TargetExt>
+    <OutDir>$(SolutionDir)PythonAPI\</OutDir>
+  </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
@@ -60,14 +70,14 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PreprocessorDefinitions>PYTHONAPI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(PYTHON_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(PYTHON_DIR)\include;$(SolutionDir)KactusAPI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>_pythonAPI_d.pyd</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;$(PYTHON_DIR)\libs;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python38_d.lib;IPXACTmodelsd.lib;Kactus2_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>python38_d.lib;IPXACTmodelsd.lib;KactusAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -77,53 +87,25 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <PreprocessorDefinitions>PYTHONAPI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(PYTHON_DIR)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(PYTHON_DIR)\include;$(SolutionDir)KactusAPI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>_pythonAPI.pyd</OutputFile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>Python38.lib;IPXACTmodels.lib;Kactus2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Python38.lib;IPXACTmodels.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;$(PYTHON_DIR)\libs;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\common\validators\LibraryPathValidator\librarypathvalidator.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\ParameterCache.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp" />
-    <ClCompile Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp" />
-    <ClCompile Include="..\VersionHelper.cpp" />
     <ClCompile Include="PythonAPI.cpp" />
     <ClCompile Include="PythonAPI_wrap.cxx">
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">swig -python -c++ PythonAPI.i</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ExpressionFormatter.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h" />
-    <ClInclude Include="..\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h" />
     <QtMoc Include="..\common\validators\LibraryPathValidator\librarypathvalidator.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\ListParameterFinder.h" />
-    <QtMoc Include="..\editors\ComponentEditor\common\ParameterCache.h" />
-    <ClInclude Include="..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
-    <ClInclude Include="..\VersionHelper.h" />
     <ClInclude Include="PythonAPI.h" />
     <ClInclude Include="pythonapi_global.h" />
   </ItemGroup>

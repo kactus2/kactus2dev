@@ -15,15 +15,15 @@
 #include <QRegularExpression>
 #include <QList>
 
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <KactusAPI/include/ImportColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/View.h>
 
-#include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
-#include <Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h>
+#include <KactusAPI/include/Highlighter.h>
+#include <KactusAPI/include/ModelParameterVisualizer.h>
 
 #include <common/NameGenerationPolicy.h>
 

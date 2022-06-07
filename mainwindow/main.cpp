@@ -17,18 +17,18 @@
 #include "CommandLineParser.h"
 #include "SplashScreen.h"
 
-#include <common/ui/MessageMediator.h>
-#include <common/ui/ConsoleMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
+#include <KactusAPI/include/ConsoleMediator.h>
 #include <common/ui/GraphicalMessageMediator.h>
 
-#include <common/KactusAPI.h>
+#include <KactusAPI/KactusAPI.h>
 
-#include <VersionHelper.h>
+#include <KactusAPI/include/VersionHelper.h>
 
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <KactusAPI/include/PluginManager.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
 
 #include <settings/SettingsUpdater.h>
 
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 
     loadPlugins(settings);
 
-    LibraryHandler::initialize(0, mediator.data(), 0);
+    LibraryHandler::initialize(mediator.data());
     QScopedPointer<LibraryHandler> library(LibraryHandler::getInstance());
 
     QScopedPointer<KactusAPI> coreAPI(new KactusAPI(library.data(), mediator.data()));

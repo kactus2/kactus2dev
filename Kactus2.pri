@@ -7,17 +7,16 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
-    ./resource1.h \
-    ./editors/ComponentEditor/common/ComponentParameterFinder.h \
+HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapSortFilter.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapView.h \
+    ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
-    ./common/KactusAPI.h \
     ./common/NameGenerationPolicy.h \
-    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
-    ./common/utils.h \
     ./common/IEditProvider.h \
     ./common/GenericEditProvider.h \
     ./common/widgets/listManager/dirlistmanagermodel.h \
@@ -65,7 +64,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
     ./common/widgets/DirectoryListSelector/DirectoryListSelector.h \
-    ./common/widgets/tagEditor/TagManager.h \
     ./common/widgets/tagEditor/TagLabel.h \
     ./common/widgets/tagEditor/FlowLayout.h \
     ./common/widgets/tagEditor/TagContainer.h \
@@ -112,7 +110,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
     ./common/dialogs/newObjectDialog/newobjectdialog.h \
-    ./common/dialogs/ObjectRemoveDialog/objectremovedialog.h \
     ./common/dialogs/listSelectDialog/ListSelectDialog.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsColumns.h \
@@ -120,12 +117,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
-    ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h \
-    ./common/dialogs/ObjectExportDialog/ObjectExportDialog.h \
-    ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.h \
-    ./common/ui/ConsoleMediator.h \
     ./common/ui/GraphicalMessageMediator.h \
-    ./common/ui/MessageMediator.h \
     ./common/expressions/utilities.h \
     ./mainwindow/CommandLineParser.h \
     ./mainwindow/SplashScreen.h \
@@ -162,6 +154,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./settings/FileTypeColumns.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
+    ./settings/NewPluginsDialog.h \
     ./settings/SettingsPage.h \
     ./settings/PluginSettingsPage.h \
     ./settings/FileTypeSettingsPage.h \
@@ -178,15 +171,13 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
     ./wizards/ComponentWizard/InstanceData.h \
+    ./wizards/ComponentWizard/ImportEditor.h \
     ./wizards/ComponentWizard/ViewListModel.h \
     ./wizards/ComponentWizard/ComponentWizardViewsPage.h \
-    ./wizards/ComponentWizard/ImportRunner.h \
     ./wizards/ComponentWizard/ComponentWizard.h \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.h \
     ./wizards/ComponentWizard/ComponentWizardImportPage.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
-    ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
-    ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.h \
@@ -214,43 +205,23 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Help/HelpSystem/HelpWindow.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
-    ./Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h \
-    ./Plugins/PluginSystem/APISupport.h \
-    ./Plugins/PluginSystem/PluginSettingsModel.h \
-    ./Plugins/PluginSystem/IPlugin.h \
-    ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
-    ./Plugins/PluginSystem/PluginInfoWidget.h \
-    ./Plugins/PluginSystem/PluginManager.h \
-    ./Plugins/PluginSystem/IPluginUtility.h \
-    ./Plugins/PluginSystem/NewPluginsDialog.h \
-    ./Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ./Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
-    ./Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h \
-    ./Plugins/PluginSystem/ImportPlugin/ImportColors.h \
-    ./Plugins/PluginSystem/ImportPlugin/Highlighter.h \
-    ./Plugins/PluginSystem/ImportPlugin/HighlightSource.h \
-    ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
-    ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
-    ./Plugins/PluginSystem/ImportPlugin/ImportPlugin.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
-    ./library/DocumentFileAccess.h \
-    ./library/DocumentValidator.h \
     ./library/LibraryInterface.h \
     ./library/LibraryItemSelectionFactory.h \
     ./library/LibraryUtils.h \
+    ./library/ObjectSelectionListItem.h \
     ./library/TableViewDialog.h \
     ./library/LibraryFilter.h \
-    ./library/LibraryHandler.h \
     ./library/LibraryErrorModel.h \
     ./library/ItemExporter.h \
-    ./library/LibraryItem.h \
     ./library/LibraryTreeFilter.h \
-    ./library/LibraryTreeModel.h \
     ./library/LibraryTreeWidget.h \
     ./library/LibraryTreeView.h \
-    ./library/LibraryLoader.h \
     ./library/LibraryWidget.h \
+    ./library/objectremovedialog.h \
+    ./library/ObjectSelectionDialog.h \
+    ./library/ObjectExportDialog.h \
     ./library/VLNVDialer/dialerwidget.h \
     ./library/VLNVDialer/filterwidget.h \
     ./library/VLNVDialer/firmnessgroup.h \
@@ -261,8 +232,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./library/HierarchyView/hierarchywidget.h \
     ./library/HierarchyView/hierarchyview.h \
     ./library/HierarchyView/hierarchyfilter.h \
-    ./library/HierarchyView/hierarchyitem.h \
-    ./library/HierarchyView/hierarchymodel.h \
     ./editors/ApiDefinitionEditor/ApiFunctionColumns.h \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
@@ -304,9 +273,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
     ./editors/ComponentEditor/ports/PortsView.h \
-    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.h \
-    ./editors/ComponentEditor/ports/interfaces/PortsInterface.h \
-    ./editors/ComponentEditor/parameters/AbstractParameterInterface.h \
     ./editors/ComponentEditor/parameters/ComponentParameterColumns.h \
     ./editors/ComponentEditor/parameters/ParameterColumns.h \
     ./editors/ComponentEditor/parameters/parametersmodel.h \
@@ -315,7 +281,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/parameters/ParameterDelegate.h \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.h \
     ./editors/ComponentEditor/parameters/ParametersView.h \
-    ./editors/ComponentEditor/parameters/ParametersInterface.h \
     ./editors/ComponentEditor/parameters/parameterseditor.h \
     ./editors/ComponentEditor/parameters/Array/ArrayColumns.h \
     ./editors/ComponentEditor/parameters/Array/ArrayDelegate.h \
@@ -349,7 +314,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h \
     ./editors/ComponentEditor/busInterfaces/general/BridgeColumns.h \
     ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.h \
     ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.h \
@@ -364,10 +328,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.h \
     ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.h \
     ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.h \
-    ./editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h \
-    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h \
-    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h \
-    ./editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.h \
     ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
@@ -390,7 +350,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.h \
     ./editors/ComponentEditor/addressSpaces/AddressSpaceColumns.h \
-    ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h \
     ./editors/ComponentEditor/addressSpaces/SegmentColumns.h \
     ./editors/ComponentEditor/addressSpaces/SegmentDelegate.h \
     ./editors/ComponentEditor/addressSpaces/addressspaceeditor.h \
@@ -451,9 +410,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
-    ./editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h \
-    ./editors/ComponentEditor/fileSet/interfaces/FileInterface.h \
-    ./editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
@@ -511,35 +467,18 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/choices/ChoicesModel.h \
     ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
-    ./editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h \
-    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.h \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
-    ./editors/ComponentEditor/common/ExpressionFormatter.h \
-    ./editors/ComponentEditor/common/ExpressionFormatterFactory.h \
-    ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
-    ./editors/ComponentEditor/common/ExpressionParser.h \
-    ./editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ./editors/ComponentEditor/common/ListParameterFinder.h \
-    ./editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ./editors/ComponentEditor/common/NullParser.h \
-    ./editors/ComponentEditor/common/ParameterFinder.h \
-    ./editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ./editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/ComponentEditor/common/CompleterPopupTable.h \
     ./editors/ComponentEditor/common/ExpressionDelegate.h \
     ./editors/ComponentEditor/common/ExpressionEditor.h \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
-    ./editors/ComponentEditor/common/ParameterCache.h \
     ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/common/ParameterizableTable.h \
     ./editors/ComponentEditor/common/ReferencingTableModel.h \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
-    ./editors/ComponentEditor/common/interfaces/CommonInterface.h \
-    ./editors/ComponentEditor/common/interfaces/NameGroupInterface.h \
-    ./editors/ComponentEditor/common/interfaces/ParameterizableInterface.h \
     ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
     ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h \
@@ -574,8 +513,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.h \
-    ./editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h \
-    ./editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.h \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfaceColumns.h \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesEditor.h \
     ./editors/ComponentEditor/indirectInterfaces/IndirectInterfacesModel.h \
@@ -635,20 +572,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapview.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h \
-    ./editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h \
     ./editors/ComponentEditor/resetTypes/ResetTypeColumns.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesModel.h \
@@ -682,8 +606,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
     ./editors/BusDefinitionEditor/AbstractionPortsEditor.h \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.h \
-    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h \
-    ./editors/common/BusInterfaceUtilities.h \
     ./editors/common/ColumnTypes.h \
     ./editors/common/DefaultRouting.h \
     ./editors/common/DesignDiagramResolver.h \
@@ -698,11 +620,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/PortUtilities.h \
     ./editors/common/TopComponentParameterFinder.h \
     ./editors/common/ComponentDesignDiagram.h \
-    ./editors/common/ComponentInstanceParameterFinder.h \
     ./editors/common/DesignCompletionModel.h \
     ./editors/common/DesignDiagram.h \
     ./editors/common/DesignWidget.h \
-    ./editors/common/DesignParameterFinder.h \
     ./editors/common/Association/Associable.h \
     ./editors/common/Association/Association.h \
     ./editors/common/Association/AssociationAddCommand.h \
@@ -759,7 +679,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/ComponentItemAutoConnector/AutoConnectorConnectionDelegate.h \
     ./editors/common/ComponentItemAutoConnector/AutoConnectorListFilter.h \
     ./editors/common/ComponentItemAutoConnector/PortListFiller.h \
-    ./editors/common/FileHandler/FileHandler.h \
     ./editors/HWDesign/AdHocEnabled.h \
     ./editors/HWDesign/HWAddCommands.h \
     ./editors/HWDesign/HWMoveCommands.h \
@@ -814,9 +733,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
     ./editors/HWDesign/undoCommands/PhysicalPortDeleteCommand.h \
     ./editors/HWDesign/undoCommands/ReplaceComponentCommand.h \
-    ./editors/HWDesign/interfaces/AdHocConnectionInterface.h \
-    ./editors/HWDesign/interfaces/ComponentInstanceInterface.h \
-    ./editors/HWDesign/interfaces/InterconnectionInterface.h \
     ./editors/MemoryDesigner/AddressBlockGraphicsItem.h \
     ./editors/MemoryDesigner/AddressSegmentGraphicsItem.h \
     ./editors/MemoryDesigner/AddressSpaceGraphicsItem.h \
@@ -890,37 +806,27 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./PythonAPI/FileChannel.h \
-    ./PythonAPI/ReadChannel.h \
     ./PythonAPI/ChannelRelay.h \
+    ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
-    ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapView.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapSortFilter.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h
-SOURCES += ./VersionHelper.cpp \
+    ./PythonAPI/extensions/IOCatcher.h
+SOURCES += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapView.cpp \
     ./common/GenericEditProvider.cpp \
-    ./common/KactusAPI.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
-    ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.cpp \
     ./common/dialogs/propertyPageDialog/PropertyPageView.cpp \
     ./common/dialogs/newObjectDialog/newobjectdialog.cpp \
-    ./common/dialogs/ObjectRemoveDialog/objectremovedialog.cpp \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.cpp \
     ./common/dialogs/listSelectDialog/ListSelectDialog.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
-    ./common/dialogs/ObjectExportDialog/ObjectExportDialog.cpp \
-    ./common/dialogs/ObjectExportDialog/ObjectSelectionDialog.cpp \
-    ./common/dialogs/ObjectExportDialog/ObjectSelectionListItem.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
     ./common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ./common/widgets/assistedLineEdit/BasicLineContentMatcher.cpp \
@@ -971,7 +877,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/widgets/tagEditor/TagEditor.cpp \
     ./common/widgets/tagEditor/TagEditorContainer.cpp \
     ./common/widgets/tagEditor/TagLabel.cpp \
-    ./common/widgets/tagEditor/TagManager.cpp \
     ./common/widgets/tagEditor/TagSelector.cpp \
     ./common/widgets/tagEditor/TagSelectorContainer.cpp \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
@@ -996,7 +901,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./common/views/EditableTreeView/EditableTreeSortFilter.cpp \
     ./common/views/EditableTreeView/EditableTreeView.cpp \
-    ./common/ui/ConsoleMediator.cpp \
     ./common/ui/GraphicalMessageMediator.cpp \
     ./common/expressions/utilities.cpp \
     ./mainwindow/CommandLineParser.cpp \
@@ -1037,6 +941,8 @@ SOURCES += ./VersionHelper.cpp \
     ./settings/filetypesview.cpp \
     ./settings/k2envvariablesettingspage.cpp \
     ./settings/k2envvarmodel.cpp \
+    ./settings/NewPluginsDialog.cpp \
+    ./settings/PluginInfoWidget.cpp \
     ./settings/PluginSettingsPage.cpp \
     ./settings/CodeEditorSettingsPage.cpp \
     ./settings/GeneralSettingsPage.cpp \
@@ -1051,10 +957,8 @@ SOURCES += ./VersionHelper.cpp \
     ./wizards/ComponentWizard/ComponentWizardImportPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardViewsPage.cpp \
-    ./wizards/ComponentWizard/ImportRunner.cpp \
+    ./wizards/ComponentWizard/ImportEditor.cpp \
     ./wizards/ComponentWizard/ViewListModel.cpp \
-    ./wizards/ComponentWizard/ImportEditor/ImportEditor.cpp \
-    ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizard.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.cpp \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.cpp \
@@ -1078,28 +982,22 @@ SOURCES += ./VersionHelper.cpp \
     ./Help/HelpSystem/ContextHelpBrowser.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
-    ./Plugins/PluginSystem/NewPluginsDialog.cpp \
-    ./Plugins/PluginSystem/PluginInfoWidget.cpp \
-    ./Plugins/PluginSystem/PluginManager.cpp \
-    ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
-    ./library/DocumentFileAccess.cpp \
-    ./library/DocumentValidator.cpp \
     ./library/ItemExporter.cpp \
     ./library/LibraryErrorModel.cpp \
     ./library/LibraryFilter.cpp \
-    ./library/LibraryHandler.cpp \
-    ./library/LibraryItem.cpp \
     ./library/LibraryItemSelectionFactory.cpp \
-    ./library/LibraryLoader.cpp \
     ./library/LibraryTreeFilter.cpp \
-    ./library/LibraryTreeModel.cpp \
     ./library/LibraryTreeView.cpp \
     ./library/LibraryTreeWidget.cpp \
     ./library/LibraryUtils.cpp \
     ./library/LibraryWidget.cpp \
+    ./library/ObjectExportDialog.cpp \
+    ./library/objectremovedialog.cpp \
     ./library/TableViewDialog.cpp \
+    ./library/ObjectSelectionDialog.cpp \
+    ./library/ObjectSelectionListItem.cpp \
     ./library/VLNVDialer/dialerwidget.cpp \
     ./library/VLNVDialer/filterwidget.cpp \
     ./library/VLNVDialer/firmnessgroup.cpp \
@@ -1108,8 +1006,6 @@ SOURCES += ./VersionHelper.cpp \
     ./library/VLNVDialer/typegroup.cpp \
     ./library/VLNVDialer/vlnvdialer.cpp \
     ./library/HierarchyView/hierarchyfilter.cpp \
-    ./library/HierarchyView/hierarchyitem.cpp \
-    ./library/HierarchyView/hierarchymodel.cpp \
     ./library/HierarchyView/hierarchyview.cpp \
     ./library/HierarchyView/hierarchywidget.cpp \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
@@ -1141,7 +1037,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.cpp \
     ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.cpp \
     ./editors/ComponentEditor/busInterfaces/general/bridgesmodel.cpp \
@@ -1155,10 +1050,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.cpp \
     ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.cpp \
-    ./editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.cpp \
-    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.cpp \
-    ./editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.cpp \
-    ./editors/ComponentEditor/busInterfaces/interfaces/TransparentBridgeInterface.cpp \
     ./editors/ComponentEditor/channels/channelsdelegate.cpp \
     ./editors/ComponentEditor/channels/channelseditor.cpp \
     ./editors/ComponentEditor/channels/channelsmodel.cpp \
@@ -1192,17 +1083,12 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
-    ./editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.cpp \
-    ./editors/ComponentEditor/fileSet/interfaces/FileInterface.cpp \
-    ./editors/ComponentEditor/fileSet/interfaces/FileSetInterface.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
-    ./editors/ComponentEditor/parameters/AbstractParameterInterface.cpp \
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ./editors/ComponentEditor/parameters/ParameterEditorHeaderView.cpp \
     ./editors/ComponentEditor/parameters/parameterseditor.cpp \
-    ./editors/ComponentEditor/parameters/ParametersInterface.cpp \
     ./editors/ComponentEditor/parameters/parametersmodel.cpp \
     ./editors/ComponentEditor/parameters/ParametersView.cpp \
     ./editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
@@ -1229,8 +1115,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/WirePortsEditorConstructor.cpp \
     ./editors/ComponentEditor/ports/WirePortsFilter.cpp \
     ./editors/ComponentEditor/ports/WirePortsModel.cpp \
-    ./editors/ComponentEditor/ports/interfaces/MasterPortInterface.cpp \
-    ./editors/ComponentEditor/ports/interfaces/PortsInterface.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
@@ -1253,7 +1137,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspaceeditor.cpp \
-    ./editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspacegeneraleditor.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspacesdelegate.cpp \
     ./editors/ComponentEditor/addressSpaces/addressspaceseditor.cpp \
@@ -1319,20 +1202,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registerfilegraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/AddressBlockExpressionsGatherer.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterExpressionsGatherer.cpp \
-    ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/RegisterFileExpressionsGatherer.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.cpp \
-    ./editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
@@ -1394,30 +1264,16 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
-    ./editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.cpp \
-    ./editors/ComponentEditor/common/ComponentInstantiationParameterFinder.cpp \
-    ./editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.cpp \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
-    ./editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ./editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
-    ./editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ./editors/ComponentEditor/common/ListParameterFinder.cpp \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
-    ./editors/ComponentEditor/common/MultipleParameterFinder.cpp \
-    ./editors/ComponentEditor/common/NullParser.cpp \
-    ./editors/ComponentEditor/common/ParameterCache.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
-    ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
-    ./editors/ComponentEditor/common/interfaces/CommonInterface.cpp \
-    ./editors/ComponentEditor/common/interfaces/NameGroupInterface.cpp \
-    ./editors/ComponentEditor/common/interfaces/ParameterizableInterface.cpp \
     ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.cpp \
@@ -1447,8 +1303,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.cpp \
-    ./editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.cpp \
-    ./editors/ComponentEditor/instantiations/interfaces/ModuleParameterInterface.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
@@ -1480,20 +1334,16 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/BusDefinitionEditor/busdefgroup.cpp \
     ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
     ./editors/BusDefinitionEditor/SystemGroupListEditor.cpp \
-    ./editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.cpp \
     ./editors/CatalogEditor/CatalogEditor.cpp \
     ./editors/CatalogEditor/CatalogFileDelegate.cpp \
     ./editors/CatalogEditor/CatalogFileFilter.cpp \
     ./editors/CatalogEditor/CatalogFileModel.cpp \
     ./editors/CatalogEditor/CatalogFileView.cpp \
-    ./editors/common/BusInterfaceUtilities.cpp \
     ./editors/common/ComponentDesignDiagram.cpp \
-    ./editors/common/ComponentInstanceParameterFinder.cpp \
     ./editors/common/DefaultRouting.cpp \
     ./editors/common/DesignCompletionModel.cpp \
     ./editors/common/DesignDiagram.cpp \
     ./editors/common/DesignDiagramResolver.cpp \
-    ./editors/common/DesignParameterFinder.cpp \
     ./editors/common/DesignWidget.cpp \
     ./editors/common/DesignWidgetFactoryImplementation.cpp \
     ./editors/common/GraphicsItemLabel.cpp \
@@ -1553,7 +1403,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/common/ComponentItemAutoConnector/PortTableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/TableAutoConnector.cpp \
     ./editors/common/ComponentItemAutoConnector/TableItemMatcher.cpp \
-    ./editors/common/FileHandler/FileHandler.cpp \
     ./editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ./editors/HWDesign/ActivePortItem.cpp \
     ./editors/HWDesign/AdHocConnectionItem.cpp \
@@ -1606,9 +1455,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/HWDesign/undoCommands/PortPasteCommand.cpp \
     ./editors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
     ./editors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp \
-    ./editors/HWDesign/interfaces/AdHocConnectionInterface.cpp \
-    ./editors/HWDesign/interfaces/ComponentInstanceInterface.cpp \
-    ./editors/HWDesign/interfaces/InterconnectionInterface.cpp \
     ./editors/MemoryDesigner/AddressBlockGraphicsItem.cpp \
     ./editors/MemoryDesigner/AddressSegmentGraphicsItem.cpp \
     ./editors/MemoryDesigner/AddressSpaceGraphicsItem.cpp \
@@ -1683,8 +1529,6 @@ SOURCES += ./VersionHelper.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapSortFilter.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.cpp
 RESOURCES += kactus.qrc

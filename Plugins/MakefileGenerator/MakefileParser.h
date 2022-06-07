@@ -22,7 +22,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 class MakefileParser
 {

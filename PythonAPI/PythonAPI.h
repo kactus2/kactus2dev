@@ -13,7 +13,7 @@
 
 #include "pythonapi_global.h"
 
-#include <common/KactusAPI.h>
+#include <KactusAPI/KactusAPI.h>
 
 #include <string>
 #include <vector>

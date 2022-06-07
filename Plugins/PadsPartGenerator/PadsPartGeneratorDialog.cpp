@@ -13,9 +13,9 @@
 #include "PadsPartGenerator.h"
 #include "PadsAsciiSyntax.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>

@@ -14,14 +14,14 @@
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/AddressBlock.h>

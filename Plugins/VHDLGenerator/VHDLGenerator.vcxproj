@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{733888AA-F653-4A92-817D-25EE4AB2BE54}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -94,7 +94,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>../../x64/executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5Widgetsd.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Xmld.lib;Qt5Widgetsd.lib;IPXACTmodelsd.lib;KactusAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
     </Link>
@@ -130,20 +130,12 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\x64\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Xml.lib;Qt5Widgets.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Xml.lib;Qt5Widgets.lib;IPXACTmodels.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\common\utils.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp" />
@@ -213,16 +205,6 @@
     <ClCompile Include="VhdlTypedObject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\common\utils.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatterFactory.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />

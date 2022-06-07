@@ -18,8 +18,8 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
-#include <Plugins/PluginSystem/PluginManager.h>
-#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
+#include <KactusAPI/include/PluginManager.h>
+#include <KactusAPI/include/ISourceAnalyzerPlugin.h>
 
 #include <common/KactusColors.h>
 

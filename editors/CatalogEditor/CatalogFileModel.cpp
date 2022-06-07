@@ -13,10 +13,10 @@
 
 #include "CatalogFileColumns.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 #include <common/KactusColors.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 

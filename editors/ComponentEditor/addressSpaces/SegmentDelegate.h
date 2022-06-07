@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 //-----------------------------------------------------------------------------

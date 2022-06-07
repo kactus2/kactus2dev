@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <QRegularExpression>
 #include <QStringList>

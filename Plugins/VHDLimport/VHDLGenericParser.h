@@ -12,11 +12,12 @@
 #ifndef VHDLGENERICPARSER_H
 #define VHDLGENERICPARSER_H
 
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/HighlightSource.h>
 
 #include <QSharedPointer>
 #include <QString>
-#include "IPXACTmodels/Component/ComponentInstantiation.h"
+
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 class Component;
 class ModuleParameter;

@@ -12,7 +12,7 @@
 #ifndef DOCKWIDGETHANDLER_H
 #define DOCKWIDGETHANDLER_H
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 #include <common/widgets/tabDocument/TabDocument.h>
 
 class LibraryHandler;
@@ -284,6 +284,8 @@ signals:
      *      @param [in] show    Value for the display of the dock widget.
      */
     void adjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show);
+
+    void generateIntegrityReport();
 
 private slots:
 

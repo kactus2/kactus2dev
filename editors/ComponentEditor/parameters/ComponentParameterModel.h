@@ -17,7 +17,7 @@
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 //-----------------------------------------------------------------------------
 //! Model for all parameter completions within a single component.

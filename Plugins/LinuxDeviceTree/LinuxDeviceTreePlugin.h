@@ -15,10 +15,10 @@
 
 #include "LinuxDeviceTreeGenerator_global.h"
 
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/APISupport.h>
+#include <KactusAPI/include/IGeneratorPlugin.h>
+#include <KactusAPI/include/IPluginUtility.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/CLIGenerator.h>
 
 #include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUDetails.h>
 
@@ -30,7 +30,7 @@ class FileSet;
 //! Generator plugin for Linux Device Tree.
 //-----------------------------------------------------------------------------
 class LINUXDEVICETREEGENERATOR_EXPORT LinuxDeviceTreePlugin : public QObject, public IGeneratorPlugin,
-    public APISupport
+    public CLIGenerator
 {
     Q_OBJECT
         Q_PLUGIN_METADATA(IID "kactus2.plugins.LinuxDeviceTreePlugin" FILE "LinuxDeviceTreePlugin.json")

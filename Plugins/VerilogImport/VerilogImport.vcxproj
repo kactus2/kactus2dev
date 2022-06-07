@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{85A166AC-D2CF-496C-9EFD-648765C4AC72}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -94,7 +94,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\x64\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Xmld.lib;IPXACTmodelsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5Xmld.lib;IPXACTmodelsd.lib;KactusAPId.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
     </Link>
@@ -130,7 +130,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
       <AdditionalLibraryDirectories>..\..\x64\executable;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Xml.lib;IPXACTmodels.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5Xml.lib;IPXACTmodels.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TargetMachine>MachineX64</TargetMachine>
       <AdditionalOptions> /SUBSYSTEM:WINDOWS</AdditionalOptions>
     </Link>
@@ -138,9 +138,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\common\expressions\utilities.cpp" />
     <ClCompile Include="..\..\common\NameGenerationPolicy.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\NullParser.cpp" />
-    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_VerilogImporter.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -158,10 +155,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\common\expressions\utilities.h" />
     <ClInclude Include="..\..\common\NameGenerationPolicy.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\NullParser.h" />
-    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\Search.h" />
     <ClInclude Include="..\..\wizards\ComponentWizard\InstanceData.h" />
     <ClInclude Include="..\common\HDLmath.h" />

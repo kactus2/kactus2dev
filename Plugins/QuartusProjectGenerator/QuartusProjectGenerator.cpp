@@ -12,9 +12,9 @@
 #include "QuartusProjectGenerator.h"
 #include "QuartusGenerator.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

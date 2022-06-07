@@ -13,19 +13,19 @@
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

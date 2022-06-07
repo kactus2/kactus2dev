@@ -11,9 +11,9 @@
 
 #include "VerilogWriterFactory.h"
 
-#include <common/ui/MessageMediator.h>
+#include <KactusAPI/include/MessageMediator.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>

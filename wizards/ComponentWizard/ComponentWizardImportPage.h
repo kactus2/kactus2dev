@@ -12,8 +12,8 @@
 #ifndef COMPONENTWIZARDVHDLIMPORTPAGE_H
 #define COMPONENTWIZARDVHDLIMPORTPAGE_H
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <wizards/ComponentWizard/InstanceData.h>
 

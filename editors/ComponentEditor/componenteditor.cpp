@@ -11,7 +11,7 @@
 
 #include "componenteditor.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/treeStructure/componenteditorrootitem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorgeneralitem.h>
@@ -43,9 +43,9 @@
 
 #include <editors/ComponentEditor/general/generaleditor.h>
 
-#include <editors/ComponentEditor/common/ParameterCache.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentAndInstantiationsParameterFinder.h>
+#include <KactusAPI/include/ParameterCache.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>
@@ -59,10 +59,10 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterfaceFactory.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <QMessageBox>
 #include <QFileDialog>

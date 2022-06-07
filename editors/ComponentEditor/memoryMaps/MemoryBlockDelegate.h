@@ -12,7 +12,7 @@
 #ifndef MEMORYBLOCKDELEGATE_H
 #define MEMORYBLOCKDELEGATE_H
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 //-----------------------------------------------------------------------------

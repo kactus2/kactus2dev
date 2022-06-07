@@ -12,7 +12,7 @@
 #ifndef CatalogFileFILTER_H
 #define CatalogFileFILTER_H
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>

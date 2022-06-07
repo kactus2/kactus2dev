@@ -12,12 +12,12 @@
 #include "componenteditorfilesetsitem.h"
 #include "componenteditorfilesetitem.h"
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/fileSet/filesetseditor.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileSetInterface.h>
-#include <editors/ComponentEditor/fileSet/interfaces/FileBuilderInterface.h>
+#include <KactusAPI/include/FileInterface.h>
+#include <KactusAPI/include/FileSetInterface.h>
+#include <KactusAPI/include/FileBuilderInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>

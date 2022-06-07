@@ -21,9 +21,9 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

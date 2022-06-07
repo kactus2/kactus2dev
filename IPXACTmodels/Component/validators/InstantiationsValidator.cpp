@@ -11,9 +11,9 @@
 
 #include "InstantiationsValidator.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>

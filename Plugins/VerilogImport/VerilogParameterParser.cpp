@@ -19,9 +19,9 @@
 
 #include <IPXACTmodels/utilities/Search.h>
 
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <KactusAPI/include/ImportColors.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <common/expressions/utilities.h>
 

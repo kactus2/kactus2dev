@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: GraphicalMessageMediator::GraphicalMessageMediator()
 //-----------------------------------------------------------------------------
-GraphicalMessageMediator::GraphicalMessageMediator(): console_(0), statusBar_(0)
+GraphicalMessageMediator::GraphicalMessageMediator(QObject* parent): QObject(parent)
 {
 
 }
@@ -29,10 +29,7 @@ GraphicalMessageMediator::GraphicalMessageMediator(): console_(0), statusBar_(0)
 //-----------------------------------------------------------------------------
 void GraphicalMessageMediator::showMessage(QString const& message) const
 {
-    if (console_)
-    {
-        console_->onNoticeMessage(message);
-    }
+    emit noticeMessage(message);
 }
 
 //-----------------------------------------------------------------------------
@@ -40,10 +37,7 @@ void GraphicalMessageMediator::showMessage(QString const& message) const
 //-----------------------------------------------------------------------------
 void GraphicalMessageMediator::showError(QString const& error) const
 {
-    if (console_)
-    {
-        console_->onErrorMessage(error);
-    }
+    emit errorMessage(error);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,24 +56,5 @@ void GraphicalMessageMediator::showFailure(QString const& error) const
 //-----------------------------------------------------------------------------
 void GraphicalMessageMediator::showStatusMessage(QString const& status) const
 {    
-    if (statusBar_)
-    {
-        statusBar_->showMessage(status);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: GraphicalMessageMediator::setMessageConsole()
-//-----------------------------------------------------------------------------
-void GraphicalMessageMediator::setMessageConsole(MessageConsole* console)
-{
-    console_ = console;
-}
-
-//-----------------------------------------------------------------------------
-// Function: GraphicalMessageMediator::setStatusBar()
-//-----------------------------------------------------------------------------
-void GraphicalMessageMediator::setStatusBar(QStatusBar* statusBar)
-{
-    statusBar_ = statusBar;
+    emit statusMessage(status);
 }

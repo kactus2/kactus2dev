@@ -11,7 +11,8 @@ DEFINES += QT_DLL LINUXDEVICETREEGENERATOR_LIB
 
 INCLUDEPATH += ./../..
 LIBS += -L"./../../executable" \
-    -lIPXACTmodels
+    -lIPXACTmodels \
+    -lKactusAPI
 
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release

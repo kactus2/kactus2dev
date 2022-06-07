@@ -17,8 +17,8 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
 
 #include <QApplication>
 #include <QFile>
@@ -47,6 +47,7 @@ busDefinitionSaved_(false)
     if (absDef_)
     {
         absDefGroup_.setAbsDef(absDef_);
+
     }
 	else
     {

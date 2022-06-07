@@ -19,11 +19,11 @@
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QVBoxLayout>
 #include <QLabel>

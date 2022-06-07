@@ -17,7 +17,7 @@
 
 #include <IPXACTmodels/common/TagData.h>
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <QWidget>
 #include <QPushButton>

@@ -14,7 +14,7 @@
 
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/SVDGenerator/CPUDialog/CPUSelectionDialog.h>
@@ -22,7 +22,7 @@
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 #include <editors/MemoryDesigner/MasterSlavePathSearch.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/File.h>
@@ -51,7 +51,7 @@ QString SVDGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString SVDGeneratorPlugin::getVersion() const
 {
-    return "0.1";
+    return "0.2";
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ QString SVDGeneratorPlugin::getDescription() const
 //-----------------------------------------------------------------------------
 QString SVDGeneratorPlugin::getVendor() const
 {
-    return tr("TUT");
+    return tr("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------

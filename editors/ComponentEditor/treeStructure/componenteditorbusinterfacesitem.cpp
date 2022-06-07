@@ -14,9 +14,9 @@
 
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
 
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
-#include <editors/ComponentEditor/ports/interfaces/PortsInterface.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>

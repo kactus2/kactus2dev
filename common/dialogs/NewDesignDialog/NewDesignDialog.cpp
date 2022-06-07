@@ -23,7 +23,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 #include <common/widgets/LineEditEx/LineEditEx.h>
@@ -333,5 +333,5 @@ void NewDesignDialog::setupLayout()
     mainLayout->addWidget(buttonBox);    
     
     setFixedHeight(sizeHint().height());
-    resize(400, sizeHint().height());
+    resize(421, sizeHint().height());
 }

@@ -17,15 +17,15 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ParametersView.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QVBoxLayout>
 

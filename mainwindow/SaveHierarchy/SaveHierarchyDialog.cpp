@@ -15,7 +15,7 @@
 #include "HierarchicalSaveBuildStrategy.h"
 #include "HierarchicalSaveColumns.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 

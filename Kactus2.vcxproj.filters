@@ -20,9 +20,6 @@
     <Filter Include="Source Files\common\dialogs\newObjectDialog">
       <UniqueIdentifier>{537c1c46-d688-4418-81d8-9b93df040ad7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\dialogs\ObjectRemoveDialog">
-      <UniqueIdentifier>{46f28371-bc07-4130-bd82-9fc91719cb2a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\dialogs\createConfigurationDialog">
       <UniqueIdentifier>{010cadd1-66f5-471c-9703-9704e3644b33}</UniqueIdentifier>
     </Filter>
@@ -261,9 +258,6 @@
     <Filter Include="Header Files\common\dialogs\newObjectDialog">
       <UniqueIdentifier>{d72f5ab7-c217-4da3-9cf1-426c8ecd81ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\dialogs\ObjectRemoveDialog">
-      <UniqueIdentifier>{f4de80ed-86f5-4ce9-a816-fc7b091dfb67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common\dialogs\listSelectDialog">
       <UniqueIdentifier>{b0e0cdc7-b4f9-4aa8-b8f7-64a71cb6361b}</UniqueIdentifier>
     </Filter>
@@ -383,14 +377,8 @@
     <Filter Include="Header Files\Plugins">
       <UniqueIdentifier>{8d955ae9-b301-48c4-ae1e-9bb92a65f3d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Plugins\PluginSystem">
-      <UniqueIdentifier>{c981759c-6aff-442a-a7a4-88d85d58a770}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Plugins">
       <UniqueIdentifier>{85e8249e-7bf8-4c41-b66f-1a5255b75589}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Plugins\PluginSystem">
-      <UniqueIdentifier>{20e3b635-b2b3-4dbc-a204-fc6773166d05}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\library">
       <UniqueIdentifier>{700d0d99-bb8f-470d-a447-fb12cee9e11e}</UniqueIdentifier>
@@ -596,15 +584,6 @@
     <Filter Include="Source Files\editors\CSourceEditor">
       <UniqueIdentifier>{b3a65de6-002a-4ddf-a213-84e64c40de2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Plugins\PluginSystem\ImportPlugin">
-      <UniqueIdentifier>{5b9bbccb-bfbc-422d-8af7-bb4584e68f58}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\wizards\ComponentWizard\ImportEditor">
-      <UniqueIdentifier>{ae90d55b-cb79-493b-afc2-530d57060ce5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\wizards\ComponentWizard\ImportEditor">
-      <UniqueIdentifier>{9ecb70ee-8042-4071-8310-8ec61afc3be9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\wizards\ImportWizard">
       <UniqueIdentifier>{79e351da-6711-4900-a6e8-9c4458cf05b6}</UniqueIdentifier>
     </Filter>
@@ -766,12 +745,6 @@
     </Filter>
     <Filter Include="Source Files\library\HierarchyView">
       <UniqueIdentifier>{930d34af-2acf-42ed-a2eb-06f5fcdacf9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\dialogs\ObjectExportDialog">
-      <UniqueIdentifier>{1edb3c26-e974-44f8-a481-b7037350c1ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\dialogs\ObjectExportDialog">
-      <UniqueIdentifier>{46c4c88c-7668-4731-bef9-27f588c8277c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\indirectInterfaces">
       <UniqueIdentifier>{eb1a9347-a208-4b57-b504-2d56bd8075f0}</UniqueIdentifier>
@@ -953,41 +926,17 @@
     <Filter Include="Header Files\common\widgets\tagEditor">
       <UniqueIdentifier>{1b390fb1-0cfa-4143-b40e-95a7467acb7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\common\FileHandler">
-      <UniqueIdentifier>{b9cac80c-ac4f-4d6c-8f6a-9e7c82788bf3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\common\FileHandler">
-      <UniqueIdentifier>{9899fde0-87e9-463c-882a-86b05a20ba6f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\memoryMaps\interfaces">
       <UniqueIdentifier>{c34883a7-39da-429d-a472-68966f4183c3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\memoryMaps\interfaces">
       <UniqueIdentifier>{214bede0-fbd8-4fa3-8988-455278b915e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\common\interfaces">
-      <UniqueIdentifier>{5693bb11-e718-4073-b034-7be67388395d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\common\interfaces">
-      <UniqueIdentifier>{8907f090-54b3-49ac-bd20-cdd212c82ac2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\fileSet\interfaces">
       <UniqueIdentifier>{87070864-35d7-43b4-b521-35c12ad9742a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\fileSet\interfaces">
       <UniqueIdentifier>{c0a4d8c3-229e-4ecd-bdad-1c3db702cc61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\instantiations\interfaces">
-      <UniqueIdentifier>{505ceca5-f699-4f57-9d99-7609492084cc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\instantiations\interfaces">
-      <UniqueIdentifier>{9b21de33-ece2-40c5-bc88-0047b8a1439e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
-      <UniqueIdentifier>{4f909392-1e57-460d-bccf-f6eaddebbdad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
-      <UniqueIdentifier>{ece98f23-9e39-43e0-8624-f2c64622e284}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\editors\BusDefinitionEditor\interfaces">
       <UniqueIdentifier>{3cebef82-5883-4778-b1e8-75e74187f053}</UniqueIdentifier>
@@ -1000,12 +949,6 @@
     </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\ports\interfaces">
       <UniqueIdentifier>{c019f53b-f0e5-47cc-87f6-5fe5337f7d4c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\interfaces">
-      <UniqueIdentifier>{7bab447a-2cbb-4a6e-a314-033d9ea4202e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\interfaces">
-      <UniqueIdentifier>{7acb1b4e-e559-4636-9cb6-f47adc52b0d0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\PythonAPI">
       <UniqueIdentifier>{c7179758-fd64-4532-9cc8-e0608bd5db93}</UniqueIdentifier>
@@ -1057,9 +1000,6 @@
     <ClCompile Include="common\TextEditProvider.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\utils.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\dialogs\comboSelector\comboselector.cpp">
       <Filter>Source Files\common\dialogs\comboSelector</Filter>
     </ClCompile>
@@ -1071,9 +1011,6 @@
     </ClCompile>
     <ClCompile Include="common\dialogs\newObjectDialog\newobjectdialog.cpp">
       <Filter>Source Files\common\dialogs\newObjectDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\ObjectRemoveDialog\objectremovedialog.cpp">
-      <Filter>Source Files\common\dialogs\ObjectRemoveDialog</Filter>
     </ClCompile>
     <ClCompile Include="common\dialogs\createConfigurationDialog\createconfigurationdialog.cpp">
       <Filter>Source Files\common\dialogs\createConfigurationDialog</Filter>
@@ -1307,9 +1244,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PropertyPageDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_objectremovedialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NewWorkspaceDialog.cpp">
@@ -1575,18 +1509,6 @@
     </ClCompile>
     <ClCompile Include="Help\HelpSystem\HelpWindow.cpp">
       <Filter>Source Files\Help\HelpSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\PluginSystem\NewPluginsDialog.cpp">
-      <Filter>Source Files\Plugins\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\PluginSystem\PluginInfoWidget.cpp">
-      <Filter>Source Files\Plugins\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="Plugins\PluginSystem\PluginManager.cpp">
-      <Filter>Source Files\Plugins\PluginSystem</Filter>
     </ClCompile>
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizard.cpp">
       <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
@@ -2617,29 +2539,8 @@
     <ClCompile Include="GeneratedFiles\moc_SettingsPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\PluginSystem\PluginUtilityAdapter.cpp">
-      <Filter>Source Files\Plugins\PluginSystem</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ImportRunner.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ImportRunner.cpp">
-      <Filter>Source Files\wizards\ComponentWizard</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardImportPage.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ImportEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportEditor.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ImportEditor\ImportHighlighter.cpp">
-      <Filter>Source Files\wizards\ComponentWizard\ImportEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ImportHighlighter.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ComponentWizardImportPage.cpp">
       <Filter>Generated Files</Filter>
@@ -2749,12 +2650,6 @@
     <ClCompile Include="GeneratedFiles\moc_Ribbon.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
@@ -2763,9 +2658,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ParameterReferenceCounter.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ComponentParameterFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
@@ -2781,9 +2673,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ParameterReferenceTree.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatter.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ParameterizableTable.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
@@ -2809,20 +2698,11 @@
     <ClCompile Include="GeneratedFiles\moc_ExpressionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\MultipleParameterFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\NullParser.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\DrawingBoard\DrawingBoard.cpp">
       <Filter>Source Files\mainwindow\DrawingBoard</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_DrawingBoard.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PortsView.cpp">
       <Filter>Generated Files</Filter>
@@ -2847,9 +2727,6 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\ChoiceCreatorDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ListParameterFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ReferenceSelector.cpp">
       <Filter>Generated Files</Filter>
@@ -2968,22 +2845,7 @@
     <ClCompile Include="GeneratedFiles\moc_WriteValueConstraintComboBox.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\ReferenceCalculator.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_addressspaceeditor.cpp">
@@ -2999,9 +2861,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\addressSpaces\SegmentDelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.cpp">
       <Filter>Source Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClCompile>
     <ClCompile Include="editors\ConfigurationTools\ViewConfigurer.cpp">
@@ -3295,18 +3154,6 @@
     <ClCompile Include="common\widgets\ParameterGroupBox\parametergroupbox.cpp">
       <Filter>Source Files\common\widgets\ParameterGroupBox</Filter>
     </ClCompile>
-    <ClCompile Include="VersionHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="VersionHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ParameterCache.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ParameterCache.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\JaroWinklerAlgorithm.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
@@ -3457,16 +3304,7 @@
     <ClCompile Include="library\LibraryFilter.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
-    <ClCompile Include="library\LibraryHandler.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\LibraryItem.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="library\LibraryTreeFilter.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\LibraryTreeModel.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
     <ClCompile Include="library\LibraryTreeWidget.cpp">
@@ -3484,13 +3322,7 @@
     <ClCompile Include="GeneratedFiles\moc_LibraryFilter.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LibraryItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_LibraryTreeFilter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LibraryTreeModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_LibraryTreeWidget.cpp">
@@ -3509,12 +3341,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_hierarchyfilter.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchyitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchymodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_dialerwidget.cpp">
@@ -3568,17 +3394,8 @@
     <ClCompile Include="library\HierarchyView\hierarchyfilter.cpp">
       <Filter>Source Files\library\HierarchyView</Filter>
     </ClCompile>
-    <ClCompile Include="library\HierarchyView\hierarchyitem.cpp">
-      <Filter>Source Files\library\HierarchyView</Filter>
-    </ClCompile>
-    <ClCompile Include="library\HierarchyView\hierarchymodel.cpp">
-      <Filter>Source Files\library\HierarchyView</Filter>
-    </ClCompile>
     <ClCompile Include="common\NameGenerationPolicy.cpp">
       <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
@@ -3587,21 +3404,6 @@
       <Filter>Source Files\library</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_LibraryWidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ObjectExportDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\ObjectExportDialog\ObjectExportDialog.cpp">
-      <Filter>Source Files\common\dialogs\ObjectExportDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\ObjectExportDialog\ObjectSelectionDialog.cpp">
-      <Filter>Source Files\common\dialogs\ObjectExportDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\ObjectExportDialog\ObjectSelectionListItem.cpp">
-      <Filter>Source Files\common\dialogs\ObjectExportDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ObjectSelectionDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_IndirectInterfacesEditor.cpp">
@@ -3775,17 +3577,8 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\AbstractionTypesDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClCompile>
-    <ClCompile Include="library\DocumentFileAccess.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\DocumentValidator.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\CommandLineParser.cpp">
       <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="common\ui\ConsoleMediator.cpp">
-      <Filter>Source Files\common\ui</Filter>
     </ClCompile>
     <ClCompile Include="common\ui\GraphicalMessageMediator.cpp">
       <Filter>Source Files\common\ui</Filter>
@@ -3922,9 +3715,6 @@
     <ClCompile Include="editors\common\ComponentDesignDiagram.cpp">
       <Filter>Source Files\editors\common</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\ComponentInstanceParameterFinder.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
     <ClCompile Include="editors\common\DefaultRouting.cpp">
       <Filter>Source Files\editors\common</Filter>
     </ClCompile>
@@ -3953,9 +3743,6 @@
       <Filter>Source Files\editors\common</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ComponentDesignDiagram.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceParameterFinder.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_DesignCompletionModel.cpp">
@@ -4489,12 +4276,6 @@
     <ClCompile Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
       <Filter>Source Files\editors\MemoryDesigner</Filter>
     </ClCompile>
-    <ClCompile Include="library\LibraryItemSelectionFactory.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="library\LibraryLoader.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusDefinitionEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4527,9 +4308,6 @@
     </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\SystemGroupListEditor.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
@@ -4672,9 +4450,6 @@
     <ClCompile Include="GeneratedFiles\moc_HierarchicalBusInterfaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\BusInterfaceUtilities.cpp">
-      <Filter>Source Files\editors\common</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ActiveBusInterfaceItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4734,15 +4509,6 @@
     </ClCompile>
     <ClCompile Include="editors\common\VendorExtensionEditor\VendorExtensionAttributesEditor\VendorExtensionAttributesModel.cpp">
       <Filter>Source Files\editors\VendorExtensionEditor\VendorExtensionsAttributesEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="library\ItemExporter.cpp">
-      <Filter>Source Files\library</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LibraryHandler.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ItemExporter.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesEditor.cpp">
       <Filter>Source Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
@@ -4840,9 +4606,6 @@
     <ClCompile Include="GeneratedFiles\moc_TagEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\tagEditor\TagManager.cpp">
-      <Filter>Source Files\common\widgets\tagEditor</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\tagEditor\TagCompleterModel.cpp">
       <Filter>Source Files\common\widgets\tagEditor</Filter>
     </ClCompile>
@@ -4873,9 +4636,6 @@
     <ClCompile Include="common\widgets\tagEditor\TagSelector.cpp">
       <Filter>Source Files\common\widgets\tagEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\FileHandler\FileHandler.cpp">
-      <Filter>Source Files\editors\common\FileHandler</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsModel.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -4885,83 +4645,11 @@
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\parameters\ParametersInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_parametersmodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\interfaces\ParameterizableInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\interfaces\NameGroupInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\interfaces\CommonInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SingleAddressBlockEditor.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileSetInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\instantiations\interfaces\ComponentInstantiationInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\instantiations\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\instantiations\interfaces\ModuleParameterInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\instantiations\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\parameters\AbstractParameterInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\interfaces\PortMapInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\interfaces\PortAbstractionInterface.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\interfaces\PortsInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\ports\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\interfaces\MasterPortInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\ports\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\TransparentBridgeInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\AbstractionTypeInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterfaceFactory.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
     </ClCompile>
     <ClCompile Include="PythonAPI\PythonInterpreter.cpp">
       <Filter>Source Files\PythonAPI</Filter>
@@ -4996,9 +4684,6 @@
     <ClCompile Include="mainwindow\ScriptingConsole\ScriptingTextEditor.cpp">
       <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
     </ClCompile>
-    <ClCompile Include="common\KactusAPI.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\ScriptingConsole\ScriptingSideArea.cpp">
       <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
     </ClCompile>
@@ -5007,9 +4692,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ScriptingHistory.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\common\FileHandler\FileHandler.cpp">
-      <Filter>Source Files\editors\common\FileHandler</Filter>
     </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsEditor.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
@@ -5026,26 +4708,11 @@
     <ClCompile Include="PythonAPI\extensions\IOCatcher.cpp">
       <Filter>Source Files\PythonAPI\extensions</Filter>
     </ClCompile>
-    <ClCompile Include="editors\HWDesign\interfaces\ComponentInstanceInterface.cpp">
-      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\interfaces\InterconnectionInterface.cpp">
-      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\interfaces\AdHocConnectionInterface.cpp">
-      <Filter>Source Files\editors\HWDesign\interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="editors\HWDesign\WarningSymbol.cpp">
       <Filter>Source Files\editors\HWDesign</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapsEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\SubspaceMapInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryBlockInterface.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SubspaceMapsEditor.cpp">
       <Filter>Generated Files</Filter>
@@ -5116,19 +4783,79 @@
     <ClCompile Include="GeneratedFiles\moc_MemoryBlockGraphItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\common\DesignParameterFinder.cpp">
-      <Filter>Source Files\editors\common</Filter>
+    <ClCompile Include="settings\NewPluginsDialog.cpp">
+      <Filter>Source Files\settings</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapModel.cpp">
+    <ClCompile Include="settings\PluginInfoWidget.cpp">
+      <Filter>Source Files\settings</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewPluginsDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapModel.cpp">
+    <ClCompile Include="wizards\ComponentWizard\ImportEditor.cpp">
+      <Filter>Source Files\wizards\ComponentWizard</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ImportEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="library\objectremovedialog.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectSelectionDialog.cpp">
+      <Filter>Source Files\library\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectSelectionListItem.cpp">
+      <Filter>Source Files\library\VLNVDialer</Filter>
+    </ClCompile>
+    <ClCompile Include="library\LibraryItemSelectionFactory.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_objectremovedialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ObjectSelectionDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ItemExporter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ItemExporter.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ObjectExportDialog.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ObjectExportDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_FileChannel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_GraphicalMessageMediator.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapTreeDelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapTreeModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapTreeSortProxyModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapTreeView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapView.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PortMapView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapView.cpp">
+    <ClCompile Include="GeneratedFiles\moc_PortMapModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapSortFilter.cpp">
@@ -5191,9 +4918,6 @@
     </CustomBuild>
     <CustomBuild Include="common\dialogs\newObjectDialog\newobjectdialog.h">
       <Filter>Header Files\common\dialogs\newObjectDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\ObjectRemoveDialog\objectremovedialog.h">
-      <Filter>Header Files\common\dialogs\ObjectRemoveDialog</Filter>
     </CustomBuild>
     <CustomBuild Include="common\dialogs\propertyPageDialog\PropertyPageDialog.h">
       <Filter>Header Files\common\dialogs\propertyPageDialog</Filter>
@@ -5407,9 +5131,6 @@
     </CustomBuild>
     <CustomBuild Include="Help\HelpSystem\HelpSearchWidget.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Plugins\PluginSystem\NewPluginsDialog.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardConclusionPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
@@ -5927,18 +5648,6 @@
     <CustomBuild Include="settings\SettingsPage.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
-    <CustomBuild Include="Plugins\PluginSystem\PluginUtilityAdapter.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\ImportRunner.h">
-      <Filter>Header Files\wizards\ComponentWizard</Filter>
-    </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\ImportEditor\ImportEditor.h">
-      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="wizards\ComponentWizard\ImportEditor\ImportHighlighter.h">
-      <Filter>Header Files\wizards\ComponentWizard\ImportEditor</Filter>
-    </CustomBuild>
     <CustomBuild Include="wizards\ComponentWizard\ComponentWizardImportPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </CustomBuild>
@@ -6013,9 +5722,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\ExpressionEditor.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
       <Filter>Header Files</Filter>
@@ -6245,9 +5951,6 @@
     <CustomBuild Include="common\widgets\ParameterGroupBox\parametergroupbox.h">
       <Filter>Header Files\common\widgets\ParameterGroupBox</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\common\ParameterCache.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\JaroWinklerAlgorithm.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
@@ -6320,16 +6023,7 @@
     <CustomBuild Include="library\LibraryFilter.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
-    <CustomBuild Include="library\LibraryHandler.h">
-      <Filter>Header Files\library</Filter>
-    </CustomBuild>
-    <CustomBuild Include="library\LibraryItem.h">
-      <Filter>Header Files\library</Filter>
-    </CustomBuild>
     <CustomBuild Include="library\LibraryTreeFilter.h">
-      <Filter>Header Files\library</Filter>
-    </CustomBuild>
-    <CustomBuild Include="library\LibraryTreeModel.h">
       <Filter>Header Files\library</Filter>
     </CustomBuild>
     <CustomBuild Include="library\LibraryTreeWidget.h">
@@ -6348,12 +6042,6 @@
       <Filter>Header Files\library\HierarchyView</Filter>
     </CustomBuild>
     <CustomBuild Include="library\HierarchyView\hierarchyfilter.h">
-      <Filter>Header Files\library\HierarchyView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="library\HierarchyView\hierarchyitem.h">
-      <Filter>Header Files\library\HierarchyView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="library\HierarchyView\hierarchymodel.h">
       <Filter>Header Files\library\HierarchyView</Filter>
     </CustomBuild>
     <CustomBuild Include="library\VLNVDialer\dialerwidget.h">
@@ -6379,12 +6067,6 @@
     </CustomBuild>
     <CustomBuild Include="library\LibraryWidget.h">
       <Filter>Header Files\library</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\ObjectExportDialog\ObjectExportDialog.h">
-      <Filter>Header Files\common\dialogs\ObjectExportDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\dialogs\ObjectExportDialog\ObjectSelectionDialog.h">
-      <Filter>Header Files\common\dialogs\ObjectExportDialog</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfacesEditor.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
@@ -6473,9 +6155,6 @@
     <CustomBuild Include="common\graphicsItems\GraphicsColumnConstants.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </CustomBuild>
-    <CustomBuild Include="Plugins\PluginSystem\IPluginUtility.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\common\ComponentInstanceEditor\ComponentInstanceConfigurableElementsEditor.h">
       <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </CustomBuild>
@@ -6528,9 +6207,6 @@
       <Filter>Header Files\editors\common\StickyNote</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\common\ComponentDesignDiagram.h">
-      <Filter>Header Files\editors\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\common\ComponentInstanceParameterFinder.h">
       <Filter>Header Files\editors\common</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\common\DesignCompletionModel.h">
@@ -6716,9 +6392,6 @@
     <CustomBuild Include="editors\HWDesign\undoCommands\PhysicalPortDeleteCommand.h">
       <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <CustomBuild Include="library\LibraryLoader.h">
-      <Filter>Header Files\library</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsView.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
@@ -6730,9 +6403,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\common\ComponentParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
       <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
@@ -6830,9 +6500,6 @@
     <CustomBuild Include="editors\common\VendorExtensionEditor\VendorExtensionsGeneral.h">
       <Filter>Header Files\editors\VendorExtensionEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="library\ItemExporter.h">
-      <Filter>Header Files\library</Filter>
-    </CustomBuild>
     <CustomBuild Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesEditor.h">
       <Filter>Header Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
     </CustomBuild>
@@ -6902,17 +6569,8 @@
     <CustomBuild Include="common\widgets\tagEditor\TagSelector.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="Plugins\PluginSystem\ImportPlugin\ImportPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsModel.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\parameters\ParametersInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\memoryMaps\interfaces\ResetInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
     </CustomBuild>
     <CustomBuild Include="PythonAPI\ChannelRelay.h">
       <Filter>Header Files\PythonAPI</Filter>
@@ -6977,13 +6635,34 @@
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\MemoryBlockGraphItem.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\common\DesignParameterFinder.h">
-      <Filter>Header Files\editors\common</Filter>
+    <CustomBuild Include="settings\NewPluginsDialog.h">
+      <Filter>Header Files\settings</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapModel.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    <CustomBuild Include="wizards\ComponentWizard\ImportEditor.h">
+      <Filter>Header Files\wizards\ComponentWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\objectremovedialog.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\ObjectSelectionDialog.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\ItemExporter.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
+    <CustomBuild Include="library\ObjectExportDialog.h">
+      <Filter>Header Files\library</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PythonAPI\FileChannel.h">
+      <Filter>Header Files\PythonAPI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\ui\GraphicalMessageMediator.h">
+      <Filter>Header Files\common\ui</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapView.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapModel.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapDelegate.h">
@@ -7054,16 +6733,10 @@
     <ClInclude Include="common\widgets\vlnvEditor\VLNVDataTree.h">
       <Filter>Header Files\common\widgets\vlnvEditor</Filter>
     </ClInclude>
-    <ClInclude Include="common\Global.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="common\KactusColors.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\TextEditProvider.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\utils.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="settings\SettingsUpdater.h">
@@ -7084,18 +6757,6 @@
     <ClInclude Include="Help\HelpSystem\HelpWindow.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\IPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ISourceAnalyzerPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\PluginInfoWidget.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\PluginManager.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </ClInclude>
@@ -7104,21 +6765,6 @@
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardPages.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\Highlighter.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\HighlightSource.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterSource.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ModelParameterVisualizer.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ImportColors.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ImportWizard\ImportWizardPages.h">
       <Filter>Header Files\wizards\ImportWizard</Filter>
@@ -7153,47 +6799,14 @@
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h">
       <Filter>Header Files\mainwindow\Ribbon</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ExpressionParser.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\SystemVerilogSyntax.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatter.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\parameters\ComponentParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\AddressBlockColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\MultipleParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\NullParser.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\ExpressionSupport.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactory.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\MemoryMapColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
@@ -7201,14 +6814,8 @@
     <ClInclude Include="editors\ComponentEditor\parameters\Array\ArrayColumns.h">
       <Filter>Header Files\editors\ComponentEditor\parameters\Array</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ListParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
     <ClInclude Include="wizards\common\ParameterComparator\ParameterComparator.h">
       <Filter>Header Files\wizards\common\ParameterComparator</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\ImportPlugin\IncludeImportPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem\ImportPlugin</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\remapStates\RemapConditionColumns.h">
       <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
@@ -7216,28 +6823,10 @@
     <ClInclude Include="editors\ComponentEditor\memoryMaps\MemoryMapsColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\FieldExpressionsGatherer.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterExpressionsGatherer.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\AddressBlockExpressionsGatherer.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryMapExpressionsGatherer.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\ReferenceCalculator.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\MemoryRemapExpressionGatherer.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceColumns.h">
-      <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\addressSpaces\AddressSpaceExpressionsGatherer.h">
       <Filter>Header Files\editors\ComponentEditor\addressSpaces</Filter>
     </ClInclude>
     <ClInclude Include="editors\ConfigurationTools\ViewConfigurerColumns.h">
@@ -7318,9 +6907,6 @@
     <ClInclude Include="editors\ComponentEditor\instantiations\DesignInstantiationColumns.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h">
-      <Filter>Header Files\Plugins</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMappingColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClInclude>
@@ -7335,9 +6921,6 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\BridgeColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\PluginSettingsModel.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\instantiations\ModuleParameterColumns.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
@@ -7369,14 +6952,8 @@
     <ClInclude Include="common\NameGenerationPolicy.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ComponentInstantiationParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\dialogs\ObjectExportDialog\ObjectSelectionListItem.h">
-      <Filter>Header Files\common\dialogs\ObjectExportDialog</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\indirectInterfaces\IndirectInterfaceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
@@ -7399,23 +6976,8 @@
     <ClInclude Include="editors\ComponentEditor\busInterfaces\AbstractionTypesConstants.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClInclude>
-    <ClInclude Include="library\DocumentFileAccess.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
-    <ClInclude Include="library\DocumentValidator.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
     <ClInclude Include="mainwindow\CommandLineParser.h">
       <Filter>Header Files\mainwindow</Filter>
-    </ClInclude>
-    <ClInclude Include="common\ui\GraphicalMessageMediator.h">
-      <Filter>Header Files\common\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="common\ui\MessageMediator.h">
-      <Filter>Header Files\common\ui</Filter>
-    </ClInclude>
-    <ClInclude Include="common\ui\ConsoleMediator.h">
-      <Filter>Header Files\common\ui</Filter>
     </ClInclude>
     <ClInclude Include="editors\common\Association\Associable.h">
       <Filter>Header Files\editors\common\Association</Filter>
@@ -7669,12 +7231,6 @@
     <ClInclude Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
       <Filter>Header Files\editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="library\LibraryItemSelectionFactory.h">
-      <Filter>Header Files\library</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators\RegisterFileExpressionsGatherer.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsExpressionCalculators</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps\memoryMapsVisualizer</Filter>
     </ClInclude>
@@ -7704,9 +7260,6 @@
     </ClInclude>
     <ClInclude Include="editors\common\ComponentItemAutoConnector\BusInterfaceTableAutoConnector.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\common\BusInterfaceUtilities.h">
-      <Filter>Header Files\editors\common</Filter>
     </ClInclude>
     <ClInclude Include="editors\common\ComponentItemAutoConnector\TableItemMatcher.h">
       <Filter>Header Files\editors\common\ComponentItemAutoConnector</Filter>
@@ -7750,92 +7303,11 @@
     <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortColumns.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
-    <ClInclude Include="common\widgets\tagEditor\TagManager.h">
-      <Filter>Header Files\common\widgets\tagEditor</Filter>
-    </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\ComponentAndInstantiationsParameterFinder.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\FieldInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\interfaces\ParameterizableInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\interfaces\CommonInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\common\interfaces\NameGroupInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\common\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\RegisterInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\AddressBlockInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryMapInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileSetInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\fileSet\interfaces\FileBuilderInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\instantiations\interfaces\ComponentInstantiationInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\instantiations\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\instantiations\interfaces\ModuleParameterInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\instantiations\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\parameters\AbstractParameterInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\interfaces\PortMapInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\BusDefinitionEditor\interfaces\PortAbstractionInterface.h">
-      <Filter>Header Files\editors\BusDefinitionEditor\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\ports\interfaces\PortsInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\ports\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\ports\interfaces\MasterPortInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\ports\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\TransparentBridgeInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\AbstractionTypeInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\busInterfaces\interfaces\BusInterfaceInterfaceFactory.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="PythonAPI\FileChannel.h">
-      <Filter>Header Files\PythonAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="common\KactusAPI.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="mainwindow\ScriptingConsole\ScriptingSideArea.h">
       <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\common\FileHandler\FileHandler.h">
-      <Filter>Header Files\editors\common\FileHandler</Filter>
-    </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\APISupport.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
@@ -7843,32 +7315,17 @@
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
-    <ClInclude Include="PythonAPI\ReadChannel.h">
-      <Filter>Header Files\PythonAPI</Filter>
-    </ClInclude>
     <ClInclude Include="PythonAPI\extensions\IOCatcher.h">
       <Filter>Header Files\PythonAPI\extensions</Filter>
     </ClInclude>
-    <ClInclude Include="editors\HWDesign\interfaces\ComponentInstanceInterface.h">
-      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\HWDesign\interfaces\InterconnectionInterface.h">
-      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\HWDesign\interfaces\AdHocConnectionInterface.h">
-      <Filter>Header Files\editors\HWDesign\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="resource1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\SubspaceMapInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\interfaces\MemoryBlockInterface.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps\interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\memoryMaps\SubspaceMapColumns.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
+    <ClInclude Include="library\ObjectSelectionListItem.h">
+      <Filter>Header Files\library</Filter>
+    </ClInclude>
+    <ClInclude Include="library\LibraryItemSelectionFactory.h">
+      <Filter>Header Files\library</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapSortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
@@ -7881,9 +7338,6 @@
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Kactus21.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="appicon.ico" />

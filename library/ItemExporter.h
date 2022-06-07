@@ -12,9 +12,7 @@
 #ifndef ITEMEXPORTER_H
 #define ITEMEXPORTER_H
 
-#include <library/DocumentFileAccess.h>
-
-#include <common/dialogs/ObjectExportDialog/ObjectSelectionListItem.h>
+#include "ObjectSelectionListItem.h"
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -26,7 +24,6 @@
 
 using FileList = QVector<QFileInfo>;
 
-class MessageMediator;
 class LibraryInterface;
 class Component;
 class File;
@@ -44,13 +41,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] messageChannel      Interface for outputting messages.
      *      @param [in] libraryAccess       Access to the library.
-     *      @param [in] fileAccess          Access to the document reading and writing.
      *      @param [in] dialogParentWidget  Parent widget for the export dialog.
      *      @param [in] parent              The parent object.
      */
-    ItemExporter(MessageMediator* messageChannel, LibraryInterface* libraryAccess, DocumentFileAccess& fileAccess,
+    ItemExporter(LibraryInterface* libraryAccess, 
         QWidget* dialogParentWidget, QObject* parent = nullptr);
 
     /*!
@@ -82,6 +77,9 @@ signals:
 
     //! Emit a notice message to be printed to user.
     void noticeMessage(const QString& message);
+
+    //! Emit an error message to be printed to user.
+    void errorMessage(const QString& message);
 
 private:
 
@@ -203,14 +201,9 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Interface for outputting messages.
-    MessageMediator* messageChannel_;
     
     //! Access to the library.
     LibraryInterface* libraryAccess_;
-    
-    //! Access to the document reading and writing.
-    DocumentFileAccess& fileAccess_;
 
     //! Parent widget for the export dialog.
     QWidget* dialogParentWidget_;

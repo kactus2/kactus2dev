@@ -15,7 +15,7 @@
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
-#include <editors/BusDefinitionEditor/interfaces/PortAbstractionInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
@@ -24,7 +24,7 @@
 #include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>

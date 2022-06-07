@@ -11,7 +11,7 @@
 
 #include "PortValidator.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 #include <IPXACTmodels/common/Enumeration.h>

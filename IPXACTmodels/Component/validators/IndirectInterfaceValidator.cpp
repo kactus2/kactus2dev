@@ -24,7 +24,7 @@
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <QRegularExpression>
 #include <QStringList>

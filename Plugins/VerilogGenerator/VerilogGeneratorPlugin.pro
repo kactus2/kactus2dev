@@ -12,16 +12,17 @@ DEFINES += VERILOGGENERATORPLUGIN_LIB
 INCLUDEPATH += ./generatedFiles \
     ./../.. \
     . \
-    ./generatedFiles/Debug
+    ./generatedFiles/release
 
 LIBS += -L"./../../executable" \
-    -lIPXACTmodels
+    -lIPXACTmodels \
+    -lKactusAPI
 
 DESTDIR = ../../executable/Plugins
 
 DEPENDPATH += .
-MOC_DIR += ./generatedFiles/debug
-OBJECTS_DIR += debug
+MOC_DIR += ./generatedFiles/release
+OBJECTS_DIR += release
 UI_DIR += ./generatedFiles
 RCC_DIR += ./generatedFiles
 

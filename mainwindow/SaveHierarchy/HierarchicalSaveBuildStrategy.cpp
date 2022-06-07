@@ -15,7 +15,7 @@
 
 #include "SaveAsItem.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

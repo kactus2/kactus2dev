@@ -12,7 +12,7 @@
 #include "MemoryBlockModel.h"
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryBlockInterface.h>
+#include <KactusAPI/include/MemoryBlockInterface.h>
 
 #include <common/KactusColors.h>
 

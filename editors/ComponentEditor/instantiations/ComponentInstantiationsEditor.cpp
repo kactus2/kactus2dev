@@ -17,9 +17,9 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
-#include <editors/ComponentEditor/instantiations/interfaces/ComponentInstantiationInterface.h>
+#include <KactusAPI/include/ComponentInstantiationInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QVBoxLayout>
 

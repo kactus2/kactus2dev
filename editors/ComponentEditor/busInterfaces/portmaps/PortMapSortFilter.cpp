@@ -11,8 +11,9 @@
 
 #include "PortMapSortFilter.h"
 
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
+
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <common/KactusColors.h>
 

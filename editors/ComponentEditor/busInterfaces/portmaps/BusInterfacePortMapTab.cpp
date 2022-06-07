@@ -13,15 +13,15 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/AbstractionTypeInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/interfaces/PortMapInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>

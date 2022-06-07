@@ -12,7 +12,7 @@
 #ifndef CPPSOURCEANALYZER_H
 #define CPPSOURCEANALYZER_H
 
-#include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
+#include <KactusAPI/include/ISourceAnalyzerPlugin.h>
 
 #include <QFile>
 #include <QString>

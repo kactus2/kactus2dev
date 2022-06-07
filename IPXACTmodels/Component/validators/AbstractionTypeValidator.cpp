@@ -11,7 +11,7 @@
 
 #include "AbstractionTypeValidator.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 
@@ -26,7 +26,7 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypeValidator::AbstractionTypeValidator()

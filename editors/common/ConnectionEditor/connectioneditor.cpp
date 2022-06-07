@@ -25,11 +25,11 @@
 #include <editors/HWDesign/HWConnectionEndpoint.h>
 #include <editors/HWDesign/HWChangeCommands.h>
 
-#include <editors/ComponentEditor/common/ParameterCache.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ParameterCache.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 

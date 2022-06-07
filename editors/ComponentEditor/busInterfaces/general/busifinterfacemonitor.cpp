@@ -11,14 +11,14 @@
 
 #include "busifinterfacemonitor.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 #include <QGridLayout>
 #include <QLabel>

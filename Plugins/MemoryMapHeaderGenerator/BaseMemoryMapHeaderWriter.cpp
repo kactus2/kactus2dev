@@ -11,14 +11,14 @@
 
 #include "BaseMemoryMapHeaderWriter.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <IPXACTmodels/common/AccessTypes.h>
 

@@ -20,7 +20,7 @@
 
 #include <IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignConfigurationValidator::SystemDesignConfigurationValidator()

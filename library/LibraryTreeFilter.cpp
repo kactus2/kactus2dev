@@ -63,33 +63,34 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
             {
                 QSharedPointer<Component const> component = document.staticCast<Component const>();
 
-                if (checkImplementation(component) && checkHierarchy(component) && checkFirmness(component) &&
-                    checkTags(document))
+                if (component.isNull() ||
+                    (checkImplementation(component) && checkHierarchy(component) && 
+                        checkFirmness(component) && checkTags(document)))
                 {
                     return true;
                 }                   
             }
         }
 
-        else if (documentType == VLNV::CATALOG && type().catalogs_  && checkTags(document))
+        else if (documentType == VLNV::CATALOG && type().catalogs_  && (document.isNull() || checkTags(document)))
         {
             return true;
         }
 
         else if (documentType == VLNV::ABSTRACTIONDEFINITION && type().buses_ && implementation().hw_ &&
-            checkTags(document))
+            (document.isNull() || checkTags(document)))
         {
                 return true;         
         }
 
         else if (documentType == VLNV::BUSDEFINITION && type().buses_ && implementation().hw_ &&
-            checkTags(document))
+            (document.isNull() || checkTags(document)))
         {
             return true;
         }
 
         else if ((documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION) && type().apis_ &&
-            checkTags(document))
+            (document.isNull() || checkTags(document)))
         {
             return true;
         }
@@ -99,13 +100,13 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
             QSharedPointer<Design> design = libraryAccess->getDesign(vlnv);
 
             if ((type().advanced_ || (type().components_ && implementation().sw_ &&
-                design->getImplementation() == KactusAttribute::SW)) && checkTags(document))
+                (design.isNull() || design->getImplementation() == KactusAttribute::SW))) && (design.isNull() || checkTags(document)))
             {
                 return true;
             }
         }
 
-        else if (type().advanced_ && checkTags(document))
+        else if (type().advanced_ && (document.isNull() || checkTags(document)))
         {
             return true;
         }

@@ -19,8 +19,8 @@
 #include <IPXACTmodels/utilities/Search.h>
 #include <IPXACTmodels/utilities/ComponentSearch.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/IPluginUtility.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QDateTime>
 #include <QDir>

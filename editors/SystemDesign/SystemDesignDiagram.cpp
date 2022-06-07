@@ -50,7 +50,7 @@
 #include <editors/SystemDesign/UndoCommands/SystemChangeCommands.h>
 #include <editors/SystemDesign/UndoCommands/ReplaceSystemComponentCommand.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 

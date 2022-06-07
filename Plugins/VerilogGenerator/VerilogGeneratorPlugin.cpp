@@ -15,12 +15,12 @@
 
 #include "VerilogWriterFactory/VerilogWriterFactory.h"
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <Plugins/common/LanguageHighlighter.h>
 #include <Plugins/common/HDLParser/HDLCommandLineParser.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
 
 #include <IPXACTmodels/Design/Design.h>
@@ -51,7 +51,7 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    return "2.3";
+    return "2.4";
 }
 
 //-----------------------------------------------------------------------------

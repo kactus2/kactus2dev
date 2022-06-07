@@ -14,8 +14,8 @@
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 

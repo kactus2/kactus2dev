@@ -12,7 +12,7 @@
 #include "ParameterizableItem.h"
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterizableItem::ParameterizableItem()

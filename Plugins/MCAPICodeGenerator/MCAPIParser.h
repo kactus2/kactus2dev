@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 class CSourceWriter;
 

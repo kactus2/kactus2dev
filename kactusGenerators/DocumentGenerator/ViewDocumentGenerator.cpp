@@ -13,16 +13,16 @@
 
 #include <kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <editors/common/DesignWidgetFactory.h>
 #include <editors/common/DesignWidget.h>
 #include <editors/common/DesignDiagram.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>

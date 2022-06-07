@@ -14,10 +14,10 @@
 
 #include "verilogincludeimport_global.h"
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h>
-#include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/ImportPlugin.h>
+#include <KactusAPI/include/IncludeImportPlugin.h>
+#include <KactusAPI/include/HighlightSource.h>
 
 #include <Plugins/VerilogImport/VerilogParameterParser.h>
 

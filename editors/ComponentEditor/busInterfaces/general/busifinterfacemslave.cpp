@@ -18,12 +18,12 @@
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 #include <QLabel>
 #include <QGridLayout>

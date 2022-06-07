@@ -14,18 +14,18 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <mainwindow/mainwindow.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Component/Component.h>

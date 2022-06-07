@@ -15,8 +15,8 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
 #include <QAbstractTableModel>
 

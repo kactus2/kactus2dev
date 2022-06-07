@@ -15,14 +15,14 @@
 #include <editors/ComponentEditor/memoryMaps/memorymapseditor.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 
-#include <editors/ComponentEditor/memoryMaps/interfaces/ResetInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/FieldInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/RegisterInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/AddressBlockInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/MemoryMapInterface.h>
-#include <editors/ComponentEditor/memoryMaps/interfaces/SubspaceMapInterface.h>
-#include <editors/ComponentEditor/parameters/ParametersInterface.h>
-#include <editors/ComponentEditor/busInterfaces/interfaces/BusInterfaceInterface.h>
+#include <KactusAPI/include/ResetInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/AddressBlockInterface.h>
+#include <KactusAPI/include/MemoryMapInterface.h>
+#include <KactusAPI/include/SubspaceMapInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>

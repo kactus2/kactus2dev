@@ -19,7 +19,7 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Catalog/Catalog.h>
 #include <IPXACTmodels/Catalog/validators/CatalogValidator.h>

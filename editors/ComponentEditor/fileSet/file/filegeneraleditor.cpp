@@ -11,11 +11,11 @@
 
 #include "filegeneraleditor.h"
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <IPXACTmodels/Component/File.h>
 
-#include <editors/ComponentEditor/fileSet/interfaces/FileInterface.h>
+#include <KactusAPI/include/FileInterface.h>
 
 #include <QLabel>
 #include <QVBoxLayout>
