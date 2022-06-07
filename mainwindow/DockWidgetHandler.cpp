@@ -12,7 +12,6 @@
 #include "DockWidgetHandler.h"
 
 #include <mainwindow/MessageConsole/messageconsole.h>
-#include <editors/PythonSourceEditor/PythonSourceEditor.h>
 
 #include <Help/HelpSystem/HelpWindow.h>
 #include <Help/HelpSystem/ContextHelpBrowser.h>

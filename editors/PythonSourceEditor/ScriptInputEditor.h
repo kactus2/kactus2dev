@@ -48,12 +48,6 @@ protected:
     virtual void keyPressEvent(QKeyEvent *e) override;  
 
 
-private slots:
-    
-    //! Clears the editor of all text.
-    void onClear();
-
-
 private:
 
 

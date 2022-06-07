@@ -33,20 +33,25 @@ public:
 
     virtual void applySettings();
 
-    virtual int sideAreaWidth() const;
+
+    virtual int sideAreaWidth() const = 0;
 
     virtual void sideAreaPaintEvent() = 0;
 
 protected:
 
+
     void resizeEvent(QResizeEvent *event) override;
-
-
-    void updateSideArea(const QRect &rect, int dy);
 
     //! Side area for the widget.
     ScriptingSideArea* promtSideArea_;
 
+private slots:
+    
+    //! Clears the editor of all text.
+    void onClear();
+
+    void updateSideArea(const QRect &rect, int dy);
 
 private:
 

@@ -115,6 +115,7 @@ void ScriptViewEditor::sideAreaPaintEvent()
 
     QTextCursor cursor = textCursor();
 
+    cursor.movePosition(QTextCursor::End);
     QTextBlock lastBlock = cursor.block();
 
     int top = qRound(blockBoundingGeometry(lastBlock).translated(contentOffset()).top());

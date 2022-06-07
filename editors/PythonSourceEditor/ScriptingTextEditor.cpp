@@ -28,10 +28,10 @@
 ScriptingTextEditor::ScriptingTextEditor(QWidget* parent):
     QPlainTextEdit(parent),
     promtSideArea_(new ScriptingSideArea(this))
-{       
-
+{
     connect(this, SIGNAL(updateRequest(QRect const&, int)),
         this, SLOT(updateSideArea(QRect const&, int)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -46,6 +46,15 @@ void ScriptingTextEditor::applySettings()
     settings.endGroup();
 
     setViewportMargins(sideAreaWidth(), 0, 0, 0);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ScriptingTextEditor::onClear()
+//-----------------------------------------------------------------------------
+void ScriptingTextEditor::onClear()
+{
+    clear();
 }
 
 //-----------------------------------------------------------------------------

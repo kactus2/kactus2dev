@@ -9,20 +9,22 @@
 // Widget for Python scripting.
 //-----------------------------------------------------------------------------
 
-#ifndef PYTHONSOURCEEDITOR_H
-#define PYTHONSOURCEEDITOR_H
-
-#include "ScriptInputEditor.h"
-#include "ScriptViewEditor.h"
+#ifndef SCRIPTING_CONSOLE_H
+#define SCRIPTING_CONSOLE_H
 
 #include <QWidget>
+
 #include <QPlainTextEdit>
 #include <QToolBar>
 #include <QListWidget>
 #include <QThread>
 
 #include <PythonAPI/ChannelRelay.h>
-#include <PythonAPI/PythonInterpreter.h>
+
+#include "ScriptViewEditor.h"
+#include "ScriptInputEditor.h"
+
+class PythonInterpreter;
 
 //-----------------------------------------------------------------------------
 //! Widget for Python scripting.
@@ -42,6 +44,7 @@ public:
     void applySettings();
 
 private slots:
+
 
     void onOpenAction();
 
@@ -81,4 +84,4 @@ private:
 
 };
 
-#endif // PYTHONSOURCEEDITOR_H
+#endif // SCRIPTING_CONSOLE_H

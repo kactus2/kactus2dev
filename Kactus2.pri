@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 
-
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
@@ -140,10 +139,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.h \
     ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.h \
-    ./mainwindow/ScriptingConsole/ScriptingSideArea.h \
-    ./mainwindow/ScriptingConsole/ScriptingConsole.h \
-    ./mainwindow/ScriptingConsole/ScriptingTextEditor.h \
-    ./mainwindow/ScriptingConsole/ScriptingHistory.h \
     ./settings/FileTypeColumns.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
@@ -799,6 +794,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/VendorExtensionEditor/VendorExtensionsGeneral.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesColumns.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.h \
+    ./editors/PythonSourceEditor/ScriptingSideArea.h \
+    ./editors/PythonSourceEditor/ScriptingTextEditor.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
@@ -808,7 +805,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./editors/PythonSourceEditor/ScriptInputEditor.h \
+    ./editors/PythonSourceEditor/ScriptViewEditor.h \
+    ./editors/PythonSourceEditor/PythonSourceEditor.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -925,10 +925,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./mainwindow/SaveHierarchy/SaveAsItem.cpp \
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.cpp \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.cpp \
-    ./mainwindow/ScriptingConsole/ScriptingConsole.cpp \
-    ./mainwindow/ScriptingConsole/ScriptingHistory.cpp \
-    ./mainwindow/ScriptingConsole/ScriptingSideArea.cpp \
-    ./mainwindow/ScriptingConsole/ScriptingTextEditor.cpp \
     ./settings/ComponentEditorSettingsPage.cpp \
     ./settings/FileTypesDelegate.cpp \
     ./settings/FileTypeSettingsPage.cpp \
@@ -1520,6 +1516,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsFilter.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
+    ./editors/PythonSourceEditor/ScriptInputEditor.cpp \
+    ./editors/PythonSourceEditor/ScriptingSideArea.cpp \
+    ./editors/PythonSourceEditor/ScriptingTextEditor.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
@@ -1527,5 +1526,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./editors/PythonSourceEditor/PythonSourceEditor.cpp \
+    ./editors/PythonSourceEditor/ScriptViewEditor.cpp
 RESOURCES += kactus.qrc

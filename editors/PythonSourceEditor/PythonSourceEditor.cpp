@@ -14,6 +14,7 @@
 
 #include "PythonSourceEditor.h"
 
+
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QTextStream>
@@ -48,6 +49,7 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
         interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
 
     bool enabled = interpreter_->initialize(false);
+    scriptView_->setReadOnly(true);
 
     QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), 
         this, SLOT(onSaveAction()));
