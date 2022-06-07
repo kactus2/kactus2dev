@@ -4843,20 +4843,32 @@
     <ClCompile Include="GeneratedFiles\moc_GraphicalMessageMediator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\PythonSourceEditor\ScriptingConsole.cpp">
-      <Filter>Source Files\editors\PythonSourceEditor</Filter>
-    </ClCompile>
     <ClCompile Include="editors\PythonSourceEditor\ScriptingSideArea.cpp">
       <Filter>Source Files\editors\PythonSourceEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ScriptingConsole.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ScriptingTextEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\PythonSourceEditor\ScriptingTextEditor.cpp">
       <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\PythonSourceEditor.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\ScriptInputEditor.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ScriptInputEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\ScriptViewEditor.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ScriptViewEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PythonSourceEditor.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6653,10 +6665,16 @@
     <CustomBuild Include="common\ui\GraphicalMessageMediator.h">
       <Filter>Header Files\common\ui</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\PythonSourceEditor\ScriptingConsole.h">
+    <CustomBuild Include="editors\PythonSourceEditor\ScriptingTextEditor.h">
       <Filter>Header Files\editors\PythonSourceEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\PythonSourceEditor\ScriptingTextEditor.h">
+    <CustomBuild Include="editors\PythonSourceEditor\PythonSourceEditor.h">
+      <Filter>Header Files\editors\PythonSourceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\PythonSourceEditor\ScriptInputEditor.h">
+      <Filter>Header Files\editors\PythonSourceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\PythonSourceEditor\ScriptViewEditor.h">
       <Filter>Header Files\editors\PythonSourceEditor</Filter>
     </CustomBuild>
   </ItemGroup>

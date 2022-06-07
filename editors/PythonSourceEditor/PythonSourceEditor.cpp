@@ -13,7 +13,6 @@
 #include <Python.h>
 
 #include "PythonSourceEditor.h"
-#include "ScriptingTextEditor.h"
 
 #include <QHBoxLayout>
 #include <QFileDialog>
@@ -31,8 +30,8 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     QWidget(parent),
     outputChannel_(new ChannelRelay(this)),
     errorChannel_(new ChannelRelay(this)),
-    scriptEditor_(new ScriptingTextEditor(this)),
-    scriptView_(new ScriptingTextEditor(this)),
+    scriptEditor_(new ScriptInputEditor(this)),
+    scriptView_(new ScriptViewEditor(this)),
     interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, true)),    
     toolBar_(new QToolBar(this)),
     scriptThread_(this)
@@ -49,7 +48,6 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
         interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
 
     bool enabled = interpreter_->initialize(false);
-    scriptView_->setReadOnly(true);
 
     QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), 
         this, SLOT(onSaveAction()));
@@ -63,7 +61,7 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
 
     if (enabled == false)
     {
-        scriptEditor_->printError(tr("Could not initialize interpreter. Script disabled."));
+        scriptEditor_->setPlaceholderText(tr("Could not initialize interpreter. Script disabled."));
         scriptEditor_->setReadOnly(true);
     }
     else

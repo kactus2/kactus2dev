@@ -31,66 +31,30 @@ public:
     //! The destructor.
     virtual ~ScriptingTextEditor() = default;
 
-    void applySettings();
+    virtual void applySettings();
 
-    void insertInput(QString const& input);
+    virtual int sideAreaWidth() const;
 
-    int sideAreaWidth() const;
-
-    void sideAreaPaintEvent();
-
-signals:
-
-    //! Emitted when a line is completed in the editor.
-    void write(QString const& line);
-
-public slots:
-
-    /*! Print the given text in the editor.
-     *
-     *      @param [in] input  The text to print.
-     */
-    void print(QString const& input);
-
-    /*! Print the given error text in the editor.
-     *
-     *      @param [in] input  The error text to print.
-     */
-    void printError(QString const& input);
+    virtual void sideAreaPaintEvent() = 0;
 
 protected:
 
-    //! Event handler for key press handling.
-    virtual void keyPressEvent(QKeyEvent *e) override;  
-
     void resizeEvent(QResizeEvent *event) override;
 
-private slots:
-    
-    //! Clears the editor of all text.
-    void onClear();
 
     void updateSideArea(const QRect &rect, int dy);
 
-private:
+    //! Side area for the widget.
+    ScriptingSideArea* promtSideArea_;
 
-    //! Check if text can be pasted at currently selected position.
-    bool canPaste() const;
+
+private:
 
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Side area for the widget.
-    ScriptingSideArea* promtSideArea_;
-
-    //! The current prompt text.
-    QString promptText_;
-
-
-    //! Use tabs or spaces for indentation.
-    bool useTabs_;
 
 };
 
