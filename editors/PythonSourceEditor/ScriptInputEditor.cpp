@@ -16,6 +16,8 @@
 #include <QTextBlock>
 #include <QSettings>
 
+#include <common/KactusColors.h>
+
 #include <PythonAPI/WriteChannel.h>
 
 //-----------------------------------------------------------------------------
@@ -27,6 +29,7 @@ ScriptInputEditor::ScriptInputEditor(QWidget* parent):
     ScriptInputEditor::applySettings();
 
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateSideAreaWidth(int)), Qt::UniqueConnection);
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,14 +87,6 @@ QString ScriptInputEditor::getSelectedLines() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptInputEditor::updateSideAreaWidth()
-//-----------------------------------------------------------------------------
-void ScriptInputEditor::updateSideAreaWidth(int /* newBlockCount */)
-{
-    setViewportMargins(sideAreaWidth(), 0, 0, 0);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ScriptInputEditor::lineNumberAreaWidth()
 //-----------------------------------------------------------------------------
 int ScriptInputEditor::sideAreaWidth() const
@@ -135,4 +130,32 @@ void ScriptInputEditor::sideAreaPaintEvent(QPaintEvent* event)
         bottom = top + qRound(blockBoundingRect(block).height());
         ++blockNumber;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::updateSideAreaWidth()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::updateSideAreaWidth(int /* newBlockCount */)
+{
+    setViewportMargins(sideAreaWidth(), 0, 0, 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::updateSideAreaWidth()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::highlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+
+    QTextEdit::ExtraSelection selection;
+
+    QColor lineColor = QColor(KactusColors::SW_COMPONENT).lighter(120);
+
+    selection.format.setBackground(lineColor);
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = textCursor();
+    selection.cursor.clearSelection();
+    extraSelections.append(selection);
+
+    setExtraSelections(extraSelections);
 }

@@ -73,6 +73,9 @@ private slots:
      */
      void updateSideAreaWidth(int newBlockCount);
 
+     //! Add background highlight to currently selected line.
+      void highlightCurrentLine();
+
 private:
 
     //-----------------------------------------------------------------------------
