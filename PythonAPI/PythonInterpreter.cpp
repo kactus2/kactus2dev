@@ -207,6 +207,26 @@ void PythonInterpreter::execute(std::string const& command)
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonInterpreter::executeString()
+//-----------------------------------------------------------------------------
+void PythonInterpreter::executeString(QString const& string)
+{
+    PyEval_AcquireThread(threadState_);
+    PyObject* result = PyRun_String(string.toStdString().c_str(), Py_file_input, globalContext_, localContext_);
+
+    if (result == nullptr)
+    {
+        PyErr_Print();
+    }
+    else
+    {
+        Py_DECREF(result);
+    }
+
+    PyEval_ReleaseThread(threadState_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonInterpreter::setOutputChannels()
 //-----------------------------------------------------------------------------
 bool PythonInterpreter::redirectIO(bool interative)

@@ -46,7 +46,6 @@ void ScriptInputEditor::applySettings()
 //-----------------------------------------------------------------------------
 void ScriptInputEditor::keyPressEvent(QKeyEvent *e)
 {
-    QTextCursor cursor = textCursor();
 
     if (e->key() == Qt::Key_Tab && useTabs_ == false)
     {
@@ -54,21 +53,49 @@ void ScriptInputEditor::keyPressEvent(QKeyEvent *e)
         return;
     }
 
-    if (e->modifiers() == Qt::ShiftModifier &&
-        (e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return))
+    QPlainTextEdit::keyPressEvent(e);
+
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::runSelection()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::runSelection()
+{
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::StartOfLine);
+    cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+    QString command = cursor.selectedText();
+
+    emit write(command);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::getSelectedLines()
+//-----------------------------------------------------------------------------
+QString ScriptInputEditor::getSelectedLines() const
+{
+    QTextCursor cursor = textCursor();
+    if (cursor.hasSelection() == false)
     {
         cursor.movePosition(QTextCursor::StartOfLine);
         cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
-        QString command = cursor.selectedText();
-
-        emit write(command);
     }
     else
     {
-        QPlainTextEdit::keyPressEvent(e);
-    }
-}
+        int start = cursor.selectionStart();
+        int end = cursor.selectionEnd();
 
+        cursor.setPosition(start);
+        cursor.movePosition(QTextCursor::StartOfLine);
+
+        cursor.setPosition(end, QTextCursor::KeepAnchor);
+        cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+    }
+
+    return cursor.selectedText().replace(QChar(QChar::ParagraphSeparator), QChar('\n'));
+}
 
 //-----------------------------------------------------------------------------
 // Function: ScriptInputEditor::lineNumberAreaWidth()

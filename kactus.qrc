@@ -130,6 +130,9 @@
         <file>common/graphics/script-save.png</file>
         <file>common/graphics/script-open.png</file>
         <file>common/graphics/script-save-as.png</file>
+        <file>common/graphics/script-run.png</file>
+        <file>common/graphics/script-run-all.png</file>
+        <file>common/graphics/script-run-file.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

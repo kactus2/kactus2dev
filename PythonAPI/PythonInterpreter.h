@@ -70,6 +70,13 @@ public:
      */
      void execute(std::string const& line);
 
+     /*!
+      * Execute the given string in the interpreter.
+      *
+      *     @param [in] string  The string to execute.
+      */
+     void executeString(QString const& string);
+
 public slots:
 
     /*!

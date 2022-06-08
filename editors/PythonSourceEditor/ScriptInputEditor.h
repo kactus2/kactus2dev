@@ -36,6 +36,9 @@ public:
 
     virtual void sideAreaPaintEvent() override;
 
+    void runSelection();
+
+    QString getSelectedLines() const;
 signals:
 
     //! Emitted when a line is completed in the editor.
@@ -46,6 +49,7 @@ protected:
 
     //! Event handler for key press handling.
     virtual void keyPressEvent(QKeyEvent *e) override;  
+
 
 
 private:

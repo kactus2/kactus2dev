@@ -57,6 +57,9 @@ private slots:
     //! Handler for run button clicks.
     void onRunAction();
 
+    void onRunAllAction();
+
+    void onRunFileAction();
 private:
 
     //! Setup widget layout.
