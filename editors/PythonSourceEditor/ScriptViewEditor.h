@@ -85,7 +85,6 @@ private:
     //! The current prompt text.
     QString promptText_ = QString();
 
-
 };
 
 #endif // SCRIPTVIEWEDITOR_H

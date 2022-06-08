@@ -4870,6 +4870,9 @@
     <ClCompile Include="GeneratedFiles\moc_PythonSourceEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\PythonSourceHighlight.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -7334,6 +7337,9 @@
       <Filter>Header Files\library</Filter>
     </ClInclude>
     <ClInclude Include="editors\PythonSourceEditor\ScriptingSideArea.h">
+      <Filter>Header Files\editors\PythonSourceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\PythonSourceEditor\PythonSourceHighlight.h">
       <Filter>Header Files\editors\PythonSourceEditor</Filter>
     </ClInclude>
   </ItemGroup>

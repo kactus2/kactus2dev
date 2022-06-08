@@ -25,6 +25,8 @@
 #include "ScriptViewEditor.h"
 #include "ScriptInputEditor.h"
 
+#include <Plugins/common/LanguageHighlighter.h>
+
 class PythonInterpreter;
 
 //-----------------------------------------------------------------------------
@@ -90,8 +92,11 @@ private:
     //! Label for showing currently open file name.
     QLabel nameLabel_;
 
+
     //! Text editor for script writing and run.
     ScriptInputEditor scriptEditor_;
+
+    LanguageHighlighter highlighter_;
 
     //! Text editor for script writing and run.
     ScriptViewEditor scriptView_;

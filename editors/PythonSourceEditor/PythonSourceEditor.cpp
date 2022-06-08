@@ -14,6 +14,8 @@
 
 #include "PythonSourceEditor.h"
 
+#include "PythonSourceHighlight.h"
+
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QTextStream>
@@ -32,6 +34,7 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     errorChannel_(this),
     nameLabel_(tr("Unnamed script"), this),
     scriptEditor_(this),
+    highlighter_(scriptEditor_.document()),
     scriptView_(this),
     interpreter_(new PythonInterpreter(&outputChannel_, &errorChannel_, true)),    
     toolBar_(this),
@@ -61,6 +64,9 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     {
         scriptThread_.start();
     }
+
+    PythonSourceHighlight highlightRules;
+    highlightRules.apply(&highlighter_);
 
     setupLayout();
 }

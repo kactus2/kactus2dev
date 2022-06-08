@@ -808,7 +808,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/extensions/IOCatcher.h \
     ./editors/PythonSourceEditor/ScriptInputEditor.h \
     ./editors/PythonSourceEditor/ScriptViewEditor.h \
-    ./editors/PythonSourceEditor/PythonSourceEditor.h
+    ./editors/PythonSourceEditor/PythonSourceEditor.h \
+    ./editors/PythonSourceEditor/PythonSourceHighlight.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1528,5 +1529,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
     ./editors/PythonSourceEditor/PythonSourceEditor.cpp \
-    ./editors/PythonSourceEditor/ScriptViewEditor.cpp
+    ./editors/PythonSourceEditor/ScriptViewEditor.cpp \
+    ./editors/PythonSourceEditor/PythonSourceHighlight.cpp
 RESOURCES += kactus.qrc
