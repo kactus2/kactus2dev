@@ -42,6 +42,7 @@
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnConstants.h>
+#include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
 #include <KactusAPI/KactusAPI.h>
 
@@ -198,6 +199,9 @@ messageChannel_(messageChannel)
         "QTableView::indicator:unchecked {image: none;}"
         "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     setStyleSheet(defaultStyleSheet);
+
+
+    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
 
     // Setup windows.
     setupDrawBoard();

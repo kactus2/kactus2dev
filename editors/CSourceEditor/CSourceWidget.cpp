@@ -113,8 +113,6 @@ void CSourceWidget::applySettings(QSettings& settings)
     textEdit_->setFont(font);
 
     // Read highlight style settings.
-    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
-
     for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
     {
         HighlightStyleDesc styleDesc = settings.value("Editor/Highlight/" + 

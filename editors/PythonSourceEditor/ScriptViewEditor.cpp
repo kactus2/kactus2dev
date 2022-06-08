@@ -29,8 +29,8 @@ ScriptViewEditor::ScriptViewEditor(QWidget* parent):
     ScriptingTextEditor(parent)
 {       
     setReadOnly(true);
-    
-    ScriptingTextEditor::applySettings();
+
+    setViewportMargins(ScriptViewEditor::sideAreaWidth(), 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------

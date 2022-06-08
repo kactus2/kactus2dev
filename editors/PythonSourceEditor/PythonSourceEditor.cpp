@@ -20,9 +20,12 @@
 #include <QFileDialog>
 #include <QTextStream>
 #include <QSplitter>
+#include <QSettings>
+
+#include <common/widgets/assistedTextEdit/AssistedTextEdit.h>
+#include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
 #include <PythonAPI/PythonInterpreter.h>
-
 #include <PythonAPI/ChannelRelay.h>
 
 //-----------------------------------------------------------------------------
@@ -69,6 +72,8 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     highlightRules.apply(&highlighter_);
 
     setupLayout();
+
+    applySettings();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +90,33 @@ PythonSourceEditor::~PythonSourceEditor()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::applySettings()
 {
-    scriptEditor_.applySettings();
+    QSettings settings;
+
+    // Read indentation settings.
+    IndentStyle style = static_cast<IndentStyle>(settings.value("Editor/IndentStyle",
+        INDENT_STYLE_SPACES).toInt());
+    unsigned int width = settings.value("Editor/IndentWidth", 4).toInt();
+
+    bool useTabs = style == INDENT_STYLE_TAB;
+    scriptEditor_.setIndentStyle(useTabs, width);
+
+    // Read font settings.
+    QFont font = settings.value("Editor/Font", QFont("Consolas", 10)).value<QFont>();
+    scriptEditor_.setFont(font);
+    scriptView_.setFont(font);
+
+    // Read highlight style settings.
+
+    for (int i = 0; i < LanguageHighlighter::STYLE_COUNT; ++i)
+    {
+        HighlightStyleDesc styleDesc = settings.value("Editor/Highlight/" +
+            LanguageHighlighter::getStyleName(static_cast<LanguageHighlighter::StyleType>(i)),
+            QVariant::fromValue(LanguageHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
+
+        highlighter_.setStyle(static_cast<LanguageHighlighter::StyleType>(i), styleDesc);
+    }
+
+    highlighter_.rehighlight();
 }
 
 //-----------------------------------------------------------------------------

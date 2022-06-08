@@ -25,25 +25,11 @@
 //-----------------------------------------------------------------------------
 ScriptInputEditor::ScriptInputEditor(QWidget* parent):
     ScriptingTextEditor(parent)
-{       
-    ScriptInputEditor::applySettings();
-
+{
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateSideAreaWidth(int)), Qt::UniqueConnection);
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()), Qt::UniqueConnection);
-}
 
-//-----------------------------------------------------------------------------
-// Function: ScriptInputEditor::ScriptInputEditor()
-//-----------------------------------------------------------------------------
-void ScriptInputEditor::applySettings()
-{
-    QSettings settings;
-
-    settings.beginGroup("Editor");
-    useTabs_ = settings.value("IndentStyle", true).toBool() == false;
-    settings.endGroup();
-
-    ScriptingTextEditor::applySettings();
+    setViewportMargins(sideAreaWidth(), 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -53,7 +39,7 @@ void ScriptInputEditor::keyPressEvent(QKeyEvent *e)
 {
     if (e->key() == Qt::Key_Tab && useTabs_ == false)
     {
-        insertPlainText("    ");
+        insertPlainText(QString(indentWidth_, QChar(' ')));
         return;
     }
 
@@ -84,6 +70,15 @@ QString ScriptInputEditor::getSelectedLines() const
     }
 
     return cursor.selectedText().replace(QChar(QChar::ParagraphSeparator), QChar('\n'));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::setIndentStyle()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::setIndentStyle(bool useTabs, unsigned int width)
+{
+    useTabs_ = useTabs;
+    indentWidth_ = width;
 }
 
 //-----------------------------------------------------------------------------

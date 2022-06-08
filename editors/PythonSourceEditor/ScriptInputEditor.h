@@ -34,22 +34,19 @@ public:
     //! The destructor.
     virtual ~ScriptInputEditor() = default;
 
-    //! Apply the application specific settings e.g. text formatting.
-    virtual void applySettings() override;
-
     /*!
      * Get the required width of the side area.
      *
      *     @return The width of the side area in pixels.
      */
-    virtual int sideAreaWidth() const override;
+    virtual int sideAreaWidth() const override final;
 
     /*!
      * Handler for side area paint event.
      *
      *     @param [in]  The paint event.
      */
-    virtual void sideAreaPaintEvent(QPaintEvent* event) override;
+    virtual void sideAreaPaintEvent(QPaintEvent* event) override final;
 
     /*!
      * Get the text on selected lines.
@@ -58,11 +55,18 @@ public:
      */
      QString getSelectedLines() const;
 
-    
+     /*!
+      * Set the style for automatic indentation.
+      *
+      *     @param [in] useTabs     Whether to use tabs or spaces.
+      *     @param [in] width       Number of spaces to use.
+      */
+      void setIndentStyle(bool useTabs, unsigned int width);
+
 protected:
 
     //! Event handler for key press handling.
-    virtual void keyPressEvent(QKeyEvent *e) override;  
+    virtual void keyPressEvent(QKeyEvent *e) override final;
 
 private slots:
 
@@ -83,6 +87,8 @@ private:
     //-----------------------------------------------------------------------------
 
     bool useTabs_ = false;
+
+    int indentWidth_ = 4;
 
 };
 

@@ -35,9 +35,6 @@ public:
     //! The destructor.
     virtual ~ScriptingTextEditor() = default;
 
-    //! Apply the application specific settings e.g. text formatting.
-     virtual void applySettings();
-
     /*!
      * Get the required width of the side area.
      *

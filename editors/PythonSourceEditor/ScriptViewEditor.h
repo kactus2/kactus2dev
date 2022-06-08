@@ -39,14 +39,14 @@ public:
      *
      *     @return The width of the side area in pixels.
      */
-    virtual int sideAreaWidth() const;
+    virtual int sideAreaWidth() const override  final;
 
     /*!
      * Handler for side area paint event.
      *
      *     @param [in] event    The paint event.
      */
-    virtual void sideAreaPaintEvent(QPaintEvent* event);
+    virtual void sideAreaPaintEvent(QPaintEvent* event) override  final;
 
 public slots:
 

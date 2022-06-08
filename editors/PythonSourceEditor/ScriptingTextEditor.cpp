@@ -34,20 +34,6 @@ ScriptingTextEditor::ScriptingTextEditor(QWidget* parent):
 
 }
 
-//-----------------------------------------------------------------------------
-// Function: ScriptingTextEditor::applySettings()
-//-----------------------------------------------------------------------------
-void ScriptingTextEditor::applySettings()
-{
-    QSettings settings;
-
-    settings.beginGroup("Editor");
-    setFont(settings.value("Font").value<QFont>());
-    settings.endGroup();
-
-    setViewportMargins(sideAreaWidth(), 0, 0, 0);
-}
-
 
 //-----------------------------------------------------------------------------
 // Function: ScriptingTextEditor::onClear()
