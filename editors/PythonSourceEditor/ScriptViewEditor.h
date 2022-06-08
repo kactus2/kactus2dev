@@ -54,6 +54,12 @@ public slots:
      *
      *      @param [in] input  The text to print.
      */
+    void printInput(QString const& input);
+
+    /*! Print the given text in the editor.
+     *
+     *      @param [in] input  The text to print.
+     */
     void print(QString const& input);
 
     /*! Print the given error text in the editor.
@@ -64,6 +70,13 @@ public slots:
 
 private:
 
+    /*!
+     * Print the given input with given color.
+     *
+     *     @param [in] input        The input text to print.
+     *     @param [in] textColor    The color of the text to use.
+     */
+     void printWithColor(QString const& input, QColor const& textColor);
 
     //-----------------------------------------------------------------------------
     // Data.

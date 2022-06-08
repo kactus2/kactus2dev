@@ -34,6 +34,20 @@ ScriptViewEditor::ScriptViewEditor(QWidget* parent):
 }
 
 //-----------------------------------------------------------------------------
+// Function: ScriptViewEditor::printInput()
+//-----------------------------------------------------------------------------
+void ScriptViewEditor::printInput(QString const& input)
+{
+    printWithColor(input, QColor(Qt::blue));
+
+    if (input.endsWith(QChar('\n')) == false)
+    {
+        QTextCursor cursor = textCursor();
+        cursor.insertBlock();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ScriptViewEditor::print()
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::print(QString const& input)
@@ -46,21 +60,7 @@ void ScriptViewEditor::print(QString const& input)
         return;
     }
 
-    QTextCursor cursor = textCursor();
-    cursor.movePosition(QTextCursor::End);
-    
-    QTextBlock block = cursor.block();
-    
-    QTextCharFormat format = block.charFormat();
-    format.setForeground(QBrush(Qt::black));
-
-    cursor.insertText(input, format);
-
-    promptText_ = cursor.block().text();
-
-    format.setForeground(QBrush(Qt::black));
-    setCurrentCharFormat(format);
-    verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+    printWithColor(input, QColor(Qt::black));
 }
 
 //-----------------------------------------------------------------------------
@@ -68,21 +68,7 @@ void ScriptViewEditor::print(QString const& input)
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::printError(QString const& input)
 {
-    QTextCursor cursor = textCursor();
-    cursor.movePosition(QTextCursor::End);
-    
-    QTextBlock block = cursor.block();
-
-    QTextCharFormat format = block.charFormat();
-    format.setForeground(QBrush(Qt::red));
-
-    cursor.insertText(input, format);
-
-    promptText_ = cursor.block().text();
-
-    format.setForeground(QBrush(Qt::black));
-    setCurrentCharFormat(format);
-    verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+    printWithColor(input, QColor(Qt::red));
 }
 
 //-----------------------------------------------------------------------------
@@ -115,4 +101,22 @@ void ScriptViewEditor::sideAreaPaintEvent(QPaintEvent* /* event */)
         painter.drawText(4, top, editorSideArea_->width()-4, fontMetrics().height(),
             Qt::AlignLeft, promptText_);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptViewEditor::printWithColor()
+//-----------------------------------------------------------------------------
+void ScriptViewEditor::printWithColor(QString const& input, QColor const& textColor)
+{
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::End);
+
+    QTextBlock block = cursor.block();
+
+    QTextCharFormat format = block.charFormat();
+    format.setForeground(QBrush(textColor));
+
+    cursor.insertText(input, format);
+
+    verticalScrollBar()->setValue(verticalScrollBar()->maximum());
 }

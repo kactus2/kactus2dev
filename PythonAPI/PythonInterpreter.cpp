@@ -224,6 +224,8 @@ void PythonInterpreter::executeString(QString const& string)
     }
 
     PyEval_ReleaseThread(threadState_);
+
+    printPrompt();
 }
 
 //-----------------------------------------------------------------------------

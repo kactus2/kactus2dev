@@ -145,6 +145,7 @@ void PythonSourceEditor::onSaveAsAction()
 void PythonSourceEditor::onRunAction()
 {
     QString script = scriptEditor_.getSelectedLines();
+    scriptView_.printInput(script);
     interpreter_->executeString(script);
 }
 
@@ -153,7 +154,9 @@ void PythonSourceEditor::onRunAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onRunAllAction()
 {
-    interpreter_->executeString(scriptEditor_.toPlainText());
+    QString script = scriptEditor_.toPlainText();
+    scriptView_.printInput(script);
+    interpreter_->executeString(script);
 }
 
 //-----------------------------------------------------------------------------
