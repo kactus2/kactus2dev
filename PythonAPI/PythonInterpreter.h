@@ -46,7 +46,6 @@ public:
      // ! The destructor.
     virtual ~PythonInterpreter();
 
-
     /*!
      * Initializes the interpterter. This function must be called before writing any commands with write().
      *
@@ -64,14 +63,14 @@ public:
       void runFile(QString const& filePath);
 
     /*!
-     * Execute the given line in the interpreter.
+     * Execute a single line in the interpreter.
      *
      *     @param [in] line  The line to execute.
      */
      void execute(std::string const& line);
 
      /*!
-      * Execute the given string in the interpreter.
+      * Execute the given arbitrary long string in the interpreter.
       *
       *     @param [in] string  The string to execute.
       */

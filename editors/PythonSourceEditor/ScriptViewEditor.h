@@ -24,21 +24,29 @@ class ScriptViewEditor : public ScriptingTextEditor
     Q_OBJECT
 public:
 
-    //! The constructor.
+    /*!
+     * The constructor.
+     *
+     *     @param [in] parent  The parent widget.
+     */
     explicit ScriptViewEditor(QWidget* parent = nullptr);
-
 
     //! The destructor.
     virtual ~ScriptViewEditor() = default;
 
+    /*!
+     * Get the required width of the side area.
+     *
+     *     @return The width of the side area in pixels.
+     */
     virtual int sideAreaWidth() const;
 
+    /*!
+     * Handler for side area paint event.
+     *
+     *     @return
+     */
     virtual void sideAreaPaintEvent();
-
-signals:
-
-    //! Emitted when a line is completed in the editor.
-    void write(QString const& line);
 
 public slots:
 
@@ -54,12 +62,6 @@ public slots:
      */
     void printError(QString const& input);
 
-
-private slots:
-    
-    //! Clears the editor of all text.
-    void onClear();
-
 private:
 
 
@@ -68,11 +70,8 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The current prompt text.
-    QString promptText_;
+    QString promptText_ = QString();
 
-
-    //! Use tabs or spaces for indentation.
-    bool useTabs_;
 
 };
 

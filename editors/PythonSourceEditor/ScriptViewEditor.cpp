@@ -26,15 +26,11 @@
 // Function: ScriptViewEditor::ScriptViewEditor()
 //-----------------------------------------------------------------------------
 ScriptViewEditor::ScriptViewEditor(QWidget* parent):
-    ScriptingTextEditor(parent),
-    promptText_()
+    ScriptingTextEditor(parent)
 {       
     setReadOnly(true);
     
     ScriptingTextEditor::applySettings();
-
-    connect(this, SIGNAL(updateRequest(QRect const&, int)),
-        this, SLOT(updateSideArea(QRect const&, int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,14 +86,6 @@ void ScriptViewEditor::printError(QString const& input)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptViewEditor::onClear()
-//-----------------------------------------------------------------------------
-void ScriptViewEditor::onClear()
-{
-    clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ScriptViewEditor::lineNumberAreaWidth()
 //-----------------------------------------------------------------------------
 int ScriptViewEditor::sideAreaWidth() const
@@ -111,7 +99,7 @@ int ScriptViewEditor::sideAreaWidth() const
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::sideAreaPaintEvent()
 {
-    QPainter painter(promtSideArea_);
+    QPainter painter(editorSideArea_);
 
     QTextCursor cursor = textCursor();
 
@@ -124,7 +112,7 @@ void ScriptViewEditor::sideAreaPaintEvent()
     {
         painter.setPen(Qt::black);
         painter.setFont(font());
-        painter.drawText(4, top, promtSideArea_->width()-4, fontMetrics().height(),
+        painter.drawText(4, top, editorSideArea_->width()-4, fontMetrics().height(),
             Qt::AlignLeft, promptText_);
     }
 }

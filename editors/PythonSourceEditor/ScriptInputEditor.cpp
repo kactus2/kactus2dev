@@ -46,7 +46,6 @@ void ScriptInputEditor::applySettings()
 //-----------------------------------------------------------------------------
 void ScriptInputEditor::keyPressEvent(QKeyEvent *e)
 {
-
     if (e->key() == Qt::Key_Tab && useTabs_ == false)
     {
         insertPlainText("    ");
@@ -54,21 +53,6 @@ void ScriptInputEditor::keyPressEvent(QKeyEvent *e)
     }
 
     QPlainTextEdit::keyPressEvent(e);
-
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: ScriptInputEditor::runSelection()
-//-----------------------------------------------------------------------------
-void ScriptInputEditor::runSelection()
-{
-    QTextCursor cursor = textCursor();
-    cursor.movePosition(QTextCursor::StartOfLine);
-    cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
-    QString command = cursor.selectedText();
-
-    emit write(command);
 }
 
 //-----------------------------------------------------------------------------
@@ -106,15 +90,13 @@ int ScriptInputEditor::sideAreaWidth() const
     return space;
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: ScriptInputEditor::sideAreaPaintEvent()
 //-----------------------------------------------------------------------------
 void ScriptInputEditor::sideAreaPaintEvent()
 {
-    QPainter painter(promtSideArea_);
+    QPainter painter(editorSideArea_);
 
-  
     QTextCursor cursor = textCursor();
 
     QTextBlock lastBlock = cursor.block();
@@ -124,7 +106,7 @@ void ScriptInputEditor::sideAreaPaintEvent()
 
         painter.setPen(Qt::black);
         painter.setFont(font());
-        painter.drawText(4, top, promtSideArea_->width()-4, fontMetrics().height(),
+        painter.drawText(4, top, editorSideArea_->width()-4, fontMetrics().height(),
             Qt::AlignLeft, QString());
     
 }

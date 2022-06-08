@@ -24,42 +24,54 @@ class ScriptingTextEditor : public QPlainTextEdit
     Q_OBJECT
 public:
 
-    //! The constructor.
-    explicit ScriptingTextEditor(QWidget* parent = nullptr);
+    /*!
+     * The constructor.
+     *
+     *     @param [in] parent  The parent widget.
+     */
+     explicit ScriptingTextEditor(QWidget* parent = nullptr);
 
 
     //! The destructor.
     virtual ~ScriptingTextEditor() = default;
 
-    virtual void applySettings();
+    //! Apply the application specific settings e.g. text formatting.
+     virtual void applySettings();
 
+    /*!
+     * Get the required width of the side area.
+     *
+     *     @return The width of the side area in pixels.
+     */
+     virtual int sideAreaWidth() const = 0;
 
-    virtual int sideAreaWidth() const = 0;
-
-    virtual void sideAreaPaintEvent() = 0;
+    /*!
+     * Handler for side area paint event.
+     *
+     *     @return 
+     */
+     virtual void sideAreaPaintEvent() = 0;
 
 protected:
 
-
+    //! Event handler for widget resize.
     void resizeEvent(QResizeEvent *event) override;
 
-    //! Side area for the widget.
-    ScriptingSideArea* promtSideArea_;
+    //! Side area for the widget for holding line numbers or other information.
+    ScriptingSideArea* editorSideArea_;
 
 private slots:
     
     //! Clears the editor of all text.
     void onClear();
 
-    void updateSideArea(const QRect &rect, int dy);
-
-private:
-
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
+    /*!
+     * Handler for side area update event.
+     *
+     *     @param [in] rect     The area being updated.
+     *     @param [in] dy       The change of y coordinate in the update.
+     */
+     void updateSideArea(const QRect &rect, int dy);
 
 };
 

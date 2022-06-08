@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 ScriptingTextEditor::ScriptingTextEditor(QWidget* parent):
     QPlainTextEdit(parent),
-    promtSideArea_(new ScriptingSideArea(this))
+    editorSideArea_(new ScriptingSideArea(this))
 {
     connect(this, SIGNAL(updateRequest(QRect const&, int)),
         this, SLOT(updateSideArea(QRect const&, int)), Qt::UniqueConnection);
@@ -72,11 +72,11 @@ void ScriptingTextEditor::updateSideArea(QRect const& rect, int dy)
 {
     if (dy)
     {
-        promtSideArea_->scroll(0, dy);
+        editorSideArea_->scroll(0, dy);
     }
     else
     {
-        promtSideArea_->update(0, rect.y(), promtSideArea_->width(), rect.height());
+        editorSideArea_->update(0, rect.y(), editorSideArea_->width(), rect.height());
     }
 }
 
@@ -88,5 +88,5 @@ void ScriptingTextEditor::resizeEvent(QResizeEvent *e)
     QPlainTextEdit::resizeEvent(e);
 
     QRect cr = contentsRect();
-    promtSideArea_->setGeometry(QRect(cr.left(), cr.top(), sideAreaWidth(), cr.height()));
+    editorSideArea_->setGeometry(QRect(cr.left(), cr.top(), sideAreaWidth(), cr.height()));
 }

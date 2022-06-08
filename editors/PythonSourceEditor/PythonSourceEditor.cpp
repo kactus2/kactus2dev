@@ -14,7 +14,6 @@
 
 #include "PythonSourceEditor.h"
 
-
 #include <QHBoxLayout>
 #include <QFileDialog>
 #include <QTextStream>
@@ -29,81 +28,38 @@
 //-----------------------------------------------------------------------------
 PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     QWidget(parent),
-    outputChannel_(new ChannelRelay(this)),
-    errorChannel_(new ChannelRelay(this)),
+    outputChannel_(this),
+    errorChannel_(this),
     nameLabel_(tr("Unnamed script"), this),
-    scriptEditor_(new ScriptInputEditor(this)),
-    scriptView_(new ScriptViewEditor(this)),
-    interpreter_(new PythonInterpreter(outputChannel_, errorChannel_, true)),    
-    toolBar_(new QToolBar(this)),
+    scriptEditor_(this),
+    scriptView_(this),
+    interpreter_(new PythonInterpreter(&outputChannel_, &errorChannel_, true)),    
+    toolBar_(this),
     scriptThread_(this)
 {    
     interpreter_->moveToThread(&scriptThread_);
     connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
 
-
-    connect(outputChannel_, SIGNAL(data(QString const&)),
-        scriptView_, SLOT(print(QString const&)), Qt::UniqueConnection);
-    connect(errorChannel_, SIGNAL(data(QString const&)),
-        scriptView_, SLOT(printError(QString const&)), Qt::UniqueConnection);
-
-    connect(scriptEditor_, SIGNAL(write(QString const&)),
-        interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
+    connect(&outputChannel_, SIGNAL(data(QString const&)),
+        &scriptView_, SLOT(print(QString const&)), Qt::UniqueConnection);
+    connect(&errorChannel_, SIGNAL(data(QString const&)),
+        &scriptView_, SLOT(printError(QString const&)), Qt::UniqueConnection);
 
     bool enabled = interpreter_->initialize(false);
 
-    QAction* openAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-open.png"), QString(),
-        this, SLOT(onOpenAction()));
-    openAction->setToolTip(tr("Open script from file..."));
-    openAction->setEnabled(enabled);
-    addAction(openAction);
+    setupToolbar();
+    toolBar_.setEnabled(enabled);
 
-    QAction* saveAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), 
-        this, SLOT(onSaveAction()));
-    saveAction->setToolTip(tr("Save script"));
-    saveAction->setEnabled(enabled);
-    addAction(saveAction);
-
-    QAction* saveAsAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-save-as.png"), QString(),
-        this, SLOT(onSaveAsAction()));
-    saveAsAction->setToolTip(tr("Save script as..."));
-    saveAsAction->setEnabled(enabled);
-    addAction(saveAsAction);
-
-    toolBar_->addSeparator();
-
-    QAction* runAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-run.png"), QString(),
-        this, SLOT(onRunAction()));
-    runAction->setToolTip(tr("Run selection (Ctrl+R)"));
-    runAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
-    runAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
-    runAction->setEnabled(enabled);
-    addAction(runAction);
-
-    QAction* runAllAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-run-all.png"), QString(),
-        this, SLOT(onRunAllAction()));
-    runAllAction->setToolTip(QStringLiteral("Run all (Ctrl+Shift+R)"));
-    runAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
-    runAllAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
-    runAllAction->setEnabled(enabled);
-    addAction(runAllAction);
-
-    QAction* runFileAction = toolBar_->addAction(QIcon(":/icons/common/graphics/script-run-file.png"), QString(),
-        this, SLOT(onRunFileAction()));
-    runFileAction->setToolTip(QStringLiteral("Run file..."));
-    runFileAction->setEnabled(enabled);
-    addAction(runFileAction);
-
-    scriptView_->setReadOnly(true);
+    scriptView_.setReadOnly(true);
     
     if (enabled == false)
     {
-        scriptEditor_->setPlaceholderText(tr("Could not initialize interpreter. Script disabled."));
-        scriptEditor_->setReadOnly(true);
+        scriptEditor_.setPlaceholderText(tr("Could not initialize interpreter. Script disabled."));
+        scriptEditor_.setReadOnly(true);
     }
     else
     {
-          scriptThread_.start();
+        scriptThread_.start();
     }
 
     setupLayout();
@@ -123,7 +79,7 @@ PythonSourceEditor::~PythonSourceEditor()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::applySettings()
 {
-    scriptEditor_->applySettings();
+    scriptEditor_.applySettings();
 }
 
 //-----------------------------------------------------------------------------
@@ -139,7 +95,7 @@ void PythonSourceEditor::onOpenAction()
         outputFile.open(QFile::ReadOnly | QFile::Text);
 
         QTextStream output(&outputFile);
-        scriptEditor_->setPlainText(output.readAll());
+        scriptEditor_.setPlainText(output.readAll());
 
         outputFile.close();
 
@@ -162,7 +118,7 @@ void PythonSourceEditor::onSaveAction()
         outputFile.open(QFile::WriteOnly | QFile::Text);
 
         QTextStream output(&outputFile);
-        output << scriptEditor_->toPlainText();
+        output << scriptEditor_.toPlainText();
 
         outputFile.close();
 
@@ -188,7 +144,7 @@ void PythonSourceEditor::onSaveAsAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onRunAction()
 {
-    QString script = scriptEditor_->getSelectedLines();
+    QString script = scriptEditor_.getSelectedLines();
     interpreter_->executeString(script);
 }
 
@@ -197,7 +153,7 @@ void PythonSourceEditor::onRunAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onRunAllAction()
 {
-    interpreter_->executeString(scriptEditor_->toPlainText());
+    interpreter_->executeString(scriptEditor_.toPlainText());
 }
 
 //-----------------------------------------------------------------------------
@@ -214,14 +170,56 @@ void PythonSourceEditor::onRunFileAction()
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::setupToolbar()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::setupToolbar()
+{
+    toolBar_.setOrientation(Qt::Horizontal);
+    toolBar_.setIconSize(QSize(20, 20));
+
+    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-open.png"), QString(),
+        this, SLOT(onOpenAction()));
+    openAction->setToolTip(tr("Open script from file..."));
+    addAction(openAction);
+
+    QAction* saveAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(),
+        this, SLOT(onSaveAction()));
+    saveAction->setToolTip(tr("Save script"));
+    addAction(saveAction);
+
+    QAction* saveAsAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save-as.png"), QString(),
+        this, SLOT(onSaveAsAction()));
+    saveAsAction->setToolTip(tr("Save script as..."));
+    addAction(saveAsAction);
+
+    toolBar_.addSeparator();
+
+    QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run.png"), QString(),
+        this, SLOT(onRunAction()));
+    runAction->setToolTip(tr("Run selection (Ctrl+R)"));
+    runAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    runAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    addAction(runAction);
+
+    QAction* runAllAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-all.png"), QString(),
+        this, SLOT(onRunAllAction()));
+    runAllAction->setToolTip(QStringLiteral("Run all (Ctrl+Shift+R)"));
+    runAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+    runAllAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    addAction(runAllAction);
+
+    QAction* runFileAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-file.png"), QString(),
+        this, SLOT(onRunFileAction()));
+    runFileAction->setToolTip(QStringLiteral("Run file..."));
+    addAction(runFileAction);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonSourceEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::setupLayout()
 {
     nameLabel_.setAlignment(Qt::AlignCenter);
-
-    toolBar_->setOrientation(Qt::Horizontal);
-    toolBar_->setIconSize(QSize(20, 20));
 
     QVBoxLayout* layout = new QVBoxLayout(this);
 
@@ -231,13 +229,14 @@ void PythonSourceEditor::setupLayout()
     QWidget* editorContainer = new QWidget(this);
 
     QVBoxLayout* containerLayout = new QVBoxLayout(editorContainer);    
-    containerLayout->addWidget(toolBar_);
+    
     containerLayout->addWidget(&nameLabel_);
-    containerLayout->addWidget(scriptEditor_);
+    containerLayout->addWidget(&scriptEditor_);
+    containerLayout->addWidget(&toolBar_); 
     containerLayout->setContentsMargins(0, 0, 0, 0);
 
     viewSplit->addWidget(editorContainer);
-    viewSplit->addWidget(scriptView_);
+    viewSplit->addWidget(&scriptView_);
     viewSplit->setStretchFactor(0, 4);
 
     layout->addWidget(viewSplit);
