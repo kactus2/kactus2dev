@@ -47,9 +47,9 @@ public:
     /*!
      * Handler for side area paint event.
      *
-     *     @return
+     *     @param [in]  The paint event.
      */
-    virtual void sideAreaPaintEvent() override;
+    virtual void sideAreaPaintEvent(QPaintEvent* event) override;
 
     /*!
      * Get the text on selected lines.
@@ -58,10 +58,20 @@ public:
      */
      QString getSelectedLines() const;
 
+    
 protected:
 
     //! Event handler for key press handling.
     virtual void keyPressEvent(QKeyEvent *e) override;  
+
+private slots:
+
+    /*!
+     * Update the side area width when the number of lines (blocks) change.
+     *
+     *     @param [in] newBlockCount  The number of blocks in the text.
+     */
+     void updateSideAreaWidth(int newBlockCount);
 
 private:
 

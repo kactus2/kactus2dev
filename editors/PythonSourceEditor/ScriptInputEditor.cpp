@@ -25,6 +25,8 @@ ScriptInputEditor::ScriptInputEditor(QWidget* parent):
     ScriptingTextEditor(parent)
 {       
     ScriptInputEditor::applySettings();
+
+    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateSideAreaWidth(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,31 +84,55 @@ QString ScriptInputEditor::getSelectedLines() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::updateSideAreaWidth()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::updateSideAreaWidth(int /* newBlockCount */)
+{
+    setViewportMargins(sideAreaWidth(), 0, 0, 0);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ScriptInputEditor::lineNumberAreaWidth()
 //-----------------------------------------------------------------------------
 int ScriptInputEditor::sideAreaWidth() const
 {
-    int space =  fontMetrics().width("0") * 5;
+    int digits = 1;
+    int max = qMax(1, blockCount());
+    while (max >= 10)
+    {
+        max /= 10;
+        ++digits;
+    }
+
+    int space = 2 + fontMetrics().width(QLatin1Char('9')) * digits + 4;
+
     return space;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ScriptInputEditor::sideAreaPaintEvent()
 //-----------------------------------------------------------------------------
-void ScriptInputEditor::sideAreaPaintEvent()
+void ScriptInputEditor::sideAreaPaintEvent(QPaintEvent* event)
 {
     QPainter painter(editorSideArea_);
+    painter.setPen(Qt::black);
 
-    QTextCursor cursor = textCursor();
+    QTextBlock block = firstVisibleBlock();
+    int blockNumber = block.blockNumber();
+    int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
+    int bottom = top + qRound(blockBoundingRect(block).height());
 
-    QTextBlock lastBlock = cursor.block();
+    while (block.isValid() && top <= event->rect().bottom())
+    {
+        if (block.isVisible() && bottom >= event->rect().top())
+        {
+            painter.drawText(0, top, editorSideArea_->width()-4, fontMetrics().height(),
+                Qt::AlignRight, QString::number(blockNumber + 1));
+        }
 
-    int top = qRound(blockBoundingGeometry(lastBlock).translated(contentOffset()).top());
-
-
-        painter.setPen(Qt::black);
-        painter.setFont(font());
-        painter.drawText(4, top, editorSideArea_->width()-4, fontMetrics().height(),
-            Qt::AlignLeft, QString());
-    
+        block = block.next();
+        top = bottom;
+        bottom = top + qRound(blockBoundingRect(block).height());
+        ++blockNumber;
+    }
 }

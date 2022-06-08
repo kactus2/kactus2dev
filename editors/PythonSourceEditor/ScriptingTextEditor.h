@@ -48,9 +48,9 @@ public:
     /*!
      * Handler for side area paint event.
      *
-     *     @return 
+     *     @param [in]  The paint event. 
      */
-     virtual void sideAreaPaintEvent() = 0;
+     virtual void sideAreaPaintEvent(QPaintEvent* event) = 0;
 
 protected:
 

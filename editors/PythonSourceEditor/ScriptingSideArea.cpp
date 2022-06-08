@@ -34,6 +34,6 @@ QSize ScriptingSideArea::sizeHint() const
 //-----------------------------------------------------------------------------
 void ScriptingSideArea::paintEvent(QPaintEvent *event)
 {
-    editor_->sideAreaPaintEvent();
+    editor_->sideAreaPaintEvent(event);
     event->accept();
 }

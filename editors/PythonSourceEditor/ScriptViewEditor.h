@@ -44,9 +44,9 @@ public:
     /*!
      * Handler for side area paint event.
      *
-     *     @return
+     *     @param [in] event    The paint event.
      */
-    virtual void sideAreaPaintEvent();
+    virtual void sideAreaPaintEvent(QPaintEvent* event);
 
 public slots:
 

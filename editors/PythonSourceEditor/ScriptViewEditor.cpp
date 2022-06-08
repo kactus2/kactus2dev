@@ -97,7 +97,7 @@ int ScriptViewEditor::sideAreaWidth() const
 //-----------------------------------------------------------------------------
 // Function: ScriptViewEditor::sideAreaPaintEvent()
 //-----------------------------------------------------------------------------
-void ScriptViewEditor::sideAreaPaintEvent()
+void ScriptViewEditor::sideAreaPaintEvent(QPaintEvent* /* event */)
 {
     QPainter painter(editorSideArea_);
 
