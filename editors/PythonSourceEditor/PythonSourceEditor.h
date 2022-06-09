@@ -18,6 +18,7 @@
 #include <QPlainTextEdit>
 #include <QToolBar>
 #include <QProgressBar>
+#include <QTabWidget>
 #include <QThread>
 
 #include <PythonAPI/ChannelRelay.h>
@@ -62,11 +63,15 @@ signals:
 
 private slots:
 
+    //! Hander for new button clicks.
+    void onNewAction();
+
     //! Handler for open button clicks.
     void onOpenAction();
 
     //! Handler for save button clicks.
     void onSaveAction();
+
 
     //! Handler for save as button clicks.
     void onSaveAsAction();
@@ -80,8 +85,35 @@ private slots:
     //! Handler for run file button clicks.
     void onRunFileAction();
 
+    //! Handler for updating run indicator when run is completed.
     void onRunComplete();
+
+    //! Handler for editor tab changes.
+    void onTabChanged(int currentIndex);
+
+    //! Handler for editor tab closing.
+    void onTabClosed(int index);
+
+    //! Handler for editor content modification changes.
+    void onTabModified(bool modified);
+
 private:
+
+    
+    /*!
+     * Update the tab label and path in tooltip.
+     *
+     *     @param [in] filePath  Path to the edited file.
+     *     @param [in] modified  True, if file content is modified, otherwise false.
+     */
+     void updateTabInfo(QString const& filePath, bool modified);
+
+    /*!
+     * Apply formatting settings to a single editor.
+     *
+     *     @param [in] editor  The editor to apply to.
+     */
+    void applySettings(ScriptInputEditor* editor) const;
 
     //! Setup the toolbar and actions.
     void setupToolbar(bool enableRun);
@@ -95,16 +127,10 @@ private:
     //! Write channel for script error output.
     ChannelRelay errorChannel_;
 
-    //! The currently open script file.
-    QString openFile_;
+    //! Widget for holding all the tabs for file editors.
+    QTabWidget tabs_;
 
-    //! Label for showing currently open file name.
-    QLabel nameLabel_;
-
-
-    //! Text editor for script writing and run.
-    ScriptInputEditor scriptEditor_;
-
+    //! Syntax highlighter.
     LanguageHighlighter highlighter_;
 
     //! Text editor for script writing and run.
@@ -116,7 +142,7 @@ private:
     //! Toolbar for actions.
     QToolBar toolBar_;
 
-    //! Progressbar for displaying editor status.
+    //! Progress bar for displaying editor status.
     QProgressBar progressBar_;
 
     //! Thread for running the scripts independent of the editor.

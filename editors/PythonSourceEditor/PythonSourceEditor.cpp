@@ -36,9 +36,8 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     QWidget(parent),
     outputChannel_(this),
     errorChannel_(this),
-    nameLabel_(tr("Unnamed script"), this),
-    scriptEditor_(this),
-    highlighter_(scriptEditor_.document()),
+    tabs_(this),
+    highlighter_(nullptr),
     scriptView_(this),
     interpreter_(new PythonInterpreter(&outputChannel_, &errorChannel_, false)),    
     toolBar_(this),
@@ -53,6 +52,13 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     connect(&errorChannel_, SIGNAL(data(QString const&)),
         &scriptView_, SLOT(printError(QString const&)), Qt::UniqueConnection);
 
+
+    tabs_.setTabsClosable(true);
+    connect(&tabs_, SIGNAL(tabCloseRequested(int)),
+        this, SLOT(onTabClosed(int)), Qt::UniqueConnection);
+    connect(&tabs_, SIGNAL(currentChanged(int)),
+        this, SLOT(onTabChanged(int)), Qt::UniqueConnection);
+
     bool enabled = interpreter_->initialize(false);
 
     setupToolbar(enabled);
@@ -61,12 +67,9 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     progressBar_.reset();
     progressBar_.setTextVisible(false);
 
-    if (enabled == false)
-    {
-        scriptEditor_.setPlaceholderText(tr("Could not initialize interpreter. Script disabled."));
-        scriptEditor_.setReadOnly(true);
-    }
-    else
+    onNewAction();
+
+    if (enabled == true)
     {
         //! Interpreter runs on different thread so all calls must go through signals for parallel execution.
         connect(this, SIGNAL(executeLine(QString const&)),
@@ -106,21 +109,17 @@ void PythonSourceEditor::applySettings()
 {
     QSettings settings;
 
-    // Read indentation settings.
-    IndentStyle style = static_cast<IndentStyle>(settings.value("Editor/IndentStyle",
-        INDENT_STYLE_SPACES).toInt());
-    unsigned int width = settings.value("Editor/IndentWidth", 4).toInt();
-
-    bool useTabs = style == INDENT_STYLE_TAB;
-    scriptEditor_.setIndentStyle(useTabs, width);
-
     // Read font settings.
     QFont font = settings.value("Editor/Font", QFont("Consolas", 10)).value<QFont>();
-    scriptEditor_.setFont(font);
     scriptView_.setFont(font);
 
-    // Read highlight style settings.
+    for (int i = 0; i < tabs_.count(); ++i)
+    {
+        auto editor = static_cast<ScriptInputEditor*>(tabs_.widget(i));
+        applySettings(editor);
+    }
 
+    // Read highlight style settings.
     for (int i = 0; i < LanguageHighlighter::STYLE_COUNT; ++i)
     {
         HighlightStyleDesc styleDesc = settings.value("Editor/Highlight/" +
@@ -134,24 +133,47 @@ void PythonSourceEditor::applySettings()
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::onNewAction()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::onNewAction()
+{
+    auto editor = new ScriptInputEditor();
+    applySettings(editor);
+
+    connect(editor, SIGNAL(modificationChanged(bool)), this, SLOT(onTabModified(bool)), Qt::UniqueConnection);
+
+    tabs_.addTab(editor, tr("New"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonSourceEditor::onOpenAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onOpenAction()
 {
-    openFile_ = QFileDialog::getOpenFileName(this, tr("Open"), QString(), tr("Python File (*.py)"));
+    QString filePath = QFileDialog::getOpenFileName(this, tr("Open"), QString(), tr("Python File (*.py)"));
 
-    if (openFile_.isEmpty() == false)
+    if (filePath.isEmpty() == false)
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
-        QFile outputFile(openFile_);
+
+        auto editor = new ScriptInputEditor();
+        applySettings(editor);
+
+        QFile outputFile(filePath);
         outputFile.open(QFile::ReadOnly | QFile::Text);
 
         QTextStream output(&outputFile);
-        scriptEditor_.setPlainText(output.readAll());
+        editor->setPlainText(output.readAll());
 
         outputFile.close();
 
-        nameLabel_.setText(openFile_);
+        tabs_.addTab(editor, QString());
+        tabs_.setCurrentWidget(editor);
+
+        updateTabInfo(filePath, false);
+
+        connect(editor, SIGNAL(modificationChanged(bool)), this, SLOT(onTabModified(bool)), Qt::UniqueConnection);
+
         QApplication::restoreOverrideCursor();
     }
 }
@@ -161,7 +183,9 @@ void PythonSourceEditor::onOpenAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onSaveAction()
 {
-    if (openFile_.isEmpty())
+    QString filePath = tabs_.tabToolTip(tabs_.currentIndex());
+
+    if (filePath.isEmpty())
     {
         onSaveAsAction();
     }
@@ -169,16 +193,17 @@ void PythonSourceEditor::onSaveAction()
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
 
-        QFile outputFile(openFile_);
+        auto editor = static_cast<ScriptInputEditor*>(tabs_.currentWidget());
+
+        QFile outputFile(filePath);
         outputFile.open(QFile::WriteOnly | QFile::Text);
 
         QTextStream output(&outputFile);
-        output << scriptEditor_.toPlainText();
+        output << editor->toPlainText();
 
         outputFile.close();
 
-        nameLabel_.setText(openFile_);
-
+        updateTabInfo(filePath, false);
 
         QApplication::restoreOverrideCursor();
     }
@@ -189,10 +214,10 @@ void PythonSourceEditor::onSaveAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onSaveAsAction()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), tr("Python File (*.py)"));
-    if (fileName.isEmpty() == false)
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Save As"), QString(), tr("Python File (*.py)"));
+    if (filePath.isEmpty() == false)
     {
-        openFile_ = fileName;
+        tabs_.setTabToolTip(tabs_.currentIndex(), filePath);
         onSaveAction();
     }
 }
@@ -202,7 +227,7 @@ void PythonSourceEditor::onSaveAsAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onRunAction()
 {
-    QString script = scriptEditor_.getSelectedLines();
+    QString script = static_cast<ScriptInputEditor*>(tabs_.currentWidget())->getSelectedLines();
     scriptView_.printInput(script);
 
     progressBar_.reset();
@@ -216,7 +241,7 @@ void PythonSourceEditor::onRunAction()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onRunAllAction()
 {
-    QString script = scriptEditor_.toPlainText();
+    QString script = static_cast<ScriptInputEditor*>(tabs_.currentWidget())->toPlainText();
     scriptView_.printInput(script);
 
     progressBar_.reset();
@@ -250,6 +275,87 @@ void PythonSourceEditor::onRunComplete()
 {
     progressBar_.setRange(0, 1);
     progressBar_.setValue(1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::onTabChanged()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::onTabChanged(int currentIndex)
+{
+    if (currentIndex >= 0)
+    {
+        auto editor = static_cast<ScriptInputEditor*>(tabs_.widget(currentIndex));
+        highlighter_.setDocument(editor->document());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::onTabClosed()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::onTabClosed(int index)
+{
+    tabs_.removeTab(index);
+
+    if (tabs_.count() == 0)
+    {
+        onNewAction();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::onTabModified()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::onTabModified(bool modified)
+{
+    updateTabInfo(tabs_.tabToolTip(tabs_.currentIndex()), modified);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::updateTabInfo()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::updateTabInfo(QString const& filePath, bool modified)
+{
+    QFileInfo info(filePath);
+
+    QString tabText = info.fileName();
+    if (filePath.isEmpty())
+    {
+        //! Unsaved documents have no filepath, so use name saved on tab text instead.
+        tabText = tabs_.tabText(tabs_.currentIndex());
+    }
+
+    if (modified)
+    {
+        tabText.append("*");
+    }
+    else if (tabText.endsWith(QChar('*')) && modified == false)
+    {
+        //! Unsaved documents have no filepath and may be modified before, so need to remove the asterisk.
+        tabText.chop(1);
+    }
+
+    tabs_.setTabText(tabs_.currentIndex(), tabText);
+    tabs_.setTabToolTip(tabs_.currentIndex(), info.canonicalFilePath());
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::applySettings()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::applySettings(ScriptInputEditor* editor) const
+{
+    QSettings settings;
+
+    // Read indentation settings.
+    IndentStyle style = static_cast<IndentStyle>(settings.value("Editor/IndentStyle",
+        INDENT_STYLE_SPACES).toInt());
+    unsigned int width = settings.value("Editor/IndentWidth", 4).toInt();
+    bool useTabs = style == INDENT_STYLE_TAB;
+
+    // Read font settings.
+    QFont font = settings.value("Editor/Font", QFont("Consolas", 10)).value<QFont>();
+
+    editor->setFont(font);
+    editor->setIndentStyle(useTabs, width);
 }
 
 //-----------------------------------------------------------------------------
@@ -305,7 +411,6 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
         &scriptView_, SLOT(clear()));
     clearAction->setToolTip(tr("Clear output"));
     addAction(clearAction);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -313,36 +418,28 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::setupLayout()
 {
-    nameLabel_.setAlignment(Qt::AlignCenter);
-
     progressBar_.setMaximumHeight(progressBar_.sizeHint().height() / 2);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
-
-    QSplitter* viewSplit = new QSplitter(this);
-    viewSplit->setOrientation(Qt::Vertical);
-
     QWidget* editorContainer = new QWidget(this);
-
     QVBoxLayout* editorLayout = new QVBoxLayout(editorContainer);    
-    
-    editorLayout->addWidget(&nameLabel_);
-    editorLayout->addWidget(&scriptEditor_);
+    editorLayout->addWidget(&tabs_);
     editorLayout->addWidget(&toolBar_);
     editorLayout->setContentsMargins(0, 0, 0, 0);
 
-
     QWidget* viewContainer = new QWidget(this);
     QVBoxLayout* viewLayout = new QVBoxLayout(viewContainer);
-
     viewLayout->addWidget(&progressBar_);
     viewLayout->addWidget(&scriptView_);
     viewLayout->setContentsMargins(0, 0, 0, 0);
 
+    QSplitter* viewSplit = new QSplitter(this);
+    viewSplit->setOrientation(Qt::Vertical);
     viewSplit->addWidget(editorContainer);
     viewSplit->addWidget(viewContainer);
     viewSplit->setStretchFactor(0, 4);
 
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(viewSplit);
     layout->setContentsMargins(0, 0, 4, 2);
 }
