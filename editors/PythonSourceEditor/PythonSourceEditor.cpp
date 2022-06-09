@@ -73,8 +73,6 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     highlightRules.apply(&highlighter_);
 
     setupLayout();
-
-    applySettings();
 }
 
 //-----------------------------------------------------------------------------

@@ -26,6 +26,8 @@
 ScriptInputEditor::ScriptInputEditor(QWidget* parent):
     ScriptingTextEditor(parent)
 {
+    setWordWrapMode(QTextOption::NoWrap);
+
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateSideAreaWidth(int)), Qt::UniqueConnection);
     connect(this, SIGNAL(cursorPositionChanged()), viewport(), SLOT(update()), Qt::UniqueConnection);
 
@@ -115,7 +117,7 @@ int ScriptInputEditor::sideAreaWidth() const
 void ScriptInputEditor::sideAreaPaintEvent(QPaintEvent* event)
 {
     QPainter painter(editorSideArea_);
-    painter.setPen(Qt::black);
+    painter.setPen(Qt::darkGray);
 
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();

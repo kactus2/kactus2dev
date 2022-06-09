@@ -200,9 +200,6 @@ messageChannel_(messageChannel)
         "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     setStyleSheet(defaultStyleSheet);
 
-
-    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
-
     // Setup windows.
     setupDrawBoard();
     dockHandler_->setupDockWidgets();
@@ -273,6 +270,8 @@ void MainWindow::restoreSettings()
 
     // Update the workspace menu.
     updateWorkspaceMenu();
+
+    dockHandler_->applySettings();
 }
 
 //-----------------------------------------------------------------------------
