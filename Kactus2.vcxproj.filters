@@ -4846,12 +4846,6 @@
     <ClCompile Include="editors\PythonSourceEditor\ScriptingSideArea.cpp">
       <Filter>Source Files\editors\PythonSourceEditor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ScriptingTextEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\PythonSourceEditor\ScriptingTextEditor.cpp">
-      <Filter>Source Files\editors\PythonSourceEditor</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ScriptInputEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -6667,9 +6661,6 @@
     </CustomBuild>
     <CustomBuild Include="common\ui\GraphicalMessageMediator.h">
       <Filter>Header Files\common\ui</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\PythonSourceEditor\ScriptingTextEditor.h">
-      <Filter>Header Files\editors\PythonSourceEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\PythonSourceEditor\ScriptInputEditor.h">
       <Filter>Header Files\editors\PythonSourceEditor</Filter>

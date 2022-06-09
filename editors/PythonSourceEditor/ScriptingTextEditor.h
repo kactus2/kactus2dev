@@ -51,25 +51,13 @@ public:
 
 protected:
 
-    //! Event handler for widget resize.
-    void resizeEvent(QResizeEvent *event) override;
-
-    //! Side area for the widget for holding line numbers or other information.
-    ScriptingSideArea* editorSideArea_;
 
 private slots:
     
     //! Clears the editor of all text.
     void onClear();
 
-    /*!
-     * Handler for side area update event.
-     *
-     *     @param [in] rect     The area being updated.
-     *     @param [in] dy       The change of y coordinate in the update.
-     */
-     void updateSideArea(const QRect &rect, int dy);
-
+  
 };
 
 #endif // SCRIPTINGTEXTEDITOR_H

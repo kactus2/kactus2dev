@@ -6,7 +6,7 @@
 // Date: 14.10.2019
 //
 // Description:
-// Text editor for script write and run.
+// Text editor for script write.
 //-----------------------------------------------------------------------------
 
 #ifndef SCRIPTINPUTEDITOR_H
@@ -14,12 +14,12 @@
 
 #include <QPlainTextEdit>
 
-#include "ScriptingTextEditor.h"
+#include "ScriptingSideArea.h"
 
 //-----------------------------------------------------------------------------
-//! Text editor for script write and run.
+//! Text editor for script write.
 //-----------------------------------------------------------------------------
-class ScriptInputEditor : public ScriptingTextEditor
+class ScriptInputEditor : public QPlainTextEdit
 {
     Q_OBJECT
 public:
@@ -39,14 +39,14 @@ public:
      *
      *     @return The width of the side area in pixels.
      */
-    virtual int sideAreaWidth() const override final;
+    int sideAreaWidth() const;
 
     /*!
      * Handler for side area paint event.
      *
      *     @param [in]  The paint event.
      */
-    virtual void sideAreaPaintEvent(QPaintEvent* event) override final;
+    void sideAreaPaintEvent(QPaintEvent* event);
 
     /*!
      * Get the text on selected lines.
@@ -68,7 +68,12 @@ protected:
     //! Event handler for key press handling.
     virtual void keyPressEvent(QKeyEvent *e) override final;
 
+    //! Event handler for painting.
     virtual void paintEvent(QPaintEvent *e) override final;
+
+    //! Event handler for widget resize.
+    void resizeEvent(QResizeEvent *event) override;
+
 
 private slots:
 
@@ -88,9 +93,24 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    /*!
+     * Handler for side area update event.
+     *
+     *     @param [in] rect     The area being updated.
+     *     @param [in] dy       The change of y coordinate in the update.
+     */
+    void updateSideArea(const QRect &rect, int dy);
+
+    //! Side area for the widget for holding line numbers.
+    ScriptingSideArea* editorSideArea_;
+
+    //! Use tabs or spaces for indent.
     bool useTabs_ = false;
 
+    //! How many spaces to use for indent.
     int indentWidth_ = 4;
+
+
 
 };
 

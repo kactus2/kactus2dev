@@ -344,5 +344,5 @@ void PythonSourceEditor::setupLayout()
     viewSplit->setStretchFactor(0, 4);
 
     layout->addWidget(viewSplit);
-    layout->setContentsMargins(0, 0, 2, 2);
+    layout->setContentsMargins(0, 0, 4, 2);
 }

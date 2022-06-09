@@ -14,12 +14,10 @@
 
 #include <QPlainTextEdit>
 
-#include "ScriptingTextEditor.h"
-
 //-----------------------------------------------------------------------------
 //! Text editor for script write and run.
 //-----------------------------------------------------------------------------
-class ScriptViewEditor : public ScriptingTextEditor
+class ScriptViewEditor : public QPlainTextEdit
 {
     Q_OBJECT
 public:
@@ -33,20 +31,6 @@ public:
 
     //! The destructor.
     virtual ~ScriptViewEditor() = default;
-
-    /*!
-     * Get the required width of the side area.
-     *
-     *     @return The width of the side area in pixels.
-     */
-    virtual int sideAreaWidth() const override  final;
-
-    /*!
-     * Handler for side area paint event.
-     *
-     *     @param [in] event    The paint event.
-     */
-    virtual void sideAreaPaintEvent(QPaintEvent* event) override  final;
 
 public slots:
 

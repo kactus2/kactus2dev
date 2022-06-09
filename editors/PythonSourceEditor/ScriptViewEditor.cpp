@@ -25,11 +25,9 @@
 // Function: ScriptViewEditor::ScriptViewEditor()
 //-----------------------------------------------------------------------------
 ScriptViewEditor::ScriptViewEditor(QWidget* parent):
-    ScriptingTextEditor(parent)
+    QPlainTextEdit(parent)
 {       
     setReadOnly(true);
-
-    setViewportMargins(ScriptViewEditor::sideAreaWidth(), 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -60,23 +58,6 @@ void ScriptViewEditor::print(QString const& input)
 void ScriptViewEditor::printError(QString const& input)
 {
     printWithColor(input, QColor(Qt::red));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ScriptViewEditor::lineNumberAreaWidth()
-//-----------------------------------------------------------------------------
-int ScriptViewEditor::sideAreaWidth() const
-{
-    int space =  fontMetrics().width(">") * 3;
-    return space;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ScriptViewEditor::sideAreaPaintEvent()
-//-----------------------------------------------------------------------------
-void ScriptViewEditor::sideAreaPaintEvent(QPaintEvent* /* event */)
-{
-
 }
 
 //-----------------------------------------------------------------------------

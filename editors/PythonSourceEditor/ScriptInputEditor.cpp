@@ -6,7 +6,7 @@
 // Date: 14.10.2019
 //
 // Description:
-// Text editor for script write and run.
+// Text editor for script write.
 //-----------------------------------------------------------------------------
 
 #include "ScriptInputEditor.h"
@@ -24,10 +24,13 @@
 // Function: ScriptInputEditor::ScriptInputEditor()
 //-----------------------------------------------------------------------------
 ScriptInputEditor::ScriptInputEditor(QWidget* parent):
-    ScriptingTextEditor(parent)
+    QPlainTextEdit(parent),
+    editorSideArea_(new ScriptingSideArea(this))
 {
     setWordWrapMode(QTextOption::NoWrap);
 
+    connect(this, SIGNAL(updateRequest(QRect const&, int)),
+        this, SLOT(updateSideArea(QRect const&, int)), Qt::UniqueConnection);
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateSideAreaWidth(int)), Qt::UniqueConnection);
     connect(this, SIGNAL(cursorPositionChanged()), viewport(), SLOT(update()), Qt::UniqueConnection);
 
@@ -53,9 +56,20 @@ void ScriptInputEditor::keyPressEvent(QKeyEvent *e)
 //-----------------------------------------------------------------------------
 void ScriptInputEditor::paintEvent(QPaintEvent *e)
 {
-    ScriptingTextEditor::paintEvent(e);
+    QPlainTextEdit::paintEvent(e);
 
     highlightSelectedLines();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::resizeEvent()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::resizeEvent(QResizeEvent *e)
+{
+    QPlainTextEdit::resizeEvent(e);
+
+    QRect cr = contentsRect();
+    editorSideArea_->setGeometry(QRect(cr.left(), cr.top(), sideAreaWidth(), cr.height()));
 }
 
 //-----------------------------------------------------------------------------
@@ -177,3 +191,20 @@ void ScriptInputEditor::highlightSelectedLines() const
         painter.drawLine(endRect.bottomLeft(), endRect.bottomRight());
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::updateSideArea()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::updateSideArea(QRect const& rect, int dy)
+{
+    if (dy)
+    {
+        editorSideArea_->scroll(0, dy);
+    }
+    else
+    {
+        editorSideArea_->update(0, rect.y(), editorSideArea_->width(), rect.height());
+    }
+}
+
+

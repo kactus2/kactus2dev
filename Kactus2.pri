@@ -795,7 +795,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesColumns.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.h \
     ./editors/PythonSourceEditor/ScriptingSideArea.h \
-    ./editors/PythonSourceEditor/ScriptingTextEditor.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
@@ -1519,7 +1518,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
     ./editors/PythonSourceEditor/ScriptInputEditor.cpp \
     ./editors/PythonSourceEditor/ScriptingSideArea.cpp \
-    ./editors/PythonSourceEditor/ScriptingTextEditor.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
