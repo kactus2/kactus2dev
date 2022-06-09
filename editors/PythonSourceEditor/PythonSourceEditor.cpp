@@ -68,6 +68,8 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
         scriptThread_.start();
     }
 
+    highlighter_.addMultilineCommentRule(QRegularExpression("[\'\"]{3}"),
+        QRegularExpression("[\'\"]{3}"));
     PythonSourceHighlight highlightRules;
     highlightRules.apply(&highlighter_);
 

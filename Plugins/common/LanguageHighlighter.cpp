@@ -88,35 +88,58 @@ void LanguageHighlighter::setStyle(StyleType type, HighlightStyleDesc const& sty
 }
 
 //-----------------------------------------------------------------------------
+// Function: LanguageHighlighter::addRule()
+//-----------------------------------------------------------------------------
+void LanguageHighlighter::addRule(QRegularExpression const& pattern, LanguageHighlighter::StyleType style)
+{
+    HighlightRule rule;
+    rule.pattern = pattern;
+    rule.format = &m_styleFormats[style];
+
+    highlightRules_.append(rule);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LanguageHighlighter::addMultilineCommentRule()
+//-----------------------------------------------------------------------------
+void LanguageHighlighter::addMultilineCommentRule(QRegularExpression const& startPattern, 
+    QRegularExpression const& endPattern)
+{
+    commentStartExp_ = startPattern;
+    commentEndExp_ = endPattern;
+}
+
+//-----------------------------------------------------------------------------
 // Function: LanguageHighlighter::highlightBlock()
 //-----------------------------------------------------------------------------
 void LanguageHighlighter::highlightBlock(QString const& text)
 {
-    foreach (HighlightRule const& rule, highlightRules_)
+    for (HighlightRule const& rule : highlightRules_)
     {
-        QRegularExpression expression(rule.pattern);
-        int index = text.indexOf(expression);
+        int index = text.indexOf(rule.pattern);
 
         while (index >= 0)
         {
-            int length = expression.match(text).capturedLength();
+            int length = rule.pattern.match(text).capturedLength();
             setFormat(index, length, *rule.format);
-            index = text.indexOf(expression, index + length);
+            index = text.indexOf(rule.pattern, index + length);
         }
     }
 
     setCurrentBlockState(0);
 
     int startIndex = 0;
-
+    int startLength = 0;
     if (previousBlockState() != 1)
     {
-        startIndex = text.indexOf(commentStartExp_);
+        QRegularExpressionMatch match = commentStartExp_.match(text);
+        startIndex = match.capturedStart();
+        startLength = match.capturedLength();
     }
 
     while (startIndex >= 0)
     {
-        QRegularExpressionMatch match = commentEndExp_.match(text, startIndex);
+        QRegularExpressionMatch match = commentEndExp_.match(text, startIndex + startLength);
         int endIndex = match.capturedStart();
         int commentLength;
 
@@ -133,16 +156,4 @@ void LanguageHighlighter::highlightBlock(QString const& text)
         setFormat(startIndex, commentLength, m_styleFormats[MULTI_LINE_COMMENT]);
         startIndex = text.indexOf(commentStartExp_, startIndex + commentLength);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: LanguageHighlighter::addRule()
-//-----------------------------------------------------------------------------
-void LanguageHighlighter::addRule(QRegularExpression const& pattern, LanguageHighlighter::StyleType style)
-{
-    HighlightRule rule;
-    rule.pattern = pattern;
-    rule.format = &m_styleFormats[style];
-
-    highlightRules_.append(rule);
 }

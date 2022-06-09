@@ -56,16 +56,18 @@ QStringList PythonSourceHighlight::preprocessorDirectives() const
 //-----------------------------------------------------------------------------
 void PythonSourceHighlight::applyLanguageSpecificRules(LanguageHighlighter* highlighter) const
 {
-    auto stringPattern = QRegularExpression("[\"]([^\\r\\n]*[\"])");
+    auto stringPattern = QRegularExpression("[\"][^\\r\\n]*[\"]");
     highlighter->addRule(stringPattern, LanguageHighlighter::STRING);
 
-    auto stringPattern2 = QRegularExpression("[\']([^\\r\\n]*[\'])");
+    auto stringPattern2 = QRegularExpression("[\'][^\\r\\n]*[\']");
     highlighter->addRule(stringPattern2, LanguageHighlighter::STRING);
 
-    auto multilineStringPattern = QRegularExpression("[\"]{3}([^\"]*[\"]{3})");
+    auto multilineStringPattern = QRegularExpression("[\"]{3}.*[\"]{3}",
+        QRegularExpression::InvertedGreedinessOption);
     highlighter->addRule(multilineStringPattern, LanguageHighlighter::STRING);
 
-    auto multilineStringPattern2 = QRegularExpression("[\']{3}([^\']*[\']{3})");
+    auto multilineStringPattern2 = QRegularExpression("[\']{3}.*[\']{3}",
+        QRegularExpression::InvertedGreedinessOption);
     highlighter->addRule(multilineStringPattern2, LanguageHighlighter::STRING);
 
     auto commentPattern = QRegularExpression("#([^\\r\\n]*)(?=\\r?\\n|$)*");

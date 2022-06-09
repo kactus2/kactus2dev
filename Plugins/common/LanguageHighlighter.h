@@ -88,6 +88,15 @@ public:
      */
     void addRule(QRegularExpression const& pattern, LanguageHighlighter::StyleType style);
 
+    /*!
+     * Add highlighting rule for multiline comments. Formatting style for the comment is set with addRule().
+     *
+     *     @param [in] startPattern     Pattern for start of multiline comment.
+     *     @param [in] endPattern       Pattern for end of multiline comment.
+     */
+     void addMultilineCommentRule(QRegularExpression const& startPattern,
+        QRegularExpression const& endPattern);
+
 protected:
     /*!
      *  Highlights a block of text.
