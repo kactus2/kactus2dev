@@ -106,7 +106,7 @@ int ScriptInputEditor::sideAreaWidth() const
         ++digits;
     }
 
-    int space = 2 + fontMetrics().width(QLatin1Char('9')) * digits + 4;
+    int space = 2 + fontMetrics().width(QLatin1Char('9')) * (digits + 1) + 4;
 
     return space;
 }

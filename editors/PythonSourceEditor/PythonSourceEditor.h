@@ -17,7 +17,7 @@
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QToolBar>
-#include <QListWidget>
+#include <QProgressBar>
 #include <QThread>
 
 #include <PythonAPI/ChannelRelay.h>
@@ -52,6 +52,14 @@ public:
     //! Apply the application settings.
     void applySettings();
 
+signals:
+    
+    void executeLine(QString const& line);
+
+    void executeString(QString const& string);
+
+    void executeFile(QString const& path);
+
 private slots:
 
     //! Handler for open button clicks.
@@ -72,6 +80,7 @@ private slots:
     //! Handler for run file button clicks.
     void onRunFileAction();
 
+    void onRunComplete();
 private:
 
     //! Setup the toolbar and actions.
@@ -106,6 +115,9 @@ private:
 
     //! Toolbar for actions.
     QToolBar toolBar_;
+
+    //! Progressbar for displaying editor status.
+    QProgressBar progressBar_;
 
     //! Thread for running the scripts independent of the editor.
     QThread scriptThread_;

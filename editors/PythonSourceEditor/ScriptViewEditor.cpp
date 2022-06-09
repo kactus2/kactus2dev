@@ -16,7 +16,6 @@
 #include <QMenu>
 #include <QKeySequence>
 #include <QPainter>
-#include <QSettings>
 #include <QVariant>
 #include <QTextStream>
 
@@ -52,14 +51,6 @@ void ScriptViewEditor::printInput(QString const& input)
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::print(QString const& input)
 {
-    static QStringList prompts({ ">>> ", "... " });
-
-    if (prompts.contains(input))
-    {
-        promptText_ = input;
-        return;
-    }
-
     printWithColor(input, QColor(Qt::black));
 }
 
@@ -76,7 +67,7 @@ void ScriptViewEditor::printError(QString const& input)
 //-----------------------------------------------------------------------------
 int ScriptViewEditor::sideAreaWidth() const
 {
-    int space =  fontMetrics().width(">") * 5;
+    int space =  fontMetrics().width(">") * 3;
     return space;
 }
 
@@ -85,22 +76,7 @@ int ScriptViewEditor::sideAreaWidth() const
 //-----------------------------------------------------------------------------
 void ScriptViewEditor::sideAreaPaintEvent(QPaintEvent* /* event */)
 {
-    QPainter painter(editorSideArea_);
 
-    QTextCursor cursor = textCursor();
-
-    cursor.movePosition(QTextCursor::End);
-    QTextBlock lastBlock = cursor.block();
-
-    int top = qRound(blockBoundingGeometry(lastBlock).translated(contentOffset()).top());
-
-    if (lastBlock.isVisible())
-    {
-        painter.setPen(Qt::black);
-        painter.setFont(font());
-        painter.drawText(4, top, editorSideArea_->width()-4, fontMetrics().height(),
-            Qt::AlignLeft, promptText_);
-    }
 }
 
 //-----------------------------------------------------------------------------

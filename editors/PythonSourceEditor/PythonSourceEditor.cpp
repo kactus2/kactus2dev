@@ -21,6 +21,7 @@
 #include <QTextStream>
 #include <QSplitter>
 #include <QSettings>
+#include <QApplication>
 
 #include <common/widgets/assistedTextEdit/AssistedTextEdit.h>
 #include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
@@ -39,8 +40,9 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     scriptEditor_(this),
     highlighter_(scriptEditor_.document()),
     scriptView_(this),
-    interpreter_(new PythonInterpreter(&outputChannel_, &errorChannel_, true)),    
+    interpreter_(new PythonInterpreter(&outputChannel_, &errorChannel_, false)),    
     toolBar_(this),
+    progressBar_(this),
     scriptThread_(this)
 {    
     interpreter_->moveToThread(&scriptThread_);
@@ -55,8 +57,10 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
 
     setupToolbar(enabled);
 
-    scriptView_.setReadOnly(true);
-    
+    progressBar_.setRange(0, 1);
+    progressBar_.reset();
+    progressBar_.setTextVisible(false);
+
     if (enabled == false)
     {
         scriptEditor_.setPlaceholderText(tr("Could not initialize interpreter. Script disabled."));
@@ -64,6 +68,17 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     }
     else
     {
+        //! Interpreter runs on different thread so all calls must go through signals for parallel execution.
+        connect(this, SIGNAL(executeLine(QString const&)),
+            interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
+        connect(this, SIGNAL(executeString(QString const&)),
+            interpreter_, SLOT(executeString(QString const&)), Qt::UniqueConnection);
+        connect(this, SIGNAL(executeFile(QString const&)),
+            interpreter_, SLOT(runFile(QString const&)), Qt::UniqueConnection);
+
+        connect(interpreter_, SIGNAL(executeDone()),
+            this, SLOT(onRunComplete()), Qt::UniqueConnection);
+
         scriptThread_.start();
     }
 
@@ -127,6 +142,7 @@ void PythonSourceEditor::onOpenAction()
 
     if (openFile_.isEmpty() == false)
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
         QFile outputFile(openFile_);
         outputFile.open(QFile::ReadOnly | QFile::Text);
 
@@ -136,6 +152,7 @@ void PythonSourceEditor::onOpenAction()
         outputFile.close();
 
         nameLabel_.setText(openFile_);
+        QApplication::restoreOverrideCursor();
     }
 }
 
@@ -150,6 +167,8 @@ void PythonSourceEditor::onSaveAction()
     }
     else 
     {
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+
         QFile outputFile(openFile_);
         outputFile.open(QFile::WriteOnly | QFile::Text);
 
@@ -159,6 +178,9 @@ void PythonSourceEditor::onSaveAction()
         outputFile.close();
 
         nameLabel_.setText(openFile_);
+
+
+        QApplication::restoreOverrideCursor();
     }
 }
 
@@ -182,7 +204,11 @@ void PythonSourceEditor::onRunAction()
 {
     QString script = scriptEditor_.getSelectedLines();
     scriptView_.printInput(script);
-    interpreter_->executeString(script);
+
+    progressBar_.reset();
+    progressBar_.setRange(0, 0);
+
+    emit executeString(script);
 }
 
 //-----------------------------------------------------------------------------
@@ -192,7 +218,11 @@ void PythonSourceEditor::onRunAllAction()
 {
     QString script = scriptEditor_.toPlainText();
     scriptView_.printInput(script);
-    interpreter_->executeString(script);
+
+    progressBar_.reset();
+    progressBar_.setRange(0, 0);
+
+    emit executeString(script);
 }
 
 //-----------------------------------------------------------------------------
@@ -204,8 +234,22 @@ void PythonSourceEditor::onRunFileAction()
         tr("Python File (*.py)"));
     if (fileName.isEmpty() == false)
     {
-        interpreter_->runFile(fileName);
+        scriptView_.printInput(tr("Run script file '%1'.").arg(fileName));
+
+        progressBar_.reset();
+        progressBar_.setRange(0, 0);
+
+        emit executeFile(fileName);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::onRunComplete()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::onRunComplete()
+{
+    progressBar_.setRange(0, 1);
+    progressBar_.setValue(1);
 }
 
 //-----------------------------------------------------------------------------
@@ -271,6 +315,8 @@ void PythonSourceEditor::setupLayout()
 {
     nameLabel_.setAlignment(Qt::AlignCenter);
 
+    progressBar_.setMaximumHeight(progressBar_.sizeHint().height() / 2);
+
     QVBoxLayout* layout = new QVBoxLayout(this);
 
     QSplitter* viewSplit = new QSplitter(this);
@@ -278,15 +324,23 @@ void PythonSourceEditor::setupLayout()
 
     QWidget* editorContainer = new QWidget(this);
 
-    QVBoxLayout* containerLayout = new QVBoxLayout(editorContainer);    
+    QVBoxLayout* editorLayout = new QVBoxLayout(editorContainer);    
     
-    containerLayout->addWidget(&nameLabel_);
-    containerLayout->addWidget(&scriptEditor_);
-    containerLayout->addWidget(&toolBar_); 
-    containerLayout->setContentsMargins(0, 0, 0, 0);
+    editorLayout->addWidget(&nameLabel_);
+    editorLayout->addWidget(&scriptEditor_);
+    editorLayout->addWidget(&toolBar_);
+    editorLayout->setContentsMargins(0, 0, 0, 0);
+
+
+    QWidget* viewContainer = new QWidget(this);
+    QVBoxLayout* viewLayout = new QVBoxLayout(viewContainer);
+
+    viewLayout->addWidget(&progressBar_);
+    viewLayout->addWidget(&scriptView_);
+    viewLayout->setContentsMargins(0, 0, 0, 0);
 
     viewSplit->addWidget(editorContainer);
-    viewSplit->addWidget(&scriptView_);
+    viewSplit->addWidget(viewContainer);
     viewSplit->setStretchFactor(0, 4);
 
     layout->addWidget(viewSplit);

@@ -55,13 +55,6 @@ public:
      */
      bool initialize(bool interactive = true);     
 
-     /*!
-      * Run a script from a given file.
-      *
-      *     @param [in] filePath  Path to the file to run.
-      */
-      void runFile(QString const& filePath);
-
     /*!
      * Execute a single line in the interpreter.
      *
@@ -69,12 +62,9 @@ public:
      */
      void execute(std::string const& line);
 
-     /*!
-      * Execute the given arbitrary long string in the interpreter.
-      *
-      *     @param [in] string  The string to execute.
-      */
-     void executeString(QString const& string);
+signals:
+    
+    void executeDone();
 
 public slots:
 
@@ -84,6 +74,20 @@ public slots:
      *     @param [in] command  The command to execute.
      */
     virtual void write(QString const& command) override final;
+
+    /*!
+     * Execute the given arbitrary long string in the interpreter.
+     *
+     *     @param [in] string  The string to execute.
+     */
+    void executeString(QString const& string);
+
+    /*!
+     * Run a script from a given file.
+     *
+     *     @param [in] filePath  Path to the file to run.
+     */
+    void runFile(QString const& filePath);
 
 private:
 
@@ -107,7 +111,7 @@ private:
      * Write prompt to output.
      */
      void printPrompt() const;
-  
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
