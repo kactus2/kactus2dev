@@ -21,6 +21,7 @@ class BusInterfaceValidator;
 class ExpressionParser;
 class PortMapInterface;
 class BusInterfaceInterface;
+class PortMapInterface;
 
 //-----------------------------------------------------------------------------
 //! The item for single bus interface in the component editor's navigation tree.
@@ -44,6 +45,7 @@ public:
 	 *      @param [in] expressionParser        The expression parser.
      *      @param [in] validator               The validator for bus interfaces.
      *      @param [in] busInterface            Interface for accessing bus interfaces.
+     *      @param [in] portMapInterface        Interface for accessing port maps.
 	 *      @param [in] parent                  The owner of this item.
 	 *      @param [in] parentWnd               The parent window.
 	 */
@@ -57,6 +59,7 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<BusInterfaceValidator> validator,
         BusInterfaceInterface* busInterface,
+        PortMapInterface* portMapInterface,
         ComponentEditorItem* parent,
         QWidget* parentWnd);
 
@@ -131,6 +134,9 @@ private:
 
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_;
+
+    //! Interface for accessing port maps.
+    PortMapInterface* portMapInterface_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACEITEM_H

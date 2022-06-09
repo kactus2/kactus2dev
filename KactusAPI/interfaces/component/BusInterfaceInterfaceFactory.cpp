@@ -47,27 +47,40 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::createBusInterface(
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Component> component,
     LibraryInterface* library)
 {
-
     QSharedPointer<PortMapValidator> portMapValidator(
         new PortMapValidator(expressionParser, component->getPorts(), library));
 
+    AbstractionTypeInterface* abstractionInterface = Details::createAbstractionTypeInterface(
+        parameterFinder, expressionFormatter, expressionParser, portMapValidator, component, library);
+
+    return Details::createCommonBusInterfaceItems(parameterFinder, expressionFormatter, expressionParser,
+        component, library, portMapValidator, abstractionInterface);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterfaceFactory::createCommonBusInterfaceItems()
+//-----------------------------------------------------------------------------
+BusInterfaceInterface* BusInterfaceInterfaceFactory::Details::createCommonBusInterfaceItems(
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Component> component,
+    LibraryInterface* library, QSharedPointer<PortMapValidator> portMapValidator,
+    AbstractionTypeInterface* abstractionInterface)
+{
     FileSetInterface* fileSetInterface =
-        createFileSetInterface(parameterFinder, expressionFormatter, expressionParser, component);
+        Details::createFileSetInterface(parameterFinder, expressionFormatter, expressionParser, component);
     fileSetInterface->setFileSets(component->getFileSets());
 
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser,
         component->getChoices()));
 
     ParametersInterface* parameterInterface =
-        createParameterInterface(parameterValidator, expressionParser, expressionFormatter);
+        Details::createParameterInterface(parameterValidator, expressionParser, expressionFormatter);
 
     MemoryMapInterface* mapInterface =
-        createMapInterface(parameterFinder, expressionFormatter, expressionParser, parameterValidator, component);
+        Details::createMapInterface(parameterFinder, expressionFormatter, expressionParser, parameterValidator, component);
 
-    AbstractionTypeInterface* abstractionInterface = createAbstractionTypeInterface(
-        parameterFinder, expressionFormatter, expressionParser, portMapValidator, component, library);
-
-    TransparentBridgeInterface* bridgeInterface = createBridgeInterface(expressionFormatter, expressionParser);
+    TransparentBridgeInterface* bridgeInterface =
+        Details::createBridgeInterface(expressionFormatter, expressionParser);
 
     QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser,
         component->getChoices(), component->getViews(), component->getPorts(), component->getAddressSpaces(),
@@ -90,7 +103,7 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::createBusInterface(
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceInterfaceFactory::createFileSetInterface()
 //-----------------------------------------------------------------------------
-FileSetInterface* BusInterfaceInterfaceFactory::createFileSetInterface(
+FileSetInterface* BusInterfaceInterfaceFactory::Details::createFileSetInterface(
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Component> component)
 {
@@ -111,7 +124,7 @@ FileSetInterface* BusInterfaceInterfaceFactory::createFileSetInterface(
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceInterfaceFactory::createMapInterface()
 //-----------------------------------------------------------------------------
-MemoryMapInterface* BusInterfaceInterfaceFactory::createMapInterface(
+MemoryMapInterface* BusInterfaceInterfaceFactory::Details::createMapInterface(
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterValidator> parameterValidator,
     QSharedPointer<Component> component)
@@ -146,7 +159,7 @@ MemoryMapInterface* BusInterfaceInterfaceFactory::createMapInterface(
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceInterfaceFactory::createAbstractionTypeInterface()
 //-----------------------------------------------------------------------------
-AbstractionTypeInterface* BusInterfaceInterfaceFactory::createAbstractionTypeInterface(
+AbstractionTypeInterface* BusInterfaceInterfaceFactory::Details::createAbstractionTypeInterface(
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<PortMapValidator> portMapValidator,
     QSharedPointer<Component> component, LibraryInterface* library)
@@ -154,18 +167,30 @@ AbstractionTypeInterface* BusInterfaceInterfaceFactory::createAbstractionTypeInt
     PortMapInterface* portMapInterface = createPortMapInterface(parameterFinder, expressionFormatter,
         expressionParser, portMapValidator, component);
 
+    return createCommonAbstractionTypeInterface(
+        expressionParser, component, portMapValidator, library, portMapInterface);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceInterfaceFactory::createCommonAbstractionTypeInterface()
+//-----------------------------------------------------------------------------
+AbstractionTypeInterface* BusInterfaceInterfaceFactory::Details::createCommonAbstractionTypeInterface(
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<Component> component,
+    QSharedPointer<PortMapValidator> portMapValidator, LibraryInterface* library,
+    PortMapInterface* portMapInterface)
+{
     QSharedPointer<AbstractionTypeValidator> validator(
         new AbstractionTypeValidator(expressionParser, component->getViews(), portMapValidator, library));
 
-    AbstractionTypeInterface* abstractionInterface(new AbstractionTypeInterface(portMapInterface, validator));
+    AbstractionTypeInterface* abstractionInterface(
+        new AbstractionTypeInterface(portMapInterface, validator, library));
     return abstractionInterface;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceInterfaceFactory::createPortMapInterface()
 //-----------------------------------------------------------------------------
-PortMapInterface* BusInterfaceInterfaceFactory::createPortMapInterface(
+PortMapInterface* BusInterfaceInterfaceFactory::Details::createPortMapInterface(
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<PortMapValidator> portMapValidator,
     QSharedPointer<Component> component)
@@ -185,7 +210,7 @@ PortMapInterface* BusInterfaceInterfaceFactory::createPortMapInterface(
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceInterfaceFactory::createBridgeInterface()
 //-----------------------------------------------------------------------------
-TransparentBridgeInterface* BusInterfaceInterfaceFactory::createBridgeInterface(
+TransparentBridgeInterface* BusInterfaceInterfaceFactory::Details::createBridgeInterface(
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser)
 {
     TransparentBridgeInterface* bridgeInterface(
@@ -196,7 +221,7 @@ TransparentBridgeInterface* BusInterfaceInterfaceFactory::createBridgeInterface(
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceInterfaceFactory::createParameterInterface()
 //-----------------------------------------------------------------------------
-ParametersInterface* BusInterfaceInterfaceFactory::createParameterInterface(
+ParametersInterface* BusInterfaceInterfaceFactory::Details::createParameterInterface(
     QSharedPointer<ParameterValidator> validator, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ExpressionFormatter> expressionFormatter)
 {

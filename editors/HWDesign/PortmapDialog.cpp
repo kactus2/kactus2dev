@@ -25,6 +25,7 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -57,34 +58,38 @@ otherBusIf_(otherBusIf)
     BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
         parameterFinder, expressionFormatter, expressionParser, component, library);
 
-    // Create the port map widget.
-    portmapWidget_ = new BusInterfacePortMapTab(library,  component, busInterface, busIf->name().toStdString(),
-        expressionParser, parameterFinder, busInterface->getAbstractionTypeInterface()->getPortMapInterface(),
-        this);
+    AbstractionTypeInterface* absTypeInterface = busInterface->getAbstractionTypeInterface();
+    PortMapInterface* portMapInterface = absTypeInterface->getPortMapInterface();
+    if (portMapInterface)
+    {
+        // Create the port map widget.
+        portmapWidget_ = new BusInterfacePortMapTab(library, component, busInterface, busIf->name().toStdString(),
+            expressionParser, parameterFinder, portMapInterface, this);
 
-    portmapWidget_->setAbstractionDefinitions();
+        portmapWidget_->setAbstractionDefinitions();
 
-    // Create a separator.
-    QGroupBox* separator = new QGroupBox(this);
-    separator->setFlat(true);
+        // Create a separator.
+        QGroupBox* separator = new QGroupBox(this);
+        separator->setFlat(true);
 
-    // Create the buttons and their layout.
-    QPushButton* btnOk = new QPushButton(tr("OK") , this);
-    QPushButton* btnCancel = new QPushButton(tr("Cancel"), this);
+        // Create the buttons and their layout.
+        QPushButton* btnOk = new QPushButton(tr("OK"), this);
+        QPushButton* btnCancel = new QPushButton(tr("Cancel"), this);
 
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    buttonLayout->addStretch(1);
-    buttonLayout->addWidget(btnOk);
-    buttonLayout->addWidget(btnCancel);
+        QHBoxLayout* buttonLayout = new QHBoxLayout();
+        buttonLayout->addStretch(1);
+        buttonLayout->addWidget(btnOk);
+        buttonLayout->addWidget(btnCancel);
 
-    // Create the main layout.
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(portmapWidget_);
-    mainLayout->addWidget(separator);
-    mainLayout->addLayout(buttonLayout);
+        // Create the main layout.
+        QVBoxLayout* mainLayout = new QVBoxLayout(this);
+        mainLayout->addWidget(portmapWidget_);
+        mainLayout->addWidget(separator);
+        mainLayout->addLayout(buttonLayout);
 
-    connect(btnOk, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+        connect(btnOk, SIGNAL(clicked()), this, SLOT(accept()));
+        connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    }
 }
 
 //-----------------------------------------------------------------------------

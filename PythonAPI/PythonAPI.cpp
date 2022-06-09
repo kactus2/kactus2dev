@@ -144,6 +144,46 @@ std::vector<std::string> PythonAPI::getLibraryPaths() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonAPI::getPortsInterface()
+//-----------------------------------------------------------------------------
+PortsInterface* PythonAPI::getPortsInterface() const
+{
+    return portsInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getComponentParameterInterface()
+//-----------------------------------------------------------------------------
+ParametersInterface* PythonAPI::getComponentParameterInterface() const
+{
+    return componentParameterInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getMapInterface()
+//-----------------------------------------------------------------------------
+MemoryMapInterface* PythonAPI::getMapInterface()
+{
+    return mapInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getFileSetInterface()
+//-----------------------------------------------------------------------------
+FileSetInterface* PythonAPI::getFileSetInterface()
+{
+    return fileSetInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::getBusInterface()
+//-----------------------------------------------------------------------------
+BusInterfaceInterface* PythonAPI::getBusInterface()
+{
+    return busInterface_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonAPI::setLibraryPaths()
 //-----------------------------------------------------------------------------
 void PythonAPI::setLibraryPaths(std::vector<std::string> paths) const
@@ -497,21 +537,6 @@ void PythonAPI::saveComponent()
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::getPortsInterface()
-//-----------------------------------------------------------------------------
-PortsInterface* PythonAPI::getPortsInterface() const
-{
-    return portsInterface_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::getComponentParameterInterface()
-//-----------------------------------------------------------------------------
-ParametersInterface* PythonAPI::getComponentParameterInterface() const
-{
-    return componentParameterInterface_;
-}
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::constructMemoryValidators()
@@ -563,14 +588,6 @@ void PythonAPI::constructMemoryInterface()
 
     mapInterface_->setAddressBlockInterface(blockInterface);
     mapInterface_->setSubspaceMapInterface(subspaceInterface);
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::getMapInterface()
-//-----------------------------------------------------------------------------
-MemoryMapInterface* PythonAPI::getMapInterface()
-{
-    return mapInterface_;
 }
 
 //-----------------------------------------------------------------------------
@@ -796,14 +813,6 @@ void PythonAPI::constructFileSetInterface()
 
     fileSetInterface_ = new FileSetInterface(
         newFileSetValidator, expressionParser_, expressionFormatter_, fileInterface, fileBuilderInterface);
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonAPI::getFileSetInterface()
-//-----------------------------------------------------------------------------
-FileSetInterface* PythonAPI::getFileSetInterface()
-{
-    return fileSetInterface_;
 }
 
 //-----------------------------------------------------------------------------

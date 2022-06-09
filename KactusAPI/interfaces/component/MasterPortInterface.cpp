@@ -27,7 +27,7 @@ NameGroupInterface()
 //-----------------------------------------------------------------------------
 std::string MasterPortInterface::getIconPathForMissingPort() const
 {
-    QString missingPath = QLatin1String(":icons/common/graphics/cross.png");
+    QString missingPath(QLatin1String(":icons/common/graphics/cross.png"));
     return missingPath.toStdString();
 }
 
@@ -36,25 +36,25 @@ std::string MasterPortInterface::getIconPathForMissingPort() const
 //-----------------------------------------------------------------------------
 std::string MasterPortInterface::getIconPathForDirection(DirectionTypes::Direction direction) const
 {
-    QString directionPath = QLatin1String(":icons/common/graphics/cross.png");
+    std::string directionPath(":icons/common/graphics/cross.png");
     if (direction == DirectionTypes::IN)
     {
-        directionPath = QLatin1String(":icons/common/graphics/input.png");
+        directionPath = ":icons/common/graphics/input.png";
     }
     else if (direction == DirectionTypes::OUT)
     {
-        directionPath = QLatin1String(":icons/common/graphics/output.png");
+        directionPath = ":icons/common/graphics/output.png";
     }
     else if (direction == DirectionTypes::INOUT)
     {
-        directionPath = QLatin1String(":icons/common/graphics/inout.png");
+        directionPath = ":icons/common/graphics/inout.png";
     }
     else if (direction == DirectionTypes::DIRECTION_PHANTOM)
     {
-        directionPath = QLatin1String(":icons/common/graphics/phantom.png");
+        directionPath = ":icons/common/graphics/phantom.png";
     }
 
-    return directionPath.toStdString();
+    return directionPath;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,23 +62,23 @@ std::string MasterPortInterface::getIconPathForDirection(DirectionTypes::Directi
 //-----------------------------------------------------------------------------
 std::string MasterPortInterface::getIconPathForInitiative(QString const& initiative) const
 {
-    QString iconPath = QLatin1String(":icons/common/graphics/cross.png");
+    std::string iconPath(":icons/common/graphics/cross.png");
     if (initiative.compare(TransactionalTypes::INITIATIVE_PROVIDES, Qt::CaseInsensitive) == 0)
     {
-        iconPath = QLatin1String(":icons/common/graphics/provides.png");
+        iconPath = ":icons/common/graphics/provides.png";
     }
     else if (initiative.compare(TransactionalTypes::INITIATIVE_REQUIRES, Qt::CaseInsensitive) == 0)
     {
-        iconPath = QLatin1String(":icons/common/graphics/requires.png");
+        iconPath = ":icons/common/graphics/requires.png";
     }
     else if (initiative.compare(TransactionalTypes::INITIATIVE_BOTH, Qt::CaseInsensitive) == 0)
     {
-        iconPath = QLatin1String(":icons/common/graphics/requires_provides.png");
+        iconPath = ":icons/common/graphics/requires_provides.png";
     }
     else if (initiative.compare(TransactionalTypes::INITIATIVE_PHANTOM, Qt::CaseInsensitive) == 0)
     {
-        iconPath = QLatin1String(":icons/common/graphics/phantom.png");
+        iconPath = ":icons/common/graphics/phantom.png";
     }
 
-    return iconPath.toStdString();
+    return iconPath;
 }

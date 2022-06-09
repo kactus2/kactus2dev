@@ -12,16 +12,15 @@
 #ifndef BUSINTERFACEPORTMAPTAB_H
 #define BUSINTERFACEPORTMAPTAB_H
 
-#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapView.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapSortFilter.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-
-#include "PortMapTreeSortProxyModel.h"
 
 #include <QCheckBox>
 #include <QWidget>
@@ -30,6 +29,8 @@
 #include <QComboBox>
 #include <QComboBox>
 
+#include <QSortFilterProxyModel>
+
 class BusInterface;
 class Component;
 class LibraryInterface;
@@ -37,7 +38,7 @@ class PortMap;
 class ExpressionParser;
 class VLNV;
 class ParameterFinder;
-class PortMapTreeDelegate;
+class PortMapDelegate;
 class PortMapValidator;
 class PortMapAutoConnector;
 class AbstractionType;
@@ -251,16 +252,16 @@ private:
     QLineEdit* physicalPrefixEditor_;
 
     //! Model for the constructed port maps.
-    PortMapTreeModel portMapsModel_;
+    PortMapModel portMapModel_;
 
     //! Proxy for filtering/sorting port maps.
-    PortMapTreeSortProxyModel portMapsSorter_;
+    PortMapSortFilter portMapSorter_;
 
     //! View for the constructed port maps.
-    PortMapTreeView portMapsView_;
+    PortMapView portMapView_;
 
     //! Delegate for the constructed port maps.
-    PortMapTreeDelegate* portMapsDelegate_;
+    PortMapDelegate* portMapDelegate_;
 
     //! Button for automatically constructing the port maps.
     QPushButton autoConnectButton_;

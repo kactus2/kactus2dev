@@ -162,7 +162,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         }
         else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
         {
-            if (!localBlockInterface_->setVolatile(blockName, value.toBool()))
+            if (!localBlockInterface_->setVolatile(blockName, value.toString().toStdString()))
             {
                 return false;
             }

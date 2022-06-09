@@ -938,12 +938,6 @@
     <Filter Include="Source Files\editors\ComponentEditor\fileSet\interfaces">
       <UniqueIdentifier>{c0a4d8c3-229e-4ecd-bdad-1c3db702cc61}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
-      <UniqueIdentifier>{4f909392-1e57-460d-bccf-f6eaddebbdad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\portmaps\interfaces">
-      <UniqueIdentifier>{ece98f23-9e39-43e0-8624-f2c64622e284}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\BusDefinitionEditor\interfaces">
       <UniqueIdentifier>{3cebef82-5883-4778-b1e8-75e74187f053}</UniqueIdentifier>
     </Filter>
@@ -3118,30 +3112,6 @@
     <ClCompile Include="GeneratedFiles\moc_PhysicalPortMappingTableModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeView.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapTreeView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapTreeModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeModel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeDelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapTreeDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapTreeSortProxyModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeSortProxyModel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PortMapAutoConnector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4864,6 +4834,39 @@
     <ClCompile Include="GeneratedFiles\moc_GraphicalMessageMediator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapTreeDelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapTreeModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapTreeSortProxyModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapTreeView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapSortFilter.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5924,18 +5927,6 @@
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PhysicalPortMappingTableModel.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeView.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeModel.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeDelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeSortProxyModel.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapAutoConnector.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
@@ -6668,6 +6659,15 @@
     <CustomBuild Include="common\ui\GraphicalMessageMediator.h">
       <Filter>Header Files\common\ui</Filter>
     </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapView.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapModel.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -7326,6 +7326,9 @@
     </ClInclude>
     <ClInclude Include="library\LibraryItemSelectionFactory.h">
       <Filter>Header Files\library</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapSortFilter.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

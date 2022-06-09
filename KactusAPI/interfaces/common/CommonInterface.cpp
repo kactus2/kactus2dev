@@ -16,15 +16,15 @@
 //-----------------------------------------------------------------------------
 QString CommonInterface::getUniqueName(std::string const& newName, std::string const& itemTypeName) const
 {
-    QString referencePortName = QString::fromStdString(newName);
+    QString referencePortName(QString::fromStdString(newName));
     if (referencePortName.isEmpty())
     {
         referencePortName = QString::fromStdString(itemTypeName);
     }
 
-    QString newPortName = referencePortName;
+    QString newPortName(referencePortName);
 
-    QString format = "$itemName$_$itemNumber$";
+    QString format(QLatin1String("$itemName$_$itemNumber$"));
     int runningNumber = 0;
     while (!nameIsUnique(newPortName))
     {
@@ -45,7 +45,7 @@ bool CommonInterface::nameIsUnique(QString const& portName) const
 {
     for (auto containedName : getItemNames())
     {
-        QString convertedName = QString::fromStdString(containedName);
+        QString convertedName(QString::fromStdString(containedName));
         if (convertedName == portName)
         {
             return false;

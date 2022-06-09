@@ -61,6 +61,8 @@
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -631,36 +633,50 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
         BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
             parameterFinder_, expressionFormatter_, expressionParser_, component, libHandler_);
 
-        QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(
-            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, busInterface, root));
+        AbstractionTypeInterface* absTypeInterface = busInterface->getAbstractionTypeInterface();
+        if (absTypeInterface)
+        {
+            PortMapInterface* portMapInterface =
+                dynamic_cast<PortMapInterface*>(absTypeInterface->getPortMapInterface());
+            if (portMapInterface)
+            {
+                QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(&navigationModel_,
+                    libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+                    expressionParser_, busInterface, root));
 
-        root->addChildItem(portsItem);
-        connect(portsItem.data(), SIGNAL(createInterface()), root, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
+                root->addChildItem(portsItem);
+                connect(portsItem.data(), SIGNAL(createInterface()),
+                    root, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
 
-        connect(portsItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
-            this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
+                connect(portsItem.data(),
+                    SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+                    this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+                    Qt::UniqueConnection);
 
-        QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem (new ComponentEditorBusInterfacesItem(
-            busInterface, &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
-            expressionFormatter_, expressionParser_, root, parentWidget()));
+                QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem(
+                    new ComponentEditorBusInterfacesItem(busInterface, portMapInterface, &navigationModel_,
+                        libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
+                        expressionParser_, root, parentWidget()));
 
-        root->addChildItem(busInterfaceItem);
+                root->addChildItem(busInterfaceItem);
 
-        connect(busInterfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
-            parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)),
-            Qt::UniqueConnection);
+                connect(busInterfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+                    parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)),
+                    Qt::UniqueConnection);
 
-        QSharedPointer<ComponentEditorIndirectInterfacesItem> indirectInterfacesItem(
-            QSharedPointer<ComponentEditorIndirectInterfacesItem>(new ComponentEditorIndirectInterfacesItem(
-            &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, busInterface, root, parentWidget())));
+                QSharedPointer<ComponentEditorIndirectInterfacesItem> indirectInterfacesItem(
+                    QSharedPointer<ComponentEditorIndirectInterfacesItem>(
+                        new ComponentEditorIndirectInterfacesItem(&navigationModel_, libHandler_, component,
+                            referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
+                            busInterface, root, parentWidget())));
 
-        root->addChildItem(indirectInterfacesItem);
+                root->addChildItem(indirectInterfacesItem);
 
-        connect(indirectInterfacesItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
-            parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)),
-            Qt::UniqueConnection);
+                connect(indirectInterfacesItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
+                    parameterReferenceWindow_, SLOT(openReferenceTree(QString const&, QString const&)),
+                    Qt::UniqueConnection);
+            }
+        }
 
         root->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
             new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, expressionParser_, root)));

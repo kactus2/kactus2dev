@@ -29,14 +29,15 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<BusInterfaceValidator> validator, BusInterfaceInterface* busInterface,
-    ComponentEditorItem* parent, QWidget* parentWnd):
+    PortMapInterface* portMapInterface, ComponentEditorItem* parent, QWidget* parentWnd):
 ParameterizableItem(model, libHandler, component, parent),
 busif_(busif),
 parentWnd_(parentWnd),
 editAction_(new QAction(tr("Edit"), this)),
 expressionParser_(expressionParser),
 validator_(validator),
-busInterface_(busInterface)
+busInterface_(busInterface),
+portMapInterface_(portMapInterface)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -81,7 +82,7 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor()
 	if (!editor_)
     {
         editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, parameterFinder_, expressionFormatter_,
-            expressionParser_, validator_, busInterface_, 0, parentWnd_);
+            expressionParser_, validator_, busInterface_, portMapInterface_, 0, parentWnd_);
         editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(const QString&)),

@@ -24,6 +24,9 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -33,7 +36,7 @@
 //-----------------------------------------------------------------------------
 BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
     LibraryInterface* handler, QStringList portNames, QWidget* parent, VLNV absDefVLNV,
-    bool descriptionAsLogicalName):
+    bool descriptionAsLogicalName) :
  QWizard(parent)
 {
     setWindowTitle(tr("Bus Interface Wizard"));
@@ -60,22 +63,30 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
         parameterFinder, expressionFormatter, expressionParser, component, handler);
 
-    BusInterfaceWizardGeneralOptionsPage* optionsPage =
-        new BusInterfaceWizardGeneralOptionsPage(component, busIf, handler, !absDefVLNV.isValid(), parameterFinder,
-            expressionFormatter, expressionParser, busInterface, this);
+    AbstractionTypeInterface* absTypeInterface = busInterface->getAbstractionTypeInterface();
+    if (absTypeInterface)
+    {
+        PortMapInterface* portMapInterface = absTypeInterface->getPortMapInterface();
+        if (portMapInterface)
+        {
+            BusInterfaceWizardGeneralOptionsPage* optionsPage = new BusInterfaceWizardGeneralOptionsPage(
+                component, busIf, handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter,
+                expressionParser, busInterface, this);
 
-    connect(optionsPage, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(optionsPage, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+            connect(optionsPage, SIGNAL(increaseReferences(QString)),
+                this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+            connect(optionsPage, SIGNAL(decreaseReferences(QString)),
+                this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
-    setPage(PAGE_GENERALOPTIONS, optionsPage);
-    setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(component, busIf, handler, portNames, 
-        this, absDefVLNV, expressionParser, namingPolicy));
-    setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
-        expressionParser, parameterFinder, busInterface, this));
-    setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
+            setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
+            setPage(PAGE_GENERALOPTIONS, optionsPage);
+            setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(
+                component, busIf, handler, portNames, this, absDefVLNV, expressionParser, namingPolicy));
+            setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
+                expressionParser, parameterFinder, busInterface, portMapInterface, this));
+            setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
