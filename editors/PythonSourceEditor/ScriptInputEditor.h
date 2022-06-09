@@ -68,6 +68,8 @@ protected:
     //! Event handler for key press handling.
     virtual void keyPressEvent(QKeyEvent *e) override final;
 
+    virtual void paintEvent(QPaintEvent *e) override final;
+
 private slots:
 
     /*!
@@ -77,8 +79,8 @@ private slots:
      */
      void updateSideAreaWidth(int newBlockCount);
 
-     //! Add background highlight to currently selected line.
-      void highlightCurrentLine();
+     //! Add highlight to currently selected lines.
+      void highlightSelectedLines() const;
 
 private:
 

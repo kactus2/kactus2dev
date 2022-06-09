@@ -27,7 +27,7 @@ ScriptInputEditor::ScriptInputEditor(QWidget* parent):
     ScriptingTextEditor(parent)
 {
     connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(updateSideAreaWidth(int)), Qt::UniqueConnection);
-    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()), Qt::UniqueConnection);
+    connect(this, SIGNAL(cursorPositionChanged()), viewport(), SLOT(update()), Qt::UniqueConnection);
 
     setViewportMargins(sideAreaWidth(), 0, 0, 0);
 }
@@ -44,6 +44,16 @@ void ScriptInputEditor::keyPressEvent(QKeyEvent *e)
     }
 
     QPlainTextEdit::keyPressEvent(e);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::keyPressEvent()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::paintEvent(QPaintEvent *e)
+{
+    ScriptingTextEditor::paintEvent(e);
+
+    highlightSelectedLines();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,21 +146,32 @@ void ScriptInputEditor::updateSideAreaWidth(int /* newBlockCount */)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ScriptInputEditor::updateSideAreaWidth()
+// Function: ScriptInputEditor::highlightSelectedLines()
 //-----------------------------------------------------------------------------
-void ScriptInputEditor::highlightCurrentLine()
+void ScriptInputEditor::highlightSelectedLines() const
 {
-    QList<QTextEdit::ExtraSelection> extraSelections;
+    QPainter painter(viewport());
+    painter.setPen(QColor(Qt::lightGray).lighter(120));
 
-    QTextEdit::ExtraSelection selection;
+    QTextCursor cursor = textCursor();
+    int start = cursor.selectionStart();
+    int end = cursor.selectionEnd();
 
-    QColor lineColor = QColor(KactusColors::SW_COMPONENT).lighter(120);
+    cursor.setPosition(start);
+    auto startBlock = cursor.block();
 
-    selection.format.setBackground(lineColor);
-    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-    selection.cursor = textCursor();
-    selection.cursor.clearSelection();
-    extraSelections.append(selection);
+    if (startBlock.isVisible())
+    {
+        auto startRect = blockBoundingGeometry(startBlock).translated(contentOffset());
+        painter.drawLine(startRect.topLeft(), startRect.topRight());
+    }
 
-    setExtraSelections(extraSelections);
+    cursor.setPosition(end);
+    auto endBlock = cursor.block();
+
+    if (endBlock.isVisible())
+    {
+        auto endRect = blockBoundingGeometry(endBlock).translated(contentOffset());
+        painter.drawLine(endRect.bottomLeft(), endRect.bottomRight());
+    }
 }

@@ -236,7 +236,7 @@ void PythonSourceEditor::setupToolbar()
 
     QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run.png"), QString(),
         this, SLOT(onRunAction()));
-    runAction->setToolTip(tr("Run selection (Ctrl+R)"));
+    runAction->setToolTip(tr("Run selected line(s) (Ctrl+R)"));
     runAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
     runAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     addAction(runAction);
