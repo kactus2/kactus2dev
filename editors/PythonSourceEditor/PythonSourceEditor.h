@@ -75,7 +75,7 @@ private slots:
 private:
 
     //! Setup the toolbar and actions.
-    void setupToolbar();
+    void setupToolbar(bool enableRun);
 
     //! Setup widget layout.
     void setupLayout();

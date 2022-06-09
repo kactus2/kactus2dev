@@ -53,8 +53,7 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
 
     bool enabled = interpreter_->initialize(false);
 
-    setupToolbar();
-    toolBar_.setEnabled(enabled);
+    setupToolbar(enabled);
 
     scriptView_.setReadOnly(true);
     
@@ -214,12 +213,12 @@ void PythonSourceEditor::onRunFileAction()
 //-----------------------------------------------------------------------------
 // Function: PythonSourceEditor::setupToolbar()
 //-----------------------------------------------------------------------------
-void PythonSourceEditor::setupToolbar()
+void PythonSourceEditor::setupToolbar(bool enableRun)
 {
     toolBar_.setOrientation(Qt::Horizontal);
     toolBar_.setIconSize(QSize(20, 20));
 
-    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-open.png"), QString(),
+    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), QString(),
         this, SLOT(onOpenAction()));
     openAction->setToolTip(tr("Open script from file..."));
     addAction(openAction);
@@ -241,19 +240,30 @@ void PythonSourceEditor::setupToolbar()
     runAction->setToolTip(tr("Run selected line(s) (Ctrl+R)"));
     runAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
     runAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    runAction->setEnabled(enableRun);
     addAction(runAction);
 
     QAction* runAllAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-all.png"), QString(),
         this, SLOT(onRunAllAction()));
-    runAllAction->setToolTip(QStringLiteral("Run all (Ctrl+Shift+R)"));
+    runAllAction->setToolTip(tr("Run all (Ctrl+Shift+R)"));
     runAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
     runAllAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    runAllAction->setEnabled(enableRun);
     addAction(runAllAction);
 
     QAction* runFileAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-file.png"), QString(),
         this, SLOT(onRunFileAction()));
-    runFileAction->setToolTip(QStringLiteral("Run file..."));
+    runFileAction->setToolTip(tr("Run file..."));
+    runFileAction->setEnabled(enableRun);
     addAction(runFileAction);
+
+    toolBar_.addSeparator();
+
+    QAction* clearAction = toolBar_.addAction(QIcon(":/icons/common/graphics/cleanup.png"), QString(),
+        &scriptView_, SLOT(clear()));
+    clearAction->setToolTip(tr("Clear output"));
+    addAction(clearAction);
+
 }
 
 //-----------------------------------------------------------------------------
