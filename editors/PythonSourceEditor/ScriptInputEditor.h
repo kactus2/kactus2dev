@@ -74,7 +74,6 @@ protected:
     //! Event handler for widget resize.
     void resizeEvent(QResizeEvent *event) override;
 
-
 private slots:
 
     /*!
@@ -84,9 +83,6 @@ private slots:
      */
      void updateSideAreaWidth(int newBlockCount);
 
-     //! Add highlight to currently selected lines.
-      void highlightSelectedLines() const;
-
       /*!
        * Handler for side area update event.
        *
@@ -94,6 +90,10 @@ private slots:
        *     @param [in] dy       The change of y coordinate in the update.
        */
       void updateSideArea(const QRect &rect, int dy);
+
+
+      //! Add highlight to currently selected lines.
+      void highlightSelectedLines() const;
 
 private:
 

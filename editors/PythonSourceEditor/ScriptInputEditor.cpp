@@ -131,10 +131,18 @@ int ScriptInputEditor::sideAreaWidth() const
 void ScriptInputEditor::sideAreaPaintEvent(QPaintEvent* event)
 {
     QPainter painter(editorSideArea_);
-    painter.setPen(Qt::darkGray);
 
+    //! Draw background.
+    QColor backgroundColor = QColor(Qt::lightGray).lighter(120);
+    painter.setPen(backgroundColor);
+    painter.setBrush(backgroundColor);
+    painter.drawRect(event->rect());
+
+    //! Draw line numbers.
     QTextBlock block = firstVisibleBlock();
     int blockNumber = block.blockNumber();
+    int cursorBlock = textCursor().blockNumber();
+
     int top = qRound(blockBoundingGeometry(block).translated(contentOffset()).top());
     int bottom = top + qRound(blockBoundingRect(block).height());
 
@@ -142,6 +150,15 @@ void ScriptInputEditor::sideAreaPaintEvent(QPaintEvent* event)
     {
         if (block.isVisible() && bottom >= event->rect().top())
         {
+            if (blockNumber == cursorBlock)
+            {
+                painter.setPen(Qt::black);
+            }
+            else
+            {
+                painter.setPen(Qt::darkGray);
+            }
+
             painter.drawText(0, top, editorSideArea_->width()-4, fontMetrics().height(),
                 Qt::AlignRight, QString::number(blockNumber + 1));
         }
@@ -159,6 +176,21 @@ void ScriptInputEditor::sideAreaPaintEvent(QPaintEvent* event)
 void ScriptInputEditor::updateSideAreaWidth(int /* newBlockCount */)
 {
     setViewportMargins(sideAreaWidth(), 0, 0, 0);
+}  
+
+//-----------------------------------------------------------------------------
+// Function: ScriptInputEditor::updateSideArea()
+//-----------------------------------------------------------------------------
+void ScriptInputEditor::updateSideArea(QRect const& rect, int dy)
+{
+    if (dy)
+    {
+        editorSideArea_->scroll(0, dy);
+    }
+    else
+    {
+        editorSideArea_->update(0, rect.y(), editorSideArea_->width(), rect.height());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -191,20 +223,3 @@ void ScriptInputEditor::highlightSelectedLines() const
         painter.drawLine(endRect.bottomLeft(), endRect.bottomRight());
     }
 }
-
-//-----------------------------------------------------------------------------
-// Function: ScriptInputEditor::updateSideArea()
-//-----------------------------------------------------------------------------
-void ScriptInputEditor::updateSideArea(QRect const& rect, int dy)
-{
-    if (dy)
-    {
-        editorSideArea_->scroll(0, dy);
-    }
-    else
-    {
-        editorSideArea_->update(0, rect.y(), editorSideArea_->width(), rect.height());
-    }
-}
-
-
