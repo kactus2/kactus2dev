@@ -126,9 +126,14 @@
         <file>common/graphics/provides.png</file>
         <file>common/graphics/requires.png</file>
         <file>common/graphics/requires_provides.png</file>
-		<file>common/graphics/history.png</file> 
-		<file>common/graphics/script-save.png</file>
-		<file>common/graphics/script-open.png</file>
+        <file>common/graphics/history.png</file>
+        <file>common/graphics/script-save.png</file>
+        <file>common/graphics/script-open.png</file>
+        <file>common/graphics/script-save-as.png</file>
+        <file>common/graphics/script-run.png</file>
+        <file>common/graphics/script-run-all.png</file>
+        <file>common/graphics/script-run-file.png</file>
+        <file>common/graphics/script-new.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

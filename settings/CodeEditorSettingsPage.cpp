@@ -11,7 +11,6 @@
 
 #include "CodeEditorSettingsPage.h"
 
-#include <editors/CSourceEditor/CSourceWidget.h>
 #include <common/widgets/assistedTextEdit/AssistedTextEdit.h>
 
 #include <QHBoxLayout>
@@ -70,7 +69,7 @@ SettingsPage(settings),
         fontSizeCombo_->addItem(QString::number(size));
     }
 
-    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
+    for (int i = 0; i < LanguageHighlighter::STYLE_COUNT; ++i)
     {
         highlightTypeList_->addItem(STYLE_NAMES[i]);
     }
@@ -91,7 +90,6 @@ SettingsPage(settings),
 
     connect(colorBox_, SIGNAL(clicked()), this, SLOT(selectColor()));
 
-    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
     loadSettings();
 
     highlightTypeList_->setCurrentRow(0);
@@ -143,10 +141,10 @@ void CodeEditorSettingsPage::apply()
     font.setPointSize(fontSizeCombo_->currentText().toInt());
     settings().setValue("Editor/Font", QVariant::fromValue(font));
 
-    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
+    for (int i = 0; i < LanguageHighlighter::STYLE_COUNT; ++i)
     {
         settings().setValue("Editor/Highlight/" + 
-            CSourceHighlighter::getStyleName(static_cast<CSourceHighlighter::StyleType>(i)),
+            LanguageHighlighter::getStyleName(static_cast<LanguageHighlighter::StyleType>(i)),
             QVariant::fromValue(styles_[i]));
     }
 }
@@ -280,10 +278,10 @@ void CodeEditorSettingsPage::loadSettings()
     fontCombo_->setCurrentFont(font);
     fontSizeCombo_->setCurrentIndex(font.pointSize() - MIN_FONT_SIZE);
 
-    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
+    for (int i = 0; i < LanguageHighlighter::STYLE_COUNT; ++i)
     {
         styles_[i] = settings().value("Editor/Highlight/" + 
-            CSourceHighlighter::getStyleName(static_cast<CSourceHighlighter::StyleType>(i)),
-            QVariant::fromValue(CSourceHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
+            LanguageHighlighter::getStyleName(static_cast<LanguageHighlighter::StyleType>(i)),
+            QVariant::fromValue(LanguageHighlighter::DEFAULT_STYLES[i])).value<HighlightStyleDesc>();
     }
 }

@@ -6,7 +6,6 @@
 # Remove it when you are finished editing this file.
 message("You are running qmake on a generated .pro file. This may not work!")
 
-
 HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapSortFilter.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.h \
@@ -147,10 +146,6 @@ HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.h \
     ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.h \
-    ./mainwindow/ScriptingConsole/ScriptingSideArea.h \
-    ./mainwindow/ScriptingConsole/ScriptingConsole.h \
-    ./mainwindow/ScriptingConsole/ScriptingTextEditor.h \
-    ./mainwindow/ScriptingConsole/ScriptingHistory.h \
     ./settings/FileTypeColumns.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
@@ -802,6 +797,7 @@ HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionsGeneral.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesColumns.h \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.h \
+    ./editors/PythonSourceEditor/ScriptingSideArea.h \
     ./kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h \
@@ -811,7 +807,11 @@ HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/WriteChannel.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./editors/PythonSourceEditor/ScriptInputEditor.h \
+    ./editors/PythonSourceEditor/ScriptViewEditor.h \
+    ./editors/PythonSourceEditor/PythonSourceEditor.h \
+    ./editors/PythonSourceEditor/PythonSourceHighlight.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapView.cpp \
     ./common/GenericEditProvider.cpp \
@@ -930,10 +930,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.cpp \
     ./mainwindow/SaveHierarchy/SaveAsItem.cpp \
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.cpp \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.cpp \
-    ./mainwindow/ScriptingConsole/ScriptingConsole.cpp \
-    ./mainwindow/ScriptingConsole/ScriptingHistory.cpp \
-    ./mainwindow/ScriptingConsole/ScriptingSideArea.cpp \
-    ./mainwindow/ScriptingConsole/ScriptingTextEditor.cpp \
     ./settings/ComponentEditorSettingsPage.cpp \
     ./settings/FileTypesDelegate.cpp \
     ./settings/FileTypeSettingsPage.cpp \
@@ -1521,6 +1517,8 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsFilter.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionsModel.cpp \
     ./editors/common/VendorExtensionEditor/VendorExtensionAttributesEditor/VendorExtensionAttributesModel.cpp \
+    ./editors/PythonSourceEditor/ScriptInputEditor.cpp \
+    ./editors/PythonSourceEditor/ScriptingSideArea.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.cpp \
     ./kactusGenerators/DocumentGenerator/ViewDocumentGenerator.cpp \
@@ -1529,6 +1527,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapModel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
+    ./editors/PythonSourceEditor/PythonSourceEditor.cpp \
+    ./editors/PythonSourceEditor/ScriptViewEditor.cpp \
+    ./editors/PythonSourceEditor/PythonSourceHighlight.cpp\
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapSortFilter.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.cpp
 RESOURCES += kactus.qrc

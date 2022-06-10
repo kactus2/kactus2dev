@@ -12,7 +12,6 @@
 #include "DockWidgetHandler.h"
 
 #include <mainwindow/MessageConsole/messageconsole.h>
-#include <mainwindow/ScriptingConsole/ScriptingConsole.h>
 
 #include <Help/HelpSystem/HelpWindow.h>
 #include <Help/HelpSystem/ContextHelpBrowser.h>
@@ -458,15 +457,16 @@ void DockWidgetHandler::setupConnectionEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupConsole()
 {
-    scriptConsoleDock_ = new QDockWidget(tr("Script (experimental)"), mainWindow_);
+    scriptConsoleDock_ = new QDockWidget(tr("Script"), mainWindow_);
     scriptConsoleDock_->setObjectName(tr("Python console"));
-    scriptConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    scriptConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | 
+        Qt::BottomDockWidgetArea);
     scriptConsoleDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    scriptConsole_ = new ScriptingConsole(scriptConsoleDock_);
+    scriptConsole_ = new PythonSourceEditor(scriptConsoleDock_);
     scriptConsoleDock_->setWidget(scriptConsole_);
 
-    mainWindow_->addDockWidget(Qt::BottomDockWidgetArea, scriptConsoleDock_);
+    mainWindow_->addDockWidget(Qt::RightDockWidgetArea, scriptConsoleDock_);
 }
 
 //-----------------------------------------------------------------------------

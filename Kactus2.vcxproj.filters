@@ -962,12 +962,6 @@
     <Filter Include="Header Files\PythonAPI\extensions">
       <UniqueIdentifier>{346878db-88ad-478f-a0fd-621e9a4d02fc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\mainwindow\ScriptingConsole">
-      <UniqueIdentifier>{7e1844e1-bfb2-429b-b702-f03dfed19ff2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\mainwindow\ScriptingConsole">
-      <UniqueIdentifier>{1f1bbc33-e4ee-4a75-90e5-ea474c67ce62}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\common\FileHandler">
       <UniqueIdentifier>{1f5c20b3-cd33-42d6-844a-9d3eaccfa9ca}</UniqueIdentifier>
     </Filter>
@@ -991,6 +985,12 @@
     </Filter>
     <Filter Include="Source Files\common\widgets\segmentComboBox">
       <UniqueIdentifier>{0701fe02-73ac-47fd-9e97-b661dd63045c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\PythonSourceEditor">
+      <UniqueIdentifier>{9ac9cff0-06e0-4da9-93e6-3d7adac47e30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\PythonSourceEditor">
+      <UniqueIdentifier>{2c530190-ab81-4ee2-8f33-70cabb06fddd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -4672,27 +4672,6 @@
     <ClCompile Include="PythonAPI\StdInputListener.cpp">
       <Filter>Source Files\PythonAPI</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ScriptingConsole.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ScriptingTextEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingConsole.cpp">
-      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingTextEditor.cpp">
-      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingSideArea.cpp">
-      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
-    </ClCompile>
-    <ClCompile Include="mainwindow\ScriptingConsole\ScriptingHistory.cpp">
-      <Filter>Source Files\mainwindow\ScriptingConsole</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ScriptingHistory.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsEditor.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -4833,6 +4812,30 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_GraphicalMessageMediator.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\ScriptingSideArea.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ScriptInputEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ScriptViewEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\ScriptInputEditor.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\ScriptViewEditor.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\PythonSourceEditor.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PythonSourceEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\PythonSourceEditor\PythonSourceHighlight.cpp">
+      <Filter>Source Files\editors\PythonSourceEditor</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PortMapTreeDelegate.cpp">
       <Filter>Source Files</Filter>
@@ -6581,15 +6584,6 @@
     <CustomBuild Include="PythonAPI\StdInputListener.h">
       <Filter>Header Files\PythonAPI</Filter>
     </CustomBuild>
-    <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingConsole.h">
-      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingTextEditor.h">
-      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\ScriptingConsole\ScriptingHistory.h">
-      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\BusDefinitionEditor\AbstractionPortsEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
@@ -6658,6 +6652,15 @@
     </CustomBuild>
     <CustomBuild Include="common\ui\GraphicalMessageMediator.h">
       <Filter>Header Files\common\ui</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\PythonSourceEditor\ScriptInputEditor.h">
+      <Filter>Header Files\editors\PythonSourceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\PythonSourceEditor\ScriptViewEditor.h">
+      <Filter>Header Files\editors\PythonSourceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\PythonSourceEditor\PythonSourceEditor.h">
+      <Filter>Header Files\editors\PythonSourceEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapView.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
@@ -7306,9 +7309,6 @@
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
-    <ClInclude Include="mainwindow\ScriptingConsole\ScriptingSideArea.h">
-      <Filter>Header Files\mainwindow\ScriptingConsole</Filter>
-    </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </ClInclude>
@@ -7326,6 +7326,12 @@
     </ClInclude>
     <ClInclude Include="library\LibraryItemSelectionFactory.h">
       <Filter>Header Files\library</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\PythonSourceEditor\ScriptingSideArea.h">
+      <Filter>Header Files\editors\PythonSourceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\PythonSourceEditor\PythonSourceHighlight.h">
+      <Filter>Header Files\editors\PythonSourceEditor</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapSortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>

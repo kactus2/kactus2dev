@@ -42,6 +42,7 @@
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnConstants.h>
+#include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
 #include <KactusAPI/KactusAPI.h>
 
@@ -269,6 +270,8 @@ void MainWindow::restoreSettings()
 
     // Update the workspace menu.
     updateWorkspaceMenu();
+
+    dockHandler_->applySettings();
 }
 
 //-----------------------------------------------------------------------------
