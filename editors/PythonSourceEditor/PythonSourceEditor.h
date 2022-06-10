@@ -106,7 +106,16 @@ private:
      *     @param [in] filePath  Path to the edited file.
      *     @param [in] modified  True, if file content is modified, otherwise false.
      */
-     void updateTabInfo(QString const& filePath, bool modified);
+     void updateTabLabel(QString const& filePath, bool modified);
+
+     /*!
+      * Create a new editor and add it in the tabs.
+      *
+      *     @param [in] label  The label on the tab for the editor.
+      *
+      *     @return The created editor.
+      */
+      ScriptInputEditor* createEditor(QString const& label);
 
     /*!
      * Apply formatting settings to a single editor.
@@ -115,8 +124,26 @@ private:
      */
     void applySettings(ScriptInputEditor* editor) const;
 
-    //! Setup the toolbar and actions.
+
+    /*!
+     * Setup the Python interpreter.
+     *
+     *     @return True, if the setup was successful and interpreter stated, otherwise false. 
+     */
+     bool setupInterpreter();
+
+     //! Setup the editor tabs.
+     void setupTabs();
+
+    /*
+     * Setup the toolbar and actions.
+     *
+     *     @param[in] enableRun     Enable flag for script run actions.
+     */
     void setupToolbar(bool enableRun);
+
+    //! Setup the progress bar for script run status indication.
+    void setupProgressBar();
 
     //! Setup widget layout.
     void setupLayout();

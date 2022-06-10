@@ -44,46 +44,18 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     progressBar_(this),
     scriptThread_(this)
 {    
-    interpreter_->moveToThread(&scriptThread_);
-    connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
-
     connect(&outputChannel_, SIGNAL(data(QString const&)),
         &scriptView_, SLOT(print(QString const&)), Qt::UniqueConnection);
     connect(&errorChannel_, SIGNAL(data(QString const&)),
         &scriptView_, SLOT(printError(QString const&)), Qt::UniqueConnection);
 
+    bool scriptEnabled = setupInterpreter();
 
-    tabs_.setTabsClosable(true);
-    connect(&tabs_, SIGNAL(tabCloseRequested(int)),
-        this, SLOT(onTabClosed(int)), Qt::UniqueConnection);
-    connect(&tabs_, SIGNAL(currentChanged(int)),
-        this, SLOT(onTabChanged(int)), Qt::UniqueConnection);
+    setupTabs();
 
-    bool enabled = interpreter_->initialize(false);
+    setupToolbar(scriptEnabled);
 
-    setupToolbar(enabled);
-
-    progressBar_.setRange(0, 1);
-    progressBar_.reset();
-    progressBar_.setTextVisible(false);
-
-    onNewAction();
-
-    if (enabled == true)
-    {
-        //! Interpreter runs on different thread so all calls must go through signals for parallel execution.
-        connect(this, SIGNAL(executeLine(QString const&)),
-            interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
-        connect(this, SIGNAL(executeString(QString const&)),
-            interpreter_, SLOT(executeString(QString const&)), Qt::UniqueConnection);
-        connect(this, SIGNAL(executeFile(QString const&)),
-            interpreter_, SLOT(runFile(QString const&)), Qt::UniqueConnection);
-
-        connect(interpreter_, SIGNAL(executeDone()),
-            this, SLOT(onRunComplete()), Qt::UniqueConnection);
-
-        scriptThread_.start();
-    }
+    setupProgressBar();
 
     highlighter_.addMultilineCommentRule(QRegularExpression("[\'\"]{3}"),
         QRegularExpression("[\'\"]{3}"));
@@ -91,6 +63,8 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     highlightRules.apply(&highlighter_);
 
     setupLayout();
+
+    onNewAction();
 }
 
 //-----------------------------------------------------------------------------
@@ -137,12 +111,7 @@ void PythonSourceEditor::applySettings()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onNewAction()
 {
-    auto editor = new ScriptInputEditor();
-    applySettings(editor);
-
-    connect(editor, SIGNAL(modificationChanged(bool)), this, SLOT(onTabModified(bool)), Qt::UniqueConnection);
-
-    tabs_.addTab(editor, tr("New"));
+    createEditor(tr("New"));
 }
 
 //-----------------------------------------------------------------------------
@@ -156,8 +125,7 @@ void PythonSourceEditor::onOpenAction()
     {
         QApplication::setOverrideCursor(Qt::WaitCursor);
 
-        auto editor = new ScriptInputEditor();
-        applySettings(editor);
+        auto editor = createEditor(filePath);
 
         QFile outputFile(filePath);
         outputFile.open(QFile::ReadOnly | QFile::Text);
@@ -167,13 +135,8 @@ void PythonSourceEditor::onOpenAction()
 
         outputFile.close();
 
-        tabs_.addTab(editor, QString());
-        tabs_.setCurrentWidget(editor);
-
-        updateTabInfo(filePath, false);
-
-        connect(editor, SIGNAL(modificationChanged(bool)), this, SLOT(onTabModified(bool)), Qt::UniqueConnection);
-
+        updateTabLabel(filePath, false);
+      
         QApplication::restoreOverrideCursor();
     }
 }
@@ -203,7 +166,7 @@ void PythonSourceEditor::onSaveAction()
 
         outputFile.close();
 
-        updateTabInfo(filePath, false);
+        updateTabLabel(filePath, false);
 
         QApplication::restoreOverrideCursor();
     }
@@ -307,13 +270,13 @@ void PythonSourceEditor::onTabClosed(int index)
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onTabModified(bool modified)
 {
-    updateTabInfo(tabs_.tabToolTip(tabs_.currentIndex()), modified);
+    updateTabLabel(tabs_.tabToolTip(tabs_.currentIndex()), modified);
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonSourceEditor::updateTabInfo()
+// Function: PythonSourceEditor::updateTabLabel()
 //-----------------------------------------------------------------------------
-void PythonSourceEditor::updateTabInfo(QString const& filePath, bool modified)
+void PythonSourceEditor::updateTabLabel(QString const& filePath, bool modified)
 {
     QFileInfo info(filePath);
 
@@ -339,6 +302,22 @@ void PythonSourceEditor::updateTabInfo(QString const& filePath, bool modified)
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::createEditor()
+//-----------------------------------------------------------------------------
+ScriptInputEditor* PythonSourceEditor::createEditor(QString const& label)
+{
+    auto editor = new ScriptInputEditor();
+    applySettings(editor);
+
+    tabs_.addTab(editor, label);
+    tabs_.setCurrentWidget(editor);
+
+    connect(editor, SIGNAL(modificationChanged(bool)), this, SLOT(onTabModified(bool)), Qt::UniqueConnection);
+
+    return editor;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonSourceEditor::applySettings()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::applySettings(ScriptInputEditor* editor) const
@@ -356,6 +335,43 @@ void PythonSourceEditor::applySettings(ScriptInputEditor* editor) const
 
     editor->setFont(font);
     editor->setIndentStyle(useTabs, width);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::setupInterpreter()
+//-----------------------------------------------------------------------------
+bool PythonSourceEditor::setupInterpreter()
+{
+    interpreter_->moveToThread(&scriptThread_);
+    connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
+
+    bool enabled = interpreter_->initialize(false);
+    if (enabled)
+    {
+        //! Interpreter runs on different thread so all calls must go through signals for parallel execution.
+        connect(this, SIGNAL(executeLine(QString const&)),
+            interpreter_, SLOT(write(QString const&)), Qt::UniqueConnection);
+        connect(this, SIGNAL(executeString(QString const&)),
+            interpreter_, SLOT(executeString(QString const&)), Qt::UniqueConnection);
+        connect(this, SIGNAL(executeFile(QString const&)),
+            interpreter_, SLOT(runFile(QString const&)), Qt::UniqueConnection);
+
+        connect(interpreter_, SIGNAL(executeDone()),
+            this, SLOT(onRunComplete()), Qt::UniqueConnection);
+
+        scriptThread_.start();
+    }
+
+    return enabled;
+}
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::setupTabs()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::setupTabs()
+{
+    tabs_.setTabsClosable(true);
+    connect(&tabs_, SIGNAL(tabCloseRequested(int)), this, SLOT(onTabClosed(int)), Qt::UniqueConnection);
+    connect(&tabs_, SIGNAL(currentChanged(int)), this, SLOT(onTabChanged(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -419,12 +435,22 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
 }
 
 //-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::setupProgressBar()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::setupProgressBar()
+{
+    progressBar_.setTextVisible(false);
+    progressBar_.setRange(0, 1);
+    progressBar_.reset();
+
+    progressBar_.setMaximumHeight(progressBar_.sizeHint().height() / 2);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PythonSourceEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::setupLayout()
 {
-    progressBar_.setMaximumHeight(progressBar_.sizeHint().height() / 2);
-
     QWidget* editorContainer = new QWidget(this);
     QVBoxLayout* editorLayout = new QVBoxLayout(editorContainer);    
     editorLayout->addWidget(&tabs_);
