@@ -366,6 +366,11 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     toolBar_.setOrientation(Qt::Horizontal);
     toolBar_.setIconSize(QSize(20, 20));
 
+    QAction* newAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-new.png"), QString(),
+        this, SLOT(onNewAction()));
+    newAction->setToolTip(tr("New script"));
+    addAction(newAction);
+
     QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), QString(),
         this, SLOT(onOpenAction()));
     openAction->setToolTip(tr("Open script from file..."));
