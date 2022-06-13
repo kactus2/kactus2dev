@@ -935,9 +935,6 @@
     <Filter Include="Header Files\editors\ComponentEditor\fileSet\interfaces">
       <UniqueIdentifier>{87070864-35d7-43b4-b521-35c12ad9742a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\fileSet\interfaces">
-      <UniqueIdentifier>{c0a4d8c3-229e-4ecd-bdad-1c3db702cc61}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\BusDefinitionEditor\interfaces">
       <UniqueIdentifier>{3cebef82-5883-4778-b1e8-75e74187f053}</UniqueIdentifier>
     </Filter>

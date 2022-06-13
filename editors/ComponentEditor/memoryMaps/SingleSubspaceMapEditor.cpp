@@ -208,14 +208,17 @@ void SingleSubspaceMapEditor::setupLayout()
     subspaceDefinitionLayout->addRow(tr("Segment reference:"), segmentSelector_);
     subspaceDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
 
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0);
-    topOfPageLayout->addWidget(subspaceDefinitionGroup, 0);
+    QGridLayout* topOfPageLayout = new QGridLayout();
+    topOfPageLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
+    topOfPageLayout->addWidget(subspaceDefinitionGroup, 0, 1, 1, 1);    
+    topOfPageLayout->setRowStretch(1, 1);
 
     QWidget* topOfPageWidget = new QWidget(scrollArea);
     topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     topOfPageWidget->setLayout(topOfPageLayout);
     topOfPageWidget->setContentsMargins(0, 0, 0, 0);
+
+    scrollArea->setWidget(topOfPageWidget);
 }
 
 //-----------------------------------------------------------------------------
