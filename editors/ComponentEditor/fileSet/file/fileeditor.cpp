@@ -39,7 +39,7 @@ buildCommand_(fileName, fileInterface, handler->getDirectoryPath(component->getV
 imageTypesEditor_(tr("Image types"), this),
 dependenciesEditor_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this),
 editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
-runButton_(new QPushButton(QIcon(":/icons/common/graphics/runProgram.png"), tr("Run file"), this)),
+runButton_(new QPushButton(QIcon(":/icons/common/graphics/script-run-file.png"), tr("Run file"), this)),
 openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"),
     tr("Open containing folder"), this)),
 fileInterface_(fileInterface),
