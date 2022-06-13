@@ -263,15 +263,18 @@ void ViewEditor::setupLayout()
     // create the layout for the top widget
     QGridLayout* topLayout = new QGridLayout(topWidget);
     topLayout->addWidget(nameEditor_, 0, 0, 1, 1);
-    topLayout->addWidget(envIdentifier_, 0, 1, 2, 1);
+    topLayout->addWidget(componentInstantiationDisplay_, 0, 1, 1, 1); 
     topLayout->addWidget(instantiationsGroup, 1, 0, 1, 1);
-    topLayout->addWidget(componentInstantiationDisplay_, 2, 0, 1, 1);
-    topLayout->addWidget(hierarchyGroup_, 2, 1, 1, 1);
+    topLayout->addWidget(hierarchyGroup_, 1, 1, 2, 1);
+    
+    topLayout->addWidget(envIdentifier_, 2, 0, 1, 1);
     topLayout->addWidget(moduleParameterEditor_, 3, 0, 1, 2);
     topLayout->setRowStretch(0, 1);
     topLayout->setRowStretch(1, 1);
     topLayout->setRowStretch(2, 1);
     topLayout->setRowStretch(3, 5);
+    topLayout->setColumnStretch(0, 1);
+    topLayout->setColumnStretch(1, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
     scrollArea->setWidget(topWidget);
