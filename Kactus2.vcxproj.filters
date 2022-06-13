@@ -2905,12 +2905,6 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\ExpressionProxyModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\ExitScreen.cpp">
-      <Filter>Source Files\mainwindow</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ExitScreen.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\MultilineDescriptionDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
@@ -4837,18 +4831,6 @@
     <ClCompile Include="editors\PythonSourceEditor\PythonSourceHighlight.cpp">
       <Filter>Source Files\editors\PythonSourceEditor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapTreeDelegate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapTreeModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapTreeSortProxyModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortMapTreeView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapView.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
@@ -5827,9 +5809,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\memoryMaps\ExpressionProxyModel.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\ExitScreen.h">
-      <Filter>Header Files\mainwindow</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\MultilineDescriptionDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
