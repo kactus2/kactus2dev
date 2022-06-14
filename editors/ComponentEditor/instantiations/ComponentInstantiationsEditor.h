@@ -49,7 +49,11 @@ public:
         QWidget* parent = 0);
 
 	//! The destructor.
-	virtual ~ComponentInstantiationsEditor();
+	virtual ~ComponentInstantiationsEditor() = default;
+
+    //! No copying.
+    ComponentInstantiationsEditor(const ComponentInstantiationsEditor& other) = delete;
+    ComponentInstantiationsEditor& operator=(const ComponentInstantiationsEditor& other) = delete;
 
 	//! Reload the information from the model to the editor.
 	virtual void refresh();
@@ -60,10 +64,6 @@ protected:
 	virtual void showEvent(QShowEvent* event);
 
 private:
-
-	//! No copying.
-	ComponentInstantiationsEditor(const ComponentInstantiationsEditor& other);
-	ComponentInstantiationsEditor& operator=(const ComponentInstantiationsEditor& other);
 
 	//! The view to display the view info.
 	EditableTableView* view_;

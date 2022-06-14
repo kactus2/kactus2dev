@@ -16,7 +16,7 @@
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
-#include <QGroupBox>
+#include <QWidget>
 #include <QPushButton>
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
@@ -34,7 +34,7 @@ class PortAbstractionInterface;
 //-----------------------------------------------------------------------------
 //! Editor for the logical ports of an abstraction definition.
 //-----------------------------------------------------------------------------
-class AbsDefGroup : public QGroupBox
+class AbsDefGroup : public QWidget
 {
 	Q_OBJECT
 
@@ -53,7 +53,7 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~AbsDefGroup();
+	virtual ~AbsDefGroup() = default;
 
 	/*!
      *  Saves the changes made in the editor.

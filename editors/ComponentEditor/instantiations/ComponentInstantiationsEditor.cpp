@@ -73,14 +73,6 @@ availableInstantiations_(component->getComponentInstantiations())
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstantiationsEditor::~ComponentInstantiationsEditor()
-//-----------------------------------------------------------------------------
-ComponentInstantiationsEditor::~ComponentInstantiationsEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsEditor::refresh()
 //-----------------------------------------------------------------------------
 void ComponentInstantiationsEditor::refresh()
