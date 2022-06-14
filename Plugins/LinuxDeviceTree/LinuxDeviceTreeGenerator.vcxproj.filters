@@ -97,6 +97,9 @@
     <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreeDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_LinuxDeviceTree.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinuxDeviceTreeGenerator_global.h">
@@ -143,19 +146,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="LinuxDeviceTreeGenerator.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="LinuxDeviceTreeDialog.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="LinuxDeviceTreePlugin.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LinuxDeviceTree.qrc">
-      <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="CPUSelection\LinuxDeviceTreeCPUModel.h">
       <Filter>Header Files\CPUSelection</Filter>
@@ -166,5 +161,13 @@
     <CustomBuild Include="CPUSelection\LinuxDeviceTreeCPUEditor.h">
       <Filter>Header Files\CPUSelection</Filter>
     </CustomBuild>
+    <CustomBuild Include="LinuxDeviceTree.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="LinuxDeviceTreeGenerator.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
