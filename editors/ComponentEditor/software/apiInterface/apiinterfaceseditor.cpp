@@ -32,8 +32,8 @@ ItemEditor(component, handler, parent),
 {
 
     // display a label on top the table
-    SummaryLabel* summaryLabel = new SummaryLabel(tr("API interfaces"), this);
-
+    SummaryLabel* summaryLabel = new SummaryLabel(tr("API interfaces summary"), this, true);
+    
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
     layout->addWidget(&view_);

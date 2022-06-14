@@ -49,7 +49,7 @@ ItemEditor(component, handler, parent),
     view_.setItemDelegate(new ComPropertyDelegate(this));
 
 	// display a label on top the table
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Software properties"), this);
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Software properties"), this, true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);

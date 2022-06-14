@@ -9,14 +9,24 @@
 
 #include <QFont>
 
-SummaryLabel::SummaryLabel( const QString& text, QWidget *parent ):
+
+ //-----------------------------------------------------------------------------
+ // Function: SummaryLabel::SummaryLabel()
+ //-----------------------------------------------------------------------------
+SummaryLabel::SummaryLabel( const QString& text, QWidget *parent, bool showExtensionIcon):
 QLabel(text, parent) {
 
 	QFont usedFont = font();
 	usedFont.setWeight(QFont::Bold);
 	usedFont.setPointSize(usedFont.pointSize() + SummaryLabel::POINTSIZE_INCREMENT);
 	setFont(usedFont);
-}
 
-SummaryLabel::~SummaryLabel() {
+    if (showExtensionIcon)
+    {
+        auto labelText = text;
+        auto size = fontMetrics().height();
+        setText("<html>" + labelText + "<img  src=':icons/common/graphics/appicon.png'"
+            "width='" + QString::number(size) + "' height='" + QString::number(size) + "' ></html>");
+        setToolTip(tr("This is Kactus2 extension"));
+    }
 }

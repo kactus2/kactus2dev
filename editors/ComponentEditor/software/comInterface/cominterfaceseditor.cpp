@@ -32,7 +32,7 @@ ItemEditor(component, libHandler, parent),
     model_(libHandler, component, this)
 {
     // display a label on top the table
-    SummaryLabel* summaryLabel = new SummaryLabel(tr("COM interfaces"), this);
+    SummaryLabel* summaryLabel = new SummaryLabel(tr("COM interfaces summary"), this, true);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);

@@ -30,7 +30,7 @@ ItemEditor(component, handler, parent),
     model_(component, this)
 {
     // display a label on top the table
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("System views"), this);
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("System views summary"), this, true);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
