@@ -49,7 +49,12 @@ public:
         FileSetInterface* fileSetInterface);
     
     //! The destructor
-    ~FileSetsEditor();
+    virtual ~FileSetsEditor() = default;
+
+
+    //! No copying
+    FileSetsEditor(const FileSetsEditor& other) = delete;
+    FileSetsEditor& operator=(const FileSetsEditor& other) = delete;
 
     //! Reload the information from the model to the editor.
     virtual void refresh();
@@ -75,10 +80,6 @@ protected:
     virtual void showEvent(QShowEvent* event);
 
 private:
-
-    //! No copying
-    FileSetsEditor(const FileSetsEditor& other);    
-    FileSetsEditor& operator=(const FileSetsEditor& other);
 
     //! Sets the widget layout.
     void setupLayout();

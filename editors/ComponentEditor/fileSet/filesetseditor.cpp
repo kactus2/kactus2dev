@@ -80,14 +80,6 @@ availableFileSets_(component->getFileSets())
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileSetsEditor::~FileSetsEditor()
-//-----------------------------------------------------------------------------
-FileSetsEditor::~FileSetsEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileSetsEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileSetsEditor::refresh()
@@ -127,11 +119,9 @@ void FileSetsEditor::setupLayout()
 {
     SummaryLabel* summaryLabel = new SummaryLabel(tr("File sets summary"), this);
 
-    QWidget* dependencyWidget = new QWidget(this);
+    QGroupBox* dependencyWidget = new QGroupBox(tr("File dependencies"), this);
 
     QVBoxLayout* dependencyLayout = new QVBoxLayout(dependencyWidget);
-    dependencyLayout->setContentsMargins(0, 2, 0, 0);
-    dependencyLayout->addWidget(new SummaryLabel(tr("File dependencies"), this), 0, Qt::AlignCenter);
     dependencyLayout->addWidget(&dependencyEditor_);
 
     splitter_.addWidget(&view_);
