@@ -67,14 +67,14 @@ public:
     virtual QString getVendor() const = 0;
 
     /*!
-     *  Returns the licence of the plugin (e.g. GPL2).
+     *  Returns the license of the plugin (e.g. GPL2).
      */
-    virtual QString getLicence() const = 0;
+    virtual QString getLicense() const = 0;
 
     /*!
      *  Returns the license holder i.e. who is the plugin licensed to (e.g. Public or Tampere University of Technology).
      */
-    virtual QString getLicenceHolder() const = 0;
+    virtual QString getLicenseHolder() const = 0;
 
     /*!
      *  This can be used to show custom plugin-specific settings UI in the Kactus2 settings dialog.

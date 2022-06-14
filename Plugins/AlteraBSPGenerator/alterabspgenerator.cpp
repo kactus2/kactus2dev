@@ -62,18 +62,18 @@ QString AlteraBSPGenerator::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapHeaderGenerator::getLicence()
+// Function: MemoryMapHeaderGenerator::getLicense()
 //-----------------------------------------------------------------------------
-QString AlteraBSPGenerator::getLicence() const
+QString AlteraBSPGenerator::getLicense() const
 {
-    static QString licence(tr("GPL2"));
-    return licence;
+    static QString license(tr("GPL2"));
+    return license;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapHeaderGenerator::getLicenceHolder()
+// Function: MemoryMapHeaderGenerator::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString AlteraBSPGenerator::getLicenceHolder() const
+QString AlteraBSPGenerator::getLicenseHolder() const
 {
     static QString holder(tr("Public"));
     return holder;

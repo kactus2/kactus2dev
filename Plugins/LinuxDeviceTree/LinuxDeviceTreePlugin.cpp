@@ -74,17 +74,17 @@ QString LinuxDeviceTreePlugin::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreePlugin::getLicence()
+// Function: LinuxDeviceTreePlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString LinuxDeviceTreePlugin::getLicence() const
+QString LinuxDeviceTreePlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreePlugin::getLicenceHolder()
+// Function: LinuxDeviceTreePlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString LinuxDeviceTreePlugin::getLicenceHolder() const
+QString LinuxDeviceTreePlugin::getLicenseHolder() const
 {
     return tr("Public");
 }
@@ -141,6 +141,7 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     {
         QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > acceptedContainers =
             dialog.getAcceptedContainers();
+
         if (!acceptedContainers.isEmpty())
         {
             generateDeviceTree(

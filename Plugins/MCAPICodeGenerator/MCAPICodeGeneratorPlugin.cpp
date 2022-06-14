@@ -66,17 +66,17 @@ QString MCAPICodeGeneratorPlugin::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getLicence()
+// Function: MCAPICodeGeneratorPlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString MCAPICodeGeneratorPlugin::getLicence() const
+QString MCAPICodeGeneratorPlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MCAPICodeGeneratorPlugin::getLicenceHolder()
+// Function: MCAPICodeGeneratorPlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString MCAPICodeGeneratorPlugin::getLicenceHolder() const
+QString MCAPICodeGeneratorPlugin::getLicenseHolder() const
 {
     return tr("Public");
 }

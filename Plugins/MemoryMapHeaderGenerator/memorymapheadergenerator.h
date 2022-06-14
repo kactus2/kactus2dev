@@ -81,18 +81,18 @@ public:
     virtual QString getVendor() const;
 
     /*!
-     *  Get the licence of the plugin.
+     *  Get the license of the plugin.
      *
-     *      @return The licence of the plugin.
+     *      @return The license of the plugin.
      */
-    virtual QString getLicence() const;
+    virtual QString getLicense() const;
 
     /*!
-     *  Get the holder of the licence of the plugin.
+     *  Get the holder of the license of the plugin.
      *
-     *      @return The holder of the licence of the plugin.
+     *      @return The holder of the license of the plugin.
      */
-    virtual QString getLicenceHolder() const;
+    virtual QString getLicenseHolder() const;
 
     /*!
      *  Get the settings widget for the plugin.

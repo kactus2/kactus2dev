@@ -56,17 +56,17 @@ QString CppSourceAnalyzer::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: CppSourceAnalyzer::getLicence()
+// Function: CppSourceAnalyzer::getLicense()
 //-----------------------------------------------------------------------------
-QString CppSourceAnalyzer::getLicence() const
+QString CppSourceAnalyzer::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: CppSourceAnalyzer::getLicenceHolder()
+// Function: CppSourceAnalyzer::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString CppSourceAnalyzer::getLicenceHolder() const
+QString CppSourceAnalyzer::getLicenseHolder() const
 {
     return tr("Public");
 }

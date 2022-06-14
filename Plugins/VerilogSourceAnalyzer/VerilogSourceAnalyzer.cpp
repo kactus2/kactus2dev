@@ -57,17 +57,17 @@ QString VerilogSourceAnalyzer::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogSourceAnalyzer::getLicence()
+// Function: VerilogSourceAnalyzer::getLicense()
 //-----------------------------------------------------------------------------
-QString VerilogSourceAnalyzer::getLicence() const
+QString VerilogSourceAnalyzer::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogSourceAnalyzer::getLicenceHolder()
+// Function: VerilogSourceAnalyzer::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString VerilogSourceAnalyzer::getLicenceHolder() const
+QString VerilogSourceAnalyzer::getLicenseHolder() const
 {
     return tr("Public");
 }

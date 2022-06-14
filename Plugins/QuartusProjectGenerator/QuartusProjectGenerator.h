@@ -91,14 +91,14 @@ public:
      *
      *      @return The license of the plugin.
      */
-    virtual QString getLicence() const;
+    virtual QString getLicense() const;
 
     /*!
      *  Returns the holder of the license of the plugin.
      *
      *      @return The holder of the license of the plugin.
      */
-    virtual QString getLicenceHolder() const;
+    virtual QString getLicenseHolder() const;
 
     /*!
      *  Returns the settings widget.

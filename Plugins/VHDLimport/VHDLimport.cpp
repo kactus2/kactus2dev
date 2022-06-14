@@ -92,17 +92,17 @@ QString VHDLimport::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::getLicence()
+// Function: VHDLimport::getLicense()
 //-----------------------------------------------------------------------------
-QString VHDLimport::getLicence() const
+QString VHDLimport::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::getLicenceHolder()
+// Function: VHDLimport::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString VHDLimport::getLicenceHolder() const
+QString VHDLimport::getLicenseHolder() const
 {
     return tr("Public");
 }

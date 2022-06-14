@@ -119,17 +119,17 @@ QString PadsPartGenerator::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PadsPartGenerator::getLicence()
+// Function: PadsPartGenerator::getLicense()
 //-----------------------------------------------------------------------------
-QString PadsPartGenerator::getLicence() const
+QString PadsPartGenerator::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: PadsPartGenerator::getLicenceHolder()
+// Function: PadsPartGenerator::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString PadsPartGenerator::getLicenceHolder() const
+QString PadsPartGenerator::getLicenseHolder() const
 {
     return tr("Public");
 }

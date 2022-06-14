@@ -69,17 +69,17 @@ QString MemoryMapHeaderGenerator::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapHeaderGenerator::getLicence()
+// Function: MemoryMapHeaderGenerator::getLicense()
 //-----------------------------------------------------------------------------
-QString MemoryMapHeaderGenerator::getLicence() const
+QString MemoryMapHeaderGenerator::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapHeaderGenerator::getLicenceHolder()
+// Function: MemoryMapHeaderGenerator::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString MemoryMapHeaderGenerator::getLicenceHolder() const
+QString MemoryMapHeaderGenerator::getLicenseHolder() const
 {
     return tr("Public");
 }

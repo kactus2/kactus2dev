@@ -51,17 +51,17 @@ QString VHDLSourceAnalyzer::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLSourceAnalyzer::getLicence()
+// Function: VHDLSourceAnalyzer::getLicense()
 //-----------------------------------------------------------------------------
-QString VHDLSourceAnalyzer::getLicence() const
+QString VHDLSourceAnalyzer::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLSourceAnalyzer::getLicenceHolder()
+// Function: VHDLSourceAnalyzer::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString VHDLSourceAnalyzer::getLicenceHolder() const
+QString VHDLSourceAnalyzer::getLicenseHolder() const
 {
     return tr("Public");
 }

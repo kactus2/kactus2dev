@@ -62,17 +62,17 @@ QString MakefileGeneratorPlugin::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MakefileGeneratorPlugin::getLicence()
+// Function: MakefileGeneratorPlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString MakefileGeneratorPlugin::getLicence() const
+QString MakefileGeneratorPlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MakefileGeneratorPlugin::getLicenceHolder()
+// Function: MakefileGeneratorPlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString MakefileGeneratorPlugin::getLicenceHolder() const
+QString MakefileGeneratorPlugin::getLicenseHolder() const
 {
     return tr("Public");
 }

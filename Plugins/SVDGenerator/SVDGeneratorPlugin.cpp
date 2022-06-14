@@ -71,17 +71,17 @@ QString SVDGeneratorPlugin::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDGeneratorPlugin::getLicence()
+// Function: SVDGeneratorPlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString SVDGeneratorPlugin::getLicence() const
+QString SVDGeneratorPlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGeneratorPlugin::getLicenceHolder()
+// Function: VerilogGeneratorPlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString SVDGeneratorPlugin::getLicenceHolder() const
+QString SVDGeneratorPlugin::getLicenseHolder() const
 {
     return tr("Public");
 }

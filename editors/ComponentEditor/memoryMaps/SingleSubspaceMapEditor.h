@@ -102,11 +102,6 @@ signals:
     void addressingChanged();
 
     /*!
-     *  Inform of a change in subspace map graphics.
-     */
-    void graphicsChanged();
-
-    /*!
      *  Inform of a change in subspace map name.
      */
     void thisEditorNameChange(QString const& oldName, QString const& newName);
