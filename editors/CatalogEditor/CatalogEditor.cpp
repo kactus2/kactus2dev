@@ -18,6 +18,7 @@
 #include "CatalogFileView.h"
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
+#include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -238,12 +239,13 @@ void CatalogEditor::setupLayout()
     filesLayout->addWidget(fileView_);
 
     QGridLayout* topLayout = new QGridLayout(this);
-    topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
-    topLayout->addWidget(descriptionBox, 0, 1, 1, 1);
-    topLayout->addWidget(filesBox, 1, 0, 1, 2);
+    topLayout->addWidget(new SummaryLabel(tr("Catalog"), this), 0, 0, 1, 2, Qt::AlignCenter);
+    topLayout->addWidget(vlnvDisplay_, 1, 0, 1, 1);
+    topLayout->addWidget(descriptionBox, 1, 1, 1, 1);
+    topLayout->addWidget(filesBox, 2, 0, 1, 2);
 
     topLayout->setColumnStretch(0, 1);
     topLayout->setColumnStretch(1, 1);
-    topLayout->setRowStretch(0, 1);
-    topLayout->setRowStretch(1, 10);
+    topLayout->setRowStretch(1, 1);
+    topLayout->setRowStretch(2, 10);
 }
