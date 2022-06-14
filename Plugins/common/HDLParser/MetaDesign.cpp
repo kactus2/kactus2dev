@@ -15,6 +15,8 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <IPXACTmodels/utilities/Search.h>
+
 #include <IPXACTmodels/utilities/ComponentSearch.h>
 
 #include <IPXACTmodels/Design/Design.h>
@@ -177,17 +179,17 @@ void MetaDesign::parseDesignParamaters()
     for (QSharedPointer<Parameter> original : *parameters_)
     {
         // Try find an existing meta-parameter with a matching name.
-        auto foundParameter = topInstance_->getMetaParameters()->find(original->name());
+        auto foundParameter = Search::findByName(original->name(), *topInstance_->getMetaParameters());
 
-        if (foundParameter != topInstance_->getMetaParameters()->end())
+        if (foundParameter.isNull() == false)
         {
-            (*foundParameter)->setName(original->name());
-            (*foundParameter)->setValue(original->getValue());
-            (*foundParameter)->setValueResolve(original->getValueResolve());            
+            foundParameter->setName(original->name());
+            foundParameter->setValue(original->getValue());
+            foundParameter->setValueResolve(original->getValueResolve());            
         }
         else
         {
-            topInstance_->getMetaParameters()->insert(original->name(), original);
+            topInstance_->getMetaParameters()->append(original);
         }
     }
 }

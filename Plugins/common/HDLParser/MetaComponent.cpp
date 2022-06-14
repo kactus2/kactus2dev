@@ -34,7 +34,7 @@ MetaComponent::MetaComponent(MessageMediator* messages,
     activeView_(activeView),
     parameters_(new QList<QSharedPointer<Parameter> >()),
     moduleParameters_(new QList<QSharedPointer<Parameter> >()),
-    metaParameters_(new QMap<QString,QSharedPointer<Parameter> >()),
+    metaParameters_(new QList<QSharedPointer<Parameter> >()),
     ports_(new QMap<QString,QSharedPointer<MetaPort> >()),
     fileSets_(new QList<QSharedPointer<FileSet> >()),
     moduleName_(),
@@ -95,22 +95,28 @@ void MetaComponent::parseMetaParameters()
 {
     for (QSharedPointer<Parameter> original : *getParameters())
     {
-        metaParameters_->insert(original->name(), original);
+        metaParameters_->append(original);
     }
 
-    for (QSharedPointer<Parameter> pOriginal : *getModuleParameters())
+    for (QSharedPointer<Parameter> original : *getModuleParameters())
     {
-        QSharedPointer<ModuleParameter> original = pOriginal.dynamicCast<ModuleParameter>();
-        if (original)
+        Q_ASSERT(original);
+
+        auto i = std::find_if(metaParameters_->begin(), metaParameters_->end(),
+            [&original](QSharedPointer<Parameter> parameter)
+        { return original->getValue().contains(parameter->name()); });
+
+        if (i != metaParameters_->end())
         {
-            auto i = metaParameters_->find(original->name());
-            if (i != metaParameters_->end())
+            if (original->getValue().compare((*i)->name()) == 0)
             {
-                metaParameters_->erase(i);
+                original->setValue((*i)->getValue());
             }
-            
-            metaParameters_->insert(original->name(), original);
+
+            metaParameters_->erase(i);
         }
+
+        metaParameters_->append(original);
     }
 }
 
@@ -140,6 +146,29 @@ void MetaComponent::parseParameters()
 //-----------------------------------------------------------------------------
 void MetaComponent::formatParameters(ExpressionFormatter const& formatter)
 {
+   /* auto allParameters = QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> >());
+    allParameters->append(*parameters_);
+    allParameters->append(*moduleParameters_);
+    parameters_->clear();
+    moduleParameters_->clear();
+
+    sortParameters(allParameters);
+    for (QSharedPointer<Parameter> parameter : *allParameters)
+    {
+        parameter->setValue(formatter.formatReferringExpression(parameter->getValue()));
+
+        QSharedPointer<ModuleParameter> moduleParameter = parameter.dynamicCast<ModuleParameter>();
+        if (moduleParameter)
+        {
+            moduleParameters_->append(moduleParameter);
+        }
+        else
+        {
+            parameters_->append(parameter);
+        }
+    }*/
+
+
     sortParameters(parameters_);
     for (QSharedPointer<Parameter> parameter : *parameters_)
     {

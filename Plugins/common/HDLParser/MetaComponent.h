@@ -72,7 +72,7 @@ public:
     /*!
      *  Returns list of resolved meta parameters
      */
-    QSharedPointer<QMap<QString,QSharedPointer<Parameter> > > getMetaParameters() { return metaParameters_; }
+    QSharedPointer<QList<QSharedPointer<Parameter> > > getMetaParameters() { return metaParameters_; }
 
     /*!
      *  Returns list of culled ports.
@@ -157,7 +157,7 @@ private:
     QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters_;
 
     //! These parameters are actually generated.
-    QSharedPointer<QMap<QString,QSharedPointer<Parameter> > > metaParameters_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > metaParameters_;
 
     //! The ports of the component keyed with its physical name.
     QSharedPointer<QMap<QString,QSharedPointer<MetaPort> > > ports_;
