@@ -80,14 +80,6 @@ QTreeView(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeView::~LibraryTreeView()
-//-----------------------------------------------------------------------------
-LibraryTreeView::~LibraryTreeView()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryTreeView::contextMenuEvent()
 //-----------------------------------------------------------------------------
 void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
@@ -312,6 +304,9 @@ void LibraryTreeView::mousePressEvent(QMouseEvent* event)
     {
         setExpanded(index, !previouslyExpanded);
     }
+
+    expandUntilFirstBranch(index);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -602,6 +597,24 @@ void LibraryTreeView::setChildrenExpandStates(QModelIndex index, bool expanded)
             setExpanded(childIndex, expanded);
             setChildrenExpandStates(childIndex, expanded);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::expandUntilFirstBranch()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::expandUntilFirstBranch(QModelIndex const& index)
+{
+    if (isExpanded(index) == false)
+    {
+        return;
+    }
+
+    QModelIndex currentIndex = index;
+    while (currentIndex.isValid() && model()->rowCount(currentIndex) == 1)
+    {
+        expand(currentIndex);
+        currentIndex = currentIndex.child(0, 0);
     }
 }
 

@@ -42,7 +42,7 @@ public:
 	LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent = 0);
 
 	//! The destructor.
-	virtual ~LibraryTreeView();
+	virtual ~LibraryTreeView() = default;
 
 signals:
 
@@ -230,6 +230,13 @@ private:
 
     //! Expands/collapses all child indexes recursively.
     void setChildrenExpandStates(QModelIndex index, bool expanded);
+
+    /*!
+     * Expand the tree until first branch i.e. index with more than one children is found.
+     *
+     *     @param [in] index  The starting index for expanding.
+     */
+     void expandUntilFirstBranch(QModelIndex const& index);
 
     //! Set up the actions for the context menu
     void setupActions();
