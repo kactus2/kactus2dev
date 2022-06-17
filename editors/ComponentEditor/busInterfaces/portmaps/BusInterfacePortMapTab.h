@@ -179,6 +179,21 @@ private slots:
      */
     void onAbstractionChanged();
 
+    /*!
+     *  Handle creation of port maps with required logical signals.
+     */
+    void onCreateRequiredSignals();
+
+    /*!
+     *  Handle creation of port maps with optional logical signals.
+     */
+    void onCreateOptionalSignals();
+
+    /*!
+     *  Handle creation of port maps with all logical signals.
+     */
+    void onCreateAllSignals();
+
 private:
 	
     //! No copying.	No assignment.

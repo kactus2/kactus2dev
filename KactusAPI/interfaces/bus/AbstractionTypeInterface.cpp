@@ -71,15 +71,13 @@ void AbstractionTypeInterface::setSystemGroup(QString const& systemGroup)
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypeInterface::setupAbstractionForPortMapInterface()
 //-----------------------------------------------------------------------------
-bool AbstractionTypeInterface::setupAbstractionTypeForPortMapInterface(int const& abstractionTypeIndex,
-    General::InterfaceMode busMode, QString const& systemGroup)
+bool AbstractionTypeInterface::setupAbstractionTypeForPortMapInterface(int const& abstractionTypeIndex)
 {
     QSharedPointer<AbstractionType> abstraction = getAbstraction(abstractionTypeIndex);
     if (abstraction)
     {
         portMapInterface_->setupPortMaps(abstraction);
-        portMapInterface_->setupBusMode(busMode);
-        portMapInterface_->setupSystemGroup(systemGroup);
+        setupAbstractionDefinitionForPortMapInterface(abstractionTypeIndex);
 
         return true;
     }

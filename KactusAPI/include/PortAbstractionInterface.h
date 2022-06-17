@@ -266,6 +266,18 @@ public:
     DirectionTypes::Direction getDirection(int const& portIndex) const;
 
     /*!
+     *  Get the direction of the selected signal.
+     *
+     *      @param [in] portName        The selected signal name.
+     *      @param [in] mode            The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return Direction of the selected signal.
+     */
+    DirectionTypes::Direction getDirection(std::string const& portName, General::InterfaceMode mode,
+        std::string const& systemGroup) const;
+
+    /*!
      *  Set a new direction for the selected signal.
      *
      *      @param [in] portIndex       Index of the selected signal.
@@ -288,12 +300,24 @@ public:
      *  Get the width of the selected signal.
      *
      *      @param [in] portName        Name of the selected port.
-     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] interfaceMode   The selected bus interface mode in string form.
      *      @param [in] systemGroup     The selected system group.
      *
      *      @return Width of the selected signal.
      */
     std::string getWidth(std::string const& portName, std::string const& interfaceMode,
+        std::string const& systemGroup) const;
+
+    /*!
+     *  Get the width of the selected signal.
+     *
+     *      @param [in] portName        Name of the selected port.
+     *      @param [in] interfaceMode   The selected bus interface mode.
+     *      @param [in] systemGroup     The selected system group.
+     *
+     *      @return Width of the selected signal.
+     */
+    std::string getWidth(std::string const& portName, General::InterfaceMode interfaceMode,
         std::string const& systemGroup) const;
 
     /*!

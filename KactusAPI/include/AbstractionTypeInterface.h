@@ -87,13 +87,10 @@ public:
      *  Setup the containing port map interface.
      *
      *      @param [in] abstractionTypeIndex    Index of the selected abstraction type.
-     *      @param [in] busMode                 The selected interface mode.
-     *      @param [in] systemGroup             The selected system group.
      *
      *      @return True, if succesfull, false otherwise.
      */
-    bool setupAbstractionTypeForPortMapInterface(int const& abstractionTypeIndex, General::InterfaceMode busMode,
-        QString const& systemGroup);
+    bool setupAbstractionTypeForPortMapInterface(int const& abstractionTypeIndex);
 
     /*!
      *  Setup the abstraction definition for port map interface.

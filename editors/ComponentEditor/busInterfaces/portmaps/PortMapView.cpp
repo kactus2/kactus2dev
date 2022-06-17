@@ -24,6 +24,9 @@
 PortMapView::PortMapView(PortMapInterface* portMapInterface, QWidget* parent):
 EditableTableView(parent),
 autoConnectAction_(tr("Auto connect"), this),
+createAllSignalsAction_(tr("All"), this),
+createRequiredSignalsAction_(tr("Required"), this),
+createOptionalSignalsAction_(tr("Optional"), this),
 mapInterface_(portMapInterface)
 {
     horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
@@ -49,11 +52,24 @@ mapInterface_(portMapInterface)
 //-----------------------------------------------------------------------------
 void PortMapView::setupActions()
 {
-    autoConnectAction_.setToolTip(
-        tr("Automatically create a port map from this logical signal and physical port."));
-    autoConnectAction_.setStatusTip(
-        tr("Automatically create a port map from this logical signal and physical port."));
+    autoConnectAction_.setToolTip(tr("Automatically connect logical signals to physical ports."));
+    autoConnectAction_.setStatusTip(tr("Automatically connect logical signals to physical ports."));
     connect(&autoConnectAction_, SIGNAL(triggered()), this, SLOT(onAutoConnect()), Qt::UniqueConnection);
+
+    createAllSignalsAction_.setToolTip(tr("Create port maps from all signals"));
+    createAllSignalsAction_.setStatusTip(tr("Create port maps from all signals"));
+    connect(&createAllSignalsAction_, SIGNAL(triggered()), this, SIGNAL(createAllSignals()), Qt::UniqueConnection);
+
+
+    createRequiredSignalsAction_.setToolTip(tr("Create port maps from the required signals"));
+    createRequiredSignalsAction_.setStatusTip(tr("Create port maps from the required signals"));
+    connect(&createRequiredSignalsAction_, SIGNAL(triggered()),
+        this, SIGNAL(createRequiredSignals()), Qt::UniqueConnection);
+
+    createOptionalSignalsAction_.setToolTip(tr("Create port maps from the optional signals"));
+    createOptionalSignalsAction_.setStatusTip(tr("Create port maps from the optional signals"));
+    connect(&createOptionalSignalsAction_, SIGNAL(triggered()),
+        this, SIGNAL(createOptionalSignals()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,10 +90,19 @@ void PortMapView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction(&cutAction_);
         menu.addAction(&copyAction_);
         menu.addAction(&pasteAction_);
+
+        menu.addSeparator();
+        menu.addAction(&autoConnectAction_);
     }
 
     menu.addSeparator();
-    menu.addAction(&autoConnectAction_);
+
+    QMenu* signalAddMenu = menu.addMenu("Add signals");
+    signalAddMenu->addAction(&createAllSignalsAction_);
+    signalAddMenu->addAction(&createRequiredSignalsAction_);
+    signalAddMenu->addAction(&createOptionalSignalsAction_);
+
+    menu.addMenu(signalAddMenu);
 
     if (importExportAllowed())
     {
