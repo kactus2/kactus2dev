@@ -11,12 +11,12 @@
 
 #include "ScriptingSideArea.h"
 
-#include "ScriptingTextEditor.h"
+#include "ScriptInputEditor.h"
 
 //-----------------------------------------------------------------------------
 // Function: ScriptingSideArea::ScriptingSideArea()
 //-----------------------------------------------------------------------------
-ScriptingSideArea::ScriptingSideArea(ScriptingTextEditor *editor) : QWidget(editor), editor_(editor)
+ScriptingSideArea::ScriptingSideArea(ScriptInputEditor* editor) : QWidget(editor), editor_(editor)
 {
 
 }
@@ -34,6 +34,6 @@ QSize ScriptingSideArea::sizeHint() const
 //-----------------------------------------------------------------------------
 void ScriptingSideArea::paintEvent(QPaintEvent *event)
 {
-    editor_->sideAreaPaintEvent();
+    editor_->sideAreaPaintEvent(event);
     event->accept();
 }

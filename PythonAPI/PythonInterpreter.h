@@ -46,7 +46,6 @@ public:
      // ! The destructor.
     virtual ~PythonInterpreter();
 
-
     /*!
      * Initializes the interpterter. This function must be called before writing any commands with write().
      *
@@ -56,19 +55,16 @@ public:
      */
      bool initialize(bool interactive = true);     
 
-     /*!
-      * Run a script from a given file.
-      *
-      *     @param [in] filePath  Path to the file to run.
-      */
-      void runFile(QString const& filePath);
-
     /*!
-     * Execute the given line in the interpreter.
+     * Execute a single line in the interpreter.
      *
      *     @param [in] line  The line to execute.
      */
      void execute(std::string const& line);
+
+signals:
+    
+    void executeDone();
 
 public slots:
 
@@ -78,6 +74,20 @@ public slots:
      *     @param [in] command  The command to execute.
      */
     virtual void write(QString const& command) override final;
+
+    /*!
+     * Execute the given arbitrary long string in the interpreter.
+     *
+     *     @param [in] string  The string to execute.
+     */
+    void executeString(QString const& string);
+
+    /*!
+     * Run a script from a given file.
+     *
+     *     @param [in] filePath  Path to the file to run.
+     */
+    void runFile(QString const& filePath);
 
 private:
 
@@ -101,7 +111,7 @@ private:
      * Write prompt to output.
      */
      void printPrompt() const;
-  
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

@@ -42,14 +42,6 @@ LinuxDeviceTreePlugin::LinuxDeviceTreePlugin()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreePlugin::~LinuxDeviceTreePlugin()
-//-----------------------------------------------------------------------------
-LinuxDeviceTreePlugin::~LinuxDeviceTreePlugin()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreePlugin::getName()
 //----------------------------------------------------------------------------
 QString LinuxDeviceTreePlugin::getName() const
@@ -62,7 +54,7 @@ QString LinuxDeviceTreePlugin::getName() const
 //-----------------------------------------------------------------------------
 QString LinuxDeviceTreePlugin::getVersion() const
 {
-    return "0.2";
+    return "0.3";
 }
 
 //-----------------------------------------------------------------------------
@@ -78,21 +70,21 @@ QString LinuxDeviceTreePlugin::getDescription() const
 //-----------------------------------------------------------------------------
 QString LinuxDeviceTreePlugin::getVendor() const
 {
-    return tr("TUT");
+    return tr("tuni.fi");
 }
 
 //-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreePlugin::getLicence()
+// Function: LinuxDeviceTreePlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString LinuxDeviceTreePlugin::getLicence() const
+QString LinuxDeviceTreePlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreePlugin::getLicenceHolder()
+// Function: LinuxDeviceTreePlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString LinuxDeviceTreePlugin::getLicenceHolder() const
+QString LinuxDeviceTreePlugin::getLicenseHolder() const
 {
     return tr("Public");
 }
@@ -149,6 +141,7 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     {
         QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > acceptedContainers =
             dialog.getAcceptedContainers();
+
         if (!acceptedContainers.isEmpty())
         {
             generateDeviceTree(

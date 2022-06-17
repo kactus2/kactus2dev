@@ -31,7 +31,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! BusDefGroup contains elements to set the properties of a Bus Definition.
 //-----------------------------------------------------------------------------
-class BusDefGroup : public QGroupBox
+class BusDefGroup : public QWidget
 {
 	Q_OBJECT
 

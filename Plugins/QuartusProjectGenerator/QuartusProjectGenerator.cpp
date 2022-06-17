@@ -77,18 +77,18 @@ QString QuartusProjectGenerator::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusProjectGenerator::getLicence()
+// Function: QuartusProjectGenerator::getLicense()
 //-----------------------------------------------------------------------------
-QString QuartusProjectGenerator::getLicence() const
+QString QuartusProjectGenerator::getLicense() const
 {
-    static QString licence(tr("GPL2"));
-    return licence;
+    static QString license(tr("GPL2"));
+    return license;
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusProjectGenerator::getLicenceHolder()
+// Function: QuartusProjectGenerator::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString QuartusProjectGenerator::getLicenceHolder() const
+QString QuartusProjectGenerator::getLicenseHolder() const
 {
     static QString holder(tr("Public"));
     return holder;

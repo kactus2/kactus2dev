@@ -47,11 +47,11 @@ public:
     //! Returns the vendor of the plugin.     
     virtual QString getVendor() const;
 
-    //! Returns the licence of the plugin.
-    virtual QString getLicence() const;
+    //! Returns the license of the plugin.
+    virtual QString getLicense() const;
 
     //! Returns the license holder i.e. who is the plugin licensed to.
-    virtual QString getLicenceHolder() const;
+    virtual QString getLicenseHolder() const;
 
     /*!
      *  This can be used to show custom plugin-specific settings UI in the Kactus2 settings dialog.

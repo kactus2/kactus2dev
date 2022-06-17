@@ -131,7 +131,7 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 
     outputStream << " #(" << endl;
 
-    foreach(QSharedPointer<Parameter> parameter, *component_->getMetaParameters())
+    for (QSharedPointer<Parameter> parameter : *component_->getMetaParameters())
     {
         bool isLastParameter = parameter == component_->getMetaParameters()->last();
         writeParameter(outputStream, parameter, isLastParameter);

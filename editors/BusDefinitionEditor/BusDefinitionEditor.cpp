@@ -16,6 +16,7 @@
 #include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
+#include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
 #include <KactusAPI/include/PortAbstractionInterface.h>
@@ -336,10 +337,23 @@ void BusDefinitionEditor::setupLayout()
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
+    QWidget* busDefGroup = new QWidget(this);
+    QVBoxLayout* busLayout = new QVBoxLayout(busDefGroup);
+    busLayout->addWidget(new SummaryLabel(tr("Bus definition"), this), 0, Qt::AlignCenter);
+    busLayout->addWidget(&busDefGroup_);
+    busLayout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget* absDefGroup = new QWidget(this);
+    QVBoxLayout* absLayout = new QVBoxLayout(absDefGroup);
+    absLayout->addWidget(new SummaryLabel(tr("Abstraction definition"), this), 0, Qt::AlignCenter);
+    absLayout->addWidget(&absDefGroup_);
+    absLayout->setContentsMargins(0, 0, 0, 0);
+
+
     QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
-    verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    verticalSplitter->addWidget(&busDefGroup_);
-    verticalSplitter->addWidget(&absDefGroup_);
+    verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
+    verticalSplitter->addWidget(busDefGroup);
+    verticalSplitter->addWidget(absDefGroup);
     verticalSplitter->setStretchFactor(0, 1);
     verticalSplitter->setStretchFactor(1, 300);
     verticalSplitter->setContentsMargins(2, 2, 2, 2);

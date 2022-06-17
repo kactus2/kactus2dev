@@ -34,7 +34,7 @@ ItemEditor(component, handler, parent),
     proxy_(this),
     model_(component, parameterFinder, this)
 {
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Indirect interfaces"), this);
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Indirect interfaces summary"), this);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);

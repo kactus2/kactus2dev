@@ -48,7 +48,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~LinuxDeviceTreeGenerator();
+    ~LinuxDeviceTreeGenerator() = default;
 
     /*!
      *  Generates the linux device tree.
@@ -91,8 +91,7 @@ private:
      *      @param [in] masterRoots     Roots of the connectivity graph.
      *      @param [in] prefix          Current tab prefix of the items.
      */
-    void writeTreeStart(QTextStream& outputStream, QString const& designVendor, QString const& designName,
-        QVector<QSharedPointer<ConnectivityInterface> > masterRoots, QString& prefix);
+    void writeTreeStart(QTextStream& outputStream, QString const& designVendor, QString const& designName, QString const& prefix, int addressSize, int rangeSize) const;
 
 	/*!
 	 *  Write the found memory paths of the selected CPU container.
@@ -104,7 +103,7 @@ private:
      */
     void writeContainer(QTextStream& outputStream,
         QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> cpuContainer, bool writeAddressBlocks,
-        QString& prefix);
+        QString& prefix, int addressSize, int rangeSize);
 
     /*!
      *  Write the selected interface path.
@@ -117,7 +116,7 @@ private:
      */
     void startPathWriting(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> pathRootNode,
         QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> cpuContainer, bool writeAddressBlocks,
-        QString& prefix);
+        QString& prefix, int addressSize, int rangeSize);
 
     /*!
      *	Write an introduction to the CPUs.
@@ -155,7 +154,7 @@ private:
      */
     void writePathNode(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> previousInterface,
         QSharedPointer<const ConnectivityInterface> interfaceNode, quint64 const& baseAddress,
-        quint64 const& memoryItemRange, QString& prefix, bool writeAddressBlocks);
+        quint64 const& memoryItemRange, QString& prefix, bool writeAddressBlocks, int addressSize, int rangeSize);
 
     /*!
      *  Check if an interface node has access to memory interface nodes.
@@ -187,7 +186,7 @@ private:
      *      @param [in] prefix          The prefix for the bridge.
      */
     void writeBridge(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
-        QString const& bridgeType, quint64 baseAddress, quint64 memoryRange, QString& prefix);
+        QString const& bridgeType, int addressSize, int rangeSize, QString& prefix);
 
     /*!
      *  Get address and size requirements of the selected interface node.
@@ -211,21 +210,7 @@ private:
      *
      *      @return The amount of 32 bit sizes of the selected value.
      */
-    int calculateRequiredBits(quint64 const& requirementValue) const;
-
-    /*!
-     *  Write a memory map item.
-     *
-     *      @param [in] outputStream        Stream to write into.
-     *      @param [in] interfaceNode       Interface containing the memory item.
-     *      @param [in] itemBaseAddress     Base address of the memory location.
-     *      @param [in] baseAddress         Base address of the memory item.
-     *      @param [in] range               Range of the memory item.
-     *      @param [in] prefix              Prefix of the memory map item.
-     *      @param [in] writeAddressBlocks  Flag for writing address block data.
-     */
-    void writeMemoryMapItem(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> interfaceNode,
-        quint64 itemBaseAddress, quint64 mapBaseAddress, quint64 range, QString& prefix, bool writeAddressBlocks);
+    unsigned int calculateWordSize(quint64 const& requirementValue) const;
 
     /*!
      *  Write memory item.
@@ -241,9 +226,9 @@ private:
      *      @param [in] memoryNode          Interface containing the memory item.
      *      @param [in] writeAddressBlocks  Flag for writing address block data.
      */
-    void writeMemoryData(QTextStream& outputStream, QString const& itemName, QString const& instanceName,
-        QString const& componentVLNV, quint64 const& itemBaseAddress, quint64 const& mapBaseAddress,
-        quint64 const& range, bool isMemory, QString& prefix,
+    void writeMemoryData(QTextStream& outputStream, quint64 const& itemBaseAddress, quint64 const& mapBaseAddress,
+        quint64 const& range,
+        int addressSize, int rangeSize, bool isMemory, QString& prefix,
         QSharedPointer<ConnectivityInterface const> memoryNode, bool writeAddressBlocks) const;
 
     /*!
@@ -255,7 +240,7 @@ private:
      *      @param [in] prefix              Prefix of the address blocks.
      */
     void writeAddressBlocksData(QTextStream& outputStream, QSharedPointer<ConnectivityInterface const> memoryNode,
-        quint64 const& itemBaseAddress, QString& prefix) const;
+        quint64 const& itemBaseAddress, int addressSize, int rangeSize, QString& prefix) const;
 
     /*!
      *  Write the selected address block.
@@ -267,8 +252,16 @@ private:
      *      @param [in] prefix              Prefix of the address blocks.
      */
     void writeSingleAddressBlock(QTextStream& outputStream,
-        QSharedPointer<ConnectivityInterface const> containingMemoryNode, QSharedPointer<MemoryItem> blockItem,
-        quint64 const& itemBaseAddress, QString& prefix) const;
+        QString const& vendorName, QSharedPointer<MemoryItem> blockItem,
+        quint64 const& itemBaseAddress, int addressSize, int rangeSize, QString& prefix) const;
+
+    QString getStatus(QSharedPointer<MemoryItem> blockItem) const;
+
+    void writeRegister(QTextStream& output, quint64 const& address, quint64 const& range, 
+        int addressSize, int rangeSize,
+        QString const& prefix) const;
+
+    QString formatValue(quint64 const& address, int addressSize) const;
 
     /*!
      *  Write the memory items with usage memory.
@@ -280,7 +273,7 @@ private:
      */
     void writeMemories(QTextStream& outputStream,
         QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> cpuContainer, QString& prefix,
-        bool writeAddressBlocks) const;
+        bool writeAddressBlocks,int addressSize, int rangeSize) const;
 
     /*!
      *	Get the active view matching the selected view name.

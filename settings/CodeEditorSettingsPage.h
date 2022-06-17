@@ -16,6 +16,8 @@
 #include <common/widgets/colorBox/ColorBox.h>
 #include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
+#include <Plugins/common/LanguageHighlighter.h>
+
 #include <QLineEdit>
 #include <QSettings>
 #include <QRadioButton>
@@ -24,8 +26,6 @@
 #include <QListWidget>
 #include <QFrame>
 #include <QCheckBox>
-
-#include <editors/CSourceEditor/CSourceHighlighter.h>
 
 //-----------------------------------------------------------------------------
 //! CodeEditorSettingsPage class.
@@ -128,7 +128,7 @@ private:
     ColorBox* previewBox_;
 
     //! The current (non-saved) highlight styles.
-    HighlightStyleDesc styles_[CSourceHighlighter::STYLE_COUNT];
+    HighlightStyleDesc styles_[LanguageHighlighter::STYLE_COUNT];
 };
 
 //-----------------------------------------------------------------------------

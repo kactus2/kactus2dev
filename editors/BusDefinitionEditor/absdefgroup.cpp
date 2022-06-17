@@ -35,7 +35,7 @@
 AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface,
     PortAbstractionInterface* extendInterface,
     QWidget *parent):
-QGroupBox(tr("Signals (Abstraction Definition)"), parent),
+QWidget(parent),
 vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 descriptionEditor_(new QPlainTextEdit(this)),
@@ -77,14 +77,6 @@ libraryHandler_(libraryHandler)
     connect(extendEditor_, SIGNAL(vlnvEdited()), this, SLOT(onExtendChanged()), Qt::UniqueConnection);
 
 	setupLayout();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbsDefGroup::~AbsDefGroup()
-//-----------------------------------------------------------------------------
-AbsDefGroup::~AbsDefGroup()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +124,7 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 //-----------------------------------------------------------------------------
 bool AbsDefGroup::abstractionContainsTransactionalPorts() const
 {
-    foreach(QSharedPointer<PortAbstraction> logicalPort, *abstraction_->getLogicalPorts())
+    for (QSharedPointer<PortAbstraction> logicalPort : *abstraction_->getLogicalPorts())
     {
         if (logicalPort->hasTransactional())
         {
@@ -247,7 +239,7 @@ QSharedPointer<const AbstractionDefinition> AbsDefGroup::getExtendedAbstraction(
 //-----------------------------------------------------------------------------
 // Function: absdefgroup::extendSignals()
 //-----------------------------------------------------------------------------
-void AbsDefGroup::extendSignals(QSharedPointer<const AbstractionDefinition> extendAbstraction)
+void AbsDefGroup::extendSignals(QSharedPointer<const AbstractionDefinition> /*extendAbstraction*/)
 {
     portModel_->setExtendedPorts();
 }

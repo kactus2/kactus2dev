@@ -43,8 +43,7 @@ SettingsPage(settings),
     settings_(settings),
     pluginDirSelector_(QApplication::applicationDirPath(), 
         settings.value("Platform/PluginsPath", QStringList("Plugins")).toStringList(), this),
-    pluginsTree_(this),
-    settingsStack_(this),    
+    pluginsTree_(this), 
     infoStack_(this),
     directoriesChanged_(false)
 {
@@ -154,8 +153,7 @@ void PluginSettingsPage::onTreeItemChanged(QTreeWidgetItem* current, QTreeWidget
         index = current->data(0, PLUGIN_STACK_INDEX_ROLE).toInt();
     }
 
-    Q_ASSERT(index < settingsStack_.count());
-    settingsStack_.setCurrentIndex(index);
+    Q_ASSERT(index < infoStack_.count());
     infoStack_.setCurrentIndex(index);
 }
 
@@ -196,16 +194,7 @@ QTreeWidgetItem* PluginSettingsPage::createPluginItem(IPlugin* plugin)
     }
 
     item->setData(0, PLUGIN_POINTER_ROLE, qVariantFromValue(static_cast<void*>(plugin)));
-    item->setData(0, PLUGIN_STACK_INDEX_ROLE, settingsStack_.count());
-
-    // Retrieve the settings widget and load the current settings.
-    QWidget* settingsWidget = plugin->getSettingsWidget();
-    if (settingsWidget == nullptr)
-    {
-        settingsWidget = new QWidget(this);
-    }    
-
-    settingsStack_.addWidget(settingsWidget);
+    item->setData(0, PLUGIN_STACK_INDEX_ROLE, infoStack_.count());
 
     infoStack_.addWidget(new PluginInfoWidget(plugin));
 
@@ -296,13 +285,6 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
 //-----------------------------------------------------------------------------
 void PluginSettingsPage::resetStacks()
 {
-    while (settingsStack_.count() > 0)
-    {
-        settingsStack_.removeWidget(settingsStack_.widget(0));
-    }
-
-    settingsStack_.addWidget(new QWidget());
-
     while (infoStack_.count() > 0)
     {
         infoStack_.removeWidget(infoStack_.widget(0));
@@ -326,10 +308,6 @@ void PluginSettingsPage::setupLayout()
     QVBoxLayout* infoLayout = new QVBoxLayout(infoGroup);
     infoLayout->addWidget(&infoStack_);
 
-    QGroupBox* settingsGroup = new QGroupBox(tr("Plugin settings"), this);
-
-    QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);
-    settingsLayout->addWidget(&settingsStack_);
 
     QGridLayout* layout = new QGridLayout(this);
     layout->addWidget(new QLabel(tr("Plugin directories:"), this), 0, 0, 1, 1);
@@ -337,7 +315,6 @@ void PluginSettingsPage::setupLayout()
     layout->addWidget(&pluginDirSelector_, 1, 0, 1, 1);
     layout->addWidget(&pluginsTree_, 1, 1, 1, 1);
     layout->addWidget(infoGroup, 2, 0, 1, 2);
-    layout->addWidget(settingsGroup, 3, 0, 1, 2);
     layout->setColumnStretch(0, 1);
     layout->setColumnStretch(1, 1);
 }

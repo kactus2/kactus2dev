@@ -19,25 +19,27 @@ class SummaryLabel : public QLabel {
 public:
 
 	//! \brief The increment amount for normal font point size.
-	static const int POINTSIZE_INCREMENT = 0;
+	static const int POINTSIZE_INCREMENT = 6;
 
-	/*! \brief The constructor
+	/*!
+	 * The constructor
 	 *
-	 * \param text The text to display in the label.
-	 * \param parent Pointer to the owner of this label.
-	 *
-	*/
-	SummaryLabel(const QString& text, QWidget *parent);
+	 *     @param [in] text                 The text to display in the label.
+	 *     @param [in] parent               The owner of this label.
+	 *     @param [in] showExtensionIcon    If true, an extension icon is shown next to the label.
+	 */
+	 SummaryLabel(const QString& text, QWidget *parent, bool showExtensionIcon = false);
 	
 	//! \brief The destructor
-	virtual ~SummaryLabel();
+	virtual ~SummaryLabel() = default;
 
-private:
-	//! \brief No copying
-	SummaryLabel(const SummaryLabel& other);
+    //! \brief No copying
+    SummaryLabel(const SummaryLabel& other) = delete;
 
-	//! \brief No assignment
-	SummaryLabel& operator=(const SummaryLabel& other);
+    //! \brief No assignment
+    SummaryLabel& operator=(const SummaryLabel& other) = delete;
+
+
 };
 
 #endif // SUMMARYLABEL_H

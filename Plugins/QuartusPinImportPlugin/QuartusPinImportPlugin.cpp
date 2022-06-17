@@ -65,17 +65,17 @@ QString QuartusPinImportPlugin::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusPinImportPlugin::getLicence()
+// Function: QuartusPinImportPlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString QuartusPinImportPlugin::getLicence() const
+QString QuartusPinImportPlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusPinImportPlugin::getLicenceHolder()
+// Function: QuartusPinImportPlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString QuartusPinImportPlugin::getLicenceHolder() const
+QString QuartusPinImportPlugin::getLicenseHolder() const
 {
     return tr("Public");
 }

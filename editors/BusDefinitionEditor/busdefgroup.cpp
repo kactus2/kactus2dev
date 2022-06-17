@@ -30,7 +30,7 @@
 // Function: BusDefGroup::BusDefGroup()
 //-----------------------------------------------------------------------------
 BusDefGroup::BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent):
-QGroupBox(tr("General (Bus Definition)"), parent),
+QWidget(parent),
 library_(libraryHandler),
 busDef_(),
 directConnection_(tr("Allow non-mirrored connections"), this),

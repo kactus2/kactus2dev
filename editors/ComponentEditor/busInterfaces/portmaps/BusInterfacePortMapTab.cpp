@@ -16,7 +16,6 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapDelegate.h>
-#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
 #include <KactusAPI/include/PortMapInterface.h>

@@ -64,17 +64,17 @@ QString ModelSimGeneratorPlugin::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelSimGeneratorPlugin::getLicence()
+// Function: ModelSimGeneratorPlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString ModelSimGeneratorPlugin::getLicence() const
+QString ModelSimGeneratorPlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModelSimGeneratorPlugin::getLicenceHolder()
+// Function: ModelSimGeneratorPlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString ModelSimGeneratorPlugin::getLicenceHolder() const
+QString ModelSimGeneratorPlugin::getLicenseHolder() const
 {
     return tr("Public");
 }

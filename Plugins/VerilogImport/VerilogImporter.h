@@ -68,14 +68,14 @@ public:
     virtual QString getVendor() const override final;
     
     /*!
-     *  Returns the licence of the plugin.
+     *  Returns the license of the plugin.
      */
-    virtual QString getLicence() const override final;
+    virtual QString getLicense() const override final;
     
     /*!
-     *  Returns the licence holder of the plugin.
+     *  Returns the license holder of the plugin.
      */
-    virtual QString getLicenceHolder() const override final;
+    virtual QString getLicenseHolder() const override final;
     
     /*!
      *  Returns the settings widget.

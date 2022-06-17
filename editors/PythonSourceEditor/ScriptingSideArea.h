@@ -15,7 +15,7 @@
 #include <QWidget>
 
 
-class ScriptingTextEditor;
+class ScriptInputEditor;
 
 //-----------------------------------------------------------------------------
 //! Widget for showing info besides scripting text editor.
@@ -25,22 +25,22 @@ class ScriptingSideArea : public QWidget
 public:
 
     //! The constructor.
-    ScriptingSideArea(ScriptingTextEditor *editor);
+    explicit ScriptingSideArea(ScriptInputEditor* editor);
 
     virtual ~ScriptingSideArea() = default;
 
-    //! 
+    //! Size hint for preferred size in layout.
     QSize sizeHint() const override;
 
 protected:
 
     //! The handler for paint events.
-    void paintEvent(QPaintEvent *event) override;
+    virtual void paintEvent(QPaintEvent *event) override;
 
 private:
 
     //! The scripting editor for which to show side information.
-    ScriptingTextEditor *editor_;
+    ScriptInputEditor* editor_;
 };
 
 #endif // SCRIPTING_SIDE_AREA_H

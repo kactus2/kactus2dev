@@ -14,6 +14,7 @@
 
 #include <KactusAPI/include/utils.h>
 #include <common/widgets/tabDocument/TabDocument.h>
+#include <editors/PythonSourceEditor/PythonSourceEditor.h>
 
 class LibraryHandler;
 class LibraryWidget;
@@ -581,7 +582,8 @@ private:
     QDockWidget* connectionDock_;
 
     QDockWidget* scriptConsoleDock_;
-    ScriptingConsole* scriptConsole_;
+
+    PythonSourceEditor* scriptConsole_;
 
     //! The dock widget that contains the vendor extension editor.
     QDockWidget* extensionDock_;

@@ -70,17 +70,17 @@ QString VHDLGeneratorPlugin::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLGeneratorPlugin::getLicence()
+// Function: VHDLGeneratorPlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString VHDLGeneratorPlugin::getLicence() const
+QString VHDLGeneratorPlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLGeneratorPlugin::getLicenceHolder()
+// Function: VHDLGeneratorPlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString VHDLGeneratorPlugin::getLicenceHolder() const
+QString VHDLGeneratorPlugin::getLicenseHolder() const
 {
     return tr("Public");
 }

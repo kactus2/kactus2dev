@@ -117,9 +117,6 @@ private:
     //! The plugins tree widget.
     QTreeWidget pluginsTree_;
 
-    //! The settings stack.
-    QStackedWidget settingsStack_;
-
     //! The plugin info stack.
     QStackedWidget infoStack_;
 

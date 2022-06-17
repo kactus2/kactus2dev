@@ -12,7 +12,7 @@
 #include "mainwindow.h"
 
 #include "SplashScreen.h"
-#include "ExitScreen.h"
+
 #include "VersionHelper.h"
 
 #include "NewWorkspaceDialog.h"
@@ -42,6 +42,7 @@
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsColumnConstants.h>
+#include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
 #include <KactusAPI/KactusAPI.h>
 
@@ -269,6 +270,8 @@ void MainWindow::restoreSettings()
 
     // Update the workspace menu.
     updateWorkspaceMenu();
+
+    dockHandler_->applySettings();
 }
 
 //-----------------------------------------------------------------------------
@@ -1451,15 +1454,6 @@ void MainWindow::closeEvent(QCloseEvent* event)
     {
         event->ignore();
         return;
-    }
-
-    QSettings settings;
-    bool showExitScreen = settings.value("General/showExitScreen", true).toBool();
-    if (showExitScreen)
-    {
-        hide();
-        ExitScreen exitScreen(this);
-        exitScreen.exec();
     }
 }
 

@@ -31,6 +31,8 @@
 
 #include <IPXACTmodels/Design/Design.h>
 
+#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
+
 #include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>
 
 #include <tests/MockObjects/LibraryMock.h>
@@ -68,9 +70,12 @@ private slots:
 
     void testHierarchicalPath();
 
+    void testMemoryInAddressBlock();
 private:
 
-    QString runGenerator(QString const& activeView);
+    QString runGenerator(QString const& activeView, bool generateAddressBlocks = false);
+
+    QString getFileContent(QString const& fileName);
 
     QSharedPointer<AddressSpace> createAddressSpace(QString const& spaceName, QString const& range,
         QString const& width, QSharedPointer<Component> containingComponent) const;
@@ -123,7 +128,6 @@ private:
     QSharedPointer<Design> design_;
 
     LibraryMock* library_;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -167,7 +171,7 @@ void tst_LinuxDeviceTreeGenerator::cleanup()
 {
     library_->clear();
 
-    QFile outputFile("./output.dts");
+    QFile outputFile("./TopComponent_0.dts");
     outputFile.remove();
 }
 
@@ -176,27 +180,10 @@ void tst_LinuxDeviceTreeGenerator::cleanup()
 //-----------------------------------------------------------------------------
 void tst_LinuxDeviceTreeGenerator::testWriteSimpleCPU()
 {
-    QSharedPointer<AddressSpace> testSpace =
-        createAddressSpace(QStringLiteral("testSpace"), "16", "16", topComponent_);
-    QSharedPointer<Cpu> testCPU = createCPU("testCPU", testSpace->name(), topComponent_);
+    QString output = runGenerator("hierarchical");
+    QString expectedOutput = "";
 
-    QSharedPointer<View> testView(new View("testView"));
-    topComponent_->getViews()->append(testView);
-
-    QString output = runGenerator(testView->name());
-    QString expectedOutPut = "/dts-v0/;\n\n"
-        "/ {\n"
-            "\tcpus {\n"
-                "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
-                "\t\t// 'testCPU' in component Test:TestLibrary:TopComponent:1.0\n"
-                "\t\tcpu@0 {\n"
-                    "\t\t\treg = <0>;\n"
-                "\t\t};\n"
-            "\t};\n"
-        "};\n\n";
-
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -236,12 +223,17 @@ void tst_LinuxDeviceTreeGenerator::testWriteSimpleConnection()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -253,7 +245,7 @@ void tst_LinuxDeviceTreeGenerator::testWriteSimpleConnection()
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -300,12 +292,17 @@ void tst_LinuxDeviceTreeGenerator::testConnectToMemory()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
-        "/ {\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
+        "/ {\n"        
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -318,7 +315,7 @@ void tst_LinuxDeviceTreeGenerator::testConnectToMemory()
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -375,12 +372,17 @@ void tst_LinuxDeviceTreeGenerator::testConnectToMemoryAndMap()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
-        "/ {\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
+        "/ {\n"        
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -397,7 +399,7 @@ void tst_LinuxDeviceTreeGenerator::testConnectToMemoryAndMap()
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -438,12 +440,17 @@ void tst_LinuxDeviceTreeGenerator::testWriteSingleConnectionWithMultipleCPUs()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -459,7 +466,7 @@ void tst_LinuxDeviceTreeGenerator::testWriteSingleConnectionWithMultipleCPUs()
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -527,14 +534,19 @@ void tst_LinuxDeviceTreeGenerator::testWriteMultipleCPUs()
     createInterconnection(cpuInterface, mapInterface, design_);
     createInterconnection(secondCpuInterface, secondMapInterface, design_);
 
-    QString output = runGenerator(hierarchicalView_->name());
+    QString output0 = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput0 =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -544,24 +556,35 @@ void tst_LinuxDeviceTreeGenerator::testWriteMultipleCPUs()
             "\ttestMap@0 {\n"
                 "\t\treg = <0x0 0x1>;\n"
             "\t};\n\n"
-        "};\n\n"
-        "/dts-v1/;\n\n"
-        "/ {\n"
-            "\tcpus {\n"
-                "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
-                "\t\t// 'secondTestCPU' in component Test:TestLibrary:testCPU2:1.0\n"
-                "\t\tcpu@0 {\n"
-                    "\t\t\treg = <0>;\n"
-                "\t\t};\n"
-            "\t};\n\n"
-            "\t// Memory map 'secondTestMap' in instance 'secondMapInstance' of component Test:TestLibrary:SecondMapComponent:1.0\n"
-            "\tsecondTestMap@0 {\n"
-                "\t\treg = <0x0 0x1>;\n"
-            "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output0, expectedOutput0);
+
+    QString expectedOutputFile1 =
+        "/dts-v1/;\n\n"
+        "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
+        "\tcpus {\n"
+        "\t\t#address-cells = <1>;\n"
+        "\t\t#size-cells = <0>;\n\n"
+        "\t\t// 'secondTestCPU' in component Test:TestLibrary:testCPU2:1.0\n"
+        "\t\tcpu@0 {\n"
+        "\t\t\treg = <0>;\n"
+        "\t\t};\n"
+        "\t};\n\n"
+        "\t// Memory map 'secondTestMap' in instance 'secondMapInstance' of component Test:TestLibrary:SecondMapComponent:1.0\n"
+        "\tsecondTestMap@0 {\n"
+        "\t\treg = <0x0 0x1>;\n"
+        "\t};\n\n"
+        "};\n\n";
+
+    QString output1 = getFileContent("TopComponent_1.dts");
+    QCOMPARE(output1, expectedOutputFile1);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -613,12 +636,17 @@ void tst_LinuxDeviceTreeGenerator::testSingleCPUInMultipleMasterInterfaces()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -635,7 +663,7 @@ void tst_LinuxDeviceTreeGenerator::testSingleCPUInMultipleMasterInterfaces()
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -678,12 +706,17 @@ void tst_LinuxDeviceTreeGenerator::testAddressChange()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -695,7 +728,7 @@ void tst_LinuxDeviceTreeGenerator::testAddressChange()
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -755,24 +788,36 @@ void tst_LinuxDeviceTreeGenerator::testAddressChangeInMirroredSlave()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
                 "\t\t};\n"
             "\t};\n\n"
-            "\t// Memory map 'testMap' in instance 'mapInstance' of component Test:TestLibrary:MapComponent:1.0\n"
-                "\ttestMap@3F2 {\n"
-                "\t\treg = <0x3F2 0x64>;\n"
+        "\t// Instance 'channelInstance' of channel component Test:TestLibrary:channelComponent:1.0\n"
+        "\tchannelComponent {\n"
+            "\t\tcompatible = \"simple-bus\";\n"
+            "\t\t#address-cells = <1>;\n"
+            "\t\t#size-cells = <1>;\n"
+            "\n"
+            "\t\t// Memory map 'testMap' in instance 'mapInstance' of component Test:TestLibrary:MapComponent:1.0\n"
+                "\t\ttestMap@3F2 {\n"
+                "\t\t\treg = <0x3F2 0x64>;\n"
+                "\t\t};\n\n"
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -832,12 +877,17 @@ void tst_LinuxDeviceTreeGenerator::testCPUInMiddleOfPath()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -849,7 +899,7 @@ void tst_LinuxDeviceTreeGenerator::testCPUInMiddleOfPath()
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -932,12 +982,17 @@ void tst_LinuxDeviceTreeGenerator::testBusPath()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -947,14 +1002,14 @@ void tst_LinuxDeviceTreeGenerator::testBusPath()
             "\t// Instance 'axiInstance' of bridge component Test:TestLibrary:axe:1.0\n"
             "\taxe {\n"
                 "\t\tcompatible = \"simple-bus\";\n"
-                "\t\t#address-cells = <0x1>;\n"
-                "\t\t#size-cells = <0x1>;\n"
+                "\t\t#address-cells = <1>;\n"
+                "\t\t#size-cells = <1>;\n"
                 "\n"
                 "\t\t// Instance 'wrapInstance' of bridge component Test:TestLibrary:periph_bus_wrap:1.0\n"
                 "\t\tperiph_bus_wrap {\n"
                     "\t\t\tcompatible = \"simple-bus\";\n"
-                    "\t\t\t#address-cells = <0x1>;\n"
-                    "\t\t\t#size-cells = <0x1>;\n"
+                    "\t\t\t#address-cells = <1>;\n"
+                    "\t\t\t#size-cells = <1>;\n"
                     "\n"
                     "\t\t\t// Memory map 'testMap' in instance 'mapInstance_0' of component Test:TestLibrary:MapComponent:1.0\n"
                     "\t\t\ttestMap@0 {\n"
@@ -972,7 +1027,7 @@ void tst_LinuxDeviceTreeGenerator::testBusPath()
             "\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
@@ -1040,12 +1095,17 @@ void tst_LinuxDeviceTreeGenerator::testHierarchicalPath()
 
     QString output = runGenerator(hierarchicalView_->name());
 
-    QString expectedOutPut =
-        "/dts-v0/;\n\n"
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
         "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
             "\tcpus {\n"
                 "\t\t#address-cells = <1>;\n"
-                "\t\t#size-cells = <1>;\n\n"
+                "\t\t#size-cells = <0>;\n\n"
                 "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
                 "\t\tcpu@0 {\n"
                     "\t\t\treg = <0>;\n"
@@ -1057,19 +1117,115 @@ void tst_LinuxDeviceTreeGenerator::testHierarchicalPath()
             "\t};\n\n"
         "};\n\n";
 
-    QCOMPARE(output, expectedOutPut);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::testMemoryInAddressBlock()
+//-----------------------------------------------------------------------------
+void tst_LinuxDeviceTreeGenerator::testMemoryInAddressBlock()
+{
+    VLNV cpuVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "testCPU", "1.0");
+    QSharedPointer<Component> cpuComponent(new Component(cpuVLNV));
+
+    QSharedPointer<AddressSpace> testSpace =
+        createAddressSpace(QStringLiteral("testSpace"), "16", "16", cpuComponent);
+    QSharedPointer<Cpu> testCPU = createCPU("testCPU", testSpace->name(), cpuComponent);
+
+    QSharedPointer<BusInterface> cpuBus = createMasterBusInterface("topBus", testSpace, cpuComponent);
+
+    VLNV mapVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "MapComponent", "1.0");
+    QSharedPointer<Component> mapComponent(new Component(mapVlnv));
+
+    library_->addComponent(cpuComponent);
+    library_->addComponent(mapComponent);
+
+    QSharedPointer<MemoryMap> testMap = createMemoryMap("testMap", mapComponent);
+    createBlockForMap("testBlock", "0", "32", "8", testMap);
+    testMap->getMemoryBlocks()->first().dynamicCast<AddressBlock>()->setUsage(General::MEMORY);
+    createBlockForMap("extraBlock", "8", "32", "8", testMap);
+
+    QSharedPointer<BusInterface> mapBus = createSlaveBusInterface("mapBus", testMap, mapComponent);
+
+    QSharedPointer<ComponentInstance> cpuInstance =
+        createComponentInstance(cpuVLNV, "cpuInstance", "cpuID", design_);
+    QSharedPointer<ComponentInstance> mapInstance =
+        createComponentInstance(mapVlnv, "mapInstance", "mapID", design_);
+
+    QSharedPointer<ActiveInterface> cpuInterface(
+        new ActiveInterface(cpuInstance->getInstanceName(), cpuBus->name()));
+    QSharedPointer<ActiveInterface> mapInterface(
+        new ActiveInterface(mapInstance->getInstanceName(), mapBus->name()));
+
+    createInterconnection(cpuInterface, mapInterface, design_);
+
+    QString output = runGenerator(hierarchicalView_->name(), true);
+
+    QString expectedOutput =
+        "/dts-v1/;\n\n"
+        "/ {\n"
+        "\t#address-cells = <1>;\n"
+        "\t#size-cells = <1>;\n"
+        "\tmodel = \"Test,TestDesign\";\n"
+        "\tcompatible = \"Test,TestDesign\";\n"
+        "\n"
+        "\tcpus {\n"
+        "\t\t#address-cells = <1>;\n"
+        "\t\t#size-cells = <0>;\n\n"
+        "\t\t// 'testCPU' in component Test:TestLibrary:testCPU:1.0\n"
+        "\t\tcpu@0 {\n"
+        "\t\t\treg = <0>;\n"
+        "\t\t};\n"
+        "\t};\n\n"
+        "\t// Memory map 'testMap' in instance 'mapInstance' of component Test:TestLibrary:MapComponent:1.0\n"
+        "\ttestMap@0 {\n"
+        "\t\treg = <0x0 0x10>;\n"
+        "\n"
+        "\t\t// Address block 'testBlock'\n"
+        "\t\ttestBlock@0 {\n"
+        "\t\t\tcompatible = \"Test,testBlock\";\n"
+        "\t\t\tstatus = \"okay\";\n"       
+        "\t\t\tdevice_type = \"memory\";\n"
+        "\t\t};\n\n"
+        "\t\t// Address block 'extraBlock'\n"
+        "\t\textraBlock@8 {\n"
+        "\t\t\tcompatible = \"Test,extraBlock\";\n"
+        "\t\t\tstatus = \"okay\";\n"
+        "\t\t};\n"
+        "\t};\n\n"
+        "};\n\n";
+
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_LinuxDeviceTreeGenerator::runGenerator()
 //-----------------------------------------------------------------------------
-QString tst_LinuxDeviceTreeGenerator::runGenerator(QString const& activeView)
+QString tst_LinuxDeviceTreeGenerator::runGenerator(QString const& activeView, bool generateAddressBlocks)
 {
     LinuxDeviceTreeGenerator generator(library_);
-    QString outPutFileName = "output.dts";
-    generator.generate(topComponent_, activeView, outPutFileName);
+    QString outPutFileName = "TopComponent_0.dts";
 
-    QFile outputFile("./" + outPutFileName);
+    ConnectivityGraphFactory graphFactory(library_);
+    QSharedPointer<ConnectivityGraph> graph = graphFactory.createConnectivityGraph(topComponent_, activeView);
+
+    MasterSlavePathSearch searchAlgorithm;
+    QVector < QSharedPointer<ConnectivityInterface> > masterRoots = searchAlgorithm.findMasterSlaveRoots(graph);
+
+    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuContainers =
+        LinuxDeviceTreeCPUDetails::getCPUContainers(topComponent_->getVlnv().getName(), masterRoots, library_);
+
+    generator.generate(topComponent_, activeView, generateAddressBlocks, cpuContainers, "./");
+
+    return getFileContent(outPutFileName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_LinuxDeviceTreeGenerator::getFileContent()
+//-----------------------------------------------------------------------------
+QString tst_LinuxDeviceTreeGenerator::getFileContent(QString const& fileName)
+{
+    QFile outputFile("./" + fileName);
 
     outputFile.open(QIODevice::ReadOnly);
     QString output = outputFile.readAll();

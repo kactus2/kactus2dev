@@ -75,17 +75,17 @@ QString MemoryViewGeneratorPlugin::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryViewGeneratorPlugin::getLicence()
+// Function: MemoryViewGeneratorPlugin::getLicense()
 //-----------------------------------------------------------------------------
-QString MemoryViewGeneratorPlugin::getLicence() const
+QString MemoryViewGeneratorPlugin::getLicense() const
 {
     return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryViewGeneratorPlugin::getLicenceHolder()
+// Function: MemoryViewGeneratorPlugin::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString MemoryViewGeneratorPlugin::getLicenceHolder() const
+QString MemoryViewGeneratorPlugin::getLicenseHolder() const
 {
     return tr("Public");
 }

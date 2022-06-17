@@ -155,11 +155,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="MemoryViewGeneratorPlugin.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="MemoryViewGenerator.qrc">
       <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MemoryViewGeneratorPlugin.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -31,7 +31,7 @@ view_(this),
 proxy_(this),
 model_(handler, parameterFinder, busInterface, this)
 {
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Bus interfaces"), this);
+	SummaryLabel* summaryLabel = new SummaryLabel(tr("Bus interfaces summary"), this);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);

@@ -90,33 +90,6 @@ void PythonInterpreter::write(QString const& command)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonInterpreter::runFile()
-//-----------------------------------------------------------------------------
-void PythonInterpreter::runFile(QString const& filePath)
-{
-    Q_ASSERT_X(Py_IsInitialized(), "Python interpreter", "Trying to execute file without initializing.");
-
-
-    QFile scriptFile(filePath);
-    if (scriptFile.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        int fd = scriptFile.handle();
-        FILE* f = fdopen(dup(fd), "rb");
-
-        PyEval_AcquireThread(threadState_);
-        PyRun_SimpleFile(f, scriptFile.fileName().toLocal8Bit());
-        PyEval_ReleaseThread(threadState_);
-
-        fclose(f);
-
-        scriptFile.close();
-
-        printPrompt();
-    }
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: PythonInterpreter::execute()
 //-----------------------------------------------------------------------------
 void PythonInterpreter::execute(std::string const& command)
@@ -204,6 +177,56 @@ void PythonInterpreter::execute(std::string const& command)
     PyEval_ReleaseThread(threadState_);
 
     printPrompt();
+    emit executeDone();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonInterpreter::executeString()
+//-----------------------------------------------------------------------------
+void PythonInterpreter::executeString(QString const& string)
+{
+    PyEval_AcquireThread(threadState_);
+    PyObject* result = PyRun_String(string.toStdString().c_str(), Py_file_input, globalContext_, localContext_);
+
+    if (result == nullptr)
+    {
+        PyErr_Print();
+    }
+    else
+    {
+        Py_DECREF(result);
+    }
+
+    PyEval_ReleaseThread(threadState_);
+
+    printPrompt();
+    emit executeDone();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonInterpreter::runFile()
+//-----------------------------------------------------------------------------
+void PythonInterpreter::runFile(QString const& filePath)
+{
+    Q_ASSERT_X(Py_IsInitialized(), "Python interpreter", "Trying to execute file without initializing.");
+
+    QFile scriptFile(filePath);
+    if (scriptFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        int fd = scriptFile.handle();
+        FILE* f = fdopen(dup(fd), "rb");
+
+        PyEval_AcquireThread(threadState_);
+        PyRun_SimpleFile(f, scriptFile.fileName().toLocal8Bit());
+        PyEval_ReleaseThread(threadState_);
+
+        fclose(f);
+
+        scriptFile.close();
+
+        printPrompt();
+    }
+    emit executeDone();
 }
 
 //-----------------------------------------------------------------------------
