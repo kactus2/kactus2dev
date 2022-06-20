@@ -22,7 +22,7 @@
 ComponentTreeView::ComponentTreeView(LibraryInterface* handler,
 									 const VLNV& compVLNV,
 									 QWidget *parent):
-QTreeView(parent),
+ExpandingTreeView(parent),
 pressedPoint_(),
 locked_(true),
 handler_(handler),
@@ -70,6 +70,8 @@ void ComponentTreeView::mousePressEvent( QMouseEvent* event )
 {
 	pressedPoint_ = event->pos();
 	QTreeView::mousePressEvent(event);
+
+    QModelIndex index = indexAt(pressedPoint_);
 }
 
 //-----------------------------------------------------------------------------

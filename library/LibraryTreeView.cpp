@@ -34,7 +34,7 @@
 // Function: LibraryTreeView::LibraryTreeView()
 //-----------------------------------------------------------------------------
 LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent):
-QTreeView(parent), 
+    ExpandingTreeView(parent),
     handler_(handler),
     filter_(filter),
     startPos_(),
@@ -304,9 +304,6 @@ void LibraryTreeView::mousePressEvent(QMouseEvent* event)
     {
         setExpanded(index, !previouslyExpanded);
     }
-
-    expandUntilFirstBranch(index);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -597,24 +594,6 @@ void LibraryTreeView::setChildrenExpandStates(QModelIndex index, bool expanded)
             setExpanded(childIndex, expanded);
             setChildrenExpandStates(childIndex, expanded);
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryTreeView::expandUntilFirstBranch()
-//-----------------------------------------------------------------------------
-void LibraryTreeView::expandUntilFirstBranch(QModelIndex const& index)
-{
-    if (isExpanded(index) == false)
-    {
-        return;
-    }
-
-    QModelIndex currentIndex = index;
-    while (currentIndex.isValid() && model()->rowCount(currentIndex) == 1)
-    {
-        expand(currentIndex);
-        currentIndex = currentIndex.child(0, 0);
     }
 }
 
