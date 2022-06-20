@@ -30,6 +30,7 @@ class ExpressionParser;
 class PortMap;
 class AbstractionType;
 class PortMapInterface;
+class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Automatically forms port maps between logical and physical ports.
@@ -43,32 +44,16 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component           Component containing the bus interface.
-     *      @param [in] parser              The used expression parser.
      *      @param [in] portMapInterface    Interface for accessing port maps.
-     *      @param [in] libraryHandler      The library interface for locating required documents.
      *      @param [in] parent              The owner of this object.
      */
-    PortMapAutoConnector(QSharedPointer<Component> component,
-        QSharedPointer<ExpressionParser> parser,
-        PortMapInterface* portMapInterface,
-        LibraryInterface* libraryHandler,
+    PortMapAutoConnector(PortMapInterface* portMapInterface,
         QObject* parent);
 
     /*!
      *  The destructor.
      */
     ~PortMapAutoConnector();
-
-    /*!
-     *  Set the abstraction definition.
-     *
-     *      @param [in] abstractionDefinitionVLNV   VLNV of the abstraction definition.
-     *      @param [in] newMode                     The new interface mode.
-     *      @param [in] systemGroup                 The used system group in case of system mode.
-     */
-    void setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV, General::InterfaceMode newMode,
-        QString const& systemGroup);
 
 public slots:
 
@@ -109,8 +94,8 @@ private:
     //! Structure for possible logical-physical pairs.
     struct PossiblePortMaps
     {
-        //! The logical signal.
-        QSharedPointer<PortAbstraction> logicalPort_;
+        //! The logical signal name.
+        QString logicalPort_;
 
         //! Possible physical ports in the order of their weights.
         QMap<double, QString> possiblePhysicals_;
@@ -121,25 +106,18 @@ private:
      *
      *      @param [in] logicalPorts    List of the selected logical signals.
      */
-    void connectSelectedLogicalPorts(QList<QSharedPointer<PortAbstraction> > logicalPorts);
-
-    /*!
-     *  Check if the logical port has been referenced in a port map.
-     *
-     *      @param [in] logicalName     Name of the logical port.
-     *
-     *      @return True, if the port has been referenced in a port map, otherwise false.
-     */
-    bool logicalPortHasReferencingPortMap(QString const& logicalName) const;
+    void connectSelectedLogicalPorts(QStringList const& logicalPorts);
 
     /*!
      *  Get the possible physical ports for the selected logical port.
      *
-     *      @param [in] logicalPort     The selected logical port.
+     *      @param [in] logicalPort         The selected logical port.
+     *      @param [in] logicalInterface    Interface for accessing logical ports.
      *
      *      @return The possible physical ports combined with weights.
      */
-    QMap<double, QString> getWeightedPhysicalPorts(QSharedPointer<PortAbstraction> logicalPort) const;
+    QMap<double, QString> getWeightedPhysicalPorts(std::string const& logicalPort,
+        PortAbstractionInterface* logicalInterface) const;
 
     /*!
      *  Get the best matching physical port. If another logical signal has the same port with a better value, it
@@ -162,15 +140,6 @@ private:
      *      @return A list of weighted physical ports with a suitable direction to the logical port.
      */
     QMap<QString, double> getPortsByDirection(DirectionTypes::Direction logicalDirection) const;
-
-    /*!
-     *  Get the width of the selected logical port.
-     *
-     *      @param [in] logicalPort     The selected logical port.
-     *
-     *      @return The width of the selected logical port.
-     */
-    QString getLogicalPortWidth(QSharedPointer<PortAbstraction> logicalPort) const;
 
     /*!
      *  Get a list of physical ports weighted by the width of the logical port.
@@ -201,33 +170,9 @@ private:
      */
     QStringList reorderPortsToWeight(QMap<QString, double> portList) const;
 
-    /*!
-     *  Get the logical port with the given name.
-     *
-     *      @param [in] logicalName     The selected logical port name.
-     *
-     *      @return The selected logical port.
-     */
-    QSharedPointer<PortAbstraction> getLogicalPort(QString const& logicalName) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //----------------------------------------------------------------------------- 
-
-    //! The abstraction definition referenced in the bus interface.
-    QSharedPointer<AbstractionDefinition const> absDef_;
-
-    //! The used expression parser.
-    QSharedPointer<ExpressionParser> parser_;
-
-    //! The used library handler.
-    LibraryInterface* libraryHandler_;
-
-    //! The used interface mode.
-    General::InterfaceMode interfaceMode_;
-
-    //! The system group name in case of system mode.
-    QString systemGroup_;
 
     //! Prefix for physical ports.
     QString physicalPrefix_;

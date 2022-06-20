@@ -63,6 +63,21 @@ signals:
      */
     void autoConnecteLogicalSignals(QStringList const& logicalSignals);
 
+    /*!
+     *  Automatically create port maps for all signals.
+     */
+    void createAllSignals();
+
+    /*!
+     *  Automatically create port maps for required signals.
+     */
+    void createRequiredSignals();
+
+    /*!
+     *  Automatically create port maps for optional signals.
+     */
+    void createOptionalSignals();
+
 private slots:
 
     /*!
@@ -87,6 +102,15 @@ private:
 
     //! The action for automatically connecting logical signals to physical ports.
     QAction autoConnectAction_;
+
+    //! Action for creating port maps from all signals.
+    QAction createAllSignalsAction_;
+
+    //! Action for creating port maps from required signals.
+    QAction createRequiredSignalsAction_;
+
+    //! Action for creating port maps from optional signals.
+    QAction createOptionalSignalsAction_;
 
     //! Interface for accessing port maps.
     PortMapInterface* mapInterface_;

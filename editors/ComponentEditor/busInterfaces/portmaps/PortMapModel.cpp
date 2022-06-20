@@ -659,7 +659,8 @@ void PortMapModel::onRemoveAllPortMappings()
 {
     beginRemoveRows(QModelIndex(), 0, portMapInterface_->itemCount() - 1);
 
-    for (int i = 0; i < portMapInterface_->itemCount(); ++i)
+    int itemCount = portMapInterface_->itemCount();
+    for (int i = 0; i < itemCount; ++i)
     {
         portMapInterface_->removePortMap(0);
     }

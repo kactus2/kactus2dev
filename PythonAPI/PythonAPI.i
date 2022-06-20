@@ -35,6 +35,10 @@
 #include "../KactusAPI/include/FileSetInterface.h"
 #include "../KactusAPI/include/FileInterface.h"
 #include "../KactusAPI/include/FileBuilderInterface.h"
+#include "../KactusAPI/include/AbstractionTypeInterface.h"
+#include "../KactusAPI/include/PortAbstractionInterface.h"
+#include "../KactusAPI/include/PortMapInterface.h"
+#include "../KactusAPI/include/BusInterfaceInterface.h"
 %}
 
 
@@ -65,3 +69,7 @@ namespace std {
 %include "../KactusAPI/include/FileSetInterface.h"
 %include "../KactusAPI/include/FileInterface.h"
 %include "../KactusAPI/include/FileBuilderInterface.h"
+%include "../KactusAPI/include/AbstractionTypeInterface.h"
+%include "../KactusAPI/include/PortAbstractionInterface.h"
+%include "../KactusAPI/include/PortMapInterface.h"
+%include "../KactusAPI/include/BusInterfaceInterface.h"

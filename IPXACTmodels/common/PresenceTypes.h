@@ -27,7 +27,8 @@ namespace PresenceTypes
 		ILLEGAL = 0,
 		OPTIONAL,
 		REQUIRED,
-		UNKNOWN
+		UNKNOWN,
+        ALL
     };
 
     /*! Convert the value of the QString into enum Presence
