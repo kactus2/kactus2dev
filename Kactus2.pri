@@ -98,6 +98,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/views/EditableListView/editablelistview.h \
     ./common/views/EditableTreeView/EditableTreeView.h \
     ./common/views/EditableTreeView/EditableTreeSortFilter.h \
+    ./common/views/ExpandingTreeView/ExpandingTreeView.h \
     ./common/dialogs/comboSelector/comboselector.h \
     ./common/dialogs/propertyPageDialog/PropertyPageView.h \
     ./common/dialogs/propertyPageDialog/PropertyPageDialog.h \
@@ -895,6 +896,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./common/views/EditableTreeView/EditableTreeSortFilter.cpp \
     ./common/views/EditableTreeView/EditableTreeView.cpp \
+    ./common/views/ExpandingTreeView/ExpandingTreeView.cpp \
     ./common/ui/GraphicalMessageMediator.cpp \
     ./common/expressions/utilities.cpp \
     ./mainwindow/CommandLineParser.cpp \
