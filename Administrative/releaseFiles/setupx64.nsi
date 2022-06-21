@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "3.9.168 64-bit"
+!define PRODUCT_VERSION "3.10.0 64-bit"
 !define PRODUCT_PUBLISHER "TUNI"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -322,7 +322,7 @@ Section Uninstall
   Delete "$INSTDIR\libcrypto-1_1.dll"
   Delete "$INSTDIR\libffi-7.dll"
   Delete "$INSTDIR\libssl-1_1.dll"
-  Delete "$INSTDIR\LICENSE.txt"
+  Delete "$INSTDIR\PSF_LICENSE.txt"
   Delete "$INSTDIR\pyexpat.pyd"
   Delete "$INSTDIR\python.cat"
   Delete "$INSTDIR\python.exe"

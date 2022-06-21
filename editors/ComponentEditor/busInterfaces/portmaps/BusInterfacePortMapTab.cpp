@@ -35,6 +35,7 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QFormLayout>
+#include <QMenu>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfacePortMapTab::BusInterfacePortMapTab()
@@ -61,8 +62,8 @@ portMapSorter_(portMapInterface, this),
 portMapView_(portMapInterface, this),
 portMapDelegate_(0),
 autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
-removeAllMappingsButton_(QIcon(":/icons/common/graphics/cross.png"), "Remove all", this),
-autoConnector_(component, expressionParser, portMapInterface, libHandler, this),
+removeAllMappingsButton_(QIcon(":/icons/common/graphics/delete.png"), "Remove all", this),
+autoConnector_(portMapInterface, this),
 abstractionSelector_(new QComboBox(this))
 {
     hideConnectedPortsBox_.setCheckState(Qt::Checked);
@@ -263,8 +264,6 @@ void BusInterfacePortMapTab::setAbsType(int const& abstractionIndex)
 
         portMapDelegate_->setBusMode(busMode);
         portMapDelegate_->setSystemGroup(systemGroup);
-
-        autoConnector_.setAbstractionDefinition(definitionVLNV, busMode, systemGroup);
     }
 }
 
@@ -321,19 +320,46 @@ void BusInterfacePortMapTab::setupLayout()
     abstractionLayout->addWidget(abstractionSelector_, 0, Qt::AlignLeft);
     abstractionLayout->addStretch(5);
 
+    QAction* requiredSignalsAction(new QAction("Required signals", this));
+    QAction* optionalSignalsAction(new QAction("Optional signals", this));
+    QAction* allSignalsAction(new QAction("All signals", this));
+
+    connect(requiredSignalsAction, SIGNAL(triggered()),
+        this, SLOT(onCreateRequiredSignals()), Qt::UniqueConnection);
+    connect(optionalSignalsAction, SIGNAL(triggered()),
+        this, SLOT(onCreateOptionalSignals()), Qt::UniqueConnection);
+    connect(allSignalsAction, SIGNAL(triggered()), this, SLOT(onCreateAllSignals()), Qt::UniqueConnection);
+
+    QMenu* addSignalMenu(new QMenu());
+    addSignalMenu->addAction(allSignalsAction);
+    addSignalMenu->addAction(requiredSignalsAction);
+    addSignalMenu->addAction(optionalSignalsAction);
+
+    QPushButton* addSignalButton(new QPushButton(QIcon(":/icons/common/graphics/add.png"), "Add", this));
+    addSignalButton->setMenu(addSignalMenu);
+
+    QHBoxLayout* buttonLayout(new QHBoxLayout());
+    buttonLayout->addWidget(addSignalButton);
+    buttonLayout->addWidget(&removeAllMappingsButton_);
+    buttonLayout->addStretch(10);
+
     QVBoxLayout* portMapsLayout = new QVBoxLayout();
-    portMapsLayout->addLayout(abstractionLayout, 0);
+    portMapsLayout->addLayout(buttonLayout, 0);
     portMapsLayout->addWidget(&portMapView_);
-    portMapsLayout->addWidget(&removeAllMappingsButton_, 0, Qt::AlignLeft);
 
     QGroupBox* portMapsGroupBox = new QGroupBox(tr("Port Maps"), this);
     portMapsGroupBox->setLayout(portMapsLayout);
+
+    QWidget* bottomWidget(new QWidget(this));
+    QVBoxLayout* bottomLayout(new QVBoxLayout(bottomWidget));
+    bottomLayout->addLayout(abstractionLayout);
+    bottomLayout->addWidget(portMapsGroupBox);
 
     QVBoxLayout* masterLayout = new QVBoxLayout(this);
 
     QSplitter* splitter = new QSplitter(Qt::Vertical, this);    
     splitter->addWidget(topWidget);
-    splitter->addWidget(portMapsGroupBox);
+    splitter->addWidget(bottomWidget);
     splitter->setStretchFactor(1, 1);
 
     masterLayout->addWidget(splitter);
@@ -385,6 +411,12 @@ void BusInterfacePortMapTab::connectItems()
 
     connect(abstractionSelector_, SIGNAL(currentIndexChanged(int)),
         this, SLOT(onAbstractionChanged()), Qt::UniqueConnection);
+
+    connect(&portMapView_, SIGNAL(createAllSignals()), this, SLOT(onCreateAllSignals()), Qt::UniqueConnection);
+    connect(&portMapView_, SIGNAL(createRequiredSignals()),
+        this, SLOT(onCreateRequiredSignals()), Qt::UniqueConnection);
+    connect(&portMapView_, SIGNAL(createOptionalSignals()),
+        this, SLOT(onCreateOptionalSignals()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -461,4 +493,55 @@ void BusInterfacePortMapTab::showEvent(QShowEvent* event)
 void BusInterfacePortMapTab::changeBusName(std::string const& newName)
 {
     busName_ = newName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacePortMapTab::onCreateRequiredSignals()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::onCreateRequiredSignals()
+{
+    AbstractionTypeInterface* absType = busInterface_->getAbstractionTypeInterface();
+    if (absType)
+    {
+        PortMapInterface* portMapInterface = absType->getPortMapInterface();
+        if (portMapInterface)
+        {
+            portMapInterface->createRequiredSignals();
+            portMapModel_.reset();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacePortMapTab::onCreateOptionalSignals()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::onCreateOptionalSignals()
+{
+    AbstractionTypeInterface* absType = busInterface_->getAbstractionTypeInterface();
+    if (absType)
+    {
+        PortMapInterface* portMapInterface = absType->getPortMapInterface();
+        if (portMapInterface)
+        {
+            portMapInterface->createOptionalSignals();
+            portMapModel_.reset();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacePortMapTab::onCreateAllSignals()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::onCreateAllSignals()
+{
+    AbstractionTypeInterface* absType = busInterface_->getAbstractionTypeInterface();
+    if (absType)
+    {
+        PortMapInterface* portMapInterface = absType->getPortMapInterface();
+        if (portMapInterface)
+        {
+            portMapInterface->createAllSignals();
+            portMapModel_.reset();
+        }
+    }
 }

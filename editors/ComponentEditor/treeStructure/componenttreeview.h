@@ -7,6 +7,8 @@
 #ifndef COMPONENTTREEVIEW_H
 #define COMPONENTTREEVIEW_H
 
+#include <common/views/ExpandingTreeView/ExpandingTreeView.h>
+
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <QTreeView>
@@ -23,7 +25,8 @@ class ComponentEditorItem;
  * This tree view displays a navigation tree in IPXactComponentEditor that
  * is used to navigate between IP-Xact elements.
  */
-class ComponentTreeView : public QTreeView {
+class ComponentTreeView : public ExpandingTreeView
+{
     Q_OBJECT
 
 public:

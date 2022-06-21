@@ -14,6 +14,8 @@
 
 #include "LibraryTreeFilter.h"
 
+#include <common/views/ExpandingTreeView/ExpandingTreeView.h>
+
 #include <QTreeView>
 #include <QContextMenuEvent>
 #include <QAction>
@@ -26,7 +28,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! The widget to display the library in a tree.
 //-----------------------------------------------------------------------------
-class LibraryTreeView : public QTreeView
+class LibraryTreeView : public ExpandingTreeView
 {
 	Q_OBJECT
 
@@ -230,13 +232,6 @@ private:
 
     //! Expands/collapses all child indexes recursively.
     void setChildrenExpandStates(QModelIndex index, bool expanded);
-
-    /*!
-     * Expand the tree until first branch i.e. index with more than one children is found.
-     *
-     *     @param [in] index  The starting index for expanding.
-     */
-     void expandUntilFirstBranch(QModelIndex const& index);
 
     //! Set up the actions for the context menu
     void setupActions();

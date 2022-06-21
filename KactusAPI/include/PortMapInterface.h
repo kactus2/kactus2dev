@@ -15,6 +15,7 @@
 #include <CommonInterface.h>
 #include <ParameterizableInterface.h>
 
+#include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -627,7 +628,45 @@ public:
      */
     PortAbstractionInterface* getLogicalPortInterface() const;
 
+    /*!
+     *  Create port maps from signals with required presence.
+     */
+    void createRequiredSignals();
+
+    /*!
+     *  Create port maps from signals with optional presence.
+     */
+    void createOptionalSignals();
+
+    /*!
+     *  Create port maps from all signals.
+     */
+    void createAllSignals();
+
+    /*!
+     *  Get the currently active bus interface mode.
+     *
+     *      @return The active interface mode.
+     */
+    General::InterfaceMode getInterfaceMode() const;
+
+    /*!
+     *  Get the currently active system group.
+     *
+     *      @return The active system group.
+     */
+    std::string getSystemGroup() const;
+
 private:
+
+    /*!
+     *  Get a port map with the selected logical signal without connected physical port or assigned tie off.
+     *
+     *      @param [in] logicalPortName     Name of the selected logical signal.
+     *
+     *      @return Port map with the connected logical port and unconnected physical.
+     */
+    QSharedPointer<PortMap> getUnconnectedPortMap(std::string const& logicalPortName) const;
 
     /*!
      *  Get the selected port map.
@@ -680,6 +719,22 @@ private:
      *      @return The created part select.
      */
     QSharedPointer<PartSelect> getPhysicalPartSelect(int const& portMapIndex);
+
+    /*!
+     *  Create port maps with the selected presence.
+     *
+     *      @param [in] presence    The selected presence.
+     */
+    void createPortMapsWithPresence(PresenceTypes::Presence presence);
+
+    /*!
+     *  Check if a port map exists for the selected signal.
+     *
+     *      @param [in] signalName  Name of the selected logical signal.
+     *
+     *      @return True, if a port map exists for the selected signal, false otherwise.
+     */
+    bool portMapExistsForLogicalSignal(std::string const& signalName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

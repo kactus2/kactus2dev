@@ -1162,22 +1162,40 @@ bool PortMapInterface::connectPorts(std::string const& logicalPortName, std::str
         return false;
     }
 
+    QSharedPointer<PortMap> newPortMap = getUnconnectedPortMap(logicalPortName);
+    if (!newPortMap)
+    {
+        return false;
+    }
+
     QSharedPointer<PortMap::PhysicalPort> newMappedPhysical(
         new PortMap::PhysicalPort(QString::fromStdString(physicalPortName)));
-    QSharedPointer<PortMap::LogicalPort> newMappedLogical(
-        new PortMap::LogicalPort(QString::fromStdString(logicalPortName)));
     
+    QSharedPointer<PortMap::LogicalPort> newMappedLogical = newPortMap->getLogicalPort();
+
     QString logicalWireWidth(QString::fromStdString(
         logicalPortInterface_->getWidth(logicalPortName, interfaceMode, systemGroup)));
     if (!logicalWireWidth.isEmpty())
     {
-        int logicalSize = parseExpressionToDecimal(logicalWireWidth).toInt();
-        int logicalLeft = logicalSize - 1;
-        int logicalRight = 0;
-        
-        int physicalLeft = std::stoi(physicalPortInterface_->getLeftBoundValue(physicalPortName));
-        int physicalRight = std::stoi(physicalPortInterface_->getRightBoundValue(physicalPortName));
-        int physicalSize = abs(physicalLeft - physicalRight) + 1;
+        qint64 logicalSize = parseExpressionToDecimal(logicalWireWidth).toInt();
+        qint64 logicalLeft = logicalSize - 1;
+        qint64 logicalRight = 0;
+
+        qint64 physicalLeft = 0;
+        std::string leftValue(physicalPortInterface_->getLeftBoundValue(physicalPortName));
+        if (!leftValue.empty())
+        {
+            physicalLeft = std::stoll(leftValue);
+        }
+
+        qint64 physicalRight = 0;
+        std::string rightValue(physicalPortInterface_->getRightBoundValue(physicalPortName));
+        if (!rightValue.empty())
+        {
+            physicalRight = std::stoi(rightValue);
+        }
+
+        qint64 physicalSize = abs(physicalLeft - physicalRight) + 1;
         
         if (logicalSize != physicalSize)
         {
@@ -1205,14 +1223,26 @@ bool PortMapInterface::connectPorts(std::string const& logicalPortName, std::str
             new PartSelect(QString::number(physicalLeft), QString::number(physicalRight)));
     }
     
-    QSharedPointer<PortMap> newPortMap(new PortMap());
-    newPortMap->setLogicalPort(newMappedLogical);
     newPortMap->setPhysicalPort(newMappedPhysical);
 
-
-    portMaps_->append(newPortMap);
-
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::getUnconnectedPortMap()
+//-----------------------------------------------------------------------------
+QSharedPointer<PortMap> PortMapInterface::getUnconnectedPortMap(std::string const& logicalPortName) const
+{
+    for (int i = 0; i < itemCount(); ++i)
+    {
+        if (getLogicalPortName(i) == logicalPortName && getPhysicalPortName(i).empty() &&
+            getLogicalTieOffValue(i).empty())
+        {
+            return getPortMap(i);
+        }
+    }
+
+    return QSharedPointer<PortMap>();
 }
 
 //-----------------------------------------------------------------------------
@@ -1290,4 +1320,96 @@ PortsInterface* PortMapInterface::getPhysicalPortInterface() const
 PortAbstractionInterface* PortMapInterface::getLogicalPortInterface() const
 {
     return logicalPortInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::createRequiredSignals()
+//-----------------------------------------------------------------------------
+void PortMapInterface::createRequiredSignals()
+{
+    createPortMapsWithPresence(PresenceTypes::REQUIRED);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::createOptionalSignals()
+//-----------------------------------------------------------------------------
+void PortMapInterface::createOptionalSignals()
+{
+    createPortMapsWithPresence(PresenceTypes::OPTIONAL);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::createAllSignals()
+//-----------------------------------------------------------------------------
+void PortMapInterface::createAllSignals()
+{
+    createPortMapsWithPresence(PresenceTypes::ALL);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::createPortMapsWithPresence()
+//-----------------------------------------------------------------------------
+void PortMapInterface::createPortMapsWithPresence(PresenceTypes::Presence presence)
+{
+    std::string busMode = General::interfaceMode2Str(interfaceMode_).toStdString();
+    
+    std::vector<std::string> logicalSignals;
+
+    std::vector<std::string> testi = logicalPortInterface_->getItemNamesWithModeAndGroup(busMode, systemGroup_);
+
+    for (auto signalName : logicalPortInterface_->getItemNamesWithModeAndGroup(busMode, systemGroup_))
+    {
+        bool notFound = std::find(logicalSignals.cbegin(), logicalSignals.cend(), signalName) == logicalSignals.cend();
+        bool protMapDoesNotExist = !portMapExistsForLogicalSignal(signalName);
+        PresenceTypes::Presence portPresence = logicalPortInterface_->getPresence(signalName, busMode, systemGroup_);
+
+        if (std::find(logicalSignals.cbegin(), logicalSignals.cend(), signalName) == logicalSignals.cend() &&
+            !portMapExistsForLogicalSignal(signalName) &&
+                (presence == PresenceTypes::ALL ||
+                presence == logicalPortInterface_->getPresence(signalName, busMode, systemGroup_)))
+        {
+            logicalSignals.push_back(signalName);
+        }
+    }
+
+    int newPortMapIndex = itemCount();
+    for (auto signalName : logicalSignals)
+    {
+        addPortMap(newPortMapIndex);
+        setLogicalPort(newPortMapIndex, signalName);
+
+        newPortMapIndex++;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::portMapExistsForLogicalSignal()
+//-----------------------------------------------------------------------------
+bool PortMapInterface::portMapExistsForLogicalSignal(std::string const& signalName) const
+{
+    for (int i = 0; i < itemCount(); ++i)
+    {
+        if (getLogicalPortName(i) == signalName)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::getInterfaceMode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode PortMapInterface::getInterfaceMode() const
+{
+    return interfaceMode_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapInterface::getSystemGroup()
+//-----------------------------------------------------------------------------
+std::string PortMapInterface::getSystemGroup() const
+{
+    return systemGroup_;
 }

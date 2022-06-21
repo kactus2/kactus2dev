@@ -13,6 +13,7 @@
 #include "TransactionalAbstraction.h"
 #include "WireAbstraction.h"
 #include "WirePort.h"
+#include "TransactionalPort.h"
 
 #include <IPXACTmodels/common/Qualifier.h>
 
@@ -268,7 +269,7 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
         else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) &&
             !wire_->getSystemPorts()->isEmpty())
         {
-            foreach (QSharedPointer<WirePort> systemPort, *wire_->getSystemPorts())
+            foreach (auto systemPort, *wire_->getSystemPorts())
             {
                 if (systemPort->getSystemGroup() == systemGroup)
                 {
@@ -276,6 +277,29 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
                 }
             }
         }
+    }
+    else if (hasTransactional())
+    {
+        if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && transactional_->hasMasterPort())
+        {
+            return transactional_->getMasterPort()->getPresence();
+        }
+        else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && transactional_->hasSlavePort())
+        {
+            return transactional_->getSlavePort()->getPresence();
+        }
+        else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) &&
+            !transactional_->getSystemPorts()->isEmpty())
+        {
+            foreach(auto systemPort, *transactional_->getSystemPorts())
+            {
+                if (systemPort->getSystemGroup() == systemGroup)
+                {
+                    return systemPort->getPresence();
+                }
+            }
+        }
+
     }
 
     return PresenceTypes::UNKNOWN;

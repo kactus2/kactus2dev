@@ -666,6 +666,24 @@ DirectionTypes::Direction PortAbstractionInterface::getDirection(int const& port
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getDirection()
+//-----------------------------------------------------------------------------
+DirectionTypes::Direction PortAbstractionInterface::getDirection(std::string const& portName,
+    General::InterfaceMode mode, std::string const& systemGroup) const
+{
+    DirectionTypes::Direction portDirection(DirectionTypes::DIRECTION_INVALID);
+
+    QSharedPointer<PortAbstraction> port = getPort(portName);
+    if (port && port->getWire() && mode != General::INTERFACE_MODE_COUNT)
+    {
+        portDirection =
+            port->getWire()->getDirection(mode, QString::fromStdString(systemGroup));
+    }
+
+    return portDirection;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::setDirection()
 //-----------------------------------------------------------------------------
 bool PortAbstractionInterface::setDirection(int const& portIndex, std::string const& newDirection)
@@ -714,7 +732,23 @@ std::string PortAbstractionInterface::getWidth(std::string const& portName, std:
     }
 
     return signalWidth.toStdString();
+}
 
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getWidth()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getWidth(std::string const& portName, General::InterfaceMode interfaceMode,
+    std::string const& systemGroup) const
+{
+    QString signalWidth("");
+
+    QSharedPointer<PortAbstraction> port = getPort(portName);
+    if (port && port->getWire() && interfaceMode != General::INTERFACE_MODE_COUNT)
+    {
+        signalWidth = port->getWire()->getWidth(interfaceMode, QString::fromStdString(systemGroup));
+    }
+
+    return signalWidth.toStdString();
 }
 
 //-----------------------------------------------------------------------------
