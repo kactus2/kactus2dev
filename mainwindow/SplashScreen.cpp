@@ -23,6 +23,7 @@ QSplashScreen(parent, QPixmap(":/common/graphics/splash.png")),
     versionString_(versionString)
 {
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+    setCursor(Qt::PointingHandCursor);
 }
 
 //-----------------------------------------------------------------------------

@@ -227,7 +227,10 @@ Python 3.8.3 (tags/v3.8.3:6f8c832, May 13 2020, 22:20:16) [MSC v.1925 64 bit (AM
 
 Please note the following when using the module independent of Kactus2:
 * The API is dependent on a shared library named KactusAPI. It must be found at import time.
-* Kactus2 settings, such as library paths, are not loaded with the module. You must set them manually.
+* Kactus2 settings, such as library paths, are not loaded with the module. You must set them manually. An example is shown below:
+```
+>>> kactus2.setLibraryPaths(['/home/me/ipxact', '/home/me/ip/uart/'])
+```
 
 Please note that the command-line interface is an experimental feature and very likely 
 subject to change in the near future. 
