@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 QString VerilogSyntax::legalizeName(QString const& name)
 {
-    QRegExp illegalCharacters("[:.-]+");
+    QRegularExpression illegalCharacters("[:.-]+");
     QString legitName = name;
     legitName = legitName.replace(illegalCharacters, "_");
 

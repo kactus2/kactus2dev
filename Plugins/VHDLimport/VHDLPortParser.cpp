@@ -193,7 +193,7 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration,
 QStringList VHDLPortParser::parsePortNames(QString const& declaration) const
 {
     QString portNames = PORT_EXP.match(declaration).captured(1);
-    return portNames.split(QRegExp("\\s*[,]\\s*"), QString::SkipEmptyParts);
+    return portNames.split(QRegularExpression("\\s*[,]\\s*"), QString::SkipEmptyParts);
 }
 
 //-----------------------------------------------------------------------------

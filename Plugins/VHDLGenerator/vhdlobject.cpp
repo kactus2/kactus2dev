@@ -7,7 +7,7 @@
 
 #include "vhdlobject.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
@@ -55,12 +55,12 @@ QString VhdlObject::getVhdlLegalName() const
 {
     QString vhdlLegalName = name_;
 
-    QRegExp illegalCharacters("[:_.-]+");
+    QRegularExpression illegalCharacters("[:_.-]+");
     vhdlLegalName = vhdlLegalName.replace(illegalCharacters, "_");
 
-    QRegExp leadingUnderScore("^[_]");
+    QRegularExpression leadingUnderScore("^[_]");
     vhdlLegalName.remove(leadingUnderScore);
-    QRegExp trailingUnderScore("[_]$");
+    QRegularExpression trailingUnderScore("[_]$");
     vhdlLegalName.remove(trailingUnderScore);
 
     return vhdlLegalName;

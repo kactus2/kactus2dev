@@ -308,35 +308,38 @@ bool PadsPartGenerator::generateCAEFile(QFile* file, QString const& partTitle, Q
     QTextStream caeFileStream(file);
 
     // Write file header.
-    caeFileStream << PadsAsciiSyntax::CAE_FILE_BEGIN << endl;
-    caeFileStream << endl;
+    caeFileStream << PadsAsciiSyntax::CAE_FILE_BEGIN << Qt::endl;
+    caeFileStream << Qt::endl;
     
     // Get the timestamp from part.
-    PadsAsciiSyntax::PART_HEADER_2ND_EXP.indexIn(partDescription);
-    QString timestamp = PadsAsciiSyntax::PART_HEADER_2ND_EXP.cap(0);
+    auto timeMatch = PadsAsciiSyntax::PART_HEADER_2ND_EXP.match(partDescription);
+    QString timestamp = timeMatch.captured();
 
     // Generate CAE decal for each gate.
-    int pos = PadsAsciiSyntax::PART_GATE_EXP.indexIn(partDescription, 0);
-    while(pos != -1)
+    int pos = 0;
+    auto gateMatch = PadsAsciiSyntax::PART_GATE_EXP.match(partDescription);
+    while(gateMatch.hasMatch())
     {
-        QString gate = PadsAsciiSyntax::PART_GATE_EXP.cap(0);
-        PadsAsciiSyntax::PART_GATE_NAME_EXP.indexIn(partDescription, pos + gate.length());
-        QString gateName = PadsAsciiSyntax::PART_GATE_NAME_EXP.cap(0);
-        int pinCount = PadsAsciiSyntax::PART_GATE_EXP.cap(PadsAsciiSyntax::NUM_PINS).toInt();
+        QString gate = gateMatch.captured(0);
+
+        auto nameMatch = PadsAsciiSyntax::PART_GATE_NAME_EXP.match(partDescription, gateMatch.capturedEnd());
+
+        QString gateName = nameMatch.captured(0);
+        int pinCount = gateMatch.captured(PadsAsciiSyntax::NUM_PINS).toInt();
 
         QRect caeRect(0,0, PART_DEFAULT_WIDTH, pinCount/2 * PIN_SPAN + 5*PIN_SPAN);
 
         insertCAEHeader(caeFileStream, timestamp, gateName, pinCount);
         insertCAEDecal(caeFileStream, caeRect, partTitle, gateName);
         insertCAETerminals(caeFileStream, caeRect, pinCount);
-        caeFileStream << endl;
+        caeFileStream << Qt::endl;
 
         // Find the next gate.
-        pos = PadsAsciiSyntax::PART_GATE_EXP.indexIn(partDescription, pos + gate.length());
+        gateMatch = PadsAsciiSyntax::PART_GATE_EXP.match(partDescription, gateMatch.capturedEnd());
     }
 
     // Write file end.
-    caeFileStream << PadsAsciiSyntax::PADS_FILE_END << endl;
+    caeFileStream << PadsAsciiSyntax::PADS_FILE_END << Qt::endl;
 
     caeFileStream.flush();
     return true;

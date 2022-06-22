@@ -14,7 +14,7 @@
 #include <cassert>
 #include <algorithm>
 #include <QFont>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QApplication>
 #include <QTextBlock>
 
@@ -214,22 +214,24 @@ int AssistedTextEdit::calculateIndentDepth(int pos)
     int searchPos = 0;
     int discardPos = 0;
     QString text = toPlainText();
-    QRegExp braceExp("(\\{|\\})");
-    QRegExp discardExp("(\"([^\"]|(\\\\\"))*\")|(\'([^\']|(\\\\\'))*\')|(//[^\n]*\\n)|(/\\*[^*/]*\\*/)");
+    QRegularExpression braceExp("(\\{|\\})");
+    QRegularExpression discardExp("(\"([^\"]|(\\\\\"))*\")|(\'([^\']|(\\\\\'))*\')|(//[^\n]*\\n)|(/\\*[^*/]*\\*/)");
 
     // Search all braces up to the cursor position discarding comments, strings and char literals.
-    searchPos = braceExp.indexIn(text);
-    discardPos = discardExp.indexIn(text);
+    searchPos = text.indexOf(braceExp);
+    discardPos = text.indexOf(discardExp);
 
     while (searchPos >= 0 && searchPos < pos)
     {
         // If the search position has gone over the discard area, search the next discard area.
-        while (discardPos >= 0 && searchPos >= discardPos + discardExp.matchedLength())
+        auto discardLength = discardExp.match(text, discardPos).capturedLength();
+        while (discardPos >= 0 && searchPos >= discardPos + discardLength)
         {
-            discardPos = discardExp.indexIn(text, discardPos + discardExp.matchedLength());
+            discardPos = text.indexOf(discardExp, discardPos + discardLength);
+            discardLength = discardExp.match(text, discardPos).capturedLength();
         }
 
-        if (discardPos < 0 || searchPos < discardPos || searchPos > discardPos + discardExp.matchedLength())
+        if (discardPos < 0 || searchPos < discardPos || searchPos > discardPos + discardLength)
         {
             QChar c = text.at(searchPos);
 
@@ -243,7 +245,7 @@ int AssistedTextEdit::calculateIndentDepth(int pos)
             }
         }
 
-        searchPos = braceExp.indexIn(text, searchPos + 1);
+        searchPos = text.indexOf(braceExp, searchPos + 1);
     }
 
     return qMax(indentDepth, 0);
@@ -254,20 +256,21 @@ int AssistedTextEdit::calculateIndentDepth(int pos)
 //-----------------------------------------------------------------------------
 void AssistedTextEdit::indentRightBrace()
 {
-    static QRegExp braceRightExp("^\\s*(?=\\})");
+    static QRegularExpression braceRightExp("^\\s*(?=\\})");
     QString blockStr = textCursor().block().text();
 
     // Update the beginning of the current text block with the correct indentation
     // if there is only whitespace before the first right brace.
-    int startIndex = braceRightExp.indexIn(blockStr);
+    auto blockMatch = braceRightExp.match(blockStr);
 
-    if (startIndex >= 0)
+    if (blockMatch.hasMatch())
     {
         // Calculate the indentation depth.
         int indentDepth = calculateIndentDepth(textCursor().block().position() +
-                                               braceRightExp.matchedLength() + 1);
+            blockMatch.capturedLength() + 1);
+
         int startIndex = textCursor().block().position();
-        int endIndex = startIndex + braceRightExp.matchedLength();
+        int endIndex = startIndex + blockMatch.capturedLength();
 
         // Replace the area with the correct indentation.
         replaceWithIndent(startIndex, endIndex, indentDepth);
@@ -279,21 +282,21 @@ void AssistedTextEdit::indentRightBrace()
 //-----------------------------------------------------------------------------
 void AssistedTextEdit::indentColon()
 {
-    static QRegExp wpStartExp("^\\s*(?=[^;]*:)");
+    static QRegularExpression wpStartExp("^\\s*(?=[^;]*:)");
     QString blockStr = textCursor().block().text();
 
     // Update the beginning of the current text block with the correct indentation
     // for the whitespace part, if there is no following semicolon.
-    int startIndex = wpStartExp.indexIn(blockStr);
+    auto wpMatch = wpStartExp.match(blockStr);
 
-    if (startIndex >= 0)
+    if (wpMatch.hasMatch())
     {
         // Calculate the indentation depth.
         int indentDepth = qMax(0, calculateIndentDepth(textCursor().block().position() +
-                                                           wpStartExp.matchedLength()) - 1);
+            wpMatch.capturedLength()) - 1);
 
         int startIndex = textCursor().block().position();
-        int endIndex = startIndex + wpStartExp.matchedLength();
+        int endIndex = startIndex + wpMatch.capturedLength();
 
         // Replace the area with the correct indentation.
         replaceWithIndent(startIndex, endIndex, indentDepth);

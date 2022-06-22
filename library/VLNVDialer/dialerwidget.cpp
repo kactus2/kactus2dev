@@ -18,8 +18,8 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
-#include <QRegExp>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QStringList>
 #include <QVBoxLayout>
 
@@ -49,8 +49,8 @@ versions_()
     versionBox_.completer()->setCompletionMode(QCompleter::PopupCompletion);
 
 	// set validator to accept only valid names and special characters '?' and '*'
-	QRegExp regExp(QString("[a-zA-Z0-9:_\\-\\.\\*\\?]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
-	QRegExpValidator* validator = new QRegExpValidator(regExp, this);
+	QRegularExpression regExp(QString("[a-zA-Z0-9:_\\-\\.\\*\\?]*"), QRegularExpression::CaseInsensitiveOption);
+	QRegularExpressionValidator* validator = new QRegularExpressionValidator(regExp, this);
 	vendorBox_.setValidator(validator);
 	libraryBox_.setValidator(validator);
 	nameBox_.setValidator(validator);
@@ -124,23 +124,17 @@ void DialerWidget::onVendorChanged(QString const& vendorText)
 	libraryBox_.clear();
 	libraries_.clear();
 
-	QString vendor = vendorText;
+	QString vendorExp = vendorText + ".*";
 
-	// if the last character is not '?' then append '*' to the string
-	if (!vendor.endsWith(QLatin1String("?"), Qt::CaseInsensitive))
-    {
-        vendor.append('*');
-    }
-
-	QRegExp regExp(vendor, Qt::CaseInsensitive, QRegExp::Wildcard);
-	QRegExpValidator validator(regExp, this);
+	QRegularExpression regExp(vendorExp, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+	QRegularExpressionValidator validator(regExp, this);
 
 	// get the library items from the vendors that matched 
 	int pos = 0;
 	for (LibraryItem const* item : vendors_)
     {
-		QString name = item->name();
-		if (validator.validate(name, pos) == QValidator::Acceptable)
+		QString vendor = item->name();
+		if (validator.validate(vendor, pos) == QValidator::Acceptable)
         {
 			libraries_ += item->getLibraries();
 		}
@@ -161,7 +155,7 @@ void DialerWidget::onVendorChanged(QString const& vendorText)
 	connect(&libraryBox_, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onLibraryChanged(const QString&)), Qt::UniqueConnection);
 
-	emit vendorChanged(vendor);
+	emit vendorChanged(vendorExp);
 	onLibraryChanged(libraryText);
 }
 
@@ -179,22 +173,16 @@ void DialerWidget::onLibraryChanged(QString const& libraryText)
 	nameBox_.clear();
 	names_.clear();
 
-	QString library = libraryText;
+	QString libraryExp = libraryText + ".*";
 
-	// if the last character is not '?' then append '*' to the string
-	if (!library.endsWith(QLatin1String("?"), Qt::CaseInsensitive))
-    {
-        library.append('*');
-    }
-
-	QRegExp regExp(library, Qt::CaseInsensitive, QRegExp::Wildcard);
-	QRegExpValidator validator(regExp, this);
+	QRegularExpression regExp(libraryExp, QRegularExpression::CaseInsensitiveOption);
+	QRegularExpressionValidator validator(regExp, this);
 
     int pos = 0;
     for (LibraryItem const* item : libraries_)
     {
-        QString name = item->name();
-        if (validator.validate(name, pos) == QValidator::Acceptable)
+        QString library = item->name();
+        if (validator.validate(library, pos) == QValidator::Acceptable)
         {
             names_ += item->getNames();
         }
@@ -215,7 +203,7 @@ void DialerWidget::onLibraryChanged(QString const& libraryText)
 	connect(&nameBox_, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
 
-	emit libraryChanged(library);
+	emit libraryChanged(libraryExp);
 	onNameChanged(nameText);
 }
 
@@ -233,16 +221,10 @@ void DialerWidget::onNameChanged(QString const& nameText)
 	versionBox_.clear();
 	versions_.clear();
 
-	QString name = nameText;
+	QString nameExp = nameText + ".*";
 
-	// if the last character is not '?' then append '*' to the string
-	if (!name.endsWith(QLatin1String("?"), Qt::CaseInsensitive))
-    {
-		name.append('*');
-    }
-
-	QRegExp regExp(name, Qt::CaseInsensitive, QRegExp::Wildcard);
-	QRegExpValidator validator(regExp, this);
+	QRegularExpression regExp(nameExp, QRegularExpression::CaseInsensitiveOption);
+	QRegularExpressionValidator validator(regExp, this);
 
 	int pos = 0;
 	for (LibraryItem const* item : names_)
@@ -269,7 +251,7 @@ void DialerWidget::onNameChanged(QString const& nameText)
 	connect(&versionBox_, SIGNAL(editTextChanged(const QString&)),
 		this, SLOT(onVersionChanged(const QString&)), Qt::UniqueConnection);
 
-	emit nameChanged(name);
+	emit nameChanged(nameExp);
 	onVersionChanged(versionText);
 }
 
@@ -280,13 +262,7 @@ void DialerWidget::onVersionChanged(QString const& versionText)
 {
 	Q_ASSERT(root_);
 
-	QString version = versionText;
-
-	// if the last character is not '?' then append '*' to the string
-	if (!version.endsWith(QLatin1String("?"), Qt::CaseInsensitive))
-    {
-		version.append('*');
-    }
+	QString version = versionText + ".*";
 
 	emit versionChanged(version);
 }

@@ -219,7 +219,7 @@ void BusInterfaceWizardBusDefinitionEditorPage::createLogicalPortsAndMappings(QS
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts = absDef->getLogicalPorts(); 
     logicalPorts->clear();
 
-    foreach(QString const& port, physPorts)
+    for (QString const& port : physPorts)
     {
         QSharedPointer<Port> physPort = component_->getPort(port);
         DirectionTypes::Direction portDirection = physPort->getDirection();
@@ -227,19 +227,19 @@ void BusInterfaceWizardBusDefinitionEditorPage::createLogicalPortsAndMappings(QS
 
         QSharedPointer<PortAbstraction> absPort(0);
 
-        QRegExp indexExp("\\[(\\d+)\\]");
+        QRegularExpression indexExp("\\[(\\d+)\\]");
         QString absPortName = physPort->name().toUpper();        
         if (portNamesPolicy_ == DESCRIPTION)
         {
             absPortName = physPort->description().toUpper();
-            indexExp.indexIn(absPortName);
+            absPortName.indexOf(indexExp);
             absPortName.remove(indexExp);
             absPort = findPortByName(absPortName, logicalPorts);
         }
 
         if (!absPort.isNull())
         {
-            int index = indexExp.cap(1).toInt(); //!< On failed capture, index = 0.
+            int index = indexExp.match(absPortName).captured(1).toInt(); //!< On failed capture, index = 0.
             int masterPortWidth =
                 expressionParser_->parseExpression(absPort->getWire()->getMasterPort()->getWidth()).toInt();
             int physicalPortSize = index + getPortSize(physPort);
@@ -289,7 +289,7 @@ void BusInterfaceWizardBusDefinitionEditorPage::createPortMaps()
         if (absDef)
         {
             int logicalMax = 0;
-            foreach(QString const& port, physicalPorts_)
+            for (QString const& port : physicalPorts_)
             {
                 QString logicalName = portMappings_.value(port);
 
@@ -310,11 +310,11 @@ void BusInterfaceWizardBusDefinitionEditorPage::createPortMaps()
 
                     // Use bit index in description to map to logical signal, if logical signals
                     // are generated from the physical ports and index is found in description.
-                    QRegExp indexExp("\\[(\\d+)\\]");                    
+                    QRegularExpression indexExp("\\[(\\d+)\\]");                    
                     if ( (mappingMode_ == GENERATE_SINGLE || portNamesPolicy_ == DESCRIPTION) && 
                         physPort->description().contains(indexExp))
                     {
-                        lowerLogical = indexExp.cap(1).toInt();
+                        lowerLogical = indexExp.match(physPort->description()).captured(1).toInt();
                         higherLogical += lowerLogical;                       
                     }
                     // If all ports are mapped to a single logical port, map them in ascending bit order.

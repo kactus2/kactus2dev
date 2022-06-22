@@ -85,13 +85,13 @@ CSourceContentMatcher::MatchType CSourceContentMatcher::enumerateMatches(QString
                                                                      int& startIndex, QString* toolTipText,
                                                                      int& toolTipIndex)
 {
-    static QRegExp funcCallExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*\\([a-z|A-Z|0-9|_|.|,|&|\\s]*$");
+    static QRegularExpression funcCallExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*\\([a-z|A-Z|0-9|_|.|,|&|\\s]*$");
 
     bool exactMatch = false;
     int count = 0;
     
     // Enumerate function parameters if a function call is found.
-    if (funcCallExp.indexIn(text) >= 0)
+    if (text.indexOf(funcCallExp) >= 0)
     {
         count = enumerateFunctionParams(text, func, startIndex, exactMatch, toolTipText, toolTipIndex);
 
@@ -124,18 +124,19 @@ int CSourceContentMatcher::enumerateNames(QString const &text, MatchExecFunc fun
     int count = 0;
 
     // Check if the last word could be a name.
-    static QRegExp lastWordExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*$");
-    startIndex = lastWordExp.indexIn(text, 0);
+    static QRegularExpression lastWordExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*$");
+    startIndex = text.indexOf(lastWordExp, 0);
+    auto wordMatch = lastWordExp.match(text);
 
-    if (startIndex >= 0)
+    if (wordMatch.hasMatch())
     {
-        QString word = text.mid(startIndex, lastWordExp.matchedLength());
-        QRegExp matchExp("^" + QRegExp::escape(word.toLower()) + ".*");
+        QString word = wordMatch.captured(); //text.mid(startIndex, wordMatch.capturedLength());
+        QRegularExpression matchExp("^" + QRegularExpression::escape(word.toLower()) + ".*");
 
-        foreach (QSharedPointer<ApiDefinition const> apiDef, sourceApiDefinitions_)
+        for (QSharedPointer<ApiDefinition const> apiDef : sourceApiDefinitions_)
         {
 			// Search for functions that start with the retrieved word.
-			foreach ( QSharedPointer<ApiFunction> apiFunc, *apiDef->getFunctions() )
+			for ( QSharedPointer<ApiFunction> apiFunc : *apiDef->getFunctions() )
             {
                 if (tryMatchIdentifier(apiFunc->name(), MCAPI_CONTENT_FUNC, matchExp, func, count))
                 {
@@ -148,7 +149,7 @@ int CSourceContentMatcher::enumerateNames(QString const &text, MatchExecFunc fun
             }
 
             // Search for types that start with the retrieved word.
-            foreach (QString const& dataType, *apiDef->getDataTypes())
+            for (QString const& dataType : *apiDef->getDataTypes())
             {
                 if (tryMatchIdentifier(dataType, MCAPI_CONTENT_TYPENAME, matchExp, func, count))
                 {
@@ -173,34 +174,35 @@ int CSourceContentMatcher::enumerateFunctionParams(QString const &text, MatchExe
                                                  QString* toolTipText, int& toolTipIndex)
 {
     // Used static regular expressions.
-    static QRegExp funcCallExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*\\([a-z|A-Z|0-9|_|,|.|&|\\s]*$");
-    static QRegExp lastParamExp("[(|,]\\s*(&)?([a-z|A-Z|0-9|_][a-z|A-Z|0-9|_|.]*)?$");
-    static QRegExp callStartExp("\\([a-z|A-Z|0-9|_|,|.|&|\\s]*$");
+    static QRegularExpression funcCallExp("[a-z|A-Z|_][a-z|A-Z|0-9|_]*\\([a-z|A-Z|0-9|_|,|.|&|\\s]*$");
+    static QRegularExpression lastParamExp("[(|,]\\s*(&)?([a-z|A-Z|0-9|_][a-z|A-Z|0-9|_|.]*)?$");
+    static QRegularExpression callStartExp("\\([a-z|A-Z|0-9|_|,|.|&|\\s]*$");
     
     exactMatch = false;
     int count = 0;
 
     // Find the beginning of the function call.
-    int funcStartIndex = funcCallExp.indexIn(text, 0);
+    int funcStartIndex = text.indexOf(funcCallExp, 0);
     Q_ASSERT(funcStartIndex >= 0);
     
     // Search for the last param.
-    int index = lastParamExp.indexIn(text, funcStartIndex);
+    int index = text.indexOf(lastParamExp, funcStartIndex);
+    auto paramMatch = lastParamExp.match(text, funcStartIndex);
 
     if (index >= 0)
     {
         // If found, discard the leading whitespaces, left parentheses and commas.
-        startIndex = text.indexOf(QRegExp("[&|a-z|A-Z|0-9|_]"), index);
+        startIndex = text.indexOf(QRegularExpression("[&|a-z|A-Z|0-9|_]"), index);
 
         if (startIndex < 0)
         {
-            startIndex = index + lastParamExp.matchedLength();
+            startIndex = index + paramMatch.capturedLength();
         }
 
-        QString word = text.mid(startIndex, lastParamExp.matchedLength() - (startIndex - index));
+        QString word = text.mid(startIndex, paramMatch.capturedLength() - (startIndex - index));
         
         // Extract the function name & parameter list from the text.
-        index = callStartExp.indexIn(text, funcStartIndex);
+        index = text.indexOf(callStartExp, funcStartIndex);
         Q_ASSERT(index >= 0);
 
         QString funcName = text.mid(funcStartIndex, index - funcStartIndex);
@@ -213,9 +215,9 @@ int CSourceContentMatcher::enumerateFunctionParams(QString const &text, MatchExe
         // Based on the function description, try to match content.
         ApiFunction const* matchingApiFunc = 0;
 
-        foreach (QSharedPointer<ApiDefinition const> apiDef, sourceApiDefinitions_)
+        for (QSharedPointer<ApiDefinition const> apiDef : sourceApiDefinitions_)
 		{
-			foreach ( QSharedPointer<ApiFunction> apiFunc, *apiDef->getFunctions() )
+			for ( QSharedPointer<ApiFunction> apiFunc : *apiDef->getFunctions() )
             {
                 if (apiFunc->name() == funcName)
                 {
@@ -262,7 +264,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
     // Find out the parameter index.
     int paramIndex = params.count();
 
-    QRegExp matchExp("^" + QRegExp::escape(word.toLower()) + ".*");
+    QRegularExpression matchExp("^" + QRegularExpression::escape(word.toLower()) + ".*");
 
     // Based on the function parameter description, try to find matching content.
     QSharedPointer<ApiFunctionParameter const> apiParam = apiFuncDesc->getParam(paramIndex);
@@ -354,7 +356,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
 // Function: tryMatchIdentifier()
 //-----------------------------------------------------------------------------
 bool CSourceContentMatcher::tryMatchIdentifier(QString const& identifier, MCAPIContentType type,
-                                             QRegExp& exp, MatchExecFunc func, int& count)
+                                             QRegularExpression& exp, MatchExecFunc func, int& count)
 {
     if (identifier.toLower().contains(exp))
     {
@@ -376,20 +378,21 @@ bool CSourceContentMatcher::tryMatchIdentifier(QString const& identifier, MCAPIC
 //-----------------------------------------------------------------------------
 void CSourceContentMatcher::extractParams(QString const& paramsListStr, QStringList& params)
 {
-    static QRegExp paramExtractExp("([a-z|A-Z|0-9|_][^,]*)?(?=\\s*[,|$])");
+    static QRegularExpression paramExtractExp("([a-z|A-Z|0-9|_][^,]*)?(?=\\s*[,|$])");
 
     // Clear the parameter list.
     params.clear();
 
     // Extract parameters one-by-one.
-    int index = paramExtractExp.indexIn(paramsListStr);
+    auto paramMatch = paramExtractExp.match(paramsListStr);
 
-    while (index >= 0)
+    while (paramMatch.hasMatch())
     {
-        params.push_back(paramsListStr.mid(index, paramExtractExp.matchedLength()));
+        params.push_back(paramMatch.captured());
 
         // Find the next comma to prepare for extracting the next parameter.
-        int nextComma = paramsListStr.indexOf(',', index + paramExtractExp.matchedLength());
+        int index = paramMatch.capturedStart();
+        int nextComma = paramsListStr.indexOf(',', index + paramMatch.capturedLength());
 
         // If not found, there are no more complete parameters (only the one that is
         // being written at the moment).
@@ -398,7 +401,7 @@ void CSourceContentMatcher::extractParams(QString const& paramsListStr, QStringL
             break;
         }
 
-        index = paramExtractExp.indexIn(paramsListStr, nextComma + 1);
+        paramMatch = paramExtractExp.match(paramsListStr, nextComma + 1);
     }
 }
 

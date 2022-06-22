@@ -55,7 +55,7 @@ PortListSortProxyModel::DirectionFilter PortListSortProxyModel::filterDirection(
 //-----------------------------------------------------------------------------
 void PortListSortProxyModel::setFilterPortName(QString const& portName)
 {
-    setFilterRegExp(QRegExp(portName, Qt::CaseInsensitive));
+    setFilterRegularExpression(QRegularExpression(portName, QRegularExpression::CaseInsensitiveOption));
 }
 
 //-----------------------------------------------------------------------------
