@@ -13,8 +13,8 @@
 
 #include <Plugins/VerilogImport/VerilogPortParser.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <IPXactSystemVerilogParser.h>
+#include <ComponentParameterFinder.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

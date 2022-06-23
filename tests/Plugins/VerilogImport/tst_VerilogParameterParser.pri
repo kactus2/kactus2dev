@@ -7,14 +7,14 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+HEADERS += ../../../KactusAPI/include/ExpressionParser.h \
+    ../../../KactusAPI/include/IPXactSystemVerilogParser.h \
+    ../../../KactusAPI/include/SystemVerilogExpressionParser.h \
     ../../../Plugins/VerilogImport/VerilogParameterParser.h \
     ../../../Plugins/VerilogImport/VerilogSyntax.h \
     ../../../common/expressions/utilities.h
-SOURCES += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+SOURCES += ../../../KactusAPI/expressions/IPXactSystemVerilogParser.cpp \
+    ../../../KactusAPI/expressions/SystemVerilogExpressionParser.cpp \
     ../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ../../../Plugins/VerilogImport/VerilogSyntax.cpp \
     ./tst_VerilogParameterParser.cpp \
