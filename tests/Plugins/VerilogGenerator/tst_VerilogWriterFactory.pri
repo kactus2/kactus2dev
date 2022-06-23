@@ -5,25 +5,25 @@
 HEADERS += ../../../IPXACTmodels/utilities/ComponentSearch.h \
     ../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../KactusAPI/include/ComponentParameterFinder.h \
     ../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
-    ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../../KactusAPI/include/ExpressionFormatter.h \
     ../../../Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../../../Plugins/common/HDLParser/HDLParserCommon.h \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../KactusAPI/include/IPXactSystemVerilogParser.h \
     ../../../Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h \
     ../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.h \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../../../KactusAPI/include/ListParameterFinder.h \
     ../../../Plugins/common/HDLParser/MetaComponent.h \
     ../../../Plugins/common/HDLParser/MetaDesign.h \
     ../../../Plugins/common/HDLParser/MetaInstance.h \
     ../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
-    ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ../../../KactusAPI/include/MultipleParameterFinder.h \
     ../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.h \
-    ../../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../../../KactusAPI/include/ParameterFinder.h \
     ../../../Plugins/common/PortSorter/PortSorter.h \
     ../../../Plugins/VerilogGenerator/VerilogPortWriter/VerilogPortWriter.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../KactusAPI/include/SystemVerilogExpressionParser.h \
     ../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h \
     ../../../editors/common/TopComponentParameterFinder.h \
     ../../../Plugins/VerilogGenerator/VerilogAssignmentWriter/VerilogAssignmentWriter.h \
@@ -42,21 +42,21 @@ SOURCES += ../../../Plugins/VerilogGenerator/VerilogPortWriter/VerilogTopDefault
     ../../../IPXACTmodels/utilities/ComponentSearch.cpp \
     ../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../KactusAPI/expressions/ComponentParameterFinder.cpp \
     ../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
-    ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../KactusAPI/expressions/ExpressionFormatter.cpp \
+    ../../../KactusAPI/expressions/IPXactSystemVerilogParser.cpp \
     ../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cpp \
     ../../MockObjects/LibraryMock.cpp \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
+    ../../../KactusAPI/expressions/ListParameterFinder.cpp \
     ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.cpp \
     ../../../Plugins/common/HDLParser/MetaComponent.cpp \
     ../../../Plugins/common/HDLParser/MetaDesign.cpp \
     ../../../Plugins/common/HDLParser/MetaInstance.cpp \
     ../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
-    ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
+    ../../../KactusAPI/expressions/MultipleParameterFinder.cpp \
     ../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../KactusAPI/expressions/SystemVerilogExpressionParser.cpp \
     ../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.cpp \
     ../../../editors/common/TopComponentParameterFinder.cpp \
     ../../../Plugins/VerilogGenerator/VerilogAssignmentWriter/VerilogAssignmentWriter.cpp \
