@@ -7,27 +7,27 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
-    ../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../Plugins/PluginSystem/ImportPlugin/ImportColors.h \
+HEADERS += ../../../KactusAPI/include/ComponentParameterFinder.h \
+    ../../../KactusAPI/include/ExpressionParser.h \
+    ../../../KactusAPI/include/ExpressionSupport.h \
+    ../../../KactusAPI/include/IPXactSystemVerilogParser.h \
+    ../../../KactusAPI/include/ImportColors.h \
     ../../../common/NameGenerationPolicy.h \
-    ../../../editors/ComponentEditor/common/NullParser.h \
+    ../../../KactusAPI/include/NullParser.h \
     ../../../IPXACTmodels/utilities/Search.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../KactusAPI/include/SystemVerilogExpressionParser.h \
     ../../../Plugins/VerilogImport/VerilogParameterParser.h \
     ../../../Plugins/VerilogImport/VerilogPortParser.h \
-    ../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
+    ../../../KactusAPI/include/ImportHighlighter.h \
     ../../../Plugins/VerilogImport/VerilogImporter.h \
     ../../../Plugins/VerilogImport/VerilogInstanceParser.h \
     ../../../common/expressions/utilities.h
-SOURCES += ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
+SOURCES += ../../../KactusAPI/expressions/ComponentParameterFinder.cpp \
+    ../../../KactusAPI/expressions/IPXactSystemVerilogParser.cpp \
+    ../../../KactusAPI/plugins/ImportHighlighter.cpp \
     ../../../common/NameGenerationPolicy.cpp \
-    ../../../editors/ComponentEditor/common/NullParser.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../KactusAPI/expressions/NullParser.cpp \
+    ../../../KactusAPI/expressions/SystemVerilogExpressionParser.cpp \
     ../../../Plugins/VerilogImport/VerilogImporter.cpp \
     ../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ../../../Plugins/VerilogImport/VerilogPortParser.cpp \

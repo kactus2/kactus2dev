@@ -34,7 +34,7 @@
 // Function: LibraryTreeView::LibraryTreeView()
 //-----------------------------------------------------------------------------
 LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent):
-QTreeView(parent), 
+    ExpandingTreeView(parent),
     handler_(handler),
     filter_(filter),
     startPos_(),
@@ -77,14 +77,6 @@ QTreeView(parent),
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	setupActions();
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryTreeView::~LibraryTreeView()
-//-----------------------------------------------------------------------------
-LibraryTreeView::~LibraryTreeView()
-{
-
 }
 
 //-----------------------------------------------------------------------------

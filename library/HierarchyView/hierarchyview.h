@@ -12,6 +12,8 @@
 #ifndef HIERARCHYVIEW_H
 #define HIERARCHYVIEW_H
 
+#include <common/views/ExpandingTreeView/ExpandingTreeView.h>
+
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <QTreeView>
@@ -26,7 +28,7 @@ class HierarchyFilter;
 //-----------------------------------------------------------------------------
 //! HierarchyView displays the filtered contents from hierarchy filter.
 //-----------------------------------------------------------------------------
-class HierarchyView : public QTreeView
+class HierarchyView : public ExpandingTreeView
 {
 	Q_OBJECT
 

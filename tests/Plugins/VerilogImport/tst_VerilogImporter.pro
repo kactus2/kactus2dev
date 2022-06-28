@@ -36,6 +36,7 @@ else:unix {
 }
 
 INCLUDEPATH += $$DESTDIR
+INCLUDEPATH += $$PWD/../../../KactusAPI/include/
 INCLUDEPATH += ../../../
 
 DEPENDPATH += .

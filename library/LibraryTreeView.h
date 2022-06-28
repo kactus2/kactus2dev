@@ -14,6 +14,8 @@
 
 #include "LibraryTreeFilter.h"
 
+#include <common/views/ExpandingTreeView/ExpandingTreeView.h>
+
 #include <QTreeView>
 #include <QContextMenuEvent>
 #include <QAction>
@@ -26,7 +28,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! The widget to display the library in a tree.
 //-----------------------------------------------------------------------------
-class LibraryTreeView : public QTreeView
+class LibraryTreeView : public ExpandingTreeView
 {
 	Q_OBJECT
 
@@ -42,7 +44,7 @@ public:
 	LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent = 0);
 
 	//! The destructor.
-	virtual ~LibraryTreeView();
+	virtual ~LibraryTreeView() = default;
 
 signals:
 

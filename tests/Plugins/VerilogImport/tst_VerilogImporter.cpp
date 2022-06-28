@@ -19,13 +19,13 @@
 
 #include <Plugins/VerilogImport/VerilogImporter.h>
 #include <Plugins/VerilogImport/VerilogSyntax.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <ImportColors.h>
 #include <common/NameGenerationPolicy.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <IPXactSystemVerilogParser.h>
+#include <ComponentParameterFinder.h>
 
-#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
+#include <ImportHighlighter.h>
 
 class tst_VerilogImporter : public QObject
 {

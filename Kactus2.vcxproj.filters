@@ -989,6 +989,12 @@
     <Filter Include="Header Files\editors\PythonSourceEditor">
       <UniqueIdentifier>{2c530190-ab81-4ee2-8f33-70cabb06fddd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\views\ExpandingTreeView">
+      <UniqueIdentifier>{28d7fd91-dbb0-40d8-85f0-c4097cfe1eb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\views\ExpandingTreeView">
+      <UniqueIdentifier>{6b22f01c-62dd-440c-b783-a6595960ebb3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4849,6 +4855,12 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
+    <ClCompile Include="common\views\ExpandingTreeView\ExpandingTreeView.cpp">
+      <Filter>Source Files\common\views\ExpandingTreeView</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ExpandingTreeView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6646,6 +6658,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\views\ExpandingTreeView\ExpandingTreeView.h">
+      <Filter>Header Files\common\views\ExpandingTreeView</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -339,7 +339,7 @@ QSharedPointer<Parameter> tst_VerilogWriterFactory::addParameter(QString const& 
     parameter->setName(name);
     parameter->setValue(value);
 
-    mComponent->getMetaParameters()->insert(name, parameter);
+    mComponent->getMetaParameters()->append(parameter);
 
     return parameter;
 }

@@ -48,7 +48,7 @@ public:
 // Function: HierarchyView::HierarchyView()
 //-----------------------------------------------------------------------------
 HierarchyView::HierarchyView(QWidget *parent, LibraryInterface* handler, HierarchyFilter* filter):
-QTreeView(parent),
+    ExpandingTreeView(parent),
     handler_(handler),
     filter_(filter),
     startPos_(),

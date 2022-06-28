@@ -1,5 +1,5 @@
                                 README : Kactus2
-				   Copyright (c) 2012-2019 Tampere University
+				   Copyright (c) 2012-2022 Tampere University
                   https://research.tuni.fi/system-on-chip/tools
 
 Summary
@@ -181,13 +181,13 @@ c) In some systems, a link to the executable is created, if Kactus2 was installe
 
 Please note the lower-case binary name i.e. kactus2, not Kactus2.
 
-#### 3b. Run Kactus2 on command-line (experimental)
+#### 3b. Run Kactus2 on command-line
 
 Kactus2 can be run in the command-line without the GUI. Run:
 
     kactus2 -c
 
-This will start an interactive Python interpreter for executing series of commands. 
+This will start an interactive Python® interpreter for executing series of commands. 
 
 Kactus2 supports the following command-line options:
 * `-c, --no-gui`: Run in command-line mode without the GUI.
@@ -227,7 +227,10 @@ Python 3.8.3 (tags/v3.8.3:6f8c832, May 13 2020, 22:20:16) [MSC v.1925 64 bit (AM
 
 Please note the following when using the module independent of Kactus2:
 * The API is dependent on a shared library named KactusAPI. It must be found at import time.
-* Kactus2 settings, such as library paths, are not loaded with the module. You must set them manually.
+* Kactus2 settings, such as library paths, are not loaded with the module. You must set them manually. An example is shown below:
+```
+>>> kactus2.setLibraryPaths(['/home/me/ipxact', '/home/me/ip/uart/'])
+```
 
 Please note that the command-line interface is an experimental feature and very likely 
 subject to change in the near future. 
@@ -296,15 +299,18 @@ Contributors
 Antti Kamppi, Joni-Matti Määttä, Lauri Matilainen, Timo D. Hämäläinen,
 Mikko Teuho, Juho Järvinen, Esko Pekkarinen, Janne Virtanen
 
-Kactus2 is linked with Qt 5.10.1, copyright Digia Plc. (LGPL).
+Kactus2 uses [Icons8](https://icons8.com/) provided by Icons8 LLC.
 
-Kactus2 uses [Icons8](https://icons8.com/) provided by Icons8 LLC
-
-Licencing
+Licensing
 ----------------------------------------------------
-This software is licenced under the GPL2 General Public License.
+This software is licensed under the [GPL2 General Public License](LICENSE).
 
-Kactus2 is also available for dual licencing. Please contact kactus2@tuni.fi
-to purchase a commercial licence.
+Kactus2 is also available for dual licensing. Please contact kactus2@tuni.fi
+to purchase a commercial license.
 
-Python® (Python is a registered trademark of the Python Software Foundation).
+Kactus2 is dynamically linked using Qt 5.15.2 open source libraries (LGPL),
+copyright The Qt Company.
+
+Kactus2 uses the Python language and interpreter for automating design tasks.  
+Python is a registered trademark of the Python Software Foundation. See also the
+[PSF license](PSF_LICENSE.txt).

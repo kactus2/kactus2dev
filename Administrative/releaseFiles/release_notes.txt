@@ -1,12 +1,42 @@
 ===============================================================================
                             RELEASE NOTES : Kactus2
-                  Copyright (c) 2012-2019 Tampere University
-                            http://funbase.cs.tut.fi
+                  Copyright (c) 2012-2022 Tampere University
+                 https://research.tuni.fi/system-on-chip/tools
 ===============================================================================
               + Improvement or feature added
               - Bug fix or something removed
               * Changed or Information
 ===============================================================================
+
+21/06/2022 3.10.0
+----------------------------------------------------
++ Added bus interfaces in Python API
++ Added subspace maps to memory maps visualization
++ Replaced Python console in GUI with a text editor
++ Increased editor title sizes and marked Kactus2 extensions with an icon
++ Added automatic expansion of hierarchy for lone items in library views and 
+  component editor tree.
++ Added register dimension indexing in SVD generator
++ Added checks and formatting for address-cells and size-cells in Linux Device 
+  Tree Generator
+
+- Removed file modification watches for XML files so changes on the disk are no
+  shown to user. The implementation was incompatible with standalone Python 
+  script runs
+- Removed exit screen
+- Fixed crashing when creating connection in design with draft bus interface
+- Fixed crashing for incorrect indexing with memory remaps
+- Fixed crashing when reading invalid XML file
+- Fixed design editor reordering component bus interfaces in XML
+- Fixed Verilog generator parameter order
+- Fixed Verilog generator module parameter values
+- Fixed VHDL generics import stopping on semicolon in a comment
+
+* Relocated common functions and library handling to new KactusAPI shared 
+  library
+* Changed port map editor tree format to a table format
+* Migrated to Qt 5.15.2
+* Kactus2 will migrate to Qt6 in version 3.11.
 
 06/04/2022 3.9.333
 ----------------------------------------------------

@@ -8,5 +8,5 @@ CONFIG += testcase
 
 SUBDIRS += tst_HDLParser.pro \
            tst_VerilogPortParser.pro \
-		   tst_VerilogParameterParser.pro\
-		   tst_VerilogImporter.pro 
+           tst_VerilogParameterParser.pro\
+           tst_VerilogImporter.pro
