@@ -27,8 +27,7 @@ NameGroupInterface()
 //-----------------------------------------------------------------------------
 std::string MasterPortInterface::getIconPathForMissingPort() const
 {
-    QString missingPath(QLatin1String(":icons/common/graphics/cross.png"));
-    return missingPath.toStdString();
+    return (":icons/common/graphics/cross.png");
 }
 
 //-----------------------------------------------------------------------------

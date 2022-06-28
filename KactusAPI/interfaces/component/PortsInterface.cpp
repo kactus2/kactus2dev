@@ -61,9 +61,10 @@ bool PortsInterface::hasPorts() const
 //-----------------------------------------------------------------------------
 int PortsInterface::getItemIndex(string const& itemName) const
 {
+    QString selectedName(QString::fromStdString(itemName));
     for (int i = 0; i < ports_->size(); ++i)
     {
-        if (ports_->at(i)->name().toStdString() == itemName)
+        if (ports_->at(i)->name() == selectedName)
         {
             return i;
         }
@@ -77,13 +78,12 @@ int PortsInterface::getItemIndex(string const& itemName) const
 //-----------------------------------------------------------------------------
 string PortsInterface::getIndexedItemName(int const& itemIndex) const
 {
-    string portName("");
     if (itemIndex >= 0 && itemIndex < ports_->size())
     {
-        portName = ports_->at(itemIndex)->name().toStdString();
+        return ports_->at(itemIndex)->name().toStdString();
     }
 
-    return portName;
+    return string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -115,9 +115,11 @@ QSharedPointer<Port> PortsInterface::getPort(string const& portName) const
 {
     if (ports_)
     {
+        QString portNameQ(QString::fromStdString(portName));
+
         for (auto port : *ports_)
         {
-            if (port->name().toStdString() == portName)
+            if (port->name() == portNameQ)
             {
                 return port;
             }
@@ -619,10 +621,10 @@ string PortsInterface::getWidth(string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
 
-    qint64 calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toULongLong();
-    qint64 calculatedRightBound = parseExpressionToDecimal(port->getRightBound()).toULongLong();
+    qint64 calculatedLeftBound(parseExpressionToDecimal(port->getLeftBound()).toULongLong());
+    qint64 calculatedRightBound(parseExpressionToDecimal(port->getRightBound()).toULongLong());
 
-    qint64 portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
+    qint64 portWidth(abs(calculatedLeftBound - calculatedRightBound) + 1);
     return QString::number(portWidth).toStdString();
 }
 
@@ -637,7 +639,7 @@ bool PortsInterface::setWidth(string const& portName, string const& newWidth)
         return false;
     }
 
-    int size = parseExpressionToDecimal(QString::fromStdString(newWidth)).toInt();
+    int size(parseExpressionToDecimal(QString::fromStdString(newWidth)).toInt());
     port->setPortSize(size);
 
     setTypeNameAndDefinition(port);
@@ -674,10 +676,10 @@ bool PortsInterface::hasExpressionInLeftOrRightBound(string const& portName) con
 //-----------------------------------------------------------------------------
 void PortsInterface::setTypeNameAndDefinition(QSharedPointer<Port> port)
 {
-    qint64 calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toLongLong();
-    qint64 calculatedRightBound = parseExpressionToDecimal(port->getRightBound()).toLongLong();
+    qint64 calculatedLeftBound(parseExpressionToDecimal(port->getLeftBound()).toLongLong());
+    qint64 calculatedRightBound(parseExpressionToDecimal(port->getRightBound()).toLongLong());
 
-    int portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
+    int portWidth(abs(calculatedLeftBound - calculatedRightBound) + 1);
     // if port is vectored and previous type was std_logic
     if (portWidth > 1 && port->getTypeName() == QString("std_logic"))
     {

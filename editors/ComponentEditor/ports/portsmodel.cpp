@@ -355,7 +355,7 @@ void PortsModel::onRemoveRow(int row)
 		return;
     }
 
-    string portName = portsInterface_->getIndexedItemName(row);
+    string portName(portsInterface_->getIndexedItemName(row));
 
     beginRemoveRows(QModelIndex(), row, row);
     portsInterface_->removePort(portName);
@@ -382,7 +382,7 @@ void PortsModel::onRemoveItem(QModelIndex const& index)
 	}
 
     int portRow = index.row();
-    string portName = portsInterface_->getIndexedItemName(portRow);
+    string portName(portsInterface_->getIndexedItemName(portRow));
 
     beginRemoveRows(QModelIndex(), portRow, portRow);
 
@@ -559,7 +559,7 @@ bool PortsModel::rowIsLocked(int row)
 //-----------------------------------------------------------------------------
 QVariant PortsModel::formattedExpressionForIndex(QModelIndex const& index) const
 {
-    std::string portName = portsInterface_->getIndexedItemName(index.row());
+    std::string portName(portsInterface_->getIndexedItemName(index.row()));
 
     if (index.column() == arrayLeftColumn())
     {
@@ -580,7 +580,7 @@ QVariant PortsModel::formattedExpressionForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant PortsModel::expressionForIndex(QModelIndex const& index) const
 {
-    std::string portName = portsInterface_->getIndexedItemName(index.row());
+    std::string portName(portsInterface_->getIndexedItemName(index.row()));
 
     if (index.column() == arrayLeftColumn())
     {
@@ -601,7 +601,7 @@ QVariant PortsModel::expressionForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant PortsModel::valueForIndex(QModelIndex const& index) const
 {
-    string portName = portsInterface_->getItemNames().at(index.row());
+    string portName(portsInterface_->getItemNames().at(index.row()));
 
     if (index.column() == rowNumberColumn())
     {
@@ -662,7 +662,7 @@ QVariant PortsModel::expressionOrValueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool PortsModel::validateIndex(QModelIndex const& index) const
 {
-    string portName = portsInterface_->getIndexedItemName(index.row());
+    string portName(portsInterface_->getIndexedItemName(index.row()));
 
     if (index.column() == nameColumn())
     {
@@ -708,8 +708,8 @@ QSharedPointer<PortsInterface> PortsModel::getInterface() const
 //-----------------------------------------------------------------------------
 QString PortsModel::getIconPath(int const& portIndex) const
 {
-    std::string portName = getInterface()->getIndexedItemName(portIndex);
-    std::string iconPath = getInterface()->getIconPathForPort(portName);
+    std::string portName(getInterface()->getIndexedItemName(portIndex));
+    std::string iconPath(getInterface()->getIconPathForPort(portName));
     return QString::fromStdString(iconPath);
 }
 

@@ -1355,8 +1355,6 @@ void PortMapInterface::createPortMapsWithPresence(PresenceTypes::Presence presen
     
     std::vector<std::string> logicalSignals;
 
-    std::vector<std::string> testi = logicalPortInterface_->getItemNamesWithModeAndGroup(busMode, systemGroup_);
-
     for (auto signalName : logicalPortInterface_->getItemNamesWithModeAndGroup(busMode, systemGroup_))
     {
         bool notFound = std::find(logicalSignals.cbegin(), logicalSignals.cend(), signalName) == logicalSignals.cend();
