@@ -26,6 +26,8 @@
 //-----------------------------------------------------------------------------
 void SettingsUpdater::runUpgrade(QSettings& settings, MessageMediator* mediator)
 {   
+    qRegisterMetaType<HighlightStyleDesc>("HighlightStyleDesc");
+
     // Retrieve the version number of the settings file and check if it is not up-to-date.
     QString settingsVersion = 
         settings.value(QStringLiteral("Platform/Version"), QStringLiteral("1.5.0.0")).toString();
