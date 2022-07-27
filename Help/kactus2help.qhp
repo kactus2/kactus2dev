@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QtHelpProject version="1.0">
-  <namespace>com.tut.kactus2.2.0</namespace>
+  <namespace>fi.tuni.kactus2</namespace>
   <virtualFolder>doc</virtualFolder>
   <customFilter name="Kactus2 2.0">
     <filterAttribute>kactus2</filterAttribute>
