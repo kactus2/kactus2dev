@@ -45,7 +45,7 @@ console_(new MessageConsole(this))
 
     // Create the previewer.
     previewer_->setFont(font);
-    previewer_->setTabStopWidth(4 * previewer_->fontMetrics().width(' '));
+    previewer_->setTabStopDistance(4 * previewer_->fontMetrics().horizontalAdvance(' '));
     previewer_->setReadOnly(true);
     previewer_->setCursorWidth(0);
     previewer_->setLineWrapMode(QPlainTextEdit::NoWrap);

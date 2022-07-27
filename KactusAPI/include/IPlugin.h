@@ -2,7 +2,7 @@
 // File: IPlugin.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 27.6.2012
 //
 // Description:

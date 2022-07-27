@@ -200,7 +200,7 @@ QMap<QString, QString> VerilogSourceAnalyzer::findItemsInFilesets(Component cons
 				QString path = findAbsolutePathFor(file->name(), componentPath);
 				QString content = readFileContentAndRemoveComments(file->name());
 
-				itemsInFilesets.unite(findItemsInFileContent(content, path));
+				itemsInFilesets.insert(findItemsInFileContent(content, path));
 
 			}
 		}

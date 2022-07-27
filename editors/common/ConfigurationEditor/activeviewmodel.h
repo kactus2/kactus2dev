@@ -197,7 +197,7 @@ private:
 		 *
 		 *      @return bool True if the component instance names are the same.
 		 */
-		bool operator==(const InstanceViewPair& other);
+		bool operator==(const InstanceViewPair& other) const;
 
 		/*!
          *  Operator != 

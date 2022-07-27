@@ -255,7 +255,7 @@ bool FileInterface::removeFile(std::string const& fileName)
 //-----------------------------------------------------------------------------
 void FileInterface::swapFiles(int const& firstIndex, int const& secondIndex)
 {
-    files_->swap(firstIndex, secondIndex);
+    files_->swapItemsAt(firstIndex, secondIndex);
 }
 
 //-----------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 // File: SystemAddCommands.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 13.10.2011
 //
 // Description:

@@ -2,7 +2,7 @@
 // File: FileDependencySourceEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 06.06.2013
 //
 // Description:

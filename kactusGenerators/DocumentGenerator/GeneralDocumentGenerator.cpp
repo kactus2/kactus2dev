@@ -47,11 +47,11 @@ void GeneralDocumentGenerator::writeTableElement(const QStringList& headers, con
     QString headerTabs = tableTabs + "\t";  
     QString headerRowTabs = headerTabs + "\t";
 
-    stream << tableTabs << DocumentGeneratorHTML::table() << title << "\">" << endl;
-    stream << headerTabs << "<tr>" << endl;
+    stream << tableTabs << DocumentGeneratorHTML::table() << title << "\">" << Qt::endl;
+    stream << headerTabs << "<tr>" << Qt::endl;
     foreach (QString header, headers)
     {
-        stream << headerRowTabs << "<th>" << header << "</th>" << endl;
+        stream << headerRowTabs << "<th>" << header << "</th>" << Qt::endl;
     }
     stream << headerTabs << "</tr>\n";
 }
@@ -160,26 +160,26 @@ void GeneralDocumentGenerator::writeParameters(QTextStream& stream, QString cons
     QString tableRowTabs = tableTabs + QStringLiteral("\t");
     foreach (QSharedPointer<Parameter> singleParameter, *parameters)
     {
-        stream << tableTabs << "<tr>" << endl;
-        stream << tableRowTabs << "<td>" << singleParameter->name() << "</td>" << endl;
-        stream << tableRowTabs << "<td>" << singleParameter->getType() << "</td>" << endl;
+        stream << tableTabs << "<tr>" << Qt::endl;
+        stream << tableRowTabs << "<td>" << singleParameter->name() << "</td>" << Qt::endl;
+        stream << tableRowTabs << "<td>" << singleParameter->getType() << "</td>" << Qt::endl;
         stream << tableRowTabs << "<td>" << formatter->formatReferringExpression(singleParameter->getValue()) <<
-            "</td>" << endl;
-        stream << tableRowTabs << "<td>" << singleParameter->getValueResolve() << "</td>" << endl;
+            "</td>" << Qt::endl;
+        stream << tableRowTabs << "<td>" << singleParameter->getValueResolve() << "</td>" << Qt::endl;
         stream << tableRowTabs << "<td>" <<
-            formatter->formatReferringExpression(singleParameter->getVectorLeft()) << "</td>" << endl;
+            formatter->formatReferringExpression(singleParameter->getVectorLeft()) << "</td>" << Qt::endl;
         stream << tableRowTabs << "<td>" <<
-            formatter->formatReferringExpression(singleParameter->getVectorRight()) << "</td>" << endl;
+            formatter->formatReferringExpression(singleParameter->getVectorRight()) << "</td>" << Qt::endl;
         stream << tableRowTabs << "<td>" <<
-            formatter->formatReferringExpression(singleParameter->getArrayLeft()) << "</td>" << endl;
+            formatter->formatReferringExpression(singleParameter->getArrayLeft()) << "</td>" << Qt::endl;
         stream << tableRowTabs << "<td>" <<
-            formatter->formatReferringExpression(singleParameter->getArrayRight()) << "</td>" << endl;
-        stream << tableRowTabs << "<td>" << singleParameter->description() << "</td>" << endl;
+            formatter->formatReferringExpression(singleParameter->getArrayRight()) << "</td>" << Qt::endl;
+        stream << tableRowTabs << "<td>" << singleParameter->description() << "</td>" << Qt::endl;
 
-        stream << tableTabs << "</tr>" << endl;
+        stream << tableTabs << "</tr>" << Qt::endl;
     }
 
-    stream << parameterTabs << "</table>" << endl;
+    stream << parameterTabs << "</table>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -204,16 +204,16 @@ void GeneralDocumentGenerator::writeFileBuildCommands(QTextStream& stream, QStri
 
         foreach (QSharedPointer<FileBuilder> builder, *buildCommands)
         {
-            stream << builderTableTabs << "<tr>" << endl;
-            stream << builderRowTabs << "<td>" << builder->getFileType() << "</td>" << endl;
-            stream << builderRowTabs << "<td>" << builder->getCommand() << "</td>" << endl;
-            stream << builderRowTabs << "<td>" << builder->getFlags() << "</td>" << endl;
+            stream << builderTableTabs << "<tr>" << Qt::endl;
+            stream << builderRowTabs << "<td>" << builder->getFileType() << "</td>" << Qt::endl;
+            stream << builderRowTabs << "<td>" << builder->getCommand() << "</td>" << Qt::endl;
+            stream << builderRowTabs << "<td>" << builder->getFlags() << "</td>" << Qt::endl;
             stream << builderRowTabs << "<td>" <<
                 buildExpressionFormatter->formatReferringExpression(builder->getReplaceDefaultFlags()) <<
-                "</td>" << endl;
-            stream << builderTableTabs << "</tr>" << endl;
+                "</td>" << Qt::endl;
+            stream << builderTableTabs << "</tr>" << Qt::endl;
         }
 
-        stream << buildCommandTabs << "</table>" << endl;
+        stream << buildCommandTabs << "</table>" << Qt::endl;
     }
 }

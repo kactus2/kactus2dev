@@ -2,7 +2,7 @@
 // File: ConnectionEndpoint.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 4.6.2012
 //
 // Description:

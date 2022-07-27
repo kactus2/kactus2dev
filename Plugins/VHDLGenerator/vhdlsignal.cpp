@@ -37,7 +37,7 @@ void VhdlSignal::write( QTextStream& stream ) const {
     stream << getVhdlLegalName().leftJustified(16, ' '); // align colons (:) at least roughly
 	stream << " : ";
 	QString typeDefinition = VhdlGeneral::vhdlType2String(type(), left_, right_);
-	stream << typeDefinition << ";" << endl;
+	stream << typeDefinition << ";" << Qt::endl;
 }
 
 int VhdlSignal::left() const {

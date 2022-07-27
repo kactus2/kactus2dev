@@ -70,7 +70,7 @@ void RegisterGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::addChild(MemoryVisualizationItem* childItem)
 {
-    childItems_.insertMulti(childItem->getOffset(), childItem);
+    childItems_.insert(childItem->getOffset(), childItem);
 
     childItem->setParentItem(this);    
     childItem->setVisible(isExpanded());
@@ -254,7 +254,7 @@ unsigned int RegisterGraphItem::findHighestReservedBit()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::removeGapsAndSortChildren()
 {
-    QMap<quint64, MemoryVisualizationItem*> sortedMap;
+    QMultiMap<quint64, MemoryVisualizationItem*> sortedMap;
     for (auto item = childItems_.cbegin(); item != childItems_.cend(); ++item)
     {
         MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(*item);
@@ -264,7 +264,7 @@ void RegisterGraphItem::removeGapsAndSortChildren()
         }
         else
         {
-            sortedMap.insertMulti((*item)->getLastAddress(), *item);
+            sortedMap.insert((*item)->getLastAddress(), *item);
         }
     }
 
@@ -312,7 +312,7 @@ bool RegisterGraphItem::emptySpaceBeforeChild(MemoryVisualizationItem const* cur
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::addMemoryGap()
 //-----------------------------------------------------------------------------
-QMap<quint64, MemoryVisualizationItem*>::iterator RegisterGraphItem::addMemoryGap(quint64 startAddress,
+QMultiMap<quint64, MemoryVisualizationItem*>::iterator RegisterGraphItem::addMemoryGap(quint64 startAddress,
     quint64 endAddress)
 {
     FieldGapItem* gap = new FieldGapItem(tr("Reserved"), getExpressionParser(), this);

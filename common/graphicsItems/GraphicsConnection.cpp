@@ -2,7 +2,7 @@
 // File: GraphicsConnection.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 5.6.2012
 //
 // Description:
@@ -135,7 +135,7 @@ bool GraphicsConnection::connectEnds()
         // The path points have to be reversed.
         for (int i = 0; i < pathPoints_.size() / 2; ++i)
         {
-            pathPoints_.swap(i, pathPoints_.size() - 1 - i);
+            pathPoints_.swapItemsAt(i, pathPoints_.size() - 1 - i);
         }
     }
 
@@ -845,7 +845,7 @@ void GraphicsConnection::drawOverlapWithConnection(QPainter* painter, GraphicsCo
                 if (!qFuzzyIsNull(connectionLine.dx())) //<! Discard vertical segments of the intersecting line.
                 {
                     QPointF intersectionPoint;
-                    QLineF::IntersectType type = pathLine.intersect(connectionLine, &intersectionPoint);
+                    QLineF::IntersectType type = pathLine.intersects(connectionLine, &intersectionPoint);
 
                     if (type == QLineF::BoundedIntersection)
                     {
@@ -943,10 +943,10 @@ void GraphicsConnection::drawOverlapWithComponent(QPainter* painter, QGraphicsIt
         QPointF topPoint;
         QPointF bottomPoint;
 
-        QLineF::IntersectType leftIntersection = pathLine.intersect(leftEdge, &leftPoint);
-        QLineF::IntersectType rightIntersection = pathLine.intersect(rightEdge, &rightPoint);
-        QLineF::IntersectType topIntersection = pathLine.intersect(topEdge, &topPoint);
-        QLineF::IntersectType bottomIntersection = pathLine.intersect(bottomEdge, &bottomPoint);
+        QLineF::IntersectType leftIntersection = pathLine.intersects(leftEdge, &leftPoint);
+        QLineF::IntersectType rightIntersection = pathLine.intersects(rightEdge, &rightPoint);
+        QLineF::IntersectType topIntersection = pathLine.intersects(topEdge, &topPoint);
+        QLineF::IntersectType bottomIntersection = pathLine.intersects(bottomEdge, &bottomPoint);
 
         painter->setPen(QPen(KactusColors::CONNECTION_UNDERCROSSING, pen().width() + 1));
 
@@ -1249,8 +1249,8 @@ void GraphicsConnection::createSegmentBounds(QList<SegmentBound>& verticalBounds
         horizontalBounds.append(SegmentBound(pathPoints_.at(pathPoints_.size() - 2), pathPoints_.last()));
     }
 
-    qSort(horizontalBounds.begin(), horizontalBounds.end(), sortBoundsByY);
-    qSort(verticalBounds.begin(), verticalBounds.end(), sortBoundsByX);
+    std::sort(horizontalBounds.begin(), horizontalBounds.end(), sortBoundsByY);
+    std::sort(verticalBounds.begin(), verticalBounds.end(), sortBoundsByX);
 }
 
 //-----------------------------------------------------------------------------

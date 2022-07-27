@@ -37,7 +37,7 @@ ConsoleMediator::~ConsoleMediator()
 void ConsoleMediator::showMessage(QString const& message) const
 {
     static QTextStream out(stdout); 
-    out << message << endl;  
+    out << message << Qt::endl;  
 }
 
 //-----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ void ConsoleMediator::showMessage(QString const& message) const
 void ConsoleMediator::showError(QString const& error) const
 {
     static QTextStream err(stderr);
-    err << error << endl;
+    err << error << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

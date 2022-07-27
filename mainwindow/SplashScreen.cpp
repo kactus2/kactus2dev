@@ -2,7 +2,7 @@
 // File: SplashScreen.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 24.5.2011
 //
 // Description:
@@ -19,7 +19,7 @@
 // Function: SplashScreen::SplashScreen()
 //-----------------------------------------------------------------------------
 SplashScreen::SplashScreen(QString const& versionString, QWidget* parent /*= 0*/):
-QSplashScreen(parent, QPixmap(":/common/graphics/splash.png")),
+QSplashScreen(QPixmap(":/common/graphics/splash.png")),
     versionString_(versionString)
 {
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
@@ -63,7 +63,7 @@ void SplashScreen::drawContents(QPainter *painter)
                             "kactus2@tuni.fi\n"
                             "Kactus2 is available for dual licensing.\n"
                             "This software is licensed under the General Public License Version 2.\n"
-                            "Contributors: Antti Kamppi, Esko Pekkarinen, Janne Virtanen, Joni-Matti M‰‰tt‰, \n"
+                            "Contributors: Antti Kamppi, Esko Pekkarinen, Janne Virtanen, Joni-Matti Maatta, \n"
                             "Juho J‰rvinen, Lauri Matilainen, Mikko Teuho, Timo D. H‰m‰l‰inen"));
 }
 

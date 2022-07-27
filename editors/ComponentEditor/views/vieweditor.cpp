@@ -152,7 +152,7 @@ void ViewEditor::onComponentInstanceChanged(QString const& instanceName)
     {
         moduleParameterEditor_->setModuleParameters(instantiation);
     }
-    moduleParameterEditor_->setVisible(instantiation);
+    moduleParameterEditor_->setVisible(instantiation.isNull() == false);
 
     if (previousInstance != instanceName)
     {
@@ -187,7 +187,7 @@ void ViewEditor::onDesignConfigurationInstanceChanged(QString const& instanceNam
     }
 
     hierarchyGroup_->setVisible(!instanceName.isEmpty() || !designInstantiationSelector_->currentText().isEmpty());
-    designConfigurationDisplay_->setVisible(selectedInstantiation);
+    designConfigurationDisplay_->setVisible(selectedInstantiation.isNull() == false);
     designConfigurationDisplay_->setVLNV(selectedVLNV);
 
     if (previousInstance != instanceName)
@@ -223,7 +223,7 @@ void ViewEditor::onDesignInstanceChanged(QString const& instanceName)
 
     hierarchyGroup_->setVisible(!instanceName.isEmpty() || 
         !designConfigurationInstantiationSelector_->currentText().isEmpty());
-    designDisplay_->setVisible(selectedInstantiation);
+    designDisplay_->setVisible(selectedInstantiation.isNull() == false);
     designDisplay_->setVLNV(selectedVLNV);
 
     if (previousInstance != instanceName)

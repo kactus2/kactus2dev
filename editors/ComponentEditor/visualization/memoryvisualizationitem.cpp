@@ -238,7 +238,7 @@ void MemoryVisualizationItem::updateChildMap()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::removeGapsAndSortChildren()
 {
-    QMap<quint64, MemoryVisualizationItem*> updatedMap;
+    QMultiMap<quint64, MemoryVisualizationItem*> updatedMap;
 
     for (auto item = childItems_.cbegin(); item != childItems_.cend(); ++item)
     {
@@ -249,7 +249,7 @@ void MemoryVisualizationItem::removeGapsAndSortChildren()
         }
         else
         {
-            updatedMap.insertMulti((*item)->getOffset(), *item);
+            updatedMap.insert((*item)->getOffset(), *item);
         }
     }
 
@@ -261,10 +261,10 @@ void MemoryVisualizationItem::removeGapsAndSortChildren()
             QList<MemoryVisualizationItem*> childs = updatedMap.values(offset);
             updatedMap.remove(offset);
 
-            qStableSort(childs.begin(), childs.end(), compareItems);
+            std::stable_sort(childs.begin(), childs.end(), compareItems);
             for (auto& child : childs)
             {
-                updatedMap.insertMulti(offset, child);
+                updatedMap.insert(offset, child);
             }
         }
     }
@@ -444,7 +444,7 @@ bool MemoryVisualizationItem::emptySpaceBeforeChild(MemoryVisualizationItem cons
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::createMemoryGap()
 //-----------------------------------------------------------------------------
-QMap<quint64, MemoryVisualizationItem*>::iterator MemoryVisualizationItem::createMemoryGap(quint64 startAddress,
+QMultiMap<quint64, MemoryVisualizationItem*>::iterator MemoryVisualizationItem::createMemoryGap(quint64 startAddress,
     quint64 endAddress)
 {
     MemoryGapItem* gap = new MemoryGapItem(expressionParser_, this);

@@ -149,7 +149,7 @@ public:
      *
      *      @return A map containing the memory connection items in the order of their base addresses.
      */
-    QMap<quint64, MemoryConnectionItem*> getMemoryConnections() const;
+    QMultiMap<quint64, MemoryConnectionItem*> getMemoryConnections() const;
 
     /*!
      *  Fit the selected label to this item.
@@ -369,7 +369,7 @@ private:
     QString displayName_;
 
     //! Map containing memory connection items and their base addresses.
-    QMap<quint64, MemoryConnectionItem*> memoryConnections_;
+    QMultiMap<quint64, MemoryConnectionItem*> memoryConnections_;
 
     //! The containing component instance.
     QSharedPointer<ConnectivityComponent const> containingInstance_;

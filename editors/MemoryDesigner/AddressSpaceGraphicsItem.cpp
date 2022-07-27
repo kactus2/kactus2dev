@@ -158,9 +158,9 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(bool memoryItemsAr
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems (new QVector<MainMemoryGraphicsItem*> ());
     visitedMemoryItems->append(this);
 
-    QMap<quint64, MemoryConnectionItem*> allConnectedConnections =
+    QMultiMap<quint64, MemoryConnectionItem*> allConnectedConnections =
         getAllConnectionsFromConnectedItems(visitedMemoryItems);
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(allConnectedConnections);
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator(allConnectedConnections);
     connectionIterator.toFront();
 
     visitedMemoryItems->clear();
@@ -174,7 +174,7 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(bool memoryItemsAr
 
     connectionIterator.toFront();
     QVector<quint64> unCutAddresses = getUnCutAddressesFromConnections(connectionIterator);
-    qSort(unCutAddresses);
+    std::sort(unCutAddresses.begin(), unCutAddresses.end());
 
     connectionIterator.toFront();
     while (connectionIterator.hasNext())
@@ -255,13 +255,13 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(bool memoryItemsAr
 //-----------------------------------------------------------------------------
 qreal AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates(bool memoryItemsAreCompressed,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems,
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator)
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator)
 {
     const qreal CUTMODIFIER = 3 * MemoryDesignerConstants::RANGEINTERVAL;
 
     connectionIterator.toFront();
     QVector<qreal> unCutCoordinates = getUnCutCoordinatesFromConnections(connectionIterator);
-    qSort(unCutCoordinates);
+    std::sort(unCutCoordinates.begin(), unCutCoordinates.end());
 
     connectionIterator.toFront();
     while (connectionIterator.hasNext())
@@ -354,10 +354,10 @@ qreal AddressSpaceGraphicsItem::getFilteredCompressedHeightByCoordinates(bool me
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::getChainedMemoryConnections()
 //-----------------------------------------------------------------------------
-QMap<quint64, MemoryConnectionItem*> AddressSpaceGraphicsItem::getChainedMemoryConnections() const
+QMultiMap<quint64, MemoryConnectionItem*> AddressSpaceGraphicsItem::getChainedMemoryConnections() const
 {
     QMultiMap<quint64, MemoryConnectionItem*> chainedConnections = getMemoryConnections();
-    QMapIterator<quint64, MemoryConnectionItem*> chainIterator (chainedConnections);
+    QMultiMapIterator<quint64, MemoryConnectionItem*> chainIterator (chainedConnections);
     while (chainIterator.hasNext())
     {
         chainIterator.next();
@@ -367,8 +367,8 @@ QMap<quint64, MemoryConnectionItem*> AddressSpaceGraphicsItem::getChainedMemoryC
         AddressSpaceGraphicsItem* chainSpace = dynamic_cast<AddressSpaceGraphicsItem*>(chainEndItem);
         if (chainSpace && chainSpace != this)
         {
-            QMap<quint64, MemoryConnectionItem*> secondConnections = chainSpace->getChainedMemoryConnections();
-            QMapIterator<quint64, MemoryConnectionItem*> secondChainIterator (secondConnections);
+            QMultiMap<quint64, MemoryConnectionItem*> secondConnections = chainSpace->getChainedMemoryConnections();
+            QMultiMapIterator<quint64, MemoryConnectionItem*> secondChainIterator (secondConnections);
             while (secondChainIterator.hasNext())
             {
                 secondChainIterator.next();
@@ -406,7 +406,7 @@ QMap<quint64, MemoryConnectionItem*> AddressSpaceGraphicsItem::getChainedMemoryC
 // Function: AddressSpaceGraphicsItem::getUnCutAddresses()
 //-----------------------------------------------------------------------------
 QVector<quint64> AddressSpaceGraphicsItem::getUnCutAddressesFromConnections(
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
 {
     QVector<quint64> unCutAddresses = getUnCutAddresses();
 
@@ -455,7 +455,7 @@ QVector<quint64> AddressSpaceGraphicsItem::getUnCutAddressesFromConnections(
 // Function: AddressSpaceGraphicsItem::getUnCutCoordinatesFromConnections()
 //-----------------------------------------------------------------------------
 QVector<qreal> AddressSpaceGraphicsItem::getUnCutCoordinatesFromConnections(
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
 {
     QVector<qreal> unCutCoordinates = getUnCutCoordinates();
 
@@ -509,8 +509,8 @@ QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getAllConnectedSpaceI
 
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedItems (new QVector<MainMemoryGraphicsItem*> ());
 
-    QMap<quint64, MemoryConnectionItem*> allConnections = getAllConnectionsFromConnectedItems(visitedItems);
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
+    QMultiMap<quint64, MemoryConnectionItem*> allConnections = getAllConnectionsFromConnectedItems(visitedItems);
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
@@ -559,14 +559,14 @@ QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getSpaceItemsConnecte
 // Function: AddressSpaceGraphicsItem::hasProblemConnection()
 //-----------------------------------------------------------------------------
 bool AddressSpaceGraphicsItem::hasProblemConnection(
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
 {
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
         MemoryConnectionItem* connectionItem = connectionIterator.value();
 
-        QMapIterator<quint64, MemoryConnectionItem*> comparisonIterator(connectionIterator);
+        QMultiMapIterator<quint64, MemoryConnectionItem*> comparisonIterator(connectionIterator);
         while (comparisonIterator.hasNext())
         {
             comparisonIterator.next();

@@ -300,7 +300,7 @@ bool EditableTableView::eventFilter(QObject* target, QEvent* event)
         {
             // paint by hand (borrowed from QTableCornerButton)
             QStyleOptionHeader opt;
-            opt.init(cornerButton);
+            opt.initFrom(cornerButton);
 
             QStyle::State styleState = QStyle::State_None;
 
@@ -345,7 +345,7 @@ void EditableTableView::onAddAction()
 
 	if (!indexes.isEmpty())
     {
-		qSort(indexes);
+		std::sort(indexes.begin(), indexes.end());
 		posToAdd = indexes.first();
 
 		if (sortProxy)
@@ -402,7 +402,7 @@ void EditableTableView::onRemoveAction()
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    qSort(indexes);
+    std::sort(indexes.begin(), indexes.end());
     int rowCount = qMax(1, countRows(indexes));
 
     // Remove as many rows as wanted.
@@ -438,7 +438,7 @@ void EditableTableView::onCutAction()
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    qSort(indexes);
+    std::sort(indexes.begin(), indexes.end());
     int lastColumn = indexes.last().column();
 
     QString copyText;
@@ -485,7 +485,7 @@ void EditableTableView::onCopyAction()
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
 	QModelIndexList indexes = selectedIndexes();
-	qSort(indexes);
+    std::sort(indexes.begin(), indexes.end());
 
     int lastColumn = indexes.last().column();
     
@@ -520,7 +520,7 @@ void EditableTableView::onPasteAction()
 	QModelIndex posToPaste;
 	if (!indexes.isEmpty())
     {
-		qSort(indexes);
+        std::sort(indexes.begin(), indexes.end());
 		posToPaste = indexes.first();
 	}
 
@@ -531,7 +531,7 @@ void EditableTableView::onPasteAction()
     QString pasteText = QApplication::clipboard()->text(textType);
 
 	// Split the string from clip board into rows.
-	QStringList rowsToAdd = pasteText.split("\n", QString::SkipEmptyParts);
+	QStringList rowsToAdd = pasteText.split("\n", Qt::SkipEmptyParts);
 
     bool useDynamicSorting = false;
     QSortFilterProxyModel* proxyModel = qobject_cast<QSortFilterProxyModel*>(model());
@@ -593,7 +593,7 @@ void EditableTableView::onCopyElementAction()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     QModelIndexList indexList = selectedIndexes();
-    qSort(indexList);
+    std::sort(indexList.begin(), indexList.end());
 
     QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
 
@@ -675,7 +675,7 @@ void EditableTableView::onCSVExport(const QString& filePath)
     {
 		stream << model()->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString().simplified() << ";";
 	}
-	stream << endl;
+	stream << Qt::endl;
 
 	// write each row
 	for (int row = 0; row < rowCount; row++)
@@ -702,7 +702,7 @@ void EditableTableView::onCSVExport(const QString& filePath)
             }
 			
 		}
-		stream << endl;
+		stream << Qt::endl;
 	}
 	file.close();
 
@@ -824,13 +824,13 @@ void EditableTableView::setModel(QAbstractItemModel* model)
 		// get the header for the section
 		QString headerText = model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString();
 		// if the header contains several lines
-		QStringList headerLines = headerText.split("\n", QString::SkipEmptyParts);
+		QStringList headerLines = headerText.split("\n", Qt::SkipEmptyParts);
 		int headerSize = 0;
 
 		// find the line that needs most space
 		foreach (QString headerLine, headerLines)
         {
-			headerSize = qMax(headerSize, fMetrics.width(headerLine));
+			headerSize = qMax(headerSize, fMetrics.horizontalAdvance(headerLine));
 		}
         headerSize += 45;
 

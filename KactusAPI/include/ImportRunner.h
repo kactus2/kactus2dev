@@ -241,7 +241,7 @@ private:
     QTabWidget* displayTabs_;
 
     //! Table containing file extensions as key combined with file types as value.
-    QMap<QString, QString> fileSuffixTable_;
+    QMultiMap<QString, QString> fileSuffixTable_;
 
     //! List of currently available component declarations.
     QVector<AvailableComponent> componentsInFile_;

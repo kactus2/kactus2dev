@@ -140,7 +140,7 @@ void SingleRegisterEditor::setupLayout()
     QSplitterHandle* handle = verticalSplitter->handle(1);
     QVBoxLayout* handleLayout = new QVBoxLayout(handle);
     handleLayout->setSpacing(0);
-    handleLayout->setMargin(0);
+    handleLayout->setContentsMargins(0, 0, 0, 0);
 
     QFrame* line = new QFrame(handle);
     line->setLineWidth(2);

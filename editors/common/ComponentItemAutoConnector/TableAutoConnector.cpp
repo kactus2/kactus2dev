@@ -56,14 +56,14 @@ QVector<QPair<QString, QString> > TableAutoConnector::getCombinations(QSharedPoi
         {
             QString itemToBeConnected = possibleCombinations.at(i).first;
 
-            QMap<double, QString> possibleConnecedItems;
+            QMultiMap<double, QString> possibleConnecedItems;
             for (auto comparisonItem : possibleCombinations.at(i).second)
             {
                 double jaroDistance =
                     JaroWinklerAlgorithm::calculateJaroWinklerDistance(itemToBeConnected, comparisonItem);
                 if (jaroDistance >= JAROWINKLERTRESHOLD)
                 {
-                    possibleConnecedItems.insertMulti(jaroDistance, comparisonItem);
+                    possibleConnecedItems.insert(jaroDistance, comparisonItem);
                 }
             }
 

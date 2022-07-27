@@ -2,7 +2,7 @@
 // File: HWChangeCommands.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 5.8.2011
 //
 // Description:

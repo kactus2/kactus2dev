@@ -2,7 +2,7 @@
 // File: CSourceContentMatcher.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 11.1.2011
 //
 // Description:

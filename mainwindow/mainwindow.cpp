@@ -2,7 +2,7 @@
 // File: mainwindow.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 24.2.2011
 //
 // Description:
@@ -3665,7 +3665,7 @@ void MainWindow::createGeneratorPluginActions()
             painter.drawPixmap(0, 0, pluginBaseIcon.pixmap(32, 32));
 
             QAction* action = new QAction(icon, genPlugin->getName(), this);
-            action->setData(qVariantFromValue((void*)genPlugin));
+            action->setData(QVariant::fromValue((void*)genPlugin));
 
             generationGroup_->addAction(action);
             pluginActionGroup_->addAction(action);

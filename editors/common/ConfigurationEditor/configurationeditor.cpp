@@ -97,7 +97,7 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
 
     activeViewEditor_->setDesign(designWidget_);
 
-    bool hasConfiguration = designWidget_->getDiagram()->getDesignConfiguration();
+    bool hasConfiguration = designWidget_->getDiagram()->getDesignConfiguration().isNull() == false;
 
     configurationDisplay_->setVisible(hasConfiguration);
     if (hasConfiguration)
@@ -339,9 +339,9 @@ void ConfigurationEditor::setupConnections()
 {
     connect(addNewButton_, SIGNAL(clicked(bool)), this, SLOT(onAdd()), Qt::UniqueConnection);
 
-    connect(configurationSelector_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(configurationSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SIGNAL(configurationChanged(QString const&)), Qt::UniqueConnection);
-    connect(configurationSelector_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(configurationSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onConfigurationChanged(QString const&)), Qt::UniqueConnection);
 }
 

@@ -2,7 +2,7 @@
 // File: IHGraphicsLayout.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 9.10.2012
 //
 // Description:

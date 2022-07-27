@@ -127,8 +127,8 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem const> register
     QFont fieldFont = getNameLabel()->font();
     fieldFont.setPointSizeF(fieldFont.pointSizeF() - 1.6);
 
-    QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> subItems = getFieldItemsInLastBitOrder(registerItem);
-    QMapIterator<quint64, RegisterGraphicsItem::FieldMemoryItem> subItemIterator(subItems);
+    QMultiMap<quint64, RegisterGraphicsItem::FieldMemoryItem> subItems = getFieldItemsInLastBitOrder(registerItem);
+    QMultiMapIterator<quint64, RegisterGraphicsItem::FieldMemoryItem> subItemIterator(subItems);
     subItemIterator.toBack();
     while (subItemIterator.hasPrevious())
     {
@@ -164,14 +164,14 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem const> register
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::getFieldItemsInLastBitOrder()
 //-----------------------------------------------------------------------------
-QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> RegisterGraphicsItem::getFieldItemsInLastBitOrder(
+QMultiMap<quint64, RegisterGraphicsItem::FieldMemoryItem> RegisterGraphicsItem::getFieldItemsInLastBitOrder(
     QSharedPointer<MemoryItem const> registerItem) const
 {
-    QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> fieldMap;
+    QMultiMap<quint64, RegisterGraphicsItem::FieldMemoryItem> fieldMap;
 
     quint64 registerOffset = registerItem->getAddress().toULongLong();
 
-    foreach (QSharedPointer<MemoryItem const> fieldItem, registerItem->getChildItems())
+    for (QSharedPointer<MemoryItem const> fieldItem : registerItem->getChildItems())
     {
         if (fieldItem->getType().compare(MemoryDesignerConstants::FIELD_TYPE, Qt::CaseInsensitive) == 0)
         {
@@ -190,7 +190,7 @@ QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> RegisterGraphicsItem::getFi
                 newFieldMemoryItem.fieldWidth = fieldWidth;
                 newFieldMemoryItem.fieldMemoryItem = fieldItem;
 
-                fieldMap.insertMulti(lastBit, newFieldMemoryItem);
+                fieldMap.insert(lastBit, newFieldMemoryItem);
             }
         }
     }

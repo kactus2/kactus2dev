@@ -173,7 +173,7 @@ void AddressBlockGraphicsItem::changeWidth(qreal widthChange)
 {
     if (!subItemsAreFiltered())
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();
@@ -215,7 +215,7 @@ void AddressBlockGraphicsItem::createFieldOverlapItems()
 {
     if (!subItemsAreFiltered())
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();

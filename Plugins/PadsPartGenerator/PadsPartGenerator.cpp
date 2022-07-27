@@ -366,14 +366,14 @@ void PadsPartGenerator::insertCAEHeader(QTextStream& output, QString const& time
     header.replace(PadsAsciiSyntax::NUM_TERMINALS, QString::number(pinCount));
     header.replace(PadsAsciiSyntax::VISIBILITY, QString::number(DEFAULT_VISIBILITY));
 
-    output << header.join(PadsAsciiSyntax::SEPARATOR) << endl;
+    output << header.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
 
     // 2. line has the timestamp.
-    output << timestamp << endl;
+    output << timestamp << Qt::endl;
 
     // Font info on the 3. and 4. lines.
-    output << PadsAsciiSyntax::DEFAULT_FONT << endl;
-    output << PadsAsciiSyntax::DEFAULT_FONT << endl;
+    output << PadsAsciiSyntax::DEFAULT_FONT << Qt::endl;
+    output << PadsAsciiSyntax::DEFAULT_FONT << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -395,32 +395,32 @@ void PadsPartGenerator::insertCAEDecal(QTextStream& output, QRect const& drawSym
     text.replace(PadsAsciiSyntax::LABEL_FONTINFO, PadsAsciiSyntax::DEFAULT_FONT);
 
     // Reference designator location definition.
-    output << text.join(PadsAsciiSyntax::SEPARATOR) << endl;
-    output << "REF-DES" << endl;
+    output << text.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+    output << "REF-DES" << Qt::endl;
 
     // Part type name definition.
     text.replace(PadsAsciiSyntax::LABEL_POS_Y, QString::number(-2*PIN_SPAN));
     text.replace(PadsAsciiSyntax::JUSTIFICATION,QString::number(JUST_TOP_CENTER));
-    output << text.join(PadsAsciiSyntax::SEPARATOR) << endl;
-    output << "PART-TYPE" << endl;
+    output << text.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+    output << "PART-TYPE" << Qt::endl;
 
     // First part attribute value definition.
     text.replace(PadsAsciiSyntax::LABEL_POS_Y, QString::number(-PIN_SPAN));
-    output << text.join(PadsAsciiSyntax::SEPARATOR) << endl;
-    output << "*" << endl;
+    output << text.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+    output << "*" << Qt::endl;
 
     // Second part attribute value definition.
     text.replace(PadsAsciiSyntax::LABEL_POS_Y, QString::number(partHeight + PIN_SPAN));
-    output << text.join(PadsAsciiSyntax::SEPARATOR) << endl;
-    output << "*" << endl;
+    output << text.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+    output << "*" << Qt::endl;
 
     // Drawing symbol, rectangle, corner points. First point twice.
-    output << PadsAsciiSyntax::CAE_RECT_PIECE << endl;
-    output << drawSymbol.topLeft().x() << " " << drawSymbol.topLeft().y() << endl;
-    output << drawSymbol.bottomLeft().x() << " " << drawSymbol.bottomLeft().y() << endl;        
-    output << drawSymbol.bottomRight().x() << " " << drawSymbol.bottomRight().y() << endl;
-    output << drawSymbol.topRight().x() << " " << drawSymbol.topRight().y() << endl;
-    output << drawSymbol.topLeft().x() << " " << drawSymbol.topLeft().y() << endl;
+    output << PadsAsciiSyntax::CAE_RECT_PIECE << Qt::endl;
+    output << drawSymbol.topLeft().x() << " " << drawSymbol.topLeft().y() << Qt::endl;
+    output << drawSymbol.bottomLeft().x() << " " << drawSymbol.bottomLeft().y() << Qt::endl;        
+    output << drawSymbol.bottomRight().x() << " " << drawSymbol.bottomRight().y() << Qt::endl;
+    output << drawSymbol.topRight().x() << " " << drawSymbol.topRight().y() << Qt::endl;
+    output << drawSymbol.topLeft().x() << " " << drawSymbol.topLeft().y() << Qt::endl;
 
     // First label for gate title.
     QStringList overheadLabel = PadsAsciiSyntax::TEXT_ITEM.split(PadsAsciiSyntax::SEPARATOR);             
@@ -435,13 +435,13 @@ void PadsPartGenerator::insertCAEDecal(QTextStream& output, QRect const& drawSym
     overheadLabel.replace(PadsAsciiSyntax::PCB_DRAW_NUMBER, "0");
     overheadLabel.replace(PadsAsciiSyntax::FIELD_FLAG, "0");
     overheadLabel.replace(PadsAsciiSyntax::TEXT_FONTINFO, PadsAsciiSyntax::DEFAULT_FONT);
-    output << overheadLabel.join(PadsAsciiSyntax::SEPARATOR) << endl;                                        
-    output << gateTitle << endl;
+    output << overheadLabel.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;                                        
+    output << gateTitle << Qt::endl;
 
     // Second label for gate name.
     overheadLabel.replace(PadsAsciiSyntax::TEXT_POS_Y, QString::number(drawSymbol.bottom() - 2*PIN_SPAN));
-    output << overheadLabel.join(PadsAsciiSyntax::SEPARATOR) << endl;         
-    output << gateName << endl;        
+    output << overheadLabel.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;         
+    output << gateName << Qt::endl;        
 }
 
 //-----------------------------------------------------------------------------
@@ -489,8 +489,8 @@ void PadsPartGenerator::insertCAETerminals(QTextStream& output, QRect const& dra
     {
         terminal.replace(PadsAsciiSyntax::TERMINAL_POS_Y,QString::number(y));
 
-        output << "T" << terminal.join(PadsAsciiSyntax::SEPARATOR) << endl;
-        output << "P" << pinProperty.join(PadsAsciiSyntax::SEPARATOR) << endl;
+        output << "T" << terminal.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+        output << "P" << pinProperty.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
 
         y -= PIN_SPAN;
     }
@@ -505,8 +505,8 @@ void PadsPartGenerator::insertCAETerminals(QTextStream& output, QRect const& dra
     {
         terminal.replace(PadsAsciiSyntax::TERMINAL_POS_Y,QString::number(y));
 
-        output << "T" << terminal.join(PadsAsciiSyntax::SEPARATOR) << endl;
-        output << "P" << pinProperty.join(PadsAsciiSyntax::SEPARATOR) << endl;
+        output << "T" << terminal.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+        output << "P" << pinProperty.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
 
         y -= PIN_SPAN;
     }

@@ -1,3 +1,5 @@
+#include "DirectionTypes.h"
+#include "DirectionTypes.h"
 //-----------------------------------------------------------------------------
 // File: DirectionTypes.cpp
 //-----------------------------------------------------------------------------
@@ -41,7 +43,7 @@ DirectionTypes::Direction DirectionTypes::convert2Mirrored(const Direction origi
 //-----------------------------------------------------------------------------
 // Function: DirectionTypes::str2Direction()
 //-----------------------------------------------------------------------------
-DirectionTypes::Direction DirectionTypes::str2Direction(QString str, DirectionTypes::Direction defaultValue)
+DirectionTypes::Direction DirectionTypes::str2Direction(QString const& str, DirectionTypes::Direction defaultValue)
 {
 	if (str == QLatin1String("in"))
     {
@@ -63,6 +65,33 @@ DirectionTypes::Direction DirectionTypes::str2Direction(QString str, DirectionTy
     {
         return defaultValue;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: DirectionTypes::str2Direction()
+//-----------------------------------------------------------------------------
+DirectionTypes::Direction DirectionTypes::str2Direction(std::string const& str, DirectionTypes::Direction defaultValue )
+{
+    if (str == "in")
+    {
+        return DirectionTypes::IN;
+    }
+    else if (str == "out")
+    {
+        return DirectionTypes::OUT;
+    }
+    else if (str == "inout")
+    {
+        return DirectionTypes::INOUT;
+    }
+    else if (str == "phantom")
+    {
+        return DirectionTypes::DIRECTION_PHANTOM;
+    }
+    else
+    {
+        return defaultValue;
+    }
 }
 
 //-----------------------------------------------------------------------------

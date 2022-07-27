@@ -303,13 +303,13 @@ void MemoryDesignerGraphicsItem::condense(qreal newItemHeight)
 void MemoryDesignerGraphicsItem::addMemoryConnection(MemoryConnectionItem* connectionItem)
 {
     quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
-    memoryConnections_.insertMulti(connectionBaseAddress, connectionItem);
+    memoryConnections_.insert(connectionBaseAddress, connectionItem);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::getMemoryConnections()
 //-----------------------------------------------------------------------------
-QMap<quint64, MemoryConnectionItem*> MemoryDesignerGraphicsItem::getMemoryConnections() const
+QMultiMap<quint64, MemoryConnectionItem*> MemoryDesignerGraphicsItem::getMemoryConnections() const
 {
     return memoryConnections_;
 }
@@ -322,7 +322,7 @@ void MemoryDesignerGraphicsItem::fitLabel(QGraphicsTextItem* label)
     QString labelText = label->toPlainText();
 
     QFontMetrics fontMetrics(label->font());
-    qreal originalLabelWidth = fontMetrics.width(labelText);
+    qreal originalLabelWidth = fontMetrics.horizontalAdvance(labelText);
     qreal availableArea = getItemWidth() - 6;
 
     bool collidesWithRange = labelCollidesWithRangeLabels(label, fontMetrics.height());
@@ -341,7 +341,7 @@ void MemoryDesignerGraphicsItem::fitLabel(QGraphicsTextItem* label)
 
         if (label->pos().x() < 0)
         {
-            qreal shortenedWidth = fontMetrics.width(shortened);
+            qreal shortenedWidth = fontMetrics.horizontalAdvance(shortened);
             qreal widthDifference = originalLabelWidth - shortenedWidth;
             label->setX(label->pos().x() + widthDifference);
         }

@@ -166,6 +166,6 @@ void ParameterReferenceTree::colourItemGrey(QTreeWidgetItem* item)
 {
     for (int columnIndex = 0; columnIndex < COLUMN_COUNT; ++columnIndex)
     {
-        item->setBackgroundColor(columnIndex, KactusColors::STRONG_FIELD);
+        item->setForeground(columnIndex, KactusColors::STRONG_FIELD);
     }
 }

@@ -298,7 +298,7 @@ void VisualizerItem::clipName()
     }
 
     QFontMetrics fontMetrics(nameItem_.font());
-    int charCount = qMax(int(0), maxLength) / fontMetrics.width("x");
+    int charCount = qMax(int(0), maxLength) / fontMetrics.horizontalAdvance("x");
 
     nameItem_.setText(clipText(name_, charCount));
 }
@@ -324,7 +324,7 @@ void VisualizerItem::clipAddress(QString const& text, QGraphicsSimpleTextItem* i
     }
 
     QFontMetrics labelMetrics(item->font());
-    int maxCharacters = qMax(int(0), maxLength) / labelMetrics.width("x");
+    int maxCharacters = qMax(int(0), maxLength) / labelMetrics.horizontalAdvance("x");
 
     item->setText(clipText(text, maxCharacters));
 }

@@ -167,9 +167,9 @@ void MemoryDesignDocument::setZoomLevel(int level)
     TabDocument::setZoomLevel(level);
 
     double newScale = getZoomLevel() / 100.0;
-    QMatrix oldMatrix = view_->matrix();
+    QTransform oldMatrix = view_->transform();
 
-    view_->resetMatrix();
+    view_->resetTransform();
     view_->translate(oldMatrix.dx(), oldMatrix.dy());
     view_->scale(newScale, newScale);
 
@@ -205,7 +205,7 @@ void MemoryDesignDocument::centerViewTo(QPointF const& centerPoint)
 void MemoryDesignDocument::onVerticalScroll(int y)
 {
     QPointF pt(0.0, y);
-    QMatrix mat = view_->matrix().inverted();
+    QTransform mat = view_->transform().inverted();
     diagram_->onVerticalScroll(mat.map(pt).y());
 }
 

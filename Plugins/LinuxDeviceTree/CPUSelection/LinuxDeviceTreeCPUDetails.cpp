@@ -35,7 +35,7 @@ QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > LinuxDeviceTre
     QMultiMap<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > cpuNodes =
         getCPUInterfacePairs(roots, visitedInterfaces, library);
 
-    QMapIterator<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > cpuNodeIterator(cpuNodes);
+    QMultiMapIterator<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > cpuNodeIterator(cpuNodes);
     while (cpuNodeIterator.hasNext())
     {
         cpuNodeIterator.next();
@@ -112,7 +112,7 @@ getCPUInterfacePairs(QVector<QSharedPointer<ConnectivityInterface>> roots,
             QMultiMap<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > childCPUNodes =
                 getCPUInterfacePairs(interfaceNode->getChildInterfaceNodes(), visitedInterfaces, library);
 
-            QMapIterator<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> >
+            QMultiMapIterator<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> >
                 childIterator(childCPUNodes);
             while (childIterator.hasNext())
             {

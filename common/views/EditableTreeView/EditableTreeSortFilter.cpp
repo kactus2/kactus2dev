@@ -39,7 +39,7 @@ void EditableTreeSortFilter::onAddItem(QModelIndexList const& indexes)
     if (!indexes.isEmpty())
     {
         QModelIndexList sortedIndexes = indexes;
-        qSort(sortedIndexes);
+        std::sort(sortedIndexes.begin(), sortedIndexes.end());
         posToAdd = mapToSource(indexes.first());
 
         int previousRow = indexes.first().row();
@@ -83,7 +83,7 @@ void EditableTreeSortFilter::onRemoveSelectedRows(QModelIndexList const& indexes
     }
 
     QModelIndexList removableIndexList = getRemovableIndexes(concatIndexesToOneColumn(indexes));
-    qSort(removableIndexList);
+    std::sort(removableIndexList.begin(), removableIndexList.end());
 
     for (int i = removableIndexList.size() - 1; i >= 0; i--)
     {

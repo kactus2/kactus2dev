@@ -124,7 +124,7 @@ private:
      */
     qreal getFilteredCompressedHeightByCoordinates(bool memoryItemsAreCompressed,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems,
-        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator);
+        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator);
 
     /*!
      *  Get the address space items connected to the selected memory item.
@@ -140,7 +140,7 @@ private:
      *
      *      @return The chained memory connection items.
      */
-    QMap<quint64, MemoryConnectionItem*> getChainedMemoryConnections() const;
+    QMultiMap<quint64, MemoryConnectionItem*> getChainedMemoryConnections() const;
 
     /*!
      *  Get all the addresses that must be retained after compression.
@@ -150,7 +150,7 @@ private:
      *      @return All the addresses that are retained after compression.
      */
     QVector<quint64> getUnCutAddressesFromConnections(
-        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
+        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
 
     /*!
      *  Get the list of coordinates that must be retained after compression.
@@ -160,7 +160,7 @@ private:
      *      @return All the coordinates that are retained after compression.
      */
     QVector<qreal> getUnCutCoordinatesFromConnections(
-        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
+        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
 
     /*!
      *  Check if an address space has connections pointing to the same memory item with different address ranges.
@@ -169,7 +169,7 @@ private:
      *
      *      @return True, if a problem connection is found, false otherwise.
      */
-    bool hasProblemConnection(QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
+    bool hasProblemConnection(QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
 
     //-----------------------------------------------------------------------------
     // Data.

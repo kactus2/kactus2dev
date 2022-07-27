@@ -142,7 +142,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::TextAlignmentRole && index.column() == rowNumberColumn())
     {
-        return Qt::AlignRight + Qt::AlignVCenter;
+        return int(Qt::AlignRight | Qt::AlignVCenter);
     }
 
 	// if unsupported role

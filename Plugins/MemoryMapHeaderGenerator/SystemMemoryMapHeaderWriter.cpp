@@ -171,10 +171,10 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
 		foreach (const QFileInfo& includeFile, systemHeaderOption.includeFiles_)
         {
-			stream << "#include \"" << includeFile.absoluteFilePath() << "\"" << endl;
+			stream << "#include \"" << includeFile.absoluteFilePath() << "\"" << Qt::endl;
 		}
 
-		stream << endl << "#endif /* " << headerGuard << " */" << endl;
+		stream << Qt::endl << "#endif /* " << headerGuard << " */" << Qt::endl;
 
         informWritingFinished(systemHeaderOption.sysHeaderInfo_.fileName());
 

@@ -2,7 +2,7 @@
 // File: SystemDesignDiagram.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 26.2.2011
 //
 // Description:
@@ -392,7 +392,7 @@ void SystemDesignDiagram::onCopyAction()
         }
         else if (type == SystemColumn::Type)
         {
-            qSort(items.begin(), items.end(), &sortByX);
+            std::sort(items.begin(), items.end(), &sortByX);
 
             ColumnCollectionCopyData collection;
 
@@ -1497,13 +1497,13 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         }
     }
 
-    QMap<unsigned int, QSharedPointer<ColumnDesc> > orderedColumns;
-    foreach(QSharedPointer<ColumnDesc> desc, design->getColumns())
+    QMultiMap<unsigned int, QSharedPointer<ColumnDesc> > orderedColumns;
+    for (QSharedPointer<ColumnDesc> desc : design->getColumns())
     {
-        orderedColumns.insertMulti(desc->getPosition(), desc);
+        orderedColumns.insert(desc->getPosition(), desc);
     }
 
-    foreach (QSharedPointer<ColumnDesc> containedColumn, orderedColumns)
+    for (QSharedPointer<ColumnDesc> containedColumn : orderedColumns)
     {
         SystemColumn* column = new SystemColumn(containedColumn, getLayout().data());
         getLayout()->addColumn(column, true);
@@ -1514,7 +1514,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     // Create (HW) component instances.
     if (!onlySW_)
     {
-        foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
+        for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
         {
             QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
             QSharedPointer<Component> component = libComponent.staticCast<Component>();

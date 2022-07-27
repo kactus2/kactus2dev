@@ -248,7 +248,7 @@ protected:
      *
      *      @return All the connections from the connected memory items.
      */
-    QMap<quint64, MemoryConnectionItem*> getAllConnectionsFromConnectedItems(
+    QMultiMap<quint64, MemoryConnectionItem*> getAllConnectionsFromConnectedItems(
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems) const;
 
 private:

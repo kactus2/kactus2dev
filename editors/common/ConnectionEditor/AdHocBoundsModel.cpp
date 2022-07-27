@@ -2,7 +2,7 @@
 // File: AdHocBoundsModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 20.2.2012
 //
 // Description:

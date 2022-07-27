@@ -40,45 +40,27 @@
     <ClCompile Include="MakefileParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_MakefileGenerator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_MakefileGeneratorPlugin.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_MakefileGeneratorPlugin.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="SWStackParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MakeParametersDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_MakeParametersDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_MakeParametersDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_FileOutputWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_FileOutputWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MakeConfiguration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_MakeConfiguration.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_MakeConfiguration.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,21 +95,21 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="MakefileGeneratorPlugin.h">
+    <QtMoc Include="MakefileGeneratorPlugin.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="MakefileGenerator.qrc">
+    </QtMoc>
+    <QtRcc Include="MakefileGenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="MakeParametersDialog.h">
+    </QtRcc>
+    <QtMoc Include="MakeParametersDialog.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
+    </QtMoc>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="MakeConfiguration.h">
+    </QtMoc>
+    <QtMoc Include="MakeConfiguration.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="MakefileGenerator.png">

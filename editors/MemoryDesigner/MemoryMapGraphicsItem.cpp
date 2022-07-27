@@ -338,7 +338,7 @@ void MemoryMapGraphicsItem::changeWidth(qreal widthChange)
 
     if (!subItemsAreFiltered() && !getSubMemoryItems().isEmpty())
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();
@@ -407,7 +407,7 @@ void MemoryMapGraphicsItem::createFieldOverlapItems()
 {
     if (!subItemsAreFiltered())
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();

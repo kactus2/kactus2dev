@@ -181,7 +181,7 @@ void LinuxDeviceTreeGenerator::writeFile(QString const& designVendor, QString co
 
     prefix.remove(0, 1);
     writeLineEnding(outputStream, prefix);
-    outputStream << endl;
+    outputStream << Qt::endl;
 
     outputFile.close();
 }
@@ -192,15 +192,15 @@ void LinuxDeviceTreeGenerator::writeFile(QString const& designVendor, QString co
 void LinuxDeviceTreeGenerator::writeTreeStart(QTextStream& outputStream, QString const& designVendor,
     QString const& designName, QString const& prefix, int addressSize, int rangeSize) const
 {
-    outputStream << "/dts-v1/;" << endl << endl << "/ {" << endl;
+    outputStream << "/dts-v1/;" << Qt::endl << Qt::endl << "/ {" << Qt::endl;
 
     outputStream << prefix << "#address-cells = <" << QString::number(addressSize) << ">;" <<
-        endl;
-    outputStream << prefix << "#size-cells = <" << QString::number(rangeSize) << ">;" << endl;
+        Qt::endl;
+    outputStream << prefix << "#size-cells = <" << QString::number(rangeSize) << ">;" << Qt::endl;
 
     QString compatibaleText = "\"" + designVendor + "," + designName + "\";";
-    outputStream << prefix << "model = " << compatibaleText << endl;
-    outputStream << prefix << "compatible = " << compatibaleText << endl << endl;
+    outputStream << prefix << "model = " << compatibaleText << Qt::endl;
+    outputStream << prefix << "compatible = " << compatibaleText << Qt::endl << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +216,7 @@ void LinuxDeviceTreeGenerator::writeContainer(QTextStream& outputStream,
 
     prefix.remove(0, 1);
     writeLineEnding(outputStream, prefix);
-    outputStream << endl;
+    outputStream << Qt::endl;
 
     for (auto rootNode : cpuContainer->rootInterfaces_)
     {
@@ -233,12 +233,12 @@ void LinuxDeviceTreeGenerator::writeContainer(QTextStream& outputStream,
 void LinuxDeviceTreeGenerator::writeIntroductionToCPUs(QTextStream& outputStream,
     QVector<QSharedPointer<const Cpu>> cpus, QString const& componentVLNV, QString& prefix)
 {
-    outputStream << prefix << "cpus {" << endl;
+    outputStream << prefix << "cpus {" << Qt::endl;
 
     prefix.append(TABPREFIX);
 
-    outputStream << prefix << "#address-cells = <1>;" << endl;
-    outputStream << prefix << "#size-cells = <0>;" << endl << endl;
+    outputStream << prefix << "#address-cells = <1>;" << Qt::endl;
+    outputStream << prefix << "#size-cells = <0>;" << Qt::endl << Qt::endl;
 
     for (int i = 0; i < cpus.size(); ++i)
     {
@@ -253,11 +253,11 @@ void LinuxDeviceTreeGenerator::writeIntroductionToCPUs(QTextStream& outputStream
 void LinuxDeviceTreeGenerator::writeCPU(QTextStream& outputStream, QString const& CPUName,
     QString const& componentVLNV, int cpuNumber, QString& prefix)
 {
-    outputStream << prefix << "// '" << CPUName << "' in component " << componentVLNV << endl;
-    outputStream << prefix << "cpu@" << QString::number(cpuNumber) << " {" << endl;
+    outputStream << prefix << "// '" << CPUName << "' in component " << componentVLNV << Qt::endl;
+    outputStream << prefix << "cpu@" << QString::number(cpuNumber) << " {" << Qt::endl;
     prefix.append(TABPREFIX);
 
-    outputStream << prefix << "reg = <" << QString::number(cpuNumber) << ">;" << endl;
+    outputStream << prefix << "reg = <" << QString::number(cpuNumber) << ">;" << Qt::endl;
 
     prefix.remove(0, 1);
     writeLineEnding(outputStream, prefix);
@@ -335,7 +335,7 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
             writeMemoryData(outputStream, newBaseAddress, mapBaseAddress,
                 newMemoryRange, addressSize, rangeSize, false, prefix, interfaceNode, writeAddressBlocks);
 
-            outputStream << endl;
+            outputStream << Qt::endl;
             return;
         }
     }
@@ -356,7 +356,7 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream,
     {
         prefix.remove(0, 1);
         writeLineEnding(outputStream, prefix);
-        outputStream << endl;
+        outputStream << Qt::endl;
     }
 }
 
@@ -391,7 +391,7 @@ bool LinuxDeviceTreeGenerator::canWriteNode(QSharedPointer<const ConnectivityInt
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeGenerator::writeLineEnding(QTextStream& outputStream, QString const& prefix) const
 {
-    outputStream << prefix << "};" << endl;
+    outputStream << prefix << "};" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -407,14 +407,14 @@ void LinuxDeviceTreeGenerator::writeBridge(QTextStream& outputStream,
         LinuxDeviceTreeCPUDetails::getComponentContainingInterface(interfaceNode, library_);
 
     outputStream << prefix << "// Instance '" << instanceName << "' of " << bridgeType << " component " <<
-        componentVLNV << endl;
-    outputStream << prefix << interfacedComponent->getVlnv().getName() << " {" << endl;
+        componentVLNV << Qt::endl;
+    outputStream << prefix << interfacedComponent->getVlnv().getName() << " {" << Qt::endl;
 
     prefix.append(TABPREFIX);
 
-    outputStream << prefix << "compatible = \"simple-bus\";" << endl;
-    outputStream << prefix << "#address-cells = <" << QString::number(addressSize) << ">;" << endl;
-    outputStream << prefix << "#size-cells = <" << QString::number(rangeSize) << ">;" << endl << endl;
+    outputStream << prefix << "compatible = \"simple-bus\";" << Qt::endl;
+    outputStream << prefix << "#address-cells = <" << QString::number(addressSize) << ">;" << Qt::endl;
+    outputStream << prefix << "#size-cells = <" << QString::number(rangeSize) << ">;" << Qt::endl << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -532,13 +532,13 @@ void LinuxDeviceTreeGenerator::writeMemoryData(QTextStream& outputStream,
     }
 
     outputStream << prefix << "// Memory map '" << mapName << "' in instance '" << instanceName <<
-        "' of component " << componentVLNV << endl;
-    outputStream << prefix << writtenName << "@" << QString::number(mapBaseAddress, 16).toUpper() << " {" << endl;
+        "' of component " << componentVLNV << Qt::endl;
+    outputStream << prefix << writtenName << "@" << QString::number(mapBaseAddress, 16).toUpper() << " {" << Qt::endl;
     prefix.append(TABPREFIX);
 
     if (isMemory)
     {
-        outputStream << prefix << QLatin1String("device_type = \"memory\";") << endl;
+        outputStream << prefix << QLatin1String("device_type = \"memory\";") << Qt::endl;
     }
 
     writeRegister(outputStream, mapBaseAddress, range, addressSize, rangeSize, prefix);
@@ -589,13 +589,13 @@ void LinuxDeviceTreeGenerator::writeSingleAddressBlock(QTextStream& outputStream
 
     QString status = getStatus(blockItem);
 
-    outputStream << endl;
-    outputStream << prefix << "// Address block '" << blockName << "'" << endl;
-    outputStream << prefix << blockItem->getName() << "@" << addressString << " {" <<  endl;
+    outputStream << Qt::endl;
+    outputStream << prefix << "// Address block '" << blockName << "'" << Qt::endl;
+    outputStream << prefix << blockItem->getName() << "@" << addressString << " {" <<  Qt::endl;
     prefix.append(TABPREFIX);
 
-    outputStream << prefix << "compatible = \"" << vendorName << "," << blockName << "\";" << endl;
-    outputStream << prefix << "status = \"" << status << "\";" << endl;
+    outputStream << prefix << "compatible = \"" << vendorName << "," << blockName << "\";" << Qt::endl;
+    outputStream << prefix << "status = \"" << status << "\";" << Qt::endl;
 
     General::Usage blockUsage = blockItem->getUsage();
     if (blockUsage == General::REGISTER)
@@ -604,7 +604,7 @@ void LinuxDeviceTreeGenerator::writeSingleAddressBlock(QTextStream& outputStream
     }
     else if (blockUsage == General::MEMORY)
     {
-        outputStream << prefix << "device_type = \"memory\";" << endl;
+        outputStream << prefix << "device_type = \"memory\";" << Qt::endl;
     }
 
     prefix.remove(0, 1);
@@ -636,7 +636,7 @@ void LinuxDeviceTreeGenerator::writeRegister(QTextStream& output, quint64 const&
     QString formattedAddress = formatValue(address, addressSize);
     QString formattedRange = formatValue(range, rangeSize);
 
-    output << prefix << "reg = <" << formattedAddress << " " << formattedRange << ">;" << endl;
+    output << prefix << "reg = <" << formattedAddress << " " << formattedRange << ">;" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -697,7 +697,7 @@ void LinuxDeviceTreeGenerator::writeMemories(QTextStream& outputStream,
                 memory.mapBaseAddress_, memory.range_,
                 addressSize, rangeSize, true, prefix, memory.memoryInterface_, writeAddressBlocks);
 
-            outputStream << endl;
+            outputStream << Qt::endl;
         }
     }
 }

@@ -45,7 +45,7 @@ fields_(fields)
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
     view_->verticalHeader()->show();
     view_->verticalHeader()->setMaximumWidth(300);
-    view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
+    view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().horizontalAdvance(tr("Name"))*2);
     view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     model_ = new RegisterTableModel(fieldInterface, expressionParser, parameterFinder, this);

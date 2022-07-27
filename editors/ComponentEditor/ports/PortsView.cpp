@@ -28,7 +28,7 @@ busInterface_(busInterface)
 {
     verticalHeader()->show();
     verticalHeader()->setMaximumWidth(300);
-    verticalHeader()->setMinimumWidth(horizontalHeader()->fontMetrics().width(tr("Name"))*2);
+    verticalHeader()->setMinimumWidth(horizontalHeader()->fontMetrics().horizontalAdvance(tr("Name"))*2);
     verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     connect(&createBus_, SIGNAL(triggered()), this, SLOT(onCreateNewBus()), Qt::UniqueConnection);

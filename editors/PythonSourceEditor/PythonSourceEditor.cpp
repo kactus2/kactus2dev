@@ -415,7 +415,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     QAction* runAllAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-all.png"), QString(),
         this, SLOT(onRunAllAction()));
     runAllAction->setToolTip(tr("Run all (Ctrl+Shift+R)"));
-    runAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+    runAllAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
     runAllAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     runAllAction->setEnabled(enableRun);
     addAction(runAllAction);

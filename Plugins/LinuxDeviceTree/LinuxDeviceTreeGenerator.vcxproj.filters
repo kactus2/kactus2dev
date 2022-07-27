@@ -79,27 +79,15 @@
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUModel.cpp">
       <Filter>Source Files\CPUSelection</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreeCPUModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreeCPUDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreeCPUEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUDetails.cpp">
       <Filter>Source Files\CPUSelection</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreePlugin.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_LinuxDeviceTreeDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_LinuxDeviceTree.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinuxDeviceTreeGenerator_global.h">
@@ -146,24 +134,24 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="LinuxDeviceTreeDialog.h">
+    <QtMoc Include="LinuxDeviceTreeDialog.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LinuxDeviceTreePlugin.h">
+    </QtMoc>
+    <QtMoc Include="LinuxDeviceTreePlugin.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="CPUSelection\LinuxDeviceTreeCPUModel.h">
+    </QtMoc>
+    <QtMoc Include="CPUSelection\LinuxDeviceTreeCPUModel.h">
       <Filter>Header Files\CPUSelection</Filter>
-    </CustomBuild>
-    <CustomBuild Include="CPUSelection\LinuxDeviceTreeCPUDelegate.h">
+    </QtMoc>
+    <QtMoc Include="CPUSelection\LinuxDeviceTreeCPUDelegate.h">
       <Filter>Header Files\CPUSelection</Filter>
-    </CustomBuild>
-    <CustomBuild Include="CPUSelection\LinuxDeviceTreeCPUEditor.h">
+    </QtMoc>
+    <QtMoc Include="CPUSelection\LinuxDeviceTreeCPUEditor.h">
       <Filter>Header Files\CPUSelection</Filter>
-    </CustomBuild>
-    <CustomBuild Include="LinuxDeviceTree.qrc">
+    </QtMoc>
+    <QtRcc Include="LinuxDeviceTree.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
+    </QtRcc>
   </ItemGroup>
   <ItemGroup>
     <Image Include="LinuxDeviceTreeGenerator.png">

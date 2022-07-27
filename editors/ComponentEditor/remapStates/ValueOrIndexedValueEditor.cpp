@@ -120,7 +120,7 @@ void ValueOrIndexedValueEditor::setupLayout()
 {
     QVBoxLayout* editorLayout = new QVBoxLayout(this);
 
-    editorLayout->setMargin(0);
+    editorLayout->setContentsMargins(0, 0, 0, 0);
     editorLayout->setContentsMargins(0,0,0,0);
 
     QString singleExplanation = tr("Set the value for the whole port");

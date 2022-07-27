@@ -128,7 +128,7 @@ void DesignParameterReferenceTree::createReferencesForAdHocConnections()
 
     QString topComponentName("Top Component");
 
-    QMap<QString, QSharedPointer<AdHocConnection> > connectionsInOrder =
+    QMultiMap<QString, QSharedPointer<AdHocConnection> > connectionsInOrder =
         getAdHocConnectionsInComponentOrder(topComponentName);
 
     QSharedPointer<QList<QSharedPointer<AdHocConnection> > > topComponentConnections(
@@ -176,10 +176,10 @@ void DesignParameterReferenceTree::createAdHocItemsForComponent(QString const& c
 //-----------------------------------------------------------------------------
 // Function: DesignParameterReferenceTree::DesignParameterReferenceTree()
 //-----------------------------------------------------------------------------
-QMap<QString, QSharedPointer<AdHocConnection> > DesignParameterReferenceTree::getAdHocConnectionsInComponentOrder(
+QMultiMap<QString, QSharedPointer<AdHocConnection> > DesignParameterReferenceTree::getAdHocConnectionsInComponentOrder(
     QString const& topComponentName) const
 {
-    QMap<QString, QSharedPointer<AdHocConnection> > connectionsInOder;
+    QMultiMap<QString, QSharedPointer<AdHocConnection> > connectionsInOder;
 
     foreach (QSharedPointer<AdHocConnection> connection, *design_->getAdHocConnections())
     {
@@ -187,12 +187,12 @@ QMap<QString, QSharedPointer<AdHocConnection> > DesignParameterReferenceTree::ge
             connection->getExternalPortReferences()->isEmpty())
         {
             QSharedPointer<PortReference> port = connection->getInternalPortReferences()->first();
-            connectionsInOder.insertMulti(port->getComponentRef(), connection);
+            connectionsInOder.insert(port->getComponentRef(), connection);
         }
         else if (connection->getExternalPortReferences()->size() == 1 &&
             connection->getInternalPortReferences()->isEmpty())
         {
-            connectionsInOder.insertMulti(topComponentName, connection);
+            connectionsInOder.insert(topComponentName, connection);
         }
     }
 

@@ -232,7 +232,7 @@ void CreateConfigurationDialog::setupLayout()
     introLayout->addWidget(configurationIcon, 1);    
 
     QPalette introPalette = introWidget->palette();
-    introPalette.setColor(QPalette::Background, Qt::white);
+    introPalette.setColor(QPalette::Window, Qt::white);
     introWidget->setPalette(introPalette);
     introWidget->setAutoFillBackground(true);
 

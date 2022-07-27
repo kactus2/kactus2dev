@@ -2,7 +2,7 @@
 // File: SWInterfaceItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 24.5.2012
 //
 // Description:

@@ -95,7 +95,7 @@ void VhdlGeneral::writeDescription( const QString& description, QTextStream& str
 {
 	if (description.isEmpty())
     {
-		stream << endl;
+		stream << Qt::endl;
 		return;
 	}
 
@@ -122,11 +122,11 @@ void VhdlGeneral::writeDescription( const QString& description, QTextStream& str
 
 			if (line_len > 70)
             {
-				stream << endl;
+				stream << Qt::endl;
 				line_len = 0;
 			}
 		}			
-		stream << endl;
+		stream << Qt::endl;
 	}
 }
 

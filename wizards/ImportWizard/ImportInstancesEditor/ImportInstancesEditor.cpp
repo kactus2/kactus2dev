@@ -151,7 +151,7 @@ void ImportInstancesEditor::createInstanceNameItem(QString const& instanceName, 
 //-----------------------------------------------------------------------------
 void ImportInstancesEditor::createInstancePathItems(QVector<InstanceData::instanceData> const& instances)
 {
-    QMap<QString, QString> instanceFilePaths = getPossibleFilePaths(instances);
+    QMultiMap<QString, QString> instanceFilePaths = getPossibleFilePaths(instances);
 
     for (int i = 0; i < instances.size(); ++i)
     {
@@ -173,10 +173,10 @@ void ImportInstancesEditor::createInstancePathItems(QVector<InstanceData::instan
 //-----------------------------------------------------------------------------
 // Function: ImportInstancesEditor::getPossibleFilePaths()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> ImportInstancesEditor::getPossibleFilePaths(
+QMultiMap<QString, QString> ImportInstancesEditor::getPossibleFilePaths(
     QVector<InstanceData::instanceData> const& instances) const
 {
-    QMap<QString, QString> instanceFilePaths;
+    QMultiMap<QString, QString> instanceFilePaths;
 
     QString componentPath = libraryAccess_->getPath(workingComponent_->getVlnv());
 
@@ -197,7 +197,7 @@ QMap<QString, QString> ImportInstancesEditor::getPossibleFilePaths(
             {
                 if (moduleName.compare(singleInstance.moduleName_, Qt::CaseInsensitive) == 0)
                 {
-                    instanceFilePaths.insertMulti(singleInstance.instanceName_, absoluteFilePath);
+                    instanceFilePaths.insert(singleInstance.instanceName_, absoluteFilePath);
                 }
             }
         }
@@ -274,7 +274,7 @@ bool ImportInstancesEditor::fileIsVerilogFile(QSharedPointer<File> file) const
 //-----------------------------------------------------------------------------
 void ImportInstancesEditor::createInstanceVLNVItems(QVector<InstanceData::instanceData> const& instances)
 {
-    QMap < QString, QSharedPointer<const Component> > instanceComponentMatches;
+    QMultiMap< QString, QSharedPointer<const Component> > instanceComponentMatches;
     for (auto const& vlnv : libraryAccess_->getAllVLNVs())
     {
         QSharedPointer<const Component> componentCandidate = getComponentFromVLNV(vlnv);

@@ -365,7 +365,7 @@ QPlainTextEdit* ImportRunner::createSourceDisplayForFile(QString const& filePath
     font.setPointSize(9);
 
     sourceDisplay->setFont(font);
-    sourceDisplay->setTabStopWidth(4 * sourceDisplay->fontMetrics().width(QLatin1Char(' ')));
+    sourceDisplay->setTabStopDistance(4 * sourceDisplay->fontMetrics().horizontalAdvance(QLatin1Char(' ')));
     sourceDisplay->setReadOnly(true);
     sourceDisplay->setCursorWidth(0);
 

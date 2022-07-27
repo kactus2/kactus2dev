@@ -327,5 +327,5 @@ bool StickyNote::hitsAssociationButton(QPointF const& clickPosition) const
 //-----------------------------------------------------------------------------
 QString StickyNote::getFormattedTimestamp()
 {
-    return QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate);
+    return QDateTime::currentDateTime().toString(Qt::RFC2822Date);
 }

@@ -58,7 +58,7 @@ void CommentWriter::write(QTextStream& output) const
                 }
             }
             
-            output << indent << "// " << line.left(lineEnd) << endl;
+            output << indent << "// " << line.left(lineEnd) << Qt::endl;
             line = line.remove(0, lineEnd + 1);
             emptyLineToWrite = false;
         }

@@ -2,7 +2,7 @@
 // File: PluginSettingsPage.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 19.02.2013
 //
 // Description:

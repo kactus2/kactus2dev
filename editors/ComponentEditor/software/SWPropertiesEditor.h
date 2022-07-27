@@ -2,7 +2,7 @@
 // File: SWPropertiesEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 21.5.2012
 //
 // Description:

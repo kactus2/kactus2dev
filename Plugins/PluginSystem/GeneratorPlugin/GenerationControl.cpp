@@ -204,12 +204,12 @@ void GenerationControl::initializeDocuments()
 {
     // Clear the existing list of files.
     outputControl_->getOutputs()->clear();
-
+    auto locale = QLocale::system();
     if (isDesignGeneration_)
     {
         // Time to write the contents to files
-        input_.messages->showMessage(QObject::tr("Parsing hierarchy %1.").
-            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        input_.messages->showMessage(QObject::tr("Parsing hierarchy %1 %2.").arg(locale.toString(QDate::currentDate(),
+            locale.dateFormat(QLocale::ShortFormat)), locale.toString(QTime::currentTime(), locale.timeFormat(QLocale::ShortFormat))));
 
         // Parse the design hierarchy.
         QList<QSharedPointer<MetaDesign> > designs =
@@ -223,8 +223,8 @@ void GenerationControl::initializeDocuments()
         }
 
         // Write outputs.
-        input_.messages->showMessage(QObject::tr("Writing content for preview %1.").
-            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        input_.messages->showMessage(QObject::tr("Writing content for preview %1 %2.").arg(locale.toString(QDate::currentDate(),
+            locale.dateFormat(QLocale::ShortFormat)), locale.toString(QTime::currentTime(), locale.timeFormat(QLocale::ShortFormat))));
 
         // Pass the topmost design.
         QList<QSharedPointer<GenerationOutput> > documents = factory_->prepareDesign(designs);
@@ -247,8 +247,8 @@ void GenerationControl::initializeDocuments()
     else
     {
         // Parse component metadata.
-        input_.messages->showMessage(QObject::tr("Formatting component %1.").
-            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        input_.messages->showMessage(QObject::tr("Formatting component %1 %2.").arg(locale.toString(QDate::currentDate(),
+            locale.dateFormat(QLocale::ShortFormat)), locale.toString(QTime::currentTime(), locale.timeFormat(QLocale::ShortFormat))));
 
         QSharedPointer<MetaComponent> componentParser
             (new MetaComponent(input_.messages, input_.component, viewSelection_->getView()));
@@ -264,8 +264,8 @@ void GenerationControl::initializeDocuments()
         }
 
         // Write outputs.
-        input_.messages->showMessage(QObject::tr("Writing content for preview %1.").
-            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        input_.messages->showMessage(QObject::tr("Writing content for preview %1 %2.").arg(locale.toString(QDate::currentDate(),
+            locale.dateFormat(QLocale::ShortFormat)), locale.toString(QTime::currentTime(), locale.timeFormat(QLocale::ShortFormat))));
         output->write(outputControl_->getOutputPath());
 
         // Append to the list of proposed outputs.
@@ -541,8 +541,10 @@ QSharedPointer<GenerationOutput> GenerationControl::setupRenamedSelection(int co
     }
     else
     {
-        input_.messages->showMessage(QObject::tr("Formatting component %1.").
-            arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        auto locale = QLocale::system();
+
+        input_.messages->showMessage(QObject::tr("Formatting component %1 %2.").arg(locale.toString(QDate::currentDate(),
+            locale.dateFormat(QLocale::ShortFormat)), locale.toString(QTime::currentTime(), locale.timeFormat(QLocale::ShortFormat))));
 
         QSharedPointer<MetaComponent> componentParser = selection->metaComponent_;
         componentParser->formatComponent();
@@ -552,8 +554,8 @@ QSharedPointer<GenerationOutput> GenerationControl::setupRenamedSelection(int co
             factory_->prepareComponent(outputControl_->getOutputPath(), componentParser);
         if (output)
         {
-            input_.messages->showMessage(QObject::tr("Writing content for preview %1.").
-                arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+            input_.messages->showMessage(QObject::tr("Writing content for preview %1 %2.").arg(locale.toString(QDate::currentDate(),
+                locale.dateFormat(QLocale::ShortFormat)), locale.toString(QTime::currentTime(), locale.timeFormat(QLocale::ShortFormat))));
 
             output->write(outputControl_->getOutputPath());
 

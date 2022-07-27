@@ -40,12 +40,8 @@
     <ClCompile Include="VerilogParameterParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VerilogImporter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VerilogImporter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="VerilogSyntax.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,9 +88,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="VerilogImporter.h">
+    <QtMoc Include="VerilogImporter.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="verilogimportplugin.json" />

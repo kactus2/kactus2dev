@@ -2,7 +2,7 @@
 // File: NewDesignDialog.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 2.8.2012
 //
 // Description:
@@ -310,7 +310,7 @@ void NewDesignDialog::setupLayout()
     introLayout->addWidget(designIcon_, 1);    
     
     QPalette introPalette = introWidget->palette();
-    introPalette.setColor(QPalette::Background, Qt::white);
+    introPalette.setColor(QPalette::Window, Qt::white);
     introWidget->setPalette(introPalette);
     introWidget->setAutoFillBackground(true);
     

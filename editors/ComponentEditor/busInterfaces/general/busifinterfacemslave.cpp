@@ -40,7 +40,7 @@ rangeEditor_(new ExpressionEditor(parameterFinder, this)),
 expressionParser_(expressionParser),
 parameterFinder_(parameterFinder)
 {
-    QString functionSymbol(0x0192);
+    QString functionSymbol(QChar(0x0192));
 	QLabel* remapLabel = new QLabel(tr("Remap address") + ", " + functionSymbol + "(x):", this);
 	QLabel* rangeLabel = new QLabel(tr("Range") + ", " + functionSymbol + "(x):", this);
 

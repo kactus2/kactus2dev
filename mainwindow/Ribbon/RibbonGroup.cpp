@@ -2,7 +2,7 @@
 // File: RibbonGroup.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 06.02.2013
 //
 // Description:
@@ -38,7 +38,7 @@ title_(title)
 	setStyleSheet(style.arg(QString::number(HMARGIN)));
 
 	QFontMetrics metrics(font());
-	setMinimumWidth(metrics.width(title_) +  TITLE_MARGIN);
+	setMinimumWidth(metrics.horizontalAdvance(title_) +  TITLE_MARGIN);
 }
 
 //-----------------------------------------------------------------------------

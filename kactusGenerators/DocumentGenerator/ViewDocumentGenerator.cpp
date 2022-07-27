@@ -72,7 +72,7 @@ void ViewDocumentGenerator::writeViews( QTextStream& stream, int& subHeaderNumbe
 	if (component->hasViews())
     {
         stream << "\t\t\t<h2><a id=\"" << component->getVlnv().toString() << ".views\">" << myNumber() <<
-            "." << subHeaderNumber << " Views</a></h2>" << endl;
+            "." << subHeaderNumber << " Views</a></h2>" << Qt::endl;
 		
 		int viewNumber = 1;
 		foreach (QSharedPointer<View> view, *component->getViews())
@@ -93,11 +93,11 @@ void ViewDocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<
     QString viewTabs = "\t\t\t";
 
     stream << viewTabs << "<h3>" << myNumber() << "." << subHeaderNumber << "." << viewNumber <<
-        " View: " << view->name() << "</h3>" << endl;
+        " View: " << view->name() << "</h3>" << Qt::endl;
 
-    stream << viewTabs << "<p>" << endl;
+    stream << viewTabs << "<p>" << Qt::endl;
     writeDescription(stream, viewTabs, view->description());
-    stream << viewTabs << "</p>" << endl;
+    stream << viewTabs << "</p>" << Qt::endl;
 
     QString instantiationTabs = viewTabs + QString("\t");
     QString instantiationItemTabs = instantiationTabs + ("\t");
@@ -137,7 +137,7 @@ void ViewDocumentGenerator::writeReferencedComponentInstantiation(QString const&
     int const& subHeaderNumber, int const& viewNumber, int const& instantiationNumber)
 {
     stream << instantiationTabs << "<h4>" << myNumber() << "." << subHeaderNumber << "." << viewNumber << "." <<
-        instantiationNumber << " Component instantiation: " << instantiationReference << "</h4>" << endl;
+        instantiationNumber << " Component instantiation: " << instantiationReference << "</h4>" << Qt::endl;
 
     QSharedPointer<ComponentInstantiation> instantiation = getComponentInstantiation(instantiationReference);
     if (!instantiation)
@@ -229,7 +229,7 @@ void ViewDocumentGenerator::writeImplementationDetails(QTextStream& stream, QStr
     if (!language.isEmpty() || !library.isEmpty() || !package.isEmpty() || !module.isEmpty() ||
         !architecture.isEmpty() || !configuration.isEmpty())
     {
-        stream << instantiationTabs << "<p>" << endl;
+        stream << instantiationTabs << "<p>" << Qt::endl;
 
         if (!language.isEmpty())
         {
@@ -241,35 +241,35 @@ void ViewDocumentGenerator::writeImplementationDetails(QTextStream& stream, QStr
                 stream << " <strong>strict</strong>";
             }
 
-            stream << "<br>" << endl;
+            stream << "<br>" << Qt::endl;
         }
         if (!library.isEmpty())
         {
             stream << instantiationItemTabs << DocumentGeneratorHTML::indent() << "<strong>Library: </strong>" <<
-                library << "<br>" << endl;
+                library << "<br>" << Qt::endl;
         }
         if (!package.isEmpty())
         {
             stream << instantiationItemTabs << DocumentGeneratorHTML::indent() << "<strong>Package: </strong>" <<
-                package << "<br>" << endl;
+                package << "<br>" << Qt::endl;
         }
         if (!module.isEmpty())
         {
             stream << instantiationItemTabs << DocumentGeneratorHTML::indent() << "<strong>Module name: </strong>" <<
-                module << "<br>" << endl;
+                module << "<br>" << Qt::endl;
         }
         if (!architecture.isEmpty())
         {
             stream << instantiationItemTabs << DocumentGeneratorHTML::indent() <<
-                "<strong>Architecture: </strong>" << architecture << "<br>" << endl;
+                "<strong>Architecture: </strong>" << architecture << "<br>" << Qt::endl;
         }
         if (!configuration.isEmpty())
         {
             stream << instantiationItemTabs << DocumentGeneratorHTML::indent() <<
-                "<strong>Configuration: </strong>" << configuration << "<br>" << endl;
+                "<strong>Configuration: </strong>" << configuration << "<br>" << Qt::endl;
         }
 
-        stream << instantiationTabs << "</p>" << endl;
+        stream << instantiationTabs << "</p>" << Qt::endl;
     }
 }
 
@@ -282,20 +282,20 @@ void ViewDocumentGenerator::writeFileSetReferences(QTextStream& stream, QString 
     QStringList fileSetRefs = *instantiation->getFileSetReferences().data();
     if (!fileSetRefs.isEmpty())
     {
-        stream << instantiationTabs << "<p>" << endl;
+        stream << instantiationTabs << "<p>" << Qt::endl;
         stream << instantiationItemTabs << "File sets contained in this component instantiation: </strong>" <<
-            endl;
-        stream << instantiationTabs << "</p>" << endl;
+            Qt::endl;
+        stream << instantiationTabs << "</p>" << Qt::endl;
 
-        stream << instantiationTabs << "<ul>" << endl;
+        stream << instantiationTabs << "<ul>" << Qt::endl;
 
         foreach (QString fileSetRef, fileSetRefs)
         {
             stream << instantiationItemTabs << "<li><a href=\"#" << getComponent()->getVlnv().toString() <<
-                ".fileSet." << fileSetRef << "\">" << fileSetRef << "</a></li>" << endl;
+                ".fileSet." << fileSetRef << "\">" << fileSetRef << "</a></li>" << Qt::endl;
         }
 
-        stream << instantiationTabs << "</ul>" << endl;
+        stream << instantiationTabs << "</ul>" << Qt::endl;
     }
 }
 
@@ -307,7 +307,7 @@ void ViewDocumentGenerator::writeFileBuildCommands(QTextStream& stream, QString 
 {
     if (!instantiation->getDefaultFileBuilders()->isEmpty())
     {
-        stream << instantiationTabs << "<p>Default file build commands:</p>" << endl;
+        stream << instantiationTabs << "<p>Default file build commands:</p>" << Qt::endl;
 
         GeneralDocumentGenerator::writeFileBuildCommands(stream, instantiationTabs,
             instantiation->getDefaultFileBuilders(), instantiationFormatter);
@@ -325,7 +325,7 @@ void ViewDocumentGenerator::writeParameters(QTextStream&stream, QString const& t
     {
         if (!parameters->isEmpty())
         {
-            stream << parameterTabs << "<p>" << tableTooltip << "</p>" << endl;
+            stream << parameterTabs << "<p>" << tableTooltip << "</p>" << Qt::endl;
             GeneralDocumentGenerator::writeParameters(
                 stream, tableHeading, parameterTabs, parameters, instantiationFormatter);
         }
@@ -341,7 +341,7 @@ void ViewDocumentGenerator::writereferencedDesignConfigurationInstantiation(QStr
 {
     stream << instantiationTabs << "<h4>" << myNumber() << "." << subHeaderNumber << "." << viewNumber << "." <<
         instantiationNumber << " Design configuration instantiation: " << configurationReference << "</h4>" <<
-        endl;
+        Qt::endl;
 
     QSharedPointer<DesignConfigurationInstantiation> instantiation =
         getDesignConfigurationInstantiation(configurationReference);
@@ -435,17 +435,17 @@ void ViewDocumentGenerator::writeDocumentReference(QTextStream& stream, QString 
         else
         {
             QString documentReferenceTabs = instantiationItemTabs + "\t";
-            stream << instantiationItemTabs << "<p>" << endl;
+            stream << instantiationItemTabs << "<p>" << Qt::endl;
             stream << documentReferenceTabs << DocumentGeneratorHTML::indent() <<
-                "<strong>" << documentType << ": </strong>" << vlnvReference->toString() << "<br>" << endl;
+                "<strong>" << documentType << ": </strong>" << vlnvReference->toString() << "<br>" << Qt::endl;
 
             QFileInfo vlnvXMLInfo(getLibraryHandler()->getPath(*vlnvReference.data()));
             QString relativeXmlPath = General::getRelativePath(getTargetPath(), vlnvXMLInfo.absoluteFilePath());
 
             stream << documentReferenceTabs <<  DocumentGeneratorHTML::indent() << "<strong>" <<
                 "IP-Xact file: </strong><a href=\"" << relativeXmlPath << "\">" << vlnvXMLInfo.fileName() <<
-                "</a><br>" << endl;
-            stream << instantiationItemTabs << "</p>" << endl;
+                "</a><br>" << Qt::endl;
+            stream << instantiationItemTabs << "</p>" << Qt::endl;
         }
     }
 }
@@ -460,7 +460,7 @@ void ViewDocumentGenerator::writeConfigurableElementValues(QTextStream& stream,
     if (vlnvReference && vlnvReference->getConfigurableElementValues() &&
         !vlnvReference->getConfigurableElementValues()->isEmpty())
     {
-        stream << instantiationsItemTabs << "<p>Configurable element values:</p>" << endl;
+        stream << instantiationsItemTabs << "<p>Configurable element values:</p>" << Qt::endl;
 
         QStringList paramHeaders;
         paramHeaders.append(QStringLiteral("Name"));
@@ -471,16 +471,16 @@ void ViewDocumentGenerator::writeConfigurableElementValues(QTextStream& stream,
         QString elementRowTabs = elementTableTabs + "\t";
         foreach (QSharedPointer<ConfigurableElementValue> element, *vlnvReference->getConfigurableElementValues())
         {
-            stream << elementTableTabs << "<tr>" << endl;
+            stream << elementTableTabs << "<tr>" << Qt::endl;
             stream << elementRowTabs << "<td>" <<
-                instantiationFormatter->formatReferringExpression(element->getReferenceId()) << "</td>" << endl;
+                instantiationFormatter->formatReferringExpression(element->getReferenceId()) << "</td>" << Qt::endl;
             stream << elementRowTabs << "<td>" <<
                 instantiationFormatter->formatReferringExpression(element->getConfigurableValue()) << "</td>" <<
-                endl;
-            stream << elementTableTabs << "</tr>" << endl;
+                Qt::endl;
+            stream << elementTableTabs << "</tr>" << Qt::endl;
         }
 
-        stream << instantiationsItemTabs << "</table>" << endl;
+        stream << instantiationsItemTabs << "</table>" << Qt::endl;
     }
 }
 
@@ -492,7 +492,7 @@ void ViewDocumentGenerator::writeReferencedDesignInstantiation(QString const& in
     int const& instantiationNumber)
 {
     stream << instantiationTabs << "<h4>" << myNumber() << "." << subHeaderNumber << "." << viewNumber << "." <<
-        instantiationNumber << " Design instantiation: " << designReference << "</h4>" << endl;
+        instantiationNumber << " Design instantiation: " << designReference << "</h4>" << Qt::endl;
 
     QSharedPointer<DesignInstantiation> instantiation = getDesignInstantiation(designReference);
     if (!instantiation)
@@ -560,9 +560,9 @@ QSharedPointer<DesignInstantiation> ViewDocumentGenerator::getDesignInstantiatio
 void ViewDocumentGenerator::writeErrorMessage(QTextStream& stream, QString const& documentTabs,
     QString const& errorMsg)
 {
-    stream << documentTabs << "<p>" << endl;
-    stream << documentTabs << "<strong><font color=red>" << errorMsg << "</font></strong><br>" << endl;
-    stream << documentTabs << "</p>" << endl;
+    stream << documentTabs << "<p>" << Qt::endl;
+    stream << documentTabs << "<strong><font color=red>" << errorMsg << "</font></strong><br>" << Qt::endl;
+    stream << documentTabs << "</p>" << Qt::endl;
     emit errorMessage(errorMsg);
 }
 
@@ -572,7 +572,7 @@ void ViewDocumentGenerator::writeErrorMessage(QTextStream& stream, QString const
 void ViewDocumentGenerator::writeDesign(QTextStream& stream, QString const& viewTabs, QSharedPointer<View> view,
     QStringList& pictureList)
 {
-    stream << viewTabs << "<br>" << endl;
+    stream << viewTabs << "<br>" << Qt::endl;
 
     QSharedPointer<DesignConfiguration> configuration = getDesignConfiguration(view);
     QSharedPointer<Design> design = getDesign(view, configuration);
@@ -587,9 +587,9 @@ void ViewDocumentGenerator::writeDesign(QTextStream& stream, QString const& view
     createDesignPicture(pictureList, view->name());
 
     QString diagramHeadline = QString("Diagram of design %1:").arg(design->getVlnv().toString());
-    stream << viewTabs << diagramHeadline << "<br>" << endl;
+    stream << viewTabs << diagramHeadline << "<br>" << Qt::endl;
     stream << viewTabs  << "<img src=\"" << getComponent()->getVlnv().toString(".") << "." << view->name() <<
-        ".png\" alt=\"" << "View: " << view->name() << " preview picture\"><br>" << endl;
+        ".png\" alt=\"" << "View: " << view->name() << " preview picture\"><br>" << Qt::endl;
 
     writeDesignInstances(stream, design, configuration, viewTabs);
 }
@@ -673,8 +673,8 @@ void ViewDocumentGenerator::writeDesignInstances(QTextStream& stream, QSharedPoi
 
     QString instanceTitle = QString("Component instances within design %1").arg(design->getVlnv().toString());
 
-    stream << viewTabs << "<br>" << endl;
-    stream << viewTabs << instanceTitle << ":<br>" << endl;
+    stream << viewTabs << "<br>" << Qt::endl;
+    stream << viewTabs << instanceTitle << ":<br>" << Qt::endl;
 
     QStringList instanceHeaders;
     instanceHeaders.append("Instance name");
@@ -690,13 +690,13 @@ void ViewDocumentGenerator::writeDesignInstances(QTextStream& stream, QSharedPoi
 
     foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-        stream << tableTabs << "<tr>" << endl;
-        stream << tableRowTabs << "<td>" << instance->getInstanceName() << "</td>" << endl;
+        stream << tableTabs << "<tr>" << Qt::endl;
+        stream << tableRowTabs << "<td>" << instance->getInstanceName() << "</td>" << Qt::endl;
 
         stream << tableRowTabs << "<td><a href=\"#" << instance->getComponentRef()->toString(":") << "\">" <<
-            instance->getComponentRef()->toString(" - ") << "</a></td>" << endl;
+            instance->getComponentRef()->toString(" - ") << "</a></td>" << Qt::endl;
 
-        stream << tableRowTabs << "<td>" << endl;
+        stream << tableRowTabs << "<td>" << Qt::endl;
 
         VLNV componentVLNV = *instance->getComponentRef();
 
@@ -730,23 +730,23 @@ void ViewDocumentGenerator::writeDesignInstances(QTextStream& stream, QSharedPoi
             {
                 stream << "<br>";
             }
-            stream << endl;
+            stream << Qt::endl;
         }
 
-        stream << tableRowTabs << "</td>" << endl;
+        stream << tableRowTabs << "</td>" << Qt::endl;
 
         stream << tableRowTabs << "<td>";
         if (configuration && configuration->getDesignRef() == design->getVlnv())
         {
             stream << configuration->getActiveView(instance->getInstanceName());
         }
-        stream << "</td>" << endl;
+        stream << "</td>" << Qt::endl;
 
-        stream << tableRowTabs << "<td>" << instance->getDescription() << "</td>" << endl;
-        stream << tableTabs << "</tr>" << endl;
+        stream << tableRowTabs << "<td>" << instance->getDescription() << "</td>" << Qt::endl;
+        stream << tableTabs << "</tr>" << Qt::endl;
     }
 
-    stream << viewTabs << "</table>" << endl; 
+    stream << viewTabs << "</table>" << Qt::endl; 
 }
 
 //-----------------------------------------------------------------------------
@@ -807,6 +807,6 @@ void ViewDocumentGenerator::writeDescription(QTextStream& stream, QString const&
     if (!description.isEmpty())
     {
         stream << descriptionTabs << DocumentGeneratorHTML::indent() << "<strong>Description: </strong>" <<
-            description << "<br>" << endl;
+            description << "<br>" << Qt::endl;
     }
 }

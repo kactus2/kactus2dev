@@ -32,7 +32,7 @@ qreal NamelabelWidth::getTextLength( QString text, QFont font )
 {
 	QFontMetrics fontMetrics(font);
 
-	return fontMetrics.width( text );
+	return fontMetrics.horizontalAdvance( text );
 }
 
 //-----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ qreal NamelabelWidth::getTextLength( QString text, QFont font )
 QString NamelabelWidth::setNameLabel( QString labelName, QFont font, qreal width )
 {
 	QFontMetrics fontMetrics(font);
-	qreal shortWidth = fontMetrics.width(labelName);
+	qreal shortWidth = fontMetrics.horizontalAdvance(labelName);
 	QString shortLabel = labelName;
 
 	if ( shortWidth + MIDDLE + PADDING > width )
@@ -49,7 +49,7 @@ QString NamelabelWidth::setNameLabel( QString labelName, QFont font, qreal width
 	    for (int i = 1; i < labelName.size(); ++i)
     	{
 	    	shortLabel = labelName.left(labelName.size() - i);
-		    shortWidth = fontMetrics.width(shortLabel);
+		    shortWidth = fontMetrics.horizontalAdvance(shortLabel);
 
     		if ( shortWidth + MIDDLE + PADDING < width  )
 	    	{

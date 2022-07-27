@@ -315,7 +315,7 @@ void ConfigurableElementDelegate::onCreateMultipleElementRemoveCommands(QModelIn
 
             for (int i = rowCount - 1; i >= 0; i = i - 1)
             {
-                QModelIndex elementIndex = index.child(i, index.column());
+                QModelIndex elementIndex = index.model()->index(i, index.column(), index);
 
                 if (elementIndex.data(ConfigurableElementsModel::deletableElementCheckRole).toBool())
                 {

@@ -1279,11 +1279,11 @@ bool PythonAPI::endsCheckForInterconnection(QSharedPointer<const Component> star
     {
         QString startModeString = General::interfaceMode2Str(startMode);
         QString endModeString = General::interfaceMode2Str(endMode);
-        if (startModeString == General::MONITOR)
+        if (startMode == General::MONITOR)
         {
             startModeString = General::interfaceMode2Str(startMonitor);
         }
-        if (endModeString == General::MONITOR)
+        if (endMode == General::MONITOR)
         {
             endModeString = General::interfaceMode2Str(endMonitor);
         }

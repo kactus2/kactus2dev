@@ -2,7 +2,7 @@
 // File: FileDependencyInfoWidget.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰, Tommi Korhonen
+// Author: Joni-Matti Maatta, Tommi Korhonen
 // Date: 19.01.2013
 //
 // Description:

@@ -499,7 +499,7 @@ viewName_()
 //-----------------------------------------------------------------------------
 // Function: activeviewmodel::InstanceViewPair::operator==()
 //-----------------------------------------------------------------------------
-bool ActiveViewModel::InstanceViewPair::operator==(const InstanceViewPair& other )
+bool ActiveViewModel::InstanceViewPair::operator==(const InstanceViewPair& other ) const
 {
 	return instanceName_ == other.instanceName_;
 }

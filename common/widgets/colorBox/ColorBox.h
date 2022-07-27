@@ -2,7 +2,7 @@
 // File: ColorBox.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 16.6.2011
 //
 // Description:

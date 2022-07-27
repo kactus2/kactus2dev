@@ -2,7 +2,7 @@
 // File: SnippetTextEdit.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 22.08.2012
 //
 // Description:
@@ -12,6 +12,8 @@
 #include "SnippetTextEdit.h"
 
 #include "SnippetHighlighter.h"
+
+#include <QActionGroup>
 
 //-----------------------------------------------------------------------------
 // Function: SnippetTextEdit::SnippetTextEdit()

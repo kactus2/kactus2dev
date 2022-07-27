@@ -38,17 +38,13 @@
     <ClCompile Include="VHDLSourceAnalyzer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VHDLSourceAnalyzer.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VHDLSourceAnalyzer.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
+    
+    
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="VHDLSourceAnalyzer.h">
+    <QtMoc Include="VHDLSourceAnalyzer.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="vhdlPlugin.json" />

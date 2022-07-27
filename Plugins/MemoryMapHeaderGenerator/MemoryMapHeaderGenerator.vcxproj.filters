@@ -40,69 +40,39 @@
     <ClCompile Include="memorymapheadergenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_memorymapheadergenerator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_memorymapheadergenerator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_memorymapheadergenerator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="localheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="globalheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_globalheadersavemodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_globalheadersavemodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="localheadersavedelegate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_localheadersavedelegate.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_localheadersavedelegate.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="systemheadersavemodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_localheadersavemodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_localheadersavemodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_systemheadersavemodel.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_systemheadersavemodel.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
     <ClCompile Include="fileSaveDialog\filesavedialogview.cpp">
       <Filter>Source Files\fileSaveDialog</Filter>
     </ClCompile>
     <ClCompile Include="fileSaveDialog\filesavedialog.cpp">
       <Filter>Source Files\fileSaveDialog</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_filesavedialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_filesavedialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_filesavedialogview.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_filesavedialogview.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
     <ClCompile Include="SystemMemoryMapHeaderWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -118,12 +88,8 @@
     <ClCompile Include="..\..\common\widgets\viewSelector\viewselector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_viewselector.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_viewselector.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memorymapheadergenerator_global.h">
@@ -143,33 +109,33 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="memorymapheadergenerator.h">
+    <QtMoc Include="memorymapheadergenerator.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="memorymapheadergenerator.qrc">
+    </QtMoc>
+    <QtRcc Include="memorymapheadergenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="globalheadersavemodel.h">
+    </QtRcc>
+    <QtMoc Include="globalheadersavemodel.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="localheadersavedelegate.h">
+    </QtMoc>
+    <QtMoc Include="localheadersavedelegate.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="localheadersavemodel.h">
+    </QtMoc>
+    <QtMoc Include="localheadersavemodel.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="systemheadersavemodel.h">
+    </QtMoc>
+    <QtMoc Include="systemheadersavemodel.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="fileSaveDialog\filesavedialog.h">
+    </QtMoc>
+    <QtMoc Include="fileSaveDialog\filesavedialog.h">
       <Filter>Header Files\fileSaveDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="fileSaveDialog\filesavedialogview.h">
+    </QtMoc>
+    <QtMoc Include="fileSaveDialog\filesavedialogview.h">
       <Filter>Header Files\fileSaveDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\common\widgets\viewSelector\viewselector.h">
+    </QtMoc>
+    <QtMoc Include="..\..\common\widgets\viewSelector\viewselector.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="headerGenerator.json" />

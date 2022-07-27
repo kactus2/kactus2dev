@@ -2,7 +2,7 @@
 // File: AssistedTextEdit.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 21.12.2010
 //
 // Description:
@@ -58,7 +58,7 @@ void AssistedTextEdit::setIndentStyle(IndentStyle style, unsigned int width)
 
     // Set the correct tab stop width.
     QFontMetrics metrics(font());
-    setTabStopWidth(indentWidth_ * metrics.averageCharWidth());
+    setTabStopDistance(indentWidth_ * metrics.averageCharWidth());
 }
 
 //-----------------------------------------------------------------------------

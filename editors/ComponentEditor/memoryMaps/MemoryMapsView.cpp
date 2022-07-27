@@ -224,7 +224,7 @@ void MemoryMapsView::onCopyAction()
         QApplication::setOverrideCursor(Qt::WaitCursor);
 
         QModelIndexList indexes = selectedIndexes();
-        qSort(indexes);
+        std::sort(indexes.begin(), indexes.end());
 
         QString copyText;
 
@@ -265,7 +265,7 @@ void MemoryMapsView::onPasteAction()
     QModelIndex posToPaste;
     if (!indexes.isEmpty())
     {
-        qSort(indexes);
+        std::sort(indexes.begin(), indexes.end());
         posToPaste = indexes.first();
     }
 
@@ -459,7 +459,7 @@ void MemoryMapsView::onCSVExport(const QString& filePath /* = QString() */)
         stream << model()->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString().simplified();
         stream << ";";
     }
-    stream << endl;
+    stream << Qt::endl;
 
     // write each row
     for (int row = 0; row < rowCount; ++row)
@@ -471,7 +471,7 @@ void MemoryMapsView::onCSVExport(const QString& filePath /* = QString() */)
             stream << model()->data(index, Qt::DisplayRole).toString();
             stream << ";";
         }
-        stream << endl;
+        stream << Qt::endl;
     }
     file.close();
 
@@ -492,7 +492,7 @@ void MemoryMapsView::onCopyRowsAction()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     QModelIndexList indexList = selectedIndexes();
-    qSort(indexList);
+    std::sort(indexList.begin(), indexList.end());
 
     QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
 

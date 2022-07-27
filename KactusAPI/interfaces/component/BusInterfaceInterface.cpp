@@ -799,7 +799,7 @@ void BusInterfaceInterface::swapBusInterfaces(int const& firstIndex, int const& 
     }
     else
     {
-        busInterfaces_->swap(firstIndex, secondIndex);
+        busInterfaces_->swapItemsAt(firstIndex, secondIndex);
     }
 }
 

@@ -2,7 +2,7 @@
 // File: VLNVContentMatcher.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 14.2.2011
 //
 // Description:

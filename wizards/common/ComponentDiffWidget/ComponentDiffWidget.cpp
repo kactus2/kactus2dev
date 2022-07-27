@@ -116,7 +116,7 @@ QTreeWidgetItem* ComponentDiffWidget::createTopLevelItemForElement(QString const
 
     for (int i = 0; i < COLUMN_COUNT; i++)
     {
-        item->setBackgroundColor(i, KactusColors::STRONG_FIELD);
+        item->setBackground(i, KactusColors::STRONG_FIELD);
     }            
     addTopLevelItem(item);
     return item;        

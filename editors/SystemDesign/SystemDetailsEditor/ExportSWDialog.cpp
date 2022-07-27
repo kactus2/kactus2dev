@@ -2,7 +2,7 @@
 // File: ExportSWDialog.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 31.7.2012
 //
 // Description:

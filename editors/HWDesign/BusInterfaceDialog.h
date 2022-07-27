@@ -2,7 +2,7 @@
 // File: BusInterfaceDialog.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 30.5.2011
 //
 // Description:

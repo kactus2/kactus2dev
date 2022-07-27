@@ -26,27 +26,27 @@ ModelSimWriter::ModelSimWriter()
 void ModelSimWriter::write(QTextStream& output, QString const& outputDirectory) const
 {
     // Inform user when executing the script.
-    output << "echo " << QObject::tr("\"Adding files to the project\"") << endl;
+    output << "echo " << QObject::tr("\"Adding files to the project\"") << Qt::endl;
 
-    output << endl;
+    output << Qt::endl;
 
     // Each path gets a line: Create a relative path from output directory to the location.
     foreach (QString absolutePath, paths_)
     {
         QString relativePath = General::getRelativePath(outputDirectory, absolutePath);
 
-        output << "project addfile " << relativePath << endl;
+        output << "project addfile " << relativePath << Qt::endl;
     }
 
-    output << endl;
+    output << Qt::endl;
 
     // Latsly, compile the project.
-    output << "project compileall" << endl;
+    output << "project compileall" << Qt::endl;
 
-    output << endl;
+    output << Qt::endl;
 
     // Inform user that script has been successfully executed.
-    output << "echo " << QObject::tr("\"Script has been executed\"") << endl;
+    output << "echo " << QObject::tr("\"Script has been executed\"") << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

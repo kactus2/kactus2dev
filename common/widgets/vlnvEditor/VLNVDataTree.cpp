@@ -2,7 +2,7 @@
 // File: VLNVDataTree.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 5.1.2012
 //
 // Description:

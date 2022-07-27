@@ -31,21 +31,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\qrc_VHDLGenerator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_vhdlcomponentinstance.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_vhdlcomponentinstance.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_vhdlgenerator2.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_vhdlgenerator2.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
+    
     <ClCompile Include="vhdlconnectionendpoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -85,33 +75,21 @@
     <ClCompile Include="VHDLGeneratorDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VHDLGeneratorDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VHDLGeneratorDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ViewSelectionWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ViewSelectionWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="VHDLGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VHDLGeneratorPlugin.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VHDLGeneratorPlugin.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -161,24 +139,24 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="VHDLGenerator.qrc">
+    <QtRcc Include="VHDLGenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="vhdlcomponentinstance.h">
+    </QtRcc>
+    <QtMoc Include="vhdlcomponentinstance.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="vhdlgenerator2.h">
+    </QtMoc>
+    <QtMoc Include="vhdlgenerator2.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="VHDLGeneratorDialog.h">
+    </QtMoc>
+    <QtMoc Include="VHDLGeneratorDialog.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
+    </QtMoc>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="VHDLGeneratorPlugin.h">
+    </QtMoc>
+    <QtMoc Include="VHDLGeneratorPlugin.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="VHDLGenerator.png">

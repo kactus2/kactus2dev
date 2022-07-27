@@ -61,7 +61,7 @@ void ComponentInstantiationDisplayer::refresh()
         filesetsLabel_->setText(instantiation_->getFileSetReferences()->join(", "));
     }
 
-    setVisible(instantiation_);
+    setVisible(instantiation_.isNull() == false);
 }
 
 //-----------------------------------------------------------------------------
