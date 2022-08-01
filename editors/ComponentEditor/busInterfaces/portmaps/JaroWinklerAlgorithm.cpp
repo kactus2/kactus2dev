@@ -58,14 +58,15 @@ double JaroWinklerAlgorithm::calculateJaroWinklerDistance(QString const& firstSt
 QString JaroWinklerAlgorithm::Details::findMatchingCharacters(QString const& searched,
     QString const& reference)
 {
-    int matchingDistance = qMax(1, qMax(searched.length(), reference.length())/2 - 1);
+    int matchingDistanceStart = 2;
+    int matchingDistanceEnd = qMax(1, qMax(searched.length(), reference.length())/2 - 1);
 
     QString matchingCharacters = "";
 
     for (int i = 0; i < searched.length(); ++i)
     {
-        int startPosition = qMax(0, i - matchingDistance);
-        int endPosition = qMin(i + matchingDistance, reference.length() - 1);
+        int startPosition = qMax(0, i - matchingDistanceStart);
+        int endPosition = qMin(i + matchingDistanceEnd, reference.length() - 1);
 
         int sectionLength = endPosition - startPosition + 1;
 
