@@ -61,5 +61,13 @@ print ("\n", end='')
 print ("Example for displaying registers of the selected component")
 api = pythonAPI.PythonAPI()
 
-command = input("VLNV: ")
+#command = input("VLNV: ")
+
+vendor = "tut.fi"
+library = "example"
+name = "register_if"
+version = "1.0"
+
+command = vendor + ":" + library + ":" + name + ":" + version
+
 listComponentRegisters(api, command)

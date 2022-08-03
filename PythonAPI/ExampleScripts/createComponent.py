@@ -96,3 +96,5 @@ if (success):
 	api.saveComponent()
 
 api.closeOpenComponent()
+
+print ("Creation of component " + vendor + "." + library + "." + name + "." + version + " complete.")
