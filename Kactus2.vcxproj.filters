@@ -7327,6 +7327,9 @@
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapSortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClInclude>
+    <ClInclude Include="resource2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -7335,6 +7338,9 @@
     <None Include="wizards\common\ListComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Kactus22.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="appicon.ico" />

@@ -466,6 +466,14 @@ QVector<VLNV> HierarchyItem::getVLNVs() const
 void HierarchyItem::clear()
 {
 	qDeleteAll(childItems_);
+
+/*
+    for (int i = childItems_.size() - 1; i >= 0; --i)
+    {
+        childItems_.at(i)->deleteLater();
+    }
+*/
+
 	childItems_.clear();
 }
 
