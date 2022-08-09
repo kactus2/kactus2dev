@@ -64,16 +64,16 @@ you can skip to step 2. Otherwise, select installing Qt with either using a pack
 a) Install Qt5 packages using a package manager (requires admin privileges).
 The following packages are required (on Ubuntu):
 
-  * qt5-default
+  * qtbase5-dev
   * qttools5-private-dev
   * qttools5-dev-tools
   * libqt5svg5-dev
-  * libpython3.7-dev or newer
+  * python3.10-dev or newer
   * swig, version 3.0.12 or newer
 
 Example:
 ```
-sudo apt-get install qt5-default qttools5-private-dev qttools5-dev-tools libqt5svg5-dev libpython3.7-dev swig
+sudo apt-get install qtbase5-dev qttools5-private-dev qttools5-dev-tools libqt5svg5-dev python3.10-dev swig
 ```
 
 b) Manually download and install from https://www.qt.io/download/
@@ -84,7 +84,7 @@ variable QTBIN_PATH.
   
 Example: 
       
-    QTBIN_PATH="~/Qt/5.7/gcc_64/bin/"
+    QTBIN_PATH="~/Qt/5.15/gcc_64/bin/"
   
 Please do note the slash at the end of the path. 
 
@@ -101,6 +101,13 @@ tar -xvf kactus2-3.9.0.tar.gz -C ~/kactus2
 cd ~/kactus2
 ```
 
+Or you can clone the repository. Click on Code on top of the repository, copy the HTTPS and clone it.
+
+Example:
+```
+git clone https://github.com/kactus2/kactus2dev.git ~/kactus2
+```
+
 Select installation either for all users (option a) or customized target (option b) below:
 
 a) Default installation for all users (requires admin privileges).
@@ -111,9 +118,9 @@ you may have to change lib_path from /usr/lib to /usr/lib64.
 Next, check that the PYTHON_CONFIG variable has been set correctly and matches the installed
 Python version.
 
-Example for Python version 3.7:
+Example for Python version 3.10:
 ```
-PYTHON_CONFIG=python3.7-config
+PYTHON_CONFIG=python3.10-config
 ```
 
 Now run following commands:
