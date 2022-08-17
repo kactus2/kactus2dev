@@ -27,7 +27,7 @@ include(PythonAPI.pri)
 # Run SWIG to generate PythonAPI_wrap.cxx.
 swig.depends = ./PythonAPI.i
 swig.target = PythonAPI_wrap.cxx
-swig.commands = swig -python -c++ -O PythonAPI.i
+swig.commands = swig -python -doxygen -c++ -O PythonAPI.i
 swig.path = .
 
 QMAKE_EXTRA_TARGETS += swig
