@@ -54,7 +54,7 @@ void InterfaceModeSelector::initialize()
 		addItem(General::INTERFACE_MODE_NAMES[i]);
 	}
 
-	connect(this, SIGNAL(currentIndexChanged(const QString&)),
+	connect(this, SIGNAL(currentTextChanged(const QString&)),
 		this, SLOT(setMode(const QString&)), Qt::UniqueConnection);
 
 	// the interface mode is mandatory by default
@@ -72,12 +72,12 @@ void InterfaceModeSelector::setMode(const General::InterfaceMode mode)
 		return;
 	}
 
-	disconnect(this, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setMode(const QString&)));
+	disconnect(this, SIGNAL(currentTextChanged(const QString&)), this, SLOT(setMode(const QString&)));
 	
 	// the names in the combo box are in the same order as the interface modes
 	setCurrentIndex(mode);
 	
-	connect(this, SIGNAL(currentIndexChanged(const QString&)),
+	connect(this, SIGNAL(currentTextChanged(const QString&)),
         this, SLOT(setMode(const QString&)), Qt::UniqueConnection);
 }
 
@@ -86,7 +86,7 @@ void InterfaceModeSelector::setMode(const General::InterfaceMode mode)
 //-----------------------------------------------------------------------------
 void InterfaceModeSelector::setMode(QString const& modeName)
 {
-	disconnect(this, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setMode(const QString&)));
+	disconnect(this, SIGNAL(currentTextChanged(const QString&)), this, SLOT(setMode(const QString&)));
 
 	// find the item for the text
 	int index = findText(modeName, Qt::MatchFixedString);
@@ -98,7 +98,7 @@ void InterfaceModeSelector::setMode(QString const& modeName)
 		emit modeSelected(static_cast<General::InterfaceMode>(index));
 	}
 
-	connect(this, SIGNAL(currentIndexChanged(const QString&)), 
+	connect(this, SIGNAL(currentTextChanged(const QString&)),
         this, SLOT(setMode(const QString&)), Qt::UniqueConnection);
 }
 

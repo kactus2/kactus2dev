@@ -226,9 +226,9 @@ void SingleSubspaceMapEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void SingleSubspaceMapEditor::connectSignals() const
 {
-    connect(masterSelector_, SIGNAL(activated(QString const&)),
+    connect(masterSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onMasterSelected(QString const&)), Qt::UniqueConnection);
-    connect(segmentSelector_, SIGNAL(activated(QString const&)),
+    connect(segmentSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onSegmentSelected(QString const&)), Qt::UniqueConnection);
 
     connect(baseAddressEditor_, SIGNAL(increaseReference(QString)),

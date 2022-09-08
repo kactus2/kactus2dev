@@ -46,7 +46,7 @@ systemGroup_(this)
 
 	connect(&interfaceMode_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onInterfaceModeChange(General::InterfaceMode)), Qt::UniqueConnection);
-	connect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+	connect(&systemGroup_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onSystemGroupChange(QString const&)), Qt::UniqueConnection);
 }
 
@@ -86,7 +86,7 @@ void BusIfInterfaceMonitor::refresh()
 	interfaceMode_.setMode(monitorMode);
 
 	// disconnect the combo box to avoid emitting signals
-	disconnect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+	disconnect(&systemGroup_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onSystemGroupChange(QString const&)));
 
 	// clear the previous items from the group combo box
@@ -140,7 +140,7 @@ void BusIfInterfaceMonitor::refresh()
 	}
 
 	// reconnect the combo box
-	connect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+	connect(&systemGroup_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onSystemGroupChange(QString const&)), Qt::UniqueConnection);	
 }
 
@@ -187,7 +187,7 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
     busInterface->setMonitorMode(busName, modeString);
 
 	// disconnect the combo box to avoid emitting signals
-	disconnect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+	disconnect(&systemGroup_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onSystemGroupChange(QString const&)));
 
 	systemGroup_.clear();
@@ -235,7 +235,7 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
     }
 
 	// reconnect the combo box
-	connect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+	connect(&systemGroup_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onSystemGroupChange(QString const&)), Qt::UniqueConnection);
 
 	emit contentChanged();

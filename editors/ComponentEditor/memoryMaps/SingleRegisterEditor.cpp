@@ -113,13 +113,13 @@ void SingleRegisterEditor::setupLayout()
     volatileEditor_ = new BooleanComboBox(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
 
-    connect(volatileEditor_, SIGNAL(activated(QString const&)),
+    connect(volatileEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
 
     accessEditor_ = new AccessComboBox(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Access:"), accessEditor_);
 
-    connect(accessEditor_, SIGNAL(activated(QString const&)),
+    connect(accessEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();

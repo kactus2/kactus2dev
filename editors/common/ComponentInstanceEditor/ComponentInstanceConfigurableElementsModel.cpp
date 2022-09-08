@@ -242,7 +242,7 @@ int ComponentInstanceConfigurableElementsModel::rowCount(QModelIndex const& pare
         return rootItems_.size();
     }
 
-    foreach (QSharedPointer<rootModel> root, rootItems_)
+    for (auto const& root : rootItems_)
     {
         if (root == parent.internalPointer())
         {

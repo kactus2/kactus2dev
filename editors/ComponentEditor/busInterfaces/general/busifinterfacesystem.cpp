@@ -40,7 +40,7 @@ groupEditor_(this)
 
 	groupEditor_.setProperty("mandatoryField", true);
 
-	connect(&groupEditor_, SIGNAL(currentIndexChanged(QString const&)),
+	connect(&groupEditor_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onGroupChange(QString const&)), Qt::UniqueConnection);
 
     QFormLayout* groupLayout = new QFormLayout(this);
@@ -61,7 +61,7 @@ bool BusIfInterfaceSystem::isValid() const
 void BusIfInterfaceSystem::refresh()
 {
 	// when the combo box changes it must be disconnected to avoid emitting signals
-	disconnect(&groupEditor_, SIGNAL(currentIndexChanged(QString const&)), this, SLOT(onGroupChange(QString const&)));
+	disconnect(&groupEditor_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onGroupChange(QString const&)));
 	
 	// update the combobox to display only the possible values
 
@@ -121,7 +121,7 @@ void BusIfInterfaceSystem::refresh()
 	groupEditor_.setCurrentIndex(index);
 
 	// reconnect the combo box
-	connect(&groupEditor_, SIGNAL(currentIndexChanged(QString const&)),
+	connect(&groupEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onGroupChange(QString const&)), Qt::UniqueConnection);
 }
 
