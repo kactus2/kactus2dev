@@ -136,6 +136,32 @@ private:
 
     QString getInOutAssignment(QSharedPointer<MetaPort> mPort) const;
 
+    /*!
+     *  Get the hierarchical port connected to the selected port.
+     *
+     *      @param [in] metaPort        The selected port.
+     *      @param [in] metaAssignment  Assignment for the selected port.
+     *      @param [in] assignmentWire  Wire of the connection.
+     *
+     *      @return The hierarchical port connected to the selected port and its port assignment.
+     */
+    QPair<QSharedPointer<MetaPort>, QSharedPointer<MetaPortAssignment> > getConnectedHierarchicalPort(
+        QSharedPointer<MetaPort> metaPort,
+        QSharedPointer<MetaPortAssignment> metaAssignment,
+        QSharedPointer<MetaWire> assignmentWire) const;
+
+    /*!
+     *  Get the port assignment for the selected port.
+     *
+     *      @param [in] hierarchicalPort    The selected port.
+     *      @param [in] assignedWire        Wire of the connection.
+     *
+     *      @return Port assignment of the selected port.
+     */
+    QSharedPointer<MetaPortAssignment> getHierarchicalPortAssignmentConnectedToWire(
+        QSharedPointer<MetaPort> hierarchicalPort,
+        QSharedPointer<MetaWire> assignedWire) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

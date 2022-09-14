@@ -62,6 +62,8 @@ private slots:
     void testOneBitSlicing();
     void testPhysicalSlicedMasterToSlaveInterconnection();
     void testLogicalSlicedMasterToSlaveInterconnection();
+    void testLogicalSlicedMasterToMultiplePortsInSlave();
+    void testHierarchicalInOutConnectionWithMultiplePorts();
     void testPortSlicedMasterToSlaveInterconnection();
     void testMasterToMultipleSlavesInterconnections();
 
@@ -125,9 +127,6 @@ private:
         QString const& logicalLeft, QString const& logicalRight, QString const& physicalLeft, 
         QString const& physicalRight);
 
-    void createWirePortAssignment(QSharedPointer<MetaPort> port, QSharedPointer<MetaWire> wire,
-        QSharedPointer<MetaInstance> instance, QString const& leftBound, QString const& rightBound);
-
     QSharedPointer<Component> addTestComponentToLibrary(VLNV vlnv);
 
     QSharedPointer<MetaInstance> addInstanceToDesign(QString instanceName, QSharedPointer<Component> component);
@@ -158,15 +157,20 @@ private:
 
     QSharedPointer<BusInterface> addBusInterfaceToComponent(QString const& busName,
         QSharedPointer<Component> containingComponent, General::InterfaceMode busMode,
-        QSharedPointer<BusDefinition> busDefinition, QSharedPointer<AbstractionDefinition> abstraction);
+        QSharedPointer<BusDefinition> busDefinition, QSharedPointer<AbstractionDefinition> abstraction,
+        QString const& systemGroup = "");
 
     QSharedPointer<PortAbstraction> addLogicalPortToAbstraction(QString const& portName,
         QSharedPointer<AbstractionDefinition> containingAbstraction, General::InterfaceMode busMode,
         TransactionalTypes::Initiative logicalInitiative = TransactionalTypes::INITIATIVE_INVALID,
-        DirectionTypes::Direction logicalDirection = DirectionTypes::DIRECTION_INVALID);
+        DirectionTypes::Direction logicalDirection = DirectionTypes::DIRECTION_INVALID,
+        QString const& systemGroup = "");
 
     void mapPortsToBusInterface(QSharedPointer<BusInterface> containingBus, QSharedPointer<Port> physicalPort,
         QSharedPointer<PortAbstraction> logicalPort);
+
+    void mapMultiplePortsToBusInterface(QSharedPointer<BusInterface> containingBus,
+        QList<QSharedPointer<Port> > physicalPorts, QSharedPointer<PortAbstraction> logicalPort);
 
     QSharedPointer<ComponentInstance> addInstanceToDesign(QSharedPointer<Design> containingDesign,
         QSharedPointer<Component> instancedComponent);
@@ -174,6 +178,10 @@ private:
     QSharedPointer<Interconnection> addInterconnectionToDesign(QString const& interconnectionName,
         QSharedPointer<Design> containingDesign, QString const& startInterfaceName,
         QString const& startInstanceName, QString const& secondInterfaceName, QString const& secondInstanceName);
+
+    QSharedPointer<Interconnection> addHierarchicalInterconnectionToDesign(QString const& interconnectionName,
+        QSharedPointer<Design> containingDesign, QString const& topInterface, QString const& targetInterfaceName,
+        QString const& targetInstanceName);
 
     QSharedPointer<MetaInterconnection> addConnectionToDesign();
 
@@ -980,6 +988,279 @@ void tst_VerilogWriterFactory::testLogicalSlicedMasterToSlaveInterconnection()
         "        // Interface: data_if\n"
         "        .data_out            (sender_data_out),\n"
         "        .enable_out          (sender_enable_out)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testLogicalSlicedMasterToMultiplePortsInSlave()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testLogicalSlicedMasterToMultiplePortsInSlave()
+{
+    QSharedPointer<Component> topComponent = createComponent("topComponent");
+    QSharedPointer<Design> topDesign = createDesignForComponent("topDesign", topComponent);
+
+    QSharedPointer<BusDefinition> busDefinition = createBusDefinition("testBus");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition = createAbstractionDefinition("testAbstraction");
+
+    QSharedPointer<PortAbstraction> logicalData = addLogicalPortToAbstraction("DATA", abstractionDefinition,
+        General::SYSTEM, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+
+    QSharedPointer<Component> instanceComponent = createComponent("Receiver");
+
+    QSharedPointer<BusInterface> topBus = addBusInterfaceToComponent(
+        "topBus", topComponent, General::SYSTEM, busDefinition, abstractionDefinition);
+    QSharedPointer<BusInterface> instanceBus = addBusInterfaceToComponent(
+        "instanceBus", instanceComponent, General::SYSTEM, busDefinition, abstractionDefinition);
+
+
+    QSharedPointer<Port> topPort = addPortToComponent(
+        "topPort", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+    QSharedPointer<Port> dataPort0 = addPortToComponent(
+        "data0", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+    QSharedPointer<Port> dataPort1 = addPortToComponent(
+        "data1", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+    QSharedPointer<Port> dataPort2 = addPortToComponent(
+        "data2", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+
+    topPort->setLeftBound("2");
+    topPort->setRightBound("0");
+
+    dataPort0->setLeftBound("0");
+    dataPort0->setRightBound("0");
+    dataPort1->setLeftBound("0");
+    dataPort1->setRightBound("0");
+    dataPort2->setLeftBound("0");
+    dataPort2->setRightBound("0");
+
+    mapPortsToBusInterface(topBus, topPort, logicalData);
+
+    QList<QSharedPointer<Port> > dataPorts;
+    dataPorts.append(dataPort0);
+    dataPorts.append(dataPort1);
+    dataPorts.append(dataPort2);
+
+    mapMultiplePortsToBusInterface(instanceBus, dataPorts, logicalData);
+
+    QSharedPointer<ComponentInstance> targetInstance = addInstanceToDesign(topDesign, instanceComponent);
+
+    QSharedPointer<Interconnection> wireConnection = addHierarchicalInterconnectionToDesign(
+        "wireConnection", topDesign, topBus->name(), instanceBus->name(), targetInstance->getInstanceName());
+
+    MessagePasser messages;
+
+    connect(&messages, SIGNAL(errorMessage(const QString&)),
+        this, SLOT(gatherErrorMessage(QString const&)), Qt::UniqueConnection);
+
+    GenerationTuple input;
+    input.component = topComponent;
+    input.design = topDesign;
+    input.messages = &messages;
+
+    QList<QSharedPointer<MetaDesign> > designs =
+        MetaDesign::parseHierarchy(&library_, input, topComponent->getViews()->first());
+
+    QCOMPARE(designs.size(), 1);
+
+    design_ = designs.first();
+    runGenerator(true);
+
+    output_;
+
+    verifyOutputContains("input                [2:0]          topPort");
+
+    verifyOutputContains("wire [2:0] wireConnection_DATA;");
+
+    verifyOutputContains("wire       Receiver_instance_data0;");
+
+    verifyOutputContains("assign wireConnection_DATA = topPort;");
+    verifyOutputContains("assign Receiver_instance_data0 = wireConnection_DATA[0];");
+    verifyOutputContains("assign Receiver_instance_data1 = wireConnection_DATA[1];");
+    verifyOutputContains("assign Receiver_instance_data2 = wireConnection_DATA[2];");
+
+    verifyOutputContains(
+        "    Receiver Receiver_instance(\n"
+        "        // Interface: instanceBus\n"
+        "        .data0               (Receiver_instance_data0),\n"
+        "        .data1               (Receiver_instance_data1),\n"
+        "        .data2               (Receiver_instance_data2));");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testHierarchicalInOutConnectionWithMultiplePorts()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testHierarchicalInOutConnectionWithMultiplePorts()
+{
+    QSharedPointer<Component> topComponent = createComponent("topComponent");
+    QSharedPointer<Design> topDesign = createDesignForComponent("topDesign", topComponent);
+
+    QString systemName("external_pad");
+    QStringList systemGroups;
+    systemGroups.append(systemName);
+
+    QSharedPointer<BusDefinition> busDefinition = createBusDefinition("testBus");
+    busDefinition->setSystemGroupNames(systemGroups);
+    QSharedPointer<AbstractionDefinition> abstractionDefinition = createAbstractionDefinition("testAbstraction");
+
+    QSharedPointer<PortAbstraction> logicalCSN = addLogicalPortToAbstraction("CSN", abstractionDefinition,
+        General::SYSTEM, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
+    QSharedPointer<PortAbstraction> logicalDATA = addLogicalPortToAbstraction("DATA", abstractionDefinition,
+        General::SYSTEM, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
+    QSharedPointer<PortAbstraction> logicalSCK = addLogicalPortToAbstraction("SCK", abstractionDefinition,
+        General::SYSTEM, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
+
+    logicalCSN->getWire()->getSystemPorts()->first()->setWidth("2");
+    logicalCSN->getWire()->getSystemPorts()->first()->setPresence(PresenceTypes::REQUIRED);
+    logicalDATA->getWire()->getSystemPorts()->first()->setWidth("4");
+    logicalDATA->getWire()->getSystemPorts()->first()->setPresence(PresenceTypes::REQUIRED);
+    logicalSCK->getWire()->getSystemPorts()->first()->setWidth("1");
+    logicalSCK->getWire()->getSystemPorts()->first()->setPresence(PresenceTypes::REQUIRED);
+
+    QSharedPointer<Port> topPortDATA0 = addPortToComponent(
+        "topPortDATA0", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    topPortDATA0->setTypeName("wire");
+    topPortDATA0->setPortSize(1);
+
+    QSharedPointer<Port> topPortDATA1 = addPortToComponent(
+        "topPortDATA1", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    topPortDATA1->setTypeName("wire");
+    topPortDATA1->setPortSize(1);
+
+    QSharedPointer<Port> topPortDATA2 = addPortToComponent(
+        "topPortDATA2", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    topPortDATA2->setTypeName("wire");
+    topPortDATA2->setPortSize(1);
+
+    QSharedPointer<Port> topPortDATA3 = addPortToComponent(
+        "topPortDATA3", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    topPortDATA3->setTypeName("wire");
+    topPortDATA3->setPortSize(1);
+
+    QSharedPointer<Port> topPortCSN1 = addPortToComponent(
+        "topPortCSN1", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    topPortCSN1->setTypeName("wire");
+    topPortCSN1->setPortSize(1);
+
+    QSharedPointer<Port> topPortCSN2 = addPortToComponent(
+        "topPortCSN2", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    topPortCSN2->setTypeName("wire");
+    topPortCSN2->setPortSize(1);
+
+    QSharedPointer<Port> topPortCLK = addPortToComponent(
+        "topPortCLK", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    topPortCLK->setTypeName("wire");
+    topPortCLK->setPortSize(1);
+
+    QSharedPointer<BusInterface> topBus = addBusInterfaceToComponent(
+        "topBus", topComponent, General::SYSTEM, busDefinition, abstractionDefinition, systemName);
+
+    QList<QSharedPointer<Port> > csnPorts;
+    csnPorts.append(topPortCSN1);
+    csnPorts.append(topPortCSN2);
+
+    QList<QSharedPointer<Port> > dataPorts;
+    dataPorts.append(topPortDATA0);
+    dataPorts.append(topPortDATA1);
+    dataPorts.append(topPortDATA2);
+    dataPorts.append(topPortDATA3);
+
+    QList<QSharedPointer<Port> > sckPorts;
+    sckPorts.append(topPortCLK);
+
+    mapMultiplePortsToBusInterface(topBus, csnPorts, logicalCSN);
+    mapMultiplePortsToBusInterface(topBus, dataPorts, logicalDATA);
+    mapMultiplePortsToBusInterface(topBus, sckPorts, logicalSCK);
+
+    QSharedPointer<Component> instanceComponent = createComponent("Receiver");
+
+    QSharedPointer<Port> instanceCSN0 = addPortToComponent(
+        "instanceCSN0", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    instanceCSN0->setTypeName("wire");
+    instanceCSN0->setPortSize(1);
+
+    QSharedPointer<Port> instanceCSN1 = addPortToComponent(
+        "instanceCSN1", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    instanceCSN1->setTypeName("wire");
+    instanceCSN1->setPortSize(1);
+
+    QSharedPointer<Port> instanceDATA0 = addPortToComponent(
+        "instanceDATA0", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    instanceDATA0->setTypeName("wire");
+    instanceDATA0->setPortSize(1);
+
+    QSharedPointer<Port> instanceDATA1 = addPortToComponent(
+        "instanceDATA1", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    instanceDATA1->setTypeName("wire");
+    instanceDATA1->setPortSize(1);
+
+    QSharedPointer<Port> instanceDATA2 = addPortToComponent(
+        "instanceDATA2", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    instanceDATA2->setTypeName("wire");
+    instanceDATA2->setPortSize(1);
+
+    QSharedPointer<Port> instanceDATA3 = addPortToComponent(
+        "instanceDATA3", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    instanceDATA3->setTypeName("wire");
+    instanceDATA3->setPortSize(1);
+
+    QSharedPointer<Port> instanceSCK = addPortToComponent(
+        "instanceSCK", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+    instanceSCK->setTypeName("wire");
+    instanceSCK->setPortSize(1);
+
+    QSharedPointer<BusInterface> instanceBus = addBusInterfaceToComponent(
+        "pads", instanceComponent, General::SYSTEM, busDefinition, abstractionDefinition, systemName);
+
+    QList<QSharedPointer<Port> > instanceCSNPorts;
+    instanceCSNPorts.append(instanceCSN0);
+    instanceCSNPorts.append(instanceCSN1);
+
+    QList<QSharedPointer<Port> > instanceDATAPorts;
+    instanceDATAPorts.append(instanceDATA0);
+    instanceDATAPorts.append(instanceDATA1);
+    instanceDATAPorts.append(instanceDATA2);
+    instanceDATAPorts.append(instanceDATA3);
+
+    QList<QSharedPointer<Port> > instanceSCKPorts;
+    instanceSCKPorts.append(instanceSCK);
+
+    mapMultiplePortsToBusInterface(instanceBus, instanceCSNPorts, logicalCSN);
+    mapMultiplePortsToBusInterface(instanceBus, instanceDATAPorts, logicalDATA);
+    mapMultiplePortsToBusInterface(instanceBus, instanceSCKPorts, logicalSCK);
+
+    QSharedPointer<ComponentInstance> targetInstance = addInstanceToDesign(topDesign, instanceComponent);
+
+    QSharedPointer<Interconnection> wireConnection = addHierarchicalInterconnectionToDesign(
+        "wireConnection", topDesign, topBus->name(), instanceBus->name(), targetInstance->getInstanceName());
+
+    MessagePasser messages;
+
+    connect(&messages, SIGNAL(errorMessage(const QString&)),
+        this, SLOT(gatherErrorMessage(QString const&)), Qt::UniqueConnection);
+
+    GenerationTuple input;
+    input.component = topComponent;
+    input.design = topDesign;
+    input.messages = &messages;
+
+    QList<QSharedPointer<MetaDesign> > designs =
+        MetaDesign::parseHierarchy(&library_, input, topComponent->getViews()->first());
+
+    QCOMPARE(designs.size(), 1);
+
+    design_ = designs.first();
+    runGenerator(true);
+
+    output_;
+
+    verifyOutputContains(
+        "    Receiver Receiver_instance(\n"
+        "        // Interface: pads\n"
+        "        .instanceCSN0        (topPortCSN1),\n"
+        "        .instanceCSN1        (topPortCSN2),\n"
+        "        .instanceDATA0       (topPortDATA0),\n"
+        "        .instanceDATA1       (topPortDATA1),\n"
+        "        .instanceDATA2       (topPortDATA2),\n"
+        "        .instanceDATA3       (topPortDATA3),\n"
+        "        .instanceSCK         (topPortCLK));");
 }
 
 //-----------------------------------------------------------------------------
@@ -2188,7 +2469,8 @@ QSharedPointer<Port> tst_VerilogWriterFactory::addPortToComponent(QString const&
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterface> tst_VerilogWriterFactory::addBusInterfaceToComponent(QString const& busName,
     QSharedPointer<Component> containingComponent, General::InterfaceMode busMode,
-    QSharedPointer<BusDefinition> busDefinition, QSharedPointer<AbstractionDefinition> abstraction)
+    QSharedPointer<BusDefinition> busDefinition, QSharedPointer<AbstractionDefinition> abstraction,
+    QString const& systemGroup /* = "" */)
 {
     const ConfigurableVLNVReference busVLNV(busDefinition->getVlnv());
     QSharedPointer<ConfigurableVLNVReference> abstractionVLNV(
@@ -2198,6 +2480,11 @@ QSharedPointer<BusInterface> tst_VerilogWriterFactory::addBusInterfaceToComponen
     newInterface->setName(busName);
     newInterface->setInterfaceMode(busMode);
     newInterface->setBusType(busVLNV);
+
+    if (!systemGroup.isEmpty())
+    {
+        newInterface->setSystem(systemGroup);
+    }
 
     QSharedPointer<AbstractionType> newAbstractionType(new AbstractionType());
     newAbstractionType->setAbstractionRef(abstractionVLNV);
@@ -2213,7 +2500,9 @@ QSharedPointer<BusInterface> tst_VerilogWriterFactory::addBusInterfaceToComponen
 //-----------------------------------------------------------------------------
 QSharedPointer<PortAbstraction> tst_VerilogWriterFactory::addLogicalPortToAbstraction(QString const& portName,
     QSharedPointer<AbstractionDefinition> containingAbstraction, General::InterfaceMode busMode,
-    TransactionalTypes::Initiative logicalInitiative, DirectionTypes::Direction logicalDirection)
+    TransactionalTypes::Initiative logicalInitiative /* = TransactionalTypes::INITIATIVE_INVALID */,
+    DirectionTypes::Direction logicalDirection /* = DirectionTypes::DIRECTION_INVALID */,
+    QString const& systemGroup /* = "" */)
 {
     QSharedPointer<PortAbstraction> newLogical = containingAbstraction->getPort(portName);
     if (!newLogical)
@@ -2242,6 +2531,11 @@ QSharedPointer<PortAbstraction> tst_VerilogWriterFactory::addLogicalPortToAbstra
         {
             newWireAbstraction->setSlavePort(newWirePort);
         }
+        else if (busMode == General::SYSTEM)
+        {
+            newWirePort->setSystemGroup(systemGroup);
+            newWireAbstraction->addSystemPort(newWirePort);
+        }
     }
     else if (logicalInitiative != TransactionalTypes::INITIATIVE_INVALID)
     {
@@ -2260,6 +2554,11 @@ QSharedPointer<PortAbstraction> tst_VerilogWriterFactory::addLogicalPortToAbstra
         else if (busMode == General::SLAVE)
         {
             newTransactionalAbstraction->setSlavePort(newTransactionalPort);
+        }
+        else if (busMode == General::SYSTEM)
+        {
+            newTransactionalPort->setSystemGroup(systemGroup);
+            newTransactionalAbstraction->addSystemPort(newTransactionalPort);
         }
     }
 
@@ -2281,6 +2580,43 @@ void tst_VerilogWriterFactory::mapPortsToBusInterface(QSharedPointer<BusInterfac
     newPortMap->setLogicalPort(newLogical);
 
     containingBus->getAbstractionTypes()->first()->getPortMaps()->append(newPortMap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::mapMultiplePortsToBusInterface()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::mapMultiplePortsToBusInterface(QSharedPointer<BusInterface> containingBus,
+    QList<QSharedPointer<Port> > physicalPorts, QSharedPointer<PortAbstraction> logicalPort)
+{
+    int logicalIndex = 0;
+
+    for (auto port : physicalPorts)
+    {
+        QSharedPointer<PortMap> newPortMap(new PortMap());
+
+        QSharedPointer<PortMap::PhysicalPort> newPhysical(new PortMap::PhysicalPort(port->name()));
+        QSharedPointer<PortMap::LogicalPort> newLogical(new PortMap::LogicalPort(logicalPort->name()));
+
+        QString logicalLeft = QString::number(logicalIndex);
+
+        int portLeft = port->getLeftBound().toInt();
+        int portRight = port->getRightBound().toInt();
+
+        int portWidth = abs(portLeft - portRight) + 1;
+
+        QString rangeLeft(QString::number(logicalIndex));
+        QString rangeRight(QString::number(logicalIndex + portWidth - 1));
+
+        logicalIndex = logicalIndex + portWidth;
+
+        QSharedPointer<Range> newRange(new Range(rangeLeft, rangeRight));
+        newLogical->range_ = newRange;
+
+        newPortMap->setPhysicalPort(newPhysical);
+        newPortMap->setLogicalPort(newLogical);
+
+        containingBus->getAbstractionTypes()->first()->getPortMaps()->append(newPortMap);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2312,6 +2648,23 @@ QSharedPointer<Interconnection> tst_VerilogWriterFactory::addInterconnectionToDe
 
     QSharedPointer<Interconnection> newInterconnection(new Interconnection(interconnectionName, startInterface));
     newInterconnection->getActiveInterfaces()->append(secondInterface);
+
+    containingDesign->getInterconnections()->append(newInterconnection);
+    return newInterconnection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::addHierarchicalInterconnectionToDesign()
+//-----------------------------------------------------------------------------
+QSharedPointer<Interconnection> tst_VerilogWriterFactory::addHierarchicalInterconnectionToDesign(
+    QString const& interconnectionName, QSharedPointer<Design> containingDesign, QString const& topInterface,
+    QString const& targetInterfaceName, QString const& targetInstanceName)
+{
+    QSharedPointer<HierInterface> startInterface(new HierInterface(topInterface));
+    QSharedPointer<ActiveInterface> secondInterface(new ActiveInterface(targetInstanceName, targetInterfaceName));
+
+    QSharedPointer<Interconnection> newInterconnection(new Interconnection(interconnectionName, secondInterface));
+    newInterconnection->getHierInterfaces()->append(startInterface);
 
     containingDesign->getInterconnections()->append(newInterconnection);
     return newInterconnection;

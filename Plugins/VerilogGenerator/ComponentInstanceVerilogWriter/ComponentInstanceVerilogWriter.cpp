@@ -190,7 +190,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::createInterfaceSeparator()
 //-----------------------------------------------------------------------------
-QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& interfaceName, 
+QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& interfaceName,
     QString const& previousInteface) const
 {
     QString interfaceIntroduction = "";
@@ -205,14 +205,14 @@ QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& 
         }
         else if (interfaceName == "several")
         {
-            interfaceIntroduction.append("// There ports are contained in many interfaces\n");       
+            interfaceIntroduction.append("// There ports are contained in many interfaces\n");
         }
         else
         {
             interfaceIntroduction.append("// Interface: " + interfaceName + "\n");
         }
-    }	
-    
+    }
+
     // Begin first introduction on own line.
     if (previousInteface.isEmpty())
     {
@@ -254,72 +254,142 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
 QString ComponentInstanceVerilogWriter::getInOutAssignment(QSharedPointer<MetaPort> mPort) const
 {
     // Search for the first port assignment with a wire.
-    QSharedPointer<MetaPortAssignment> mpa;
 
-    foreach (QSharedPointer<MetaPortAssignment> inspect, mPort->upAssignments_)
+    QStringList assignmentRows;
+    for (auto assignment : mPort->upAssignments_)
     {
-        if (inspect->wire_)
+        QSharedPointer<MetaWire> assignmentWire = assignment->wire_;
+
+        if (assignmentWire)
         {
-            mpa = inspect;
-            break;
+            if (assignmentWire->hierPorts_.size() < 1)
+            {
+                assignmentRows.append(assignment->wire_->name_);
+            }
+            else
+            {
+                QString portName = mPort->port_->name();
+
+                QPair<QSharedPointer<MetaPort>, QSharedPointer<MetaPortAssignment> > hierarchicalPortAndAssignment
+                    = getConnectedHierarchicalPort(mPort, assignment, assignmentWire);
+
+                QSharedPointer<MetaPort> hierarchicalPort = hierarchicalPortAndAssignment.first;
+                QSharedPointer<MetaPortAssignment> hierarchicalAssignment = hierarchicalPortAndAssignment.second;
+                if (hierarchicalPort && hierarchicalAssignment)
+                {
+                    QString bounds;
+
+                    // If the assigned bounds are the same, different notation is needed.
+                    if (hierarchicalAssignment->physicalBounds_.first ==
+                        hierarchicalAssignment->physicalBounds_.second)
+                    {
+                        // If the vector bounds are not the same, use index instead.
+                        if (hierarchicalPort->vectorBounds_.first != hierarchicalPort->vectorBounds_.second)
+                        {
+                            bounds = "[<left>]";
+
+                            bounds.replace("<left>", hierarchicalAssignment->physicalBounds_.first);
+                        }
+
+                        // Else no bounds are needed.
+                    }
+                    else
+                    {
+                        // If the assigned bounds differ, they must be generated.
+                        bounds = "[<left>:<right>]";
+
+                        bounds.replace("<left>", hierarchicalAssignment->physicalBounds_.first);
+                        bounds.replace("<right>", hierarchicalAssignment->physicalBounds_.second);
+                    }
+
+                    QString portAssignment(hierarchicalPort->port_->name() + bounds);
+                    assignmentRows.append(portAssignment);
+                }
+            }
         }
     }
 
-    // No wiring means no assignment.
-    if (!mpa)
+    if (assignmentRows.isEmpty())
     {
-        return "";
-    }
-
-    // If its not hierarchical, the name of the wire shall suffice.
-    if (mpa->wire_->hierPorts_.size() < 1)
-    {
-        return mpa->wire_->name_;
-    }
-
-    // If it is hierarchical, use the corresponding hierarchical port assignment instead.
-    QSharedPointer<MetaPort> hierPort = mpa->wire_->hierPorts_.first();
-    QSharedPointer<MetaPortAssignment> hierMpa;
-
-    // Find corresponding assignment: It must use the same wire to match.
-    foreach (QSharedPointer<MetaPortAssignment> theirAssignment, hierPort->downAssignments_)
-    {
-        if (theirAssignment->wire_ == mpa->wire_)
-        {
-            hierMpa = theirAssignment;
-            break;
-        }
-    }
-
-    // If none exists, no can do.
-    if (!hierMpa)
-    {
-        return "";
-    }
-
-    QString bounds;
-
-    // If the assigned bounds are the same, different notation is needed.
-    if (hierMpa->physicalBounds_.first == hierMpa->physicalBounds_.second)
-    {
-        // If the vector bounds are not the same, use index instead.
-        if (hierPort->vectorBounds_.first != hierPort->vectorBounds_.second)
-        {
-            bounds = "[<left>]";
-
-            bounds.replace("<left>", hierMpa->physicalBounds_.first);
-        }
-
-        // Else no bounds are needed.
+        return QString("");
     }
     else
     {
-        // If the assigned bounds differ, they must be generated.
-        bounds = "[<left>:<right>]";
+        return assignmentRows.first();
+    }
+}
 
-        bounds.replace("<left>", hierMpa->physicalBounds_.first);
-        bounds.replace("<right>", hierMpa->physicalBounds_.second);
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::getConnectedHierarchicalPort()
+//-----------------------------------------------------------------------------
+QPair<QSharedPointer<MetaPort>, QSharedPointer<MetaPortAssignment> > ComponentInstanceVerilogWriter::
+    getConnectedHierarchicalPort(QSharedPointer<MetaPort> metaPort,
+        QSharedPointer<MetaPortAssignment> metaAssignment, QSharedPointer<MetaWire> assignmentWire) const
+{
+    QPair<QSharedPointer<MetaPort>, QSharedPointer<MetaPortAssignment> > portAssignment;
+
+    QString portName = metaPort->port_->name();
+
+    QPair<QString, QString> portBounds = metaAssignment->logicalBounds_;
+    qint64 portLeft = portBounds.first.toLongLong();
+    qint64 portRight = portBounds.second.toLongLong();
+
+    if (portRight < portLeft)
+    {
+        qint64 temporary = portLeft;
+        portLeft = portRight;
+        portRight = temporary;
     }
 
-    return hierPort->port_->name() + bounds;
+    qint64 portWidth = abs(portLeft - portRight) + 1;
+
+    for (auto comparisonPort : assignmentWire->hierPorts_)
+    {
+        QString comparisonName = comparisonPort->port_->name();
+
+        QSharedPointer<MetaPortAssignment> comparisonAssignment =
+            getHierarchicalPortAssignmentConnectedToWire(comparisonPort, assignmentWire);
+        if (comparisonAssignment)
+        {
+            QPair<QString, QString> comparisonBounds = comparisonAssignment->logicalBounds_;
+
+            qint64 comparisonLeft = comparisonBounds.first.toLongLong();
+            qint64 comparisonRight = comparisonBounds.second.toLongLong();
+            if (comparisonRight < comparisonLeft)
+            {
+                qint64 temporary = comparisonLeft;
+                comparisonLeft = comparisonRight;
+                comparisonRight = temporary;
+            }
+
+            qint64 comparisonWidth = abs(comparisonLeft - comparisonRight) + 1;
+
+            if (portLeft >= comparisonLeft && portLeft <= comparisonRight && portWidth <= comparisonWidth)
+            {
+                portAssignment.first = comparisonPort;
+                portAssignment.second = comparisonAssignment;
+
+                break;
+            }
+        }
+    }
+
+    return portAssignment;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::portIsConnectedToWire()
+//-----------------------------------------------------------------------------
+QSharedPointer<MetaPortAssignment> ComponentInstanceVerilogWriter::getHierarchicalPortAssignmentConnectedToWire(
+    QSharedPointer<MetaPort> hierarchicalPort, QSharedPointer<MetaWire> assignedWire) const
+{
+    for (auto comparisonAssignment : hierarchicalPort->downAssignments_)
+    {
+        if (comparisonAssignment->wire_ == assignedWire)
+        {
+            return comparisonAssignment;
+        }
+    }
+
+    return QSharedPointer<MetaPortAssignment>();
 }
