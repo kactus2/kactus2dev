@@ -557,7 +557,7 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
 
     const bool consoleVisible = settings.value("ScriptVisibility", true).toBool();
     visibilities_.insert(TabDocument::SCRIPTWINDOW, consoleVisible);
-    scriptConsoleDock_->toggleViewAction()->setChecked(connectionVisible);
+    scriptConsoleDock_->toggleViewAction()->setChecked(consoleVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -973,7 +973,7 @@ void DockWidgetHandler::connectVisibilityControls()
     connect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)), Qt::UniqueConnection);
     connect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onVendorExtensionVisibilityAction(bool)), Qt::UniqueConnection);
+        this, SLOT(onScriptConsoleVisibilityAction(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1000,7 +1000,7 @@ void DockWidgetHandler::disconnectVisibilityControls()
     disconnect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
         this, SLOT(onVendorExtensionVisibilityAction(bool)));
     disconnect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onVendorExtensionVisibilityAction(bool)));
+        this, SLOT(onScriptConsoleVisibilityAction(bool)));
 }
 
 //-----------------------------------------------------------------------------
@@ -1105,6 +1105,14 @@ void DockWidgetHandler::onInstanceAction( bool show )
 void DockWidgetHandler::onDesignParametersAction(bool show)
 {
     emit adjustVisibilityInWindow(TabDocument::DESIGNPARAMETERSWINDOW, show);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::onScriptConsoleVisibilityAction()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::onScriptConsoleVisibilityAction(bool show)
+{
+    emit adjustVisibilityInWindow(TabDocument::SCRIPTWINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
