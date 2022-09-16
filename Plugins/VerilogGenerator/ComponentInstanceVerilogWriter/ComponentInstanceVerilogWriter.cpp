@@ -234,7 +234,7 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
     {
         if (mPort->port_->getDirection() == DirectionTypes::IN)
         {
-            QRegularExpression re(R"""(^(\b((\d+'(s|S){0,1}(b|h|o|d|B|H|O|D))[0-9xzXZa-fA-F_]+))|(\B(('(s|S){0,1}(b|h|o|d|B|H|O|D))[0-9xzXZa-fA-F_]+))|(\b([0-9_])+)$)""");
+            QRegularExpression re(R"""(^(\b((\d+'(s|S){0,1}(b|h|o|d|B|H|O|D))[0-9xzXZa-fA-F_]+))|(\B(('(s|S){0,1}(b|h|o|d|B|H|O|D))[0-9xzXZa-fA-F_]+))$)""");
             QRegularExpressionMatch match = re.match(mPort->port_->getDefaultValue().trimmed());
             if (match.hasMatch()) {
                 // If it's canonical Number Literals, keep it as is.
