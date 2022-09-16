@@ -247,10 +247,10 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
                 bool boundsFirstOk = false;
                 bool boundsSecondOk = false;
                 bool defaultValueOk = false;
-                unsigned long boundsFirst = mPort->vectorBounds_.first.toULong(&boundsFirstOk);
-                unsigned long boundsSecond = mPort->vectorBounds_.second.toULong(&boundsSecondOk);
-                unsigned long defaultValue = mPort->defaultValue_.toULong(&defaultValueOk);
-                unsigned long vectorWidth = 0;
+                qint64 boundsFirst(mPort->vectorBounds_.first.toULongLong(&boundsFirstOk));
+                qint64 boundsSecond(mPort->vectorBounds_.second.toULongLong(&boundsSecondOk));
+                qint64 defaultValue(mPort->defaultValue_.toULongLong(&defaultValueOk));
+                qint64 vectorWidth(0);
                 if (defaultValueOk)
                 {
                     if (mPort->vectorBounds_.first == mPort->vectorBounds_.second)
@@ -262,12 +262,12 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
                     if (boundsFirstOk && boundsSecondOk && boundsFirst > boundsSecond)
                     {
                         // Calculate width based on legal bounds.
-                        vectorWidth = boundsFirst - boundsSecond + 1;
+                        vectorWidth = abs(boundsFirst - boundsSecond) + 1;
                     }
 
                     if (vectorWidth > 0)
                     {
-                        //At this point, the conversion is successful.
+                        // At this point, the conversion is successful.
                         if (vectorWidth < 8)
                         {
                             // If the width is less than 8 bits, use the 'b format
