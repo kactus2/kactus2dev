@@ -17,6 +17,8 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
+#include <QRegularExpression>
+
 namespace
 {
     const int ALL_BITS = -1; //! Indicator for connecting all bits in a connection.
@@ -232,6 +234,13 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
     {
         if (mPort->port_->getDirection() == DirectionTypes::IN)
         {
+            QRegularExpression re(R"""(^(\b((\d+'(s|S){0,1}(b|h|o|d|B|H|O|D))[0-9xzXZa-fA-F_]+))|(\B(('(s|S){0,1}(b|h|o|d|B|H|O|D))[0-9xzXZa-fA-F_]+))|(\b([0-9_])+)$)""");
+            QRegularExpressionMatch match = re.match(mPort->port_->getDefaultValue().trimmed());
+            if (match.hasMatch()) {
+                // If it's canonical Number Literals, keep it as is.
+                return mPort->port_->getDefaultValue();
+            }
+            // If it still doesn't work, use the calculated value.
             return mPort->defaultValue_;
         }
 
