@@ -260,6 +260,15 @@ QString ComponentInstanceVerilogWriter::getDefaultValueAssignment(QSharedPointer
         qint64 defaultValue(mPort->defaultValue_.toULongLong(&defaultValueOk));
         qint64 vectorWidth(0);
 
+        if (mPort->vectorBounds_.first.isEmpty() && mPort->vectorBounds_.second.isEmpty())
+        {
+            // Missing boundsFirst and boundsSecond, the vectorWidth should be 1.
+            boundsFirst = 0;
+            boundsSecond = 0;
+            boundsFirstOk = true;
+            boundsSecondOk = true;
+        }
+
         if (boundsFirstOk && boundsSecondOk && defaultValueOk)
         {
             vectorWidth = abs(boundsFirst - boundsSecond) + 1;
@@ -267,15 +276,15 @@ QString ComponentInstanceVerilogWriter::getDefaultValueAssignment(QSharedPointer
             if (vectorWidth > 0)
             {
                 QString numberFormat(QLatin1String("'b"));
-                int numberOfBits = 2;
+                int numberBase = 2;
 
                 if (vectorWidth >= 8)
                 {
                     numberFormat = QLatin1String("'h");
-                    numberOfBits = 16;
+                    numberBase = 16;
                 }
 
-                return QString::number(vectorWidth) + numberFormat + QString::number(defaultValue, numberOfBits);
+                return QString::number(vectorWidth) + numberFormat + QString::number(defaultValue, numberBase);
             }
         }
 
