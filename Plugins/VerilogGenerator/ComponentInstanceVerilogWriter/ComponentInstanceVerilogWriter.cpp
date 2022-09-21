@@ -232,60 +232,7 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
     // Use the default value of port, if no assignments exist.
     if (mPort->upAssignments_.size() < 1)
     {
-        if (mPort->port_->getDirection() == DirectionTypes::IN)
-        {
-            QRegularExpression re(R"""(^(\b((\d+'(s|S){0,1}(b|h|o|d|B|H|O|D))[0-9xzXZa-fA-F_]+))|(\B(('(s|S){0,1}(b|h|o|d|B|H|O|D))[0-9xzXZa-fA-F_]+))$)""");
-            QRegularExpressionMatch match = re.match(mPort->port_->getDefaultValue().trimmed());
-            if (match.hasMatch()) {
-                // If it's canonical Number Literals, keep it as is.
-                return mPort->port_->getDefaultValue();
-            }
-            else
-            {
-                // Get the port width by mPort->vectorBounds_
-                // NOTE: mPort->width_ and mPort->vectorBounds_ may empty
-                bool boundsFirstOk = false;
-                bool boundsSecondOk = false;
-                bool defaultValueOk = false;
-                qint64 boundsFirst(mPort->vectorBounds_.first.toULongLong(&boundsFirstOk));
-                qint64 boundsSecond(mPort->vectorBounds_.second.toULongLong(&boundsSecondOk));
-                qint64 defaultValue(mPort->defaultValue_.toULongLong(&defaultValueOk));
-                qint64 vectorWidth(0);
-                if (defaultValueOk)
-                {
-                    if (mPort->vectorBounds_.first == mPort->vectorBounds_.second)
-                    {
-                        // If they are the same, the vector width is 1.
-                        vectorWidth = 1;
-                    }
-                    else
-                    if (boundsFirstOk && boundsSecondOk && boundsFirst > boundsSecond)
-                    {
-                        // Calculate width based on legal bounds.
-                        vectorWidth = abs(boundsFirst - boundsSecond) + 1;
-                    }
-
-                    if (vectorWidth > 0)
-                    {
-                        // At this point, the conversion is successful.
-                        if (vectorWidth < 8)
-                        {
-                            // If the width is less than 8 bits, use the 'b format
-                            return QString::number(vectorWidth) + "'b" + QString::number(defaultValue, 2);
-                        }
-                        else
-                        {
-                            // If the width is greater than 8 bits, use the 'h format
-                            return QString::number(vectorWidth) + "'h" + QString::number(defaultValue, 16);
-                        }
-                    }
-                }
-            }
-            // If it still doesn't work, use the calculated value.
-            return mPort->defaultValue_;
-        }
-
-        return "";
+        return getDefaultValueAssignment(mPort);
     }
 
     // In case of an inout port, connect it directly the first encountered wire.
@@ -296,6 +243,46 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
 
     return VerilogSyntax::legalizeName(instance_->getComponentInstance()->getInstanceName() + "_"
         + mPort->port_->name());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::getDefaultValueAssignment()
+//-----------------------------------------------------------------------------
+QString ComponentInstanceVerilogWriter::getDefaultValueAssignment(QSharedPointer<MetaPort> mPort) const
+{
+    if (mPort->port_->getDirection() == DirectionTypes::IN)
+    {
+        bool boundsFirstOk = false;
+        bool boundsSecondOk = false;
+        bool defaultValueOk = false;
+        qint64 boundsFirst(mPort->vectorBounds_.first.toULongLong(&boundsFirstOk));
+        qint64 boundsSecond(mPort->vectorBounds_.second.toULongLong(&boundsSecondOk));
+        qint64 defaultValue(mPort->defaultValue_.toULongLong(&defaultValueOk));
+        qint64 vectorWidth(0);
+
+        if (boundsFirstOk && boundsSecondOk && defaultValueOk)
+        {
+            vectorWidth = abs(boundsFirst - boundsSecond) + 1;
+
+            if (vectorWidth > 0)
+            {
+                QString numberFormat(QLatin1String("'b"));
+                int numberOfBits = 2;
+
+                if (vectorWidth >= 8)
+                {
+                    numberFormat = QLatin1String("'h");
+                    numberOfBits = 16;
+                }
+
+                return QString::number(vectorWidth) + numberFormat + QString::number(defaultValue, numberOfBits);
+            }
+        }
+
+        return mPort->defaultValue_;
+    }
+
+    return "";
 }
 
 //-----------------------------------------------------------------------------

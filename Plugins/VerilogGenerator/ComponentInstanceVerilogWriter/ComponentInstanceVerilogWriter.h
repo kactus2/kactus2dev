@@ -134,6 +134,22 @@ private:
     */
     QString assignmentForInstancePort(QSharedPointer<MetaPort> mPort) const;
 
+    /*!
+     *  Get the default value assignment for a port.
+     *
+     *      @param [in] mPort   The selected port.
+     *
+     *      @return The default value assignment of the selected port.
+     */
+    QString getDefaultValueAssignment(QSharedPointer<MetaPort> mPort) const;
+
+    /*!
+     *  Get the connection assignment for an INOUT port.
+     *
+     *      @param [in] mPort   The selected INOUT port.
+     *
+     *      @return Verilog description of the port assignment.
+     */
     QString getInOutAssignment(QSharedPointer<MetaPort> mPort) const;
 
     /*!
