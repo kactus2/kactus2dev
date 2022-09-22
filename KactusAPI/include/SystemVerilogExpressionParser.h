@@ -120,6 +120,16 @@ protected:
     */
     unsigned int operatorPrecedence(QString oper) const;
 
+    /*!
+    *  Checks if the given operator has higher precedence.
+    *
+    *      @param [in] operStack  The stack operator string.
+    *      @param [in] operCurr   The current operator string.
+    *
+    *      @return True, if the operator has higher precedence.
+    */
+    bool isPrecedenceOperator(QString operStack, QString operCurr) const;
+
 private:
 
     /*!
@@ -177,6 +187,18 @@ private:
      *      @return True, if the token is a binary operator, otherwise false.
      */
     bool isBinaryOperator(QString const& token) const;
+
+    /*!
+     *  Solves a trinary operation.
+     *
+     *      @param [in] operation   The operation to solve.
+     *      @param [in] leftTerm    The first term of the operation.
+     *      @param [in] middleTerm   The second term of the operation.
+     *      @param [in] rightTerm   The third term of the operation.
+     *
+     *      @return The result of the operation.
+     */
+    QString solveTrinary(QString const& operation, QString const& leftTerm, QString const& middleTerm, QString const& rightTerm) const;
 
     /*!
      *  Solves a binary operation.
