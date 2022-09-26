@@ -426,8 +426,7 @@ QString SystemVerilogExpressionParser::solveTrinary(QString const& operation, QS
 {
     if (isLiteral(leftTerm) && operation.compare(QLatin1String(":")) == 0 )
     {
-        qreal leftOperand = leftTerm.toDouble();
-        if (leftOperand > 0)
+        if (leftTerm.toDouble() != 0)
         {
             return middleTerm;
         }
