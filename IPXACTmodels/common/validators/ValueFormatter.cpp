@@ -35,15 +35,15 @@ QString ValueFormatter::format(QString const& value, int base) const
 
     else if (base == 2)
     {
-        return QStringLiteral("'b") % QString::number(value.toInt(), 2);
+        return QStringLiteral("'b") % QString::number(value.toLongLong(), 2);
     }
     else if (base == 8)
     {
-        return QStringLiteral("'o") % QString::number(value.toInt(), 8);
+        return QStringLiteral("'o") % QString::number(value.toLongLong(), 8);
     }
     else if (base == 16)
     {
-        return QStringLiteral("'h") % QString::number(value.toInt(), 16);
+        return QStringLiteral("'h") % QString::number(value.toLongLong(), 16);
     }
     else
     {

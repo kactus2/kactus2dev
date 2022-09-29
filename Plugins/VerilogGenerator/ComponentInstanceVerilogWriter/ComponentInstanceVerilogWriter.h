@@ -178,6 +178,29 @@ private:
         QSharedPointer<MetaPort> hierarchicalPort,
         QSharedPointer<MetaWire> assignedWire) const;
 
+    //! Data for the written default value.
+    struct DefaultValueData
+    {
+        //! The vector width.
+        int bitvalue;
+
+        //! Base of the value.
+        int base;
+
+        //! Flag for signed value.
+        bool isSigned;
+    };
+
+    /*!
+     *  Get the data required for writing the default value of the selected port.
+     *
+     *      @param [in] portDefaultValue    The default value.
+     *      @param [in] port                The selected port.
+     *
+     *      @return Data required for writing the default value.
+     */
+    DefaultValueData getDefaultValueBits(QString const& portDefaultValue, QSharedPointer<MetaPort> port) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

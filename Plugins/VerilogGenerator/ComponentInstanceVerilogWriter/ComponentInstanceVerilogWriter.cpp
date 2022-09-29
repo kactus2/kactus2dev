@@ -252,37 +252,190 @@ QString ComponentInstanceVerilogWriter::getDefaultValueAssignment(QSharedPointer
 {
     if (mPort->port_->getDirection() == DirectionTypes::IN)
     {
-        bool boundsFirstOk = false;
-        bool boundsSecondOk = false;
         bool defaultValueOk = false;
-        qint64 boundsFirst(mPort->vectorBounds_.first.toULongLong(&boundsFirstOk));
-        qint64 boundsSecond(mPort->vectorBounds_.second.toULongLong(&boundsSecondOk));
-        qint64 defaultValue(mPort->defaultValue_.toULongLong(&defaultValueOk));
-        qint64 vectorWidth(0);
-
-        if (boundsFirstOk && boundsSecondOk && defaultValueOk)
+        qint64 calculatedDefaultValue(mPort->defaultValue_.toULongLong(&defaultValueOk));
+        if (!defaultValueOk)
         {
-            vectorWidth = abs(boundsFirst - boundsSecond) + 1;
-
-            if (vectorWidth > 0)
-            {
-                QString numberFormat(QLatin1String("'b"));
-                int numberOfBits = 2;
-
-                if (vectorWidth >= 8)
-                {
-                    numberFormat = QLatin1String("'h");
-                    numberOfBits = 16;
-                }
-
-                return QString::number(vectorWidth) + numberFormat + QString::number(defaultValue, numberOfBits);
-            }
+            return "";
         }
 
-        return mPort->defaultValue_;
+        QString defaultValue = mPort->port_->getDefaultValue();
+
+        ComponentInstanceVerilogWriter::DefaultValueData defaultValueBasePair =
+            getDefaultValueBits(defaultValue, mPort);
+
+        int vectorWidth = defaultValueBasePair.bitvalue;
+        int base = defaultValueBasePair.base;
+
+        QString numberFormatLetter(QLatin1String("d"));
+        if (base == 2)
+        {
+            numberFormatLetter = QLatin1String("b");
+        }
+        else if (base == 8)
+        {
+            numberFormatLetter = QLatin1String("o");
+        }
+        else if (base == 16)
+        {
+            numberFormatLetter = QLatin1String("h");
+        }
+
+        QString vectorWidthString = "";
+        if (vectorWidth != 0)
+        {
+            vectorWidthString = QString::number(vectorWidth);
+        }
+
+        QString portName = mPort->port_->name();
+
+        QString numberFormat("");
+        if (vectorWidth != 0 || numberFormatLetter != QStringLiteral("d"))
+        {
+            numberFormat.append("'");
+            if (defaultValueBasePair.isSigned)
+            {
+                numberFormat.append("s");
+            }
+            
+            numberFormat.append(numberFormatLetter);
+        }
+
+        return vectorWidthString + numberFormat + QString::number(calculatedDefaultValue, base);
     }
 
     return "";
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::getDefaultValueBits()
+//-----------------------------------------------------------------------------
+ComponentInstanceVerilogWriter::DefaultValueData ComponentInstanceVerilogWriter::getDefaultValueBits(
+    QString const& portDefaultValue, QSharedPointer<MetaPort> port) const
+{
+    QString portName = port->port_->name();
+
+    bool calculateBitValue = true;
+    quint64 bitValue = 0;
+    int base = 0;
+    bool isSigned = false;
+
+    QRegularExpression numberExpression("\\d+");
+    QRegularExpression digitExpression("(\\w|')+");
+
+    QStringList matchList;
+
+    QRegularExpressionMatchIterator matchIterator = digitExpression.globalMatch(portDefaultValue);
+    while (matchIterator.hasNext())
+    {
+        QRegularExpressionMatch match = matchIterator.next();
+        matchList.append(match.captured());
+    }
+
+    for (auto matchedWord : matchList)
+    {
+        if (matchedWord.contains("'"))
+        {
+            int markIndex = matchedWord.indexOf("'");
+
+            QString bitSideString = matchedWord.left(markIndex);
+            if (!bitSideString.isEmpty())
+            {
+                quint64 bitSide = bitSideString.toULongLong();
+                if (bitSide > bitValue)
+                {
+                    bitValue = bitSide;
+                    calculateBitValue = false;
+                }
+            }
+
+            QString format = matchedWord.mid(markIndex + 1, 2).toLower();
+            if (format.size() == 2)
+            {
+                bool newValueIsSigned = false;
+
+                int newBase = 0;
+                QString baseString = format.at(0);
+                if (baseString == ("s"))
+                {
+                    baseString = format.at(1);
+                    newValueIsSigned = true;
+                }
+
+                if (baseString == "b")
+                {
+                    newBase = 2;
+                }
+                else if (baseString == "o")
+                {
+                    newBase = 8;
+                }
+                else if (baseString == "d")
+                {
+                    newBase = 10;
+                }
+                else if (baseString == "h")
+                {
+                    newBase = 16;
+                }
+
+                if (newBase > base)
+                {
+                    base = newBase;
+                    isSigned = newValueIsSigned;
+                }
+            }
+        }
+        else
+        {
+            QRegularExpressionMatch match = numberExpression.match(matchedWord);
+            if (match.captured() == matchedWord && base < 10)
+            {
+                base = 10;
+                calculateBitValue = false;
+            }
+        }
+    }
+
+    if (calculateBitValue)
+    {
+        bool boundsFirstOk = false;
+        bool boundsSecondOk = false;
+        qint64 boundsFirst(port->vectorBounds_.first.toULongLong(&boundsFirstOk));
+        qint64 boundsSecond(port->vectorBounds_.second.toULongLong(&boundsSecondOk));
+
+        quint64 vectorWidth(0);
+
+        if (boundsFirstOk && boundsSecondOk)
+        {
+            vectorWidth = abs(boundsFirst - boundsSecond) + 1;
+        }
+
+        bitValue = vectorWidth;
+    }
+
+    if (base == 0)
+    {
+        if (bitValue < 8)
+        {
+            base = 2;
+        }
+        else if (bitValue < 16)
+        {
+            base = 10;
+        }
+        else
+        {
+            base = 16;
+        }
+    }
+
+    ComponentInstanceVerilogWriter::DefaultValueData defaultData;
+    defaultData.bitvalue = bitValue;
+    defaultData.base = base;
+    defaultData.isSigned = isSigned;
+
+    return defaultData;
 }
 
 //-----------------------------------------------------------------------------
