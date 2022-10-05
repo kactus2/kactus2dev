@@ -38,6 +38,9 @@ namespace VerilogSyntax
     //! Regular expression for capturing range terms.
     const QRegularExpression CAPTURING_RANGE("\\[(.*?)\\s*[:]\\s*(.*?)\\]");
 
+    //! Pattern for ternary operator left part.
+    const QRegularExpression TERNARY_LEFT("\\?(?:[^?:]+|(?R))*+\\:");
+
     /*  Identifiers e.g. port names may contain characters a-z, A-Z, numbers, underscores and dollar signs.
      *  Multiple identifiers declared at once must be comma separated.
      */

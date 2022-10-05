@@ -332,8 +332,28 @@ QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& boun
 
     if (!bounds.isEmpty())
     {
-        leftBound = VerilogSyntax::CAPTURING_RANGE.match(bounds).captured(1);
-        rightBound = VerilogSyntax::CAPTURING_RANGE.match(bounds).captured(2);
+        // If there is a ternary operator, special handling is required.
+        QRegularExpressionMatch matchTernary = VerilogSyntax::TERNARY_LEFT.match(bounds);
+        if (matchTernary.hasMatch())
+        {
+            QString tempBounds(bounds);
+            QString placeholder("");
+            for (int i = 0; i <= matchTernary.lastCapturedIndex(); ++i)
+            {
+                QString captured = matchTernary.captured(i);
+                // Removed captured text.
+                placeholder.resize(captured.length(), ' ');
+                tempBounds.replace(captured, placeholder);
+            }
+            int boundsPos = tempBounds.lastIndexOf(QLatin1String(":"));
+            leftBound = bounds.left(boundsPos).remove('[');
+            rightBound = bounds.right(bounds.length() - boundsPos - 1).remove(']');
+        }
+        else
+        {
+            leftBound = VerilogSyntax::CAPTURING_RANGE.match(bounds).captured(1);
+            rightBound = VerilogSyntax::CAPTURING_RANGE.match(bounds).captured(2);
+        }
 
         bool leftValid = false;
         parser_->parseExpression(leftBound, &leftValid);
