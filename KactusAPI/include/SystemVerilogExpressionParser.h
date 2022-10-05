@@ -27,10 +27,10 @@ class KACTUS2_API SystemVerilogExpressionParser : public ExpressionParser
 public:
 
 	//! The constructor.
-	SystemVerilogExpressionParser();
+	SystemVerilogExpressionParser() = default;
 
 	//! The destructor.
-    virtual ~SystemVerilogExpressionParser() = default;
+    ~SystemVerilogExpressionParser() override = default;
 
     // Disable copying.
     SystemVerilogExpressionParser(SystemVerilogExpressionParser const& rhs) = delete;
@@ -118,17 +118,7 @@ protected:
     *
     *      @return The precedence value where bigger value has higher precedence.
     */
-    unsigned int operatorPrecedence(QString oper) const;
-
-    /*!
-    *  Checks if the given operator has higher precedence.
-    *
-    *      @param [in] operStack  The stack operator string.
-    *      @param [in] operCurr   The current operator string.
-    *
-    *      @return True, if the operator has higher precedence.
-    */
-    bool isPrecedenceOperator(QString operStack, QString operCurr) const;
+    unsigned int operatorPrecedence(QString const& oper) const;
 
 private:
 
@@ -150,7 +140,7 @@ private:
      *
      *      @return The solved result.
      */
-    QString solveRPN(QVector<QString> rpn, bool* validExpression) const;
+    QString solveRPN(QVector<QString> const& rpn, bool* validExpression) const;
 
     /*!
      *  Checks if the given expression is a string.
@@ -189,16 +179,24 @@ private:
     bool isBinaryOperator(QString const& token) const;
 
     /*!
-     *  Solves a trinary operation.
+     *  Checks if the given token is a ternary operator.
      *
-     *      @param [in] operation   The operation to solve.
-     *      @param [in] leftTerm    The first term of the operation.
-     *      @param [in] middleTerm   The second term of the operation.
-     *      @param [in] rightTerm   The third term of the operation.
+     *      @param [in] expression   The token to check.
+     *
+     *      @return True, if the token is a ternary operator, otherwise false.
+     */
+    bool isTernaryOperator(QString const& token) const;
+
+    /*!
+     *  Solves a Ternary operation.
+     *
+     *      @param [in] condition   The selecting condition of the ternary operation.
+     *      @param [in] trueCase    The value for true condition.
+     *      @param [in] falseCase   The value for false condition.
      *
      *      @return The result of the operation.
      */
-    QString solveTrinary(QString const& operation, QString const& leftTerm, QString const& middleTerm, QString const& rightTerm) const;
+    QString solveTernary( QString const& condition, QString const& trueCase, QString const& falseCase) const;
 
     /*!
      *  Solves a binary operation.
@@ -240,14 +238,13 @@ private:
     QString solveSqrt(QString const& value) const;
 
     /*!
-     *  Get the precision used from the terms.
+     *  Get the precision used from the term.
      *
-     *      @param [in] firstTerm   The first term of the operation.
-     *      @param [in] secondTerm  The second term of the operation.
+     *      @param [in] term   The first term of the operation.
      *
-     *      @return The precision of the decimal used in the terms of the operation.
+     *      @return The precision of the decimal used in the given term.
      */
-    int getDecimalPrecision(QString const& term) const;
+    int precisionOf(QString const& term) const;
 
     /*!
      *  Get the base for a given number.
@@ -256,7 +253,7 @@ private:
      *
      *      @return The base for the selected number. Either 2, 8, 10 or 16.
      */
-    int getBaseForNumber(QString const& constantNumber) const;
+    int baseOf(QString const& constantNumber) const;
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

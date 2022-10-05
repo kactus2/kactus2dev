@@ -29,11 +29,11 @@ namespace
         SystemVerilogSyntax::BOOLEAN_VALUE % QStringLiteral("|") %
         SystemVerilogSyntax::STRING_LITERAL);
 
-    const QRegularExpression BINARY_OPERATOR(QStringLiteral("\\*\\*|[*/%]|[+-]|<<|>>|<=?|>=?|!==?|===?|[&|]{1,2}|[\\^]|[$]pow"));
+    const QRegularExpression BINARY_OPERATOR(QStringLiteral("[/%^+-]|<<|>>|<=?|>=?|!==?|===?|[&|*]{1,2}|[$]pow"));
 
     const QRegularExpression UNARY_OPERATOR(QStringLiteral("[$]clog2|[$]exp|[$]sqrt|~"));
 
-    const QRegularExpression TRINARY_OPERATOR(QStringLiteral("\\?|:"));
+    const QRegularExpression TERNARY_OPERATOR(QStringLiteral("[?:]"));
 
     const QChar OPEN_PARENTHESIS(QLatin1Char('('));
     const QChar CLOSE_PARENTHESIS(QLatin1Char(')'));
@@ -44,21 +44,13 @@ namespace
     const QString OPEN_ARRAY_STRING(QStringLiteral("{"));
     const QString CLOSE_ARRAY_STRING(QStringLiteral("}"));
 
-    const QString TRINARY_QUESTION_STRING(QStringLiteral("?"));
-    const QString TRINARY_COLON_STRING(QStringLiteral(":"));
+    const QString TERNARY_QUESTION_STRING(QStringLiteral("?"));
+    const QString TERNARY_COLON_STRING(QStringLiteral(":"));
 
     const QRegularExpression ANY_OPERATOR(
         BINARY_OPERATOR.pattern() % QStringLiteral("|") %
         UNARY_OPERATOR.pattern() % QStringLiteral("|") %
-        TRINARY_OPERATOR.pattern());
-}
-
-//-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::SystemVerilogExpressionParser()
-//-----------------------------------------------------------------------------
-SystemVerilogExpressionParser::SystemVerilogExpressionParser()
-{
-
+        TERNARY_OPERATOR.pattern());
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +88,7 @@ int SystemVerilogExpressionParser::baseForExpression(QString const& expression) 
     {
         if (isLiteral(token))
         {
-            greatestBase = qMax(greatestBase, getBaseForNumber(token));
+            greatestBase = qMax(greatestBase, baseOf(token));
         }
         else if (isSymbol(token))
         {
@@ -145,13 +137,10 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
             QString operation = operatorMatch.captured();
             while (stack.isEmpty() == false &&
                 stack.last() != OPEN_PARENTHESIS_STRING &&
-                isPrecedenceOperator(stack.last(), operation))
+                stack.last() != TERNARY_QUESTION_STRING &&
+                operatorPrecedence(stack.last()) >= operatorPrecedence(operation))
             {
                 output.append(stack.takeLast());
-                if (output.last() == TRINARY_COLON_STRING)
-                {
-                    output.append(TRINARY_QUESTION_STRING);
-                }
             }
 
             stack.append(operation);
@@ -173,7 +162,7 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
                 output.append(stack.takeLast());
             }
 
-            if (stack.size() != 0)
+            if (stack.isEmpty() == false)
             {
                 stack.removeLast(); //!< Remove open parenthesis.
             }
@@ -237,17 +226,7 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
 
     while (stack.isEmpty() == false)
     {
-        if (output.isEmpty() == false &&
-            output.last() == TRINARY_QUESTION_STRING &&
-            stack.isEmpty() == false &&
-            stack.last() == TRINARY_QUESTION_STRING )
-        {
-            stack.takeLast();
-        }
-        else
-        {
-            output.append(stack.takeLast());
-        }
+        output.append(stack.takeLast());
     }
 
     return output;
@@ -256,119 +235,120 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveRPN()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::solveRPN(QVector<QString> rpn, bool* validExpression) const
+QString SystemVerilogExpressionParser::solveRPN(QVector<QString> const& rpn, bool* validExpression) const
 {
-    QStringList resultStack;
+    QStringList result;
     bool isWellFormed = true;
+    int ternaryCount = 0;
 
-    for (int index = 0; index < rpn.size(); ++index)
+    for (QString const& token : rpn)
     {
-        QString const& token = rpn[index];
-        if (isBinaryOperator(token))
+        if (isUnaryOperator(token))
         {
-            if (resultStack.size() < 2)
+            if (result.isEmpty())
             {
                 isWellFormed = false;
-                break;
-            }
-
-            resultStack.append(solveBinary(token, resultStack.takeLast(), resultStack.takeLast()));
-        }
-        else if (isUnaryOperator(token))
-        {
-            if (resultStack.isEmpty())
-            {
-                isWellFormed = false;
-                break;
-            }
-
-            resultStack.append(solveUnary(token, resultStack.takeLast()));
-        }
-        else if (token.compare(TRINARY_QUESTION_STRING) == 0)
-        {
-            // Syntax error: trinary ? without : at TRINARY_QUESTION_STRING.
-            isWellFormed = false;
-            break;
-        }
-        else if (token.compare(TRINARY_COLON_STRING) == 0)
-        {
-            if (index + 1 < rpn.size() && rpn[index + 1].compare(TRINARY_QUESTION_STRING) == 0)
-            {
-                // Move index to next token.
-                index++;
             }
             else
             {
-                // Syntax error: trinary : without ? at TRINARY_COLON_STRING.
-                isWellFormed = false;
-                break;
+                result.append(solveUnary(token, result.takeLast()));
             }
-
-            if (resultStack.size() < 3)
+        }
+        else if (isBinaryOperator(token))
+        {
+            if (result.size() < 2)
             {
-                // Syntax error: missing parameters at TRINARY_COLON_STRING.
                 isWellFormed = false;
-                break;
             }
+            else
+            {
+                result.append(solveBinary(token, result.takeLast(), result.takeLast()));
+            }
+        }
+        else if (isTernaryOperator(token))
+        {
+            if (token.compare(TERNARY_COLON_STRING) == 0)
+            {
+                ++ternaryCount;
 
-            resultStack.append(solveTrinary(token, resultStack.takeLast(), resultStack.takeLast(), resultStack.takeLast()));
+                if (result.size() < 3)
+                {
+                    isWellFormed = false;
+                }
+                else
+                {
+                    result.append(solveTernary(result.takeLast(), result.takeLast(), result.takeLast()));
+                }
+            }
+            else
+            {
+                --ternaryCount;
+            }
         }
         else if (token.compare(OPEN_ARRAY_STRING) == 0)
         {
-            resultStack.append(token);
+            result.append(token);
         }
         else if (token.compare(CLOSE_ARRAY_STRING) == 0)
         {
             QStringList items;
-            while (resultStack.size() > 0 && resultStack.last().compare(OPEN_ARRAY_STRING) != 0)
+            while (result.isEmpty() == false && result.last().compare(OPEN_ARRAY_STRING) != 0)
             {
-                items.prepend(resultStack.takeLast());
+                items.prepend(result.takeLast());
             }
 
-            if (resultStack.size() == 0)
+            if (result.isEmpty())
             {
                 isWellFormed = false;
-                break;
             }
-
-            QString arrayItem(resultStack.takeLast() % items.join(QLatin1Char(',')) % token);
-            resultStack.append(arrayItem);
+            else
+            {
+                QString arrayItem(result.takeLast() % items.join(QLatin1Char(',')) % token);
+                result.append(arrayItem);
+            }
         }
         else if (token.compare(QLatin1String("true"), Qt::CaseInsensitive) == 0)
         {
-            resultStack.append(QStringLiteral("1"));
+            result.append(QStringLiteral("1"));
         }
         else if (token.compare(QLatin1String("false"), Qt::CaseInsensitive) == 0)
         {
-            resultStack.append(QStringLiteral("0"));
+            result.append(QStringLiteral("0"));
         }
         else if (isStringLiteral(token))
         {
-            resultStack.append(token);
+            result.append(token);
         }
         else if (isSymbol(token))
         {
-            resultStack.append(findSymbolValue(token));
+            result.append(findSymbolValue(token));
         }
         else
         {
             QString constant = parseConstant(token);
-            resultStack.append(constant);
 
             if (constant == QLatin1String("x"))
             {
                 isWellFormed = false;
-                break;
             }
+            else
+            {
+                result.append(constant);
+            }
+        }
+
+        if (isWellFormed == false)
+        {
+            break;
         }
     }
 
     if (validExpression != nullptr)
     {
-        *validExpression = (isWellFormed && resultStack.contains(QStringLiteral("x")) == false);
+        *validExpression = (isWellFormed && result.contains(QStringLiteral("x")) == false && ternaryCount == 0);
     }
 
-    return resultStack.join(QString());
+    return result.join(QString());
 }
 
 //-----------------------------------------------------------------------------
@@ -395,10 +375,7 @@ bool SystemVerilogExpressionParser::isLiteral(QString const& expression) const
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isUnaryOperator(QString const& token) const
 {
-    static const QVector<QString> unaryOperators({ QStringLiteral("$clog2"),
-        QStringLiteral("$exp"), QStringLiteral("$sqrt"), QStringLiteral("~") });
-
-    return unaryOperators.contains(token);
+    return UNARY_OPERATOR.match(token).hasMatch();
 }
 
 //-----------------------------------------------------------------------------
@@ -406,37 +383,33 @@ bool SystemVerilogExpressionParser::isUnaryOperator(QString const& token) const
 //-----------------------------------------------------------------------------
 bool SystemVerilogExpressionParser::isBinaryOperator(QString const& token) const
 {
-    static const QVector<QString> binaryOperators({ QStringLiteral("+"),
-        QStringLiteral("-"), QStringLiteral("*"), QStringLiteral("/"),
-        QStringLiteral("%"), QStringLiteral("**"), QStringLiteral("<<"),
-        QStringLiteral(">>"), QStringLiteral("<"), QStringLiteral("<="),
-        QStringLiteral(">"), QStringLiteral(">="), QStringLiteral("!="),
-        QStringLiteral("!=="), QStringLiteral("=="), QStringLiteral("==="),
-        QStringLiteral("&"), QStringLiteral("&&"), QStringLiteral("|"),
-        QStringLiteral("||"), QStringLiteral("^"), QStringLiteral("$pow")});
-
-    return binaryOperators.contains(token);
+    //! Check for operator length so e.g. negative numbers are not interpret as operators.
+    auto match = BINARY_OPERATOR.match(token);
+    return match.hasMatch() && match.capturedLength() == token.length();
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::solveTrinary()
+// Function: SystemVerilogExpressionParser::isTernaryOperator()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::solveTrinary(QString const& operation, QString const& leftTerm,
-    QString const& middleTerm, QString const& rightTerm) const
+bool SystemVerilogExpressionParser::isTernaryOperator(QString const& token) const
 {
-    if (isLiteral(leftTerm) && operation.compare(QLatin1String(":")) == 0 )
-    {
-        if (leftTerm.toDouble() != 0)
-        {
-            return middleTerm;
-        }
-        else
-        {
-            return rightTerm;
-        }
-    }
+    return TERNARY_OPERATOR.match(token).hasMatch();
+}
 
-    return QStringLiteral("x");
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::solveTernary()
+//-----------------------------------------------------------------------------
+QString SystemVerilogExpressionParser::solveTernary(QString const& condition,
+    QString const& trueCase, QString const& falseCase) const
+{
+    if (condition.toDouble() != 0)
+    {
+        return trueCase;
+    }
+    else
+    {
+        return falseCase;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -575,8 +548,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
         }
         else
         {
-            return QString::number(result, 'f',
-                qMax(getDecimalPrecision(leftTerm), getDecimalPrecision(rightTerm)));
+            return QString::number(result, 'f', qMax(precisionOf(leftTerm), precisionOf(rightTerm)));
         }
     }
 
@@ -671,7 +643,7 @@ QString SystemVerilogExpressionParser::parseConstant(QString token) const
         return token;
     }
 
-    int base = getBaseForNumber(token);
+    int base = baseOf(token);
 
     // Remove formating of the number.
     static QRegularExpression prefix(QStringLiteral("^([1-9][0-9_]*)?'[sS]?[dDbBoOhH]?"));
@@ -709,18 +681,19 @@ QString SystemVerilogExpressionParser::findSymbolValue(QString const& symbol) co
 //-----------------------------------------------------------------------------
 int SystemVerilogExpressionParser::getBaseForSymbol(QString const& symbol) const
 {
-    return getBaseForNumber(symbol);
+    return baseOf(symbol);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::operatorPrecedence()
 //-----------------------------------------------------------------------------
-unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString oper) const
+unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString const& oper) const
 {
+    // Higher value means higher precedence.
     const static QMap<QString, int> operator_precedence =
     {
-        {QStringLiteral("?")      , 1},
-        {QStringLiteral(":")      , 2},
+        {QStringLiteral(":")      , 1},
+        {QStringLiteral("?")      , 2},
         {QStringLiteral("||")     , 3},
         {QStringLiteral("&&")     , 4},
         {QStringLiteral("|")      , 5},
@@ -753,34 +726,9 @@ unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString oper) con
 }
 
 //-----------------------------------------------------------------------------
-// Function: SystemVerilogExpressionParser::isPrecedenceOperator()
-//-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isPrecedenceOperator(QString operStack, QString operCurr) const
-{
-    if (operStack == TRINARY_QUESTION_STRING && operCurr == TRINARY_QUESTION_STRING)
-    {
-        return false;
-    }
-    if (operStack == TRINARY_COLON_STRING && operCurr == TRINARY_COLON_STRING)
-    {
-        return true;
-    }
-    if (operStack == TRINARY_QUESTION_STRING && operCurr == TRINARY_COLON_STRING)
-    {
-        return false;
-    }
-    if (operStack == TRINARY_COLON_STRING && operCurr == TRINARY_QUESTION_STRING)
-    {
-        return false;
-    }
-
-    return operatorPrecedence(operStack) >= operatorPrecedence(operCurr);
-}
-
-//-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getBaseForNumber()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::getBaseForNumber(QString const& constantNumber) const
+int SystemVerilogExpressionParser::baseOf(QString const& constantNumber) const
 {
     const static QMap<QString, int> base_formats =
     {
@@ -805,7 +753,7 @@ int SystemVerilogExpressionParser::getBaseForNumber(QString const& constantNumbe
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getDecimalPrecision()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::getDecimalPrecision(QString const& term) const
+int SystemVerilogExpressionParser::precisionOf(QString const& term) const
 {
     int decimalLength = 0;
     int commaPosition = term.indexOf(QLatin1Char('.'));

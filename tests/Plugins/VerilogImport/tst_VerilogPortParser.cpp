@@ -9,12 +9,13 @@
 // Unit test for class VerilogPortParser.
 //-----------------------------------------------------------------------------
 
-#include <QtTest>
+#include <QTest>
 
 #include <Plugins/VerilogImport/VerilogPortParser.h>
 
-#include <IPXactSystemVerilogParser.h>
-#include <ComponentParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -873,6 +874,27 @@ void tst_VerilogPortParser::testEquationAsPortBound_data()
         ");\n"
         "endmodule\n"
         << "32/0" << "0";
+
+    QTest::newRow("Ternary operation in width") <<
+        "module test(\n"
+        "    input [1?15:0:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "1?15:0" << "0";
+
+    QTest::newRow("Nested ternary operation in width") <<
+        "module test(\n"
+        "    input [1?2?3:0:0:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "1?2?3:0:0" << "0";
+
+    QTest::newRow("Ternary operation in left and right bound") <<
+        "module test(\n"
+        "    input [1?2:0:0?2:0] data\n"
+        ");\n"
+        "endmodule\n"
+        << "1?2:0" << "0?2:0";
 }
 
 //-----------------------------------------------------------------------------

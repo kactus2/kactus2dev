@@ -9,7 +9,8 @@
 // Unit test for class SystemVerilogExpressionParser.
 //-----------------------------------------------------------------------------
 
-#include <QtTest>
+#include <QTest>
+#include <QtMath>
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
@@ -67,8 +68,8 @@ private slots:
     void testBitwiseOperations();
     void testBitwiseOperations_data();
 
-    void testTrinaryOperations();
-    void testTrinaryOperations_data();
+    void testTernaryOperations();
+    void testTernaryOperations_data();
 
     void testParserPerformance();
     void testParserPerformance_data();
@@ -892,7 +893,7 @@ void tst_SystemVerilogExpressionParser::testParseMathFunctions_data()
     QTest::newRow("Exp() of 0 is 1") << "$exp(0)" << "1" << true;
     QTest::newRow("Exp() of 1") << "$exp(1)" << QString::number(qExp(1)) << true;
     QTest::newRow("Exp() of -2") << "$exp(-2)" << QString::number(qExp(-2)) << true;
-}
+}   
 
 //-----------------------------------------------------------------------------
 // Function: tst_SystemVerilogExpressionParser::testBitwiseOperations()
@@ -918,36 +919,38 @@ void tst_SystemVerilogExpressionParser::testBitwiseOperations_data()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_SystemVerilogExpressionParser::testTrinaryOperations()
+// Function: tst_SystemVerilogExpressionParser::testTernaryOperations()
 //-----------------------------------------------------------------------------
-void tst_SystemVerilogExpressionParser::testTrinaryOperations()
+void tst_SystemVerilogExpressionParser::testTernaryOperations()
 {
     testInputs();
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_SystemVerilogExpressionParser::testTrinaryOperations_data()
+// Function: tst_SystemVerilogExpressionParser::testTernaryOperations_data()
 //-----------------------------------------------------------------------------
-void tst_SystemVerilogExpressionParser::testTrinaryOperations_data()
+void tst_SystemVerilogExpressionParser::testTernaryOperations_data()
 {
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("expectedResult");
     QTest::addColumn<bool>("expectedValid");
 
+    QTest::newRow("Ternary true?1:0 should be 1") << "true?1:0" << "1" << true;
+    QTest::newRow("Ternary false?1:0 should be 0") << "false?1:0" << "0" << true;
+    QTest::newRow("Ternary 1?2:3 should be 2") << "1?2:3" << "2" << true;
+    QTest::newRow("Ternary 1-1?2:3+1 should be 4") << "1-1?2:3+1" << "4" << true;
+    QTest::newRow("Ternary ? should invalid") << "?" << "0" << false;
+    QTest::newRow("Ternary : should invalid") << ":" << "0" << false;
+    QTest::newRow("Ternary (3+2)?(4+6) should invalid") << "(3+2)?(4+6)" << "0" << false;
+    QTest::newRow("Ternary (3+2):(4+6) should invalid") << "(3+2):(4+6)" << "0" << false;
+    QTest::newRow("Ternary (3+2)?((3+3)?(4+7):1):0 should be 11") << "(3+2)?((3+3)?(4+7):1):0" << "11" << true;
+    QTest::newRow("Ternary (1>2)?((3+3)?(4+7):1):0 should be 0") << "(1>2)?((3+3)?(4+7):1):0" << "0" << true;
+    QTest::newRow("Ternary 3+2?3+3?4+7:1:0 should be 11") << "3+2?3+3?4+7:1:0" << "11" << true;
+    QTest::newRow("Ternary 1>2?3+3?4+7:1:0 should be 0") << "1>2?3+3?4+7:1:0" << "0" << true;
+    QTest::newRow("Ternary 1?11:2?12:0 should be 11") << "1?11:2?12:0" << "11" << true;
+    QTest::newRow("Ternary 1?11:(2?12:0) should be 11") << "1?11:(2?12:0)" << "11" << true;
+    QTest::newRow("Ternary 1?12?1:0:22 should be 1") << "1?12?1:0:22" << "1" << true;
 
-    QTest::newRow("Trinary 1?2:3 should be 2") << "1?2:3" << "2" << true;
-    QTest::newRow("Trinary 1-1?2:3+1 should be 4") << "1-1?2:3+1" << "4" << true;
-    QTest::newRow("Trinary ? should invalid") << "?" << "0" << false;
-    QTest::newRow("Trinary : should invalid") << ":" << "0" << false;
-    QTest::newRow("Trinary (3+2)?(4+6) should invalid") << "(3+2)?(4+6)" << "0" << false;
-    QTest::newRow("Trinary (3+2):(4+6) should invalid") << "(3+2):(4+6)" << "0" << false;
-    QTest::newRow("Trinary (3+2)?((3+3)?(4+7):1):0 should be 11") << "(3+2)?((3+3)?(4+7):1):0" << "11" << true;
-    QTest::newRow("Trinary (1>2)?((3+3)?(4+7):1):0 should be 0") << "(1>2)?((3+3)?(4+7):1):0" << "0" << true;
-    QTest::newRow("Trinary 3+2?3+3?4+7:1:0 should be 11") << "3+2?3+3?4+7:1:0" << "11" << true;
-    QTest::newRow("Trinary 1>2?3+3?4+7:1:0 should be 0") << "1>2?3+3?4+7:1:0" << "0" << true;
-    QTest::newRow("Trinary 1?11:2?12:0 should be 11") << "1?11:2?12:0" << "11" << true;
-    QTest::newRow("Trinary 1?11:(2?12:0) should be 11") << "1?11:(2?12:0)" << "11" << true;
-    QTest::newRow("Trinary 1?12?1:0:22 should be 1") << "1?12?1:0:22" << "1" << true;
 }
 
 //-----------------------------------------------------------------------------
