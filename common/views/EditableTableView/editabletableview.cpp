@@ -443,7 +443,7 @@ void EditableTableView::onCutAction()
 
     QString copyText;
 
-    foreach (QModelIndex index, indexes)
+    for (QModelIndex const& index : indexes)
     {
         copyText.append(index.data(Qt::EditRole).toString());
 
@@ -490,7 +490,7 @@ void EditableTableView::onCopyAction()
     int lastColumn = indexes.last().column();
     
     QString copyText;
-    foreach(QModelIndex sourceIndex, indexes)
+    for (QModelIndex const& sourceIndex : indexes)
     {
         copyText.append(sourceIndex.data(Qt::EditRole).toString());
 
@@ -541,14 +541,14 @@ void EditableTableView::onPasteAction()
         proxyModel->setDynamicSortFilter(false);
     }
 
-	foreach (QString const& row, rowsToAdd)
+	for (QString const& row : rowsToAdd)
     {
 		// New row starts always on same column.
 		int targetColumn = qMax(0, startColumn);
 
 		// Split the row into columns.
 		QStringList columnsToAdd = row.split("\t");
-		foreach (QString column, columnsToAdd)
+		for (QString column : columnsToAdd)
         {
 			QModelIndex itemToSet = model()->index(targetRow, targetColumn, QModelIndex());
 			if (itemToSet.isValid())
@@ -629,7 +629,7 @@ void EditableTableView::onClearAction()
 	QModelIndexList indexes = selectedIndexes();
 
 	// clear the contents of each cell
-	foreach (QModelIndex index, indexes)
+	for (QModelIndex const& index : indexes)
     {
 		model()->setData(index, QVariant(), Qt::EditRole);
 	}
@@ -828,7 +828,7 @@ void EditableTableView::setModel(QAbstractItemModel* model)
 		int headerSize = 0;
 
 		// find the line that needs most space
-		foreach (QString headerLine, headerLines)
+		for (QString const& headerLine : headerLines)
         {
 			headerSize = qMax(headerSize, fMetrics.horizontalAdvance(headerLine));
 		}
@@ -851,42 +851,42 @@ void EditableTableView::setupActions()
     addAction_.setToolTip(tr("Add a new row to table"));
     addAction_.setStatusTip(tr("Add a new row to table"));
     addAction_.setShortcuts(addRowShortcuts);
-    addAction_.setShortcutContext(Qt::WidgetShortcut);
+    addAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
 
     addAction(&removeAction_);
     removeAction_.setToolTip(tr("Remove a row from the table"));
     removeAction_.setStatusTip(tr("Remove a row from the table"));    
     removeAction_.setShortcut(Qt::SHIFT + Qt::Key_Delete);
-    removeAction_.setShortcutContext(Qt::WidgetShortcut);
+    removeAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
 
     addAction(&cutAction_);
     cutAction_.setToolTip(tr("Cut the contents of a cell from the table"));
     cutAction_.setStatusTip(tr("Cut the contents of a cell from the table"));
     cutAction_.setShortcut(QKeySequence::Cut);
-    cutAction_.setShortcutContext(Qt::WidgetShortcut);
+    cutAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&cutAction_, SIGNAL(triggered()), this, SLOT(onCutAction()), Qt::UniqueConnection);
 
     addAction(&copyAction_);
     copyAction_.setToolTip(tr("Copy the contents of a cell from the table"));
     copyAction_.setStatusTip(tr("Copy the contents of a cell from the table"));
     copyAction_.setShortcut(QKeySequence::Copy);
-    copyAction_.setShortcutContext(Qt::WidgetShortcut);
+    copyAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&copyAction_, SIGNAL(triggered()), this, SLOT(onCopyAction()), Qt::UniqueConnection);
 
     addAction(&pasteAction_);
     pasteAction_.setToolTip(tr("Paste the contents of a cell to the table"));
     pasteAction_.setStatusTip(tr("Paste the contents of a cell to the table"));
     pasteAction_.setShortcut(QKeySequence::Paste);
-    pasteAction_.setShortcutContext(Qt::WidgetShortcut);
+    pasteAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
 
     addAction(&clearAction_);
     clearAction_.setToolTip(tr("Clear the contents of a cell"));
     clearAction_.setStatusTip(tr("Clear the contents of a cell"));
     clearAction_.setShortcut(QKeySequence::Delete);
-    clearAction_.setShortcutContext(Qt::WidgetShortcut);
+    clearAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&clearAction_, SIGNAL(triggered()),	this, SLOT(onClearAction()), Qt::UniqueConnection);
 
     addAction(&importAction_);
@@ -923,7 +923,7 @@ int EditableTableView::countRows(QModelIndexList const& indexes)
     int rows = 1;
 
     int previousRow = indexes.first().row();
-    foreach (QModelIndex index, indexes)
+    for (QModelIndex const& index : indexes)
     {
         if (index.row() != previousRow)
         {

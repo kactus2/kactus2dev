@@ -54,7 +54,7 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~ComponentInstanceConfigurableElementsEditor();
+    virtual ~ComponentInstanceConfigurableElementsEditor() = default;
 
 	/*!
      *  Set the component instance to be edited.
@@ -78,7 +78,7 @@ private:
     ComponentInstanceConfigurableElementsEditor& operator=(const ComponentInstanceConfigurableElementsEditor& other);
 
 	//! The model to edit the configurable elements of a component instance.
-    ComponentInstanceConfigurableElementsModel* model_;
+	ComponentInstanceConfigurableElementsModel* model_;
 };
 
 #endif // COMPONENTINSTANCECONFIGURABLEELEMENTSEDITOR_H

@@ -37,7 +37,11 @@ void VStackedLayout<T>::updateItemMove(QList<T*>& items, T* item, qreal minY)
     using DiagramUtil::clampCeil;
 
     // Move the item to the last position (this simplifies the for loop).
-    items.removeAt(items.indexOf(item));
+    if (items.contains(item))
+    {
+        items.removeAt(items.indexOf(item));
+    }
+    
     items.append(item);
 
     // Determine the best position for the item (position where the item is closest to

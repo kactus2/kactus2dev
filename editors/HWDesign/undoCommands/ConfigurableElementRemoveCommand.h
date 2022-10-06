@@ -67,10 +67,9 @@ signals:
      *
      *      @param [in] elementID       ID of the selected configurable element.
      *      @param [in] elementValue    Value of the selected configurable element.
-     *      @param [in] parentName      Name of the parent item containing the configurable element.
      *      @param [in] elementRow      Row of the configurable element in the associated table.
      */
-    void addConfigurableElement(QString const& elementID, QString const& elementValue, QString const& parentName,
+    void addConfigurableElement(QString const& elementID, QString const& elementValue, 
         int elementRow);
 
     /*!
@@ -80,7 +79,7 @@ signals:
      *      @param [in] parentName  Name of the parent item containing the configurable element item.
      *      @param [in] elementRow  Row of the removed configurable element value.
      */
-    void removeConfigurableElement(QString const& elementID, QString const& parentName, int elementRow);
+    void removeConfigurableElement(QString const& elementID, int elementRow);
 
     /*!
      *  Increase the amount of references in the new value.
