@@ -125,6 +125,10 @@ QVariant StickyNote::itemChange(GraphicsItemChange change, const QVariant& value
         positionExtension_->setPosition(newPosition);
         return newPosition;
     }
+    if (change == ItemPositionHasChanged)
+    {
+        positionUpdated();
+    }
 
     return QGraphicsItemGroup::itemChange(change, value);
 }

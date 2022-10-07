@@ -55,7 +55,7 @@ void Association::paint(QPainter* painter, QStyleOptionGraphicsItem const*, QWid
         painter->setPen(pen());
     }
 
-    updateLine();
+    //updateLine();
     painter->drawLine(line());
 }
 
