@@ -12,148 +12,151 @@
 #ifndef CHOICESMODEL_H
 #define CHOICESMODEL_H
 
-#include <QAbstractTableModel>
-#include <QSharedPointer>
-#include <QList>
 #include <QObject>
+#include <QAbstractListModel>
+#include <QVariant>
+#include <QModelIndex>
+#include <QSharedPointer>
 
-class ChoiceValidator;
 class Choice;
+class ChoiceValidator;
 
 //-----------------------------------------------------------------------------
 //! Model for editing choices in a component.
 //-----------------------------------------------------------------------------
-class ChoicesModel : public QAbstractTableModel
+class ChoicesModel : public QAbstractListModel
 {
 	Q_OBJECT
 
 public:
+    
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] choices     List of the available choices.
+     *      @param [in] validator   Validator for choices.
+     *      @param [in] parent      The parent object.
+     */
+    ChoicesModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<ChoiceValidator> validator,
+        QObject* parent = 0);
+    
+    /*!
+     *  Destructor.
+     */
+    virtual ~ChoicesModel() = default;
 
-	/*!
-     *  The constructor
-	 *
-	 *      @param [in] choices     Pointer to the component being edited.
-     *      @param [in] validator   Choice validator.
-	 *      @param [in] parent      Pointer to the owner of this model.
-	 */
-	ChoicesModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-        QSharedPointer<ChoiceValidator> validator,QObject* parent);
-	
-	//! The destructor.
-	virtual ~ChoicesModel();
+    /*!
+     *  Validate the choices.
+     * 
+     *      @return True, if the choices are valid, false otherwise.
+     */
+    bool validate() const;
 
-	/*!
-     *  Get the number of rows an item contains.
-	 *
-	 *      @param [in] parent  Identifies the parent that's row count is requested.
-	 *
-	 *      @return Number of rows the item has.
-	 */
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
-
-	/*!
-     *  Get the number of columns the item has to be displayed.
-	 *
-	 *      @param [in] parent  Identifies the parent that's column count is requested.
-	 *
-	 *      @return The number of columns to be displayed.
-	 */
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
-
-	/*!
-     *  Get the item flags that defines the possible operations for the item.
-	 *
-	 *      @param [in] index   Model index that identifies the item.
-	 *
-	 *      @return The possible operations for the item.
-	 */
-	Qt::ItemFlags flags(const QModelIndex& index) const;
-
-	/*!
-     *  Get the header data for specified header.
-	 *
-	 *      @param [in] section         The section specifies the row/column number for the header.
-	 *      @param [in] orientation     Specified if horizontal or vertical header is wanted.
-	 *      @param [in] role            Specifies the type of the requested data.
-	 *
-	 *      @return The requested data.
-	 */
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-
-	/*!
-     *  Get the data for specified item.
-	 *
-	 *      @param [in] index   Specifies the item that's data is requested.
-	 *      @param [in] role    The role that defines what kind of data is requested.
-	 *
-	 *      @return The data for the item.
-	 */
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
-
-	/*!
-     *  Save the data to the model for specified item
-	 *
-	 *      @param [in] index   The model index of the item that's data is to be saved.
-	 *      @param [in] value   The data that is to be saved.
-	 *      @param [in] role    The role specifies what kind of data should be saved.
-	 *
-	 *      @return True if saving happened successfully.
-	 */
-	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-
-	/*!
-     *  Check if the choices model is in a valid state.
-	 *
-	 *      @return True, if all the choices are valid, otherwise false.
-	 */
-	bool isValid() const;
+    /*!
+     *  Returns the choice at the given index.
+     *
+     *      @param [in] index   The selected index.
+     */
+    QSharedPointer<Choice> getChoice(QModelIndex const& index) const;
+    
+    /*!
+     *  Returns the number of rows in this model.
+     *
+     *      @param [in] parent ModelIndex of the item that's rowCount is requested.
+     */
+    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    
+    /*!
+     *  Returns the data stored for the specified item.
+     *
+     *      @param [in] index  ModelIndex of the wanted item.
+     *      @param [in] role   Specifies what kind of data is requested.
+     */
+    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+    
+    /*!
+     *  Returns the data for the header of the list.
+     *
+     *      @param [in] section      Specifies the column for which the header is requested.
+     *      @param [in] orientation  The orientation of the header, only Qt::Horizontal is supported.
+     *      @param [in] role         Specifies what kind of header data is requested.
+     */
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    
+    /*!
+     *  Saves the data to the model for specified item
+     *
+     *      @param [in] index  The model index of the item that's data is to be saved.
+     *      @param [in] value  The data that is to be saved.
+     *      @param [in] role   The role specifies what kind of data should be saved.
+     *
+     *      @return True if saving happened successfully.
+     */
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    
+    /*!
+     *  Returns the item flags that defines the possible operations for the item.
+     *
+     *      @param [in] index Model index that identifies the item.
+     *
+     *      @return Qt::ItemFlags specify the possible operations for the item.
+     */
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+    
+    /*!
+     *  Replace an item text in the list.
+     *
+     *      @param [in] index    ModelIndex of the item that is to be replaced.
+     *      @param [in] newText  The new text for the given item.
+     */
+    virtual void replace(QModelIndex& index, const QString newText);
 
 public slots:
-
-	/*!
-     *  Add a new item to the given index.
-	 *
-	 *      @param [in] index   The index identifying the position for new item.
-	 */
-	virtual void onAddItem(const QModelIndex& index);
-
-	/*!
-     *  Remove the item in the given index.
-	 *
-	 *      @param [in] index   The index identifying the item to remove.
-	 */
-	virtual void onRemoveItem(const QModelIndex& index);
+    
+    /*!
+     *  Removes the specified item from the model.
+     *
+     *      @param [in] index The model index of the item to remove.
+     */
+    virtual void remove(const QModelIndex& index);
+    
+    /*!
+     *  A new item should be added to given index.
+     *
+     *      @param [in] index The position where new item should be added at.
+     */
+    virtual void addItem(const QModelIndex& index);
+    
+    /*!
+     *  Move item to another position.
+     *
+     *      @param [in] originalPos  Identifies the item that should be moved.
+     *      @param [in] newPos       The new position the item should be moved to.
+     */
+    virtual void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
 
 signals:
 
-	//! Emitted when the contents of the model change.
+    /*!
+     *  Emitted when contents of the model change.
+     */
 	void contentChanged();
 
 private:
-
-	//! No copying.
-	ChoicesModel(const ChoicesModel& other);
-
-	//! No assignment.
-	ChoicesModel& operator=(const ChoicesModel& other);
-
-    /*!
-     *  Check if the index is not valid.
-     *
-     *      @param [in] index   The selected index.
-     *
-     *      @return True, if the index is not valid, false otherwise.
-     */
-    bool isNotValidIndex(QModelIndex const& index) const;
-
+    
+    // Disable copying.
+    ChoicesModel(ChoicesModel const& rhs);
+    ChoicesModel& operator=(ChoicesModel const& rhs);
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! Pointer to the choices being edited.
-	QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
-
-    //! The choice validator.
+    
+    //! The list of available choices.
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+    
+    //! Validator for choices.
     QSharedPointer<ChoiceValidator> validator_;
 };
 

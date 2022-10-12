@@ -11,39 +11,44 @@
 
 #include "EnumerationModel.h"
 
-#include <IPXACTmodels/common/Enumeration.h>
 #include <common/KactusColors.h>
 
+#include <editors/ComponentEditor/choices/EnumerationColumns.h>
 
-
-namespace
-{
-    enum COLUMNS
-    {
-        ENUMERATION = 0,
-        TEXT,
-        HELP,
-        COLUMN_COUNT
-    };
-}
+#include <IPXACTmodels/common/Enumeration.h>
 
 //-----------------------------------------------------------------------------
 // Function: EnumerationModel::EnumerationModel()
 //-----------------------------------------------------------------------------
-EnumerationModel::EnumerationModel(QSharedPointer<QList<QSharedPointer<Enumeration> > > enumerations,
-    QObject *parent):
+EnumerationModel::EnumerationModel(QObject* parent):
 QAbstractTableModel (parent),
-enumerations_(enumerations)
+enumerations_()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: EnumerationModel::~EnumerationModel()
+// Function: EnumerationModel::setupEnumerations()
 //-----------------------------------------------------------------------------
-EnumerationModel::~EnumerationModel()
+void EnumerationModel::setupEnumerations(QSharedPointer<QList<QSharedPointer<Enumeration> > > newEnumerations)
 {
-    
+    beginResetModel();
+
+    enumerations_ = newEnumerations;
+
+    endResetModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumerationModel::setupEnumerations()
+//-----------------------------------------------------------------------------
+void EnumerationModel::clearEnumerations()
+{
+    beginResetModel();
+
+    enumerations_.clear();
+
+    endResetModel();
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +61,7 @@ int EnumerationModel::columnCount(QModelIndex const& parent) const
         return 0;
     }
 
-    return COLUMN_COUNT;
+    return EnumerationColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,13 +69,12 @@ int EnumerationModel::columnCount(QModelIndex const& parent) const
 //-----------------------------------------------------------------------------
 int EnumerationModel::rowCount(QModelIndex const& parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid() || enumerations_.isNull())
     {
         return 0;
     }
 
-    // Additional row for inserting new rows.
-    return enumerations_->size() + 1;
+    return enumerations_->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -83,15 +87,15 @@ QVariant EnumerationModel::data(QModelIndex const& index, int role) const
         return QVariant();
     }
     
-    if (index.column() == ENUMERATION)
+    if (index.column() == EnumerationColumns::ENUMERATION)
     {
         return getEnumerationColumnData(index.row(), role);
     } 
-    else if (index.column() == TEXT)
+    else if (index.column() == EnumerationColumns::TEXT)
     {
         return getTextColumnData(index.row(), role);
     }
-    else if (index.column() == HELP)
+    else if (index.column() == EnumerationColumns::HELP)
     {
         return getHelpColumnData(index.row(), role);
     }
@@ -109,15 +113,15 @@ QVariant EnumerationModel::headerData(int section, Qt::Orientation orientation, 
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
-        if (section == ENUMERATION)
+        if (section == EnumerationColumns::ENUMERATION)
         {
             return tr("Enumeration");
         }
-        else if (section == TEXT)
+        else if (section == EnumerationColumns::TEXT)
         {
             return tr("Text");
         } 
-        else if (section == HELP)
+        else if (section == EnumerationColumns::HELP)
         {
             return tr("Description");
         } 
@@ -138,31 +142,23 @@ bool EnumerationModel::setData(QModelIndex const& index, QVariant const& value, 
 
     if (role == Qt::EditRole)
     {
-        if (isLastRow(index.row()) && !value.toString().isEmpty())
+        if (index.column() == EnumerationColumns::ENUMERATION)
         {
-            onAddItem(QModelIndex());
+            enumerations_->at(index.row())->setValue(value.toString());
         }
-
-        if (hasEnumerationOnRow(index.row()))
+        else if (index.column() == EnumerationColumns::TEXT)
         {
-            if (index.column() == ENUMERATION)
-            {
-                enumerations_->at(index.row())->setValue(value.toString());
-            }
-            else if (index.column() == TEXT)
-            {
-                enumerations_->at(index.row())->setText(value.toString());
-            } 
-            else if (index.column() == HELP)
-            {
-                enumerations_->at(index.row())->setHelp(value.toString());
-            } 
-            else
-            {
-                Q_ASSERT_X(false, "setData()", "Undefined column requested.");
-                return false;
-            }
-        }        
+            enumerations_->at(index.row())->setText(value.toString());
+        }
+        else if (index.column() == EnumerationColumns::HELP)
+        {
+            enumerations_->at(index.row())->setHelp(value.toString());
+        }
+        else
+        {
+            Q_ASSERT_X(false, "setData()", "Undefined column requested.");
+            return false;
+        }
     } 
 
     emit dataChanged(index, index);
@@ -189,6 +185,11 @@ Qt::ItemFlags EnumerationModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 void EnumerationModel::onAddItem(QModelIndex const& index)
 {
+    if (enumerations_.isNull())
+    {
+        return;
+    }
+
     int row = rowCount();
 
     if (index.isValid())
@@ -197,9 +198,11 @@ void EnumerationModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
+
     QSharedPointer<Enumeration> enumeration(new Enumeration());
     enumeration->setValue(QString::number(rowCount()));
     enumerations_->insert(row, enumeration);
+    
     endInsertRows();
 
     emit contentChanged();
@@ -210,15 +213,19 @@ void EnumerationModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void EnumerationModel::onRemoveItem(QModelIndex const& index)
 {
-    int row = index.row();
-    if (hasEnumerationOnRow(row))
+    if (isNotValidIndex(index))
     {
-        beginRemoveRows(QModelIndex(), row, row);
-        enumerations_->removeAt(row);
-        endRemoveRows();
-
-        emit contentChanged();
+        return;
     }
+
+    int row = index.row();
+    beginRemoveRows(QModelIndex(), row, row);
+
+    enumerations_->removeAt(row);
+
+    endRemoveRows();
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -226,23 +233,7 @@ void EnumerationModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool EnumerationModel::isNotValidIndex(QModelIndex const& index) const
 {
-    return !index.isValid() ||  index.row() > enumerations_->size() || index.column() >= COLUMN_COUNT;
-}
-
-//-----------------------------------------------------------------------------
-// Function: EnumerationModel::hasEnumerationOnRow()
-//-----------------------------------------------------------------------------
-bool EnumerationModel::hasEnumerationOnRow(int row) const
-{
-    return row < enumerations_->size();
-}
-
-//-----------------------------------------------------------------------------
-// Function: EnumerationModel::isLastRow()
-//-----------------------------------------------------------------------------
-bool EnumerationModel::isLastRow(int row)
-{
-    return row == enumerations_->size();
+    return !index.isValid() ||  index.row() > enumerations_->size() || index.column() < 0 || index.column() >= EnumerationColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -250,34 +241,20 @@ bool EnumerationModel::isLastRow(int row)
 //-----------------------------------------------------------------------------
 QVariant EnumerationModel::getEnumerationColumnData(int row, int role) const
 {
-    if (hasEnumerationOnRow(row))
-    { 
-        QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
-        if (role == Qt::DisplayRole || role == Qt::EditRole)
-        {
-            return enumeration->getValue();
-        }
-        else if (role == Qt::ForegroundRole)
-        { 
-            return getForegroundColorForEnumeration(enumeration);
-        }
-        else if (role == Qt::BackgroundRole)
-        { 
-            return KactusColors::MANDATORY_FIELD;
-        }
-    }
-    else
+    QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-        if (role == Qt::DisplayRole)
-        {
-            return tr("Add new enumeration");
-        }
-        else if (role == Qt::ForegroundRole)
-        { 
-            return KactusColors::DISABLED_TEXT;
-        }        
+        return enumeration->getValue();
     }
-
+    else if (role == Qt::ForegroundRole)
+    {
+        return getForegroundColorForEnumeration(enumeration);
+    }
+    else if (role == Qt::BackgroundRole)
+    {
+        return KactusColors::MANDATORY_FIELD;
+    }
+    
     return QVariant();
 }
 
@@ -301,21 +278,18 @@ QVariant EnumerationModel::getForegroundColorForEnumeration(QSharedPointer<Enume
 //-----------------------------------------------------------------------------
 QVariant EnumerationModel::getTextColumnData(int row, int role) const
 {
-   if (hasEnumerationOnRow(row))
-   {
-       QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
-
-       if (role == Qt::DisplayRole || role == Qt::EditRole)
-       {
-           return enumeration->getText();
-       }
-       else if (role == Qt::ForegroundRole)
-       { 
-           return getForegroundColorForEnumeration(enumeration);
-       }
-   }
-
-   return QVariant();
+    QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
+    
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
+    {
+        return enumeration->getText();
+    }
+    else if (role == Qt::ForegroundRole)
+    {
+        return getForegroundColorForEnumeration(enumeration);
+    }
+    
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -323,18 +297,15 @@ QVariant EnumerationModel::getTextColumnData(int row, int role) const
 //-----------------------------------------------------------------------------
 QVariant EnumerationModel::getHelpColumnData(int row, int role) const
 {
-    if (hasEnumerationOnRow(row))
+    QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
+    
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-        QSharedPointer<Enumeration> enumeration = enumerations_->at(row);
-
-        if (role == Qt::DisplayRole || role == Qt::EditRole)
-        {
-            return enumeration->getHelp();
-        }
-        else if (role == Qt::ForegroundRole)
-        { 
-            return getForegroundColorForEnumeration(enumeration);
-        }
+        return enumeration->getHelp();
+    }
+    else if (role == Qt::ForegroundRole)
+    {
+        return getForegroundColorForEnumeration(enumeration);
     }
 
     return QVariant();

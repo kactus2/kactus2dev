@@ -10,72 +10,78 @@
 //-----------------------------------------------------------------------------
 
 #include "ChoicesModel.h"
-#include "ChoiceColumns.h"
 
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 
 #include <common/KactusColors.h>
 
-
-
 //-----------------------------------------------------------------------------
 // Function: ChoicesModel::ChoicesModel()
 //-----------------------------------------------------------------------------
-ChoicesModel::ChoicesModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-    QSharedPointer<ChoiceValidator> validator,QObject* parent):
-QAbstractTableModel(parent),
+ChoicesModel::ChoicesModel(QSharedPointer<QList<QSharedPointer<Choice>>> choices, QSharedPointer<ChoiceValidator> validator, QObject* parent /* = 0 */) :
+QAbstractListModel(parent),
 choices_(choices),
 validator_(validator)
 {
-
+    connect(this, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChoicesModel::~ChoicesModel()
+// Function: ChoicesModel::validate()
 //-----------------------------------------------------------------------------
-ChoicesModel::~ChoicesModel()
+bool ChoicesModel::validate() const
 {
+    for (auto choice : *choices_)
+    {
+        if (!validator_->validate(choice))
+        {
+            return false;
+        }
+    }
 
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesModel::rowCount()
 //-----------------------------------------------------------------------------
-int ChoicesModel::rowCount(QModelIndex const& parent) const
+int ChoicesModel::rowCount(const QModelIndex&) const
 {
-    if (parent.isValid())
+    if (choices_)
     {
-		return 0;
-	}
-
-	return choices_->count();
+        return choices_->size();
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChoicesModel::columnCount()
+// Function: ChoicesModel::data()
 //-----------------------------------------------------------------------------
-int ChoicesModel::columnCount(const QModelIndex& parent) const
+QVariant ChoicesModel::data(const QModelIndex& index, int role) const
 {
-    if (parent.isValid())
+    if (!index.isValid() || index.row() < 0 || index.row() >= choices_->size())
     {
-		return 0;
-	}
-
-	return ChoiceColumns::COLUMN_COUNT;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChoicesModel::flags()
-//-----------------------------------------------------------------------------
-Qt::ItemFlags ChoicesModel::flags( const QModelIndex& index ) const
-{
-	if (!index.isValid())
+        return QVariant();
+    }
+    
+    QSharedPointer<Choice> indexedChoice = choices_->at(index.row());
+    
+    if (role == Qt::DisplayRole)
     {
-		return Qt::NoItemFlags;
-	}
-
-	return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+        return indexedChoice->name();
+    }
+    else if (role == Qt::ForegroundRole)
+    {
+        return validator_->validate(indexedChoice);
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -83,97 +89,27 @@ Qt::ItemFlags ChoicesModel::flags( const QModelIndex& index ) const
 //-----------------------------------------------------------------------------
 QVariant ChoicesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (Qt::DisplayRole == role && orientation == Qt::Horizontal)
-    {
-        if (section == ChoiceColumns::CHOICE_NAME)
-        {
-            return tr("Name");
-        }
-        else if (section == ChoiceColumns::CHOICE_ENUMERATIONS)
-        {
-            return tr("Enumeration(s)");
-        }
-        else
-        {
-            return QVariant();
-        }
-    }
-    else 
+    if (section != 0 || orientation != Qt::Horizontal || role != Qt::DisplayRole)
     {
         return QVariant();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChoicesModel::data()
-//-----------------------------------------------------------------------------
-QVariant ChoicesModel::data( const QModelIndex& index, int role) const
-{
-	if (isNotValidIndex(index))
+    else
     {
-		return QVariant();
-	}
-
-    QSharedPointer<Choice> choice = choices_->at(index.row());
-
-    if (role == Qt::DisplayRole)
-    {
-        if (index.column() == ChoiceColumns::CHOICE_NAME)
-        {
-            return choice->name();
-        }
-        else if (index.column() == ChoiceColumns::CHOICE_ENUMERATIONS) 
-        {
-            return choice->getEnumerationValues().join(", ");
-        }
-        else
-        {
-            return QVariant();
-        }
-	}
-    else if (role == Qt::EditRole)
-    {
-        if (index.column() == ChoiceColumns::CHOICE_NAME) 
-        {
-            return choice->name();
-        }
-        else
-        {
-            return QVariant();
-        }
+        return tr("Choices");
     }
-	else if (role == Qt::ForegroundRole)
-    {
-        if (validator_->validate(choice))
-        {
-            return KactusColors::REGULAR_TEXT;
-        }
-        else
-        {
-            return KactusColors::ERROR;
-        }
-	}
-    else if (role == Qt::BackgroundRole)
-    {
-        return KactusColors::MANDATORY_FIELD;
-    }
-	else
-    {
-		return QVariant();
-	}
 }
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesModel::setData()
 //-----------------------------------------------------------------------------
-bool ChoicesModel::setData( const QModelIndex& index, const QVariant& value, int role)
+bool ChoicesModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-	if (isNotValidIndex(index))
+    if (!index.isValid() || index.column() != 0 || index.row() < 0 || index.row() >= choices_->size())
     {
-		return false;
-	}
-
-    if (role == Qt::EditRole && index.column() == ChoiceColumns::CHOICE_NAME)
+        return false;
+    }
+    
+    if (role == Qt::EditRole)
     {
         choices_->at(index.row())->setName(value.toString());
         emit dataChanged(index, index);
@@ -187,68 +123,116 @@ bool ChoicesModel::setData( const QModelIndex& index, const QVariant& value, int
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChoicesModel::isValid()
+// Function: ChoicesModel::flags()
 //-----------------------------------------------------------------------------
-bool ChoicesModel::isValid() const
+Qt::ItemFlags ChoicesModel::flags(const QModelIndex& index) const
 {
-    QStringList choiceNames;
-
-	foreach (QSharedPointer<Choice> choice, *choices_)
+    if (!index.isValid())
     {
-        if (choiceNames.contains(choice->name()) || !validator_->validate(choice))
-        {
-            return false;
-        }
-        else
-        {
-            choiceNames.append(choice->name());
-        }
+        return Qt::NoItemFlags;
     }
- 
-    return true;
+    
+    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChoicesModel::onAddItem()
+// Function: ChoicesModel::addItem()
 //-----------------------------------------------------------------------------
-void ChoicesModel::onAddItem(QModelIndex const& index)
+void ChoicesModel::addItem(const QModelIndex& index)
 {
-	int row = rowCount();
+    int row = choices_->size();
 
-	if (index.isValid())
+    if (index.isValid())
     {
-		row = index.row();
-	}
+        row = index.row();
+    }
+    
+    beginInsertRows(QModelIndex(), row, row);
+    
+    QSharedPointer<Choice> newChoice(new Choice());
+    newChoice->setName("newChoice");
 
-	beginInsertRows(QModelIndex(), row, row);
-	choices_->insert(row, QSharedPointer<Choice>(new Choice()));
-	endInsertRows();
-
-	// tell also parent widget that contents have been changed
-	emit contentChanged();
+    choices_->insert(row, newChoice);
+    
+    endInsertRows();
+    
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChoicesModel::onRemoveItem()
+// Function: ChoicesModel::remove()
 //-----------------------------------------------------------------------------
-void ChoicesModel::onRemoveItem(QModelIndex const& index)
+void ChoicesModel::remove(const QModelIndex& index)
 {
-    if (isNotValidIndex(index))
+    if (!index.isValid() || index.row() < 0 || index.row() >= choices_->size())
     {
-		return;
-	}
-
-	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	choices_->removeAt(index.row());
-	endRemoveRows();
-
-	emit contentChanged();
+        return;
+    }
+    
+    beginRemoveRows(QModelIndex(), index.row(), index.row());
+    
+    choices_->removeAt(index.row());
+    
+    endRemoveRows();
+    
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChoicesModel::isNotValidIndex()
+// Function: ChoicesModel::moveItem()
 //-----------------------------------------------------------------------------
-bool ChoicesModel::isNotValidIndex(QModelIndex const& index) const
+void ChoicesModel::moveItem(const QModelIndex& originalPos, const QModelIndex& newPos)
 {
-    return !index.isValid() || index.row() < 0 || index.row() >= rowCount();
+    if (!originalPos.isValid() || originalPos == newPos || originalPos.row() < 0 || originalPos.row() >= choices_->size())
+    {
+        return;
+    }
+    
+    if (!newPos.isValid() || newPos.row() < 0 || newPos.row() >= choices_->size())
+    {
+        beginResetModel();
+        
+        QSharedPointer<Choice> selectedChoice = choices_->takeAt(originalPos.row());
+        choices_->append(selectedChoice);
+        
+        endResetModel();
+    }
+    else
+    {
+        beginResetModel();
+        
+        choices_->swapItemsAt(originalPos.row(), newPos.row());
+        
+        endResetModel();
+    }
+    
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ChoicesModel::replace()
+//-----------------------------------------------------------------------------
+void ChoicesModel::replace(QModelIndex& index, const QString newText)
+{
+    if (!index.isValid() || index.row() < 0 || index.row() >= choices_->size())
+    {
+        return;
+    }
+
+    choices_->at(index.row())->setName(newText);
+    
+    emit dataChanged(index, index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ChoicesModel::getChoice()
+//-----------------------------------------------------------------------------
+QSharedPointer<Choice> ChoicesModel::getChoice(QModelIndex const& index) const
+{
+    if (!index.isValid() || index.row() < 0 || index.row() >= choices_->size())
+    {
+        return QSharedPointer<Choice>();
+    }
+    
+    return choices_->at(index.row());
 }

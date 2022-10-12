@@ -27,16 +27,18 @@ class EnumerationModel : public QAbstractTableModel
 	Q_OBJECT
 
 public:
-	/*!
-	 *  The constructor.
-	 *
-     *      @param [in] enumerations   The enumerations represented by the model.
-	 *      @param [in] parent         The parent object.
-	 */
-	EnumerationModel(QSharedPointer<QList<QSharedPointer<Enumeration> > > enumerations, QObject *parent = 0);
+    
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] parent         The parent object.
+     */
+    EnumerationModel(QObject* parent = 0);
 
-    //! The destructor.
-    ~EnumerationModel();
+    /*!
+     *  The destructor.
+     */
+    ~EnumerationModel() = default;
 
     /*!
      *  Returns the amount of columns in the model.
@@ -99,11 +101,25 @@ public:
 
 signals:
 
-    //! Emitted when the model content has changed.
+    /*!
+     *  Emitted when the model content has changed.
+     */
     void contentChanged();
 
 public slots:
-    
+
+    /*!
+     *  Setup the available enumerations.
+     *
+     *      @param [in] newEnumerations     The new enumerations.
+     */
+    void setupEnumerations(QSharedPointer<QList<QSharedPointer<Enumeration> > > newEnumerations);
+
+    /*!
+     *  Clear the available enumerations.
+     */
+    void clearEnumerations();
+
     /*!
      *  Called when a new enumeration should be added to the model.
      *
@@ -133,24 +149,6 @@ private:
      *      @return True, if the index is invalid, otherwise false.
      */
     bool isNotValidIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Checks if the given row represents an enumeration.
-     *
-     *      @param [in] row   The row number to check.
-     *
-     *      @return True, if the row represents an enumeration, otherwise false.
-     */
-    bool hasEnumerationOnRow(int row) const;
-
-    /*!
-     *  Checks if the given row is the last row in the model.
-     *
-     *      @param [in] row   The row number to check.
-     *
-     *      @return True, if the given row is the last row in the model, otherwise false.
-     */
-    bool isLastRow(int row);
 
     /*!
      *  Gets the data in the enumeration column.
