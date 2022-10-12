@@ -247,8 +247,19 @@ void PythonSourceEditor::onTabChanged(int currentIndex)
 {
     if (currentIndex >= 0)
     {
+        disconnect(undoAction_, SIGNAL(triggered(bool)), nullptr, nullptr);
+        disconnect(redoAction_, SIGNAL(triggered(bool)), nullptr, nullptr);
+
         auto editor = static_cast<ScriptInputEditor*>(tabs_.widget(currentIndex));
         highlighter_.setDocument(editor->document());
+
+        undoAction_->setEnabled(editor->document()->isUndoAvailable());
+        redoAction_->setEnabled(editor->document()->isRedoAvailable());
+
+        connect(undoAction_, SIGNAL(triggered(bool)), editor, SLOT(undo()));
+        connect(redoAction_, SIGNAL(triggered(bool)), editor, SLOT(redo()));
+        connect(editor, SIGNAL(undoAvailable(bool)), undoAction_, SLOT(setEnabled(bool)));
+        connect(editor, SIGNAL(redoAvailable(bool)), redoAction_, SLOT(setEnabled(bool)));
     }
 }
 
@@ -384,23 +395,43 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
 
     QAction* newAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-new.png"), QString(),
         this, SLOT(onNewAction()));
-    newAction->setToolTip(tr("New script"));
+    newAction->setToolTip(tr("New script (Ctrl+N)"));
+    newAction->setShortcut(QKeySequence::New);
+    newAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     addAction(newAction);
 
     QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), QString(),
         this, SLOT(onOpenAction()));
-    openAction->setToolTip(tr("Open script from file..."));
+    openAction->setToolTip(tr("Open script from file... (Ctrl+O)"));
+    openAction->setShortcut(QKeySequence::Open);
+    openAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     addAction(openAction);
 
     QAction* saveAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(),
         this, SLOT(onSaveAction()));
-    saveAction->setToolTip(tr("Save script"));
+    saveAction->setToolTip(tr("Save script (Ctrl+S"));
+    saveAction->setShortcut(QKeySequence::Save);
+    saveAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     addAction(saveAction);
 
     QAction* saveAsAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save-as.png"), QString(),
         this, SLOT(onSaveAsAction()));
     saveAsAction->setToolTip(tr("Save script as..."));
     addAction(saveAsAction);
+
+    toolBar_.addSeparator();
+
+    undoAction_ = toolBar_.addAction(QIcon(":/icons/common/graphics/edit-undo.png"), QString());
+    undoAction_->setToolTip(tr("Undo (Ctrl+Z)"));
+    undoAction_->setShortcut(QKeySequence::Undo);
+    undoAction_->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    addAction(undoAction_);
+
+    redoAction_ = toolBar_.addAction(QIcon(":/icons/common/graphics/edit-redo.png"), QString());
+    redoAction_->setToolTip(tr("Redo (Ctrl+Y)"));
+    redoAction_->setShortcut(QKeySequence::Redo);
+    redoAction_->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    addAction(redoAction_);
 
     toolBar_.addSeparator();
 
@@ -452,9 +483,9 @@ void PythonSourceEditor::setupProgressBar()
 void PythonSourceEditor::setupLayout()
 {
     QWidget* editorContainer = new QWidget(this);
-    QVBoxLayout* editorLayout = new QVBoxLayout(editorContainer);    
+    QVBoxLayout* editorLayout = new QVBoxLayout(editorContainer);
+
     editorLayout->addWidget(&tabs_);
-    editorLayout->addWidget(&toolBar_);
     editorLayout->setContentsMargins(0, 0, 0, 0);
 
     QWidget* viewContainer = new QWidget(this);
@@ -471,6 +502,7 @@ void PythonSourceEditor::setupLayout()
 
 
     QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(&toolBar_);
     layout->addWidget(viewSplit);
     layout->setContentsMargins(0, 0, 4, 2);
 }

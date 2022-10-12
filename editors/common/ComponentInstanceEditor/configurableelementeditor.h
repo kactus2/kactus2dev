@@ -54,7 +54,13 @@ public:
         QWidget *parent);
 	
 	//! The destructor.
-	virtual ~ConfigurableElementEditor();
+	virtual ~ConfigurableElementEditor() = default;
+
+    //! No copying.
+    ConfigurableElementEditor(const ConfigurableElementEditor& other) = delete;
+
+    //! No assignment.
+    ConfigurableElementEditor& operator=(const ConfigurableElementEditor& other) = delete;
 
 	/*!
      *  Clear the editor from all data.
@@ -88,45 +94,14 @@ protected:
      *      @param [in] newModel    The new model.
      *      @param [in] newFilter   The new filter.
      */
-    virtual void setModel(QAbstractItemModel* newModel, QSortFilterProxyModel* newFilter);
-
-    /*!
-     *  Expand all of the items contained the view.
-     */
-    void expandView();
-
-    /*!
-     *  Get the configurable element delegate.
-     *
-     *      @return The configurable element delegate.
-     */
-    ConfigurableElementDelegate* getDelegate() const;
-
-    /*!
-     *  Get the immediate filter selection box.
-     *
-     *      @return The selection box determining the visibility of immediate configurable element values.
-     */
-    QCheckBox* getFilterSelectionBox() const;
+    void setModel(QAbstractItemModel* newModel, QSortFilterProxyModel* newFilter);
 
     /*!
      *  Hide the columns that should not be seen in the configurable elements editor.
      */
     void hideUnnecessaryColumns();
 
-protected slots:
-
-    /*!
-     *  Set the first column for the parent items to span the entire table.
-     */
-    void setFirstParentColumnsSpannable();
-
-private:
-    //! No copying. //! No assignment.
-	ConfigurableElementEditor(const ConfigurableElementEditor& other);
-	ConfigurableElementEditor& operator=(const ConfigurableElementEditor& other);
-
-	//! The widget to display the contents of the model.
+    //! The widget to display the contents of the model.
     ConfigurableElementsView view_;
 
     //! The delegate used in the display widget.
@@ -134,6 +109,9 @@ private:
 
     //! The immediate configurable element values filter check box.
     QCheckBox* filterSelection_;
+
+
+
 };
 
 #endif // CONFIGURABLEELEMENTEDITOR_H

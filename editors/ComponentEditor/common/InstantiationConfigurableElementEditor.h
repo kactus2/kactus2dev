@@ -56,7 +56,7 @@ public:
         QAbstractItemModel* completionModel, QWidget* parent);
 
 	//! The destructor.
-    ~InstantiationConfigurableElementEditor();
+    virtual ~InstantiationConfigurableElementEditor() = default;
 
 	/*!
      *  Clear the editor from all data.
@@ -79,10 +79,9 @@ private slots:
      *  Handle the element removal.
      *
      *      @param [in] elementID   ID of the parameter referenced by the removed configurable element.
-     *      @param [in] parentName  Name of the parent item (Empty in the instantiation configurable elements).
      *      @param [in] elementRow  Index row of the removed configurable element.
      */
-    void sendSignalForElementRemoval(QString const& elementID, QString const& parentName, int elementRow);
+    void sendSignalForElementRemoval(QString const& elementID,  int elementRow);
 
 private:
 

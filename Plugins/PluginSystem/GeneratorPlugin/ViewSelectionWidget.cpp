@@ -68,9 +68,9 @@ QWidget(parent),
 	// Connect the relevant events to their handler functions.
     connect(addToFileset_, SIGNAL(toggled(bool)), 
         this, SLOT(onFileSetStateChanged(bool)), Qt::UniqueConnection);
-    connect(viewSelection_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(viewSelection_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onViewChanged(QString const&)), Qt::UniqueConnection);
-	connect(fileSetSelection_, SIGNAL(currentIndexChanged(QString const&)),
+	connect(fileSetSelection_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
 	connect(fileSetSelection_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);

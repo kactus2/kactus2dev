@@ -73,7 +73,7 @@ parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), com
     connect(addressSelector_, SIGNAL(itemSelected(QString const&)), this, SLOT(onIndirectAddressChanged()));
     connect(dataSelector_, SIGNAL(itemSelected(QString const&)), this, SLOT(onIndirectDataChanged()));
     connect(bitsInLauEditor_, SIGNAL(editingFinished()), this, SLOT(onBitsInLauChanged()));
-    connect(endiannessSelector_, SIGNAL(activated(QString const&)), this, SLOT(onEndiannessChanged()));
+    connect(endiannessSelector_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onEndiannessChanged()));
     connect(memoryMapSelector_, SIGNAL(itemSelected(QString const&)), this, SLOT(onMemoryMapChanged()));
  
     connect(memoryMapBox_, SIGNAL(clicked(bool)), this, SLOT(onMemoryMapSelected(bool)));

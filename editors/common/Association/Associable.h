@@ -59,6 +59,11 @@ public:
      */
     virtual QPointF connectionPoint(QPointF const& otherEnd = QPointF()) const = 0;
 
+protected:
+
+    //! Called when the associable item position is changed to update all association lines.
+    virtual void positionUpdated();
+
 private:
 
     //! The associations of the item.

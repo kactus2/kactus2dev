@@ -32,6 +32,7 @@ ComponentItem::ComponentItem(QRectF const& size, LibraryInterface* libInterface,
     QSharedPointer<ComponentInstance> instance, QSharedPointer<Component> component,
     QGraphicsItem* parent) : 
 QGraphicsRectItem(parent),
+    Associable(),
     libInterface_(libInterface),
     component_(component), 
     componentInstance_(instance),
@@ -237,6 +238,7 @@ QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &va
     else if (change == ItemScenePositionHasChanged)
     {
         componentInstance_->setPosition(scenePos());
+        positionUpdated();
     }
 
     return QGraphicsItem::itemChange(change, value);

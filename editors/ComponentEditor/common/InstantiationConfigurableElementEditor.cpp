@@ -33,21 +33,15 @@ filter_(new ConfigurableElementsFilter(this))
     setModel(model_, filter_);
     hideUnnecessaryColumns();
 
-    connect(getFilterSelectionBox(), SIGNAL(clicked(bool)),
+    connect(filterSelection_, SIGNAL(clicked(bool)),
         filter_, SLOT(setShowImmediateValues(bool)), Qt::UniqueConnection);
 
-    connect(getDelegate(), SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
-        this, SLOT(sendSignalForElementRemoval(QString const&, QString const&, int)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(removeConfigurableElement(QString const&, int)),
+        this, SLOT(sendSignalForElementRemoval(QString const&, int)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(dataChangedInID(QString const&, QString const&)),
+        model_, SLOT(emitDataChangeForID(QString const&, QString const&)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationConfigurableElementEditor::~InstantiationConfigurableElementEditor()
-//-----------------------------------------------------------------------------
-InstantiationConfigurableElementEditor::~InstantiationConfigurableElementEditor() 
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -61,8 +55,6 @@ void InstantiationConfigurableElementEditor::setParameters(QString const& contai
         containerName, parameters, QSharedPointer<QList<QSharedPointer<Choice> > >(), storedElements);
 
     elementFinder_->setConfigurableElementList(model_->getConfigurableElements());
-
-    expandView();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,11 +69,8 @@ void InstantiationConfigurableElementEditor::clear()
 // Function: InstantiationConfigurableElementEditor::sendSignalForElementRemoval()
 //-----------------------------------------------------------------------------
 void InstantiationConfigurableElementEditor::sendSignalForElementRemoval(QString const& elementID,
-    QString const& parentName, int elementRow)
+     int elementRow)
 {
-    if (parentName.isEmpty())
-    {
-        model_->onRemoveItem(elementID, elementRow);
-        filter_->invalidate();
-    }
+	model_->onRemoveItem(elementID, elementRow);
+	filter_->invalidate();
 }

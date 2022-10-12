@@ -131,6 +131,7 @@ public slots:
      *      @param [in] indexes     Indexes of the selected configurable elements.
      */
     void onCreateRemoveElementCommands(QModelIndexList const& indexes);
+    void onCreateRemoveElementCommands(QModelIndex const& index);
 
     /*!
      *  Create remove commands for the sub items of the selected index.
@@ -165,20 +166,18 @@ signals:
      *
      *      @param [in] elementID       ID of the parameter referenced by the new configurable element.
      *      @param [in] elementValue    New value for the configurable element.
-     *      @param [in] parentName      Name of the parent item of the configurable element.
      *      @param [in] elementRow      Index row of the new configurable element.
      */
-    void addConfigurableElement(QString const& elementID, QString const& elementValue, QString const& parentName,
+    void addConfigurableElement(QString const& elementID, QString const& elementValue, 
         int elementRow);
 
     /*!
      *  Informs the model that a configurable element should be removed.
      *
      *      @param [in] elementID   ID of the parameter referenced by the removed configurable element.
-     *      @param [in] parentName  Name of the parent item of the selected configurable element.
      *      @param [in] elementRow  Index row of the selected configurable element.
      */
-    void removeConfigurableElement(QString const& elementID, QString const& parentName, int elementRow);
+    void removeConfigurableElement(QString const& elementID, int elementRow);
 
 protected:
 
@@ -269,6 +268,7 @@ private:
      */
     void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index)
         const;
+
 
     /*!
      *  Create an element remove command for the selected configurable element.

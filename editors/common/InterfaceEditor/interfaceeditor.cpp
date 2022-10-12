@@ -351,13 +351,13 @@ void InterfaceEditor::setBusInterface()
     absType_.setVLNV(absVLNV);
 
     // Set selection for mode editor, signal must be disconnected when mode is set to avoid loops.
-    disconnect(&modeSelector_, SIGNAL(currentIndexChanged(QString const&)),
+    disconnect(&modeSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onInterfaceModeChanged(QString const&)));
 
     int index = modeSelector_.findText(General::interfaceMode2Str(interface_->getBusInterface()->getInterfaceMode()));
     modeSelector_.setCurrentIndex(index);
 
-    connect(&modeSelector_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(&modeSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onInterfaceModeChanged(QString const&)), Qt::UniqueConnection);
 
     portMapsModel_->setInterfaceData(interface_, activeView, getActiveInterfaces());
@@ -471,7 +471,7 @@ void InterfaceEditor::setComInterface()
     setNameAndDescription(&comNameEditor_, &comDescriptionEditor_);
 
     // Fill in the possible values of the data type.
-    disconnect(&transferTypeCombo_, SIGNAL(currentIndexChanged(QString const&)),
+    disconnect(&transferTypeCombo_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onComTransferTypeChanged(QString const&)));
 
     transferTypeCombo_.clear();
@@ -489,17 +489,17 @@ void InterfaceEditor::setComInterface()
         transferTypeCombo_.setCurrentIndex(transferTypeCombo_.findText(interface_->getComInterface()->getTransferType()));
     }
 
-    connect(&transferTypeCombo_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(&transferTypeCombo_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onComTransferTypeChanged(QString const&)), Qt::UniqueConnection);
 
     // Set selection for COM direction.
-    disconnect(&comDirectionCombo_, SIGNAL(currentIndexChanged(QString const&)),
+    disconnect(&comDirectionCombo_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onComDirectionChanged(QString const&)));
 
     comDirectionCombo_.setCurrentIndex(comDirectionCombo_.findText(DirectionTypes::direction2Str(
         interface_->getComInterface()->getDirection())));
 
-    connect(&comDirectionCombo_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(&comDirectionCombo_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onComDirectionChanged(QString const&)), Qt::UniqueConnection);
 
     // Set property values and try to read the allowed properties from the COM definition if valid.
@@ -529,13 +529,13 @@ void InterfaceEditor::setApiInterface()
 
     setNameAndDescription(&apiNameEditor_, &apiDescriptionEditor_);
 
-    disconnect(&dependencyDirCombo_, SIGNAL(currentIndexChanged(QString const&)),
+    disconnect(&dependencyDirCombo_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onDependencyDirectionChanged(QString const&)));
 
     dependencyDirCombo_.setCurrentIndex(dependencyDirCombo_.findText(
         dependencyDirection2Str(interface_->getApiInterface()->getDependencyDirection())));
 
-    connect(&dependencyDirCombo_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(&dependencyDirCombo_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onDependencyDirectionChanged(QString const&)), Qt::UniqueConnection);
 
     setCurrentIndex(API);    

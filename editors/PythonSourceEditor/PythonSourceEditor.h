@@ -72,7 +72,6 @@ private slots:
     //! Handler for save button clicks.
     void onSaveAction();
 
-
     //! Handler for save as button clicks.
     void onSaveAsAction();
 
@@ -153,6 +152,10 @@ private:
 
     //! Write channel for script error output.
     ChannelRelay errorChannel_;
+
+    QAction* undoAction_ = nullptr;
+
+    QAction* redoAction_ = nullptr;
 
     //! Widget for holding all the tabs for file editors.
     QTabWidget tabs_;

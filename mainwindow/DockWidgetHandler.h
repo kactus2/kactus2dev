@@ -368,6 +368,13 @@ private slots:
     void onDesignParametersAction(bool show);
 
     /*!
+     *  Handles the action for the visibility of the script editor dock widget.
+     *
+     *      @param [in] show    Value for the visibility of the script editor dock widget.
+     */
+    void onScriptConsoleVisibilityAction(bool show);
+
+    /*!
      *  Handles the action for the visibility of the ad hoc port visibility editor dock widget.
      *
      *      @param [in] show    Value for the visibility of the ad hoc port visibility editor dock widget.

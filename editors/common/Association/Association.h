@@ -68,6 +68,9 @@ public:
     //! Disconnects the association from both ends.     
     void disconnect();
 
+    //! Updates the line according to end item connection points.
+    void updateLine();
+
     /*!
      *  Changes the item at the end of the association.
      *
@@ -88,9 +91,6 @@ private:
 
 	// Disable assignment.
 	Association& operator=(Association const& rhs);
-
-    //! Updates the line according to end item connection points.
-    void updateLine();
 
 	//-----------------------------------------------------------------------------
 	// Data.

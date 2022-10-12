@@ -90,9 +90,9 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
     configurationSelector_->addItems(findPossibleViews());
     configurationSelector_->setCurrentText(designWidget_->getOpenViewName());
 
-    connect(configurationSelector_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(configurationSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SIGNAL(configurationChanged(QString const&)), Qt::UniqueConnection);
-    connect(configurationSelector_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(configurationSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onConfigurationChanged(QString const&)), Qt::UniqueConnection);
 
     activeViewEditor_->setDesign(designWidget_);

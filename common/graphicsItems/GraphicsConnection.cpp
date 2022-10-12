@@ -36,6 +36,7 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
                                        QString const& /*displayName*/,
                                        QString const& description, DesignDiagram* parent):
 QGraphicsPathItem(), 
+    Associable(),
       parent_(parent),
       name_(name), 
       description_(description),
@@ -188,6 +189,7 @@ void GraphicsConnection::setRoute(QList<QPointF> path)
     pathLines_ = pointsToLines(pathPoints_);
 
     paintConnectionPath();
+    positionUpdated();
 }
 
 

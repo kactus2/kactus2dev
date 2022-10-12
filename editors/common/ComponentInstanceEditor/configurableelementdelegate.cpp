@@ -218,6 +218,26 @@ void ConfigurableElementDelegate::onCreateRemoveElementCommands(QModelIndexList 
 }
 
 //-----------------------------------------------------------------------------
+// Function: configurableelementdelegate::onCreateRemoveElementCommands()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::onCreateRemoveElementCommands(QModelIndex const& index)
+{
+	QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
+
+	if (index.parent().isValid() || (!index.parent().isValid() && index.model()->rowCount(index) == 0))
+	{
+		auto elementRemoveCommand = createElementRemoveCommand(index, parentCommand);
+
+		connect(elementRemoveCommand, SIGNAL(increaseReferencesInNewValue(QString const&)),
+			this, SLOT(increaseReferencesInNewValue(QString const&)), Qt::UniqueConnection);
+		connect(elementRemoveCommand, SIGNAL(decreaseReferencesInOldValue(QString const&)),
+			this, SLOT(decreaseReferencesInOldValue(QString const&)), Qt::UniqueConnection);
+	}
+
+	addCommandToStackAndRedo(parentCommand);
+}
+
+//-----------------------------------------------------------------------------
 // Function: configurableelementdelegate::createElementRemoveCommand()
 //-----------------------------------------------------------------------------
 ConfigurableElementRemoveCommand* ConfigurableElementDelegate::createElementRemoveCommand(
@@ -287,11 +307,11 @@ QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > ConfigurableEl
 //-----------------------------------------------------------------------------
 void ConfigurableElementDelegate::connectElementRemoveCommand(ConfigurableElementRemoveCommand* removeCommand)
 {
-    connect(removeCommand, SIGNAL(addConfigurableElement(QString const&, QString const&, QString const&, int)),
-        this, SIGNAL(addConfigurableElement(QString const&, QString const&, QString const&, int)),
+    connect(removeCommand, SIGNAL(addConfigurableElement(QString const&, QString const&, int)),
+        this, SIGNAL(addConfigurableElement(QString const&, QString const&, int)),
         Qt::UniqueConnection);
-    connect(removeCommand, SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
-        this, SIGNAL(removeConfigurableElement(QString const&, QString const&, int)), Qt::UniqueConnection);
+    connect(removeCommand, SIGNAL(removeConfigurableElement(QString const&, int)),
+        this, SIGNAL(removeConfigurableElement(QString const& int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -331,10 +351,10 @@ void ConfigurableElementDelegate::onCreateMultipleElementRemoveCommands(QModelIn
                         elementID, filteredRow, parentName, itemConfigurableElements, multipleRemoveCommand));
 
                     connect(elementRemoveCommand, SIGNAL(addConfigurableElement(QString const&, QString const&,
-                        QString const&, int)), this, SIGNAL(addConfigurableElement(QString const&, QString const&,
-                        QString const&, int)), Qt::UniqueConnection);
-                    connect(elementRemoveCommand, SIGNAL(removeConfigurableElement(QString const&, QString const&,
-                        int)), this, SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
+                         int)), this, SIGNAL(addConfigurableElement(QString const&, QString const&,
+                         int)), Qt::UniqueConnection);
+                    connect(elementRemoveCommand, SIGNAL(removeConfigurableElement(QString const&, 
+                        int)), this, SIGNAL(removeConfigurableElement(QString const&, int)),
                         Qt::UniqueConnection);
                 }
             }
