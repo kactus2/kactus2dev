@@ -83,6 +83,13 @@ public:
      */
     void setCornerButtonText(QString const& text);
 
+    /*!
+    *  Sets if the column sizes are fit to content at model load.
+    *
+    *      @param [in] fit   To fit or not.
+    */
+    void setFitColumnsToContent(bool fit);
+
 public slots:
 
 	/*!
@@ -303,6 +310,9 @@ private:
 
 	//! Specifies if the items in the view can be dragged from position to another.
 	bool itemsDraggable_;
+
+    //! Specifies if the columns sizes are fit to content on model load.
+    bool fitColumnsToContent_;
 };
 
 #endif // EDITABLETABLEVIEW_H
