@@ -1864,9 +1864,6 @@
     <ClCompile Include="editors\ComponentEditor\choices\EnumerationModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\choices</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\choices\ChoicesDelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\choices</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameters\parametersmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameters</Filter>
     </ClCompile>
@@ -3974,9 +3971,6 @@
     <QtMoc Include="editors\ComponentEditor\choices\EnumerationModel.h">
       <Filter>Header Files\editors\ComponentEditor\choices</Filter>
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\choices\ChoicesDelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\choices</Filter>
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\parameters\parametersmodel.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </QtMoc>
@@ -5607,6 +5601,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapSortFilter.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\choices\EnumerationColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\choices</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

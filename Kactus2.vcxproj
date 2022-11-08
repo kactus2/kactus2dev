@@ -129,7 +129,7 @@
     </PreLinkEvent>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>IPXACTmodelsd.lib;KactusAPId.lib;python38_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IPXACTmodelsd.lib;KactusAPId.lib;python310_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>x64\executable\Kactus2_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -482,7 +482,6 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\channels\channelsdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\channels\channelseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\channels\channelsmodel.cpp" />
-    <ClCompile Include="editors\ComponentEditor\choices\ChoicesDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\choices\ChoicesEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\choices\ChoicesModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\choices\EnumerationModel.cpp" />
@@ -1100,8 +1099,6 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\choices\ChoicesModel.h">
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\choices\ChoicesDelegate.h">
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\choices\EnumerationModel.h">
     </QtMoc>
     <QtMoc Include="common\widgets\ParameterGroupBox\parametergroupbox.h">
@@ -1558,6 +1555,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\channels\ChannelColumns.h" />
     <ClInclude Include="editors\ComponentEditor\addressSpaces\SegmentColumns.h" />
     <ClInclude Include="editors\ComponentEditor\choices\ChoiceColumns.h" />
+    <ClInclude Include="editors\ComponentEditor\choices\EnumerationColumns.h" />
     <ClInclude Include="editors\ComponentEditor\common\ConfigurableElementFinder.h" />
     <ClInclude Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.h" />
     <QtMoc Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.h">
