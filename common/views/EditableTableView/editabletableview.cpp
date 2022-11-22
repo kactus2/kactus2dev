@@ -48,7 +48,8 @@ QTableView(parent),
     importExportEnabled_(false),
     elementCopyIsAllowed_(false),
     defImportExportPath_(),
-    itemsDraggable_(true)
+    itemsDraggable_(true),
+    fitColumnsToContent_(true)
 {
     horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
     horizontalHeader()->setStretchLastSection(true);
@@ -118,6 +119,14 @@ void EditableTableView::setCornerButtonText(QString const& text)
     {
         cornerButton->setText(text);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::setFitColumnsToContent()
+//-----------------------------------------------------------------------------
+void EditableTableView::setFitColumnsToContent(bool fit)
+{
+    fitColumnsToContent_ = fit;
 }
 
 //-----------------------------------------------------------------------------
@@ -819,7 +828,11 @@ void EditableTableView::setModel(QAbstractItemModel* model)
 	for (int i = 0; i < columnCount; ++i)
     {
 		// the width required by the contents of the model
-		int contentSize = sizeHintForColumn(i);
+		int contentSize = 0;
+        if (fitColumnsToContent_)
+        {
+            contentSize = sizeHintForColumn(i);
+        }
 
 		// get the header for the section
 		QString headerText = model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString();

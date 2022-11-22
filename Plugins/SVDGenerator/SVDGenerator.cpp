@@ -178,11 +178,12 @@ void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> curren
     writer.writeStartElement("cpu");
 
     QString cpuName = formatName(currentCPU->name());
-    if (cpuName != "CM0" && cpuName != "CM0PLUS" && cpuName != "CM0+" && cpuName != "CM1" && cpuName != "SC000" &&
-        cpuName != "CM23" && cpuName != "CM3" && cpuName != "CM33" && cpuName != "CM35P" && cpuName != "SC300" &&
-        cpuName != "CM4" && cpuName != "CM7" && cpuName != "CA5" && cpuName != "CA7" && cpuName != "CA8" &&
-        cpuName != "CA9" && cpuName != "CA15" && cpuName != "CA17" && cpuName != "CA53" && cpuName != "CA57" &&
-        cpuName != "CA72")
+    QStringList knownNames({ "CM0", "CM0PLUS", "CM0+", "CM1", "SC000",
+        "CM23", "CM3", "CM33", "CM35P", "SC300", "CM4", "CM7",
+        "CA5", "CA7", "CA8", "CA9", "CA15", "CA17", "CA53", "CA57", "CA72"
+        });
+
+    if (knownNames.contains(cpuName) == false)
     {
         cpuName = "other";
     }
@@ -462,16 +463,30 @@ void SVDGenerator::writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer
 void SVDGenerator::writeRegister(QXmlStreamWriter& writer, QSharedPointer<MemoryItem> registerItem,
     QSharedPointer<Register> realRegister)
 {
-    QRegularExpression dimensionExpression("\\[(\\d)\\]$");
-    QString dimensionIndex = dimensionExpression.match(registerItem->getIdentifier()).captured(1);
+    // Skip all but first register in dimension array.
+    if (registerItem->getDimension().isEmpty() == false && registerItem->getIdentifier().endsWith("[0]") == false)
+    {
+        return;
+    }
 
+    QString name = registerItem->getName();
     quint64 registerOffset = registerItem->getOffset().toULongLong();
     QString addressOffsetInHexa = valueToHexa(registerOffset);
     QString sizeString = registerItem->getSize();
 
     writer.writeStartElement("register");
-    writer.writeTextElement("name", formatName(registerItem->getName() + dimensionIndex));
+
+    if (registerItem->getDimension().isEmpty() == false)
+    {
+        writer.writeTextElement("dim", registerItem->getDimension());
+        writer.writeTextElement("dimIncrement", QString::number(sizeString.toInt() / 8));
+
+        name.append("[%s]");
+    }
+
+    writer.writeTextElement("name", formatName(name));
     writeOptionalElement(writer, "description", realRegister->description());
+
     writer.writeTextElement("addressOffset", addressOffsetInHexa);
 
     QSharedPointer<MemoryItem> resetItem = getResetItem(registerItem);
@@ -487,7 +502,6 @@ void SVDGenerator::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Memory
     writeFields(writer, realRegister, fieldItems);
 
     writer.writeEndElement(); //! register
-
 }
 
 //-----------------------------------------------------------------------------

@@ -688,6 +688,15 @@ public:
     virtual bool portIsWire(std::string const& portName) const override final;
 
     /*!
+     *  Check if the selected port is a wire.
+     *
+     *      @param [in] port    The selected port.
+     *
+     *      @return True, if the selected port is a wire, false otherwise.
+     */
+    bool portIsWire(QSharedPointer<Port> port) const;
+
+    /*!
      *  Check if the selected port has a valid left bound value.
      *
      *      @param [in] portName    Name of the selected port.
@@ -722,6 +731,15 @@ public:
      *      @return True, if the selected port is transactional, false otherwise.
      */
     virtual bool portIsTransactional(std::string const& portName) const override final;
+
+    /*!
+     *  Check if the selected port is transactional.
+     *
+     *      @param [in] port    The selected port.
+     *
+     *      @return True, if the selected port is transactional, false otherwise.
+     */
+    bool portIsTransactional(QSharedPointer<Port> port) const;
 
     /*!
      *  Check if the selected port has a valid bus width.

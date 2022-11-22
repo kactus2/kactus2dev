@@ -50,7 +50,7 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~RegisterGraphicsItem();
+    virtual ~RegisterGraphicsItem() = default;
 
     /*!
      *  Get the graphics type.

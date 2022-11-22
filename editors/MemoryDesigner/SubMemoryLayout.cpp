@@ -67,7 +67,7 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
         {
             QMultiMap<quint64, MemoryDesignerChildGraphicsItem*> subItemsInOrder;
 
-            foreach (QSharedPointer<MemoryItem const> subMemoryItem, memoryItem->getChildItems())
+            for (QSharedPointer<MemoryItem const> subMemoryItem : memoryItem->getChildItems())
             {
                 if (subMemoryItem->getType().compare(subItemType, Qt::CaseInsensitive) == 0)
                 {

@@ -46,14 +46,6 @@ filterFields_(filterFields)
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterGraphicsItem::~RegisterGraphicsItem()
-//-----------------------------------------------------------------------------
-RegisterGraphicsItem::~RegisterGraphicsItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::getRegisterEnd()
 //-----------------------------------------------------------------------------
 quint64 RegisterGraphicsItem::getRegisterEnd(unsigned int addressUnitBits, quint64 registerSize) const
@@ -102,7 +94,7 @@ void RegisterGraphicsItem::setLabelPositions()
 //-----------------------------------------------------------------------------
 void RegisterGraphicsItem::condense(qreal newItemHeight)
 {
-    foreach (FieldGraphicsItem* fieldItem, fieldItems_)
+    for (FieldGraphicsItem* fieldItem : fieldItems_)
     {
         fieldItem->condense(newItemHeight);
     }
@@ -354,7 +346,7 @@ void RegisterGraphicsItem::changeWidth(qreal widthChange)
         qreal subItemPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2;
         qreal fieldsStartPosition = boundingRect().left() + subItemPosition;
 
-        foreach (FieldGraphicsItem* fieldItem, fieldItems_)
+        for (FieldGraphicsItem* fieldItem : fieldItems_)
         {
             quint64 fieldOffset = fieldItem->getBaseAddress();
             quint64 fieldLastBit = fieldItem->getLastAddress();
@@ -381,7 +373,7 @@ void RegisterGraphicsItem::changeWidth(qreal widthChange)
             }
         }
 
-        foreach (FieldGraphicsItem* fieldItem, fieldItems_)
+        for (FieldGraphicsItem* fieldItem : fieldItems_)
         {
             fieldItem->resizeAndRepositionOverlappingItems();
         }
@@ -489,7 +481,7 @@ void RegisterGraphicsItem::setNewIdentifierChain(QVector<QString> newIdentifiers
 {
     MemoryDesignerGraphicsItem::setNewIdentifierChain(newIdentifiers);
 
-    foreach (FieldGraphicsItem* fieldItem, fieldItems_)
+    for (FieldGraphicsItem* fieldItem : fieldItems_)
     {
         QVector<QString> newFieldIdentifierChain = newIdentifiers;
         newFieldIdentifierChain.append(fieldItem->name());

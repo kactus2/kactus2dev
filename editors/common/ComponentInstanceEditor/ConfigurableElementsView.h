@@ -12,7 +12,7 @@
 #ifndef CONFIGURABLEELEMENTSVIEW_H
 #define CONFIGURABLEELEMENTSVIEW_H
 
-#include <common/views/EditableTableView/EditableTableView.h>
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QContextMenuEvent>
 #include <QModelIndex>
