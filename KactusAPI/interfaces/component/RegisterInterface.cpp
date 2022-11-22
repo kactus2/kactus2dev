@@ -666,7 +666,7 @@ void RegisterInterface::addRegister(int const& row, int const& dataIndex, std::s
         }
     }
 
-    qreal offsetIncrease = qMax(quint64(1), lastRegRange * qMax(quint64(1), lastRegDimension));
+    qreal offsetIncrease = qMax(quint64(0), lastRegRange * qMax(quint64(1), lastRegDimension));
 
     quint64 itemAddress = lastRegAddress + offsetIncrease;
     QString offset = QStringLiteral("'h") + QString::number(itemAddress, 16);

@@ -491,7 +491,9 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ExpressionLineEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\MasterExpressionEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MultilineDescriptionDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterizableTable.cpp" />
@@ -1591,6 +1593,8 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\ReferenceSelector\ReferenceSelector.h">
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\ExpressionLineEditor.h" />
+    <ClInclude Include="editors\ComponentEditor\common\MasterExpressionEditor.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyColumns.h" />

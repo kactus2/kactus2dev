@@ -459,9 +459,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/visualization/memorygapitem.h \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.h \
     ./editors/ComponentEditor/choices/ChoiceColumns.h \
+    ./editors/ComponentEditor/choices/EnumerationColumns.h \
     ./editors/ComponentEditor/choices/ChoicesEditor.h \
     ./editors/ComponentEditor/choices/ChoicesModel.h \
-    ./editors/ComponentEditor/choices/ChoicesDelegate.h \
     ./editors/ComponentEditor/choices/EnumerationModel.h \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
@@ -813,7 +813,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/choices/EnumerationColumns.h
+    ./editors/ComponentEditor/common/ExpressionLineEditor.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1258,7 +1258,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ./editors/ComponentEditor/visualization/memorygapitem.cpp \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
-    ./editors/ComponentEditor/choices/ChoicesDelegate.cpp \
     ./editors/ComponentEditor/choices/ChoicesEditor.cpp \
     ./editors/ComponentEditor/choices/ChoicesModel.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
@@ -1533,5 +1532,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./editors/ComponentEditor/common/ExpressionLineEditor.cpp
 RESOURCES += kactus.qrc
