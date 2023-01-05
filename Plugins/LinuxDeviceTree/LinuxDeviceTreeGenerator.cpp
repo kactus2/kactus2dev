@@ -533,7 +533,7 @@ void LinuxDeviceTreeGenerator::writeMemoryData(QTextStream& outputStream,
 
     outputStream << prefix << "// Memory map '" << mapName << "' in instance '" << instanceName <<
         "' of component " << componentVLNV << Qt::endl;
-    outputStream << prefix << writtenName << "@" << QString::number(mapBaseAddress, 16).toUpper() << " {" << Qt::endl;
+    outputStream << prefix << writtenName << "@" << QString::number(mapBaseAddress, 16) << " {" << Qt::endl;
     prefix.append(TABPREFIX);
 
     if (isMemory)
@@ -657,12 +657,12 @@ QString LinuxDeviceTreeGenerator::formatValue(quint64 const& value, int wordSize
     QStringList hexWords;
     if (leftmostHexCount != 0)
     {
-        hexWords.append(hexValue.left(leftmostHexCount).toUpper());
+        hexWords.append(hexValue.left(leftmostHexCount));
     }
 
     for (auto i = leftmostHexCount; i < length; i = i + 8)
     {
-        hexWords.append(hexValue.mid(i, 8).toUpper());
+        hexWords.append(hexValue.mid(i, 8));
     }
 
     while (hexWords.size() < wordSize)
