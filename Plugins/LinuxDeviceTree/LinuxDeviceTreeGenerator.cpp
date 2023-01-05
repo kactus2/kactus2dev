@@ -541,6 +541,10 @@ void LinuxDeviceTreeGenerator::writeMemoryData(QTextStream& outputStream,
         outputStream << prefix << QLatin1String("device_type = \"memory\";") << Qt::endl;
     }
 
+    outputStream << prefix << "#address-cells = <" << QString::number(addressSize) << ">;" <<
+        Qt::endl;
+    outputStream << prefix << "#size-cells = <" << QString::number(rangeSize) << ">;" << Qt::endl;
+
     writeRegister(outputStream, mapBaseAddress, range, addressSize, rangeSize, prefix);
 
     if (writeAddressBlocks && !isMemory)
