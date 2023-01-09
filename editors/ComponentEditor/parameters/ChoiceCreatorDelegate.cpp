@@ -67,3 +67,59 @@ QSharedPointer<Choice> ChoiceCreatorDelegate::findChoice(QModelIndex const& inde
 
     return QSharedPointer<Choice>(new Choice());
 }
+
+//-----------------------------------------------------------------------------
+// Function: ChoiceCreatorDelegate::getChoiceComboItems()
+//-----------------------------------------------------------------------------
+QStringList ChoiceCreatorDelegate::getChoiceComboItems(QModelIndex const& index) const
+{
+    QStringList comboItems;
+
+    QSharedPointer<Choice> indexedChoice = findChoice(index);
+    for (auto enumeration : *indexedChoice->enumerations())
+    {
+        QString enumerationText = enumeration->getValue();
+        if (!enumeration->getText().isEmpty())
+        {
+            enumerationText.append(":" + enumeration->getText());
+        }
+
+        comboItems.append(enumerationText);
+    }
+
+    return comboItems;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ChoiceCreatorDelegate::findEnumerationText()
+//-----------------------------------------------------------------------------
+QString ChoiceCreatorDelegate::findEnumerationText(QModelIndex const& index, QString const& enumerationValue) const
+{
+    QSharedPointer<Choice> indexedChoice = findChoice(index);
+    for (auto enumeration : *indexedChoice->enumerations())
+    {
+        if (enumeration->getValue() == enumerationValue)
+        {
+            return enumeration->getText();
+        }
+    }
+
+    return QString("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: ChoiceCreatorDelegate::findEnumerationValue()
+//-----------------------------------------------------------------------------
+QString ChoiceCreatorDelegate::findEnumerationValue(QModelIndex const& index, QString const& enumerationText) const
+{
+    QSharedPointer<Choice> indexedChoice = findChoice(index);
+    for (auto enumeration : *indexedChoice->enumerations())
+    {
+        if (enumeration->getText() == enumerationText)
+        {
+            return enumeration->getValue();
+        }
+    }
+
+    return QString("");
+}

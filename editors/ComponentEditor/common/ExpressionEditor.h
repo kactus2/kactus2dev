@@ -12,6 +12,8 @@
 #ifndef EXPRESSIONEDITOR_H
 #define EXPRESSIONEDITOR_H
 
+#include <editors/ComponentEditor/common/MasterExpressionEditor.h>
+
 #include <QCompleter>
 #include <QTextEdit>
 
@@ -19,56 +21,34 @@ class ParameterFinder;
 //-----------------------------------------------------------------------------
 //! Editor for expressions with parameter name completion.
 //-----------------------------------------------------------------------------
-class ExpressionEditor : public QTextEdit
+class ExpressionEditor : public QTextEdit, public MasterExpressionEditor
 {
     Q_OBJECT
 public:
 
-	//! The constructor.
+	/*!
+     *  The constructor.
+     */
     ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
 
-	//! The destructor.
-	virtual ~ExpressionEditor();
+	/*!
+     *  The destructor.
+     */
+	virtual ~ExpressionEditor() = default;
 
     /*!
      *  Sets a completer whose selection will be appended to the text.
      *
      *      @param [in] completer   The completer to set.
      */
-    void setAppendingCompleter(QCompleter* completer);
-
-    /*!
-     *  Gets the completer for the widget.
-     *
-     *      @return The completer of the widget.
-     */
-    QCompleter* completer() const;
-
-    /*!
-     *  Gets the underlying expression in the editor.
-     *
-     *      @return The expression in the editor.
-     */
-    QString getExpression() const;
+    virtual void setAppendingCompleter(QCompleter* completer) override final;
     
     /*!
      *  Sets the expression in the editor.
      *
      *      @param [in] expression   The expression to set.
      */
-    void setExpression(QString const& expression);
-
-    /*!
-     *  Ends the editing of current word and commits it to the expression.
-     */
-    void finishEditingCurrentWord();
-
-    /*!
-     *  Set the reserved words.
-     *
-     *      @param [in] newReservations     A list of the new reserved words.
-     */
-    void setReservedWords(QStringList newReservations);
+    virtual void setExpression(QString const& expression) override final;
 
 protected:
 
@@ -165,13 +145,6 @@ private:
     ExpressionEditor& operator=(ExpressionEditor const& rhs);
 
     /*!
-     *  Gets the delimiter for words.
-     *
-     *      @return The delimiter for words.
-     */
-    QRegularExpression wordDelimiter() const;
-
-    /*!
      *  Inserts a given word into the text using the given cursor.
      *
      *      @param [in] word    The word to insert into the text.
@@ -180,247 +153,84 @@ private:
     void insertWord(QString const& word, QTextCursor& cursor);
 
     /*!
-     *  Checks if a given text is a reference to a parameter.
-     *
-     *      @param [in] text   The text to check.
-     *
-     *      @return True, if the text is a reference, otherwise false.
-     */
-    bool isReference(QString const& text) const;
-
-    /*!
-     *  Checks if a given word is a constant value.
-     *
-     *      @param [in] word   The word to check.
-     *
-     *      @return True, if the word is a constant, otherwise false.
-     */
-    bool wordIsConstant(QString const& word) const;
-
-    /*!
-     *  Gives a format for a given text color.
-     *
-     *      @param [in] textColor   The name of the color in the format.
-     *
-     *      @return The format for the given color.
-     */
-    QTextCharFormat colorFormat(QString const& textColor) const;
-
-    /*!
-     *  Checks if the editing would change text in the middle of a referencing term.
-     *
-     *      @return True, if the edit position is in the middle of a referencing term, otherwise false.
-     */
-    bool editingMiddleOfReference() const;
-
-    /*!
-     *  Checks if the given key event will remove the last character in a word.
-     *
-     *      @param [in] keyEvent   The key event to check.
-     *
-     *      @return True, if the event will remove the last character, otherwise false.
-     */
-    bool removesLastCharacterOfWord(QKeyEvent* keyEvent);
-    
-    /*!
-     *  Removes the term currently under cursor.
-     */
-    void removeTermUnderCursor();
-    
-    /*!
-     *  Checks if the given key event will remove an operator before the cursor.
-     *
-     *      @param [in] keyEvent   The key event to check.
-     *
-     *      @return True, if the event will remove an operator, otherwise false.
-     */
-    bool removesOperatorBeforeWord(QKeyEvent* keyEvent);
-
-    /*!
-     *  Removes an operator in the expression in front of the cursor.
-     */
-    void removeOperatorBeforeCursorInExpression();
-        
-    /*!
-     *  Checks if the given key event will remove an operator after the cursor.
-     *
-     *      @param [in] keyEvent   The key event to check.
-     *
-     *      @return True, if the event will remove an operator, otherwise false.
-     */
-    bool removesOperatorAfterCursor(QKeyEvent* keyEvent);
-        
-    /*!
-     *  Removes an operator in the expression after the cursor.
-     */
-    void removeOperatorAfterCursorInExpression();
-
-    /*!
-     *  Finds the word currently under cursor.
-     *
-     *      @return The word under cursor.
-     */
-    QString currentWord() const;
-
-    /*!
-     *  Finds the index for the start of the current word.
-     *
-     *      @return The index for the start of the current word.
-     */
-    int startOfCurrentWord() const;
-    
-    /*!
-     *  Finds the index for the end of the current word.
-     *
-     *      @return The index for the end of the current word.
-     */
-    int endOfCurrentWord() const;
-
-    /*!
-     *  Finds the length of the current word.
-     *
-     *      @return The length of the current word.
-     */
-    int currentWordLength() const;
-
-    /*!
-     *  Gives the index of the word currently under the cursor.
-     *
-     *      @return The index of the word.
-     */
-    int currentWordIndex() const;
-
-    /*!
-     *  Replaces a word in a given index with another.
-     *
-     *      @param [in] n           The index of the word to replace i.e 1 for second word in a sentence.
-     *      @param [in] oldText     The text to replace the word in.
-     *      @param [in] after       The word used to replace the old word.
-     *
-     *      @return A text where the nth word has been replaced.
-     */
-    QString replaceNthWordWith(int n, QString const& oldText, QString const& after) const;
-
-    /*!
-     *  Finds the nth word in a text.
-     *
-     *      @param [in] n       The word index to find.
-     *      @param [in] text    The text to search in.
-     *
-     *      @return The nth word in a text.
-     */
-    QString nthWordIn(int n, QString const& text) const;
-
-    /*!
-     *  Finds the character index of the beginning of nth word in a text.
-     *
-     *      @param [in] n       The word to search.
-     *      @param [in] text    The text to search the word in.
-     *
-     *      @return The index at the beginning of the nth word.
-     */
-    int indexOfNthWord(int n, QString const& text) const;
-
-    /*!
-     * Checks if the current word is unambiguous name of a parameter.
-     *
-     *      @return True, if the word is unambiguous parameter name, otherwise false.
-     */
-    bool currentWordIsUniqueParameterName();
-
-    /*!
      *  Changes the color of the font for the current word to red.
      */
-    void colorCurrentWordRed();
+    virtual void colorCurrentWordRed() override final;
 
     /*!
      *  Changes the color of the font for the current word to black.
      */
-    void colorCurrentWordBlack();
+    virtual void colorCurrentWordBlack() override final;
 
     /*!
-     *  Checks if the given text is a word delimiter.
+     *  Check if a selection exists.
      *
-     *      @param [in] text   The text to check.
-     *
-     *      @return True, if the text is a word delimiter, otherwise false.
+     *      @return True, if a selection exists, false otherwise.
      */
-    bool isWordDelimiter(QString const& text) const; 
+    virtual bool hasSelection() override final;
 
     /*!
-     *  Checks if the given key event will remove or replace text.
+     *  Let the parent widget handle the key press event.
      *
-     *      @param [in] keyEvent   The event to check.
-     *
-     *      @return True, if the event will remove or replace text, otherwise false.
+     *      @param [in] keyEvent    The selected key press event.
      */
-    bool removesOrReplacesText(QKeyEvent* keyEvent);
+    virtual void handleParentKeyPressEvent(QKeyEvent* keyEvent) override final;
 
     /*!
-     *  Checks if the given event will copy, cut or paste text.
+     *  Decrease references made to the selected ID.
      *
-     *      @param [in] keyEvent    The event to check.
-     *
-     *      @return True, if the event will copy, cut or paste text, otherwise false.
+     *      @param [in] referenceItem   ID of the selected item.
      */
-    bool keysequenceCopyCutPaste(QKeyEvent* keyEvent);
+    virtual void handleReferenceDecrease(QString const& referenceItem) override final;
 
     /*!
-     *  Checks if the given event will move the cursor.
+     *  Increase references made to the selected ID.
      *
-     *      @param [in] keyEvent    The event to check.
-     *
-     *      @return True, if the event will move the cursor, otherwise false.
+     *      @param [in] referenceItem   ID of the selected item.
      */
-    bool keyMovesCursor(QKeyEvent* keyEvent);
+    virtual void handleReferenceIncrease(QString const& referenceItem) override final;
 
     /*!
-     *  Removes the current selection in the underlying expression.
+     *  Set the completed parameter name for the editor.
+     *
+     *      @param [in] parameterName   The completed parameter name.
      */
-    void removeSelectionInExpression();
+    virtual void setCompletedParameterName(QString const& parameterName) override final;
 
     /*!
-     *  Replaces the references in the underlying expression with the referenced names.
+     *  Get the current cursor position.
      *
-     *      @param [in] firstWord   The sequence number of the first word to replace.
-     *      @param [in] lastWord    The sequence number of the last word to replace.
+     *      @return The position of the cursor.
      */
-    void replaceReferencesInExpressionWithNames(int firstWord, int lastWord);
+    virtual int getCursorPosition() const override final;
 
     /*!
-     *  Ends the editing of current term in the underlying expression with the given word delimiter.
+     *  Get the current text of the editor.
      *
-     *      @param [in] delimiter   The word delimiter ending the term edit.
+     *      @return The current text.
      */
-    void finishEditingCurrentTerm(QString delimiter);
-    
+    virtual QString getCurrentText() const override final;
+
     /*!
-     *  Checks if the given key event represents shortcut for showing all available completions.
+     *  Get the selected text.
      *
-     *      @param [in] keyEvent   The key event to check.
-     *
-     *      @return True, if the key event requests showing completions, otherwise false.
+     *      @return The selected text.
      */
-    bool showCompletionsRequested(QKeyEvent* keyEvent);
+    virtual QString getSelectedText() const override final;
 
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
+    /*!
+     *  Count the length of the first word in the current selection.
+     *
+     *      @return Length of the first word in the selection.
+     */
+    virtual int getSelectionFirstWord() const override final;
 
-    //! The completer whose selection is used in the text.
-    QCompleter* nameCompleter_;
-
-    //! Resolver for parameter names.
-    QSharedPointer<ParameterFinder> parameterFinder_;
-
-    //! The underlying expression for the editor.
-    QString expression_;
-    
-    //! Flag for indicating that the user is not selecting text with the mouse.
-    bool notSelectingText_;
-
-    //! The list of the reserved words for this editor.
-    QStringList reservedWords_;
+    /*!
+     *  Count the length of the last word in the current selection.
+     *
+     *      @return Length of the last word in the selection.
+     */
+    virtual int getSelectionLastWord() const override final;
 };
 
 #endif // EXPRESSIONEDITOR_H

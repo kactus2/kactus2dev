@@ -13,16 +13,17 @@
 
 #include "ExpressionEditor.h"
 
+#include <editors/ComponentEditor/common/ExpressionLineEditor.h>
+
 #include <QAbstractItemView>
 #include <QKeyEvent>
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionDelegate::ExpressionDelegate()
 //-----------------------------------------------------------------------------
-ExpressionDelegate::ExpressionDelegate(QCompleter* parameterNameCompleter, 
-    QSharedPointer<ParameterFinder> parameterFinder, QObject *parent)
-    : MultilineDescriptionDelegate(parent), 
-    parameterNameCompleter_(parameterNameCompleter), parameterFinder_(parameterFinder)
+ExpressionDelegate::ExpressionDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
+MultilineDescriptionDelegate(parent), 
+parameterNameCompleter_(parameterNameCompleter), parameterFinder_(parameterFinder)
 {
 
 }
@@ -88,7 +89,7 @@ void ExpressionDelegate::setModelData(QWidget* editor, QAbstractItemModel* model
 //-----------------------------------------------------------------------------
 // Function: ExpressionDelegate::createExpressionEditor()
 //-----------------------------------------------------------------------------
-QWidget* ExpressionDelegate::createExpressionEditor(QWidget* parent) const
+ExpressionEditor* ExpressionDelegate::createExpressionEditor(QWidget* parent) const
 {
     ExpressionEditor* editor = new ExpressionEditor(parameterFinder_, parent);
     editor->setAppendingCompleter(parameterNameCompleter_);
@@ -98,6 +99,20 @@ QWidget* ExpressionDelegate::createExpressionEditor(QWidget* parent) const
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(editor, SIGNAL(decreaseReference(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    return editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionDelegate::createExpressionLineEditor()
+//-----------------------------------------------------------------------------
+ExpressionLineEditor* ExpressionDelegate::createExpressionLineEditor(QWidget* parent) const
+{
+    ExpressionLineEditor* editor = new ExpressionLineEditor(parameterFinder_, parent);
+    editor->setAppendingCompleter(parameterNameCompleter_);
+
+    connect(editor, SIGNAL(increaseReference(QString)), this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(decreaseReference(QString)), this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     return editor;
 }

@@ -236,13 +236,15 @@ unsigned int RegisterGraphItem::findHighestReservedBit()
 {
     unsigned int highestBit = getRegisterMSB();
 
-    // Check, if fields span outside register boundary i.e. MSB.
-    for (auto i = childItems_.cend() - 1; i != childItems_.cbegin() - 1; --i)
+    if (!childItems_.isEmpty())
     {
-        MemoryVisualizationItem* current = i.value();
-        if (current->getLastAddress() > highestBit && current->isPresent())
+        for (auto i = childItems_.cend() - 1; i != childItems_.cbegin() - 1; --i)
         {
-            highestBit = current->getLastAddress();
+            MemoryVisualizationItem* current = i.value();
+            if (current->getLastAddress() > highestBit && current->isPresent())
+            {
+                highestBit = current->getLastAddress();
+            }
         }
     }
 
@@ -279,17 +281,21 @@ void RegisterGraphItem::fillGapsBetweenChildren()
     quint64 lowestBitHandled = findHighestReservedBit() + 1;
 
     // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB). 
-    for (auto i = childItems_.end() - 1; i != childItems_.begin() - 1; --i)
-    {
-        MemoryVisualizationItem const* current = i.value();
-        if (current->isPresent())
-        {
-            if (emptySpaceBeforeChild(current, lowestBitHandled))
-            {
-                i = addMemoryGap(current->getLastAddress() + 1, lowestBitHandled - 1);
-            }
 
-            lowestBitHandled = qMin(current->getOffset(), lowestBitHandled);
+    if (!childItems_.isEmpty())
+    {
+        for (auto i = childItems_.end() - 1; i != childItems_.begin() - 1; --i)
+        {
+            MemoryVisualizationItem const* current = i.value();
+            if (current->isPresent())
+            {
+                if (emptySpaceBeforeChild(current, lowestBitHandled))
+                {
+                    i = addMemoryGap(current->getLastAddress() + 1, lowestBitHandled - 1);
+                }
+
+                lowestBitHandled = qMin(current->getOffset(), lowestBitHandled);
+            }
         }
     }
 
@@ -332,28 +338,31 @@ void RegisterGraphItem::markConflictingChildren()
     quint64 lowestBitHandled = registerMSB + 1;
 
     // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB).     
-    for (auto child = childItems_.end() - 1; child != childItems_.begin() - 1; --child)
+    if (!childItems_.isEmpty())
     {
-        MemoryVisualizationItem* current = child.value();
-        if (current->isPresent())
+        for (auto child = childItems_.end() - 1; child != childItems_.begin() - 1; --child)
         {
-            bool overlaps = current->getLastAddress() >= lowestBitHandled;
-            bool isOutsideRegister = current->getOffset() > registerMSB || current->getLastAddress() > registerMSB;
-
-            current->setConflicted(overlaps || isOutsideRegister);
-            if (overlaps)
+            MemoryVisualizationItem* current = child.value();
+            if (current->isPresent())
             {
-                // Walk in the opposite direction and mark any overlapping items conflicted.
-                for (auto previous = child + 1; previous != childItems_.end(); ++previous)
+                bool overlaps = current->getLastAddress() >= lowestBitHandled;
+                bool isOutsideRegister = current->getOffset() > registerMSB || current->getLastAddress() > registerMSB;
+
+                current->setConflicted(overlaps || isOutsideRegister);
+                if (overlaps)
                 {
-                    if ((*previous)->getOffset() <= current->getLastAddress())
+                    // Walk in the opposite direction and mark any overlapping items conflicted.
+                    for (auto previous = child + 1; previous != childItems_.end(); ++previous)
                     {
-                        (*previous)->setConflicted(true);
+                        if ((*previous)->getOffset() <= current->getLastAddress())
+                        {
+                            (*previous)->setConflicted(true);
+                        }
                     }
                 }
-            }
 
-            lowestBitHandled = qMin(current->getOffset(), lowestBitHandled);
+                lowestBitHandled = qMin(current->getOffset(), lowestBitHandled);
+            }
         }
     }
 }
