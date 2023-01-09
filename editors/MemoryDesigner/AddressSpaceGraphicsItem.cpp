@@ -387,12 +387,12 @@ QMultiMap<quint64, MemoryConnectionItem*> AddressSpaceGraphicsItem::getChainedMe
                         for (int connectionIndex = amountOfSameKeys - 1; connectionIndex >= 0; --connectionIndex)
                         {
                             MemoryConnectionItem* sameKeyConnection = sameKeyItems.at(connectionIndex);
-                            chainedConnections.insertMulti(secondChainBaseAddress, sameKeyConnection);
+                            chainedConnections.insert(secondChainBaseAddress, sameKeyConnection);
                         }
                     }
                     else
                     {
-                        chainedConnections.insertMulti(secondChainBaseAddress, secondChainConnection);
+                        chainedConnections.insert(secondChainBaseAddress, secondChainConnection);
                     }
                 }
             }
