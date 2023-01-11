@@ -21,7 +21,6 @@ print_success() {
 
 # Generate compressed help files.
 echo "Generating compressed help files..."
-${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
 ${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
 
 if command -v ${QTBIN_PATH}qmake6 >/dev/null 2>&1; then
