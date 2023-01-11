@@ -359,7 +359,14 @@ std::string AbstractParameterInterface::getValue(std::string const& parameterNam
     QSharedPointer<Parameter> parameter = getParameter(parameterName);
     if (parameter)
     {
-        return parseExpressionToBaseNumber(parameter->getValue(), baseNumber).toStdString();
+        if (parameter->getType() == QStringLiteral("string"))
+        {
+            return parameter->getValue().toStdString();
+        }
+        else
+        {
+            return parseExpressionToBaseNumber(parameter->getValue(), baseNumber).toStdString();
+        }
     }
 
     return std::string("");

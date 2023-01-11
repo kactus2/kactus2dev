@@ -207,7 +207,7 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
         }
         else
         {
-            QRegularExpression separator(ANY_OPERATOR.pattern() % QStringLiteral("|[(){}]"));
+            QRegularExpression separator(ANY_OPERATOR.pattern() % QStringLiteral("|[(){},]"));
             QString unknown = expression.mid(index, separator.match(expression, index).capturedStart() - index);
             
             output.append(unknown.trimmed());
