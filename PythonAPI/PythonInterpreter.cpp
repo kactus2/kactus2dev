@@ -41,8 +41,7 @@ PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* 
 //-----------------------------------------------------------------------------
 PythonInterpreter::~PythonInterpreter()
 {
-    PyEval_AcquireThread(threadState_);
-    Py_FinalizeEx();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -79,6 +78,15 @@ bool PythonInterpreter::initialize(bool interactive)
 
     printPrompt();
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonInterpreter::finalize()
+//-----------------------------------------------------------------------------
+void PythonInterpreter::finalize()
+{
+    PyEval_AcquireThread(threadState_);
+    Py_FinalizeEx();
 }
 
 //-----------------------------------------------------------------------------
