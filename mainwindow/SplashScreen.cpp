@@ -57,7 +57,7 @@ void SplashScreen::drawContents(QPainter *painter)
     painter->setFont(font);
  
     painter->drawText(QRectF(5, 240, 590, 160), Qt::AlignCenter,
-        QString::fromLatin1("Copyright 2010-2022 Tampere University,\n"
+        QString::fromLatin1("Copyright 2010-2023 Tampere University,\n"
                             "Korkeakoulunkatu 10, FI-33720 Tampere, Finland\n"
                             "https://research.tuni.fi/system-on-chip/tools\n"
                             "kactus2@tuni.fi\n"
