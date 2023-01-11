@@ -19,14 +19,29 @@ print_success() {
     fi
 }
 
+# Auto search QTBIN_PATH when empty and qmake already installed.
+if [ -z ${QTBIN_PATH} ]; then
+    if command -v qmake6 >/dev/null 2>&1; then
+        # Default to qmake6, which will exist on some linux distributions.
+        QTBIN_PATH=$(qmake6 -query QT_INSTALL_BINS)/
+    elif command -v qmake >/dev/null 2>&1; then
+        # qmake exists on the vast majority of linux distributions.
+        QTBIN_PATH=$(qmake -query QT_INSTALL_BINS)/
+    fi
+fi
+
 # Generate compressed help files.
 echo "Generating compressed help files..."
-${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
+if command -v ${QTBIN_PATH}qhelpgenerator >/dev/null 2>&1; then
+    ${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
+else
+    echo "Qhelpgenerator not found. Please set variable QTBIN_PATH to Qt binary files."
+fi
 
-if command -v ${QTBIN_PATH}qmake6 >/dev/null 2>&1; then
-   echo "Running qmake6..."
-   ${QTBIN_PATH}qmake6 Kactus2_Solution.pro
+if command -v ${QTBIN_PATH}qmake >/dev/null 2>&1; then
+   echo "Running qmake..."
+   ${QTBIN_PATH}qmake Kactus2_Solution.pro
    print_success
 else
-    echo "Could not find qmake6. Please set variable QTBIN_PATH to Qt binary files."
+    echo "Qmake not found. Please set variable QTBIN_PATH to Qt binary files."
 fi
