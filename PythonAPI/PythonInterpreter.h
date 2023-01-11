@@ -47,13 +47,18 @@ public:
     virtual ~PythonInterpreter();
 
     /*!
-     * Initializes the interpterter. This function must be called before writing any commands with write().
+     * Initializes the interpreter. This function must be called before writing any commands with write().
      *
      *     @param [in] interactive  Flag for enabling interactive std input. Set to true on command-line.
      *
      *     @return True, if initialization was successful, otherwise false.
      */
      bool initialize(bool interactive = true);     
+     
+     /*!
+      * Clean up the interpreter state at end of life time.
+      */
+    void finalize();
 
     /*!
      * Execute a single line in the interpreter.
@@ -139,6 +144,7 @@ private:
 
     //! Interpreter thread state value holder.
     PyThreadState* threadState_;
+
 };
 
 #endif // PYTHON_INTERPRETER_H

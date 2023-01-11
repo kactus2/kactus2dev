@@ -465,6 +465,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/choices/EnumerationModel.h \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
+    ./editors/ComponentEditor/common/MasterExpressionEditor.h \
     ./editors/ComponentEditor/common/ParameterizableTable.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/ComponentEditor/common/CompleterPopupTable.h \
@@ -474,6 +475,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
     ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/common/ReferencingTableModel.h \
+    ./editors/ComponentEditor/common/ExpressionLineEditor.h \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
     ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
@@ -812,8 +814,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/common/ExpressionLineEditor.h
+    ./PythonAPI/extensions/IOCatcher.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1267,7 +1268,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
+    ./editors/ComponentEditor/common/ExpressionLineEditor.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
+    ./editors/ComponentEditor/common/MasterExpressionEditor.cpp \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
     ./editors/ComponentEditor/common/ParameterCompleter.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
@@ -1532,6 +1535,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/common/ExpressionLineEditor.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp
 RESOURCES += kactus.qrc

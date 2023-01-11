@@ -72,6 +72,7 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
 //-----------------------------------------------------------------------------
 PythonSourceEditor::~PythonSourceEditor()
 {
+    interpreter_->finalize();
     scriptThread_.quit();
     scriptThread_.wait();
 }
