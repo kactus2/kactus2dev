@@ -8,6 +8,34 @@
               * Changed or Information
 ===============================================================================
 
+
+12/01/2023 3.11.0
+----------------------------------------------------
+* Migrated to Qt 6.2.4, Qt5 build is no longer supported
+
++ Updated choice editor
++ Added line editor for expressions
++ Added doxygen flag to swig for better documentation of functions
++ Added undo/redo in Python script editor
++ Added support for ternary opertor (?:) in SystemVerilog expressions (community contribution)
++ Added width for port default values in generated Verilog (community contribution)
++ Added register dimensions in SVD generation
+
+- Changed configurable element values of a component instance to use table instead of a tree view
+- Improved port editor performance
+- Improved configuration and help generation in Linux (community contribution)
+- Fixed disappearing component remap states 
+- Fixed application settings losing code editor settings on startup
+- Fixed Python script editor visibility to persist between documents
+- Fixed Python interpreter thread not quiting at application shutdown
+- Fixed component editor crashing after removing last memory map
+- Fixed component editor crashing after removing memory remaps
+- Fixed SVD generator crashing on sticky note with assosiaction
+- Removed win32 build configurations for VS
+
+* Migrated to VS2022
+* Windows installer now embeds Python version 3.10.6
+
 21/06/2022 3.10.0
 ----------------------------------------------------
 + Added bus interfaces in Python API

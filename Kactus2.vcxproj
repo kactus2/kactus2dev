@@ -196,7 +196,7 @@ CreateHelp
     </ResourceCompile>
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>IPXACTmodels.lib;python38.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IPXACTmodels.lib;python310.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>x64\executable\Kactus2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
