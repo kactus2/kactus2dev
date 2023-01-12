@@ -600,6 +600,7 @@ QVariant PortsModel::expressionForIndex(QModelIndex const& index) const
 // Function: portsmodel::valueForIndex()
 //-----------------------------------------------------------------------------
 QVariant PortsModel::valueForIndex(QModelIndex const& index) const
+{
     if (index.column() == rowNumberColumn())
     {
         QModelIndex filteredIndex = filter_->mapFromSource(index);
