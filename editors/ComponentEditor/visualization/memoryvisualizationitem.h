@@ -274,7 +274,7 @@ private:
      *
      *      @return The created child item.
      */
-    QMap<quint64, MemoryVisualizationItem*>::iterator createMemoryGap(quint64 offset, quint64 lastAddress);
+    QMultiMap<quint64, MemoryVisualizationItem*>::iterator createMemoryGap(quint64 offset, quint64 lastAddress);
 
     /*!
      *  Groups a given address text to groups of four digits.

@@ -49,7 +49,7 @@ public:
 	 *      @param [in] f               Widget flags for the dialog.
 	 */
     ObjectSelectionDialog(QString const& okButtonText, QString const& iconPath, QString const& okIconPath,
-        QString const& windowTitle, QWidget* parent = 0, Qt::WindowFlags f = 0);
+        QString const& windowTitle, QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
     /*!
 	 *  The destructor.

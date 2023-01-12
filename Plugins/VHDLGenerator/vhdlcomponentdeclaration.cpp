@@ -70,8 +70,8 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const
     {
 		VhdlGeneral::writeDescription(description(), stream, QString("  "));
 	}
-	stream << "  " << "-- IP-XACT VLNV: " << component_->getVlnv().toString() << endl;
-    stream << "  " << "component " << getVhdlLegalName() << endl;
+	stream << "  " << "-- IP-XACT VLNV: " << component_->getVlnv().toString() << Qt::endl;
+    stream << "  " << "component " << getVhdlLegalName() << Qt::endl;
 
 	// write the generic declarations
 	if (!generics_.isEmpty())
@@ -85,7 +85,7 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const
         writePorts(stream);
 	}
 
-	stream << "  end component;" << endl;
+	stream << "  end component;" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const
 //-----------------------------------------------------------------------------
 void VhdlComponentDeclaration::writeGenerics(QTextStream& stream) const
 {
-    stream << "  " << "  " << "generic (" << endl;
+    stream << "  " << "  " << "generic (" << Qt::endl;
     for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin();
         i != generics_.end(); ++i)
     {
@@ -113,10 +113,10 @@ void VhdlComponentDeclaration::writeGenerics(QTextStream& stream) const
         }
         else
         {
-            stream << endl;
+            stream << Qt::endl;
         }
     }
-    stream << "  " << "  " << ");" << endl;
+    stream << "  " << "  " << ");" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ void VhdlComponentDeclaration::writeGenerics(QTextStream& stream) const
 //-----------------------------------------------------------------------------
 void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
 {
-    stream << "  " << "  " << "port (" << endl;
+    stream << "  " << "  " << "port (" << Qt::endl;
     QString previousInterface;
     for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin();
         i != ports_.end(); ++i)
@@ -134,19 +134,19 @@ void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
         {
             const QString interfaceName = i.key().interface();
 
-            stream << endl << "  " << "  " << "  " << "-- ";
+            stream << Qt::endl << "  " << "  " << "  " << "-- ";
 
             if (interfaceName == QString("none"))
             {
-                stream << "These ports are not in any interface" << endl;
+                stream << "These ports are not in any interface" << Qt::endl;
             }
             else if (interfaceName == QString("several"))
             {
-                stream << "There ports are contained in many interfaces" << endl;
+                stream << "There ports are contained in many interfaces" << Qt::endl;
             }
             else
             {
-                stream << "Interface: " << interfaceName << endl;
+                stream << "Interface: " << interfaceName << Qt::endl;
                 const QString description = component_->getBusInterface(
                     interfaceName)->description();
                 if (!description.isEmpty())
@@ -174,10 +174,10 @@ void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
         }
         else
         {
-            stream << endl;
+            stream << Qt::endl;
         }
     }
-    stream << "    );" << endl;
+    stream << "    );" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

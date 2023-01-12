@@ -2,7 +2,7 @@
 // File: PropertyValueModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 16.4.2012
 //
 // Description:
@@ -182,7 +182,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
         return QVariant();
     }
 
-    else if (role == Qt::TextColorRole)
+    else if (role == Qt::ForegroundRole)
     {
         if (index.column() == 0)
         {

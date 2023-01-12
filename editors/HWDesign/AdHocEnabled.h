@@ -2,7 +2,7 @@
 // File: AdHocEnabled.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 27.2.2012
 //
 // Description:

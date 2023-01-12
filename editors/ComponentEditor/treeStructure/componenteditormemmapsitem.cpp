@@ -163,11 +163,6 @@ void ComponentEditorMemMapsItem::createChild( int index )
 //-----------------------------------------------------------------------------
 ItemVisualizer* ComponentEditorMemMapsItem::visualizer()
 {
-	if (childItems_.isEmpty() == false)
-	{
-        return childItems_.at(0)->visualizer();
-	}
-
     return nullptr;
 }
 

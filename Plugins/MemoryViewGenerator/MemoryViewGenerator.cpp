@@ -74,7 +74,7 @@ void MemoryViewGenerator::writeFile(QString const& outputPath,
 
     QTextStream outputStream(&outputFile);
 
-    outputStream << "Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);" << endl;
+    outputStream << "Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);" << Qt::endl;
 
     foreach (QVector<QSharedPointer<const ConnectivityInterface> > path, masterRoutes)
     {        
@@ -108,7 +108,7 @@ void MemoryViewGenerator::writeItem(QSharedPointer<MemoryItem> item, int address
         outputStream << item->getIdentifier() << ";" << item->getType() << ";" <<
             "0x" + QString::number(addressOffset + item->getAddress().toInt(), 16) << ";" << 
             item->getRange() << ";" << item->getWidth() << ";" << item->getSize() << ";" <<
-            item->getOffset() << ";" << endl;
+            item->getOffset() << ";" << Qt::endl;
 
         foreach (QSharedPointer<MemoryItem> child, item->getChildItems())
         {

@@ -122,7 +122,7 @@ void LocalMemoryMapHeaderWriter::writeMemoryMapHeader(QList<LocalHeaderSaveModel
             writeRegisterFromMemoryMap(finder, headerOpt->localMemMap_, stream, true, 0);
 		}*/
 
-		stream << "#endif /* " << headerGuard << " */" << endl << endl;
+		stream << "#endif /* " << headerGuard << " */" << Qt::endl << Qt::endl;
 
         informWritingFinished(headerOpt->fileInfo_.fileName());
 

@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 #include <QString>
@@ -193,16 +193,16 @@ private:
     QVector<TagData> tags_;
 
 	//! The validator that checks vendor rules
-	QRegExpValidator vendorValidator_;
+	QRegularExpressionValidator vendorValidator_;
 
 	//! The validator that checks library rules
-	QRegExpValidator libraryValidator_;
+	QRegularExpressionValidator libraryValidator_;
 
 	//! The validator that checks name rules
-	QRegExpValidator nameValidator_;
+	QRegularExpressionValidator nameValidator_;
 
 	//! The validator that checks version rules
-	QRegExpValidator versionValidator_;
+	QRegularExpressionValidator versionValidator_;
 
 	//! Contains filters for vendor
 	QString vendorFilter_;

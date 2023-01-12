@@ -142,7 +142,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::TextAlignmentRole && index.column() == rowNumberColumn())
     {
-        return Qt::AlignRight + Qt::AlignVCenter;
+        return int(Qt::AlignRight | Qt::AlignVCenter);
     }
 
 	// if unsupported role
@@ -600,15 +600,15 @@ QVariant PortsModel::expressionForIndex(QModelIndex const& index) const
 // Function: portsmodel::valueForIndex()
 //-----------------------------------------------------------------------------
 QVariant PortsModel::valueForIndex(QModelIndex const& index) const
-{
-    string portName(portsInterface_->getItemNames().at(index.row()));
-
     if (index.column() == rowNumberColumn())
     {
         QModelIndex filteredIndex = filter_->mapFromSource(index);
         return filteredIndex.row() + 1;
     }
-    else if (index.column() == nameColumn())
+    
+    string portName = portsInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == nameColumn())
     {
         return QString::fromStdString(portName);
     }

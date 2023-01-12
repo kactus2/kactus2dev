@@ -12,7 +12,7 @@
 #ifndef PADSASCIISYNTAX_H
 #define PADSASCIISYNTAX_H
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QString>
 
 namespace PadsAsciiSyntax {
@@ -36,8 +36,8 @@ namespace PadsAsciiSyntax {
 
     // First header line in PADS part.    
     const QString PART_HEADER_1ST_LINE = "name pcbdecals u logfam attrs gates sigpins pinmap flag";
-    const QRegExp PART_HEADER_1ST_EXP = 
-        QRegExp("(\\w{1,40}) (\\w{1,40}(?:[:]\\w{1,40}){0,15}) (\\w) (\\w{3}) \\d+ \\d+ \\d+ \\d+ \\d{1,3}");
+    const QRegularExpression PART_HEADER_1ST_EXP = 
+        QRegularExpression("(\\w{1,40}) (\\w{1,40}(?:[:]\\w{1,40}){0,15}) (\\w) (\\w{3}) \\d+ \\d+ \\d+ \\d+ \\d{1,3}");
 
     // Positions of header fields.
     enum partHeaderPos
@@ -55,12 +55,12 @@ namespace PadsAsciiSyntax {
 
     // Second header line in PADS part.
     const QString PART_HEADER_2ND_LINE = "TIMESTAMP year.month.day.hour.minute.second";
-    const QRegExp PART_HEADER_2ND_EXP = 
-        QRegExp("TIMESTAMP \\d{4}[.]\\d{1,2}[.]\\d{1,2}[.]\\d{1,2}[.]\\d{1,2}[.]\\d{1,2}", Qt::CaseInsensitive);
+    const QRegularExpression PART_HEADER_2ND_EXP("TIMESTAMP \\d{4}[.]\\d{1,2}[.]\\d{1,2}[.]\\d{1,2}[.]\\d{1,2}[.]\\d{1,2}",
+            QRegularExpression::CaseInsensitiveOption);
 
     // Part attribute line.
     const QString ATTRIBUTE_DECLARATION = "name value";
-    const QRegExp ATTRIBUTE_EXP = QRegExp("\"[^\"]{1,255}\"(([^\\r\\n])*)");
+    const QRegularExpression ATTRIBUTE_EXP = QRegularExpression("\"[^\"]{1,255}\"(([^\\r\\n])*)");
 
     // Positions of fields in attributes.
     enum attrPos
@@ -71,8 +71,10 @@ namespace PadsAsciiSyntax {
 
     // Gate declaration for normal parts.
     const QString PART_GATE_DECLARATION = "GATE decals pins gateswap";
-    const QRegExp PART_GATE_EXP = QRegExp("GATE (\\d) (\\d+) (\\d)", Qt::CaseInsensitive);    
-    const QRegExp PART_GATE_NAME_EXP = QRegExp("(\\w{1,40}([:]\\w{1,40}){0,3})", Qt::CaseInsensitive);
+    const QRegularExpression PART_GATE_EXP = QRegularExpression("GATE (\\d) (\\d+) (\\d)", 
+        QRegularExpression::CaseInsensitiveOption);
+    const QRegularExpression PART_GATE_NAME_EXP = QRegularExpression("(\\w{1,40}([:]\\w{1,40}){0,3})", 
+        QRegularExpression::CaseInsensitiveOption);
 
     // Positions of gate fields in normal part.
     enum gatePos
@@ -84,8 +86,8 @@ namespace PadsAsciiSyntax {
 
     // Pin declaration for normal part gates.
     const QString PART_GATE_PIN = "pinnumber pinswap pintype pinname";
-    const QRegExp PART_GATE_PIN_EXP = QRegExp("(\\w{1,7}) (\\d) ([S|B|C|O|T|L|Z|P|G|U])( \\w{1,40})?", 
-        Qt::CaseInsensitive);
+    const QRegularExpression PART_GATE_PIN_EXP = QRegularExpression("(\\w{1,7}) (\\d) ([S|B|C|O|T|L|Z|P|G|U])( \\w{1,40})?", 
+        QRegularExpression::CaseInsensitiveOption);
 
     // Positions of gate pin fields.
     enum pinPos
@@ -207,7 +209,7 @@ namespace PadsAsciiSyntax {
 
     // PADS PCB decal header.
     // const QString PCB_DECAL_HEADER = "name u x y attrs labels pieces txt terminals stacks maxlayers"
-    const QRegExp PCB_DECAL_HEADER_EXP = QRegExp("(\\w+) \\w -?\\d+ -?\\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\d");
+    const QRegularExpression PCB_DECAL_HEADER_EXP = QRegularExpression("(\\w+) \\w -?\\d+ -?\\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\d+ \\d");
 
 }
 

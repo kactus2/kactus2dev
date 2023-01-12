@@ -73,7 +73,7 @@ void ReferenceSelector::selectItem(QString const& itemName)
         addItem(itemName);
         index = findText(itemName);
 
-        setItemData(index, KactusColors::ERROR, Qt::TextColorRole);
+        setItemData(index, KactusColors::ERROR, Qt::ForegroundRole);
         setItemIcon(index, QIcon(QPixmap(":/icons/common/graphics/exclamation.png")));
     }
     else if (!isEnabled())

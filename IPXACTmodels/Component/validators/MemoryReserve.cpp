@@ -46,29 +46,31 @@ void MemoryReserve::addArea(QString const& newId, qint64 newBegin, qint64 newEnd
 //-----------------------------------------------------------------------------
 bool MemoryReserve::hasOverlap()
 {
-    if (!reservedArea_.isEmpty())
+    if (reservedArea_.isEmpty())
     {
-        qSort(reservedArea_);
-
-        for (int areaIndex = 0; areaIndex < reservedArea_.size(); ++areaIndex)
-        {
-            MemoryArea const& area = reservedArea_.at(areaIndex);
-
-            for (int nextIndex = areaIndex+1; nextIndex < reservedArea_.size(); ++nextIndex)
-            {
-                MemoryArea const& nextArea = reservedArea_.at(nextIndex);
-
-                if (nextArea.begin_ > area.end_)
-                {
-                    break;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-        }
+        return false;
     }
+
+	std::sort(reservedArea_.begin(), reservedArea_.end());
+
+	for (int areaIndex = 0; areaIndex < reservedArea_.size(); ++areaIndex)
+	{
+		MemoryArea const& area = reservedArea_.at(areaIndex);
+
+		for (int nextIndex = areaIndex + 1; nextIndex < reservedArea_.size(); ++nextIndex)
+		{
+			MemoryArea const& nextArea = reservedArea_.at(nextIndex);
+
+			if (nextArea.begin_ > area.end_)
+			{
+				break;
+			}
+			else
+			{
+				return true;
+			}
+		}
+	}
 
     return false;
 }
@@ -80,7 +82,7 @@ bool MemoryReserve::hasIdDependantOverlap()
 {
     if (!reservedArea_.isEmpty())
     {
-        qSort(reservedArea_);
+        std::sort(reservedArea_.begin(), reservedArea_.end());
 
         for (int areaIndex = 0; areaIndex < reservedArea_.size(); ++areaIndex)
         {
@@ -114,30 +116,32 @@ bool MemoryReserve::hasIdDependantOverlap()
 void MemoryReserve::findErrorsInOverlap(QVector<QString>& errors, QString const& itemIdentifier,
     QString const& context)
 {
-    if (!reservedArea_.isEmpty())
+    if (reservedArea_.isEmpty())
     {
-        qSort(reservedArea_);
+        return;
+	}
 
-        for (int i = 0; i < reservedArea_.size(); ++i)
-        {
-            MemoryArea area = reservedArea_.at(i);
+	std::sort(reservedArea_.begin(), reservedArea_.end());
 
-            for (int j = i+1; j < reservedArea_.size(); ++j)
-            {
-                MemoryArea nextArea = reservedArea_.at(j);
+	for (int i = 0; i < reservedArea_.size(); ++i)
+	{
+		MemoryArea area = reservedArea_.at(i);
 
-                if (nextArea.begin_ > area.end_)
-                {
-                    break;
-                }
-                else
-                {
-                    errors.append(QObject::tr("%1 %2 and %3 overlap within %4")
-                        .arg(itemIdentifier).arg(area.id_).arg(nextArea.id_).arg(context));
-                }
-            }
-        }
-    }
+		for (int j = i + 1; j < reservedArea_.size(); ++j)
+		{
+			MemoryArea nextArea = reservedArea_.at(j);
+
+			if (nextArea.begin_ > area.end_)
+			{
+				break;
+			}
+			else
+			{
+				errors.append(QObject::tr("%1 %2 and %3 overlap within %4")
+					.arg(itemIdentifier).arg(area.id_).arg(nextArea.id_).arg(context));
+			}
+		}
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -146,28 +150,27 @@ void MemoryReserve::findErrorsInOverlap(QVector<QString>& errors, QString const&
 void MemoryReserve::findErrorsInIdDependantOverlap(QVector<QString>& errors, QString const& itemIdentifier,
     QString const& context)
 {
-    if (!reservedArea_.isEmpty())
-    {
-        qSort(reservedArea_);
+    if (reservedArea_.isEmpty())
+	{
+		return;
+	}
 
-        for (int i = 0; i < reservedArea_.size(); ++i)
-        {
-            MemoryArea const& area = reservedArea_.at(i);
+	std::sort(reservedArea_.begin(), reservedArea_.end());
 
-            for (int j = i+1; j < reservedArea_.size(); ++j)
-            {
-                MemoryArea const& nextArea = reservedArea_.at(j);
+	for (int i = 0; i < reservedArea_.size(); ++i)
+	{
+		MemoryArea const& area = reservedArea_.at(i);
 
-                if (area.id_ == nextArea.id_)
-                {
-                    if (nextArea.begin_ <= area.end_)
-                    {
-                        errors.append(QObject::tr("Multiple definitions of %1 %2 overlap within %3")
-                            .arg(itemIdentifier).arg(area.id_).arg(context));
-                        break;
-                    }
-                }
-            }
-        }
-    }
+		for (int j = i + 1; j < reservedArea_.size(); ++j)
+		{
+			MemoryArea const& nextArea = reservedArea_.at(j);
+
+			if (area.id_ == nextArea.id_ && nextArea.begin_ <= area.end_)
+			{
+				errors.append(QObject::tr("Multiple definitions of %1 %2 overlap within %3")
+					.arg(itemIdentifier).arg(area.id_).arg(context));
+				break;
+			}
+		}
+	}
 }

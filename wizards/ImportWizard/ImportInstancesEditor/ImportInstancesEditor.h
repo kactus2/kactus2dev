@@ -131,7 +131,7 @@ private:
      *
      *      @return List of instance name file path pairs.
      */
-    QMap<QString, QString> getPossibleFilePaths(QVector<InstanceData::instanceData> const& instances) const;
+    QMultiMap<QString, QString> getPossibleFilePaths(QVector<InstanceData::instanceData> const& instances) const;
 
     /*!
      *  Get the importable files of the selected component.

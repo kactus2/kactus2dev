@@ -129,7 +129,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 		component_->disconnect(nameGroup_);
         component_->disconnect(fileSetRefCombo_);
 
-        disconnect(fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+        disconnect(fileSetRefCombo_, SIGNAL(currentTextChanged(QString const&)),
                    this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
@@ -228,7 +228,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 	connect(component_, SIGNAL(descriptionChanged(QString const&)),
 		    nameGroup_, SLOT(setDescription(QString const&)), Qt::UniqueConnection);
 
-    connect(fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(fileSetRefCombo_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onFileSetRefChanged(QString const&)), Qt::UniqueConnection);
 
 	// if the connected component is destroyed then clear this editor
@@ -280,7 +280,7 @@ void ComponentInstanceEditor::clear()
         component_->disconnect(nameGroup_);
         component_->disconnect(fileSetRefCombo_);
 
-        disconnect(fileSetRefCombo_, SIGNAL(currentIndexChanged(QString const&)),
+        disconnect(fileSetRefCombo_, SIGNAL(currentTextChanged(QString const&)),
                    this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 

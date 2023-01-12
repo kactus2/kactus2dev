@@ -2,7 +2,7 @@
 // File: NewSWComponentPage.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 24.8.2011
 //
 // Description:

@@ -25,6 +25,7 @@ width_(),
 size_(),
 offset_(),
 childItems_(),
+dimension_(),
 usage_(General::USAGE_COUNT),
 value_(),
 isPresent_("1")
@@ -198,6 +199,22 @@ void MemoryItem::addChild(QSharedPointer<MemoryItem> child)
 QVector<QSharedPointer<MemoryItem> > MemoryItem::getChildItems() const
 {
     return childItems_;         
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setDimension()
+//-----------------------------------------------------------------------------
+void MemoryItem::setDimension(QString const& dimension)
+{
+    dimension_ = dimension;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getWidth()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getDimension() const
+{
+    return dimension_;
 }
 
 //-----------------------------------------------------------------------------

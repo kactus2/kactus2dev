@@ -2,7 +2,7 @@
 // File: CSourceContentMatcher.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 11.1.2011
 //
 // Description:
@@ -202,7 +202,7 @@ private:
      *      @return True, if the identifier matched with the regular expression. Otherwise false.
      */
     bool tryMatchIdentifier(QString const& identifier, MCAPIContentType type,
-                            QRegExp& exp, MatchExecFunc func, int& count);
+                            QRegularExpression& exp, MatchExecFunc func, int& count);
 
     //-----------------------------------------------------------------------------
     // Data.

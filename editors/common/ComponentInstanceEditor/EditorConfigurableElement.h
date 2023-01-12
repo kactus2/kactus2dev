@@ -85,6 +85,20 @@ public:
      */
     void setConfiguratedValue(QString const& newConfiguratedValue);
 
+    /*!
+     *  Get the configurable element type.
+     *
+     *      @return The configurable element type.
+     */
+    QString const& getType() const;
+
+    /*!
+     *  Set a new type for configurable value.
+     *
+     *      @param [in] newType    The new configurable element type.
+     */
+    void setType(QString const& newType);
+
 private:
 
     //-----------------------------------------------------------------------------
@@ -99,6 +113,9 @@ private:
 
     //! The configurable value.
     QString configuratedValue_;
+
+    //! The type of the configurable value.
+    QString type_;
 };
 
 #endif // EDITORCONFIGURABLEELEMENT_H

@@ -476,8 +476,8 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF const& highStartPoint, 
         qreal connectionTop = highStartPoint.y();
         qreal connectionLow = lowStartPoint.y();
 
-        QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints;
-        QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints;
+        QMultiMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints;
+        QMultiMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints;
 
         MemoryColumn* startColumn = dynamic_cast<MemoryColumn*>(startItem_->parentItem());
         MemoryColumn* endColumn = dynamic_cast<MemoryColumn*>(endItem_->parentItem());
@@ -518,7 +518,7 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF const& highStartPoint, 
                             QPointF collisionEnd (collisionRight, connectionTop);
 
                             QPair<QPointF, QPointF> collisionPoints(collisionStart, collisionEnd);
-                            highCollisionPoints.insertMulti(collisionLeft, collisionPoints);
+                            highCollisionPoints.insert(collisionLeft, collisionPoints);
                         }
 
                         if (collisionTop < connectionLow && collisionLow > connectionLow)
@@ -527,7 +527,7 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF const& highStartPoint, 
                             QPointF collisionEnd (collisionRight, connectionLow);
 
                             QPair<QPointF, QPointF> collisionPoints(collisionStart, collisionEnd);
-                            lowCollisionPoints.insertMulti(collisionLeft, collisionPoints);
+                            lowCollisionPoints.insert(collisionLeft, collisionPoints);
                         }
                     }
                 }
@@ -547,8 +547,8 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF const& highStartPoint, 
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::createCollisionPath(QPointF highStartPoint, QPointF highEndPoint,
     QPointF lowStartPoint, QPointF lowEndPoint,
-    QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
-    QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints)
+    QMultiMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
+    QMultiMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints)
 {
     QPainterPath collisionPath;
     
@@ -574,8 +574,8 @@ void MemoryConnectionItem::createCollisionPath(QPointF highStartPoint, QPointF h
 //-----------------------------------------------------------------------------
 QPainterPath MemoryConnectionItem::createCollidingPathForUnusualConnection(bool connectionIsLocal,
     QPointF highStartPoint, QPointF highEndPoint, QPointF lowStartPoint, QPointF lowEndPoint,
-    QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
-    QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints)
+    QMultiMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
+    QMultiMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints)
 {
     QPainterPath collisionPath;
 
@@ -653,13 +653,13 @@ QPainterPath MemoryConnectionItem::createCollidingPathForUnusualConnection(bool 
 // Function: MemoryConnectionItem::eraseCollisionsFromPath()
 //-----------------------------------------------------------------------------
 QPainterPath MemoryConnectionItem::eraseCollisionsFromPath(QPainterPath collisionPath, QPointF collisionBegin,
-    QMap<qreal, QPair<QPointF, QPointF> > collisionPoints)
+    QMultiMap<qreal, QPair<QPointF, QPointF> > collisionPoints)
 {
     QPainterPath erasedPath = collisionPath;
     QPointF collisionStartPoint = collisionBegin;
     qreal pathY = collisionStartPoint.y();
 
-    QMapIterator<qreal, QPair<QPointF, QPointF> > collisionIterator(collisionPoints);
+    QMultiMapIterator<qreal, QPair<QPointF, QPointF> > collisionIterator(collisionPoints);
     while (collisionIterator.hasNext())
     {
         collisionIterator.next();

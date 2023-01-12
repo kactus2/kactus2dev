@@ -38,7 +38,7 @@ QStringList FileTypes::getFileTypes( QSettings& settings, const QString& fileSuf
     {
 		QString extensions = settings.value(type + QStringLiteral("/Extensions")).toString();
 
-		foreach (QString const& extension, extensions.split(QLatin1Char(';'), QString::SkipEmptyParts))
+		foreach (QString const& extension, extensions.split(QLatin1Char(';'), Qt::SkipEmptyParts))
         {
 			if (extension.compare(fileSuffix, Qt::CaseInsensitive) == 0)
             {

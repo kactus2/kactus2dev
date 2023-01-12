@@ -51,7 +51,7 @@ public:
      *      @param [in] instanceComponentMatches    The possible component modules for each component instance.
      *      @param [in] newInstances                List of imported component instances.
      */
-    void setupVLNVEditors(QMap < QString, QSharedPointer<const Component> > instanceComponentMatches,
+    void setupVLNVEditors(QMultiMap< QString, QSharedPointer<const Component> > instanceComponentMatches,
         QVector<InstanceData::instanceData> const& newInstances);
 
 	/*!
@@ -146,7 +146,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! List of possible components for each component instance.
-    QMap<QString, QSharedPointer<const Component> > instanceComponentMatches_;
+    QMultiMap<QString, QSharedPointer<const Component> > instanceComponentMatches_;
 
     //! List of instanced components.
     QVector<InstanceData::instanceData> instanceData_;

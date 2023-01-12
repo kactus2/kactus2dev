@@ -2,7 +2,7 @@
 // File: CodeEditorSettingsPage.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 14.6.2011
 //
 // Description:

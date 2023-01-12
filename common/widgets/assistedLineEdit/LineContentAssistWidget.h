@@ -2,7 +2,7 @@
 // File: LineContentAssistWidget.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 4.1.2011
 //
 // Description:

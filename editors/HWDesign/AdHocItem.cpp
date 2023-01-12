@@ -145,7 +145,7 @@ void AdHocItem::updateEndPointGraphics()
 //-----------------------------------------------------------------------------
 bool AdHocItem::adhocPortIsValid() const
 {
-    bool portExists = getOwnerComponent()->getPort(getPort()->name());
+    bool portExists = (getOwnerComponent()->getPort(getPort()->name()).isNull() == false);
     return portExists;
 }
 

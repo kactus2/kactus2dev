@@ -2,7 +2,7 @@
 // File: HelpWindow.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 7.8.2012
 //
 // Description:

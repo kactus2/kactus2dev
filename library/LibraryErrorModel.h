@@ -2,7 +2,7 @@
 // File: LibraryErrorModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 04.09.2012
 //
 // Description:

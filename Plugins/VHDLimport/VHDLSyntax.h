@@ -19,7 +19,7 @@ namespace VHDLSyntax
     //! Whitespace without line end.
     const QString SPACE = "[ \\t]*";    
 
-    //! Platform-independent endline.
+    //! Platform-independent endLine.
     const QString ENDLINE = "(?:\\r\\n?|\\n\\r?)";
 
     //! VHDL comment.

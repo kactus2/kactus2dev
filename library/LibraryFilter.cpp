@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::LibraryFilter()
@@ -40,11 +40,11 @@ QSortFilterProxyModel(parent),
 	setSortLocaleAware(true);
 	setSortCaseSensitivity(Qt::CaseInsensitive);
 
-	QRegExp regExp("*", Qt::CaseInsensitive, QRegExp::Wildcard);
-	vendorValidator_.setRegExp(regExp);
-	libraryValidator_.setRegExp(regExp);
-	nameValidator_.setRegExp(regExp);
-	versionValidator_.setRegExp(regExp);
+	QRegularExpression regExp(".*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+	vendorValidator_.setRegularExpression(regExp);
+	libraryValidator_.setRegularExpression(regExp);
+	nameValidator_.setRegularExpression(regExp);
+	versionValidator_.setRegularExpression(regExp);
 
     Q_ASSERT(libraryAccess_);
 }
@@ -54,11 +54,11 @@ QSortFilterProxyModel(parent),
 //-----------------------------------------------------------------------------
 void LibraryFilter::onVendorChanged(QString const& vendorText)
 {
-    vendorFilter_ = vendorText;
+    vendorFilter_ = vendorText + ".*";
 
 	// update the reg exp for validator
-	QRegExp regExp(vendorText, Qt::CaseInsensitive, QRegExp::Wildcard);
-	vendorValidator_.setRegExp(regExp);
+	QRegularExpression regExp(vendorFilter_, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+	vendorValidator_.setRegularExpression(regExp);
 
 	invalidateFilter();
 }
@@ -68,11 +68,11 @@ void LibraryFilter::onVendorChanged(QString const& vendorText)
 //-----------------------------------------------------------------------------
 void LibraryFilter::onLibraryChanged(QString const& libraryText)
 {
-    libraryFilter_ = libraryText;
+    libraryFilter_ = libraryText + ".*";
 
 	// update the reg exp for validator
-	QRegExp regExp(libraryText, Qt::CaseInsensitive, QRegExp::Wildcard);
-	libraryValidator_.setRegExp(regExp);
+	QRegularExpression regExp(libraryFilter_, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+	libraryValidator_.setRegularExpression(regExp);
 
 	invalidateFilter();
 }
@@ -82,11 +82,11 @@ void LibraryFilter::onLibraryChanged(QString const& libraryText)
 //-----------------------------------------------------------------------------
 void LibraryFilter::onNameChanged(QString const& nameText)
 {
-    nameFilter_ = nameText;
+    nameFilter_ = nameText + ".*";
 
 	// update the reg exp for validator
-	QRegExp regExp(nameText, Qt::CaseInsensitive, QRegExp::Wildcard);
-	nameValidator_.setRegExp(regExp);
+	QRegularExpression regExp(nameFilter_, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+	nameValidator_.setRegularExpression(regExp);
 
 	invalidateFilter();
 }
@@ -96,11 +96,11 @@ void LibraryFilter::onNameChanged(QString const& nameText)
 //-----------------------------------------------------------------------------
 void LibraryFilter::onVersionChanged(QString const& versionText)
 {
-    versionFilter_ = versionText;
+    versionFilter_ = versionText + ".*";
 
 	// update the reg exp for validator
-	QRegExp regExp(versionText, Qt::CaseInsensitive, QRegExp::Wildcard);
-	versionValidator_.setRegExp(regExp);
+	QRegularExpression regExp(versionFilter_, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
+	versionValidator_.setRegularExpression(regExp);
 
 	invalidateFilter();
 }

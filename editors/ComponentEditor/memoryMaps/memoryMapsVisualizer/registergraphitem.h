@@ -156,7 +156,7 @@ private:
      *      @param [in] startAddress    The offset of the free memory slot.
      *      @param [in] lastAddress     The last address of the free memory slot.
      */
-    QMap<quint64, MemoryVisualizationItem*>::iterator addMemoryGap(quint64 startAddress, quint64 endAddress);
+    QMultiMap<quint64, MemoryVisualizationItem*>::iterator addMemoryGap(quint64 startAddress, quint64 endAddress);
 
     //-----------------------------------------------------------------------------
     // Data.

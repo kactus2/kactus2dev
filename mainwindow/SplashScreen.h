@@ -2,7 +2,7 @@
 // File: SplashScreen.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 24.5.2011
 //
 // Description:

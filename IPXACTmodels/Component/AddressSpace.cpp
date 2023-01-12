@@ -23,7 +23,7 @@ range_(range),
 width_(width),
 segments_(new QList<QSharedPointer<Segment> > ()),
 addressUnitBits_(),
-localMemoryMap_(0),
+localMemoryMap_(nullptr),
 parameters_(new QList<QSharedPointer<Parameter> > ())
 {
 
@@ -159,7 +159,7 @@ QSharedPointer<MemoryMapBase> AddressSpace::getLocalMemoryMap()
 //-----------------------------------------------------------------------------
 bool AddressSpace::hasLocalMemoryMap() const
 {
-    return localMemoryMap_;
+    return localMemoryMap_.isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -226,7 +226,7 @@ void AddressSpace::copySegments(const AddressSpace& other)
     {
         if (segment)
         {
-            QSharedPointer<Segment> copy = QSharedPointer<Segment>(new Segment(*segment.data()));
+            auto copy = QSharedPointer<Segment>(new Segment(*segment.data()));
             segments_->append(copy);
         }
     }
@@ -241,7 +241,7 @@ void AddressSpace::copyParameters(const AddressSpace& other)
     {
         if (parameter)
         {
-            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
+            auto copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
             parameters_->append(copy);
         }
     }

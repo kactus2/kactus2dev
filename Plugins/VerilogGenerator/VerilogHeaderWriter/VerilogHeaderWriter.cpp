@@ -35,22 +35,22 @@ void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileNa
 {
     QStringList descriptionLines = description_.split("\n");
 
-    outputStream << "//-----------------------------------------------------------------------------" << endl;
-    outputStream << "// File          : " << fileName << endl;
-    outputStream << "// Creation date : " << generationTime.date().toString("dd.MM.yyyy") << endl;
-	outputStream << "// Creation time : " << generationTime.time().toString("hh:mm:ss") << endl;
-    outputStream << "// Description   : " << descriptionLines.first() << endl;
+    outputStream << "//-----------------------------------------------------------------------------" << Qt::endl;
+    outputStream << "// File          : " << fileName << Qt::endl;
+    outputStream << "// Creation date : " << generationTime.date().toString("dd.MM.yyyy") << Qt::endl;
+	outputStream << "// Creation time : " << generationTime.time().toString("hh:mm:ss") << Qt::endl;
+    outputStream << "// Description   : " << descriptionLines.first() << Qt::endl;
 
     for (int i = 1; i < descriptionLines.count(); i++)
     {
-        outputStream << "//                 " << descriptionLines.at(i) << endl;
+        outputStream << "//                 " << descriptionLines.at(i) << Qt::endl;
     }
 
-	outputStream << "// Created by    : " << author_ << endl;
-	outputStream << "// Tool : Kactus2 " << kactusVersion_ << endl;
-	outputStream << "// Plugin : Verilog generator " << generatorVersion_ << endl;
-	outputStream << "// This file was generated based on IP-XACT component " << vlnv_.toString() << endl;
-    outputStream << "// whose XML file is " << xmlPath_ << endl;
-    outputStream << "//-----------------------------------------------------------------------------" << endl;
-    outputStream << endl;
+	outputStream << "// Created by    : " << author_ << Qt::endl;
+	outputStream << "// Tool : Kactus2 " << kactusVersion_ << Qt::endl;
+	outputStream << "// Plugin : Verilog generator " << generatorVersion_ << Qt::endl;
+	outputStream << "// This file was generated based on IP-XACT component " << vlnv_.toString() << Qt::endl;
+    outputStream << "// whose XML file is " << xmlPath_ << Qt::endl;
+    outputStream << "//-----------------------------------------------------------------------------" << Qt::endl;
+    outputStream << Qt::endl;
 }

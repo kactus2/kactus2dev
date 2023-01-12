@@ -2,7 +2,7 @@
 // File: HelpSearchWidget.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 8.8.2012
 //
 // Description:
@@ -41,6 +41,6 @@ HelpSearchWidget::~HelpSearchWidget()
 //-----------------------------------------------------------------------------
 void HelpSearchWidget::onSearch()
 {
-    QList<QHelpSearchQuery> query = searchEngine_->queryWidget()->query();
+    auto query = searchEngine_->queryWidget()->searchInput();
     searchEngine_->search(query);
 }

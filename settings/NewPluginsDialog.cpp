@@ -67,7 +67,7 @@ void NewPluginsDialog::selectionChanged()
 void NewPluginsDialog::addPlugin(IPlugin* plugin)
 {
     QListWidgetItem* item = new QListWidgetItem(plugin->getName() + " (" + plugin->getVersion() + ")");
-    item->setData(PLUGIN_POINTER_ROLE, qVariantFromValue(static_cast<void*>(plugin)));
+    item->setData(PLUGIN_POINTER_ROLE, QVariant::fromValue(static_cast<void*>(plugin)));
     item->setData(PLUGIN_STACK_INDEX_ROLE, detailsStack_.count());
 
     // Set icon for plugin.

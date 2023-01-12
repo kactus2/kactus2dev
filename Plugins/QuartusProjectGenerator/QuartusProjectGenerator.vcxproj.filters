@@ -31,38 +31,28 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="QuartusProjectGenerator.h">
+    <QtMoc Include="QuartusProjectGenerator.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QuartusProjectGenerator.qrc">
+    </QtMoc>
+    <QtRcc Include="QuartusProjectGenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="QuartusGenerator.h">
+    </QtRcc>
+    <QtMoc Include="QuartusGenerator.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QuartusProjectGenerator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QuartusProjectGenerator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="QuartusProjectGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_QuartusProjectGenerator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
     <ClCompile Include="QuartusGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QuartusGenerator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QuartusGenerator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

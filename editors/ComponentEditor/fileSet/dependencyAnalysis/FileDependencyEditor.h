@@ -2,7 +2,7 @@
 // File: FileDependencyEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 19.01.2013
 //
 // Description:
@@ -196,7 +196,7 @@ private:
     QSharedPointer<Component> component_;
 
     //! Extension fileset lookup.
-    QMap<QString, QString> fileTypeLookup_;
+    QMultiMap<QString, QString> fileTypeLookup_;
 
     //! Ignore list for extensions.
     QStringList ignoreExtList_;

@@ -43,24 +43,23 @@ void CommentWriter::write(QTextStream& output) const
 
     QString indent = QString(" ").repeated(indentSize_);
 
-    foreach(QString line, comment_.split("\n"))
+    for (QString line : comment_.split("\n"))
     {
-        bool emptyLineToWrite = line.isEmpty();
-        while (line.length() > 0 || emptyLineToWrite)
+        while (line.length() > 0)
         {
-            int lineEnd = line.lastIndexOf(" ", lineLength_);
-            if (lineEnd == -1)
+            auto lineEnd = line.length();
+
+            if (line.length() > DEFAULT_LINE_LENGHT && line.lastIndexOf(" ", DEFAULT_LINE_LENGHT) != -1)
             {
-                lineEnd = line.indexOf(" ", lineLength_);
-                if (lineEnd == -1)
-                {
-                    lineEnd = line.length();
-                }
+                lineEnd = line.lastIndexOf(" ", DEFAULT_LINE_LENGHT);
+            }
+            else if (line.length() > DEFAULT_LINE_LENGHT && line.indexOf(" ", DEFAULT_LINE_LENGHT) != -1)
+            {
+                lineEnd = line.indexOf(" ", DEFAULT_LINE_LENGHT);
             }
             
-            output << indent << "// " << line.left(lineEnd) << endl;
+            output << indent << "// " << line.left(lineEnd) << Qt::endl;
             line = line.remove(0, lineEnd + 1);
-            emptyLineToWrite = false;
         }
     }
 }

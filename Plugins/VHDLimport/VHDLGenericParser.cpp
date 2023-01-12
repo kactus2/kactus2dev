@@ -153,7 +153,7 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
     QRegularExpressionMatch matchedDeclaration = GENERIC_EXP.match(declaration);
 
     QStringList genericNames = matchedDeclaration.captured(1).split(QRegularExpression("\\s*[,]\\s*"),
-        QString::SkipEmptyParts);
+        Qt::SkipEmptyParts);
     QString dataType = matchedDeclaration.captured(2);
     QString type = findMatchingType(dataType);
     QString defaultValue = matchedDeclaration.captured(3);

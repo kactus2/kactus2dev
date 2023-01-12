@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QHelpCollectionProject version="1.0">
     <docFiles>
+        <generate>
+            <file>
+                <input>kactus2help.qhp</input>
+                <output>Kactus2Help.qch</output>
+            </file>
+        </generate>
         <register>
             <file>Kactus2Help.qch</file>
         </register>

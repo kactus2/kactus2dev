@@ -50,7 +50,7 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~RegisterGraphicsItem();
+    virtual ~RegisterGraphicsItem() = default;
 
     /*!
      *  Get the graphics type.
@@ -137,7 +137,7 @@ private:
      *
      *      @return Field items in last bit order with calculated offsets and widths.
      */
-    QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> getFieldItemsInLastBitOrder(
+    QMultiMap<quint64, RegisterGraphicsItem::FieldMemoryItem> getFieldItemsInLastBitOrder(
         QSharedPointer<MemoryItem const> registerItem) const;
 
     /*!

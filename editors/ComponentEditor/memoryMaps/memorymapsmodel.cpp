@@ -874,22 +874,25 @@ void MemoryMapsModel::onRemoveAllChildItemsFrom(QModelIndex const& itemIndex)
         std::string mapName = mapInterface_->getIndexedItemName(itemIndex.row());
 
         int remapCount = mapInterface_->remapCount(mapName);
-
-        beginRemoveRows(itemIndex, 0, remapCount);
-
-        for (int i = 0; i < remapCount; ++i)
+        if (remapCount > 0)
         {
-            std::string remapName = mapInterface_->getIndexedRemapName(mapName, 0);
-            decreaseReferencesWithRemovedMemoryMap(QString::fromStdString(mapName),
-                QString::fromStdString(remapName));
+            int lastRemapIndex = remapCount - 1;
+            beginRemoveRows(itemIndex, 0, lastRemapIndex);
 
-            emit memoryRemapRemoved(0, QString::fromStdString(mapName));
+            for (int i = 0; i < remapCount; ++i)
+            {
+                std::string remapName = mapInterface_->getIndexedRemapName(mapName, 0);
+                decreaseReferencesWithRemovedMemoryMap(QString::fromStdString(mapName),
+                    QString::fromStdString(remapName));
 
-            mapInterface_->removeRemap(mapName, remapName);
+                emit memoryRemapRemoved(0, QString::fromStdString(mapName));
+
+                mapInterface_->removeRemap(mapName, remapName);
+            }
+
+            endRemoveRows();
+
+            emit contentChanged();
         }
-
-        endRemoveRows();
-
-        emit contentChanged();
     }
 }

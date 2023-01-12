@@ -34,17 +34,13 @@
     <ClCompile Include="CppSourceAnalyzer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_CppSourceAnalyzer.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_CppSourceAnalyzer.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
+    
+    
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="CppSourceAnalyzer.h">
+    <QtMoc Include="CppSourceAnalyzer.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="CppSourceAnalyzer.json" />

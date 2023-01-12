@@ -12,7 +12,7 @@
 #ifndef CONFIGURABLEELEMENTSVIEW_H
 #define CONFIGURABLEELEMENTSVIEW_H
 
-#include <common/views/EditableTreeView/EditableTreeView.h>
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QContextMenuEvent>
 #include <QModelIndex>
@@ -21,7 +21,7 @@
 //-----------------------------------------------------------------------------
 //! A tree view for the configurable element tree model.
 //-----------------------------------------------------------------------------
-class ConfigurableElementsView : public EditableTreeView
+class ConfigurableElementsView : public EditableTableView
 {
     Q_OBJECT
 
@@ -37,7 +37,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~ConfigurableElementsView();
+    virtual ~ConfigurableElementsView() = default;
 
 signals:
 

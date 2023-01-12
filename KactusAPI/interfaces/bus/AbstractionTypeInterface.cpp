@@ -77,9 +77,8 @@ bool AbstractionTypeInterface::setupAbstractionTypeForPortMapInterface(int const
     if (abstraction)
     {
         portMapInterface_->setupPortMaps(abstraction);
-        setupAbstractionDefinitionForPortMapInterface(abstractionTypeIndex);
 
-        return true;
+        return setupAbstractionDefinitionForPortMapInterface(abstractionTypeIndex);
     }
 
     return false;

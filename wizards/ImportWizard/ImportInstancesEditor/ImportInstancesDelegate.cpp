@@ -45,7 +45,7 @@ libraryAccess_(libraryAccess)
 // Function: ImportInstancesDelegate::setupVLNVEditor()
 //-----------------------------------------------------------------------------
 void ImportInstancesDelegate::setupVLNVEditors(
-    QMap<QString, QSharedPointer<const Component>> instanceComponentMatches,
+    QMultiMap<QString, QSharedPointer<const Component>> instanceComponentMatches,
     QVector<InstanceData::instanceData> const& newInstances)
 {
     instanceComponentMatches_ = instanceComponentMatches;

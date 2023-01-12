@@ -153,13 +153,13 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
     else
     {
-        QMap<unsigned int, QSharedPointer<ColumnDesc> > orderedColumns;
-        foreach (QSharedPointer<ColumnDesc> desc, designColumns)
+        QMultiMap<unsigned int, QSharedPointer<ColumnDesc> > orderedColumns;
+        for (QSharedPointer<ColumnDesc> desc : designColumns)
         {
-            orderedColumns.insertMulti(desc->getPosition(), desc);
+            orderedColumns.insert(desc->getPosition(), desc);
         }
 
-        foreach (QSharedPointer<ColumnDesc> desc, orderedColumns)
+        for (QSharedPointer<ColumnDesc> desc : orderedColumns)
         {
             loadColumn(desc);
         }
@@ -411,11 +411,11 @@ void HWDesignDiagram::onCopyAction()
         }
         else if (type == HWColumn::Type)
         {
-            qSort(items.begin(), items.end(), &sortByX);
+            std::sort(items.begin(), items.end(), &sortByX);
 
             ColumnCollectionCopyData collection;
 
-            foreach (QGraphicsItem* item, items)
+            for (QGraphicsItem* item : items)
             {
                 HWColumn* column = static_cast<HWColumn*>(item);
 

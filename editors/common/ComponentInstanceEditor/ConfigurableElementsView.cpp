@@ -20,18 +20,12 @@
 // Function: ConfigurableElementsView::ConfigurableElementsView()
 //-----------------------------------------------------------------------------
 ConfigurableElementsView::ConfigurableElementsView(QWidget* parent):
-EditableTreeView(false, QString(""), QString(""), QString(tr("Remove configurable element")),
-    QString(tr("Remove all unknown configurable elements")) ,parent)
+EditableTableView(parent)
 {
-    setSelectionMode(QAbstractItemView::SingleSelection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementsView::~ConfigurableElementsView()
-//-----------------------------------------------------------------------------
-ConfigurableElementsView::~ConfigurableElementsView()
-{
-
+    setToolTip(QString());
+    removeAction_.setText(tr("Remove configurable element"));
+    setSelectionMode(QAbstractItemView::ContiguousSelection);
+    setItemsDraggable(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -46,27 +40,22 @@ void ConfigurableElementsView::contextMenuEvent(QContextMenuEvent* event)
         return;
     }
 
+    QMenu contextMenu;
+    if (contextMenuIndex.isValid())
+    {
+        contextMenu.addAction(&clearAction_);
+        contextMenu.addAction(&copyAction_);
+        contextMenu.addAction(&pasteAction_);
+    }
+
     if (model()->data(contextMenuIndex, Qt::UserRole).toBool())
     {
-        getRemoveAction()->setEnabled(true);
-
-        QMenu contextMenu;
-        contextMenu.addAction(getRemoveAction());
-
-        contextMenu.exec(event->globalPos());
-        event->accept();
+        removeAction_.setEnabled(true);
+        contextMenu.addAction(&removeAction_);
     }
-    else if (!contextMenuIndex.parent().isValid() &&
-        model()->data(contextMenuIndex, Qt::ForegroundRole) == KactusColors::ERROR)
-    {
-        getRemoveAllSubItemsAction()->setEnabled(true);
 
-        QMenu contextMenu;
-        contextMenu.addAction(getRemoveAllSubItemsAction());
-
-        contextMenu.exec(event->globalPos());
-        event->accept();
-    }
+    contextMenu.exec(event->globalPos());
+    event->accept();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +64,7 @@ void ConfigurableElementsView::contextMenuEvent(QContextMenuEvent* event)
 void ConfigurableElementsView::onClearAction()
 {
     QModelIndex selectedIndex = currentIndex();
-    if (selectedIndex.parent().isValid())
+    if (selectedIndex.isValid())
     {
         QString oldValue = model()->data(selectedIndex, Qt::EditRole).toString();
         QString newValue("");

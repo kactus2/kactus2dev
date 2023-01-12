@@ -270,14 +270,14 @@ void FileOutputWidget::checkExistence()
         {
             // Check and set a warning color.
             fileExistsItem->setCheckState(Qt::Checked);
-            pathItem->setTextColor(KactusColors::WARNING);
+            pathItem->setForeground(KactusColors::WARNING);
             existingFiles = true;
         }
         else
         {
             // Uncheck and set regular color.
             fileExistsItem->setCheckState(Qt::Unchecked);
-            pathItem->setTextColor(QApplication::palette().brush(QPalette::Text).color());
+            pathItem->setForeground(QApplication::palette().brush(QPalette::Text).color());
         }
     }
 

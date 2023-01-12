@@ -96,7 +96,7 @@ void PhysicalPortMappingTableView::dropEvent(QDropEvent* event)
 	}
 
 	// get the ports that were selected
-	QStringList dropped = mimeText.split(QString(";"), QString::SkipEmptyParts);
+	QStringList dropped = mimeText.split(QString(";"), Qt::SkipEmptyParts);
 
 	// if the item to drop is from this port list view
 	if (source == this)

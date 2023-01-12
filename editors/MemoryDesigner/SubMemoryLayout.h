@@ -58,7 +58,7 @@ public:
      *
      *      @return A map containing the sub memory items with the base addresses.
      */
-    QMap<quint64, MemoryDesignerChildGraphicsItem*> getSubMemoryItems() const;
+    QMultiMap<quint64, MemoryDesignerChildGraphicsItem*> getSubMemoryItems() const;
 
     /*!
      *  Add the memory connection item to the correct memory sub items.
@@ -249,7 +249,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! A map containing the sub memory items and their base addresses.
-    QMap<quint64, MemoryDesignerChildGraphicsItem*> subMemoryItems_;
+    QMultiMap<quint64, MemoryDesignerChildGraphicsItem*> subMemoryItems_;
 
     //! Type of the contained memory item.
     QString itemType_;

@@ -86,6 +86,35 @@ protected:
     virtual QSharedPointer<Choice> findChoice(QModelIndex const& index) const;
 
     /*!
+     *  Get the choice items for the combo editor.
+     *
+     *      @param [in] index   Index of the edited item.
+     *
+     *      @return List of choice items for the combo editor.
+     */
+    QStringList getChoiceComboItems(QModelIndex const& index) const;
+
+    /*!
+     *  Get the enumeration text for the enumeration value.
+     *
+     *      @param [in] index               Index of the edited item.
+     *      @param [in] enumerationValue    The selected enumeration value.
+     *
+     *      @return The selected enumeration text.
+     */
+    QString findEnumerationText(QModelIndex const& index, QString const& enumerationValue) const;
+
+    /*!
+     *  Get the enumeration value for the enumeration text.
+     *
+     *      @param [in] index               Index of the edited item.
+     *      @param [in] enumerationText     The selected enumeration text.
+     *
+     *      @return The selected enumeration value.
+     */
+    QString findEnumerationValue(QModelIndex const& index, QString const& enumerationText) const;
+
+    /*!
      *  Get the column of the possible place for enumeration selector.
      *
      *      @return The column number for the column that's value can be given as an enumeration.

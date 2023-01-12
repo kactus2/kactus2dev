@@ -36,7 +36,7 @@ void VerilogAssignmentWriter::write(QTextStream& output) const
 
     if (!outputLine.isEmpty())
     {
-        output << QStringLiteral("    assign ") << outputLine << QStringLiteral(";") << endl;
+        output << QStringLiteral("    assign ") << outputLine << QStringLiteral(";") << Qt::endl;
     }
 }
 

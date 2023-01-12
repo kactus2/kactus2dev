@@ -2,7 +2,7 @@
 // File: FileDependencyGraphWidget.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 23.01.2013
 //
 // Description:
@@ -24,7 +24,6 @@
 #include <QPainter>
 #include <QPaintEvent>
 #include <QScrollBar>
-#include <QDebug>
 #include <QMenu>
 #include <QFileDialog>
 

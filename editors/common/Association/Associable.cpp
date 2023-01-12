@@ -52,6 +52,17 @@ QList<Association*> Associable::getAssociations() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Associable::positionUpdated()
+//-----------------------------------------------------------------------------
+void Associable::positionUpdated()
+{
+    for (auto association : associations_)
+    {
+        association->updateLine();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: Associable::removeAssociation()
 //-----------------------------------------------------------------------------
 void Associable::removeAssociation(Association* association)

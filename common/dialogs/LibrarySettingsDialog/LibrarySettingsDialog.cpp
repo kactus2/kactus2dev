@@ -2,7 +2,7 @@
 // File: LibrarySettingsDialog.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 17.08.2012
 //
 // Description:
@@ -78,7 +78,7 @@ checkMarkIcon_(":/icons/common/graphics/checkMark.png")
         "read into the library."), this));
 
     QPalette introPalette = introWidget->palette();
-    introPalette.setColor(QPalette::Background, Qt::white);
+    introPalette.setColor(QPalette::Window, Qt::white);
     introWidget->setPalette(introPalette);
     introWidget->setAutoFillBackground(true);
 

@@ -634,9 +634,8 @@ bool PortMapModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 
         beginInsertRows(QModelIndex(), portMapIndex, portMapIndex + physicalPorts.size() - 1);
 
-        foreach(QString currentPort, physicalPorts)
+        for (QString const& currentPort : physicalPorts)
         {
-            //         setData(physicalIndex, currentPort, Qt::EditRole);
             portMapInterface_->addPortMap(portMapIndex);
             portMapInterface_->setPhysicalPort(portMapIndex, currentPort.toStdString());
             portMapInterface_->setLogicalPort(portMapIndex, logicalName);
@@ -677,7 +676,7 @@ void PortMapModel::onAddAutoConnectedPortMaps(QVector<QString> physicalPorts)
 {
     beginResetModel();
 
-    for (auto portName : physicalPorts)
+    for (auto const& portName : physicalPorts)
     {
         emit portConnected(portName);
     }

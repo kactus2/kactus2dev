@@ -14,6 +14,7 @@
 
 #include <PythonAPI/WriteChannel.h>
 
+#include <QObject>
 #include <QString>
 #include <QTextStream>
 

@@ -141,7 +141,8 @@ void AutoConnectorConnectionTable::onAddRow()
 void AutoConnectorConnectionTable::onRemoveRow()
 {
     QModelIndexList indexlist = selectedIndexes();
-    qSort(indexlist.begin(), indexlist.end(), qGreater<QModelIndex>());
+    std::sort(indexlist.begin(), indexlist.end());
+
     for(QModelIndex const& index : indexlist)
     {
         removeRow(index.row());
@@ -207,7 +208,7 @@ void AutoConnectorConnectionTable::dragMoveEvent(QDragMoveEvent *event)
 {
     QTableWidget::dragMoveEvent(event);
 
-    QModelIndex positionIndex = indexAt(event->pos());
+    QModelIndex positionIndex = indexAt(event->position().toPoint());
     if (positionIndex.isValid() && itemMatcher_)
     {
         QSharedPointer<Component> sourceComponent = firstComponent_;

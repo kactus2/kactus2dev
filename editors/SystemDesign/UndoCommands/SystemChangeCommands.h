@@ -2,7 +2,7 @@
 // File: SystemChangeCommands.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 19.10.2011
 //
 // Description:

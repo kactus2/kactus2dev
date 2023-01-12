@@ -775,14 +775,17 @@ void ComponentDesignDiagram::setupActions()
 {
     getParent()->addAction(&selectAllAction_);
     selectAllAction_.setShortcut(QKeySequence::SelectAll);
+    selectAllAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&selectAllAction_, SIGNAL(triggered()),this, SLOT(selectAll()), Qt::UniqueConnection);
 
     getParent()->addAction(&copyAction_);
     copyAction_.setShortcut(QKeySequence::Copy);
+    copyAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&copyAction_, SIGNAL(triggered()),this, SLOT(onCopyAction()), Qt::UniqueConnection);
 
     getParent()->addAction(&pasteAction_);
     pasteAction_.setShortcut(QKeySequence::Paste);
+    pasteAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
     connect(&pasteAction_, SIGNAL(triggered()),this, SLOT(onPasteAction()), Qt::UniqueConnection);	
 
     getParent()->addAction(&addAction_);

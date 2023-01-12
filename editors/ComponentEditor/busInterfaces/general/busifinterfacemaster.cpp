@@ -63,7 +63,7 @@ component_(component)
 
 	QLabel* addrSpaceLabel = new QLabel(tr("Address space:"), this);
 
-    QString functionSymbol(0x0192);
+    QString functionSymbol(QChar(0x0192));
 	QLabel* baseAddrLabel = new QLabel(tr("Base address") + ", " + functionSymbol +"(x):", this);
 
 	QGridLayout* topLayout = new QGridLayout(this);

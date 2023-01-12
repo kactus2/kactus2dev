@@ -2,7 +2,7 @@
 // File: HierarchicalBusInterfaceItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 17.3.2011
 //
 // Description:

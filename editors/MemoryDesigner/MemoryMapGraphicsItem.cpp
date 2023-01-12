@@ -105,7 +105,7 @@ void MemoryMapGraphicsItem::setupSubItems(qreal blockXPosition, QSharedPointer<M
         usedMemoryItem = QSharedPointer<MemoryItem>(new MemoryItem(memoryItem->getName(), memoryItem->getType()));
         usedMemoryItem->setAUB(memoryItem->getAUB());
 
-        foreach (QSharedPointer<MemoryItem const> subItem, memoryItem->getChildItems())
+        for (QSharedPointer<MemoryItem const> subItem : memoryItem->getChildItems())
         {
             if (subItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
             {
@@ -119,7 +119,7 @@ void MemoryMapGraphicsItem::setupSubItems(qreal blockXPosition, QSharedPointer<M
 
                 filteredBlocks_.append(blockItem);
 
-                foreach (QSharedPointer<MemoryItem> registerItem, subItem->getChildItems())
+                for (QSharedPointer<MemoryItem> registerItem : subItem->getChildItems())
                 {
                     usedMemoryItem->addChild(registerItem);
                 }
@@ -338,7 +338,7 @@ void MemoryMapGraphicsItem::changeWidth(qreal widthChange)
 
     if (!subItemsAreFiltered() && !getSubMemoryItems().isEmpty())
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();
@@ -407,7 +407,7 @@ void MemoryMapGraphicsItem::createFieldOverlapItems()
 {
     if (!subItemsAreFiltered())
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();

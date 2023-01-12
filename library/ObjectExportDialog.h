@@ -32,7 +32,7 @@ public:
 	 *      @param [in] parent          The parent widget.
 	 *      @param [in] f               Widget flags for the dialog.
 	 */
-	ObjectExportDialog(QWidget* parent = 0, Qt::WindowFlags f = 0);
+	ObjectExportDialog(QWidget* parent = 0, Qt::WindowFlags f = Qt::WindowFlags());
 
     /*!
 	 *  The destructor.

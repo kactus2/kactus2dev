@@ -2,7 +2,7 @@
 // File: ComDefinition.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 29.3.2012
 //
 // Description:

@@ -14,7 +14,7 @@
 
 #include "componenteditoritem.h"
 
-#include <QRegExpValidator>
+#include <QRegularExpressionValidator>
 
 class Component;
 class ExpressionParser;

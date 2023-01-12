@@ -74,12 +74,12 @@ void MainMemoryGraphicsItem::moveItemAndConnectedItems(qreal yTransfer)
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemories (new QVector<MainMemoryGraphicsItem*> ());
     visitedMemories->append(this);
 
-    QMap<quint64, MemoryConnectionItem*> allConnectedConnections =
+    QMultiMap<quint64, MemoryConnectionItem*> allConnectedConnections =
         getAllConnectionsFromConnectedItems(visitedMemories);
 
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems(new QVector<MainMemoryGraphicsItem*>());
 
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(allConnectedConnections);
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator(allConnectedConnections);
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
@@ -121,7 +121,7 @@ quint64 MainMemoryGraphicsItem::getSceneEndPoint() const
 {
     quint64 sceneEndPoint = sceneBoundingRect().bottom();
 
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
@@ -161,7 +161,7 @@ MemoryConnectionItem* MainMemoryGraphicsItem::getLastConnection() const
     MemoryConnectionItem* lastConnection = 0;
     quint64 lastConnectionRangeEnd = 0;
 
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
@@ -190,7 +190,7 @@ MemoryConnectionItem* MainMemoryGraphicsItem::getFirstConnection() const
         firstConnection = getMemoryConnections().first();
         quint64 firstConnectionRangeStart = firstConnection->getRangeStartValue();
 
-        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
         while (connectionIterator.hasNext())
         {
             connectionIterator.next();
@@ -319,12 +319,12 @@ void MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
 {
     if (getMemoryConnections().size() > 1)
     {
-        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
         while (connectionIterator.hasNext())
         {
             connectionIterator.next();
 
-            QMapIterator<quint64, MemoryConnectionItem*> comparisonIterator(connectionIterator);
+            QMultiMapIterator<quint64, MemoryConnectionItem*> comparisonIterator(connectionIterator);
             while (comparisonIterator.hasNext())
             {
                 comparisonIterator.next();
@@ -443,11 +443,11 @@ void MainMemoryGraphicsItem::changeAddressRange(quint64 offsetChange)
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::getAllConnectionsFromConnectedItems()
 //-----------------------------------------------------------------------------
-QMap<quint64, MemoryConnectionItem*> MainMemoryGraphicsItem::getAllConnectionsFromConnectedItems(
+QMultiMap<quint64, MemoryConnectionItem*> MainMemoryGraphicsItem::getAllConnectionsFromConnectedItems(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems) const
 {
     QMultiMap<quint64, MemoryConnectionItem*> allConnections = getMemoryConnections();
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
@@ -463,9 +463,9 @@ QMap<quint64, MemoryConnectionItem*> MainMemoryGraphicsItem::getAllConnectionsFr
         {
             visitedMemoryItems->append(connectedItem);
             
-            QMap<quint64, MemoryConnectionItem*> secondConnections =
+            QMultiMap<quint64, MemoryConnectionItem*> secondConnections =
                 connectedItem->getAllConnectionsFromConnectedItems(visitedMemoryItems);
-            QMapIterator<quint64, MemoryConnectionItem*> secondConnectionIterator (secondConnections);
+            QMultiMapIterator<quint64, MemoryConnectionItem*> secondConnectionIterator (secondConnections);
             while (secondConnectionIterator.hasNext())
             {
                 secondConnectionIterator.next();
@@ -484,12 +484,12 @@ QMap<quint64, MemoryConnectionItem*> MainMemoryGraphicsItem::getAllConnectionsFr
                         for (int connectionIndex = amountOfSameKeys - 1; connectionIndex >= 0; --connectionIndex)
                         {
                             MemoryConnectionItem* sameKeyConnection = sameKeyItems.at(connectionIndex);
-                            allConnections.insertMulti(secondConnectionBaseAddress, sameKeyConnection);
+                            allConnections.insert(secondConnectionBaseAddress, sameKeyConnection);
                         }
                     }
                     else
                     {
-                        allConnections.insertMulti(secondConnectionBaseAddress, secondConnectionItem);
+                        allConnections.insert(secondConnectionBaseAddress, secondConnectionItem);
                     }
                 }
             }
@@ -507,11 +507,11 @@ qreal MainMemoryGraphicsItem::getLowestPointOfConnectedItems()
     qreal lowestPoint = sceneBoundingRect().bottom();
 
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedItems (new QVector<MainMemoryGraphicsItem*>());
-    QMap<quint64, MemoryConnectionItem*> allConnections = getAllConnectionsFromConnectedItems(visitedItems);
+    QMultiMap<quint64, MemoryConnectionItem*> allConnections = getAllConnectionsFromConnectedItems(visitedItems);
 
     visitedItems->clear();
 
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
+    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();

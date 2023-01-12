@@ -115,12 +115,12 @@ void FileSaveDialogView::setModel( QAbstractItemModel* model ) {
 		// get the header for the section
 		QString headerText = model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString();
 		// if the header contains several lines
-		QStringList headerLines = headerText.split("\n", QString::SkipEmptyParts);
+		QStringList headerLines = headerText.split("\n", Qt::SkipEmptyParts);
 		int headerSize = 0;
 
 		// find the line that needs most space
 		foreach (QString headerLine, headerLines) {
-			headerSize = qMax(headerSize, fMetrics.width(headerLine));
+			headerSize = qMax(headerSize, fMetrics.horizontalAdvance(headerLine));
 		}
 		headerSize += 45;
 

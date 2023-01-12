@@ -308,35 +308,38 @@ bool PadsPartGenerator::generateCAEFile(QFile* file, QString const& partTitle, Q
     QTextStream caeFileStream(file);
 
     // Write file header.
-    caeFileStream << PadsAsciiSyntax::CAE_FILE_BEGIN << endl;
-    caeFileStream << endl;
+    caeFileStream << PadsAsciiSyntax::CAE_FILE_BEGIN << Qt::endl;
+    caeFileStream << Qt::endl;
     
     // Get the timestamp from part.
-    PadsAsciiSyntax::PART_HEADER_2ND_EXP.indexIn(partDescription);
-    QString timestamp = PadsAsciiSyntax::PART_HEADER_2ND_EXP.cap(0);
+    auto timeMatch = PadsAsciiSyntax::PART_HEADER_2ND_EXP.match(partDescription);
+    QString timestamp = timeMatch.captured();
 
     // Generate CAE decal for each gate.
-    int pos = PadsAsciiSyntax::PART_GATE_EXP.indexIn(partDescription, 0);
-    while(pos != -1)
+    int pos = 0;
+    auto gateMatch = PadsAsciiSyntax::PART_GATE_EXP.match(partDescription);
+    while(gateMatch.hasMatch())
     {
-        QString gate = PadsAsciiSyntax::PART_GATE_EXP.cap(0);
-        PadsAsciiSyntax::PART_GATE_NAME_EXP.indexIn(partDescription, pos + gate.length());
-        QString gateName = PadsAsciiSyntax::PART_GATE_NAME_EXP.cap(0);
-        int pinCount = PadsAsciiSyntax::PART_GATE_EXP.cap(PadsAsciiSyntax::NUM_PINS).toInt();
+        QString gate = gateMatch.captured(0);
+
+        auto nameMatch = PadsAsciiSyntax::PART_GATE_NAME_EXP.match(partDescription, gateMatch.capturedEnd());
+
+        QString gateName = nameMatch.captured(0);
+        int pinCount = gateMatch.captured(PadsAsciiSyntax::NUM_PINS).toInt();
 
         QRect caeRect(0,0, PART_DEFAULT_WIDTH, pinCount/2 * PIN_SPAN + 5*PIN_SPAN);
 
         insertCAEHeader(caeFileStream, timestamp, gateName, pinCount);
         insertCAEDecal(caeFileStream, caeRect, partTitle, gateName);
         insertCAETerminals(caeFileStream, caeRect, pinCount);
-        caeFileStream << endl;
+        caeFileStream << Qt::endl;
 
         // Find the next gate.
-        pos = PadsAsciiSyntax::PART_GATE_EXP.indexIn(partDescription, pos + gate.length());
+        gateMatch = PadsAsciiSyntax::PART_GATE_EXP.match(partDescription, gateMatch.capturedEnd());
     }
 
     // Write file end.
-    caeFileStream << PadsAsciiSyntax::PADS_FILE_END << endl;
+    caeFileStream << PadsAsciiSyntax::PADS_FILE_END << Qt::endl;
 
     caeFileStream.flush();
     return true;
@@ -363,14 +366,14 @@ void PadsPartGenerator::insertCAEHeader(QTextStream& output, QString const& time
     header.replace(PadsAsciiSyntax::NUM_TERMINALS, QString::number(pinCount));
     header.replace(PadsAsciiSyntax::VISIBILITY, QString::number(DEFAULT_VISIBILITY));
 
-    output << header.join(PadsAsciiSyntax::SEPARATOR) << endl;
+    output << header.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
 
     // 2. line has the timestamp.
-    output << timestamp << endl;
+    output << timestamp << Qt::endl;
 
     // Font info on the 3. and 4. lines.
-    output << PadsAsciiSyntax::DEFAULT_FONT << endl;
-    output << PadsAsciiSyntax::DEFAULT_FONT << endl;
+    output << PadsAsciiSyntax::DEFAULT_FONT << Qt::endl;
+    output << PadsAsciiSyntax::DEFAULT_FONT << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -392,32 +395,32 @@ void PadsPartGenerator::insertCAEDecal(QTextStream& output, QRect const& drawSym
     text.replace(PadsAsciiSyntax::LABEL_FONTINFO, PadsAsciiSyntax::DEFAULT_FONT);
 
     // Reference designator location definition.
-    output << text.join(PadsAsciiSyntax::SEPARATOR) << endl;
-    output << "REF-DES" << endl;
+    output << text.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+    output << "REF-DES" << Qt::endl;
 
     // Part type name definition.
     text.replace(PadsAsciiSyntax::LABEL_POS_Y, QString::number(-2*PIN_SPAN));
     text.replace(PadsAsciiSyntax::JUSTIFICATION,QString::number(JUST_TOP_CENTER));
-    output << text.join(PadsAsciiSyntax::SEPARATOR) << endl;
-    output << "PART-TYPE" << endl;
+    output << text.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+    output << "PART-TYPE" << Qt::endl;
 
     // First part attribute value definition.
     text.replace(PadsAsciiSyntax::LABEL_POS_Y, QString::number(-PIN_SPAN));
-    output << text.join(PadsAsciiSyntax::SEPARATOR) << endl;
-    output << "*" << endl;
+    output << text.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+    output << "*" << Qt::endl;
 
     // Second part attribute value definition.
     text.replace(PadsAsciiSyntax::LABEL_POS_Y, QString::number(partHeight + PIN_SPAN));
-    output << text.join(PadsAsciiSyntax::SEPARATOR) << endl;
-    output << "*" << endl;
+    output << text.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+    output << "*" << Qt::endl;
 
     // Drawing symbol, rectangle, corner points. First point twice.
-    output << PadsAsciiSyntax::CAE_RECT_PIECE << endl;
-    output << drawSymbol.topLeft().x() << " " << drawSymbol.topLeft().y() << endl;
-    output << drawSymbol.bottomLeft().x() << " " << drawSymbol.bottomLeft().y() << endl;        
-    output << drawSymbol.bottomRight().x() << " " << drawSymbol.bottomRight().y() << endl;
-    output << drawSymbol.topRight().x() << " " << drawSymbol.topRight().y() << endl;
-    output << drawSymbol.topLeft().x() << " " << drawSymbol.topLeft().y() << endl;
+    output << PadsAsciiSyntax::CAE_RECT_PIECE << Qt::endl;
+    output << drawSymbol.topLeft().x() << " " << drawSymbol.topLeft().y() << Qt::endl;
+    output << drawSymbol.bottomLeft().x() << " " << drawSymbol.bottomLeft().y() << Qt::endl;        
+    output << drawSymbol.bottomRight().x() << " " << drawSymbol.bottomRight().y() << Qt::endl;
+    output << drawSymbol.topRight().x() << " " << drawSymbol.topRight().y() << Qt::endl;
+    output << drawSymbol.topLeft().x() << " " << drawSymbol.topLeft().y() << Qt::endl;
 
     // First label for gate title.
     QStringList overheadLabel = PadsAsciiSyntax::TEXT_ITEM.split(PadsAsciiSyntax::SEPARATOR);             
@@ -432,13 +435,13 @@ void PadsPartGenerator::insertCAEDecal(QTextStream& output, QRect const& drawSym
     overheadLabel.replace(PadsAsciiSyntax::PCB_DRAW_NUMBER, "0");
     overheadLabel.replace(PadsAsciiSyntax::FIELD_FLAG, "0");
     overheadLabel.replace(PadsAsciiSyntax::TEXT_FONTINFO, PadsAsciiSyntax::DEFAULT_FONT);
-    output << overheadLabel.join(PadsAsciiSyntax::SEPARATOR) << endl;                                        
-    output << gateTitle << endl;
+    output << overheadLabel.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;                                        
+    output << gateTitle << Qt::endl;
 
     // Second label for gate name.
     overheadLabel.replace(PadsAsciiSyntax::TEXT_POS_Y, QString::number(drawSymbol.bottom() - 2*PIN_SPAN));
-    output << overheadLabel.join(PadsAsciiSyntax::SEPARATOR) << endl;         
-    output << gateName << endl;        
+    output << overheadLabel.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;         
+    output << gateName << Qt::endl;        
 }
 
 //-----------------------------------------------------------------------------
@@ -486,8 +489,8 @@ void PadsPartGenerator::insertCAETerminals(QTextStream& output, QRect const& dra
     {
         terminal.replace(PadsAsciiSyntax::TERMINAL_POS_Y,QString::number(y));
 
-        output << "T" << terminal.join(PadsAsciiSyntax::SEPARATOR) << endl;
-        output << "P" << pinProperty.join(PadsAsciiSyntax::SEPARATOR) << endl;
+        output << "T" << terminal.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+        output << "P" << pinProperty.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
 
         y -= PIN_SPAN;
     }
@@ -502,8 +505,8 @@ void PadsPartGenerator::insertCAETerminals(QTextStream& output, QRect const& dra
     {
         terminal.replace(PadsAsciiSyntax::TERMINAL_POS_Y,QString::number(y));
 
-        output << "T" << terminal.join(PadsAsciiSyntax::SEPARATOR) << endl;
-        output << "P" << pinProperty.join(PadsAsciiSyntax::SEPARATOR) << endl;
+        output << "T" << terminal.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
+        output << "P" << pinProperty.join(PadsAsciiSyntax::SEPARATOR) << Qt::endl;
 
         y -= PIN_SPAN;
     }

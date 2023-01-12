@@ -260,13 +260,13 @@ void SingleAddressBlockEditor::setupLayout()
     volatileEditor_ = new BooleanComboBox(addressBlockDefinitionGroup);
     addressBlockDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
 
-    connect(usageEditor_, SIGNAL(activated(QString const&)),
+    connect(usageEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onUsageSelected(QString const&)), Qt::UniqueConnection);
 
-    connect(accessEditor_, SIGNAL(activated(QString const&)),
+    connect(accessEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
 
-    connect(volatileEditor_, SIGNAL(activated(QString const&)),
+    connect(volatileEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
@@ -292,7 +292,7 @@ void SingleAddressBlockEditor::setupLayout()
         QSplitterHandle* handle = verticalSplitter->handle(i);
         QVBoxLayout* handleLayout = new QVBoxLayout(handle);
         handleLayout->setSpacing(0);
-        handleLayout->setMargin(0);
+        handleLayout->setContentsMargins(0, 0, 0, 0);
 
         QFrame* line = new QFrame(handle);
         line->setLineWidth(2);

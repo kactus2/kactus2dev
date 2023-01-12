@@ -98,7 +98,7 @@ private:
         QString logicalPort_;
 
         //! Possible physical ports in the order of their weights.
-        QMap<double, QString> possiblePhysicals_;
+        QMultiMap<double, QString> possiblePhysicals_;
     };
 
     /*!
@@ -116,7 +116,7 @@ private:
      *
      *      @return The possible physical ports combined with weights.
      */
-    QMap<double, QString> getWeightedPhysicalPorts(std::string const& logicalPort,
+    QMultiMap<double, QString> getWeightedPhysicalPorts(std::string const& logicalPort,
         PortAbstractionInterface* logicalInterface) const;
 
     /*!

@@ -2,7 +2,7 @@
 // File: CppSourceAnalyzer.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Mikko Honkonen, Joni-Matti Määttä
+// Author: Mikko Honkonen, Joni-Matti Maatta
 // Date: 18.1.2013
 //
 // Description:
@@ -202,17 +202,19 @@ QString CppSourceAnalyzer::removeComments(QString const& source)
 {
     QString finalData = source;
 
-    QRegExp tokenExp("(/\\*|//|\")");
-    QRegExp stringEndExp("(\\\\\"|\"|\n)");
+    QRegularExpression tokenExp("(/\\*|//|\")");
+    QRegularExpression stringEndExp("(\\\\\"|\"|\n)");
     
     int index = finalData.indexOf(tokenExp);
+    auto tokenMatch = tokenExp.match(finalData);
 
-    while (index >= 0)
+    while (tokenMatch.hasMatch())
     {
-        if (tokenExp.cap(1) == "//")
+        auto token = tokenMatch.captured(1);
+        if (token == "//")
         {
             // Single-line comment. Strip to the end of the line.
-            int endIndex = finalData.indexOf('\n', index + tokenExp.matchedLength());
+            int endIndex = finalData.indexOf('\n', index + tokenMatch.capturedLength());
 
             if (endIndex == -1)
             {
@@ -222,10 +224,10 @@ QString CppSourceAnalyzer::removeComments(QString const& source)
             finalData.remove(index, endIndex - index);
             index = index + 1;
         }
-        else if (tokenExp.cap(1) == "/*")
+        else if (token == "/*")
         {
             // Multi-line string begins. Strip to the end marker.
-            int endIndex = finalData.indexOf("*/", index + tokenExp.matchedLength());
+            int endIndex = finalData.indexOf("*/", index + tokenMatch.capturedLength());
 
             if (endIndex == -1)
             {
@@ -239,20 +241,22 @@ QString CppSourceAnalyzer::removeComments(QString const& source)
             finalData.remove(index, endIndex - index);
             index = index + 1;
         }
-        else if (tokenExp.cap(1) == "\"")
+        else if (token == "\"")
         {
             // String begins. Just skip the string to its end.
             int endIndex = finalData.indexOf(stringEndExp, index + 1);
+            auto stringEndMatch = stringEndExp.match(finalData, index + 1);
 
-            while (endIndex >= 0 && stringEndExp.cap(1) != "\n")
+            while (stringEndMatch.hasMatch() && stringEndMatch.captured(1) != "\n")
             {
-                if (stringEndExp.cap(1) == "\"")
+                if (stringEndMatch.captured(1) == "\"")
                 {
                     ++endIndex;
                     break;
                 }
 
-                endIndex = finalData.indexOf(stringEndExp, endIndex + stringEndExp.matchedLength());
+                endIndex = finalData.indexOf(stringEndExp, endIndex + stringEndMatch.capturedLength());
+                stringEndMatch = stringEndExp.match(finalData, endIndex);
             }
 
             if (endIndex == -1)

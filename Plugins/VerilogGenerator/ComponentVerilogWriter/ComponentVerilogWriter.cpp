@@ -70,7 +70,7 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
         writeRemapSates(outputStream);
 
 		// If an implementation exists, there must be a warning about overwriting as well.
-		outputStream << "// " << VerilogSyntax::TAG_OVERRIDE << endl;
+		outputStream << "// " << VerilogSyntax::TAG_OVERRIDE << Qt::endl;
 
         implementation_->write(outputStream);
 	}
@@ -129,7 +129,7 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
         return;
     }
 
-    outputStream << " #(" << endl;
+    outputStream << " #(" << Qt::endl;
 
     for (QSharedPointer<Parameter> parameter : *component_->getMetaParameters())
     {
@@ -161,7 +161,7 @@ void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPo
 
     if (parameter->description().isEmpty())
     {
-        outputStream << endl;
+        outputStream << Qt::endl;
     }
 }
 
@@ -236,7 +236,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
         writePort(outputStream, mPort, lastPortToWrite);
     }
     
-    outputStream << ");" << endl;
+    outputStream << ");" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -247,19 +247,19 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
 {
     if (previousInterfaceName.compare(interfaceName) != 0)
     {
-        outputStream << endl;
+        outputStream << Qt::endl;
 
         if (interfaceName == "none")
         {
-            outputStream << indentation() << "// These ports are not in any interface" << endl;                
+            outputStream << indentation() << "// These ports are not in any interface" << Qt::endl;                
         }
         else if (interfaceName == "several")
         {
-            outputStream << indentation() << "// There ports are contained in many interfaces" << endl;       
+            outputStream << indentation() << "// There ports are contained in many interfaces" << Qt::endl;       
         }
         else
         {
-            outputStream << indentation() << "// Interface: " << interfaceName << endl;
+            outputStream << indentation() << "// Interface: " << interfaceName << Qt::endl;
 
             if (!interfaceDescription.isEmpty())
             {
@@ -293,7 +293,7 @@ void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer
 
     if (port->port_->description().isEmpty())
     {
-        outputStream << endl;
+        outputStream << Qt::endl;
     }
 }
 
@@ -302,7 +302,7 @@ void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream& outputStream) const
 {
-    outputStream << endl;
+    outputStream << Qt::endl;
 
     WriterGroup::write(outputStream);
 }
@@ -317,7 +317,7 @@ void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
        return;
     }
 
-    outputStream << indentation() << "// Remap states:" << endl;
+    outputStream << indentation() << "// Remap states:" << Qt::endl;
 
     foreach (QSharedPointer<FormattedRemapState> grms, *component_->getRemapStates())
     {
@@ -334,10 +334,10 @@ void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
             }
         }
 
-        outputStream << indentation() << "`define " << grms->state_->name() << " " << condition << endl;
+        outputStream << indentation() << "`define " << grms->state_->name() << " " << condition << Qt::endl;
     }
 
-    outputStream << endl;
+    outputStream << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -345,5 +345,5 @@ void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeModuleEnd(QTextStream& outputStream) const
 {
-    outputStream << "endmodule" << endl;
+    outputStream << "endmodule" << Qt::endl;
 }

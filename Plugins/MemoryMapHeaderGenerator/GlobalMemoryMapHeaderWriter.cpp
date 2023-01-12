@@ -120,7 +120,7 @@ void GlobalMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 		// start the address parsing from the cpu's interface
 		parseInterface(0, stream, cpuMasterInterface);
 
-		stream << "#endif /* " << headerGuard << " */" << endl << endl;
+		stream << "#endif /* " << headerGuard << " */" << Qt::endl << Qt::endl;
 
         file.close();
 
@@ -233,25 +233,25 @@ void GlobalMemoryMapHeaderWriter::parseSlaveInterface(qint64 offset, QSharedPoin
 
     if (memMap && memMap->hasMemoryBlocks())
     {
-        stream << "/*" << endl;
-        stream << " * Instance: " << interface->getComponentReference() << " Interface: " << interface->getBusReference() << endl;
-        stream << " * Instance base address: 0x" << QString::number(offset, 16) << endl;
-        stream << " * Source component: " << component->getVlnv().toString() << endl;
+        stream << "/*" << Qt::endl;
+        stream << " * Instance: " << interface->getComponentReference() << " Interface: " << interface->getBusReference() << Qt::endl;
+        stream << " * Instance base address: 0x" << QString::number(offset, 16) << Qt::endl;
+        stream << " * Source component: " << component->getVlnv().toString() << Qt::endl;
 
         // if there is a description for the component instance
         QString instanceDesc = componentDesign_->getHWInstanceDescription(interface->getComponentReference());
         if (!instanceDesc.isEmpty())
         {
-            stream << " * Description:" << endl;
-            stream << " * " << instanceDesc << endl;
+            stream << " * Description:" << Qt::endl;
+            stream << " * " << instanceDesc << Qt::endl;
         }
 
         QString instanceID = getInstanceID(interface->getComponentReference());
 
         QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceID, component);
 
-        stream << " * The defines for the memory map \"" << memMap->name() << "\":" << endl;
-        stream << "*/" << endl << endl;
+        stream << " * The defines for the memory map \"" << memMap->name() << "\":" << Qt::endl;
+        stream << "*/" << Qt::endl << Qt::endl;
 
         writeMemoryAddresses(finder, memMap, stream, offset, interface->getComponentReference());
 

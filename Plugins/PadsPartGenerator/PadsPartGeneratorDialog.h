@@ -193,7 +193,7 @@ private:
      *      @param [in] cursor          Cursor to the correct position in preview.
      *      @param [in] validatingExp   RegExp for checking the line correctness.
      */
-    void insertLine(QString const& line,  QTextCursor cursor, QRegExp const& validatingExp = QRegExp() );
+    void insertLine(QString const& line,  QTextCursor cursor, QRegularExpression const& validatingExp = QRegularExpression() );
 
     /*!
      *  Inserts part attributes to the preview.

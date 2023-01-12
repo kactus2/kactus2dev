@@ -41,8 +41,8 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QRadioButton>
-#include <QRegExp>
-#include <QRegExpValidator>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QTextBlock>
 #include <QTextCursor>
 #include <QTextStream>
@@ -104,7 +104,8 @@ errorFormat_()
     setWindowTitle(generatorName_);
 
     // Part name editor.
-    QRegExpValidator* nameValidator = new QRegExpValidator(QRegExp("\\w{1,40}", Qt::CaseInsensitive), this); 
+    QRegularExpressionValidator* nameValidator = new QRegularExpressionValidator(
+        QRegularExpression("\\w{1,40}", QRegularExpression::CaseInsensitiveOption), this);
     nameEditor_->setValidator(nameValidator);    
     nameEditor_->setText(component_->getVlnv().getName());    
     connect(nameEditor_, SIGNAL(textChanged(QString const&)),
@@ -145,7 +146,8 @@ errorFormat_()
         this, SLOT(onUnitChanged()), Qt::UniqueConnection);
 
     // Part logic family editor.
-    QRegExpValidator* familyValidator = new QRegExpValidator(QRegExp("\\w{3}", Qt::CaseInsensitive), this); 
+    QRegularExpressionValidator* familyValidator = new QRegularExpressionValidator(
+        QRegularExpression("\\w{3}", QRegularExpression::CaseInsensitiveOption), this);
     familyEditor_->setValidator(familyValidator);
     familyEditor_->setText("MOS");
     connect(familyEditor_, SIGNAL(textChanged(QString const&)),
@@ -157,7 +159,8 @@ errorFormat_()
         this, SLOT(onGateSelectionChanged()), Qt::UniqueConnection);
 
     // Gate name editor.
-    QRegExpValidator* gateNameValidator = new QRegExpValidator(QRegExp("\\w{1,40}", Qt::CaseInsensitive), this); 
+    QRegularExpressionValidator* gateNameValidator = new QRegularExpressionValidator(
+        QRegularExpression("\\w{1,40}", QRegularExpression::CaseInsensitiveOption), this);
     gateNameEditor_->setValidator(gateNameValidator);  
     gateNameEditor_->setText(DEFAULT_GATENAME);  
     gateNameEditor_->setEnabled(false);
@@ -297,7 +300,7 @@ void PadsPartGeneratorDialog::onNameChanged()
         if (!newName.isEmpty())
         {
             // Replace old name with new name in the header.
-            QStringList line = cursor.block().text().split(PadsAsciiSyntax::SEPARATOR, QString::SkipEmptyParts);
+            QStringList line = cursor.block().text().split(PadsAsciiSyntax::SEPARATOR, Qt::SkipEmptyParts);
             line.replace(PadsAsciiSyntax::NAME, newName);
             cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);        
             cursor.insertText(line.join(PadsAsciiSyntax::SEPARATOR));
@@ -328,7 +331,7 @@ void PadsPartGeneratorDialog::onUnitChanged()
     if (!cursor.isNull())
     {
         // Replace old unit with new in the header.
-        QStringList line = cursor.block().text().split(PadsAsciiSyntax::SEPARATOR, QString::SkipEmptyParts);
+        QStringList line = cursor.block().text().split(PadsAsciiSyntax::SEPARATOR, Qt::SkipEmptyParts);
         if (unitSelector_->currentIndex() == IMPERIAL)
         {
             line.replace(PadsAsciiSyntax::UNITS, PadsAsciiSyntax::IMPERIAL);
@@ -353,7 +356,7 @@ void PadsPartGeneratorDialog::onFamilyChanged()
         QTextCursor cursor = preview_->document()->find(PadsAsciiSyntax::PART_HEADER_1ST_EXP);
         if (!cursor.isNull())
         {
-            QStringList line = cursor.block().text().split(PadsAsciiSyntax::SEPARATOR, QString::SkipEmptyParts);
+            QStringList line = cursor.block().text().split(PadsAsciiSyntax::SEPARATOR, Qt::SkipEmptyParts);
             line.replace(PadsAsciiSyntax::LOGFAMILY, familyEditor_->text());
 
             cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
@@ -430,7 +433,7 @@ void PadsPartGeneratorDialog::generateHeader()
 
         // Insert 1. header line.
         QStringList headerLine1 = PadsAsciiSyntax::PART_HEADER_1ST_LINE.split(PadsAsciiSyntax::SEPARATOR, 
-            QString::SkipEmptyParts);    
+            Qt::SkipEmptyParts);    
         
         headerLine1.replace(PadsAsciiSyntax::NAME, nameEditor_->text().toUpper());        
         headerLine1.replace(PadsAsciiSyntax::DECALS, tr("NO_DECAL"));
@@ -544,7 +547,7 @@ void PadsPartGeneratorDialog::generateGates()
     if (!cursor.isNull())
     {
         QStringList headerLine1 = cursor.block().text().split(PadsAsciiSyntax::SEPARATOR, 
-            QString::SkipEmptyParts);    
+            Qt::SkipEmptyParts);    
         headerLine1.replace(PadsAsciiSyntax::NUM_GATES, QString::number(gateCount));
         cursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
 
@@ -669,9 +672,9 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
 //-----------------------------------------------------------------------------
 // Function: PadsPartGeneratorDialog::insertLine()
 //-----------------------------------------------------------------------------
-void PadsPartGeneratorDialog::insertLine(QString const& line, QTextCursor cursor, QRegExp const& validatingExp)
+void PadsPartGeneratorDialog::insertLine(QString const& line, QTextCursor cursor, QRegularExpression const& validatingExp)
 {    
-    if (validatingExp.pattern().isEmpty() || validatingExp.exactMatch(line))
+    if (validatingExp.pattern().isEmpty() || validatingExp.match(line).hasMatch())
     {
         cursor.insertText(line, okFormat_);            
     }
@@ -689,7 +692,7 @@ void PadsPartGeneratorDialog::insertAttributes(QTextCursor& cursor)
 {
     // Insert default attributes.
     QStringList attr = PadsAsciiSyntax::ATTRIBUTE_DECLARATION.split(PadsAsciiSyntax::SEPARATOR, 
-        QString::SkipEmptyParts);
+        Qt::SkipEmptyParts);
     attr.replace(PadsAsciiSyntax::ATTRNAME, tr("\"Generated by\""));
     attr.replace(PadsAsciiSyntax::VALUE, "Kactus2 " + generatorName_ + tr(" version ") + 
         generatorVersion_);

@@ -41,22 +41,13 @@ configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
 defaultValueFormatter_(defaultValueFormatter),
 defaultValueParser_(defaultValueParser),
 validator_(0),
-itemConfigurableElementValues_(0),
-referableParameters_(new QList<QSharedPointer<Parameter> > ())
+itemConfigurableElementValues_(0)
 {
     setExpressionParser(configurableElementExpressionParser);
 
     QSharedPointer<QList<QSharedPointer<Choice> > > noChoices(new QList<QSharedPointer<Choice> >());
     validator_ = QSharedPointer<ParameterValidator>(
         new ParameterValidator(configurableElementExpressionParser, noChoices));
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementsModel::ConfigurableElementsModel()
-//-----------------------------------------------------------------------------
-ConfigurableElementsModel::~ConfigurableElementsModel() 
-{
-    
 }
 
 //-----------------------------------------------------------------------------
@@ -361,7 +352,7 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
     }
     else if (index.column() == ConfigurableElementsColumns::TYPE)
     {
-        return element->getReferencedParameter()->getType();
+        return element->getType();
     }
 
     return QVariant();
@@ -496,6 +487,10 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
     else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
     {
         return element->getReferencedParameter()->getValue();
+    }
+    else if (index.column() == ConfigurableElementsColumns::TYPE)
+    {
+        return element->getType();
     }
 
     return data(index, Qt::DisplayRole);

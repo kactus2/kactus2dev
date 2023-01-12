@@ -2,7 +2,7 @@
 // File: SystemDetailsEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 30.7.2012
 //
 // Description:
@@ -71,7 +71,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
     {
         designWidget_->disconnect(this);
 
-        disconnect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+        disconnect(viewSelector_, SIGNAL(currentTextChanged(const QString&)),
                    this, SLOT(onViewRefChanged(const QString&)));
     }
 
@@ -106,7 +106,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
     exportButton_->setEnabled(component_->getImplementation() != KactusAttribute::SYSTEM);
     revertButton_->setDisabled(true);
 
-    connect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+    connect(viewSelector_, SIGNAL(currentTextChanged(const QString&)),
             this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
 
     // display this widget
@@ -123,7 +123,7 @@ void SystemDetailsEditor::clear()
         designWidget_->disconnect(this);
         designWidget_ = 0;
 
-        disconnect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+        disconnect(viewSelector_, SIGNAL(currentTextChanged(const QString&)),
                    this, SLOT(onViewRefChanged(const QString&)));
     }
 
@@ -196,7 +196,7 @@ void SystemDetailsEditor::setupConnections()
 //-----------------------------------------------------------------------------
 void SystemDetailsEditor::onHWRefChanged()
 {
-    disconnect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+    disconnect(viewSelector_, SIGNAL(currentTextChanged(const QString&)),
                this, SLOT(onViewRefChanged(const QString&)));
 
     viewSelector_->clear();
@@ -212,7 +212,7 @@ void SystemDetailsEditor::onHWRefChanged()
         }
     }
 
-    connect(viewSelector_, SIGNAL(currentIndexChanged(const QString&)),
+    connect(viewSelector_, SIGNAL(currentTextChanged(const QString&)),
             this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
 
     bool modified = hwRefEditor_->getVLNV() != component_->getVlnv() ||

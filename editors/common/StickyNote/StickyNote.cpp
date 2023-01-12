@@ -125,6 +125,10 @@ QVariant StickyNote::itemChange(GraphicsItemChange change, const QVariant& value
         positionExtension_->setPosition(newPosition);
         return newPosition;
     }
+    if (change == ItemPositionHasChanged)
+    {
+        positionUpdated();
+    }
 
     return QGraphicsItemGroup::itemChange(change, value);
 }
@@ -327,5 +331,5 @@ bool StickyNote::hitsAssociationButton(QPointF const& clickPosition) const
 //-----------------------------------------------------------------------------
 QString StickyNote::getFormattedTimestamp()
 {
-    return QDateTime::currentDateTime().toString(Qt::SystemLocaleShortDate);
+    return QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm");
 }

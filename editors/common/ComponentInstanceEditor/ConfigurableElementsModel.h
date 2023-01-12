@@ -66,7 +66,7 @@ public:
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~ConfigurableElementsModel();
+	virtual ~ConfigurableElementsModel() = default;
 
 	/*!
 	 *  Set the parameters for configurable element values.
@@ -160,13 +160,6 @@ public:
      */
     QModelIndex parent(const QModelIndex& child) const;
 
-    /*!
-     *  Sends a data change signal for the selected configurable element.
-     *
-     *      @param [in] parameterID     ID of the parameter referenced by the configurable element.
-     *      @param [in] newValue        The new value of the configurable element.
-     */
-    void emitDataChangeForID(QString const& parameterID, QString const& newValue);
 
 public slots:
 
@@ -191,6 +184,14 @@ public slots:
      *      @param [in] elementRow      Index row for the new item.
      */
     void onAddItem(QString const& elementID, QString const& elementValue, int elementRow);
+
+    /*!
+     *  Sends a data change signal for the selected configurable element.
+     *
+     *      @param [in] parameterID     ID of the parameter referenced by the configurable element.
+     *      @param [in] newValue        The new value of the configurable element.
+     */
+    void emitDataChangeForID(QString const& parameterID, QString const& newValue);
 
     /*!
      *  Check if the given index is valid.
@@ -253,6 +254,37 @@ protected:
      */
     virtual bool validateIndex(QModelIndex const& index) const;
 
+    /*!
+     *  Restore the previously saved configurable element values to their correct element.
+     */
+    void restoreStoredConfigurableElements();
+
+    /*!
+     *  Evaluate the value for the given index.
+     *
+     *      @param [in] column      The column of the required value.
+     *      @param [in] choiceName  The name of the choice used in the given value.
+     *      @param [in] value       The given value.
+     *
+     *      @return The true value for the given index, whether it is given using a choice or not.
+     */
+    QString evaluateValue(int column, QString const& choiceName, QString const& value) const;
+
+    //! A list of the configurable elements of the model.
+    QList<QSharedPointer<EditorConfigurableElement> > configurableElements_;
+
+    //! A list of the available choices.
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+
+    //! Name of the containing item.
+    QString containingItemName_;
+
+    //! Validator for parameters.
+    QSharedPointer<ParameterValidator> validator_;
+
+    //! Configurable element values contained within the containing item.
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElementValues_;
+
 private:
     //! No copying. //! No assignment.
 	ConfigurableElementsModel(const ConfigurableElementsModel& other);
@@ -276,16 +308,6 @@ private:
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 
-    /*!
-     *  Evaluate the value for the given index.
-     *
-     *      @param [in] column      The column of the required value.
-     *      @param [in] choiceName  The name of the choice used in the given value.
-     *      @param [in] value       The given value.
-     *
-     *      @return The true value for the given index, whether it is given using a choice or not.
-     */
-    QString evaluateValue(int column, QString const& choiceName, QString const& value) const;
 
     /*!
      *  Finds the currently selected choice.
@@ -325,10 +347,6 @@ private:
      */
     QString tooltipForIndex(QModelIndex const& index) const;
 
-    /*!
-     *  Restore the previously saved configurable element values to their correct element.
-     */
-    void restoreStoredConfigurableElements();
 
     /*!
      *  Get the selected configurable element.
@@ -377,15 +395,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! A list of the configurable elements of the model.
-    QList<QSharedPointer<EditorConfigurableElement> > configurableElements_;
-
-    //! A list of the available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
-
-    //! Name of the containing item.
-    QString containingItemName_;
-
     //! The formatter for referencing expressions in values.
     QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter_;
 
@@ -395,14 +404,6 @@ private:
     //! The expression parser for default values.
     QSharedPointer<ExpressionParser> defaultValueParser_;
 
-    //! Validator for parameters.
-    QSharedPointer<ParameterValidator> validator_;
-
-    //! Configurable element values contained within the containing item.
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElementValues_;
-
-    //! Parameters from which the configurable element values are constructed from.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > referableParameters_;
 };
 
 //! Meta types for QVariants.

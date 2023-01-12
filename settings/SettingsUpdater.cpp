@@ -2,7 +2,7 @@
 // File: SettingsUpdater.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 15.01.2013
 //
 // Description:
@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 void SettingsUpdater::runUpgrade(QSettings& settings, MessageMediator* mediator)
 {   
-    qRegisterMetaTypeStreamOperators<HighlightStyleDesc>("HighlightStyleDesc");
+    qRegisterMetaType<HighlightStyleDesc>("HighlightStyleDesc");
 
     // Retrieve the version number of the settings file and check if it is not up-to-date.
     QString settingsVersion = 
@@ -220,7 +220,7 @@ QVariant SettingsUpdater::Details::parseVariant(QTextStream& lineStream)
     else if (type.compare(QLatin1String("HighlightStyle")) == 0)
     {
         QStringList arguments = lineStream.readAll().split(QLatin1Char(','));
-        return qVariantFromValue(HighlightStyleDesc(QColor(arguments.first()), 
+        return QVariant::fromValue(HighlightStyleDesc(QColor(arguments.first()), 
             arguments.contains(QStringLiteral("bold")),
             arguments.contains(QStringLiteral("italic"))));
     }

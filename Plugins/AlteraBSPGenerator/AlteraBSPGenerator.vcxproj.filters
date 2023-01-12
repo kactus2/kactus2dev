@@ -31,48 +31,26 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\qrc_AlteraBSPGenerator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_alterabspgenerator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_alterabspgenerator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="alterabspgenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="alterabspgeneratordialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_alterabspgeneratordialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_alterabspgeneratordialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="..\..\common\widgets\viewSelector\viewselector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_viewselector.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_viewselector.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_commandlineconsole.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_commandlineconsole.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_commandlinegeneratordialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_commandlinegeneratordialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
+    
+    
     <ClCompile Include="commandlineconsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -81,24 +59,24 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="AlteraBSPGenerator.qrc">
+    <QtRcc Include="AlteraBSPGenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="alterabspgenerator.h">
+    </QtRcc>
+    <QtMoc Include="alterabspgenerator.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="alterabspgeneratordialog.h">
+    </QtMoc>
+    <QtMoc Include="alterabspgeneratordialog.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\common\widgets\viewSelector\viewselector.h">
+    </QtMoc>
+    <QtMoc Include="..\..\common\widgets\viewSelector\viewselector.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="commandlineconsole.h">
+    </QtMoc>
+    <QtMoc Include="commandlineconsole.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="commandlinegeneratordialog.h">
+    </QtMoc>
+    <QtMoc Include="commandlinegeneratordialog.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="BSPicon24.png">

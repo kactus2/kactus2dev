@@ -27,7 +27,7 @@ ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ParameterFin
     QWidget *parent):
 QGroupBox(tr("Configurable element values"), parent),
 view_(this),
-delegate_(0),
+delegate_(nullptr),
 filterSelection_(new QCheckBox(tr("Show immediate values"), this))
 {
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
@@ -45,10 +45,8 @@ filterSelection_(new QCheckBox(tr("Show immediate values"), this))
 	topLayout->addWidget(&view_);
     topLayout->addWidget(filterSelection_);
 
-    connect(&view_, SIGNAL(removeSelectedItems(QModelIndexList const&)),
-        delegate_, SLOT(onCreateRemoveElementCommands(QModelIndexList const&)), Qt::UniqueConnection);
-    connect(&view_, SIGNAL(removeAllSubItems(QModelIndexList const&)),
-        delegate_, SLOT(onCreateMultipleElementRemoveCommands(QModelIndexList const&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(removeItem(QModelIndex const&)),
+        delegate_, SLOT(onCreateRemoveElementCommands(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(delegate_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -61,33 +59,6 @@ filterSelection_(new QCheckBox(tr("Show immediate values"), this))
         QString const&, QString const&, QModelIndex const&, QAbstractItemModel*)), Qt::UniqueConnection);
 }
 
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementEditor::~ConfigurableElementEditor()
-//-----------------------------------------------------------------------------
-ConfigurableElementEditor::~ConfigurableElementEditor() 
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurableelementeditor::expandView()
-//-----------------------------------------------------------------------------
-void ConfigurableElementEditor::expandView()
-{
-    view_.expandAll();
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurableelementeditor::setFirstParentColumnsSpannable()
-//-----------------------------------------------------------------------------
-void ConfigurableElementEditor::setFirstParentColumnsSpannable()
-{
-    int rowCount = view_.model()->rowCount();
-    for (int i = 0; i < rowCount; ++i)
-    {
-        view_.setFirstColumnSpanned(i, QModelIndex(), true);
-    }
-}
 
 //-----------------------------------------------------------------------------
 // Function: configurableelementeditor::setModel()
@@ -97,22 +68,6 @@ void ConfigurableElementEditor::setModel(QAbstractItemModel* newModel, QSortFilt
     newFilter->setSourceModel(newModel);
     newFilter->setSortCaseSensitivity(Qt::CaseInsensitive);
     view_.setModel(newFilter);
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurableelementeditor::getDelegate()
-//-----------------------------------------------------------------------------
-ConfigurableElementDelegate* ConfigurableElementEditor::getDelegate() const
-{
-    return delegate_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurableelementeditor::getFilterSelectionBox()
-//-----------------------------------------------------------------------------
-QCheckBox* ConfigurableElementEditor::getFilterSelectionBox() const
-{
-    return filterSelection_;
 }
 
 //-----------------------------------------------------------------------------

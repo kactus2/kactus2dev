@@ -2,7 +2,7 @@
 // File: FileDependency.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 19.01.2013
 //
 // Description:

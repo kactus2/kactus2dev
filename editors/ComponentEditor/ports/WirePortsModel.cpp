@@ -381,8 +381,8 @@ bool WirePortsModel::indexedItemIsDisabled(QModelIndex const& index) const
 
     return (index.column() == WirePortColumns::ROW_NUMBER ||
         (index.column() == WirePortColumns::DEFAULT_VALUE &&
-        (QString::fromStdString(getInterface()->getDirection(portName)) != DirectionTypes::IN &&
-        QString::fromStdString(getInterface()->getDirection(portName)) != DirectionTypes::INOUT)) ||
+        (DirectionTypes::str2Direction(getInterface()->getDirection(portName)) != DirectionTypes::IN && 
+            DirectionTypes::str2Direction(getInterface()->getDirection(portName)) != DirectionTypes::INOUT)) ||
         (index.column() == WirePortColumns::WIDTH && getInterface()->hasExpressionInLeftOrRightBound(portName)));
 }
 

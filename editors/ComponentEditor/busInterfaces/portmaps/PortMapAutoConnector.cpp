@@ -102,7 +102,7 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QStringList const& logica
 
         if (presence != PresenceTypes::ILLEGAL)
         {
-            QMap<double, QString> physicalPorts = getWeightedPhysicalPorts(portName, logicalInterface);
+            QMultiMap<double, QString> physicalPorts = getWeightedPhysicalPorts(portName, logicalInterface);
 
             PossiblePortMaps newPairing;
             newPairing.logicalPort_ = logicalPort;
@@ -136,10 +136,10 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QStringList const& logica
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::getWeightedPhysicalPorts()
 //-----------------------------------------------------------------------------
-QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(std::string const& logicalPort,
+QMultiMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(std::string const& logicalPort,
     PortAbstractionInterface* logicalInterface) const
 {
-    QMap<double, QString> weightedPhysicalPorts;
+    QMultiMap<double, QString> weightedPhysicalPorts;
 
     General::InterfaceMode busMode = portMapInterface_->getInterfaceMode();
     std::string systemGroup = portMapInterface_->getSystemGroup();
@@ -178,7 +178,7 @@ QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(std::string
         {
             weightIterator.next();
 
-            weightedPhysicalPorts.insertMulti(weightIterator.value(), weightIterator.key());
+            weightedPhysicalPorts.insert(weightIterator.value(), weightIterator.key());
         }
     }
 
@@ -191,7 +191,7 @@ QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(std::string
 QString PortMapAutoConnector::getBestMatchingPhysicalPort(int logicalIndex,
     QList<PossiblePortMaps> const& possiblePairings) const
 {
-    QMapIterator<double, QString> physicalIterator(possiblePairings.at(logicalIndex).possiblePhysicals_);
+    QMultiMapIterator<double, QString> physicalIterator(possiblePairings.at(logicalIndex).possiblePhysicals_);
     physicalIterator.toBack();
     while (physicalIterator.hasPrevious())
     {

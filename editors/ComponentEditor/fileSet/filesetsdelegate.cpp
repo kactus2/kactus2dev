@@ -79,7 +79,7 @@ void FileSetsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) 
     {
         ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
         Q_ASSERT(listEditor);
-        QStringList groups = index.data(Qt::DisplayRole).toString().split(' ', QString::SkipEmptyParts);
+        QStringList groups = index.data(Qt::DisplayRole).toString().split(' ', Qt::SkipEmptyParts);
         listEditor->setItems(groups);
     }
     else

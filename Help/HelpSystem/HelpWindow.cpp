@@ -2,7 +2,7 @@
 // File: HelpWindow.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 7.8.2012
 //
 // Description:
@@ -27,7 +27,7 @@ HelpWindow::HelpWindow(QHelpEngine* engine, QWidget* parent): QMainWindow(parent
     engine_(engine),
     menu_(new QMenuBar(this)),
     tocDock_(new QDockWidget(tr("Contents"), this)),
-    browser_(new ContextHelpBrowser(engine, "qthelp://com.tut.kactus2.2.0/doc", this))
+    browser_(new ContextHelpBrowser(engine, "qthelp://fi.tuni.kactus2/doc", this))
 {
     setWindowTitle(tr("Kactus2 Help"));
     resize(800, 500);

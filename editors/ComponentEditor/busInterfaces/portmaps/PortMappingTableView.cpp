@@ -179,7 +179,7 @@ QStringList PortMappingTableView::getSelectedPorts()
     }
 
 	// sort indexes so they are in order
-	qSort(indexList);
+	std::sort(indexList.begin(), indexList.end());
 
     foreach (QModelIndex const& index, removedIndexList)
     {

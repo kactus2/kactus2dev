@@ -2,7 +2,7 @@
 // File: PluginSettingsPage.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 19.02.2013
 //
 // Description:
@@ -193,7 +193,7 @@ QTreeWidgetItem* PluginSettingsPage::createPluginItem(IPlugin* plugin)
         item->setCheckState(0, Qt::Unchecked);
     }
 
-    item->setData(0, PLUGIN_POINTER_ROLE, qVariantFromValue(static_cast<void*>(plugin)));
+    item->setData(0, PLUGIN_POINTER_ROLE, QVariant::fromValue(static_cast<void*>(plugin)));
     item->setData(0, PLUGIN_STACK_INDEX_ROLE, infoStack_.count());
 
     infoStack_.addWidget(new PluginInfoWidget(plugin));

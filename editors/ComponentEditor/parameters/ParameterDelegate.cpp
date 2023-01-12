@@ -13,14 +13,15 @@
 
 #include "ParameterColumns.h"
 
+#include <IPXACTmodels/common/validators/namevalidator.h>
 #include <IPXACTmodels/Component/Choice.h>
 
-#include <IPXACTmodels/common/validators/namevalidator.h>
-
 #include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+
+#include <editors/ComponentEditor/common/ExpressionLineEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
@@ -33,7 +34,7 @@
 #include <QPainter>
 #include <QScrollArea>
 #include <QSortFilterProxyModel>
-
+#include <QComboBox>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
@@ -97,7 +98,19 @@ QWidget* ParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 
         return 0;
     }
-    
+    else if (index.column() == valueColumn() && !choiceNameOnRow(index).isEmpty())
+    {
+        QComboBox* newCombo(new QComboBox(parent));
+        newCombo->setEditable(true);
+     
+        newCombo->addItem("<none>");
+        newCombo->addItems(getChoiceComboItems(index));
+
+        ExpressionLineEditor* expressionEditor = createExpressionLineEditor(parent);
+        newCombo->setLineEdit(expressionEditor);
+
+        return newCombo;
+    }
     else if (index.column() == valueColumn() && valueIsArray(index))
     {
         ArrayView* editor = new ArrayView(parent);
@@ -178,15 +191,47 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         connect(view->itemDelegate(), SIGNAL(decreaseReferences(QString)),
             this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     }
-
-    else if (qobject_cast<QComboBox*>(editor)) 
+    else if (qobject_cast<QComboBox*>(editor))
     {
-		QString text = index.data(Qt::DisplayRole).toString();
-		QComboBox* combo = qobject_cast<QComboBox*>(editor);
-		
-		int comboIndex = combo->findText(text);
-		combo->setCurrentIndex(comboIndex);
-	}
+        QString text = index.data(Qt::DisplayRole).toString();
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+
+        if (index.column() == valueColumn())
+        {
+            if (text.isEmpty())
+            {
+                text = "<none>";
+            }
+            else
+            {
+                QString enumerationValue = findEnumerationValue(index, text);
+                if (!enumerationValue.isEmpty())
+                {
+                    text = text.prepend(enumerationValue + ":");
+                }
+            }
+        }
+
+        if (combo->isEditable())
+        {
+            ExpressionLineEditor* expressionEditor = qobject_cast<ExpressionLineEditor*>(combo->lineEdit());
+            if (expressionEditor)
+            {
+                QString dataText = index.data(Qt::EditRole).toString();
+                expressionEditor->setExpression(index.data(Qt::EditRole).toString());
+            }
+        }
+
+        int comboIndex = combo->findText(text);
+        if (comboIndex < 0)
+        {
+            combo->addItem(text);
+            comboIndex = combo->findText(text);
+        }
+
+        combo->setCurrentIndex(comboIndex);
+
+    }
 	else if (index.column() == usageCountColumn())
     {
         // Do nothing.
@@ -219,15 +264,30 @@ void ParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         QString arrayValue = arrayModel->getArrayData();
         model->setData(index, arrayValue, Qt::EditRole);
     }
-
     else if (qobject_cast<QComboBox*>(editor))
     {
         QComboBox* combo = qobject_cast<QComboBox*>(editor);
         QString text = combo->currentText();
+        
         if (text == "<none>")
         {
             text = "";
         }
+        else if (index.column() == valueColumn() && text.contains(":"))
+        {
+            text = text.left(text.indexOf(":"));
+        }
+        else if (combo->isEditable())
+        {
+            ExpressionLineEditor* expressionEditor = qobject_cast<ExpressionLineEditor*>(combo->lineEdit());
+            if (expressionEditor)
+            {
+                expressionEditor->finishEditingCurrentWord();
+
+                text = expressionEditor->getExpression();
+            }
+        }
+
         model->setData(index, text, Qt::EditRole);
     }
     else if (index.column() == descriptionColumn())

@@ -15,7 +15,7 @@
 
 ComboSelector::ComboSelector(QWidget *parent /* = 0*/,
 							 const QString selected /*= QString()*/,							  
-							 Qt::WindowFlags f /*= ´Qt::Dialog*/):
+							 Qt::WindowFlags f /*= Qt::Dialog*/):
 QInputDialog(parent, f) {
 
 	setCancelButtonText(tr("Cancel"));

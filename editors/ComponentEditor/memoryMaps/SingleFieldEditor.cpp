@@ -508,32 +508,32 @@ void SingleFieldEditor::setupLayout()
     QFormLayout* fieldConstraintLayout = new QFormLayout(fieldConstraintGroup);
     volatileEditor_ = new BooleanComboBox(fieldConstraintGroup);
     fieldConstraintLayout->addRow(tr("Volatile:"), volatileEditor_);
-    connect(volatileEditor_, SIGNAL(activated(QString const&)),
+    connect(volatileEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
 
     accessEditor_ = new AccessComboBox(fieldConstraintGroup);
     fieldConstraintLayout->addRow(tr("Access:"), accessEditor_);
-    connect(accessEditor_, SIGNAL(activated(QString const&)),
+    connect(accessEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
 
     modifiedWriteValueEditor_ = new ModWriteComboBox(fieldConstraintGroup);
     fieldConstraintLayout->addRow(tr("Modified write value:"), modifiedWriteValueEditor_);
-    connect(modifiedWriteValueEditor_, SIGNAL(activated(QString const&)),
+    connect(modifiedWriteValueEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onModifiedWriteSelected(QString const&)), Qt::UniqueConnection);
 
     readActionEditor_ = new ReadActionComboBox(fieldConstraintGroup);
     fieldConstraintLayout->addRow(tr("Read action:"), readActionEditor_);
-    connect(readActionEditor_, SIGNAL(activated(QString const&)),
+    connect(readActionEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onReadActionSelected(QString const&)), Qt::UniqueConnection);
 
     testableEditor_ = new BooleanComboBox(fieldConstraintGroup);
     fieldConstraintLayout->addRow(tr("Testable:"), testableEditor_);
-    connect(testableEditor_, SIGNAL(activated(QString const&)),
+    connect(testableEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onTestableSelected(QString const&)), Qt::UniqueConnection);
 
     testConstrainedEditor_ = new TestConstraintComboBox(fieldConstraintGroup);
     fieldConstraintLayout->addRow(tr("Test constraint:"), testConstrainedEditor_);
-    connect(testConstrainedEditor_, SIGNAL(activated(QString const&)),
+    connect(testConstrainedEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onTestConstrainedSelected(QString const&)), Qt::UniqueConnection);
 
 
@@ -561,7 +561,7 @@ void SingleFieldEditor::setupLayout()
     QSplitterHandle* handle = verticalSplitter->handle(1);
     QVBoxLayout* handleLayout = new QVBoxLayout(handle);
     handleLayout->setSpacing(0);
-    handleLayout->setMargin(0);
+    handleLayout->setContentsMargins(0, 0, 0, 0);
 
     QFrame* line = new QFrame(handle);
     line->setLineWidth(2);

@@ -2,7 +2,7 @@
 // File: ColumnEditDialog.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 15.4.2011
 //
 // Description:
@@ -70,7 +70,7 @@ ColumnEditDialog::ColumnEditDialog(QWidget* parent, bool sw, GraphicsColumn cons
 
     onTypeChange(typeCombo_->currentText());
 
-    connect(typeCombo_, SIGNAL(currentIndexChanged(QString const&)), this, SLOT(onTypeChange(QString const&)));
+    connect(typeCombo_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onTypeChange(QString const&)));
     connect(buttons_, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttons_, SIGNAL(rejected()), this, SLOT(reject()));
 }

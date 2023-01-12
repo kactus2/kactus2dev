@@ -58,15 +58,9 @@
     <ClCompile Include="ModelSimGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_ModelSimGenerator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ModelSimGeneratorPlugin.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ModelSimGeneratorPlugin.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
@@ -76,30 +70,14 @@
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_FileOutputWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_FileOutputWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_HDLGenerationDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_HDLGenerationDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ViewSelectionWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ViewSelectionWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_MessagePasser.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_MessagePasser.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
+    
+    
+    
+    
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
@@ -124,12 +102,8 @@
     <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp">
       <Filter>Source Files\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_messageconsole.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_messageconsole.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
     <ClCompile Include="ModelSimWriterFactory\ModelSimWriterFactory.cpp">
       <Filter>Source Files\ModelSimWriterFactory</Filter>
     </ClCompile>
@@ -144,27 +118,27 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="ModelSimGenerator.qrc">
+    <QtRcc Include="ModelSimGenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="ModelSimGeneratorPlugin.h">
+    </QtRcc>
+    <QtMoc Include="ModelSimGeneratorPlugin.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
+    </QtMoc>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
       <Filter>Header Files\GenerationControl</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
+    </QtMoc>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
       <Filter>Header Files\Widgets</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
+    </QtMoc>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
       <Filter>Header Files\Widgets</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.h">
+    </QtMoc>
+    <QtMoc Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.h">
       <Filter>Header Files\Widgets</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\mainwindow\MessageConsole\messageconsole.h">
+    </QtMoc>
+    <QtMoc Include="..\..\mainwindow\MessageConsole\messageconsole.h">
       <Filter>Header Files\Widgets</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="modelSimGenerator.json" />

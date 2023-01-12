@@ -109,13 +109,13 @@ void MakefileGenerator::generateInstanceMakefile(QString const& targetPath, QStr
         outStream << " " << General::getRelativePath(absolutePathString, includePath);
     }
 
-    outStream << endl;
+    outStream << Qt::endl;
 	// Will make the -I option out of every included directory.
-    outStream << "INCLUDES=$(patsubst %, -I%, $(_INCLUDES))" << endl << endl;
+    outStream << "INCLUDES=$(patsubst %, -I%, $(_INCLUDES))" << Qt::endl << Qt::endl;
 
     // The common dependency list.
 	// Currently features only Makefile, in case a new one is generated.
-    outStream << "DEPS= " << qfi.fileName() << endl << endl;
+    outStream << "DEPS= " << qfi.fileName() << Qt::endl << Qt::endl;
 
     // Other stuff is in their own functions.
     writeFinalFlagsAndBuilder(makeData, outStream);
@@ -124,15 +124,15 @@ void MakefileGenerator::generateInstanceMakefile(QString const& targetPath, QStr
 	writeCleanRules(outStream);
 
 	// Create rule for using debugging and profiling options
-	outStream << "DEBUG_FLAGS +=" << endl;
+	outStream << "DEBUG_FLAGS +=" << Qt::endl;
 	outStream << "debug: DEBUG_FLAGS += -ggdb -fno-omit-frame-pointer -fno-inline-functions "
-		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << endl;
-	outStream << "debug: $(ENAME)" << endl << endl;
+		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << Qt::endl;
+	outStream << "debug: $(ENAME)" << Qt::endl << Qt::endl;
 
-	outStream << "PROFILE_FLAGS +=" << endl;
+	outStream << "PROFILE_FLAGS +=" << Qt::endl;
 	outStream << "profile: PROFILE_FLAGS += -pg -fno-omit-frame-pointer -fno-inline-functions "
-		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << endl;
-	outStream << "profile: $(ENAME)" << endl << endl;
+		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << Qt::endl;
+	outStream << "profile: $(ENAME)" << Qt::endl << Qt::endl;
 
 	// Rule to include generated dependency files to the compilation.
 	outStream << "-include $(OBJ:%.o=%.d)";
@@ -189,34 +189,34 @@ void MakefileGenerator::generateMainMakefile(QString const& targetPath, QString 
     foreach(QString directory, makeNames)
     {
         QFileInfo qfi(targetPath + "/" + directory);
-        outStream << endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make -f " << qfi.fileName() << ")";
+        outStream << Qt::endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make -f " << qfi.fileName() << ")";
     }
 
     // Needs also cleaner for each directory.
-    outStream << endl << endl << "clean:";
+    outStream << Qt::endl << Qt::endl << "clean:";
 
     foreach(QString directory, makeNames)
     {
         QFileInfo qfi(targetPath + "/" + directory);
-        outStream << endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make clean -f " << qfi.fileName() << ")";
+        outStream << Qt::endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make clean -f " << qfi.fileName() << ")";
 	}
 
 	// Debug target for each directory.
-	outStream << endl << endl << "debug:";
+	outStream << Qt::endl << Qt::endl << "debug:";
 
 	foreach(QString directory, makeNames)
     {
         QFileInfo qfi(targetPath + "/" + directory);
-        outStream << endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make debug -f " << qfi.fileName() << ")";
+        outStream << Qt::endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make debug -f " << qfi.fileName() << ")";
 	}
 
 	// Profiling target for each directory.
-	outStream << endl << endl << "profile:";
+	outStream << Qt::endl << Qt::endl << "profile:";
 
 	foreach(QString directory, makeNames)
     {
         QFileInfo qfi(targetPath + "/" + directory);
-		outStream << endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make profile -f " << qfi.fileName() << ")";
+		outStream << Qt::endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make profile -f " << qfi.fileName() << ")";
 	}
 
     // Close after it is done.
@@ -258,9 +258,9 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(QSharedPointer<MakeFileData> m
     }
 
     // Finally, write down what we learned.
-    outStream << "ENAME= " << mfd->name << endl;
-    outStream << "EFLAGS= " << finalFlags << endl;
-    outStream << "EBUILDER= " << finalBuilder << endl;
+    outStream << "ENAME= " << mfd->name << Qt::endl;
+    outStream << "EFLAGS= " << finalFlags << Qt::endl;
+    outStream << "EBUILDER= " << finalBuilder << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -280,9 +280,9 @@ void MakefileGenerator::writeObjectList(QSharedPointer<MakeFileData> mfd, QTextS
     }
 
     // Finally, write down what we learned.
-    outStream << endl;
-    outStream << "ODIR= obj" << endl;
-    outStream << "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))" << endl << endl;
+    outStream << Qt::endl;
+    outStream << "ODIR= obj" << Qt::endl;
+    outStream << "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))" << Qt::endl << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -291,9 +291,9 @@ void MakefileGenerator::writeObjectList(QSharedPointer<MakeFileData> mfd, QTextS
 void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 {
     // Rather straight forward: write constant build rule and a cleaner rule.
-    outStream << "$(ENAME): $(OBJ)" << endl;
+    outStream << "$(ENAME): $(OBJ)" << Qt::endl;
     outStream << "\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)"
-        << endl << endl;
+        << Qt::endl << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -303,14 +303,14 @@ void MakefileGenerator::writeCleanRules(QTextStream& outStream) const
 {
 	// Delete all known object files. May leave renamed files undeleted, but is more secure than deleting all
 	// content of the object directory.
-	outStream << "clean:" << endl;
-	outStream << "\trm -f $(OBJ:%.o=%.d);" << endl;
-	outStream << "\trm -f $(OBJ);" << endl << endl;
+	outStream << "clean:" << Qt::endl;
+	outStream << "\trm -f $(OBJ:%.o=%.d);" << Qt::endl;
+	outStream << "\trm -f $(OBJ);" << Qt::endl << Qt::endl;
 
 	// Make a directory for the object files.
-	outStream << "all: $(OBJ)" << endl << endl;
-	outStream << "$(OBJ): | $(ODIR)" << endl << endl;
-	outStream << "$(ODIR):" << endl << "\tmkdir -p $(ODIR)" << endl << endl;
+	outStream << "all: $(OBJ)" << Qt::endl << Qt::endl;
+	outStream << "$(OBJ): | $(ODIR)" << Qt::endl << Qt::endl;
+	outStream << "$(ODIR):" << Qt::endl << "\tmkdir -p $(ODIR)" << Qt::endl << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -338,8 +338,8 @@ void MakefileGenerator::writeMakeObjects(QTextStream& outStream,
         QString fileName = mod->fileName;
 
         // Write the rule for building the individual object file, including dependencies.
-        outStream << endl << endl;
-        outStream << "$(ODIR)/" << fileName << ".o: $(DEPS) " << relPath << "/" << fileName << endl;
+        outStream << Qt::endl << Qt::endl;
+        outStream << "$(ODIR)/" << fileName << ".o: $(DEPS) " << relPath << "/" << fileName << Qt::endl;
         outStream << "\t" << mod->compiler << " " << DEFAULT_OBJECT_FLAGS << " $(ODIR)/" << fileName << ".o " <<
             relPath << "/" << fileName << " " << cFlags;
     }

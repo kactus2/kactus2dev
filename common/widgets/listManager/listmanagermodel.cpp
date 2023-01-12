@@ -205,7 +205,7 @@ void ListManagerModel::moveItem(QModelIndex const& originalPos, QModelIndex cons
     else
     {
         beginResetModel();
-        items_.swap(originalPos.row(), newPos.row());
+        items_.swapItemsAt(originalPos.row(), newPos.row());
         endResetModel();
     }
     emit contentChanged();

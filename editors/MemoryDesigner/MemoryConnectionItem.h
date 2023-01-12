@@ -248,8 +248,8 @@ private:
      *      @param [in] lowCollisionPoints      Map containing the low collision points of the connection item.
      */
     void createCollisionPath(QPointF highStartPoint, QPointF highEndPoint, QPointF lowStartPoint,
-        QPointF lowEndPoint, QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
-        QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints);
+        QPointF lowEndPoint, QMultiMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
+        QMultiMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints);
 
     /*!
      *  Reposition the connection labels.
@@ -347,8 +347,8 @@ private:
      */
     QPainterPath createCollidingPathForUnusualConnection(bool connectionIsLocal, QPointF highStartPoint,
         QPointF highEndPoint, QPointF lowStartPoint, QPointF lowEndPoint,
-        QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints = QMap<qreal, QPair<QPointF, QPointF> >(),
-        QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints = QMap<qreal, QPair<QPointF, QPointF> >());
+        QMultiMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints = QMultiMap<qreal, QPair<QPointF, QPointF> >(),
+        QMultiMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints = QMultiMap<qreal, QPair<QPointF, QPointF> >());
 
     /*!
      *  Erase the colliding lines from the memory connection.
@@ -360,7 +360,7 @@ private:
      *      @return The memory connection path with the colliding lines removed.
      */
     QPainterPath eraseCollisionsFromPath(QPainterPath collisionPath, QPointF collisionBegin,
-        QMap<qreal, QPair<QPointF, QPointF> > collisionPoints);
+        QMultiMap<qreal, QPair<QPointF, QPointF> > collisionPoints);
 
     //-----------------------------------------------------------------------------
     // Data.

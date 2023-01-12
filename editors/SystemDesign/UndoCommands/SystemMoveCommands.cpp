@@ -2,7 +2,7 @@
 // File: SystemMoveCommands.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 17.10.2011
 //
 // Description:

@@ -2,7 +2,7 @@
 // File: FileDependencySortFilter.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 22.03.2013
 //
 // Description:

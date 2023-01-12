@@ -2,7 +2,7 @@
 // File: CSourceWriter.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 6.12.2011
 //
 // Description:
@@ -92,7 +92,7 @@ void CSourceWriter::writeLine(QString const& line)
         stream_ << indentString_;
     }
 
-    stream_ << line << endl;
+    stream_ << line << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +100,7 @@ void CSourceWriter::writeLine(QString const& line)
 //-----------------------------------------------------------------------------
 void CSourceWriter::writeEmptyLine()
 {
-    stream_ << endl;
+    stream_ << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

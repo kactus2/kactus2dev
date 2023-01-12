@@ -2,7 +2,7 @@
 // File: GraphicsLineEdit.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 25.9.2012
 //
 // Description:

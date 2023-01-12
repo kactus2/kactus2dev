@@ -2,7 +2,7 @@
 // File: Ribbon.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 06.02.2013
 //
 // Description:
@@ -111,7 +111,7 @@ void Ribbon::wheelEvent(QWheelEvent* event)
 	event->ignore();
 
 	ribbonScrollArea_->horizontalScrollBar()->
-		setValue(ribbonScrollArea_->horizontalScrollBar()->value() - event->delta() / 6);
+		setValue(ribbonScrollArea_->horizontalScrollBar()->value() - event->angleDelta().y() / 6);
 
 	setScrollButtonVisibilities();
 }

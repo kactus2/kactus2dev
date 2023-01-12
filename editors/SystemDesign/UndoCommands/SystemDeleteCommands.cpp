@@ -2,7 +2,7 @@
 // File: SystemDeleteCommands.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 12.10.2011
 //
 // Description:

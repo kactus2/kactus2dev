@@ -2,7 +2,7 @@
 // File: SystemView.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 22.5.2012
 //
 // Description:

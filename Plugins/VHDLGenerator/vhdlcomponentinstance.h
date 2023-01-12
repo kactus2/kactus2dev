@@ -254,7 +254,7 @@ private:
 	 *  Key: The port name and bounds of this instance.
 	 *  Value: The name of the signal/top port and it's bounds the port is connected to.
 	 */
-	QMap<VhdlPortMap, VhdlPortMap> portMap_;
+	QMultiMap<VhdlPortMap, VhdlPortMap> portMap_;
 };
 
 #endif // VHDLCOMPONENTINSTANCE_H

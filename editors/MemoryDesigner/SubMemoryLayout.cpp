@@ -65,9 +65,9 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
 
         if (!memoryItem->getChildItems().isEmpty())
         {
-            QMap<quint64, MemoryDesignerChildGraphicsItem*> subItemsInOrder;
+            QMultiMap<quint64, MemoryDesignerChildGraphicsItem*> subItemsInOrder;
 
-            foreach (QSharedPointer<MemoryItem const> subMemoryItem, memoryItem->getChildItems())
+            for (QSharedPointer<MemoryItem const> subMemoryItem : memoryItem->getChildItems())
             {
                 if (subMemoryItem->getType().compare(subItemType, Qt::CaseInsensitive) == 0)
                 {
@@ -81,7 +81,7 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
                     }
 
                     positionNewSubItem(subItemPositionX, itemBaseAddress, subItemBaseAddress, newSubItem);
-                    subItemsInOrder.insertMulti(subItemBaseAddress, newSubItem);
+                    subItemsInOrder.insert(subItemBaseAddress, newSubItem);
                 }
             }
 
@@ -96,7 +96,7 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
                         itemBaseAddress, subItemLastAddress, subItemPositionX, itemBaseAddress);
                 }
 
-                QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subItemsInOrder);
+                QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subItemsInOrder);
 
                 while (subItemIterator.hasNext())
                 {
@@ -148,7 +148,7 @@ void SubMemoryLayout::positionNewSubItem(qreal subItemXPosition, quint64 mainIte
     qreal segmentTransferY = (subItemOffset - mainItemBaseAddress) * MemoryDesignerConstants::RANGEINTERVAL;
     newSubItem->setPos(subItemXPosition, segmentTransferY);
 
-    subMemoryItems_.insertMulti(subItemOffset, newSubItem);
+    subMemoryItems_.insert(subItemOffset, newSubItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void SubMemoryLayout::positionNewSubItem(qreal subItemXPosition, quint64 mainIte
 //-----------------------------------------------------------------------------
 void SubMemoryLayout::changeChildItemRanges(quint64 offset)
 {
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subMemoryIterator(subMemoryItems_);
+    QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subMemoryIterator(subMemoryItems_);
 
     while(subMemoryIterator.hasNext())
     {
@@ -169,7 +169,7 @@ void SubMemoryLayout::changeChildItemRanges(quint64 offset)
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::getSubMemoryItems()
 //-----------------------------------------------------------------------------
-QMap<quint64, MemoryDesignerChildGraphicsItem*> SubMemoryLayout::getSubMemoryItems() const
+QMultiMap<quint64, MemoryDesignerChildGraphicsItem*> SubMemoryLayout::getSubMemoryItems() const
 {
     return subMemoryItems_;
 }
@@ -196,7 +196,7 @@ qreal SubMemoryLayout::condenseChildItems(quint64 itemBaseAddress, quint64 itemL
     }
     else
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subMemoryIterator(subMemoryItems_);
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subMemoryIterator(subMemoryItems_);
         while (subMemoryIterator.hasNext())
         {
             subMemoryIterator.next();
@@ -255,7 +255,7 @@ void SubMemoryLayout::addConnectionToSubItems(MemoryConnectionItem* connectionIt
     quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
     quint64 connectionLastAddress = connectionItem->getRangeEndValue();
 
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subMemoryItems_);
+    QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subMemoryItems_);
     while (subItemIterator.hasNext())
     {
         subItemIterator.next();
@@ -292,7 +292,7 @@ void SubMemoryLayout::setFilterSubItems(bool filterValue)
 //-----------------------------------------------------------------------------
 void SubMemoryLayout::resizeSubItemNameLabels()
 {
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+    QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
     while (subItemIterator.hasNext())
     {
         subItemIterator.next();
@@ -313,7 +313,7 @@ void SubMemoryLayout::resizeSubItemNameLabels()
 //-----------------------------------------------------------------------------
 void SubMemoryLayout::createOverlappingSubItemMarkings()
 {
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+    QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
     while (subItemIterator.hasNext())
     {
         subItemIterator.next();
@@ -329,7 +329,7 @@ void SubMemoryLayout::createOverlappingSubItemMarkings()
         quint64 subItemBaseAddress = subItem->getBaseAddress();
         quint64 subItemLastAddress = subItem->getLastAddress();
 
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> comparisonItemIterator = subItemIterator;
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> comparisonItemIterator = subItemIterator;
         while (comparisonItemIterator.hasNext())
         {
             comparisonItemIterator.next();
@@ -377,7 +377,7 @@ quint64 SubMemoryLayout::getSubItemHeightAddition() const
         quint64 mainItemLastAddress = mainGraphicsItem_->getLastAddress();
         quint64 mainItemLow = mainGraphicsItem_->sceneBoundingRect().bottom();
 
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();
@@ -447,7 +447,7 @@ QVector<quint64> SubMemoryLayout::getUnCutAddresses() const
 
     if (!subItemsAreFiltered())
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();
@@ -495,7 +495,7 @@ QVector<qreal> SubMemoryLayout::getUnCutCoordinates() const
 
     if (!subItemsAreFiltered())
     {
-        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();
@@ -534,7 +534,7 @@ void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAdd
 {
     quint64 lastAddress = mainGraphicsItem_->getLastAddress();
 
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+    QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
     while (subItemIterator.hasNext())
     {
         subItemIterator.next();
@@ -614,7 +614,7 @@ void SubMemoryLayout::compressSubItemsToUnCutCoordinates(QVector<qreal> unCutCoo
 {
     qreal lastCoordinate = mainGraphicsItem_->sceneBoundingRect().bottom();
 
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+    QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
     while (subItemIterator.hasNext())
     {
         subItemIterator.next();

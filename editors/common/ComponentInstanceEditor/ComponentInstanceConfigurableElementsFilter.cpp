@@ -59,8 +59,6 @@ bool ComponentInstanceConfigurableElementsFilter::filterAcceptsRow(int source_ro
         QModelIndex itemIndex = sourceModel()->index(source_row, ConfigurableElementsColumns::VALUE, source_parent);
         return (showImmediateValues_ || itemIndex.flags().testFlag(Qt::ItemIsEditable));
     }
-
-    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
 
 //-----------------------------------------------------------------------------

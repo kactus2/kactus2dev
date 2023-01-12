@@ -452,7 +452,17 @@ QString AbstractParameterInterface::matchArrayValuesToSelectedChoice(QSharedPoin
 QString AbstractParameterInterface::findDisplayValueForEnumeration(QSharedPointer<Choice> choice,
     QString const& enumerationValue) const
 {
-    QString value = parseExpressionToDecimal(enumerationValue);
+    QString formattedValue = formattedValueFor(enumerationValue);
+    foreach(QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+    {
+        QString enumerationFormattedValue = formattedValueFor(enumeration->getValue());
+        if (enumerationFormattedValue == formattedValue && !enumeration->getText().isEmpty())
+        {
+            return enumeration->getText();
+        }
+    }
+
+    QString value = formattedValueFor(enumerationValue);
 
     foreach(QSharedPointer<Enumeration> enumeration, *choice->enumerations())
     {

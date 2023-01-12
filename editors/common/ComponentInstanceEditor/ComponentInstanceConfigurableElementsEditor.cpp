@@ -12,7 +12,7 @@
 #include "ComponentInstanceConfigurableElementsEditor.h"
 
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
-#include <editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.h>
+#include <editors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h>
 #include <editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -34,34 +34,26 @@ ConfigurableElementEditor(parameterFinder, configurableElementFormatter, complet
 model_(new ComponentInstanceConfigurableElementsModel(parameterFinder, elementFinder, configurableElementFormatter,
     instanceExpressionFormatter, expressionParser, instanceParser, this))
 {
-    ComponentInstanceConfigurableElementsFilter* filter(new ComponentInstanceConfigurableElementsFilter(this));
+    auto filter = new ConfigurableElementsFilter(this);
     setModel(model_, filter);
 
-    hideUnnecessaryColumns();
+    view_.setToolTip(QString());
+    view_.setAlternatingRowColors(false);
+    view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_LEFT, true);
+    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_RIGHT, true);
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(getDelegate(), SIGNAL(addConfigurableElement(QString const&, QString const&, QString const&, int)),
-        model_, SLOT(onAddElement(QString const&, QString const&, QString const&, int)), Qt::UniqueConnection);
-    connect(getDelegate(), SIGNAL(removeConfigurableElement(QString const&, QString const&, int)),
-        model_, SLOT(onRemoveElement(QString const&, QString const&, int)), Qt::UniqueConnection);
-    connect(getDelegate(), SIGNAL(dataChangedInID(QString const&, QString const&)),
-        model_, SLOT(onDataChangedInID(QString const&, QString const&)), Qt::UniqueConnection);
-    connect(model_, SIGNAL(invalidateFilter()), filter, SLOT(onInvalidateFilter()), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(addConfigurableElement(QString const&, QString const&, int)),
+        model_, SLOT(onAddItem(QString const&, QString const&, int)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(removeConfigurableElement(QString const&, int)),
+        model_, SLOT(onRemoveItem(QString const&, int)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(dataChangedInID(QString const&, QString const&)),
+        model_, SLOT(emitDataChangeForID(QString const&, QString const&)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(invalidateFilter()), filter, SLOT(invalidate()), Qt::UniqueConnection);
 
-    connect(getFilterSelectionBox(), SIGNAL(clicked(bool)),
-        model_, SIGNAL(showImmediateValuesInModels(bool)), Qt::UniqueConnection);
-    connect(getFilterSelectionBox(), SIGNAL(clicked(bool)),
+    connect(filterSelection_, SIGNAL(clicked(bool)),
         filter, SLOT(setShowImmediateValues(bool)), Qt::UniqueConnection);
-    connect(getFilterSelectionBox(), SIGNAL(clicked(bool)),
-        this, SLOT(setFirstParentColumnsSpannable()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceConfigurableElementsEditor::~ComponentInstanceConfigurableElementsEditor()
-//-----------------------------------------------------------------------------
-ComponentInstanceConfigurableElementsEditor::~ComponentInstanceConfigurableElementsEditor() 
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -72,11 +64,8 @@ void ComponentInstanceConfigurableElementsEditor::setComponent(QSharedPointer<Co
     QSharedPointer<IEditProvider> editProvider)
 {
     model_->setParameters(component, instance, viewConfiguration);
-    getDelegate()->setChoices(component->getChoices());
-    getDelegate()->setEditProvider(editProvider);
-
-    expandView();
-    setFirstParentColumnsSpannable();
+    delegate_->setChoices(component->getChoices());
+    delegate_->setEditProvider(editProvider);
 }
 
 //-----------------------------------------------------------------------------

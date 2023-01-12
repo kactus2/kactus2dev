@@ -59,6 +59,7 @@ PortsView* WirePortsEditorConstructor::constructView(QString const& defaultPath,
     view->setAlternatingRowColors(false);
     view->setSortingEnabled(true);
     view->setItemsDraggable(false);
+    view->setFitColumnsToContent(false);
 
     return view;
 }

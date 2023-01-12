@@ -206,7 +206,7 @@ bool CpusModel::setData(QModelIndex const& index, QVariant const& value, int rol
         else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
         {
             QString str = value.toString();
-            QStringList addrSpaceNames = str.split(' ', QString::SkipEmptyParts);
+            QStringList addrSpaceNames = str.split(' ', Qt::SkipEmptyParts);
             cpu->setAddressSpaceRefs(addrSpaceNames);
         }
         else if (index.column() == CpuColumns::DESCRIPTION_COLUMN)

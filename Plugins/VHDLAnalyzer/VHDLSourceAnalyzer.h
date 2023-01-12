@@ -2,7 +2,7 @@
 // File: VHDLSourceAnalyzer.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Mikko Honkonen, Joni-Matti M‰‰tt‰
+// Author: Mikko Honkonen, Joni-Matti Maatta
 // Date: 18.1.2013
 //
 // Description:

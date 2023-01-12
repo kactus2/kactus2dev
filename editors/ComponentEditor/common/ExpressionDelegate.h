@@ -18,6 +18,8 @@
 #include <QEvent>
 
 class ParameterFinder;
+class ExpressionEditor;
+class ExpressionLineEditor;
 
 //-----------------------------------------------------------------------------
 //! Base class for delegates providing editors for expressions.
@@ -110,11 +112,6 @@ protected:
      */
     QCompleter* getNameCompleter() const;
 
-private:
-    // Disable copying.
-    ExpressionDelegate(ExpressionDelegate const& rhs);
-    ExpressionDelegate& operator=(ExpressionDelegate const& rhs);
-   
     /*!
      *  Creates an editor for expressions.
      *
@@ -122,7 +119,21 @@ private:
      *
      *      @return An editor for expressions.
      */
-    QWidget* createExpressionEditor(QWidget* parent) const;
+    ExpressionEditor* createExpressionEditor(QWidget* parent) const;
+
+    /*!
+     *  Creates a line editor for expressions.
+     *
+     *      @param [in] parent   The parent widget for the editor.
+     *
+     *      @return A line editor for expressions.
+     */
+    ExpressionLineEditor* createExpressionLineEditor(QWidget* parent) const;
+
+private:
+    // Disable copying.
+    ExpressionDelegate(ExpressionDelegate const& rhs);
+    ExpressionDelegate& operator=(ExpressionDelegate const& rhs);
 
     //! The completer for parameter names in expressions.
     QCompleter* parameterNameCompleter_;

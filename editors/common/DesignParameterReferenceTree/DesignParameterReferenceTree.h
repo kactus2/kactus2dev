@@ -97,7 +97,7 @@ private:
      *
      *      @return Map containing the name of the referenced component and ad hoc connections.
      */
-    QMap<QString, QSharedPointer<AdHocConnection> > getAdHocConnectionsInComponentOrder(
+    QMultiMap<QString, QSharedPointer<AdHocConnection> > getAdHocConnectionsInComponentOrder(
         QString const& topComponentName) const;
 
     /*!

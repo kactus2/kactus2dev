@@ -2,7 +2,7 @@
 // File: VCollisionLayout.inl
 //-----------------------------------------------------------------------------
 // Project: Endpoint Designer
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 22.4.2011
 //
 // Description:
@@ -35,7 +35,11 @@ void VCollisionLayout<T>::updateItemMove(QList<T*>& items, T* item, qreal minY)
     QRectF itemRect = item->mapRectToParent(item->boundingRect());
 
     // Remove the moved item from the list.
-    items.removeAt(items.indexOf(item));
+    if (items.contains(item))
+    {
+        items.removeAt(items.indexOf(item));
+    }
+    
 
     int index = 0;
     qreal y = minY;

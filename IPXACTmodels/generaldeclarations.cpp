@@ -45,10 +45,10 @@ bool General::PortBounds::operator!=( const PortBounds& other ) const
 }
 
 General::PortAlignment::PortAlignment():
-port1Left_(-1),
-port1Right_(-1),
-port2Left_(-1),
-port2Right_(-1),
+port1Left_(),
+port1Right_(),
+port2Left_(),
+port2Right_(),
 invalidAlignment_(true)
 {
 
@@ -310,7 +310,7 @@ QString General::getRelativePath(QString from, QString to)
     }
 
 	// if the directory does not exist
-	QDir ipXactDir = QDir(fromPath);
+	auto ipXactDir = QDir(fromPath);
 
 	if (!ipXactDir.exists()) {
 		return QString();
@@ -361,7 +361,7 @@ QString General::getRelativeSavePath( const QString& from, const QString& to )
 	}
 
 	// if the directory does not exist
-	QDir ipXactDir = QDir(fromPath);
+	auto ipXactDir = QDir(fromPath);
 
 	if (!ipXactDir.exists()) {
 		return QString();

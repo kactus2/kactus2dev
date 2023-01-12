@@ -2,7 +2,7 @@
 // File: AssistedTextEdit.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 21.12.2010
 //
 // Description:

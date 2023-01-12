@@ -2,7 +2,7 @@
 // File: ComPropertyModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 17.4.2012
 //
 // Description:
@@ -131,7 +131,7 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
     }
-    else if (role == Qt::TextColorRole)
+    else if (role == Qt::ForegroundRole)
     {
         if (index.column() == ComPropertyColumns::DEFAULT_VALUE)
         {

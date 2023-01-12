@@ -2,7 +2,7 @@
 // File: VCollisionLayout.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 22.4.2011
 //
 // Description:

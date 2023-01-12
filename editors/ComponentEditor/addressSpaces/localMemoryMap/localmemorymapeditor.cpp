@@ -62,8 +62,7 @@ handler_(handler)
     nameEditor_ = (new NameGroupEditor(localMemoryMap_, this));
 
     setCheckable(true);
-    setChecked(hasLocalMemoryMap && !localMemoryMap_->getMemoryBlocks()->isEmpty());
-//     setChecked(hasLocalMemoryMap);
+    setChecked(hasLocalMemoryMap);
 
     nameEditor_->setTitle(tr("Memory map name and description"));
 
@@ -175,4 +174,6 @@ void LocalMemoryMapEditor::onCheckStateChanged()
     {
         addressSpace_->setLocalMemoryMap(QSharedPointer<MemoryMapBase>(nullptr));
     }
+
+    emit contentChanged();
 }

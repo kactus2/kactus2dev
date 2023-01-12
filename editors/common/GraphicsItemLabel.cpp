@@ -39,7 +39,7 @@ void GraphicsItemLabel::setText(QString const& newText)
     textLabel_->setText(newText);
 
     QFontMetrics fontMetric(textLabel_->font());
-    qreal newWidth = fontMetric.width(newText);
+    qreal newWidth = fontMetric.horizontalAdvance(newText);
     setMaximumWidth(newWidth + 10);
 
     updateLabelGeometry();

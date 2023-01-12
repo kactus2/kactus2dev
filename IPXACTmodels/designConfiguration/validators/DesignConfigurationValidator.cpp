@@ -184,6 +184,7 @@ bool DesignConfigurationValidator::hasValidViewConfigurations(
         {
             QSharedPointer<Design> referencedDesign =
                 libraryHandler_->getDesign(designConfiguration->getDesignRef());
+
             viewConfigurationValidator_->changeComponentInstances(referencedDesign->getComponentInstances());
 
             QVector<QString> instanceNames;

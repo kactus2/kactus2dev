@@ -2,7 +2,7 @@
 // File: CommonGraphicsUndoCommands.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 6.7.2012
 //
 // Description:

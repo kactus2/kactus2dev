@@ -39,7 +39,7 @@ void WriterGroup::write(QTextStream& output) const
 
     if (!childWriters_.isEmpty())
     {
-        output << endl;
+        output << Qt::endl;
     }
 }
 

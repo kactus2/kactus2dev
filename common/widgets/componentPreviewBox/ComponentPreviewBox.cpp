@@ -2,7 +2,7 @@
 // File: ComponentPreviewBox.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 1.8.2011
 //
 // Description:

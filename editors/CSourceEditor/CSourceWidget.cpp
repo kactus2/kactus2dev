@@ -2,7 +2,7 @@
 // File: CSourceWidget.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 9.5.2011
 //
 // Description:
@@ -169,7 +169,7 @@ void CSourceWidget::print()
 
     if (textEdit_->textCursor().hasSelection())
     {
-        dlg.addEnabledOption(QAbstractPrintDialog::PrintSelection);
+        dlg.setOption(QAbstractPrintDialog::PrintSelection, true);
     }
 
     if (dlg.exec() != QDialog::Accepted)

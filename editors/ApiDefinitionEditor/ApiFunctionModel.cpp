@@ -2,7 +2,7 @@
 // File: ApiFunctionModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 18.4.2012
 //
 // Description:
@@ -265,7 +265,7 @@ void ApiFunctionModel::moveItem( const QModelIndex& originalPos,
     // if both indexes were valid
     else {
         beginResetModel();
-        apiFunctions_.swap(originalPos.row(), newPos.row());
+        apiFunctions_.swapItemsAt(originalPos.row(), newPos.row());
         endResetModel();
     }
     emit contentChanged();

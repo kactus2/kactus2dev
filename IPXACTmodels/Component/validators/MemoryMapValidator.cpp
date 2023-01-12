@@ -37,7 +37,7 @@ void MemoryMapValidator::componentChange(QSharedPointer<Component> newComponent)
 {
     if (availableRemapStates_)
     {
-        availableRemapStates_->clear();
+        availableRemapStates_.clear();
     }
 
     if (newComponent)

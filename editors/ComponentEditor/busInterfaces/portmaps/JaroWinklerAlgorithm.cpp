@@ -70,7 +70,7 @@ QString JaroWinklerAlgorithm::Details::findMatchingCharacters(QString const& sea
 
         int sectionLength = endPosition - startPosition + 1;
 
-        QStringRef referenceSection = reference.midRef(startPosition, sectionLength);
+        QString referenceSection = reference.mid(startPosition, sectionLength);
         if (referenceSection.contains(searched.at(i), Qt::CaseInsensitive))
         {
             matchingCharacters.append(searched.at(i).toLower());

@@ -218,7 +218,7 @@ bool ChannelsModel::setData(QModelIndex const& index, QVariant const& value, int
         else if (index.column() == ChannelColumns::INTERFACE_COLUMN)
         {
             QString str = value.toString();
-            QStringList interfaceNames = str.split(' ', QString::SkipEmptyParts);
+            QStringList interfaceNames = str.split(' ', Qt::SkipEmptyParts);
             channels_->at(index.row())->setInterfaces(interfaceNames);
         }
         else if (index.column() == ChannelColumns::DESCRIPTION_COLUMN)

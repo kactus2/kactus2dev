@@ -211,7 +211,7 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 	writeVhdlHeader(vhdlStream, fileInfo.fileName());
 
 	// always add IEEE library
-	vhdlStream << "library IEEE;" << endl;
+	vhdlStream << "library IEEE;" << Qt::endl;
 
 	// write the libraries needed 
 	libraries_.append("work");
@@ -222,7 +222,7 @@ void VhdlGenerator2::generate( const QString& outputFileName)
     {
 		if (!library.isEmpty())
         {
-			vhdlStream << "library " << library << ";" << endl;
+			vhdlStream << "library " << library << ";" << Qt::endl;
 
 			typeDefinitions_.append(QString("%1.all").arg(library));
 		}
@@ -235,12 +235,12 @@ void VhdlGenerator2::generate( const QString& outputFileName)
     // write all type defs needed
     foreach (QString const& portTypeDef, typeDefinitions_)
     {
-        vhdlStream << "use " << portTypeDef << ";" << endl;
+        vhdlStream << "use " << portTypeDef << ";" << Qt::endl;
     }
-	vhdlStream << endl;
+	vhdlStream << Qt::endl;
 
 	// write the top-level entity
-	vhdlStream << "entity " << topLevelEntity_ << " is" << endl << endl;
+	vhdlStream << "entity " << topLevelEntity_ << " is" << Qt::endl << Qt::endl;
 
 	// write the top-level generics
 	writeGenerics(vhdlStream);
@@ -249,7 +249,7 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 	writePorts(vhdlStream);
 
 	// end top-level entity definition
-	vhdlStream << "end " << topLevelEntity_ << ";" << endl << endl;
+	vhdlStream << "end " << topLevelEntity_ << ";" << Qt::endl << Qt::endl;
 
 	// if view has description
 	QString viewDescription;
@@ -272,7 +272,7 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 	}
 
 	// write the architecture of the entity
-	vhdlStream << "architecture " << architectureName << " of " << topLevelEntity_ << " is" << endl << endl;
+	vhdlStream << "architecture " << architectureName << " of " << topLevelEntity_ << " is" << Qt::endl << Qt::endl;
 
 	writeSignalDeclarations(vhdlStream);
 
@@ -281,13 +281,13 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 	writeUserModifiedDeclarations(vhdlStream);
 
 	// start writing architecture component instances
-	vhdlStream << endl << "begin" << endl << endl;
+	vhdlStream << Qt::endl << "begin" << Qt::endl << Qt::endl;
 
 	writeUserModifiedAssignments(vhdlStream);
 
 	writeComponentInstances(vhdlStream);
 
-	vhdlStream << "end " << architectureName << ";" << endl << endl;
+	vhdlStream << "end " << architectureName << ";" << Qt::endl << Qt::endl;
 
 	file.close();
 
@@ -475,7 +475,7 @@ bool VhdlGenerator2::parseDesignAndConfiguration()
 bool VhdlGenerator2::containsArchitecture() const
 {
 	// if design exists then architecture can be created
-	return design_;
+	return design_.isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1260,22 +1260,22 @@ void VhdlGenerator2::mapPorts2Signals()
 //-----------------------------------------------------------------------------
 void VhdlGenerator2::writeVhdlHeader( QTextStream& vhdlStream, const QString& fileName )
 {
-	vhdlStream << "-- ***************************************************" << endl;
-	vhdlStream << "-- File         : " << fileName << endl;
-	vhdlStream << "-- Creation date: " << QDate::currentDate().toString(QString("dd.MM.yyyy")) << endl;
-	vhdlStream << "-- Creation time: " << QTime::currentTime().toString(QString("hh:mm:ss")) << endl;
-	vhdlStream << "-- Description  : " << endl;
+	vhdlStream << "-- ***************************************************" << Qt::endl;
+	vhdlStream << "-- File         : " << fileName << Qt::endl;
+	vhdlStream << "-- Creation date: " << QDate::currentDate().toString(QString("dd.MM.yyyy")) << Qt::endl;
+	vhdlStream << "-- Creation time: " << QTime::currentTime().toString(QString("hh:mm:ss")) << Qt::endl;
+	vhdlStream << "-- Description  : " << Qt::endl;
 	VhdlGeneral::writeDescription(component_->getDescription(), vhdlStream, QString(""));
-	vhdlStream << "-- " << endl;
+	vhdlStream << "-- " << Qt::endl;
 
 	QSettings settings;
 	QString userName = settings.value("General/Username", Utils::getCurrentUser()).toString();
-	vhdlStream << "-- Created by   : " << userName << endl; 
-	vhdlStream << "-- This file was generated with Kactus2 vhdl generator" << endl;
+	vhdlStream << "-- Created by   : " << userName << Qt::endl; 
+	vhdlStream << "-- This file was generated with Kactus2 vhdl generator" << Qt::endl;
 	VLNV vlnv = component_->getVlnv();
-	vhdlStream << "-- based on IP-XACT component " << vlnv.toString() << endl;
-	vhdlStream << "-- whose XML file is " << handler_->getPath(vlnv) << endl;
-	vhdlStream << "-- ***************************************************" << endl;
+	vhdlStream << "-- based on IP-XACT component " << vlnv.toString() << Qt::endl;
+	vhdlStream << "-- whose XML file is " << handler_->getPath(vlnv) << Qt::endl;
+	vhdlStream << "-- ***************************************************" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -1287,7 +1287,7 @@ void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream )
 	if (!topGenerics_.isEmpty())
     {
 		// the start tag
-		vhdlStream << "  " << "generic (" << endl;
+		vhdlStream << "  " << "generic (" << Qt::endl;
 
 		for (QMap<QString, QSharedPointer<VhdlGeneric> >::iterator i = topGenerics_.begin();
 			i != topGenerics_.end(); ++i)
@@ -1308,11 +1308,11 @@ void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream )
 			}
 			else
             {
-				vhdlStream << endl;
+				vhdlStream << Qt::endl;
 			}
 		}
-		vhdlStream << "  " << ");" << endl;
-		vhdlStream << endl;
+		vhdlStream << "  " << ");" << Qt::endl;
+		vhdlStream << Qt::endl;
 	}
 }
 
@@ -1324,7 +1324,7 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream )
 	// if ports exist
 	if (!topPorts_.isEmpty() && VhdlPort::hasRealPorts(topPorts_))
     {
-		vhdlStream << "  " << "port (" << endl;
+		vhdlStream << "  " << "port (" << Qt::endl;
 
 		QString previousInterface;
 		// print each port
@@ -1336,19 +1336,19 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream )
             {
                 const QString interfaceName = i.key().interface();
 
-                vhdlStream << endl << "  " << "  " << "-- ";
+                vhdlStream << Qt::endl << "  " << "  " << "-- ";
 
                 if (interfaceName == QString("none"))
                 {
-                    vhdlStream << "These ports are not in any interface" << endl;
+                    vhdlStream << "These ports are not in any interface" << Qt::endl;
                 }
                 else if (interfaceName == QString("several"))
                 {
-                    vhdlStream << "There ports are contained in many interfaces" << endl;
+                    vhdlStream << "There ports are contained in many interfaces" << Qt::endl;
                 }
                 else
                 {
-                    vhdlStream << "Interface: " << interfaceName << endl;
+                    vhdlStream << "Interface: " << interfaceName << Qt::endl;
                     const QString description = component_->getBusInterface(interfaceName)->description();
                     if (!description.isEmpty())
                     {
@@ -1375,12 +1375,12 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream )
             }
             else
             {
-                vhdlStream << endl;
+                vhdlStream << Qt::endl;
             }
 		}
-		vhdlStream << "  " << ");" << endl;
+		vhdlStream << "  " << ");" << Qt::endl;
 		// write extra empty line to make code readable
-		vhdlStream << endl;
+		vhdlStream << Qt::endl;
 	}
 }
 
@@ -1404,7 +1404,7 @@ void VhdlGenerator2::writeSignalDeclarations( QTextStream& vhdlStream )
     {
 		signal->write(vhdlStream);
 	}
-	vhdlStream << endl;
+	vhdlStream << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -1415,7 +1415,7 @@ void VhdlGenerator2::writeComponentDeclarations( QTextStream& vhdlStream )
 	foreach (QSharedPointer<VhdlComponentDeclaration> comp, components_)
     {
 		comp->write(vhdlStream);
-		vhdlStream << endl;
+		vhdlStream << Qt::endl;
 	}
 }
 
@@ -1427,7 +1427,7 @@ void VhdlGenerator2::writeComponentInstances( QTextStream& vhdlStream )
 	foreach (QSharedPointer<VhdlComponentInstance> instance, instances_)
     {
 		instance->write(vhdlStream);
-		vhdlStream << endl;
+		vhdlStream << Qt::endl;
 	}
 }
 
@@ -1506,11 +1506,11 @@ void VhdlGenerator2::readUserModifiablePart( QFile& previousFile )
 //-----------------------------------------------------------------------------
 void VhdlGenerator2::writeUserModifiedDeclarations( QTextStream& stream )
 {
-	stream << "  " <<"-- You can write vhdl code after this tag and it is saved through the generator." << endl;
-	stream << "  " << BLACK_BOX_DECL_START << endl;
+	stream << "  " <<"-- You can write vhdl code after this tag and it is saved through the generator." << Qt::endl;
+	stream << "  " << BLACK_BOX_DECL_START << Qt::endl;
 	stream << userModifiedDeclarations_;
-	stream << "  " << BLACK_BOX_DECL_END << endl;
-	stream << "  " << "-- Do not write your code after this tag." << endl << endl;
+	stream << "  " << BLACK_BOX_DECL_END << Qt::endl;
+	stream << "  " << "-- Do not write your code after this tag." << Qt::endl << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -1518,11 +1518,11 @@ void VhdlGenerator2::writeUserModifiedDeclarations( QTextStream& stream )
 //-----------------------------------------------------------------------------
 void VhdlGenerator2::writeUserModifiedAssignments( QTextStream& stream )
 {
-	stream << "  " << "-- You can write vhdl code after this tag and it is saved through the generator." << endl;
-	stream << "  " << BLACK_BOX_ASSIGN_START << endl;
+	stream << "  " << "-- You can write vhdl code after this tag and it is saved through the generator." << Qt::endl;
+	stream << "  " << BLACK_BOX_ASSIGN_START << Qt::endl;
 	stream << userModifiedAssignments_;
-	stream << "  " << BLACK_BOX_ASSIGN_END << endl;
-	stream << "  " << "-- Do not write your code after this tag." << endl << endl;
+	stream << "  " << BLACK_BOX_ASSIGN_END << Qt::endl;
+	stream << "  " << "-- Do not write your code after this tag." << Qt::endl << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

@@ -11,17 +11,21 @@
 
 #include "ChoicesEditor.h"
 
-#include <common/widgets/summaryLabel/summarylabel.h>
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
+
 #include <common/views/EditableTableView/editabletableview.h>
 
+#include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <editors/ComponentEditor/choices/ChoicesModel.h>
-#include <editors/ComponentEditor/choices/ChoicesDelegate.h>
+#include <editors/ComponentEditor/choices/EnumerationModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <QSortFilterProxyModel>
-
 #include <QVBoxLayout>
+#include <QGroupBox>
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesEditor::ChoicesEditor()
@@ -29,38 +33,54 @@
 ChoicesEditor::ChoicesEditor(QSharedPointer<Component> component, QSharedPointer<ChoiceValidator> validator,
     QWidget* parent /* = 0 */):
 ItemEditor(component, 0, parent),
-view_(new EditableTableView(this)),
-model_(new ChoicesModel(component->getChoices(), validator, this))
+choiceList_(this),
+choiceModel_(new ChoicesModel(component->getChoices(), validator, this)),
+enumerationView_(new EditableTableView(this)),
+enumerationModel_(new EnumerationModel(this))
 {
-    QSortFilterProxyModel* proxy = new QSortFilterProxyModel(this);
-    proxy->setSourceModel(model_);
+    choiceList_.setModel(choiceModel_);
+    choiceList_.setItemDelegate(new LineEditDelegate(this));
 
-    ChoicesDelegate* delegate = new ChoicesDelegate(component->getChoices(), view_);
-    view_->setItemDelegate(delegate);
-    view_->setItemsDraggable(false);
-    view_->setSortingEnabled(true);
-    view_->setModel(proxy);
+    QSortFilterProxyModel* enumerationProxy(new QSortFilterProxyModel(this));
+    enumerationProxy->setSourceModel(enumerationModel_);
 
-    connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    enumerationView_->setItemsDraggable(false);
+    enumerationView_->setSortingEnabled(true);
+    enumerationView_->setModel(enumerationProxy);
 
-    connect(view_, SIGNAL(addItem(const QModelIndex&)),
-        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-    connect(view_, SIGNAL(removeItem(const QModelIndex&)),
-        model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&choiceList_, SIGNAL(removeItem(const QModelIndex&)), choiceModel_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&choiceList_, SIGNAL(addItem(const QModelIndex&)), choiceModel_, SLOT(addItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(&choiceList_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)), choiceModel_, SLOT(moveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
 
-    connect(delegate, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&choiceList_, SIGNAL(selectionChanged(QModelIndex const&)),
+		this, SLOT(selectionChoiceChanged(QModelIndex const&)), Qt::UniqueConnection);
+
+    connect(choiceModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(enumerationModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(enumerationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+	connect(enumerationView_, SIGNAL(addItem(const QModelIndex&)), enumerationModel_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+	connect(enumerationView_, SIGNAL(removeItem(const QModelIndex&)), enumerationModel_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
     setupLayout();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChoicesEditor::~ChoicesEditor()
+// Function: ChoicesEditor::selectionFunctionChanged()
 //-----------------------------------------------------------------------------
-ChoicesEditor::~ChoicesEditor()
+void ChoicesEditor::selectionChoiceChanged(QModelIndex const& newIndex)
 {
+    QSharedPointer<Choice> currentChoice = choiceModel_->getChoice(newIndex);
 
+    if (currentChoice)
+    {
+        enumerationModel_->setupEnumerations(currentChoice->enumerations());
+    }
+    else
+    {
+        enumerationModel_->clearEnumerations();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +88,7 @@ ChoicesEditor::~ChoicesEditor()
 //-----------------------------------------------------------------------------
 bool ChoicesEditor::isValid() const
 {
-    return model_->isValid();
+    return choiceModel_->validate();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,8 +117,24 @@ void ChoicesEditor::setupLayout()
     SummaryLabel* summaryLabel = new SummaryLabel(tr("Choices"), this);
 
     // create the layout, add widgets to it
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-    layout->addWidget(view_, 1);
-    layout->setContentsMargins(0, 0, 0, 0);
+    QVBoxLayout* choiceGroupLayout(new QVBoxLayout());
+    choiceGroupLayout->addWidget(&choiceList_);
+
+    QGroupBox* choiceGroup(new QGroupBox("Choice list"));
+    choiceGroup->setLayout(choiceGroupLayout);
+
+	QVBoxLayout* enumerationGroupLayout(new QVBoxLayout());
+	enumerationGroupLayout->addWidget(enumerationView_);
+
+	QGroupBox* enumerationGroup(new QGroupBox("Enumerations"));
+    enumerationGroup->setLayout(enumerationGroupLayout);
+
+    QHBoxLayout* choicesLayout(new QHBoxLayout());
+    choicesLayout->addWidget(choiceGroup);
+	choicesLayout->addWidget(enumerationGroup, 4);
+
+    QVBoxLayout* mainLayout(new QVBoxLayout(this));
+    mainLayout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    mainLayout->addLayout(choicesLayout);
+	mainLayout->setContentsMargins(0, 0, 0, 0);
 }

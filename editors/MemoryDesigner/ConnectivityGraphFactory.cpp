@@ -107,7 +107,7 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<DesignInstantiation>
 
     QVector<QSharedPointer<ConnectivityInterface> > interfacesInDesign;
 
-    foreach (QSharedPointer<ComponentInstance> componentInstance, *design->getComponentInstances())
+    for (QSharedPointer<ComponentInstance> componentInstance : *design->getComponentInstances())
     {
         QSharedPointer<Component const> instancedComponent = 
             library_->getModelReadOnly(*componentInstance->getComponentRef()).dynamicCast<Component const>();
@@ -140,7 +140,7 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<DesignInstantiation>
         }
     }
 
-    foreach (QSharedPointer<Interconnection> interconnection, *design->getInterconnections())
+    for (QSharedPointer<Interconnection> interconnection : *design->getInterconnections())
     {
         createConnectionsForInterconnection(interconnection, interfacesInDesign, topInterfaces, graph);
     }
@@ -189,7 +189,7 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
     QString instanceIdentifier = newInstance->getVlnv().replace(':', '.') + "." + newInstance->getInstanceUuid() +
         "." + newInstance->getName();
 
-    foreach (QSharedPointer<AddressSpace> space, *component->getAddressSpaces())
+    for (QSharedPointer<AddressSpace> space : *component->getAddressSpaces())
     {
         if (space->getIsPresent().isEmpty() ||
             expressionParser_->parseExpression(space->getIsPresent()).toInt() == 1)
@@ -215,7 +215,7 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
 
             newInstance->addMemory(spaceItem);
 
-            foreach(QSharedPointer<Segment> segment, *space->getSegments())
+            for (QSharedPointer<Segment> segment : *space->getSegments())
             {
                 if (segment->getIsPresent().isEmpty() ||
                     expressionParser_->parseExpression(segment->getIsPresent()).toInt() == 1)
@@ -248,7 +248,7 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
 void ConnectivityGraphFactory::addMemoryMapMemories(QSharedPointer<ConnectivityComponent> instanceData,
     QSharedPointer<const Component> component) const
 {
-    foreach (QSharedPointer<const MemoryMap> map, *component->getMemoryMaps())
+    for (QSharedPointer<const MemoryMap> map : *component->getMemoryMaps())
     {
         if (map->getIsPresent().isEmpty() ||
             expressionParser_->parseExpression(map->getIsPresent()).toInt() == 1)
@@ -282,7 +282,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
     mapItem->setAUB(QString::number(addressableUnitBits));
 
     General::Usage mapUsage = General::USAGE_COUNT;
-    foreach (QSharedPointer<MemoryBlockBase> block, *map->getMemoryBlocks())
+    for (QSharedPointer<MemoryBlockBase> block : *map->getMemoryBlocks())
     {
         if (block->getIsPresent().isEmpty() ||
             expressionParser_->parseExpression(block->getIsPresent()).toInt() == 1)
@@ -334,7 +334,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
 
     blockItem->setIsPresent(blockPresence);
 
-    foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+    for (QSharedPointer<RegisterBase> registerBase : *addressBlock->getRegisterData())
     {
         if (registerBase->getIsPresent().isEmpty() || 
             expressionParser_->parseExpression(registerBase->getIsPresent()).toInt() == 1)
@@ -366,12 +366,15 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
     for (int i = 0; i < registerDimension || (i == 0 && registerDimension == 0); i++)
     {
         QString registerIdentifier = blockIdentifier + "." + reg->name();
+
+        QSharedPointer<MemoryItem> regItem(new MemoryItem(reg->name(), "register"));
+
         if (!reg->getDimension().isEmpty())
         {
+            regItem->setDimension(QString::number(registerDimension));
             registerIdentifier.append(QString("[%1]").arg(i));
         }
 
-        QSharedPointer<MemoryItem> regItem(new MemoryItem(reg->name(), "register"));
         regItem->setIdentifier(registerIdentifier);
         regItem->setDisplayName(reg->displayName());
         regItem->setAUB(QString::number(addressableUnitBits));
@@ -381,9 +384,9 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
 
         QVector<QSharedPointer<MemoryItem> > fieldItems;
 
-        foreach (QSharedPointer<Field> field, *reg->getFields())
+        for (QSharedPointer<Field> field : *reg->getFields())
         {
-            if (field->getIsPresent().isEmpty() || 
+            if (field->getIsPresent().isEmpty() ||
                 expressionParser_->parseExpression(field->getIsPresent()).toInt() == 1)
             {
                 fieldItems.append(createField(field, registerIdentifier, registerAddress, addressableUnitBits));
@@ -402,7 +405,7 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
         regItem->addChild(
             createRegisterResetItem(orderedFieldItems, regItem, registerIdentifier, addressableUnitBits));
 
-        registerAddress += registerSize / addressableUnitBits;      
+        registerAddress += registerSize / addressableUnitBits;
 
         blockItem->addChild(regItem);
     }
@@ -616,7 +619,7 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<const MemoryMap
     QString remapPrefix =  containingInstance->getVlnv().replace(':', '.') + "." +
         containingInstance->getInstanceUuid() + "." + containingInstance->getName() + ".";
 
-    foreach (QSharedPointer<MemoryRemap> remap, *map->getMemoryRemaps())
+    for (QSharedPointer<MemoryRemap> remap : *map->getMemoryRemaps())
     {
         QString remapIdentifier = remapPrefix + remap->name();
 
@@ -627,7 +630,7 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<const MemoryMap
 
         mapItem->addChild(remapItem);
 
-        foreach (QSharedPointer<MemoryBlockBase> block, *remap->getMemoryBlocks())
+        for (QSharedPointer<MemoryBlockBase> block : *remap->getMemoryBlocks())
         {
             if (block->getIsPresent().isEmpty() ||
                 expressionParser_->parseExpression(block->getIsPresent()).toInt() == 1)
@@ -649,7 +652,7 @@ QVector<QSharedPointer<ConnectivityInterface> > ConnectivityGraphFactory::create
 {
     QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces;
 
-    foreach (QSharedPointer<const BusInterface> busInterface, *instancedComponent->getBusInterfaces())
+    for (QSharedPointer<const BusInterface> busInterface : *instancedComponent->getBusInterfaces())
     {
         QSharedPointer<ConnectivityInterface> node = createInterfaceData(busInterface, instanceNode, graph);
         instanceInterfaces.append(node);
@@ -724,12 +727,12 @@ void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(
         instanceNode->setChanneled();
     }
 
-    foreach (QSharedPointer<Channel> channel, *instancedComponent->getChannels())
+    for (QSharedPointer<Channel> channel : *instancedComponent->getChannels())
     {
         createInternalConnectionsForChannel(channel, instanceName, instanceInterfaces, graph);
     }
 
-    foreach (QSharedPointer<BusInterface> busInterface, *instancedComponent->getBusInterfaces())
+    for (QSharedPointer<BusInterface> busInterface : *instancedComponent->getBusInterfaces())
     {
         if (busInterface->hasBridge())
         {
@@ -737,7 +740,7 @@ void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(
         }
     }
     
-    foreach (QSharedPointer<AddressSpace> space, *instancedComponent->getAddressSpaces())
+    for (QSharedPointer<AddressSpace> space : *instancedComponent->getAddressSpaces())
     {
         if (space->hasLocalMemoryMap())
         {
@@ -805,7 +808,7 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createLocalInter
 QSharedPointer<BusInterface> ConnectivityGraphFactory::getBusInterfaceReferencingAddressSpace(
     QSharedPointer<const Component> instancedComponent, QString const& spaceName) const
 {
-    foreach (QSharedPointer<BusInterface> busInterface, *instancedComponent->getBusInterfaces())
+    for (QSharedPointer<BusInterface> busInterface : *instancedComponent->getBusInterfaces())
     {
         if (busInterface->getAddressSpaceRef().compare(spaceName) == 0)
         {
@@ -854,7 +857,7 @@ void ConnectivityGraphFactory::createConnectionsForDesign(QSharedPointer<const C
 
         if (hierarchicalDesign)
         {              
-            foreach (QSharedPointer<ConnectivityInterface> topInterface, instanceInterfaces)
+            for (QSharedPointer<ConnectivityInterface> topInterface : instanceInterfaces)
             {
                 topInterface->setHierarchical();
             }
@@ -899,14 +902,14 @@ void ConnectivityGraphFactory::createConnectionsForInterconnection(
     QSharedPointer<ConnectivityInterface> startInterface =
         getInterface(start->getBusReference(), start->getComponentReference(), designInterfaces);
 
-    foreach (QSharedPointer<HierInterface> hierInterface, *interconnection->getHierInterfaces())
+    for (QSharedPointer<HierInterface> hierInterface : *interconnection->getHierInterfaces())
     {
         QSharedPointer<ConnectivityInterface> target = getTopInterface(hierInterface->getBusReference(), topInterfaces);
 
         createConnectionData(interconnection->name(), startInterface, target, graph);
     }
 
-    foreach (QSharedPointer<ActiveInterface> activeInterface, *interconnection->getActiveInterfaces())
+    for (QSharedPointer<ActiveInterface> activeInterface : *interconnection->getActiveInterfaces())
     {                
         QSharedPointer<ConnectivityInterface> target = getInterface(activeInterface->getBusReference(),
             activeInterface->getComponentReference(), designInterfaces);
@@ -963,7 +966,7 @@ QSharedPointer<View> ConnectivityGraphFactory::findView(QSharedPointer<const Com
         return instancedComponent->getViews()->first();
     }
 
-    foreach (QSharedPointer<View> componentView, *instancedComponent->getViews())
+    for (QSharedPointer<View> componentView : *instancedComponent->getViews())
     {
         if (componentView->name().compare(viewName) == 0)
         {
@@ -991,7 +994,7 @@ void ConnectivityGraphFactory::createInternalConnectionsForChannel(QSharedPointe
 
         if (startInterface)
         {
-            foreach(QString const& targetName, channelInterfaces)
+            for (QString const& targetName : channelInterfaces)
             {
                 QSharedPointer<ConnectivityInterface> target =
                     getInterface(targetName, instanceName, instanceInterfaces);
@@ -1016,7 +1019,7 @@ void ConnectivityGraphFactory::createInternalConnectionsForBridge(QSharedPointer
         getInterface(busInterface->name(), instanceName, instanceInterfaces);
     startInterface->setBridged();
 
-    foreach (QSharedPointer<TransparentBridge> bridge, *busInterface->getSlave()->getBridges())
+    for (QSharedPointer<TransparentBridge> bridge : *busInterface->getSlave()->getBridges())
     {
         QSharedPointer<ConnectivityInterface> endInterface =
             getInterface(bridge->getMasterRef(), instanceName, instanceInterfaces);
@@ -1040,7 +1043,7 @@ QSharedPointer<const DesignConfiguration> ConnectivityGraphFactory::getHierarchi
     QString configurationReference = hierarchicalView->getDesignConfigurationInstantiationRef();
     if (!configurationReference.isEmpty())
     {
-        foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
             *component->getDesignConfigurationInstantiations())
         {
             if (instantiation->name().compare(configurationReference) == 0)
@@ -1090,7 +1093,7 @@ VLNV ConnectivityGraphFactory::getHierarchicalDesignVLNV(QSharedPointer<const Co
 
     if (!referencedInstantiation.isEmpty())
     {
-        foreach (QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
+        for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
         {
             if (instantiation->name().compare(referencedInstantiation) == 0)
             {

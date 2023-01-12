@@ -2,7 +2,7 @@
 // File: ConnectionUndoCommands.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 5.6.2012
 //
 // Description:

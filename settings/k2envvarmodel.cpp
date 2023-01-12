@@ -375,7 +375,7 @@ void K2EnvVarModel::loadData(QSettings& settings)
     }
 
     // Sort the variables before showing them
-    qSort(table_);
+    std::sort(table_.begin(), table_.end());
 
     endResetModel();
 }

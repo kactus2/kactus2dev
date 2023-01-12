@@ -57,6 +57,7 @@ PortsView* TransactionalPortsEditorConstructor::constructView(QString const& def
     view->setAlternatingRowColors(false);
     view->setSortingEnabled(true);
     view->setItemsDraggable(false);
+    view->setFitColumnsToContent(false);
 
     return view;
 }

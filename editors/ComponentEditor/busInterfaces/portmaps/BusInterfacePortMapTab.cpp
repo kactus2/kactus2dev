@@ -376,10 +376,10 @@ void BusInterfacePortMapTab::connectItems()
     connect(nameFilterEditor_, SIGNAL(textChanged(const QString&)), 
         &physicalPortView_, SLOT(onFilterNameChanged(const QString&)), Qt::UniqueConnection);
 
-    connect(&typeFilter_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(&typeFilter_, SIGNAL(currentTextChanged(QString const&)),
         &physicalPortSorter_, SLOT(onChangeFilteredType(QString const&)), Qt::UniqueConnection);
 
-    connect(&directionFilter_, SIGNAL(currentIndexChanged(QString const&)),
+    connect(&directionFilter_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onDirectionFilterChanged(QString const&)), Qt::UniqueConnection);
 
     connect(&portMapModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

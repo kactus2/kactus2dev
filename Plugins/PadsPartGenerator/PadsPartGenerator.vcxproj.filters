@@ -34,35 +34,25 @@
     <ClCompile Include="PadsPartGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_PadsPartGenerator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_PadsPartGenerator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_PadsPartGenerator.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
+    
+    
+    
     <ClCompile Include="PadsPartGeneratorDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_PadsPartGeneratorDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_PadsPartGeneratorDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="PadsPartGenerator.h">
+    <QtMoc Include="PadsPartGenerator.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="PadsPartGenerator.qrc">
+    </QtMoc>
+    <QtRcc Include="PadsPartGenerator.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="PadsPartGeneratorDialog.h">
+    </QtRcc>
+    <QtMoc Include="PadsPartGeneratorDialog.h">
       <Filter>Header Files</Filter>
-    </CustomBuild>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <None Include="processor.png">

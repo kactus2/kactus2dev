@@ -175,7 +175,7 @@ void CatalogFileView::onCopyAction()
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
     QModelIndexList indexes = selectedIndexes();
-    qSort(indexes);
+    std::sort(indexes.begin(), indexes.end());
 
     int lastColumn = indexes.last().column();
 
@@ -218,7 +218,7 @@ void CatalogFileView::onPasteAction()
     QString pasteText = QApplication::clipboard()->text(subtype);
 
     // Split the string from clip board into rows.
-    QStringList rowsToAdd = pasteText.split("\n", QString::SkipEmptyParts);
+    QStringList rowsToAdd = pasteText.split("\n", Qt::SkipEmptyParts);
 
     int current = 0;
     QPersistentModelIndex currentIndex = indexes.first();
@@ -268,7 +268,7 @@ void CatalogFileView::onCutAction()
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    qSort(indexes);
+    std::sort(indexes.begin(), indexes.end());
     int lastColumn = indexes.last().column();
 
     QString copyText;
@@ -333,7 +333,7 @@ void CatalogFileView::setupActions()
 	connect(addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
     
     addAction(removeAction_);
-    removeAction_->setShortcut(Qt::SHIFT + Qt::Key_Delete);
+    removeAction_->setShortcut(Qt::SHIFT | Qt::Key_Delete);
     removeAction_->setShortcutContext(Qt::WidgetShortcut);
     connect(removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
     
@@ -373,7 +373,7 @@ void CatalogFileView::setupActions()
 QModelIndexList CatalogFileView::sortAndMinimize(QModelIndexList const& indexes)
 {
     QModelIndexList sorted = indexes;
-    qSort(sorted);
+    std::sort(sorted.begin(), sorted.end());
 
     QModelIndex previousRow = QModelIndex();
 

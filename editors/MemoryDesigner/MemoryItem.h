@@ -179,6 +179,20 @@ public:
     QVector<QSharedPointer<MemoryItem> > getChildItems() const;
 
     /*!
+     *  Set the dimension of the memory item.
+     *
+     *      @param [in] dimension    The new dimension value.
+     */
+    void setDimension(QString const& dimension);
+
+    /*!
+     *  Gets the dimension of the memory. Only used for registers.
+     *
+     *      @return The dimension of the memory.
+     */
+    QString getDimension() const;
+
+    /*!
      *  Set the usage for the memory item.
      *
      *      @param [in] newUsage    The new usage value.
@@ -285,6 +299,9 @@ private:
     QString offset_;
 
     QString value_;
+
+    //! The dimension for the memory.
+    QString dimension_;
 
     //! The usage value of the memory item.
     General::Usage usage_;

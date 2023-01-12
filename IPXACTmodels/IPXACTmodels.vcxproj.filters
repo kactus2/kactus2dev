@@ -251,24 +251,12 @@
     <ClCompile Include="AbstractionDefinition\WirePort.cpp">
       <Filter>Source Files\AbstractionDefinition</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_TransactionalAbstractionReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_TransactionalAbstractionReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_TransactionalAbstractionWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_TransactionalAbstractionWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_WireAbstractionReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_WireAbstractionReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
+    
+    
     <ClCompile Include="kactusExtensions\ApiInterconnection.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
@@ -317,54 +305,22 @@
     <ClCompile Include="kactusExtensions\SystemView.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ChoiceReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ChoiceReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ChoiceWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ChoiceWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_OtherClockDriverReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_OtherClockDriverReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_OtherClockDriverWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_OtherClockDriverWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_RemapStateReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_RemapStateReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_RemapStateWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_RemapStateWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ViewReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ViewReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ViewWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ViewWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <ClCompile Include="Component\AddressBlock.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
@@ -593,54 +549,22 @@
     <ClCompile Include="Component\WriteValueConstraint.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ModuleParameterReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ModuleParameterReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ModuleParameterWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ModuleParameterWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_NameGroupReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_NameGroupReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_NameGroupWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_NameGroupWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ParameterReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ParameterReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ParameterWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ParameterWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ProtocolReader.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ProtocolReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_ProtocolWriter.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_ProtocolWriter.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <ClCompile Include="common\Array.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -986,18 +910,10 @@
     <ClCompile Include="common\validators\NMTokenValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_namevalidator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_namevalidator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_NMTokenValidator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_NMTokenValidator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    
+    
+    
+    
     <ClCompile Include="utilities\XmlUtils.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
@@ -1620,15 +1536,15 @@
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionWriter.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
     </CustomBuild>
-    <CustomBuild Include="AbstractionDefinition\TransactionalAbstractionReader.h">
+    <QtMoc Include="AbstractionDefinition\TransactionalAbstractionReader.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
+    </QtMoc>
+    <QtMoc Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
-    </CustomBuild>
-    <CustomBuild Include="AbstractionDefinition\WireAbstractionReader.h">
+    </QtMoc>
+    <QtMoc Include="AbstractionDefinition\WireAbstractionReader.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="Component\AddressBlockReader.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
@@ -1653,12 +1569,12 @@
     <CustomBuild Include="Component\ChannelWriter.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
-    <CustomBuild Include="Component\ChoiceReader.h">
+    <QtMoc Include="Component\ChoiceReader.h">
       <Filter>Header Files\Component</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Component\ChoiceWriter.h">
+    </QtMoc>
+    <QtMoc Include="Component\ChoiceWriter.h">
       <Filter>Header Files\Component</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="Component\ComponentGeneratorReader.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
@@ -1719,12 +1635,12 @@
     <CustomBuild Include="Component\MemoryMapWriter.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
-    <CustomBuild Include="Component\OtherClockDriverReader.h">
+    <QtMoc Include="Component\OtherClockDriverReader.h">
       <Filter>Header Files\Component</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Component\OtherClockDriverWriter.h">
+    </QtMoc>
+    <QtMoc Include="Component\OtherClockDriverWriter.h">
       <Filter>Header Files\Component</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="Component\PortReader.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
@@ -1737,18 +1653,18 @@
     <CustomBuild Include="Component\RegisterWriter.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
-    <CustomBuild Include="Component\RemapStateReader.h">
+    <QtMoc Include="Component\RemapStateReader.h">
       <Filter>Header Files\Component</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Component\RemapStateWriter.h">
+    </QtMoc>
+    <QtMoc Include="Component\RemapStateWriter.h">
       <Filter>Header Files\Component</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Component\ViewReader.h">
+    </QtMoc>
+    <QtMoc Include="Component\ViewReader.h">
       <Filter>Header Files\Component</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Component\ViewWriter.h">
+    </QtMoc>
+    <QtMoc Include="Component\ViewWriter.h">
       <Filter>Header Files\Component</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="common\CommonItemsReader.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
@@ -1767,30 +1683,30 @@
     <CustomBuild Include="common\FileBuilderWriter.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\ModuleParameterReader.h">
+    <QtMoc Include="common\ModuleParameterReader.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\ModuleParameterWriter.h">
+    </QtMoc>
+    <QtMoc Include="common\ModuleParameterWriter.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\NameGroupReader.h">
+    </QtMoc>
+    <QtMoc Include="common\NameGroupReader.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\NameGroupWriter.h">
+    </QtMoc>
+    <QtMoc Include="common\NameGroupWriter.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\ParameterReader.h">
+    </QtMoc>
+    <QtMoc Include="common\ParameterReader.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\ParameterWriter.h">
+    </QtMoc>
+    <QtMoc Include="common\ParameterWriter.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\ProtocolReader.h">
+    </QtMoc>
+    <QtMoc Include="common\ProtocolReader.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\ProtocolWriter.h">
+    </QtMoc>
+    <QtMoc Include="common\ProtocolWriter.h">
       <Filter>Header Files\common</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="kactusExtensions\ApiDefinitionWriter.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </CustomBuild>
@@ -1809,12 +1725,12 @@
     <CustomBuild Include="Catalog\CatalogWriter.h">
       <Filter>Header Files\Catalog</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\validators\namevalidator.h">
+    <QtMoc Include="common\validators\namevalidator.h">
       <Filter>Header Files\common\validators</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\validators\NMTokenValidator.h">
+    </QtMoc>
+    <QtMoc Include="common\validators\NMTokenValidator.h">
       <Filter>Header Files\common\validators</Filter>
-    </CustomBuild>
+    </QtMoc>
     <CustomBuild Include="common\GenericVendorExtension.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>

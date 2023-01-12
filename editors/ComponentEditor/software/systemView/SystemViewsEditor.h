@@ -2,7 +2,7 @@
 // File: SystemViewsEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 13.7.2012
 //
 // Description:

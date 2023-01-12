@@ -2,7 +2,7 @@
 // File: LibrarySettingsDialog.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 17.08.2012
 //
 // Description:

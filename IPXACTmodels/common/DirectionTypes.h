@@ -16,6 +16,8 @@
 
 #include <QString>
 
+#include <string>
+
 //-----------------------------------------------------------------------------
 //! Namespace DirectionTypes is used to store functions related to port directions.
 //-----------------------------------------------------------------------------
@@ -49,7 +51,12 @@ namespace DirectionTypes
      *      @return Direction that matches the string or default value.
      */
     IPXACTMODELS_EXPORT DirectionTypes::Direction str2Direction(
-        QString str, DirectionTypes::Direction defaultValue);
+        QString const& str, DirectionTypes::Direction defaultValue = Direction::DIRECTION_INVALID);
+
+
+    IPXACTMODELS_EXPORT DirectionTypes::Direction str2Direction(
+        std::string const& str, DirectionTypes::Direction defaultValue = Direction::DIRECTION_INVALID);
+
 
     /*!
      *  Convert a given direction to a qstring.

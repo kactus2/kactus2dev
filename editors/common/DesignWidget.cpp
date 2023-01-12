@@ -2,7 +2,7 @@
 // File: DesignWidget.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti Määttä
+// Author: Joni-Matti Maatta
 // Date: 12.6.2012
 //
 // Description:
@@ -141,8 +141,8 @@ void DesignWidget::setZoomLevel(int level)
     TabDocument::setZoomLevel(level);
 
     double newScale = getZoomLevel() / 100.0;
-    QMatrix oldMatrix = view_->matrix();
-    view_->resetMatrix();
+    QTransform oldMatrix = view_->transform();
+    view_->resetTransform();
     view_->translate(oldMatrix.dx(), oldMatrix.dy());
     view_->scale(newScale, newScale);
 
@@ -283,7 +283,7 @@ bool DesignWidget::save()
 void DesignWidget::onVerticalScroll(int y)
 {
     QPointF pt(0.0, y);
-    QMatrix mat = view_->matrix().inverted();
+    QTransform mat = view_->transform().inverted();
     diagram_->onVerticalScroll(mat.map(pt).y());
 }
 
@@ -407,8 +407,8 @@ void DesignWidget::print()
     // create the printer instance, set default settings for it and
     // execute print dialog for user to select the printer and desired options
     QPrinter printer(QPrinter::ScreenResolution);
-    printer.setOrientation(QPrinter::Landscape);
-    printer.setPaperSize(QPrinter::A4);
+    printer.setPageOrientation(QPageLayout::Landscape);
+    printer.setPageSize(QPageSize::A4);
     QPrintDialog dialog(&printer, this);
 
     if (dialog.exec() == QPrintDialog::Accepted)
@@ -419,11 +419,11 @@ void DesignWidget::print()
             QPainter::SmoothPixmapTransform, true);
 
         // scale the picture to match the size of the printer page
-        QPixmap scaledPixmap = pic.scaled(printer.pageRect().size(),
+        QPixmap scaledPixmap = pic.scaled(printer.pageRect(QPrinter::Point).size().toSize(),
             Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         // draw the picture on the printer
-        painter.drawPixmap(printer.pageRect().topLeft(), scaledPixmap);
+        painter.drawPixmap(printer.pageRect(QPrinter::Point).topLeft(), scaledPixmap);
     }
 }
 

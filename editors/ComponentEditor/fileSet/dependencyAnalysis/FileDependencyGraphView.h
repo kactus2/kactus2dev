@@ -2,7 +2,7 @@
 // File: FileDependencyGraphWidget.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 19.01.2013
 //
 // Description:
@@ -248,7 +248,7 @@ private:
         {
         }
 
-        bool operator==(GraphDependency const& other)
+        bool operator==(GraphDependency const& other) const
         {
             return dependency == other.dependency && fromY == other.fromY && toY == other.toY;                 
         }

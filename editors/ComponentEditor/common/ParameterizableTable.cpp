@@ -33,7 +33,7 @@ parameterFinder_(parameterFinder)
 //-----------------------------------------------------------------------------
 QString ParameterizableTable::getExpressionSymbol() const
 {
-    QString functionSymbol(0x0192);
+    QString functionSymbol(QChar(0x0192));
     return QString(", " + functionSymbol + "(x)");
 }
 

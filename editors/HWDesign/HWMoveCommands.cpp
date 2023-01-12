@@ -2,7 +2,7 @@
 // File: HWMoveCommands.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 4.8.2011
 //
 // Description:

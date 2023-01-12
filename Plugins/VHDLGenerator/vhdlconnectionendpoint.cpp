@@ -10,10 +10,10 @@
 VhdlConnectionEndPoint::VhdlConnectionEndPoint():
 instanceName_(),
 portName_(),
-signalLeft_(-1),
-signalRight_(-1),
-portLeft_(-1),
-portRight_(-1) {
+signalLeft_(),
+signalRight_(),
+portLeft_(),
+portRight_() {
 }
 
 VhdlConnectionEndPoint::VhdlConnectionEndPoint(const QString& instanceName, 

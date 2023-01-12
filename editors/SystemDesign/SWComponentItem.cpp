@@ -2,7 +2,7 @@
 // File: SWComponentItem.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 30.4.2012
 //
 // Description:

@@ -135,7 +135,7 @@ std::vector<std::string> PortMapInterface::getItemNames() const
     for (int i = 0; i < itemCount(); ++i)
     {
         std::string currentPortName = getLogicalPortName(i);
-        if (std::find(names.cbegin(), names.cend(), currentPortName) != names.cend())
+        if (std::find(names.cbegin(), names.cend(), currentPortName) == names.cend())
         {
             names.push_back(currentPortName);
         }
@@ -212,12 +212,7 @@ bool PortMapInterface::removeEmptyLogicalPort(QSharedPointer<PortMap> editedPort
 //-----------------------------------------------------------------------------
 bool PortMapInterface::hasPhysicalPort(int const& portMapIndex) const
 {
-    if (portMapIndex >= 0 && portMapIndex < itemCount() && portMaps_->at(portMapIndex)->getPhysicalPort())
-    {
-        return true;
-    }
-
-    return false;
+    return portMapIndex >= 0 && portMapIndex < itemCount() && portMaps_->at(portMapIndex)->getPhysicalPort();
 }
 
 //-----------------------------------------------------------------------------
@@ -225,7 +220,7 @@ bool PortMapInterface::hasPhysicalPort(int const& portMapIndex) const
 //-----------------------------------------------------------------------------
 std::string PortMapInterface::getPhysicalPortName(int const& portMapIndex) const
 {
-    QString physicalName("");
+    std::string physicalName("");
 
     QSharedPointer<PortMap> portMap = getPortMap(portMapIndex);
     if (portMap)
@@ -233,11 +228,11 @@ std::string PortMapInterface::getPhysicalPortName(int const& portMapIndex) const
         QSharedPointer<PortMap::PhysicalPort> physicalPort = portMap->getPhysicalPort();
         if (physicalPort)
         {
-            physicalName = physicalPort->name_;
+            physicalName = physicalPort->name_.toStdString();
         }
     }
 
-    return physicalName.toStdString();
+    return physicalName;
 }
 
 //-----------------------------------------------------------------------------
@@ -486,7 +481,7 @@ std::string PortMapInterface::getLogicalTieOffExpression(int const& portMapIndex
         return selectedPortMap->getLogicalTieOff().toStdString();
     }
 
-    return ("");
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -516,7 +511,7 @@ std::string PortMapInterface::getLogicalLeftBoundValue(int const& portMapIndex, 
             toStdString();
     }
 
-    return ("");
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -530,7 +525,7 @@ std::string PortMapInterface::getLogicalLeftBoundFormattedExpression(int const& 
         return formattedValueFor(selectedPortMap->getLogicalPort()->range_->getLeft()).toStdString();
     }
 
-    return ("");
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -544,7 +539,7 @@ std::string PortMapInterface::getLogicalLeftBoundExpression(int const& portMapIn
         return selectedPortMap->getLogicalPort()->range_->getLeft().toStdString();
     }
 
-    return ("");
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -607,7 +602,7 @@ std::string PortMapInterface::getLogicalRightBoundValue(int const& portMapIndex,
             selectedPortMap->getLogicalPort()->range_->getRight(), baseNumber).toStdString();
     }
 
-    return ("");
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -622,7 +617,7 @@ std::string PortMapInterface::getLogicalRightBoundFormattedExpression(int const&
         return formattedValueFor(logicalRightBound).toStdString();
     }
 
-    return ("");
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -637,7 +632,7 @@ std::string PortMapInterface::getLogicalRightBoundExpression(int const& portMapI
         return logicalRightBound.toStdString();
     }
 
-    return ("");
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -715,7 +710,7 @@ std::string PortMapInterface::getPhysicalLeftBoundExpression(int const& portMapI
         return physicalLeftBound.toStdString();
     }
 
-    return ("");
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -975,15 +970,8 @@ std::vector<std::string> PortMapInterface::getExpressionsInSelectedPortMap(int c
 //-----------------------------------------------------------------------------
 bool PortMapInterface::validateItems() const
 {
-    for (auto portMap : *portMaps_)
-    {
-        if (!validator_->validate(portMap))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return std::all_of(portMaps_->cbegin(), portMaps_->cend(),
+        [this](auto const& portMap) { return validator_->validate(portMap); });
 }
 
 //-----------------------------------------------------------------------------

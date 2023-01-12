@@ -2,7 +2,7 @@
 // File: TextContentAssistWidget.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 4.1.2011
 //
 // Description:
@@ -18,7 +18,6 @@
 #include <QToolTip>
 #include <QTextCursor>
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QLabel>
 
 //-----------------------------------------------------------------------------

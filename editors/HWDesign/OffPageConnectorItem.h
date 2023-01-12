@@ -2,7 +2,7 @@
 // File: OffPageConnectorItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
+// Author: Joni-Matti Maatta
 // Date: 9.1.2012
 //
 // Description:
