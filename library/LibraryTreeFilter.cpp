@@ -72,27 +72,28 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
             }
         }
 
-        else if (documentType == VLNV::CATALOG && type().catalogs_  && (document.isNull() || checkTags(document)))
+        else if (documentType == VLNV::CATALOG)
         {
-            return true;
+            if (type().catalogs_ && (document.isNull() || checkTags(document)))
+            {
+                return true;
+            }
         }
 
-        else if (documentType == VLNV::ABSTRACTIONDEFINITION && type().buses_ && implementation().hw_ &&
-            (document.isNull() || checkTags(document)))
+        else if (documentType == VLNV::BUSDEFINITION || documentType == VLNV::ABSTRACTIONDEFINITION)
         {
-                return true;         
+            if (type().buses_ && implementation().hw_ && (document.isNull() || checkTags(document)))
+            {
+                return true;
+            }
         }
 
-        else if (documentType == VLNV::BUSDEFINITION && type().buses_ && implementation().hw_ &&
-            (document.isNull() || checkTags(document)))
+        else if ((documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION))
         {
-            return true;
-        }
-
-        else if ((documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION) && type().apis_ &&
-            (document.isNull() || checkTags(document)))
-        {
-            return true;
+            if (type().apis_ && (document.isNull() || checkTags(document)))
+            {
+                return true;
+            }
         }
 
         else if (documentType == VLNV::DESIGN)
