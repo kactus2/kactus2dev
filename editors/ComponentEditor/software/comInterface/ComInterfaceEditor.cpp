@@ -35,15 +35,15 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
     QSharedPointer<ComInterface> comInterface,
     QWidget *parent):
 ItemEditor(component, libHandler, parent),
-    libInterface_(libHandler),
-    comIf_(comInterface.data()),
-    nameEditor_(comInterface, this, tr("Name and description")),
-    comTypeEditor_(0),
-    detailsGroup_(tr("Details"), this),
-    transferTypeCombo_(this),
-    directionCombo_(this),
-    propertyValueEditor_(this),
-    comImplementation_(0)
+libInterface_(libHandler),
+comIf_(comInterface),
+nameEditor_(comInterface, this, tr("Name and description")),
+comTypeEditor_(0),
+detailsGroup_(tr("Details"), this),
+transferTypeCombo_(this),
+directionCombo_(this),
+propertyValueEditor_(this),
+comImplementation_(0)
 {
 	// find the main window for VLNV editor
 	QWidget* parentW = NULL;
@@ -237,7 +237,7 @@ void ComInterfaceEditor::updateEditorsForComDefinition(VLNV const& comDefinition
 
     propertyValueEditor_.setAllowedProperties(*comDef->getProperties());
 
-    QString type = transferTypeCombo_.currentText();
+    QString type = comIf_->getTransferType();
 
     transferTypeCombo_.clear();
     transferTypeCombo_.addItem("");

@@ -468,9 +468,16 @@ void PortWireTypeModel::onChangePortSelection(QSharedPointer<Port> newPort)
         wireTypeDefinitions_ = QSharedPointer<QList<QSharedPointer<WireTypeDef> > >();
     }
 
-    if (newPort && newPort->getWire())
+    if (newPort)
     {
-        wireTypeDefinitions_ = newPort->getWire()->getWireTypeDefs();
+        if (newPort->getWire())
+        {
+            wireTypeDefinitions_ = newPort->getWire()->getWireTypeDefs();
+        }
+        else if (newPort->getTransactional())
+        {
+            wireTypeDefinitions_ = newPort->getTransactional()->getTransTypeDef();
+        }
     }
 
     endResetModel();

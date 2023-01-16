@@ -113,7 +113,7 @@ private:
     LibraryInterface* libInterface_;
 
     //! The COM interface being edited.
-    ComInterface* comIf_;
+    QSharedPointer<ComInterface> comIf_;
 
     //! Contains the name, display name and description of the COM interface.
     NameGroupEditor nameEditor_;
