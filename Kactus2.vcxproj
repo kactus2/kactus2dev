@@ -142,7 +142,7 @@
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>verbuild version.h *.*.+.* -xFp -b0.0.0.0  -e10.10.9999.0 -s
+      <Command>verbuild version.h *.*.+.* -xFp -b0.0.0.0  -e10.99.9999.0 -s
 CreateHelp
 </Command>
     </PostBuildEvent>
