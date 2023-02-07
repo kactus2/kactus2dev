@@ -129,6 +129,10 @@ Section "MainSection" SEC01
   SetOverwrite on
   File "..\..\x64\executable\sqldrivers\qsqlite.dll"
 
+  SetOutPath "$INSTDIR\styles"
+  SetOverwrite on
+  File "..\..\x64\executable\styles\qwindowsvistastyle.dll"
+
   SetOutPath "$INSTDIR\Plugins"
   SetOverwrite on
   File "..\..\x64\executable\Plugins\MCAPICodeGenerator.dll"
@@ -276,6 +280,7 @@ Section Uninstall
   Delete "$INSTDIR\Plugins\VHDLSourceAnalyzer.dll"
   Delete "$INSTDIR\Plugins\CppSourceAnalyzer.dll"
   Delete "$INSTDIR\Plugins\MCAPICodeGenerator.dll"
+  Delete "$INSTDIR\styles\qwindowsvistastyle.dll"
   Delete "$INSTDIR\sqldrivers\qsqlite.dll"
   Delete "$INSTDIR\platforms\qminimal.dll"
   Delete "$INSTDIR\platforms\qwindows.dll"
@@ -356,6 +361,7 @@ Section Uninstall
   RMDir "$SMPROGRAMS\Kactus2"
   RMDir "$INSTDIR\Help"
   RMDir "$INSTDIR\Plugins"
+  RMDir "$INSTDIR\styles"
   RMDir "$INSTDIR\sqldrivers"
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\ExampleScripts"
