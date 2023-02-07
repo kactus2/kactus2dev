@@ -12,7 +12,8 @@
 #ifndef CHANNELSDELEGATE_H
 #define CHANNELSDELEGATE_H
 
-#include <QStyledItemDelegate>
+#include <editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h>
+
 #include <QSharedPointer>
 
 class Component;
@@ -20,7 +21,7 @@ class Component;
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors to edit the channels of a component.
 //-----------------------------------------------------------------------------
-class ChannelsDelegate : public QStyledItemDelegate
+class ChannelsDelegate : public EnumerationEditorConstructorDelegate
 {
 	Q_OBJECT
 
@@ -68,18 +69,51 @@ public:
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		QModelIndex const& index) const;
 
-private slots:
-
-	//! Commit the data from the sending editor and close the editor.
-	void commitAndCloseEditor();
-
 private:
 	
 	//! No copying
 	ChannelsDelegate(const ChannelsDelegate& other);
 	ChannelsDelegate& operator=(const ChannelsDelegate& other);
 
-	//! The component being edited.
+    /*!
+     *  Check if the column is used for enumerations.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return True, if the column is used for editing enumerations, false otherwise.
+     */
+    virtual bool isEnumerationEditorColumn(QModelIndex const& index) const override final;
+
+    /*!
+     *  The list of currently selected enumerations in the selected item.
+     *
+     *      @param [in] index   Index of the selected item.
+     *
+     *      @return List of currently selected enumerations.
+     */
+    virtual QStringList getCurrentSelection(QModelIndex const& index) const override final;
+
+    /*!
+     *  Get the list of the available enumerations.
+     *
+     *      @return List of the available enumerations.
+     */
+    virtual QStringList getAvailableItems() const override final;
+
+    /*!
+     *  Set the selected enumerations to the selected item.
+     *
+     *      @param [in] index           Model index identifying the item that's data is to be saved.
+     *      @param [in] model           Model that contains the data structure where data is to be saved to.
+     *      @param [in] selectedItems   List of the selected enumerations.
+     */
+    virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+    
+    //! The component being edited.
 	QSharedPointer<Component> component_;
 };
 

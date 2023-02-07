@@ -268,6 +268,7 @@ CreateHelp
     <ClCompile Include="common\widgets\busReferenceComboBox\BusReferenceComboBox.cpp" />
     <ClCompile Include="common\widgets\DirectoryListSelector\DirectoryListSelector.cpp" />
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp" />
+    <ClCompile Include="common\widgets\EnumCollectionEditor\EnumerationEditor.cpp" />
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp" />
     <ClCompile Include="common\widgets\fileTypeSelector\filetypeselector.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.cpp" />
@@ -489,6 +490,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\CompleterPopupTable.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ConfigurableElementFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\EnumerationEditorConstructorDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionLineEditor.cpp" />
@@ -1212,6 +1214,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="common\views\ExpandingTreeView\ExpandingTreeView.h">
     </QtMoc>
+    <QtMoc Include="common\widgets\EnumCollectionEditor\EnumerationEditor.h" />
     <ClInclude Include="editors\ApiDefinitionEditor\ApiFunctionColumns.h" />
     <QtMoc Include="editors\BusDefinitionEditor\absdefgroup.h">
     </QtMoc>
@@ -1594,6 +1597,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\common\ReferenceSelector\ReferenceSelector.h">
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\ExpressionLineEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\common\EnumerationEditorConstructorDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\common\MasterExpressionEditor.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h" />
@@ -2648,7 +2652,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="common\widgets\DirectoryListSelector\DirectoryListSelector.h">
     </QtMoc>
-    <CustomBuild Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
+    <QtMoc Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </Message>
@@ -2670,7 +2674,7 @@ CreateHelp
       </Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
-    </CustomBuild>
+    </QtMoc>
     <QtMoc Include="common\widgets\listManager\dirlistmanagermodel.h">
     </QtMoc>
     <QtMoc Include="common\widgets\FileSelector\fileselector.h">

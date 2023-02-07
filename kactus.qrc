@@ -74,6 +74,7 @@
         <file>common/graphics/traffic-light_red.png</file>
         <file>common/graphics/traffic-light_yellow.png</file>
         <file>common/graphics/traffic-light_gray.png</file>
+        <file>common/graphics/traffic-light_green_gray.png</file>
         <file>common/graphics/dependency_oneway.png</file>
         <file>common/graphics/dependency_twoway.png</file>
         <file>common/graphics/dependency_manual.png</file>
@@ -88,6 +89,7 @@
         <file>common/graphics/inout.png</file>
         <file>common/graphics/phantom.png</file>
         <file>common/graphics/cross.png</file>
+        <file>common/graphics/grey_cross.png</file>
         <file>common/graphics/balloon.png</file>
         <file>common/graphics/pin--plus.png</file>
         <file>common/graphics/star.png</file>

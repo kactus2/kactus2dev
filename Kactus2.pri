@@ -814,7 +814,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h \
+    ./common/widgets/EnumCollectionEditor/EnumerationEditor.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1535,5 +1537,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.cpp \
+    ./common/widgets/EnumCollectionEditor/EnumerationEditor.cpp
 RESOURCES += kactus.qrc

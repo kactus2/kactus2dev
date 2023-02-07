@@ -191,6 +191,7 @@ messageChannel_(messageChannel)
 
     QString defaultStyleSheet(
         "QCheckBox::indicator:unchecked { image: url(:icons/common/graphics/traffic-light_gray.png);}"
+        "QCheckBox::indicator:indeterminate { image: url(:icons/common/graphics/traffic-light_green_gray.png);}"
         "QCheckBox::indicator:checked { image: url(:icons/common/graphics/traffic-light_green.png);}"
         "QGroupBox::title { subcontrol-origin: margin; margin: 0 8px; }"
         "QGroupBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}"        

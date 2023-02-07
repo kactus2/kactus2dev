@@ -28,7 +28,7 @@
 // Function: FileDependencyDelegate::FileDependencyDelegate()
 //-----------------------------------------------------------------------------
 FileDependencyDelegate::FileDependencyDelegate(QSharedPointer<Component> component, QObject* parent):
-QStyledItemDelegate(parent),
+EnumerationEditorConstructorDelegate(parent),
 component_(component)
 {
 
@@ -51,61 +51,39 @@ QSize FileDependencyDelegate::sizeHint(QStyleOptionViewItem const& option, QMode
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyDelegate::createEditor()
+// Function: FileDependencyDelegate::isEnumerationEditorColumn()
 //-----------------------------------------------------------------------------
-QWidget* FileDependencyDelegate::createEditor(QWidget *parent, QStyleOptionViewItem const& option,
-                                              QModelIndex const& index) const
+bool FileDependencyDelegate::isEnumerationEditorColumn(QModelIndex const& index) const
 {
-    if (index.column() == FileDependencyColumns::FILESETS)
-    {
-        EnumCollectionEditor* editor = new EnumCollectionEditor(parent);
-        return editor;
-    }
-
-    return QStyledItemDelegate::createEditor(parent, option, index);
+    return index.column() == FileDependencyColumns::FILESETS;
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyDelegate::setEditorData()
+// Function: FileDependencyDelegate::getCurrentSelection()
 //-----------------------------------------------------------------------------
-void FileDependencyDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+QStringList FileDependencyDelegate::getCurrentSelection(QModelIndex const& index) const
 {
-    if (index.column() == FileDependencyColumns::FILESETS)
-    {
-        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-        Q_ASSERT(collectionEditor != 0);
-
-        // Retrieve the file sets used by the item.
-        QStringList fileSetNames = index.data(Qt::UserRole).toStringList();
-
-        foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
-        {
-            collectionEditor->addItem(fileSet->name(), fileSetNames.contains(fileSet->name()));
-        }
-    }
-    else
-    {
-        QStyledItemDelegate::setEditorData(editor, index);
-    }
-
+    return index.data(Qt::UserRole).toStringList();
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyDelegate::setModelData()
+// Function: FileDependencyDelegate::getAvailableItems()
 //-----------------------------------------------------------------------------
-void FileDependencyDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
-                                          QModelIndex const& index) const
+QStringList FileDependencyDelegate::getAvailableItems() const
 {
-    if (index.column() == FileDependencyColumns::FILESETS)
+    QStringList fileSetNames;
+    for (auto fileSet : *component_->getFileSets())
     {
-        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-        Q_ASSERT(collectionEditor != 0);
+        fileSetNames.append(fileSet->name());
+    }
 
-        QStringList fileSetNames = collectionEditor->getSelectedItems();
-        model->setData(index, fileSetNames, Qt::EditRole);
-    }
-    else
-    {
-        QStyledItemDelegate::setModelData(editor, model, index);
-    }
+    return fileSetNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyDelegate::setEnumerationDataToModel()
+//-----------------------------------------------------------------------------
+void FileDependencyDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
+{
+    model->setData(index, selectedItems, Qt::EditRole);
 }

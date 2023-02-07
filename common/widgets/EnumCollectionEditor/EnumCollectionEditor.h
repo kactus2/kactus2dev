@@ -19,8 +19,10 @@
 //-----------------------------------------------------------------------------
 //! Editor for choosing multiple values from a collection of enumerables.
 //-----------------------------------------------------------------------------
-class EnumCollectionEditor : public QFrame
+class EnumCollectionEditor : public QWidget
 {
+    Q_OBJECT
+
 public:
     /*!
      *  Constructor.
@@ -47,19 +49,37 @@ public:
      */
     QStringList getSelectedItems() const;
 
-protected:
+    /*!
+     *  Change the state of all the enumerations.
+     *
+     *      @param [in] newState    New state for the enumerations.
+     */
+    void changeStatesOfAllItems(bool newState);
+
+signals:
 
     /*!
-     *  Handler for move events.
+     *  Inform of a change in the combined state of the enumerations.
      *
-     *      @param [in] event   The triggering move event.
+     *      @param [in] newState    Combined state of the enumerations.
      */
-    virtual void moveEvent(QMoveEvent* event);
+    void itemStateChanged(Qt::CheckState newState);
+
+protected:
 
     /*!
      *  Repositions the editor higher, if it would otherwise exceed the bottom of parent widget.
      */
     virtual void rePosition();
+
+private slots:
+
+    /*!
+     *  Handle the state change in enumeration check box.
+     *
+     *      @param [in] newState    New state of the enumeration check box.
+     */
+    void onItemClicked(bool newState);
 
 private:
     // Disable copying.

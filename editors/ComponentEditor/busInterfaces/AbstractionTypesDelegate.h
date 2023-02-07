@@ -12,7 +12,7 @@
 #ifndef ABSTRACTIONTYPESDELEGATE_H
 #define ABSTRACTIONTYPESDELEGATE_H
 
-#include <QStyledItemDelegate>
+#include <editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h>
 
 class LibraryInterface;
 class Component;
@@ -21,7 +21,7 @@ class View;
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors to edit bus interface abstraction types.
 //-----------------------------------------------------------------------------
-class AbstractionTypesDelegate : public QStyledItemDelegate
+class AbstractionTypesDelegate : public EnumerationEditorConstructorDelegate
 {
     Q_OBJECT
 
@@ -80,14 +80,13 @@ public:
     void setComponent(QSharedPointer<Component> newComponent);
 
     /*!
-     *  Update the geometry of the editor in the selected index.
+     *  Updates the editor geometry.
      *
-     *      @param [in] editor  The contained editor.
-     *      @param [in] option  Style options for the area containing the editor.
-     *      @param [in] index   The selected index.
+     *      @param [in] editor  The editor being updated.
+     *      @param [in] option  The options used to update the editor.
+     *      @param [in] index   The model index being edited.
      */
-    virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
-        const QModelIndex &index) const;
+    virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override final;
 
 private:
 
@@ -105,12 +104,38 @@ private:
     QWidget* createVLNVEditor(QWidget* parent) const;
 
     /*!
-     *  Reposition and resize the selected editor.
+     *  Check if the column is used for enumerations.
      *
-     *      @param [in] editor  The selected editor.
-     *      @param [in] option  Style options for the area containing the selected editor.
+     *      @param [in] index   The selected index.
+     *
+     *      @return True, if the column is used for editing enumerations, false otherwise.
      */
-    void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option) const;
+    virtual bool isEnumerationEditorColumn(QModelIndex const& index) const override final;
+
+    /*!
+     *  The list of currently selected enumerations in the selected item.
+     *
+     *      @param [in] index   Index of the selected item.
+     *
+     *      @return List of currently selected enumerations.
+     */
+    virtual QStringList getCurrentSelection(QModelIndex const& index) const override final;
+
+    /*!
+     *  Get the list of the available enumerations.
+     *
+     *      @return List of the available enumerations.
+     */
+    virtual QStringList getAvailableItems() const override final;
+
+    /*!
+     *  Set the selected enumerations to the selected item.
+     *
+     *      @param [in] index           Model index identifying the item that's data is to be saved.
+     *      @param [in] model           Model that contains the data structure where data is to be saved to.
+     *      @param [in] selectedItems   List of the selected enumerations.
+     */
+    virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
 
     //-----------------------------------------------------------------------------
     // Data.

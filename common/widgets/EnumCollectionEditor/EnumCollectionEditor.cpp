@@ -17,14 +17,13 @@
 // Function: EnumCollectionEditor::EnumCollectionEditor()
 //-----------------------------------------------------------------------------
 EnumCollectionEditor::EnumCollectionEditor(QWidget* parent):
-QFrame(parent),
-      layout_(new QVBoxLayout(this)),
-      items_()
+QWidget(parent),
+layout_(new QVBoxLayout(this)),
+items_()
 {
-    setFrameStyle(QFrame::StyledPanel);
+    layout_->setContentsMargins(0, 0, 0, 0);
+
     setAutoFillBackground(true);
-    setFocusPolicy(Qt::StrongFocus);
-    setAttribute(Qt::WA_NoMousePropagation);
 }
 
 //-----------------------------------------------------------------------------
@@ -41,11 +40,36 @@ void EnumCollectionEditor::addItem(QString const& text, bool selected)
 {
     QCheckBox* checkBox = new QCheckBox(text, this);
     checkBox->setChecked(selected);
-    
+
     items_.append(checkBox);
     layout_->addWidget(checkBox);
 
     setMinimumHeight(sizeHint().height());
+
+    connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumCollectionEditor::onItemClicked()
+//-----------------------------------------------------------------------------
+void EnumCollectionEditor::onItemClicked(bool newState)
+{
+    Qt::CheckState checkAllState = Qt::Checked;
+    if (newState == false)
+    {
+        checkAllState = Qt::Unchecked;
+    }
+
+    for (auto item : items_)
+    {
+        if (item->isChecked() != newState)
+        {
+            checkAllState = Qt::PartiallyChecked;
+            break;
+        }
+    }
+
+    emit itemStateChanged(checkAllState);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,16 +91,6 @@ QStringList EnumCollectionEditor::getSelectedItems() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: EnumCollectionEditor::moveEvent()
-//-----------------------------------------------------------------------------
-void EnumCollectionEditor::moveEvent(QMoveEvent* event)
-{
-    rePosition();
-
-    QFrame::moveEvent(event);
-}
-
-//-----------------------------------------------------------------------------
 // Function: EnumCollectionEditor::rePosition()
 //-----------------------------------------------------------------------------
 void EnumCollectionEditor::rePosition()
@@ -93,5 +107,16 @@ void EnumCollectionEditor::rePosition()
         {
             move(pos().x(), yCoordinate);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumCollectionEditor::changeStatesOfAllItems()
+//-----------------------------------------------------------------------------
+void EnumCollectionEditor::changeStatesOfAllItems(bool newState)
+{
+    for (auto item : items_)
+    {
+        item->setChecked(newState);
     }
 }

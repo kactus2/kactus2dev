@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 AbstractionTypesDelegate::AbstractionTypesDelegate(QSharedPointer<Component> component, LibraryInterface* library,
     QWidget* parentWindow, QObject* parent):
-QStyledItemDelegate(parent),
+EnumerationEditorConstructorDelegate(parent),
 availableViews_(component->getViews()),
 library_(library),
 parentWindow_(parentWindow)
@@ -56,13 +56,9 @@ QWidget* AbstractionTypesDelegate::createEditor(QWidget* parent, QStyleOptionVie
         {
             return createVLNVEditor(parent);
         }
-        else if (index.column() == AbstractionTypesConstants::VIEWREFERENCES)
-        {
-            return new EnumCollectionEditor(parent);
-        }
     }
 
-    return QStyledItemDelegate::createEditor(parent, option, index);
+    return EnumerationEditorConstructorDelegate::createEditor(parent, option, index);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,39 +66,21 @@ QWidget* AbstractionTypesDelegate::createEditor(QWidget* parent, QStyleOptionVie
 //-----------------------------------------------------------------------------
 void AbstractionTypesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.isValid() && !index.parent().isValid())
+    if (index.isValid() && !index.parent().isValid() && index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
     {
-        if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
-        {
-            VLNVEditor* abstractionEditor = dynamic_cast<VLNVEditor*>(editor);
-            QVariant vlnvVariant = index.data(AbstractionTypesConstants::ABSTRACTIONVLNVROLE);
+        VLNVEditor* abstractionEditor = dynamic_cast<VLNVEditor*>(editor);
+        QVariant vlnvVariant = index.data(AbstractionTypesConstants::ABSTRACTIONVLNVROLE);
 
-            if (abstractionEditor && vlnvVariant.canConvert<VLNV> ())
-            {
-                VLNV vlnvReference = vlnvVariant.value<VLNV>();
-                abstractionEditor->setVLNV(vlnvReference);
-            }
-        }
-        else if (index.column() == AbstractionTypesConstants::VIEWREFERENCES)
+        if (abstractionEditor && vlnvVariant.canConvert<VLNV>())
         {
-            EnumCollectionEditor* viewEditor = dynamic_cast<EnumCollectionEditor*>(editor);
-            if (viewEditor)
-            {
-                QModelIndex viewIndex = index.sibling(index.row(), AbstractionTypesConstants::VIEWREFERENCES);
-                QStringList selectedViews =
-                    viewIndex.data(Qt::DisplayRole).toString().split(AbstractionTypesConstants::VIEW_SEPARATOR);
-
-                foreach (QSharedPointer<View> view, *availableViews_)
-                {
-                    QString viewName = view->name();
-                    viewEditor->addItem(viewName, selectedViews.contains(viewName));
-                }
-            }
+            VLNV vlnvReference = vlnvVariant.value<VLNV>();
+            abstractionEditor->setVLNV(vlnvReference);
         }
     }
+
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        EnumerationEditorConstructorDelegate::setEditorData(editor, index);
     }
 }
 
@@ -112,33 +90,21 @@ void AbstractionTypesDelegate::setEditorData(QWidget* editor, QModelIndex const&
 void AbstractionTypesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index )
     const
 {
-    if (index.isValid() && !index.parent().isValid())
+    if (index.isValid() && !index.parent().isValid() && index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
     {
-        if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
+        VLNVEditor* abstractionEditor = dynamic_cast<VLNVEditor*>(editor);
+        if (abstractionEditor)
         {
-            VLNVEditor* abstractionEditor = dynamic_cast<VLNVEditor*>(editor);
-            if (abstractionEditor)
-            {
-                VLNV abstractionReference = abstractionEditor->getVLNV();
-                QVariant abstractionVariant;
-                abstractionVariant.setValue(abstractionReference);
+            VLNV abstractionReference = abstractionEditor->getVLNV();
+            QVariant abstractionVariant;
+            abstractionVariant.setValue(abstractionReference);
 
-                model->setData(index, abstractionVariant, Qt::EditRole);
-            }
-        }
-        else if (index.column() == AbstractionTypesConstants::VIEWREFERENCES)
-        {
-            EnumCollectionEditor* viewEditor = dynamic_cast<EnumCollectionEditor*>(editor);
-            if (viewEditor)
-            {
-                QStringList views = viewEditor->getSelectedItems();
-                model->setData(index, views, Qt::EditRole);
-            }
+            model->setData(index, abstractionVariant, Qt::EditRole);
         }
     }
     else
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        EnumerationEditorConstructorDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -166,51 +132,52 @@ void AbstractionTypesDelegate::setComponent(QSharedPointer<Component> newCompone
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTypesDelegate::updateEditorGeometry()
+// Function: AbstractionTypesDelegate::isEnumerationEditorColumn()
 //-----------------------------------------------------------------------------
-void AbstractionTypesDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
-    const QModelIndex &index) const
+bool AbstractionTypesDelegate::isEnumerationEditorColumn(QModelIndex const& index) const
 {
-    QStyledItemDelegate::updateEditorGeometry(editor, option, index);
-
-    if (index.isValid() && !index.parent().isValid() &&
-        (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION ||
-        index.column() == AbstractionTypesConstants::VIEWREFERENCES))
-    {
-        repositionAndResizeEditor(editor, option);
-    }
+    return index.column() == AbstractionTypesConstants::VIEWREFERENCES;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTypesConstants::repositionAndResizeEditor()
+// Function: AbstractionTypesDelegate::getCurrentSelection()
 //-----------------------------------------------------------------------------
-void AbstractionTypesDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option) const
+QStringList AbstractionTypesDelegate::getCurrentSelection(QModelIndex const& index) const
 {
-    int editorMinimumSize = 120;
+    return index.data(Qt::DisplayRole).toString().split(AbstractionTypesConstants::VIEW_SEPARATOR);
+}
 
-    const int PARENT_HEIGHT = editor->parentWidget()->height();
-    const int AVAILABLE_HEIGHT_BELOW = PARENT_HEIGHT - option.rect.top();
-    
-    if (AVAILABLE_HEIGHT_BELOW > editorMinimumSize)
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypesDelegate::getAvailableItems()
+//-----------------------------------------------------------------------------
+QStringList AbstractionTypesDelegate::getAvailableItems() const
+{
+    QStringList viewNames;
+    for (auto view : *availableViews_)
     {
-        editor->move(option.rect.topLeft());
+        viewNames.append(view->name());
     }
-    else
+
+    return viewNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypesDelegate::setEnumerationDataToModel()
+//-----------------------------------------------------------------------------
+void AbstractionTypesDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
+{
+    model->setData(index, selectedItems, Qt::EditRole);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypesDelegate::updateEditorGeometry()
+//-----------------------------------------------------------------------------
+void AbstractionTypesDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+    EnumerationEditorConstructorDelegate::updateEditorGeometry(editor, option, index);
+
+    if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
     {
-        int editorNewY = PARENT_HEIGHT-editorMinimumSize;
-        if (editorNewY <= 0)
-        {
-            editorNewY = 0;
-        }
-        
-        editor->move(option.rect.left(), editorNewY);
-    }
-    if (editorMinimumSize > PARENT_HEIGHT)
-    {
-        editor->setFixedHeight(PARENT_HEIGHT);
-    }
-    else
-    {
-        editor->setFixedHeight(editorMinimumSize);
+        repositionAndResizeEditor(editor, option, index);
     }
 }

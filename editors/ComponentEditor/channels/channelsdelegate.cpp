@@ -23,8 +23,8 @@
 // Function: ChannelsDelegate::ChannelsDelegate()
 //-----------------------------------------------------------------------------
 ChannelsDelegate::ChannelsDelegate(QSharedPointer<Component> component, QObject* parent):
-QStyledItemDelegate(parent),
-    component_(component)
+EnumerationEditorConstructorDelegate(parent),
+component_(component)
 {
     Q_ASSERT(component_);
 }
@@ -51,13 +51,9 @@ QWidget* ChannelsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem co
 
         return lineEdit;
     }
-    else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
-    {
-        return new EnumCollectionEditor(parent);
-    }
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        return EnumerationEditorConstructorDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -75,23 +71,9 @@ void ChannelsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) 
 
         edit->setText(index.data(Qt::DisplayRole).toString());
     }
-
-    else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
-    {
-        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-        Q_ASSERT(collectionEditor != 0);
-
-        QStringList selectedInterfaces = index.data(ChannelColumns::USER_DISPLAY_ROLE).toStringList();
-
-        foreach (QString const& name, component_->getBusInterfaceNames())
-        {
-            collectionEditor->addItem(name, selectedInterfaces.contains(name));
-        }
-    }
-
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        EnumerationEditorConstructorDelegate::setEditorData(editor, index);
     }
 }
 
@@ -109,28 +91,45 @@ void ChannelsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, 
 
         model->setData(index, edit->text(), Qt::EditRole);
     }
-    else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
-    {
-        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-        Q_ASSERT(collectionEditor != 0);
-
-        QStringList interfaces = collectionEditor->getSelectedItems();
-        model->setData(index, interfaces, ChannelColumns::USER_EDIT_ROLE);
-    }
     else
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        EnumerationEditorConstructorDelegate::setModelData(editor, model, index);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChannelsDelegate::commitAndCloseEditor()
+// Function: channelsdelegate::isEnumerationEditorColumn()
 //-----------------------------------------------------------------------------
-void ChannelsDelegate::commitAndCloseEditor()
+bool ChannelsDelegate::isEnumerationEditorColumn(QModelIndex const& index) const
 {
-	QWidget* edit = qobject_cast<QWidget*>(sender());
-	Q_ASSERT(edit);
+    if (index.column() == ChannelColumns::INTERFACE_COLUMN)
+    {
+        return true;
+    }
 
-	emit commitData(edit);
-	emit closeEditor(edit);
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: channelsdelegate::getCurrentSelection()
+//-----------------------------------------------------------------------------
+QStringList ChannelsDelegate::getCurrentSelection(QModelIndex const& index) const
+{
+    return index.data(ChannelColumns::USER_DISPLAY_ROLE).toStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: channelsdelegate::getAvailableItems()
+//-----------------------------------------------------------------------------
+QStringList ChannelsDelegate::getAvailableItems() const
+{
+    return component_->getBusInterfaceNames();
+}
+
+//-----------------------------------------------------------------------------
+// Function: channelsdelegate::setEnumerationDataToModel()
+//-----------------------------------------------------------------------------
+void ChannelsDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
+{
+    model->setData(index, selectedItems, ChannelColumns::USER_EDIT_ROLE);
 }

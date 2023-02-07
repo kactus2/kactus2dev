@@ -3160,6 +3160,12 @@
     <ClCompile Include="editors\ComponentEditor\common\MasterExpressionEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\EnumerationEditorConstructorDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\EnumCollectionEditor\EnumerationEditor.cpp">
+      <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -3413,9 +3419,6 @@
     <QtMoc Include="common\widgets\DirectoryListSelector\DirectoryListSelector.h">
       <Filter>Header Files\common\widgets\DirectoryListSelector</Filter>
     </QtMoc>
-    <CustomBuild Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
-      <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
-    </CustomBuild>
     <QtMoc Include="wizards\ComponentWizard\ComponentWizardGeneralInfoPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </QtMoc>
@@ -5629,6 +5632,15 @@
   <ItemGroup>
     <QtMoc Include="editors\ComponentEditor\common\ExpressionLineEditor.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\EnumerationEditorConstructorDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\EnumCollectionEditor\EnumerationEditor.h">
+      <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
+      <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
