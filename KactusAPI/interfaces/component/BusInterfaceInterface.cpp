@@ -396,15 +396,17 @@ std::vector<std::string> BusInterfaceInterface::getItemNames() const
 bool BusInterfaceInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<BusInterface> editedBus = getBusInterface(currentName);
-    if (!editedBus || currentName == newName)
+    if (editedBus && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
+
+        editedBus->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
-
-    editedBus->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

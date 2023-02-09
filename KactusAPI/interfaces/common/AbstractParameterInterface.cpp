@@ -48,15 +48,17 @@ void AbstractParameterInterface::setChoices(QSharedPointer<QList<QSharedPointer<
 bool AbstractParameterInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<Parameter> editedParameter = getParameter(currentName);
-    if (!editedParameter)
+    if (editedParameter && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, "parameter");
+
+        editedParameter->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, "parameter");
-
-    editedParameter->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

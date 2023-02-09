@@ -39,6 +39,14 @@ QString CommonInterface::getUniqueName(std::string const& newName, std::string c
 }
 
 //-----------------------------------------------------------------------------
+// Function: CommonInterface::nameHasChanged()
+//-----------------------------------------------------------------------------
+bool CommonInterface::nameHasChanged(std::string const& newName, std::string const& oldName) const
+{
+    return newName != oldName;
+}
+
+//-----------------------------------------------------------------------------
 // Function: CommonInterface::nameIsUnique()
 //-----------------------------------------------------------------------------
 bool CommonInterface::nameIsUnique(QString const& portName) const

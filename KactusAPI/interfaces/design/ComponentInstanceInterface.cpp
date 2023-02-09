@@ -134,19 +134,21 @@ std::vector<std::string> ComponentInstanceInterface::getItemNames() const
 bool ComponentInstanceInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<ComponentInstance> editedInstance = getComponentInstance(currentName);
-    if (!editedInstance || currentName == newName)
+    if (editedInstance && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
+
+        editedInstance->setInstanceName(uniqueNewName);
+
+        connectionInterface_->renameComponentReferences(currentName, newName);
+        adHocConnectionInterface_->renameComponentReferences(currentName, newName);
+
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
-
-    editedInstance->setInstanceName(uniqueNewName);
-
-    connectionInterface_->renameComponentReferences(currentName, newName);
-    adHocConnectionInterface_->renameComponentReferences(currentName, newName);
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------

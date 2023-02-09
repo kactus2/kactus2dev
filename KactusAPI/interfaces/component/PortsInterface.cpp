@@ -126,15 +126,17 @@ QSharedPointer<Port> PortsInterface::getPort(string const& portName) const
 bool PortsInterface::setName(string const& currentPortName, string const& newPortName)
 {
     QSharedPointer<Port> editedPort = getPort(currentPortName);
-    if (!editedPort)
+    if (editedPort && nameHasChanged(newPortName, currentPortName))
+    {
+        QString uniqueNewName(getUniqueName(newPortName, "port"));
+
+        editedPort->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName(getUniqueName(newPortName, "port"));
-
-    editedPort->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

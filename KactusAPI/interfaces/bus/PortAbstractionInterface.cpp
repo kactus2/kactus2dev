@@ -351,15 +351,17 @@ std::vector<std::string> PortAbstractionInterface::getItemNamesWithModeAndGroup(
 bool PortAbstractionInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<PortAbstraction> editedPort = getPort(currentName);
-    if (!editedPort)
+    if (editedPort && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName(getUniqueName(newName, DEFAULT_NAME));
+
+        editedPort->setLogicalName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName(getUniqueName(newName, DEFAULT_NAME));
-
-    editedPort->setLogicalName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1037,8 +1039,7 @@ bool PortAbstractionInterface::setInitiative(int const& portIndex, std::string c
     {
         initiativeQ = QLatin1String("both");
     }
-    else if (!initiativeQ.compare(QStringLiteral("requires"), Qt::CaseInsensitive) == 0 &&
-        !initiativeQ.compare(QStringLiteral("provides"), Qt::CaseInsensitive) == 0)
+    else if (initiativeQ.compare(QStringLiteral("requires"), Qt::CaseInsensitive) != 0 && initiativeQ.compare(QStringLiteral("provides"), Qt::CaseInsensitive) != 0)
     {
         initiativeQ = QLatin1String("");
     }

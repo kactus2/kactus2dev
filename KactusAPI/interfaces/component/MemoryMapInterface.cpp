@@ -250,15 +250,17 @@ std::vector<std::string> MemoryMapInterface::getRemapNames(std::string const& ma
 bool MemoryMapInterface::setName(string const& currentName, string const& newName)
 {
     QSharedPointer<MemoryMap> editedItem = getMemoryMap(currentName);
-    if (!editedItem)
+    if (editedItem && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, MEMORYMAP_TYPE);
+
+        editedItem->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, MEMORYMAP_TYPE);
-
-    editedItem->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -268,15 +270,17 @@ bool MemoryMapInterface::setRemapName(std::string const& mapName, std::string co
     std::string const& newName)
 {
     QSharedPointer<MemoryRemap> editedItem = getMemoryRemap(mapName, currentName);
-    if (!editedItem)
+    if (editedItem && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueRemapName(mapName, newName, MEMORYREMAP_TYPE);
+
+        editedItem->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueRemapName(mapName, newName, MEMORYREMAP_TYPE);
-
-    editedItem->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

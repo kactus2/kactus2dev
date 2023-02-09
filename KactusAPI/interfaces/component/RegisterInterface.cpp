@@ -147,15 +147,17 @@ vector<string> RegisterInterface::getItemNames() const
 bool RegisterInterface::setName(string const& currentName, string const& newName)
 {
     QSharedPointer<Register> editedRegister = getRegister(currentName);
-    if (!editedRegister)
+    if (editedRegister && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, REGISTER_TYPE);
+
+        editedRegister->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, REGISTER_TYPE);
-
-    editedRegister->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

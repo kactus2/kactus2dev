@@ -126,15 +126,17 @@ vector<string> FieldInterface::getItemNames() const
 bool FieldInterface::setName(string const& currentName, string const& newName)
 {
     QSharedPointer<Field> editedField = getField(currentName);
-    if (!editedField)
+    if (editedField && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, FIELD_TYPE);
+
+        editedField->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, FIELD_TYPE);
-
-    editedField->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

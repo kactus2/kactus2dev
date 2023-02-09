@@ -109,15 +109,17 @@ std::vector<std::string> ComponentInstantiationInterface::getItemNames() const
 bool ComponentInstantiationInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<ComponentInstantiation> editedItem = getComponentInstantiation(currentName);
-    if (!editedItem)
+    if (editedItem && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, COMPONENT_INSTANTIATION_TYPE);
+
+        editedItem->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, COMPONENT_INSTANTIATION_TYPE);
-
-    editedItem->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

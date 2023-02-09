@@ -201,15 +201,17 @@ std::string FileBuilderInterface::getIndexedFileType(int const& itemIndex)
 bool FileBuilderInterface::setFileType(std::string const& currentFileType, std::string const& newFileType)
 {
     QSharedPointer<FileBuilder> editedFileBuilder = getFileBuilder(currentFileType);
-    if (!editedFileBuilder)
+    if (editedFileBuilder && nameHasChanged(newFileType, currentFileType))
+    {
+        QString uniqueNewFileType = getUniqueName(newFileType, DEFAULT_TYPE);
+
+        editedFileBuilder->setFileType(uniqueNewFileType);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewFileType = getUniqueName(newFileType, DEFAULT_TYPE);
-
-    editedFileBuilder->setFileType(uniqueNewFileType);
-    return true;
 }
 
 //-----------------------------------------------------------------------------

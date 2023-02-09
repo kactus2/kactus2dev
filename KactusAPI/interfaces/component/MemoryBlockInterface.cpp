@@ -160,15 +160,17 @@ vector<string> MemoryBlockInterface::getItemNames() const
 bool MemoryBlockInterface::setName(string const& currentName, string const& newName)
 {
     QSharedPointer<MemoryBlockBase> editedItem = getBlock(currentName);
-    if (!editedItem)
+    if (editedItem && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, getDefaultName());
+        editedItem->setName(uniqueNewName);
+
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, getDefaultName());
-    editedItem->setName(uniqueNewName);
-
-    return true;
 }
 
 

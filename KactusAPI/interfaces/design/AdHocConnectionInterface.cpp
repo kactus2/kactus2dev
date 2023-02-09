@@ -208,15 +208,17 @@ std::vector<std::string> AdHocConnectionInterface::getItemNames() const
 bool AdHocConnectionInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<AdHocConnection> editedConnection = getAdHocConnection(currentName);
-    if (!editedConnection || currentName == newName)
+    if (editedConnection && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
+        editedConnection->setName(uniqueNewName);
+
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
-    editedConnection->setName(uniqueNewName);
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------

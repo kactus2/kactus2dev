@@ -115,15 +115,17 @@ std::vector<std::string> FileSetInterface::getItemNames() const
 bool FileSetInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<FileSet> editedFileSet = getFileSet(currentName);
-    if (!editedFileSet)
+    if (editedFileSet && nameHasChanged(newName, currentName))
+    {
+        QString uniqueNewName = getUniqueName(newName, FILESET_TYPE);
+
+        editedFileSet->setName(uniqueNewName);
+        return true;
+    }
+    else
     {
         return false;
     }
-
-    QString uniqueNewName = getUniqueName(newName, FILESET_TYPE);
-
-    editedFileSet->setName(uniqueNewName);
-    return true;
 }
 
 //-----------------------------------------------------------------------------
