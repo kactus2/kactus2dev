@@ -37,6 +37,6 @@ unix:QMAKE_POST_LINK = ln -s -f libPythonAPI.so.1.0.0 _pythonAPI.so
 
 # Install target
 target.path = $$lib_path
-target.files = _pythonAPI.so
+target.files = _pythonAPI.so pythonAPI.py
 
 INSTALLS += target

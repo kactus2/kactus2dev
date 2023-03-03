@@ -18,6 +18,7 @@
 
 #include <QSharedPointer>
 #include <QTextStream>
+#include <QList>
 
 //-----------------------------------------------------------------------------
 //! Composite for writers.
