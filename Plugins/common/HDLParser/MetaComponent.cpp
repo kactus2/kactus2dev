@@ -188,7 +188,7 @@ void MetaComponent::formatParameters(ExpressionFormatter const& formatter)
 void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters)
 {
     // Go through existing ones on the instance.
-    foreach (QSharedPointer<Parameter> current, *sortParameters)
+    for (QSharedPointer<Parameter> current: *sortParameters)
     {
         // The value of the inspected parameter.
         QString currentValue = current->getValue();
@@ -222,7 +222,7 @@ void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter
         }
 
         sortParameters->removeOne(current);
-        sortParameters->insert(target, current);
+        sortParameters->append(current);
     }
 }
 
