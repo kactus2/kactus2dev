@@ -16,14 +16,17 @@
 #include <QObject>
 #include <QTableView>
 
-#include <Plugins/SVDGenerator/ConnectivityGraphUtilities.h>
+#include <Plugins/common/ConnectivityGraphUtilities.h>
+#include <Plugins/common/CPUDialog/CPUEditor.h>
 
 class SVDCPUModel;
+class CPUDetailRoutes;
+class SVDCPUDetailRoutes;
 
 //-----------------------------------------------------------------------------
 //! Editor for CPU details in SVD generation.
 //-----------------------------------------------------------------------------
-class SVDCPUEditor : public QWidget
+class SVDCPUEditor : public CPUEditor
 {
     Q_OBJECT
 
@@ -44,9 +47,18 @@ public:
     /*!
      *  Setup the selected CPUs.
      *
-     *      @param [in] cpuDetails  The selected CPUs.
+     *      @param [in] library     Interface for accessing the library.
+     *      @param [in] component   The top component of the design.
+     *      @param [in] activeView  Active view of the design.
      */
-    void setupCPUDetails(QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuDetails);
+    virtual void setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView) override final;
+
+    /*!
+     *  Get a list of the selected CPU routes.
+     *
+     *      @return List of the selected CPU routes.
+     */
+    virtual QVector<QSharedPointer<CPUDetailRoutes> > getSelectedCPUs() const override final;
 
     //! No copying. No assignment.
     SVDCPUEditor(const SVDCPUEditor& other) = delete;
@@ -54,8 +66,20 @@ public:
 
 private:
 
-    //! The view for the table.
-    QTableView* view_;
+    /*!
+     *  Create SVD CPU routes from the selected design.
+     *
+     *      @param [in] library     Interface for accessing the library.
+     *      @param [in] component   The top component of the design.
+     *      @param [in] activeView  Active view of the design.
+     *
+     *      @return The SVD CPU routes of the selected design.
+     */
+    QVector<QSharedPointer<SVDCPUDetailRoutes> > getSVDCPURoutes(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The containing model.
     SVDCPUModel* model_;

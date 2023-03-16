@@ -22,14 +22,15 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 
-#include <Plugins/SVDGenerator/ConnectivityGraphUtilities.h>
+#include <Plugins/common/ConnectivityGraphUtilities.h>
 
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 
 class Component;
 class LibraryInterface;
 class Cpu;
-class SVDCPUEditor;
+class CPUEditor;
+class CPUDetailRoutes;
 
 //-----------------------------------------------------------------------------
 //! Dialog for selecting CPUs from a connectivity graph.
@@ -47,10 +48,12 @@ public:
 	 *      @param [in] library         Interface for accessing the library.
 	 *      @param [in] viewsNames      Names of the available views.
      *      @param [in] fileSetNames    Names of the available file sets.
+     *      @param [in] cpuEditor       Editor for CPU details.
+     *      @param [in] dialogType      The type text for dialog.
 	 *      @param [in] parent          Parent widget.
 	 */
 	CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
-        QStringList const& viewNames, QStringList const& fileSetNames, QWidget *parent);
+        QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType, QWidget *parent);
 
 	/*!
      *  The destructor.
@@ -62,7 +65,7 @@ public:
      *
      *      @return List of the CPU data and their connected paths.
      */
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > getSelectedCPUs();
+    QVector<QSharedPointer<CPUDetailRoutes> > getSelectedCPUs();
 
     /*!
      *  Check if the files should be saved to a file set.
@@ -126,9 +129,6 @@ private:
     //! Group box for containing the file set widget.
     QGroupBox* fileSetBox_;
 
-    //! Containers for data of the selected CPUs.
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuSelection_;
-
     //! Interface for accessing the library.
     LibraryInterface* library_;
 
@@ -139,7 +139,7 @@ private:
     ConnectivityGraphFactory graphFactory_;
 
     //! Editor for CPU details.
-    SVDCPUEditor* cpuDetailEditor_;
+    CPUEditor* cpuDetailEditor_;
 
     //! Editor for folder path.
     QLineEdit* folderLine_;

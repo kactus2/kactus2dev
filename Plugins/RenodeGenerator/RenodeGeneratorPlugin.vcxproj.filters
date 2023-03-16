@@ -79,12 +79,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SVDGeneratorPlugin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SVDGenerator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
@@ -133,15 +127,6 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
       <Filter>Source Files\Editors\MemoryDesigner</Filter>
     </ClCompile>
-    <ClCompile Include="CPUDialog\SVDCPUEditor.cpp">
-      <Filter>Source Files\CPUDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="CPUDialog\SVDCPUModel.cpp">
-      <Filter>Source Files\CPUDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="CPUDialog\SVDCPUDelegate.cpp">
-      <Filter>Source Files\CPUDialog</Filter>
-    </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
@@ -154,29 +139,32 @@
     <ClCompile Include="..\common\CPUDialog\CPUSelectionDialog.cpp">
       <Filter>Source Files\CPUDialog</Filter>
     </ClCompile>
-    <ClCompile Include="CPUDialog\SVDCPUDetailRoutes.cpp">
+    <ClCompile Include="RenodeGeneratorPlugin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenodeGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\RenodePeripheralsModel.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\RenodeCPUDetailRoutes.cpp">
       <Filter>Source Files\CPUDialog</Filter>
     </ClCompile>
     <ClCompile Include="..\common\CPUDetailRoutes.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="CPUDialog\RenodePeripheralsEditor.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\RenodePeripheralsDelegate.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\RenodeUtilities.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="SVDGeneratorPlugin.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtRcc Include="SVDGenerator.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
-    <QtMoc Include="CPUDialog\SVDCPUEditor.h">
-      <Filter>Header Files\CPUDialog</Filter>
-    </QtMoc>
-    <QtMoc Include="CPUDialog\SVDCPUModel.h">
-      <Filter>Header Files\CPUDialog</Filter>
-    </QtMoc>
-    <QtMoc Include="CPUDialog\SVDCPUDelegate.h">
-      <Filter>Header Files\CPUDialog</Filter>
-    </QtMoc>
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
       <Filter>Header Files\GenerationControl</Filter>
     </QtMoc>
@@ -186,16 +174,25 @@
     <QtMoc Include="..\common\CPUDialog\CPUSelectionDialog.h">
       <Filter>Header Files\CPUDialog</Filter>
     </QtMoc>
+    <QtMoc Include="RenodeGeneratorPlugin.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\RenodePeripheralsModel.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\RenodePeripheralsEditor.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\RenodePeripheralsDelegate.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="SVDGenerator.png">
+    <Image Include="RenodeGenerator.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SVDGenerator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h">
       <Filter>Header Files\GenerationControl</Filter>
     </ClInclude>
@@ -244,17 +241,33 @@
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
       <Filter>Header Files\Editors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="CPUDialog\SVDCPUColumns.h">
-      <Filter>Header Files\CPUDialog</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\ConnectivityGraphUtilities.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="CPUDialog\SVDCPUDetailRoutes.h">
+    <ClInclude Include="RenodeGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeCPUDetailRoutes.h">
       <Filter>Header Files\CPUDialog</Filter>
     </ClInclude>
     <ClInclude Include="..\common\CPUDetailRoutes.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeUtilities.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeStructs.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="RenodeGenerator.qrc">
+      <Filter>Resource Files</Filter>
+    </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="peripherals.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

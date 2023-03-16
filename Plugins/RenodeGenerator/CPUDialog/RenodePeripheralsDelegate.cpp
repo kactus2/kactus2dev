@@ -9,34 +9,43 @@
 // The delegate that provides editors to edit SVD CPU details.
 //-----------------------------------------------------------------------------
 
-#include "SVDCPUDelegate.h"
+#include "RenodePeripheralsDelegate.h"
 
-#include <Plugins/SVDGenerator/CPUDialog/SVDCPUColumns.h>
-#include <Plugins/common/ConnectivityGraphUtilities.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QComboBox>
+#include <QDir>
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDelegate::SVDCPUDelegate()
+// Function: RenodePeripheralsDelegate::RenodePeripheralsDelegate()
 //-----------------------------------------------------------------------------
-SVDCPUDelegate::SVDCPUDelegate(QObject* parent):
+RenodePeripheralsDelegate::RenodePeripheralsDelegate(QObject* parent /* = 0 */):
 QStyledItemDelegate(parent),
 booleanModify_(false),
-booleanState_(Qt::Unchecked)
+booleanState_(Qt::Unchecked),
+currentFolder_("")
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDelegate::createEditor()
+// Function: RenodePeripheralsDelegate::onFolderChanged()
 //-----------------------------------------------------------------------------
-QWidget* SVDCPUDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
+void RenodePeripheralsDelegate::onFolderChanged(QString const& newFolder)
+{
+    currentFolder_ = newFolder;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* RenodePeripheralsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-    if (index.column() == SVDCPUColumns::ENDIAN)
+    if (index.column() == PeripheralColumns::CLASS)
     {
         QComboBox* editor(new QComboBox(parent));
         return editor;
@@ -48,38 +57,51 @@ QWidget* SVDCPUDelegate::createEditor(QWidget* parent, QStyleOptionViewItem cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDelegate::setEditorData()
+// Function: RenodePeripheralsDelegate::setEditorData()
 //-----------------------------------------------------------------------------
-void SVDCPUDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+void RenodePeripheralsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == SVDCPUColumns::ENDIAN)
+    if (index.column() == PeripheralColumns::CLASS)
     {
-        QComboBox* endianEditor = dynamic_cast<QComboBox*>(editor);
-        if (endianEditor)
+        QComboBox* classEditor = dynamic_cast<QComboBox*>(editor);
+        classEditor->setEditable(true);
+        if (classEditor)
         {
-            QString currentEndian = index.data(Qt::DisplayRole).toString();
+            QString filePath = QDir::currentPath() + "/Plugins/RenodeGenerator/peripherals.txt";
+            QFile peripheralClassFile(filePath);
+            if (peripheralClassFile.open(QIODevice::ReadOnly))
+            {
+                QTextStream fileStream(&peripheralClassFile);
+                while (!fileStream.atEnd())
+                {
+                    classEditor->addItem(fileStream.readLine());
+                }
 
-            endianEditor->addItem("");
-            endianEditor->addItem("little");
-            endianEditor->addItem("big");
-            endianEditor->addItem("selectable");
-            endianEditor->addItem("other");
+                peripheralClassFile.close();
+            }
 
-            endianEditor->setCurrentIndex(endianEditor->findText(currentEndian));
+            QString currentClass = index.data(Qt::DisplayRole).toString();
+            classEditor->setCurrentIndex(classEditor->findText(currentClass));
         }
     }
-    else if (index.column() != SVDCPUColumns::REVISION ||
-        (index.column() == SVDCPUColumns::REVISION &&
-            index.data().toString() != ConnectivityGraphUtilities::REVISION_FORMAT))
+    else
     {
         QStyledItemDelegate::setEditorData(editor, index);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDelegate::editorEvent()
+// Function: RenodePeripheralsDelegate::setModelData()
 //-----------------------------------------------------------------------------
-bool SVDCPUDelegate::editorEvent(QEvent *event, QAbstractItemModel* model, QStyleOptionViewItem const& option,
+void RenodePeripheralsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+{
+    QStyledItemDelegate::setModelData(editor, model, index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsDelegate::editorEvent()
+//-----------------------------------------------------------------------------
+bool RenodePeripheralsDelegate::editorEvent(QEvent *event, QAbstractItemModel* model, QStyleOptionViewItem const& option,
     QModelIndex const& index)
 {
     Q_ASSERT(event);
@@ -168,14 +190,13 @@ bool SVDCPUDelegate::editorEvent(QEvent *event, QAbstractItemModel* model, QStyl
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDelegate::paint()
+// Function: RenodePeripheralsDelegate::paint()
 //-----------------------------------------------------------------------------
-void SVDCPUDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const
+void RenodePeripheralsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
 	QStyleOptionViewItem viewItemOption(option);
 
-    if (index.column() == SVDCPUColumns::CREATESVD || index.column() == SVDCPUColumns::MPUPRESENT ||
-        index.column() == SVDCPUColumns::FPUPRESENT || index.column() == SVDCPUColumns::VENDORSYSTICKCONFIG)
+    if (index.column() == PeripheralColumns::INITABLE)
     {
         painter->fillRect(option.rect, Qt::white);
 

@@ -15,7 +15,8 @@
 
 #include <common/KactusColors.h>
 
-#include <Plugins/SVDGenerator/ConnectivityGraphUtilities.h>
+#include <Plugins/common/ConnectivityGraphUtilities.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
 
 #include <QColor>
 
@@ -31,7 +32,7 @@ cpus_()
 //-----------------------------------------------------------------------------
 // Function: SVDCPUModel::setupCPUDetails()
 //-----------------------------------------------------------------------------
-void SVDCPUModel::setupCPUDetails(QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes>> cpuDetails)
+void SVDCPUModel::setupCPUDetails(QVector<QSharedPointer<SVDCPUDetailRoutes>> cpuDetails)
 {
     beginResetModel();
 
@@ -39,6 +40,14 @@ void SVDCPUModel::setupCPUDetails(QVector<QSharedPointer<ConnectivityGraphUtilit
     cpus_ = cpuDetails;
 
     endResetModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDCPUModel::getCPUDetails()
+//-----------------------------------------------------------------------------
+QVector<QSharedPointer<SVDCPUDetailRoutes> > SVDCPUModel::getCPUDetails() const
+{
+    return cpus_;
 }
 
 //-----------------------------------------------------------------------------
@@ -180,11 +189,11 @@ QVariant SVDCPUModel::data(QModelIndex const& index, int role) const
         if (index.column() == SVDCPUColumns::CREATESVD || index.column() == SVDCPUColumns::MPUPRESENT ||
             index.column() == SVDCPUColumns::FPUPRESENT || index.column() == SVDCPUColumns::VENDORSYSTICKCONFIG)
         {
-            QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> indexedCPU = cpus_.at(index.row());
-            if ((index.column() == SVDCPUColumns::CREATESVD && indexedCPU->createFile_) ||
-                (index.column() == SVDCPUColumns::MPUPRESENT && indexedCPU->mpuPresent_) ||
-                (index.column() == SVDCPUColumns::FPUPRESENT && indexedCPU->fpuPresent_) ||
-                (index.column() == SVDCPUColumns::VENDORSYSTICKCONFIG && indexedCPU->vendorSystickConfig_))
+            QSharedPointer<SVDCPUDetailRoutes> indexedCPU = cpus_.at(index.row());
+            if ((index.column() == SVDCPUColumns::CREATESVD && indexedCPU->shouldCreateFile()) ||
+                (index.column() == SVDCPUColumns::MPUPRESENT && indexedCPU->isMPUPresent()) ||
+                (index.column() == SVDCPUColumns::FPUPRESENT && indexedCPU->isFPUPresent()) ||
+                (index.column() == SVDCPUColumns::VENDORSYSTICKCONFIG && indexedCPU->isVendorSystickConfig()))
             {
                 return Qt::Checked;
             }
@@ -212,20 +221,20 @@ bool SVDCPUModel::setData(QModelIndex const& index, QVariant const& value, int r
 		return false;
 	}
 
-    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> indexedCPU = cpus_.at(index.row());
+    QSharedPointer<SVDCPUDetailRoutes> indexedCPU = cpus_.at(index.row());
     if (Qt::EditRole == role)
     {
         if (index.column() == SVDCPUColumns::REVISION)
         {
-            indexedCPU->revision_ = value.toString();
+            indexedCPU->setRevision(value.toString());
         }
         else if (index.column() == SVDCPUColumns::ENDIAN)
         {
-            indexedCPU->endian_ = value.toString();
+            indexedCPU->setEndian(value.toString());
         }
         else if (index.column() == SVDCPUColumns::NVICPRIOBITS)
         {
-            indexedCPU->nvicPrioBits_ = value.toString();
+            indexedCPU->setNVICPrioBits(value.toString());
         }
 
         emit dataChanged(index, index);
@@ -235,19 +244,19 @@ bool SVDCPUModel::setData(QModelIndex const& index, QVariant const& value, int r
     {
         if (index.column() == SVDCPUColumns::CREATESVD)
         {
-            indexedCPU->createFile_ = value.toBool();
+            indexedCPU->setCreateFileFlag(value.toBool());
         }
         if (index.column() == SVDCPUColumns::MPUPRESENT)
         {
-            indexedCPU->mpuPresent_ = value.toBool();
+            indexedCPU->setMPUPresence(value.toBool());
         }
         else if (index.column() == SVDCPUColumns::FPUPRESENT)
         {
-            indexedCPU->fpuPresent_ = value.toBool();
+            indexedCPU->setFPUPresence(value.toBool());
         }
         else if (index.column() == SVDCPUColumns::VENDORSYSTICKCONFIG)
         {
-            indexedCPU->vendorSystickConfig_ = value.toBool();
+            indexedCPU->setVendorSystickConfig(value.toBool());
         }
 
         emit dataChanged(index, index);
@@ -262,15 +271,15 @@ bool SVDCPUModel::setData(QModelIndex const& index, QVariant const& value, int r
 //-----------------------------------------------------------------------------
 QVariant SVDCPUModel::valueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> indexedCPU = cpus_.at(index.row());
+    QSharedPointer<SVDCPUDetailRoutes> indexedCPU = cpus_.at(index.row());
 
     if (index.column() == SVDCPUColumns::NAME)
     {
-        return indexedCPU->cpuName_;
+        return indexedCPU->getCPUName();
     }
     else if (index.column() == SVDCPUColumns::REVISION)
     {
-        QString revisionText = indexedCPU->revision_;
+        QString revisionText = indexedCPU->getRevision();
         if (revisionText.isEmpty())
         {
             revisionText = ConnectivityGraphUtilities::REVISION_FORMAT;
@@ -280,11 +289,11 @@ QVariant SVDCPUModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == SVDCPUColumns::ENDIAN)
     {
-        return indexedCPU->endian_;
+        return indexedCPU->getEndian();
     }
     else if (index.column() == SVDCPUColumns::NVICPRIOBITS)
     {
-        return indexedCPU->nvicPrioBits_;
+        return indexedCPU->getNVICPrioBits();
     }
    
     return QVariant();

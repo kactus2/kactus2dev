@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{81A006F2-4FC4-4187-93E9-98C5EB8523C3}</ProjectGuid>
+    <ProjectGuid>{57BB9FA6-BA0C-4E70-83B3-DD973FED0FB4}</ProjectGuid>
     <Keyword>QtVS_v304</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <QtMsBuild Condition="'$(QtMsBuild)'=='' or !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
@@ -64,7 +64,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;SVDGENERATORPLUGIN_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>UNICODE;WIN32;WIN64;RENODEGENERATORPLUGIN_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;..\..\;.;$(SolutionDir)KactusAPI\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -152,26 +152,19 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
-    <ClCompile Include="CPUDialog\SVDCPUDelegate.cpp" />
-    <ClCompile Include="CPUDialog\SVDCPUDetailRoutes.cpp" />
-    <ClCompile Include="CPUDialog\SVDCPUEditor.cpp" />
-    <ClCompile Include="CPUDialog\SVDCPUModel.cpp" />
-    <ClCompile Include="SVDGenerator.cpp" />
-    <ClCompile Include="SVDGeneratorPlugin.cpp" />
+    <ClCompile Include="CPUDialog\RenodeCPUDetailRoutes.cpp" />
+    <ClCompile Include="CPUDialog\RenodePeripheralsDelegate.cpp" />
+    <ClCompile Include="CPUDialog\RenodePeripheralsEditor.cpp" />
+    <ClCompile Include="CPUDialog\RenodePeripheralsModel.cpp" />
+    <ClCompile Include="CPUDialog\RenodeUtilities.cpp" />
+    <ClCompile Include="RenodeGenerator.cpp" />
+    <ClCompile Include="RenodeGeneratorPlugin.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="SVDGeneratorPlugin.h">
-    </QtMoc>
+    <Image Include="RenodeGenerator.png" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="SVDGenerator.png">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <QtRcc Include="SVDGenerator.qrc">
-    </QtRcc>
+    <QtRcc Include="RenodeGenerator.qrc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h" />
@@ -185,9 +178,17 @@
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
     <ClInclude Include="..\common\ConnectivityGraphUtilities.h" />
+    <QtMoc Include="CPUDialog\RenodePeripheralsModel.h" />
+    <ClInclude Include="..\common\CPUDetailRoutes.h" />
+    <ClInclude Include="CPUDialog\RenodeCPUDetailRoutes.h" />
+    <QtMoc Include="CPUDialog\RenodePeripheralsEditor.h" />
+    <QtMoc Include="CPUDialog\RenodePeripheralsDelegate.h" />
+    <ClInclude Include="CPUDialog\RenodeStructs.h" />
+    <ClInclude Include="CPUDialog\RenodeUtilities.h" />
+    <ClInclude Include="RenodeGenerator.h" />
+    <QtMoc Include="RenodeGeneratorPlugin.h" />
     <QtMoc Include="..\common\CPUDialog\CPUEditor.h" />
     <QtMoc Include="..\common\CPUDialog\CPUSelectionDialog.h" />
-    <ClInclude Include="..\common\CPUDetailRoutes.h" />
     <ClInclude Include="..\common\HDLParser\MetaComponent.h" />
     <ClInclude Include="..\common\HDLParser\MetaDesign.h" />
     <ClInclude Include="..\common\HDLParser\MetaInstance.h" />
@@ -196,15 +197,9 @@
     </QtMoc>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />
-    <QtMoc Include="CPUDialog\SVDCPUEditor.h">
-    </QtMoc>
-    <QtMoc Include="CPUDialog\SVDCPUModel.h">
-    </QtMoc>
-    <ClInclude Include="CPUDialog\SVDCPUColumns.h" />
-    <QtMoc Include="CPUDialog\SVDCPUDelegate.h">
-    </QtMoc>
-    <ClInclude Include="CPUDialog\SVDCPUDetailRoutes.h" />
-    <ClInclude Include="SVDGenerator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="peripherals.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

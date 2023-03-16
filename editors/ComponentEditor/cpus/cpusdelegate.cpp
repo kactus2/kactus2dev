@@ -25,8 +25,8 @@
 // Function: CpusDelegate::CpusDelegate()
 //-----------------------------------------------------------------------------
 CpusDelegate::CpusDelegate(QSharedPointer<Component> component, QObject* parent):
-QStyledItemDelegate(parent),
-    component_(component)
+EnumerationEditorConstructorDelegate(parent),
+component_(component)
 {
     Q_ASSERT(component);
 }
@@ -52,15 +52,10 @@ QWidget* CpusDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const&
         connect(lineEdit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return lineEdit;
     }
-    else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
-    {
-        EnumCollectionEditor* editor = new EnumCollectionEditor(parent);
-        return editor;
-    }
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
-    }	
+        return EnumerationEditorConstructorDelegate::createEditor(parent, option, index);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -78,20 +73,9 @@ void CpusDelegate::setEditorData(QWidget* editor, QModelIndex const& index) cons
         const QString text = index.data(Qt::DisplayRole).toString();
         edit->setText(text);
     }
-    else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
-    {			
-        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-        Q_ASSERT(collectionEditor != 0);
-
-        QStringList addrSpaces = index.data(CpuColumns::USER_DISPLAY_ROLE).toStringList();
-        foreach (QString const& name, component_->getAddressSpaceNames())
-        {
-            collectionEditor->addItem(name, addrSpaces.contains(name));
-        }
-    }
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        EnumerationEditorConstructorDelegate::setEditorData(editor, index);
     }
 }
 
@@ -110,28 +94,40 @@ void CpusDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QMod
         QString text = edit->text();
         model->setData(index, text, Qt::EditRole);
     }
-    else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
-    {
-        EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
-        Q_ASSERT(collectionEditor != 0);
-
-        QStringList addrSpaces = collectionEditor->getSelectedItems();
-        model->setData(index, addrSpaces, CpuColumns::USER_EDIT_ROLE);
-    }
     else
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        EnumerationEditorConstructorDelegate::setModelData(editor, model, index);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: CpusDelegate::commitAndCloseEditor()
+// Function: cpusdelegate::isEnumerationEditorColumn()
 //-----------------------------------------------------------------------------
-void CpusDelegate::commitAndCloseEditor()
+bool CpusDelegate::isEnumerationEditorColumn(QModelIndex const& index) const
 {
-	QWidget* edit = qobject_cast<QWidget*>(sender());
-	Q_ASSERT(edit);
+    return index.column() == CpuColumns::ADDRSPACE_COLUMN;
+}
 
-	emit commitData(edit);
-	emit closeEditor(edit);
+//-----------------------------------------------------------------------------
+// Function: cpusdelegate::getCurrentSelection()
+//-----------------------------------------------------------------------------
+QStringList CpusDelegate::getCurrentSelection(QModelIndex const& index) const
+{
+    return index.data(CpuColumns::USER_DISPLAY_ROLE).toStringList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: cpusdelegate::getAvailableItems()
+//-----------------------------------------------------------------------------
+QStringList CpusDelegate::getAvailableItems() const
+{
+    return component_->getAddressSpaceNames();;
+}
+
+//-----------------------------------------------------------------------------
+// Function: cpusdelegate::setEnumerationDataToModel()
+//-----------------------------------------------------------------------------
+void CpusDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
+{
+    model->setData(index, selectedItems, CpuColumns::USER_EDIT_ROLE);
 }

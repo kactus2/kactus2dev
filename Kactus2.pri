@@ -54,6 +54,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
     ./common/widgets/viewSelector/viewselector.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
+    ./common/widgets/EnumCollectionEditor/EnumerationEditor.h \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
@@ -197,6 +198,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Help/HelpSystem/HelpWindow.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
+    ./Plugins/common/ConnectivityGraphUtilities.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./library/LibraryInterface.h \
@@ -476,6 +478,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/common/ReferencingTableModel.h \
     ./editors/ComponentEditor/common/ExpressionLineEditor.h \
+    ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
     ./editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.h \
@@ -815,8 +818,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h \
-    ./common/widgets/EnumCollectionEditor/EnumerationEditor.h
+    ./Plugins/common/CPUDetailRoutes.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -867,6 +869,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/viewSelector/viewselector.cpp \
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
+    ./common/widgets/EnumCollectionEditor/EnumerationEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
@@ -981,6 +984,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./Help/HelpSystem/ContextHelpBrowser.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
+    ./Plugins/common/ConnectivityGraphUtilities.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
     ./library/ItemExporter.cpp \
@@ -1268,6 +1272,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.cpp \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
+    ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionLineEditor.cpp \
@@ -1538,6 +1543,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.cpp \
-    ./common/widgets/EnumCollectionEditor/EnumerationEditor.cpp
+    ./Plugins/common/CPUDetailRoutes.cpp
 RESOURCES += kactus.qrc

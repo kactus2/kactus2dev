@@ -80,18 +80,6 @@ public:
      */
     virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
-private slots:
-
-	/*!
-     *  Commit the data from the sending editor and close the editor.
-     */
-	void commitAndCloseEditor();
-
-    /*!
-     *  Close the editor without committing the changes.
-     */
-    void onEditorCancel();
-
 protected:
 
     /*!
@@ -103,6 +91,20 @@ protected:
      *      @param [in] index   The current index.
      */
     void repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index) const;
+
+protected slots:
+
+    /*!
+     *  Commit the data from the sending editor and close the editor.
+     */
+    void commitAndCloseEditor();
+
+private slots:
+
+    /*!
+     *  Close the editor without committing the changes.
+     */
+    void onEditorCancel();
 
 private:
 	

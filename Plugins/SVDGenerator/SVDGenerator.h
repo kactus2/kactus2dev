@@ -18,7 +18,7 @@
 
 #include "svdgeneratorplugin_global.h"
 
-#include <ConnectivityGraphUtilities.h>
+#include <plugins/common/ConnectivityGraphUtilities.h>
 
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 
@@ -41,6 +41,7 @@ class Register;
 class Cpu;
 class MemoryMap;
 class EnumeratedValue;
+class SVDCPUDetailRoutes;
 
 //-----------------------------------------------------------------------------
 //! Creates a CMSIS System View Description listing.
@@ -72,8 +73,9 @@ public:
      *      @param [in] componentPath           Path to the component folder.
      *      @param [in] cpuRoutes               CPU and its connected routes.
      */
-    void generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > const& cpuRoutes);
+    void generate(QSharedPointer<Component> topComponent,
+        QString const& componentPath,
+        QVector<QSharedPointer<SVDCPUDetailRoutes> > const& cpuRoutes);
 
     /*!
      *  Get the generated files.
@@ -93,8 +95,10 @@ private:
      *      @param [in] cpuRoute                The selected CPU route container.
      *      @param [in] fileNames               Names of the generated SVD files.
      */
-    void writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuRoute, QStringList& fileNames);
+    void writeFile(QSharedPointer<Component> topComponent,
+        QString const& componentPath,
+        QSharedPointer<SVDCPUDetailRoutes> cpuRoute,
+        QStringList& fileNames);
 
     /*!
      *  Get the number of files containing the selected name.
@@ -130,8 +134,9 @@ private:
      *      @param [in] currentCPU      The selected CPU.
      *      @param [in] cpuContianer    The CPU data container.
      */
-    void writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU,
-        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuContainer);
+    void writeCPU(QXmlStreamWriter& writer,
+        QSharedPointer<Cpu> currentCPU,
+        QSharedPointer<SVDCPUDetailRoutes> cpuContainer);
 
     /*!
      *  Write a boolean flag.
@@ -157,7 +162,7 @@ private:
      *      @param [in] routeCollection         The selected CPU route container.
      */
     void writePeripherals(QXmlStreamWriter& writer,
-        QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> routeCollection);
+        QSharedPointer<SVDCPUDetailRoutes> routeCollection);
 
     /*!
      *  Write memory map peripheral of the selected memory item.

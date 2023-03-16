@@ -913,6 +913,8 @@ CreateHelp
     <ClCompile Include="mainwindow\SaveHierarchy\SaveHierarchyDelegate.cpp" />
     <ClCompile Include="mainwindow\SaveHierarchy\SaveHierarchyDialog.cpp" />
     <ClCompile Include="mainwindow\SplashScreen.cpp" />
+    <ClCompile Include="Plugins\common\ConnectivityGraphUtilities.cpp" />
+    <ClCompile Include="Plugins\common\CPUDetailRoutes.cpp" />
     <ClCompile Include="Plugins\common\LanguageHighlighter.cpp" />
     <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp" />
     <ClCompile Include="PythonAPI\ChannelRelay.cpp" />
@@ -2190,6 +2192,8 @@ CreateHelp
     <ClInclude Include="mainwindow\SaveHierarchy\SaveHierarchyDelegate.h" />
     <QtMoc Include="Plugins\common\LanguageHighlighter.h">
     </QtMoc>
+    <ClInclude Include="Plugins\common\ConnectivityGraphUtilities.h" />
+    <ClInclude Include="Plugins\common\CPUDetailRoutes.h" />
     <ClInclude Include="Plugins\common\SourceHighlightStyle.h" />
     <QtMoc Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
     </QtMoc>

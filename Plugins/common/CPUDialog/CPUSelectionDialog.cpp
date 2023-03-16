@@ -14,11 +14,12 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Cpu.h>
 
-#include <KactusAPI/include/LibraryInterface.h>
-
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
 
-#include <Plugins/SVDGenerator/CPUDialog/SVDCPUEditor.h>
+#include <KactusAPI/include/LibraryInterface.h>
+
+#include <Plugins/common/CPUDetailRoutes.h>
+#include <Plugins/common/CPUDialog/CPUEditor.h>
 
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -29,24 +30,26 @@
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::CPUSelectionDialog()
 //-----------------------------------------------------------------------------
-CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
-    QStringList const& viewNames, QStringList const& fileSetNames, QWidget *parent):
+CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library, QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType, QWidget *parent):
 QDialog(parent),
 viewSelection_(new QComboBox(this)),
 fileSetSelection_(new QComboBox(this)),
 fileSetBox_(new QGroupBox("Add files to file set")),
-cpuSelection_(),
 library_(library),
 component_(topComponent),
 graphFactory_(library),
-cpuDetailEditor_(new SVDCPUEditor(this)),
+cpuDetailEditor_(cpuEditor),
 folderLine_(new QLineEdit(this))
 {
-    setWindowTitle("File generation for SVD");
+    cpuDetailEditor_->setParent(this);
+
+    setWindowTitle("File generation for " + dialogType);
 
     QString componentPath = library->getDirectoryPath(topComponent->getVlnv());
     folderLine_->setText(componentPath);
     folderLine_->setToolTip(componentPath);
+
+    cpuDetailEditor_->setupFolderPath(componentPath);
 
     viewSelection_->addItems(viewNames);
     viewSelection_->setCurrentIndex(0);
@@ -60,6 +63,8 @@ folderLine_(new QLineEdit(this))
     setupLayout();
 
     connect(viewSelection_, SIGNAL(currentIndexChanged(int)), this, SLOT(onViewChanged()), Qt::UniqueConnection);
+
+    connect(folderLine_, SIGNAL(textChanged(QString const&)), cpuDetailEditor_, SIGNAL(changeInSelectedPath(QString const&)), Qt::UniqueConnection);
 
     setMinimumWidth(840);
 }
@@ -132,29 +137,17 @@ void CPUSelectionDialog::setupLayout()
 //-----------------------------------------------------------------------------
 void CPUSelectionDialog::setupCPUSelection()
 {
-    cpuSelection_.clear();
-
     QString activeView = viewSelection_->currentText();
 
-    cpuSelection_ = ConnectivityGraphUtilities::getDefaultCPUs(library_, component_, activeView);
-    cpuDetailEditor_->setupCPUDetails(cpuSelection_);
+    cpuDetailEditor_->setupCPUDetails(library_, component_, activeView);
 }
 
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::getSelectedCPUs()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > CPUSelectionDialog::getSelectedCPUs()
+QVector<QSharedPointer<CPUDetailRoutes> > CPUSelectionDialog::getSelectedCPUs()
 {
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpus;
-    for (auto currentCPU : cpuSelection_)
-    {
-        if (currentCPU->createFile_)
-        {
-            cpus.append(currentCPU);
-        }
-    }
-
-    return cpus;
+    return cpuDetailEditor_->getSelectedCPUs();
 }
 
 //-----------------------------------------------------------------------------

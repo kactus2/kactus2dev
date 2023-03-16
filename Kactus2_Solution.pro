@@ -27,7 +27,8 @@ SUBDIRS = \
     QuartusProjectGenerator \
     MemoryViewGenerator \
     LinuxDeviceTreeGenerator \
-    SVDGenerator
+    SVDGenerator \
+	RenodeGenerator
 
 CONFIG(test) {
     SUBDIRS += test_all
@@ -101,6 +102,9 @@ LinuxDeviceTreeGenerator.depends = IPXACTmodels KactusAPI
 
 SVDGenerator.file = Plugins/SVDGenerator/SVDGeneratorPlugin.pro
 SVDGenerator.depends = IPXACTmodels KactusAPI
+
+RenodeGenerator.file = Plugins/RenodeGenerator/RenodeGenerator.pro
+RenodeGenerator.depends = IPXACTmodels KactusAPI
 
 test_all.subdir = tests
 test_all.depends = IPXACTmodels

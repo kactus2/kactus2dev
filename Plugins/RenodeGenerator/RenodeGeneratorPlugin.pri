@@ -7,8 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./SVDGenerator.h \
-    ./SVDGeneratorPlugin.h \
+HEADERS += ./RenodeGenerator.h \
+    ./RenodeGeneratorPlugin.h \
     ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
@@ -26,17 +26,18 @@ HEADERS += ./SVDGenerator.h \
     ../../editors/MemoryDesigner/MemoryDesignerConstants.h \
     ../../editors/MemoryDesigner/MemoryItem.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
-    ./CPUDialog/SVDCPUColumns.h \
+    ./CPUDialog/RenodeCPUDetailRoutes.h \
+    ./CPUDialog/RenodeUtilities.h \
+    ./CPUDialog/RenodePeripheralsModel.h \
+    ./CPUDialog/RenodePeripheralsEditor.h \
+    ./CPUDialog/RenodePeripheralsDelegate.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
-    ./CPUDialog/SVDCPUEditor.h \
-    ./CPUDialog/SVDCPUModel.h \
-    ./CPUDialog/SVDCPUDelegate.h \
     ../common/ConnectivityGraphUtilities.h \
-    ./CPUDialog/SVDCPUDetailRoutes.h \
-    ../common/CPUDetailRoutes.h
-SOURCES += ./SVDGenerator.cpp \
-    ./SVDGeneratorPlugin.cpp \
+    ../common/CPUDetailRoutes.h \
+    ./CPUDialog/RenodeStructs.h
+SOURCES += ./RenodeGenerator.cpp \
+    ./RenodeGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
     ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
     ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
@@ -56,10 +57,11 @@ SOURCES += ./SVDGenerator.cpp \
     ../../IPXACTmodels/utilities/ComponentSearch.cpp \
     ../common/CPUDialog/CPUEditor.cpp \
     ../common/CPUDialog/CPUSelectionDialog.cpp \
-    ./CPUDialog/SVDCPUDelegate.cpp \
-    ./CPUDialog/SVDCPUEditor.cpp \
-    ./CPUDialog/SVDCPUModel.cpp \
+    ./CPUDialog/RenodeCPUDetailRoutes.cpp \
+    ./CPUDialog/RenodePeripheralsDelegate.cpp \
+    ./CPUDialog/RenodePeripheralsEditor.cpp \
+    ./CPUDialog/RenodePeripheralsModel.cpp \
     ../common/ConnectivityGraphUtilities.cpp \
-    ./CPUDialog/SVDCPUDetailRoutes.cpp \
-    ../common/CPUDetailRoutes.cpp
-RESOURCES += SVDGenerator.qrc
+    ../common/CPUDetailRoutes.cpp \
+    ./CPUDialog/RenodeUtilities.cpp
+RESOURCES += RenodeGenerator.qrc

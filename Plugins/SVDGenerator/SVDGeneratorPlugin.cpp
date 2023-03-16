@@ -12,21 +12,23 @@
 #include "SVDGeneratorPlugin.h"
 #include "SVDGenerator.h"
 
-#include <Plugins/common/HDLParser/HDLParserCommon.h>
-
-#include <KactusAPI/include/IPluginUtility.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
-#include <Plugins/SVDGenerator/CPUDialog/CPUSelectionDialog.h>
-
-#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
-#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
-
-#include <KactusAPI/include/LibraryInterface.h>
-
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/FileSet.h>
+
+#include <KactusAPI/include/IPluginUtility.h>
+#include <KactusAPI/include/LibraryInterface.h>
+
+#include <Plugins/common/HDLParser/HDLParserCommon.h>
+#include <plugins/common/ConnectivityGraphUtilities.h>
+#include <Plugins/common/CPUDialog/CPUSelectionDialog.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDCPUEditor.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+
+#include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
+#include <editors/MemoryDesigner/MasterSlavePathSearch.h>
 
 #include <QDateTime>
 #include <QFileDialog>
@@ -153,30 +155,44 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
         viewNames.append(view->name());
     }
 
+    SVDCPUEditor* cpuEditor(new SVDCPUEditor());
+
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames,
-        component->getFileSetNames(), utility->getParentWidget());
+        component->getFileSetNames(), cpuEditor, "SVD", utility->getParentWidget());
     if (selectionDialog.exec() == QDialog::Accepted)
     {
-        QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuRoutes =
-            selectionDialog.getSelectedCPUs();
+        QVector<QSharedPointer<CPUDetailRoutes> > cpuRoutes = selectionDialog.getSelectedCPUs();
         if (!cpuRoutes.isEmpty())
         {
-            QString xmlFilePath = selectionDialog.getTargetFolder();
-
-            SVDGenerator generator(utility->getLibraryInterface());
-            generator.generate(component, xmlFilePath, cpuRoutes);
-
-            if (selectionDialog.saveToFileSet())
+            QVector<QSharedPointer<SVDCPUDetailRoutes> > svdCPURoutes;
+            for (auto cpu : cpuRoutes)
             {
-                QString fileSetName = selectionDialog.getTargetFileSet();
-                if (!fileSetName.isEmpty())
+                QSharedPointer<SVDCPUDetailRoutes> svdCPU = cpu.dynamicCast<SVDCPUDetailRoutes>();
+                if (svdCPU)
                 {
-                    QStringList generatedFiles = generator.getGeneratedFiles();
-                    saveToFileset(utility, generatedFiles, component, fileSetName);
+                    svdCPURoutes.append(svdCPU);
                 }
             }
 
-            utility->printInfo(tr("Generation complete."));
+            if (!svdCPURoutes.isEmpty())
+            {
+                QString xmlFilePath = selectionDialog.getTargetFolder();
+
+                SVDGenerator generator(utility->getLibraryInterface());
+                generator.generate(component, xmlFilePath, svdCPURoutes);
+
+                if (selectionDialog.saveToFileSet())
+                {
+                    QString fileSetName = selectionDialog.getTargetFileSet();
+                    if (!fileSetName.isEmpty())
+                    {
+                        QStringList generatedFiles = generator.getGeneratedFiles();
+                        saveToFileset(utility, generatedFiles, component, fileSetName);
+                    }
+                }
+
+                utility->printInfo(tr("Generation complete."));
+            }
         }
         else
         {
@@ -192,9 +208,7 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
 //-----------------------------------------------------------------------------
 // Function: SVDGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
-    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration,
-    QString const& viewName, QString const& outputDirectory)
+void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, QString const& viewName, QString const& outputDirectory)
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
     utility->printInfo(tr("Running generation for %1 and view '%2'.").arg(component->getVlnv().toString(),
@@ -219,16 +233,21 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
     input.messages = &messages;
 
     LibraryInterface* utilityLibrary = utility->getLibraryInterface();
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> > cpuRoutes =
-        ConnectivityGraphUtilities::getDefaultCPUs(utilityLibrary, component, viewName);
 
-    if (cpuRoutes.isEmpty())
+    QVector<QSharedPointer<SVDCPUDetailRoutes> > svdCPUs;
+    for (auto defaultCPU : ConnectivityGraphUtilities::getDefaultCPUs(utilityLibrary, component, viewName))
+    {
+        QSharedPointer<SVDCPUDetailRoutes> newCPU(new SVDCPUDetailRoutes(*defaultCPU.data()));
+        svdCPUs.append(newCPU);
+    }
+
+    if (svdCPUs.isEmpty())
     {
         utility->printInfo(tr("Generation Failed. No CPUs found."));
     }
 
     SVDGenerator generator(utilityLibrary);
-    generator.generate(component, outputDirectory, cpuRoutes);
+    generator.generate(component, outputDirectory, svdCPUs);
 
     utility->printInfo(tr("Generation complete."));
 }

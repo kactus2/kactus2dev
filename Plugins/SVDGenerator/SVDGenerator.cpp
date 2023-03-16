@@ -37,6 +37,8 @@
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
+#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+
 #include <QXmlStreamWriter>
 #include <QRegularExpression>
 
@@ -53,13 +55,12 @@ graphFactory_(library)
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::generate()
 //-----------------------------------------------------------------------------
-void SVDGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QVector<QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes>> const& cpuRoutes)
+void SVDGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath, QVector<QSharedPointer<SVDCPUDetailRoutes>> const& cpuRoutes)
 {
     QStringList cpuNames;
     for (auto cpuMasterRoute : cpuRoutes)
     {
-        if (cpuMasterRoute->routes_.empty() == false)
+        if (cpuMasterRoute->getRoutes()->empty() == false)
         {
             writeFile(topComponent, componentPath, cpuMasterRoute, cpuNames);
         }
@@ -77,10 +78,9 @@ QStringList SVDGenerator::getGeneratedFiles() const
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeFile()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuRoute, QStringList& fileNames)
+void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath, QSharedPointer<SVDCPUDetailRoutes> cpuRoute, QStringList& fileNames)
 {
-    QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->cpuInterface_;
+    QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->getCPUInterface();
     QSharedPointer<const ConnectivityComponent> routeComponent = cpuInterface->getInstance();
     QSharedPointer<const Component> interfaceComponent =
         ConnectivityGraphUtilities::getInterfacedComponent(library_, routeComponent);
@@ -172,8 +172,7 @@ QString SVDGenerator::formatName(QString const& name) const
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeCPU()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU,
-    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> cpuContainer)
+void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU, QSharedPointer<SVDCPUDetailRoutes> cpuContainer)
 {
     writer.writeStartElement("cpu");
 
@@ -190,12 +189,12 @@ void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> curren
 
     writer.writeTextElement("name", cpuName);
 
-    writer.writeTextElement("revision", cpuContainer->revision_);
-    writer.writeTextElement("endian", cpuContainer->endian_);
-    writeBoolean(writer, "mpuPresent", cpuContainer->mpuPresent_);
-    writeBoolean(writer, "fpuPresent", cpuContainer->fpuPresent_);
-    writer.writeTextElement("nvicPrioBits", cpuContainer->nvicPrioBits_);
-    writeBoolean(writer, "vendorSystickConfig", cpuContainer->vendorSystickConfig_);
+    writer.writeTextElement("revision", cpuContainer->getRevision());
+    writer.writeTextElement("endian", cpuContainer->getEndian());
+    writeBoolean(writer, "mpuPresent", cpuContainer->isMPUPresent());
+    writeBoolean(writer, "fpuPresent", cpuContainer->isFPUPresent());
+    writer.writeTextElement("nvicPrioBits", cpuContainer->getNVICPrioBits());
+    writeBoolean(writer, "vendorSystickConfig", cpuContainer->isVendorSystickConfig());
 
     writer.writeEndElement(); //! cpu
 }
@@ -229,13 +228,12 @@ void SVDGenerator::writeAddressSpaceData(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writePeripherals()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writePeripherals(QXmlStreamWriter& writer,
-    QSharedPointer<ConnectivityGraphUtilities::cpuDetailRoutes> routeCollection)
+void SVDGenerator::writePeripherals(QXmlStreamWriter& writer, QSharedPointer<SVDCPUDetailRoutes> routeCollection)
 {
     writer.writeStartElement("peripherals");
-    QSharedPointer<const ConnectivityInterface> cpuInterface = routeCollection->cpuInterface_;
+    QSharedPointer<const ConnectivityInterface> cpuInterface = routeCollection->getCPUInterface();
 
-    for (auto masterSlaveRoute : routeCollection->routes_)
+    for (auto &masterSlaveRoute : *routeCollection->getRoutes())
     {
         for (int i = 1; i < masterSlaveRoute.size(); ++i)
         {

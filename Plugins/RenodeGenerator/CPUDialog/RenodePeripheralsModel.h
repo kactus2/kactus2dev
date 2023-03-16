@@ -1,28 +1,27 @@
 //-----------------------------------------------------------------------------
-// File: SVDCPUModel.h
+// File: RenodePeripheralsModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 18.05.2021
+// Date: 24.02.2023
 //
 // Description:
-// The model to manage the SVD CPU details.
+// The model to manage the Renode peripheral details.
 //-----------------------------------------------------------------------------
 
-#ifndef SVDCPUMODEL_H
-#define SVDCPUMODEL_H
+#ifndef RENODEPERIPHERALSMODEL_H
+#define RENODEPERIPHERALSMODEL_H
 
 #include <Plugins/common/ConnectivityGraphUtilities.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
-class SVDCPUDetailRoutes;
-
 //-----------------------------------------------------------------------------
-//! The model to manage the SVD CPU details.
+//! The model to manage the Renode peripheral details.
 //-----------------------------------------------------------------------------
-class SVDCPUModel : public QAbstractTableModel
+class RenodePeripheralsModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -33,26 +32,26 @@ public:
 	 *
 	 *      @param [in] parent  Pointer to the owner of this model.
 	 */
-	SVDCPUModel(QObject *parent);
+	RenodePeripheralsModel(QObject *parent);
 	
 	/*!
      *  The destructor.
      */
-    virtual ~SVDCPUModel() = default;
+    virtual ~RenodePeripheralsModel() = default;
 
     /*!
-     *  Setup the selected CPUs.
+     *  Setup the selected peripherals.
      *
-     *      @param [in] cpuDetails  The selected CPUs.
+     *      @param [in] newPeripherals  The selected peripherals.
      */
-    void setupCPUDetails(QVector<QSharedPointer<SVDCPUDetailRoutes> > cpuDetails);
+    void setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > newPeripherals);
 
     /*!
-     *  Get the CPU data.
+     *  Get the peripherals.
      *
-     *      @return List of CPU detail routes.
+     *      @return List of the current peripherals.
      */
-    QVector<QSharedPointer<SVDCPUDetailRoutes> > getCPUDetails() const;
+    QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > getPeripherals() const;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -114,8 +113,8 @@ public:
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
     
     //! No copying. No assignment.
-    SVDCPUModel(const SVDCPUModel& other) = delete;
-    SVDCPUModel& operator=(const SVDCPUModel& other) = delete;
+    RenodePeripheralsModel(const RenodePeripheralsModel& other) = delete;
+    RenodePeripheralsModel& operator=(const RenodePeripheralsModel& other) = delete;
 
 private:
 	
@@ -141,8 +140,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The CPU details being edited.
-    QVector<QSharedPointer<SVDCPUDetailRoutes> > cpus_;
+    //! The peripheral details being edited.
+    QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > peripherals_;
 };
 
-#endif // SVDCPUMODEL_H
+#endif // RENODEPERIPHERALSMODEL_H

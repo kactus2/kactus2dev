@@ -3166,6 +3166,12 @@
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumerationEditor.cpp">
       <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Plugins\common\ConnectivityGraphUtilities.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\common\CPUDetailRoutes.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5616,6 +5622,12 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\common\MasterExpressionEditor.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\common\ConnectivityGraphUtilities.h">
+      <Filter>Header Files\Plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\common\CPUDetailRoutes.h">
+      <Filter>Header Files\Plugins\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
