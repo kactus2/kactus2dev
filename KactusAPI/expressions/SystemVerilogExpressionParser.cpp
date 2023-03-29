@@ -606,7 +606,7 @@ QString SystemVerilogExpressionParser::solveClog2(QString const& value) const
     }
     else if (quotient == 1)
     {
-        return QStringLiteral("1");
+        return QStringLiteral("0");
     }
 
     int answer = 0;
