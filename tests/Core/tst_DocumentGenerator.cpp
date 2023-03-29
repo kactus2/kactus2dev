@@ -18,9 +18,9 @@
 #include <tests/MockObjects/DesignWidgetFactoryMock.h>
 #include <tests/MockObjects/HWDesignWidgetMock.h>
 
-#include <editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h>
+#include <KactusAPI/include/ExpressionFormatterFactoryImplementation.h>
 
-#include <common/utils.h>
+#include <KactusAPI/include/utils.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>

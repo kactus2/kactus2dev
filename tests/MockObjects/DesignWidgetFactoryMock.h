@@ -15,7 +15,7 @@
 #include <editors/common/DesignWidgetFactory.h>
 #include <editors/common/DesignWidget.h>
 
-#include <library/LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 //! Mock class for constructing design widgets.
