@@ -17,6 +17,7 @@
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
+#include <QObject>
 
 class CellSpecification;
 //-----------------------------------------------------------------------------

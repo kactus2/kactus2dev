@@ -18,6 +18,7 @@
 #include "ComponentParameterFinder.h"
 
 #include <QHash>
+#include <QObject>
 
 class Component;
 class Parameter;

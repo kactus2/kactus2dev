@@ -16,6 +16,7 @@
 #include "../veriloggeneratorplugin_global.h"
 
 #include <QTextStream>
+#include <QString>
 
 //-----------------------------------------------------------------------------
 //! Class for writing C/Verilog comments.
