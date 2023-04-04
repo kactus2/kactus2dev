@@ -72,8 +72,12 @@ struct MetaTransactional
     int refCount_;
 };
 
+struct MetaInterface;
+
 struct MetaPortAssignment
 {
+    //! The interface in which this mapping is made.
+    QSharedPointer<MetaInterface> mappedInterface_;
     //! The physical bounds of the assignment.
     QPair<QString,QString> physicalBounds_;
     //! The logical bounds of the assignment.
@@ -109,8 +113,6 @@ struct MetaPort
     //! Flag for transactional ports.
     bool isTransactional_;
 };
-
-struct MetaInterface;
 
 struct MetaInterconnection
 {

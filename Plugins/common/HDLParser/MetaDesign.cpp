@@ -19,6 +19,8 @@
 
 #include <IPXACTmodels/utilities/ComponentSearch.h>
 
+#include <IPXACTmodels/Component/BusInterface.h>
+
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
@@ -471,22 +473,27 @@ void MetaDesign::wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
             {
                 assignments = mPort->upAssignments_.values(pAbs->getLogicalName());
             }
-            
+
             QList<QSharedPointer<MetaWire> > connectedWires;
             QList<QSharedPointer<MetaTransactional> > connectedTransactionals;
 
             // ...and associate them with the wire.
             for (QSharedPointer<MetaPortAssignment> assignment : assignments)
             {
-                if (pAbs->hasWire())
+                if (assignment->mappedInterface_ == mInterface)
                 {
-                    associateWithWire(mIterconnect, pAbs, assignment, connectedWires, isHierarchical, mPort);
+                    if (pAbs->hasWire())
+                    {
+                        associateWithWire(mIterconnect, pAbs, assignment, connectedWires, isHierarchical, mPort);
+                    }
+                    else if (pAbs->hasTransactional())
+                    {
+                        associateWithTransactional(
+                            mIterconnect, pAbs, assignment, connectedTransactionals, isHierarchical, mPort);
+                    }
+
                 }
-                else if (pAbs->hasTransactional())
-                {
-                    associateWithTransactional(
-                        mIterconnect, pAbs, assignment, connectedTransactionals, isHierarchical, mPort);
-                }
+
             }
         }
     }
