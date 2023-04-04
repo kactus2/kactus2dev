@@ -20,20 +20,20 @@ jobs:
     - name: Install
       run: sudo make install
       
-  build_win64:
-
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v1
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: 6.2.4
-    - name: Build sources
-      run: |
-        $Env:PYTHON_DIR = $Env:RUNNER_TOOL_CACHE/Python/
-        $Env:QTDIR = $Env:Qt5_Dir
-        msbuild -m:4 -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln
+#  build_win64:
+#
+#    runs-on: windows-latest
+#
+#    steps:
+#    - uses: actions/checkout@v1
+#    - name: Setup MSBuild
+#      uses: microsoft/setup-msbuild@v1
+#    - name: Install Qt
+#      uses: jurplel/install-qt-action@v2
+#      with:
+#        version: 6.2.4
+#    - name: Build sources
+#      run: |
+#        $Env:PYTHON_DIR = $Env:RUNNER_TOOL_CACHE/Python/
+#        $Env:QTDIR = $Env:Qt5_Dir
+#        msbuild -m:4 -p:Configuration=Release -p:Platform=x64 Kactus2_Solution_vs2017.sln

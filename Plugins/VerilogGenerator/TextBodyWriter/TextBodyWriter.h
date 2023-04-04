@@ -16,6 +16,7 @@
 #include "../veriloggeneratorplugin_global.h"
 
 #include <QTextStream>
+#include <QString>
 
 class VERILOGGENERATORPLUGIN_EXPORT TextBodyWriter : public Writer
 {

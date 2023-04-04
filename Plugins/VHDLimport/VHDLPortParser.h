@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QSharedPointer>
 #include <QString>
+#include <QObject>
 
 class Component;
 class ComponentInstantiation;

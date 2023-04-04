@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
+#include <QObject>
 
 //-----------------------------------------------------------------------------
 //! Class for determining overlapping within an area.
