@@ -79,19 +79,11 @@ signals:
      */
     void changeInSelectedPath(QString const& newPath);
 
-protected:
-
-    /*!
-     *  Get the table view.
-     *
-     *      @return The table view.
-     */
-    QTableView* getView() const;
-
 private:
-
-    //! The view for the table.
-    QTableView* view_;
+    
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 };
 
 #endif // CPUEDITOR_H

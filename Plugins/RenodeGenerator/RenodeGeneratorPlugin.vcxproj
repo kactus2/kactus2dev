@@ -153,6 +153,9 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="CPUDialog\RenodeCPUDetailRoutes.cpp" />
+    <ClCompile Include="CPUDialog\RenodeCpuEditor.cpp" />
+    <ClCompile Include="CPUDialog\RenodeMemoriesEditor.cpp" />
+    <ClCompile Include="CPUDialog\RenodeMemoriesModel.cpp" />
     <ClCompile Include="CPUDialog\RenodePeripheralsDelegate.cpp" />
     <ClCompile Include="CPUDialog\RenodePeripheralsEditor.cpp" />
     <ClCompile Include="CPUDialog\RenodePeripheralsModel.cpp" />
@@ -183,6 +186,9 @@
     <ClInclude Include="CPUDialog\RenodeCPUDetailRoutes.h" />
     <QtMoc Include="CPUDialog\RenodePeripheralsEditor.h" />
     <QtMoc Include="CPUDialog\RenodePeripheralsDelegate.h" />
+    <QtMoc Include="CPUDialog\RenodeCpuEditor.h" />
+    <QtMoc Include="CPUDialog\RenodeMemoriesEditor.h" />
+    <QtMoc Include="CPUDialog\RenodeMemoriesModel.h" />
     <ClInclude Include="CPUDialog\RenodeStructs.h" />
     <ClInclude Include="CPUDialog\RenodeUtilities.h" />
     <ClInclude Include="RenodeGenerator.h" />

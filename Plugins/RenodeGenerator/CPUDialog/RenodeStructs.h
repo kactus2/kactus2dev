@@ -15,11 +15,11 @@
 #include <QString>
 
 //-----------------------------------------------------------------------------
-//! Columns Renode peripherals.
+//! Columns for Renode peripherals.
 //-----------------------------------------------------------------------------
 namespace PeripheralColumns
 {
-    //! The editable columns in the parameter editor.
+    //! The editable columns in the peripheral editor.
     enum columns
     {
         NAME = 0,
@@ -33,11 +33,28 @@ namespace PeripheralColumns
 }
 
 //-----------------------------------------------------------------------------
+//! Columns for Renode memories.
+//-----------------------------------------------------------------------------
+namespace MemoryColumns
+{
+    //! The editable columns in the memory editor.
+    enum columns
+    {
+        NAME = 0,
+        CLASS,
+        BASEADDRESS,
+        SIZE,
+        COLUMN_COUNT
+    };
+
+};
+
+//-----------------------------------------------------------------------------
 //! Utility structs for Renode generator.
 //-----------------------------------------------------------------------------
 namespace RenodeStructs
 {
-    //! Container for peripherals connected to a CPU.
+    //! Container for renode peripheral data connected to a CPU.
     struct cpuPeripherals
     {
         //! Name.
@@ -60,6 +77,25 @@ namespace RenodeStructs
 
         //! Relative path to the python file for this peripheral.
         QString filePath_ = "python_peripherals";
+    };
+
+    //! Container for renode memory data connected to a CPU.
+    struct cpuMemories
+    {
+        //! Name.
+        QString memoryName_ = "";
+
+        //! ID.
+        QString memoryID_ = "";
+
+        //! Class name.
+        QString className_ = "Memory.MappedMemory";
+
+        //! Base address.
+        QString baseAddress_ = "";
+
+        //! Size.
+        QString size_ = "";
     };
 };
 

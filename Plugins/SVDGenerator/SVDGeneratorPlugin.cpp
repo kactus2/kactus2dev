@@ -20,7 +20,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
-#include <plugins/common/ConnectivityGraphUtilities.h>
+#include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/common/CPUDialog/CPUSelectionDialog.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>

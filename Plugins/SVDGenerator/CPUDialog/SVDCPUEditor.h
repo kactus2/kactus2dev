@@ -81,6 +81,9 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The view for the table.
+    QTableView* view_;
+
     //! The containing model.
     SVDCPUModel* model_;
 };

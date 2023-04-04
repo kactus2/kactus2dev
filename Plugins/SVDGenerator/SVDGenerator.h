@@ -18,7 +18,7 @@
 
 #include "svdgeneratorplugin_global.h"
 
-#include <plugins/common/ConnectivityGraphUtilities.h>
+#include <Plugins/common/ConnectivityGraphUtilities.h>
 
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 

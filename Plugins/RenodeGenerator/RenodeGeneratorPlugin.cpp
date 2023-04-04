@@ -20,7 +20,7 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 
-#include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsEditor.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCPUDetailRoutes.h>
 
 #include <QCoreApplication>
@@ -136,7 +136,8 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
         viewNames.append(view->name());
     }
 
-    RenodePeripheralsEditor* cpuEditor(new RenodePeripheralsEditor());
+    RenodeCpuEditor* cpuEditor(new RenodeCpuEditor());
+
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames,
         component->getFileSetNames(), cpuEditor, "Renode platform", utility->getParentWidget());
     if (selectionDialog.exec() == QDialog::Accepted)

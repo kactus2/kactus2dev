@@ -121,7 +121,7 @@ namespace
     }
 
     //-----------------------------------------------------------------------------
-    // Function: RenodeUtilities::getPeripheral()
+    // Function: RenodeUtilities::createPeripheral()
     //-----------------------------------------------------------------------------
     QSharedPointer<RenodeStructs::cpuPeripherals> createPeripheral(QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress,
         QVector<QSharedPointer<MemoryItem> > currentMemoryBlock, QStringList& peripheralNames)
@@ -146,18 +146,78 @@ namespace
         return newPeripheral;
     }
 
+//-----------------------------------------------------------------------------
+// Function: RenodeUtilities::createMemory()
+//-----------------------------------------------------------------------------
+    QSharedPointer<RenodeStructs::cpuMemories> createMemory(QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress,
+        QVector<QSharedPointer<MemoryItem> > currentMemoryBlock, QStringList& memoryNames)
+    {
+        QSharedPointer<MemoryItem> firstBlock = currentMemoryBlock.first();
+        QSharedPointer<MemoryItem> lastBlock = currentMemoryBlock.last();
+
+        quint64 offset = mapBaseAddress + firstBlock->getAddress().toULongLong();
+        qint64 endAddress = mapBaseAddress + lastBlock->getAddress().toLongLong() + lastBlock->getRange().toLongLong() - 1;
+
+        quint64 size = endAddress - offset + 1;
+
+        QSharedPointer<RenodeStructs::cpuMemories> newMemory(new RenodeStructs::cpuMemories());
+        QString newMemoryName = getUniqueName(mapItem->getName(), memoryNames);
+        newMemory->memoryName_ = newMemoryName;
+        newMemory->memoryID_ = "";
+        newMemory->baseAddress_ = valueToHexa(offset);
+        newMemory->size_ = valueToHexa(size);
+
+        memoryNames.append(newMemoryName);
+
+        return newMemory;
+    }
+
     //-----------------------------------------------------------------------------
-    // Function: RenodeUtilities::createAndAddPeripheral()
+    // Function: RenodeUtilities::createAndAddPeripheralOrMemory()
     //-----------------------------------------------------------------------------
-    void createAndAddPeripheral(QVector<QSharedPointer<MemoryItem> >& currentMemoryBlock, QVector<QSharedPointer<RenodeStructs::cpuPeripherals> >& peripherals,
-        QSharedPointer<MemoryItem> interfaceMemory, quint64 const& memoryBaseAddress, QStringList& peripheralNames)
+    void createItemBlock(General::Usage blockUsage, QVector<QSharedPointer<MemoryItem> >& currentMemoryBlock,
+        QVector<QSharedPointer<RenodeStructs::cpuPeripherals> >& peripherals, QVector<QSharedPointer<RenodeStructs::cpuMemories> >& memories,
+        QSharedPointer<MemoryItem> interfaceMemory, quint64 const& memoryBaseAddress, QStringList& peripheralNames, QStringList& memoryNames)
     {
         if (!currentMemoryBlock.isEmpty())
         {
-            peripherals.append(createPeripheral(interfaceMemory, memoryBaseAddress, currentMemoryBlock, peripheralNames));
-
-            currentMemoryBlock.clear();
+            if (blockUsage == General::MEMORY)
+            {
+                memories.append(createMemory(interfaceMemory, memoryBaseAddress, currentMemoryBlock, memoryNames));
+            }
+            else
+            {
+                peripherals.append(createPeripheral(interfaceMemory, memoryBaseAddress, currentMemoryBlock, peripheralNames));
+            }
         }
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: RenodeUtilities::usageIsMatching()
+    //-----------------------------------------------------------------------------
+    bool usageIsMatching(General::Usage currentUsage, General::Usage previousUsage)
+    {
+        return (currentUsage == General::MEMORY && currentUsage == previousUsage) || (currentUsage != General::MEMORY && previousUsage != General::MEMORY);
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: RenodeUtilities::getFirstBlockUsage()
+    //-----------------------------------------------------------------------------
+    General::Usage getFirstBlockUsage(QMultiMap<quint64, QSharedPointer<MemoryItem> > orderedChildItems)
+    {
+        QMultiMapIterator<quint64, QSharedPointer<MemoryItem> > blockIterator(orderedChildItems);
+        while (blockIterator.hasNext())
+        {
+            blockIterator.next();
+            QSharedPointer<MemoryItem> blockItem = blockIterator.value();
+
+            if (blockItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
+            {
+                return blockItem->getUsage();
+            }
+        }
+
+        return General::USAGE_COUNT;
     }
 };
 
@@ -171,7 +231,9 @@ QVector<QSharedPointer<RenodeCPUDetailRoutes> > RenodeUtilities::getRenodeCpuRou
     {
         QSharedPointer<const ConnectivityInterface> cpuInterface = defaultCPU->getCPUInterface();
         QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > peripherals;
+        QVector<QSharedPointer<RenodeStructs::cpuMemories> > memories;
         QStringList peripheralNames;
+        QStringList memoryNames;
 
         for (auto masterSlaveRoute : *defaultCPU->getRoutes())
         {
@@ -189,37 +251,54 @@ QVector<QSharedPointer<RenodeCPUDetailRoutes> > RenodeUtilities::getRenodeCpuRou
 
                     quint64 memoryBaseAddress = pathAddresses.remappedAddress_;
 
-                    QVector<QSharedPointer<MemoryItem> > currentMemoryBlock;
+                    QVector<QPair<General::Usage, QVector<QSharedPointer<MemoryItem> > > > subItemBlocks;
 
-                    QMultiMapIterator<quint64, QSharedPointer<MemoryItem> > blockIterator(getOrderedChildItems(interfaceMemory));
+                    QPair<General::Usage, QVector<QSharedPointer<MemoryItem> > > currentItemBlock;
+
+                    QMultiMap<quint64, QSharedPointer<MemoryItem> > orderedChildItems = getOrderedChildItems(interfaceMemory);
+                    currentItemBlock.first = getFirstBlockUsage(orderedChildItems);
+
+                    QMultiMapIterator<quint64, QSharedPointer<MemoryItem> > blockIterator(orderedChildItems);
                     while (blockIterator.hasNext())
                     {
                         blockIterator.next();
                         QSharedPointer<MemoryItem> blockItem = blockIterator.value();
-                        if (blockItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) != 0)
+
+                        if (blockItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
                         {
-                            createAndAddPeripheral(currentMemoryBlock, peripherals, interfaceMemory, memoryBaseAddress, peripheralNames);
-                        }
-                        else
-                        {
-                            if (blockItem->getUsage() == General::MEMORY)
+                            if (usageIsMatching(currentItemBlock.first, blockItem->getUsage()))
                             {
-                                createAndAddPeripheral(currentMemoryBlock, peripherals, interfaceMemory, memoryBaseAddress, peripheralNames);
+                                currentItemBlock.second.append(blockItem);
                             }
                             else
                             {
-                                currentMemoryBlock.append(blockItem);
+                                createItemBlock(currentItemBlock.first, currentItemBlock.second,
+                                    peripherals, memories, interfaceMemory, memoryBaseAddress, peripheralNames, memoryNames);
+
+                                currentItemBlock.first = blockItem->getUsage();
+                                currentItemBlock.second.clear();
+                                currentItemBlock.second.append(blockItem);
                             }
+                        }
+                        else
+                        {
+                            createItemBlock(currentItemBlock.first, currentItemBlock.second,
+                                peripherals, memories, interfaceMemory, memoryBaseAddress, peripheralNames, memoryNames);
+
+                            currentItemBlock.first = General::USAGE_COUNT;
+                            currentItemBlock.second.clear();
                         }
                     }
 
-                    createAndAddPeripheral(currentMemoryBlock, peripherals, interfaceMemory, memoryBaseAddress, peripheralNames);
+                    createItemBlock(currentItemBlock.first, currentItemBlock.second, peripherals, memories, interfaceMemory,
+                        memoryBaseAddress, peripheralNames, memoryNames);
                 }
             }
         }
 
         QSharedPointer<RenodeCPUDetailRoutes> renodeCPU(new RenodeCPUDetailRoutes(*defaultCPU.data()));
         renodeCPU->setPeripherals(peripherals);
+        renodeCPU->setMemories(memories);
         cpuDetails.append(renodeCPU);
     }
 

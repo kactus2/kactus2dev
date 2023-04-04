@@ -16,9 +16,13 @@
 //-----------------------------------------------------------------------------
 RenodeCPUDetailRoutes::RenodeCPUDetailRoutes():
 CPUDetailRoutes(),
-peripherals_()
+peripherals_(),
+memories_(),
+className_(),
+cpuType_(),
+timeProvider_()
 {
-
+    initializeCpuData();
 }
 
 //-----------------------------------------------------------------------------
@@ -26,9 +30,23 @@ peripherals_()
 //-----------------------------------------------------------------------------
 RenodeCPUDetailRoutes::RenodeCPUDetailRoutes(const CPUDetailRoutes& other) :
 CPUDetailRoutes(other),
-peripherals_()
+peripherals_(),
+memories_(),
+className_(),
+cpuType_(),
+timeProvider_()
 {
+    initializeCpuData();
+}
 
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::initializeCpuData()
+//-----------------------------------------------------------------------------
+void RenodeCPUDetailRoutes::initializeCpuData()
+{
+    className_ = "IbexRiscV32";
+    cpuType_ = "rv64gc";
+    timeProvider_ = "empty";
 }
 
 //-----------------------------------------------------------------------------
@@ -45,4 +63,68 @@ void RenodeCPUDetailRoutes::setPeripherals(QVector<QSharedPointer<RenodeStructs:
 QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > RenodeCPUDetailRoutes::getPeripherals() const
 {
     return peripherals_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::setMemories()
+//-----------------------------------------------------------------------------
+void RenodeCPUDetailRoutes::setMemories(QVector<QSharedPointer<RenodeStructs::cpuMemories> > newMemories)
+{
+    memories_ = newMemories;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::getMemories()
+//-----------------------------------------------------------------------------
+QVector<QSharedPointer<RenodeStructs::cpuMemories> > RenodeCPUDetailRoutes::getMemories() const
+{
+    return memories_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::setClassName()
+//-----------------------------------------------------------------------------
+void RenodeCPUDetailRoutes::setClassName(QString const& newClass)
+{
+    className_ = newClass;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::getClassName()
+//-----------------------------------------------------------------------------
+QString RenodeCPUDetailRoutes::getClassName()
+{
+    return className_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::setCpuType()
+//-----------------------------------------------------------------------------
+void RenodeCPUDetailRoutes::setCpuType(QString const& newType)
+{
+    cpuType_ = newType;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::getCpuType()
+//-----------------------------------------------------------------------------
+QString RenodeCPUDetailRoutes::getCpuType()
+{
+    return cpuType_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::setTimeProvider()
+//-----------------------------------------------------------------------------
+void RenodeCPUDetailRoutes::setTimeProvider(QString const& newTimeProvider)
+{
+    timeProvider_ = newTimeProvider;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCPUDetailRoutes::getTimeProvider()
+//-----------------------------------------------------------------------------
+QString RenodeCPUDetailRoutes::getTimeProvider()
+{
+    return timeProvider_;
 }

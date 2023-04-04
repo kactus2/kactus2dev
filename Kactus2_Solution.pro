@@ -103,7 +103,7 @@ LinuxDeviceTreeGenerator.depends = IPXACTmodels KactusAPI
 SVDGenerator.file = Plugins/SVDGenerator/SVDGeneratorPlugin.pro
 SVDGenerator.depends = IPXACTmodels KactusAPI
 
-RenodeGenerator.file = Plugins/RenodeGenerator/RenodeGenerator.pro
+RenodeGenerator.file = Plugins/RenodeGenerator/RenodeGeneratorPlugin.pro
 RenodeGenerator.depends = IPXACTmodels KactusAPI
 
 test_all.subdir = tests
