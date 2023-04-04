@@ -13,8 +13,6 @@
 
 #include <common/KactusColors.h>
 
-#include <Plugins/common/ConnectivityGraphUtilities.h>
-
 #include <QColor>
 
 //-----------------------------------------------------------------------------
@@ -37,14 +35,6 @@ void RenodePeripheralsModel::setupPeripherals(QVector<QSharedPointer<RenodeStruc
     peripherals_ = newPeripherals;
 
     endResetModel();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodePeripheralsModel::getPeripherals()
-//-----------------------------------------------------------------------------
-QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > RenodePeripheralsModel::getPeripherals() const
-{
-    return peripherals_;
 }
 
 //-----------------------------------------------------------------------------

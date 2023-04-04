@@ -1,32 +1,29 @@
 ﻿//-----------------------------------------------------------------------------
-// File: RenodePeripheralsEditor.cpp
+// File: RenodeMemoriesEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 21.02.2023
+// Date: 20.03.2023
 //
 // Description:
-// Editor for CPU peripheral details in renode generation.
+// Editor for CPU memory details in renode generation.
 //-----------------------------------------------------------------------------
 
-#include "RenodePeripheralsEditor.h"
+#include "RenodeMemoriesEditor.h"
 
-#include <Plugins/common/CPUDetailRoutes.h>
-#include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsDelegate.h>
-#include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsModel.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeMemoriesModel.h>
 
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>
 #include <QHeaderView>
 
 //-----------------------------------------------------------------------------
-// Function: RenodePeripheralsEditor::RenodePeripheralsEditor()
+// Function: RenodeMemoriesEditor::RenodeMemoriesEditor()
 //-----------------------------------------------------------------------------
-RenodePeripheralsEditor::RenodePeripheralsEditor(QWidget *parent):
+RenodeMemoriesEditor::RenodeMemoriesEditor(QWidget *parent):
 QWidget(parent),
 view_(new QTableView(this)),
-model_(new RenodePeripheralsModel(this)),
-peripheralDelegate_(new RenodePeripheralsDelegate(parent))
+model_(new RenodeMemoriesModel(this))
 {
     QSortFilterProxyModel* proxy(new QSortFilterProxyModel(this));
     proxy->setSourceModel(model_);
@@ -37,7 +34,6 @@ peripheralDelegate_(new RenodePeripheralsDelegate(parent))
     view_->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
 
     view_->setModel(proxy);
-    view_->setItemDelegate(peripheralDelegate_);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_, 1);
@@ -45,18 +41,10 @@ peripheralDelegate_(new RenodePeripheralsDelegate(parent))
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodePeripheralsEditor::setupPeripherals()
+// Function: RenodeMemoriesEditor::setupMemories()
 //-----------------------------------------------------------------------------
-void RenodePeripheralsEditor::setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals>> peripherals)
+void RenodeMemoriesEditor::setupMemories(QVector<QSharedPointer<RenodeStructs::cpuMemories>> memories)
 {
-    model_->setupPeripherals(peripherals);
+    model_->setupMemories(memories);
     view_->resizeColumnsToContents();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodePeripheralsEditor::setupFolderPath()
-//-----------------------------------------------------------------------------
-void RenodePeripheralsEditor::setupFolderPath(QString const& newFolderPath)
-{
-    peripheralDelegate_->onFolderChanged(newFolderPath);
 }

@@ -90,7 +90,6 @@ void CPUSelectionDialog::setupLayout()
 
     QVBoxLayout* filesetLayout(new QVBoxLayout());
     filesetLayout->addWidget(fileSetSelection_);
-    filesetLayout->addStretch(1);
     fileSetBox_->setLayout(filesetLayout);
 
     QPushButton* openFolderButton(
@@ -110,7 +109,7 @@ void CPUSelectionDialog::setupLayout()
     leftLayout->addLayout(viewLayout);
     leftLayout->addWidget(fileSetBox_);
     leftLayout->addWidget(folderbox);
-
+    leftLayout->addStretch(2);
 
     QHBoxLayout* topLayout(new QHBoxLayout());
     topLayout->addLayout(leftLayout);

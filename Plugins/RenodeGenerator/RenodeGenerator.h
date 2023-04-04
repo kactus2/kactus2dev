@@ -94,7 +94,7 @@ private:
      *      @param [in] currentCPU      The selected CPU.
      *      @param [in] cpuContainer    The CPU data container.
      */
-    void writeCPU(QTextStream& stream, QSharedPointer<Cpu> currentCPU, QSharedPointer<RenodeCPUDetailRoutes> cpuContainer);
+    void writeCPU(QString const& filePath, QSharedPointer<RenodeCPUDetailRoutes> cpuContainer);
 
     /*!
      *  Write the peripherals of the selected CPU route container.
@@ -103,7 +103,7 @@ private:
      *      @param [in] renodeCollection    The selected CPU route container.
      *      @param [in] renodeFilePath      The file path to the Renode platform files.
      */
-    void writePeripherals(QTextStream& stream, QSharedPointer<RenodeCPUDetailRoutes> renodeCollection, QString const& renodeFilePath);
+    void writePeripherals(QString const& filePath, QString const& componentPath, QSharedPointer<RenodeCPUDetailRoutes> renodeCollection);
 
     /*!
      *  Write a single peripheral.
@@ -114,6 +114,23 @@ private:
      *      @param [in] renodeFilePath  The file path to the Renode platform files.
      */
     void writePeripheral(QTextStream& stream, QSharedPointer<RenodeStructs::cpuPeripherals> peripheral, QString const& tab, QString const& renodeFilePath);
+
+    /*!
+     *  Write the memory of the selected CPU.
+     *
+     *      @param [in] filePath            File path for the Renode platform files.
+     *      @param [in] renodeCollection    The selected CPU route container.
+     */
+    void writeMemories(QString const& filePath, QSharedPointer<RenodeCPUDetailRoutes> renodeCollection);
+
+    /*!
+     *  Write a single memory item.
+     *
+     *      @param [in] stream      The text stream.
+     *      @param [in] memory      The selected memory item.
+     *      @param [in] tab         Current tab.
+     */
+    void writeMemory(QTextStream& stream, QSharedPointer<RenodeStructs::cpuMemories> memory, QString const& tab);
 
     //-----------------------------------------------------------------------------
     // Data.

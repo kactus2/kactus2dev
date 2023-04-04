@@ -18,17 +18,9 @@
 // Function: CPUEditor::CPUEditor()
 //-----------------------------------------------------------------------------
 CPUEditor::CPUEditor(QWidget *parent):
-QWidget(parent),
-view_(new QTableView(this))
+QWidget(parent)
 {
-    view_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-    view_->horizontalHeader()->setStretchLastSection(true);
-    view_->verticalHeader()->hide();
-    view_->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(view_, 1);
-    layout->setContentsMargins(0, 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -37,12 +29,4 @@ view_(new QTableView(this))
 void CPUEditor::setupFolderPath(QString const& /*newFolderPath*/)
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUEditor::getView()
-//-----------------------------------------------------------------------------
-QTableView* CPUEditor::getView() const
-{
-    return view_;
 }

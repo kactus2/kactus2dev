@@ -27,15 +27,18 @@ HEADERS += ./RenodeGenerator.h \
     ../../editors/MemoryDesigner/MemoryItem.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
     ./CPUDialog/RenodeCPUDetailRoutes.h \
+    ./CPUDialog/RenodeStructs.h \
     ./CPUDialog/RenodeUtilities.h \
     ./CPUDialog/RenodePeripheralsModel.h \
     ./CPUDialog/RenodePeripheralsEditor.h \
     ./CPUDialog/RenodePeripheralsDelegate.h \
+    ./CPUDialog/RenodeCpuEditor.h \
+    ./CPUDialog/RenodeMemoriesEditor.h \
+    ./CPUDialog/RenodeMemoriesModel.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
     ../common/ConnectivityGraphUtilities.h \
-    ../common/CPUDetailRoutes.h \
-    ./CPUDialog/RenodeStructs.h
+    ../common/CPUDetailRoutes.h
 SOURCES += ./RenodeGenerator.cpp \
     ./RenodeGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
@@ -58,10 +61,13 @@ SOURCES += ./RenodeGenerator.cpp \
     ../common/CPUDialog/CPUEditor.cpp \
     ../common/CPUDialog/CPUSelectionDialog.cpp \
     ./CPUDialog/RenodeCPUDetailRoutes.cpp \
+    ./CPUDialog/RenodeCpuEditor.cpp \
+    ./CPUDialog/RenodeMemoriesEditor.cpp \
+    ./CPUDialog/RenodeMemoriesModel.cpp \
     ./CPUDialog/RenodePeripheralsDelegate.cpp \
     ./CPUDialog/RenodePeripheralsEditor.cpp \
     ./CPUDialog/RenodePeripheralsModel.cpp \
+    ./CPUDialog/RenodeUtilities.cpp \
     ../common/ConnectivityGraphUtilities.cpp \
-    ../common/CPUDetailRoutes.cpp \
-    ./CPUDialog/RenodeUtilities.cpp
+    ../common/CPUDetailRoutes.cpp
 RESOURCES += RenodeGenerator.qrc

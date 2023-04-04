@@ -25,6 +25,7 @@
 //-----------------------------------------------------------------------------
 SVDCPUEditor::SVDCPUEditor(QWidget *parent):
 CPUEditor(parent),
+view_(new QTableView(this)),
 model_(new SVDCPUModel(this))
 {
     SVDCPUDelegate* cpuDelegate(new SVDCPUDelegate(parent));
@@ -32,8 +33,17 @@ model_(new SVDCPUModel(this))
     QSortFilterProxyModel* proxy(new QSortFilterProxyModel(this));
     proxy->setSourceModel(model_);
 
-    getView()->setModel(proxy);
-    getView()->setItemDelegate(cpuDelegate);
+    view_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    view_->horizontalHeader()->setStretchLastSection(true);
+    view_->verticalHeader()->hide();
+    view_->verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
+
+    view_->setModel(proxy);
+    view_->setItemDelegate(cpuDelegate);
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(view_, 1);
+    layout->setContentsMargins(0, 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +54,7 @@ void SVDCPUEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<Com
     QVector<QSharedPointer<SVDCPUDetailRoutes> > cpuDetails = getSVDCPURoutes(library, component, activeView);
 
     model_->setupCPUDetails(cpuDetails);
-    getView()->resizeColumnsToContents();
+    view_->resizeColumnsToContents();
 }
 
 //-----------------------------------------------------------------------------

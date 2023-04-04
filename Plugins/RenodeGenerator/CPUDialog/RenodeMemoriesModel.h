@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: RenodePeripheralsModel.h
+// File: RenodeMemoriesModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 24.02.2023
+// Date: 20.03.2023
 //
 // Description:
-// The model to manage the Renode peripheral details.
+// The model to manage the Renode memory details.
 //-----------------------------------------------------------------------------
 
-#ifndef RENODEPERIPHERALSMODEL_H
-#define RENODEPERIPHERALSMODEL_H
+#ifndef RENODEMEMORIESMODEL_H
+#define RENODEMEMORIESMODEL_H
 
 #include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
@@ -19,9 +19,9 @@
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! The model to manage the Renode peripheral details.
+//! The model to manage the Renode memory details.
 //-----------------------------------------------------------------------------
-class RenodePeripheralsModel : public QAbstractTableModel
+class RenodeMemoriesModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -32,19 +32,19 @@ public:
 	 *
 	 *      @param [in] parent  Pointer to the owner of this model.
 	 */
-	RenodePeripheralsModel(QObject *parent);
+    RenodeMemoriesModel(QObject *parent);
 	
 	/*!
      *  The destructor.
      */
-    virtual ~RenodePeripheralsModel() = default;
+    virtual ~RenodeMemoriesModel() = default;
 
     /*!
-     *  Setup the selected peripherals.
+     *  Setup the selected memory items.
      *
-     *      @param [in] newPeripherals  The selected peripherals.
+     *      @param [in] newMemories     The selected memory items.
      */
-    void setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > newPeripherals);
+    void setupMemories(QVector<QSharedPointer<RenodeStructs::cpuMemories> > newMemories);
 
 	/*!
      *  Get the number of rows an item contains.
@@ -106,8 +106,8 @@ public:
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
     
     //! No copying. No assignment.
-    RenodePeripheralsModel(const RenodePeripheralsModel& other) = delete;
-    RenodePeripheralsModel& operator=(const RenodePeripheralsModel& other) = delete;
+    RenodeMemoriesModel(const RenodeMemoriesModel& other) = delete;
+    RenodeMemoriesModel& operator=(const RenodeMemoriesModel& other) = delete;
 
 private:
 	
@@ -133,8 +133,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The peripheral details being edited.
-    QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > peripherals_;
+    //! The memory items being edited.
+    QVector<QSharedPointer<RenodeStructs::cpuMemories> > memories_;
 };
 
-#endif // RENODEPERIPHERALSMODEL_H
+#endif // RENODEMEMORIESMODEL_H
