@@ -166,9 +166,9 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser const& parser)
 //-----------------------------------------------------------------------------
 void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser const& parser)
 {
-    foreach (QSharedPointer<MetaInterface> mInterface, *interfaces_)
+    for (QSharedPointer<MetaInterface> mInterface: *interfaces_)
     {
-        foreach(QSharedPointer<PortMap> pMap, *mInterface->absType_->getPortMaps())
+        for (QSharedPointer<PortMap> pMap: *mInterface->absType_->getPortMaps())
         {
             if (!pMap->getPhysicalPort() || !pMap->getLogicalPort() ||
                 !getPorts()->contains(pMap->getPhysicalPort()->name_))
@@ -217,6 +217,7 @@ void MetaInstance::parsePortAssignments(IPXactSystemVerilogParser const& parser)
 
             // Every mapping using the port creates a new assignment for the port.
             QSharedPointer<MetaPortAssignment> mUpPortAssignment(new MetaPortAssignment);
+            mUpPortAssignment->mappedInterface_ = mInterface;
             mUpPortAssignment->logicalBounds_ = logicalBounds;
             mUpPortAssignment->physicalBounds_ = physicalBounds;
             mUpPortAssignment->invert_ = pMap->getInvert().toBool();
