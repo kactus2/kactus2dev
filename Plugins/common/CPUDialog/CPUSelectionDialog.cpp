@@ -30,7 +30,9 @@
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::CPUSelectionDialog()
 //-----------------------------------------------------------------------------
-CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library, QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType, QWidget *parent):
+CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
+    QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor,
+    QString const& dialogType, QWidget* extraEditor, QWidget *parent):
 QDialog(parent),
 viewSelection_(new QComboBox(this)),
 fileSetSelection_(new QComboBox(this)),
@@ -39,7 +41,8 @@ library_(library),
 component_(topComponent),
 graphFactory_(library),
 cpuDetailEditor_(cpuEditor),
-folderLine_(new QLineEdit(this))
+folderLine_(new QLineEdit(this)),
+extraEditor_(extraEditor)
 {
     cpuDetailEditor_->setParent(this);
 
@@ -109,6 +112,12 @@ void CPUSelectionDialog::setupLayout()
     leftLayout->addLayout(viewLayout);
     leftLayout->addWidget(fileSetBox_);
     leftLayout->addWidget(folderbox);
+
+    if (extraEditor_ != 0)
+    {
+        leftLayout->addWidget(extraEditor_);
+    }
+
     leftLayout->addStretch(2);
 
     QHBoxLayout* topLayout(new QHBoxLayout());

@@ -38,7 +38,8 @@ HEADERS += ./RenodeGenerator.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
     ../common/ConnectivityGraphUtilities.h \
-    ../common/CPUDetailRoutes.h
+    ../common/CPUDetailRoutes.h \
+    ./CPUDialog/RenodeFileSelectionGroup.h
 SOURCES += ./RenodeGenerator.cpp \
     ./RenodeGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
@@ -69,5 +70,6 @@ SOURCES += ./RenodeGenerator.cpp \
     ./CPUDialog/RenodePeripheralsModel.cpp \
     ./CPUDialog/RenodeUtilities.cpp \
     ../common/ConnectivityGraphUtilities.cpp \
-    ../common/CPUDetailRoutes.cpp
+    ../common/CPUDetailRoutes.cpp \
+    ./CPUDialog/RenodeFileSelectionGroup.cpp
 RESOURCES += RenodeGenerator.qrc

@@ -22,6 +22,7 @@
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCPUDetailRoutes.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeFileSelectionGroup.h>
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -136,10 +137,11 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
         viewNames.append(view->name());
     }
 
+    RenodeFileSelectionGroup* fileSelectionGroup(new RenodeFileSelectionGroup());
     RenodeCpuEditor* cpuEditor(new RenodeCpuEditor());
 
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames,
-        component->getFileSetNames(), cpuEditor, "Renode platform", utility->getParentWidget());
+        component->getFileSetNames(), cpuEditor, "Renode platform", fileSelectionGroup, utility->getParentWidget());
     if (selectionDialog.exec() == QDialog::Accepted)
     {
         QVector<QSharedPointer<CPUDetailRoutes> > cpuRoutes = selectionDialog.getSelectedCPUs();
@@ -161,7 +163,8 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
                 QString xmlFilePath = selectionDialog.getTargetFolder();
 
                 RenodeGenerator generator(utility->getLibraryInterface());
-                generator.generate(component, xmlFilePath, renodeCPURoutes);
+                generator.generate(component, xmlFilePath, renodeCPURoutes,
+                    fileSelectionGroup->writeCpu(), fileSelectionGroup->writeMemory(), fileSelectionGroup->writePeripherals());
 
                 utility->printInfo(tr("Generation complete."));
             }
@@ -218,7 +221,7 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     }
 
     RenodeGenerator generator(utilityLibrary);
-    generator.generate(component, outputDirectory, renodeCPUs);
+    generator.generate(component, outputDirectory, renodeCPUs, true, true, true);
 
     utility->printInfo(tr("Generation complete."));
 }

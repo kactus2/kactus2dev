@@ -172,6 +172,9 @@
     <ClCompile Include="CPUDialog\RenodeMemoriesModel.cpp">
       <Filter>Source Files\CPUDialog</Filter>
     </ClCompile>
+    <ClCompile Include="CPUDialog\RenodeFileSelectionGroup.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
@@ -202,6 +205,9 @@
       <Filter>Header Files\CPUDialog</Filter>
     </QtMoc>
     <QtMoc Include="CPUDialog\RenodeMemoriesModel.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\RenodeFileSelectionGroup.h">
       <Filter>Header Files\CPUDialog</Filter>
     </QtMoc>
   </ItemGroup>

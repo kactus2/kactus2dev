@@ -50,10 +50,17 @@ public:
      *      @param [in] fileSetNames    Names of the available file sets.
      *      @param [in] cpuEditor       Editor for CPU details.
      *      @param [in] dialogType      The type text for dialog.
+     *      @param [in] extraEditor     An extra editor.
 	 *      @param [in] parent          Parent widget.
 	 */
-	CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
-        QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType, QWidget *parent);
+	CPUSelectionDialog(QSharedPointer<Component> topComponent,
+        LibraryInterface* library,
+        QStringList const& viewNames,
+        QStringList const& fileSetNames,
+        CPUEditor* cpuEditor,
+        QString const& dialogType,
+        QWidget* extraEditor,
+        QWidget *parent);
 
 	/*!
      *  The destructor.
@@ -143,6 +150,9 @@ private:
 
     //! Editor for folder path.
     QLineEdit* folderLine_;
+
+    //! An extra editor.
+    QWidget* extraEditor_;
 };
 
 #endif //CPUSELECTIONDIALOG_H
