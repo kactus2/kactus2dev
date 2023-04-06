@@ -222,7 +222,7 @@ void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter
         }
 
         sortParameters->removeOne(current);
-        sortParameters->insert(target, current);
+        sortParameters->insert(target - 1, current);
     }
 }
 
