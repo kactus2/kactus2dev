@@ -31,8 +31,9 @@
 // Function: CPUSelectionDialog::CPUSelectionDialog()
 //-----------------------------------------------------------------------------
 CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
-    QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor,
-    QString const& dialogType, QWidget* extraEditor, QWidget *parent):
+    QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType,
+    QWidget* extraEditor, QWidget *parent, QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet,
+    QString const& configurationView):
 QDialog(parent),
 viewSelection_(new QComboBox(this)),
 fileSetSelection_(new QComboBox(this)),
@@ -63,6 +64,8 @@ extraEditor_(extraEditor)
 
     fileSetBox_->setCheckable(true);
 
+    setupConfiguration(configurationFolder, saveToFileSet, configurationFileSet, configurationView);
+
     setupLayout();
 
     connect(viewSelection_, SIGNAL(currentIndexChanged(int)), this, SLOT(onViewChanged()), Qt::UniqueConnection);
@@ -70,6 +73,31 @@ extraEditor_(extraEditor)
     connect(folderLine_, SIGNAL(textChanged(QString const&)), cpuDetailEditor_, SIGNAL(changeInSelectedPath(QString const&)), Qt::UniqueConnection);
 
     setMinimumWidth(840);
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::setupConfiguration()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::setupConfiguration(QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet, QString const& configurationView)
+{
+    if (!configurationFolder.isEmpty())
+    {
+        folderLine_->setText(configurationFolder);
+        emit changeInSelectedPath(configurationFolder);
+    }
+
+    fileSetBox_->setChecked(saveToFileSet);
+    if (!configurationFileSet.isEmpty())
+    {
+        fileSetSelection_->setCurrentText(configurationFileSet);
+    }
+
+    if (!configurationView.isEmpty())
+    {
+        viewSelection_->setCurrentText(configurationView);
+    }
+
+    onViewChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -180,6 +208,14 @@ QString CPUSelectionDialog::getTargetFileSet() const
 QString CPUSelectionDialog::getTargetFolder() const
 {
     return folderLine_->text();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::getView()
+//-----------------------------------------------------------------------------
+QString CPUSelectionDialog::getView() const
+{
+    return viewSelection_->currentText();
 }
 
 //-----------------------------------------------------------------------------

@@ -32,6 +32,8 @@ class Cpu;
 class CPUEditor;
 class CPUDetailRoutes;
 
+#include <QJsonDocument>
+
 //-----------------------------------------------------------------------------
 //! Dialog for selecting CPUs from a connectivity graph.
 //-----------------------------------------------------------------------------
@@ -44,15 +46,19 @@ public:
 	/*!
      *  The constructor.
      *
-	 *      @param [in] topComponent    Top component of the selected design.
-	 *      @param [in] library         Interface for accessing the library.
-	 *      @param [in] viewsNames      Names of the available views.
-     *      @param [in] fileSetNames    Names of the available file sets.
-     *      @param [in] cpuEditor       Editor for CPU details.
-     *      @param [in] dialogType      The type text for dialog.
-     *      @param [in] extraEditor     An extra editor.
-	 *      @param [in] parent          Parent widget.
-	 */
+	 *      @param [in] topComponent            Top component of the selected design.
+	 *      @param [in] library                 Interface for accessing the library.
+	 *      @param [in] viewsNames              Names of the available views.
+     *      @param [in] fileSetNames            Names of the available file sets.
+     *      @param [in] cpuEditor               Editor for CPU details.
+     *      @param [in] dialogType              The type text for dialog.
+     *      @param [in] extraEditor             An extra editor.
+	 *      @param [in] parent                  Parent widget.
+     *      @param [in] configurationFolder     Folder path for the generator.
+     *      @param [in] saveToFileSet           Flag for save to file set.
+     *      @param [in] configurationFileSet    Name of the target file set.
+     *      @param [in] configurationView       Name of the view to use in the generator.
+     */
 	CPUSelectionDialog(QSharedPointer<Component> topComponent,
         LibraryInterface* library,
         QStringList const& viewNames,
@@ -60,7 +66,11 @@ public:
         CPUEditor* cpuEditor,
         QString const& dialogType,
         QWidget* extraEditor,
-        QWidget *parent);
+        QWidget *parent,
+        QString const& configurationFolder = "",
+        bool saveToFileSet = true,
+        QString const& configurationFileSet = "",
+        QString const& configurationView = "");
 
 	/*!
      *  The destructor.
@@ -95,6 +105,13 @@ public:
      */
     QString getTargetFolder() const;
 
+    /*!
+     *  Get the active view.
+     *
+     *      @return Name of the active view.
+     */
+    QString getView() const;
+
 private slots:
 
     /*!
@@ -107,11 +124,30 @@ private slots:
      */
     void onChangeTargetFolder();
 
+signals:
+
+    /*!
+     *  Signal informing of a change in the destination path.
+     *
+     *      @param [in] newFolderLocation   The new destination.
+     */
+    void changeInSelectedPath(QString const& newFolderLocation);
+
 private:
 
     // Disable copying.
     CPUSelectionDialog(CPUSelectionDialog const& rhs);
     CPUSelectionDialog& operator=(CPUSelectionDialog const& rhs);
+
+    /*!
+     *  Setup the dialog.
+     *
+     *      @param [in] configurationFolder     Folder path for the generated files.
+     *      @param [in] saveToFileSet           Flag for saving to a file set.
+     *      @param [in] configurationFileSet    Name of the selected file set.
+     *      @param [in] configurationView       The currently active view.
+     */
+    void setupConfiguration(QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet, QString const& configurationView);
 
     /*!
      *  Setup the layout.

@@ -15,6 +15,7 @@
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QObject>
+#include <QJsonObject>
 
 //-----------------------------------------------------------------------------
 //! Group for selecting files to be written in Renode generation.
@@ -28,9 +29,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Pointer to the owner of this widget.
+     *      @param [in] configurationObject     JSON object containing the editor configuration.
+     *      @param [in] parent                  Pointer to the owner of this widget.
      */
-    RenodeFileSelectionGroup(QWidget *parent = 0);
+    RenodeFileSelectionGroup(QJsonObject const& configurationObject, QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -80,6 +82,13 @@ private slots:
     void onItemClicked(bool newState);
 
 private:
+
+    /*!
+     *  Apply the configuration to file selections.
+     *
+     *      @param [in] configurationObject     JSON object containing the editor configuration.
+     */
+    void applyConfigurations(QJsonObject const& configurationObject);
 
     //-----------------------------------------------------------------------------
     // Data.

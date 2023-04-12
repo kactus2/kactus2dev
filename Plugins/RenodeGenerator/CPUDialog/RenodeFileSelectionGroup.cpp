@@ -11,12 +11,15 @@
 
 #include "RenodeFileSelectionGroup.h"
 
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
+
 #include <QVBoxLayout>
+#include <QJsonObject>
 
 //-----------------------------------------------------------------------------
 // Function: RenodeFileSelectionGroup::RenodeFileSelectionGroup()
 //-----------------------------------------------------------------------------
-RenodeFileSelectionGroup::RenodeFileSelectionGroup(QWidget *parent):
+RenodeFileSelectionGroup::RenodeFileSelectionGroup(QJsonObject const& configurationObject, QWidget *parent):
 QGroupBox(parent),
 selectAll_(new QCheckBox("All")),
 cpuCheck_(new QCheckBox("CPU")),
@@ -50,10 +53,36 @@ boxStorage_()
     {
         connect(box, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
 
-        box->setChecked(true);
-
         checkBoxLayout->addWidget(box);
     }
+
+    applyConfigurations(configurationObject);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeFileSelectionGroup::applyConfigurations()
+//-----------------------------------------------------------------------------
+void RenodeFileSelectionGroup::applyConfigurations(QJsonObject const& configurationObject)
+{
+    bool writeCpuFlag = true;
+    bool writeMemoryFlag = true;
+    bool writePeripheralsFlag = true;
+
+    QJsonValue writeFlagsValue = configurationObject.value(RenodeConstants::WRITEFILES);
+    if (writeFlagsValue.type() == QJsonValue::Object)
+    {
+        QJsonObject writeFlagsObject = writeFlagsValue.toObject();
+
+        writeCpuFlag = writeFlagsObject.value(RenodeConstants::CPU).toBool(true);
+        writeMemoryFlag = writeFlagsObject.value(RenodeConstants::MEMORY).toBool(true);
+        writePeripheralsFlag = writeFlagsObject.value(RenodeConstants::PERIPHERALS).toBool(true);
+    }
+
+    cpuCheck_->setChecked(writeCpuFlag);
+    memoryCheck_->setChecked(writeMemoryFlag);
+    peripheralsCheck_->setChecked(writePeripheralsFlag);
+
+    onItemClicked(writePeripheralsFlag);
 }
 
 //-----------------------------------------------------------------------------

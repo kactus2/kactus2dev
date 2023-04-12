@@ -30,6 +30,7 @@ class RenodeMemoriesEditor;
 
 #include <QComboBox>
 #include <QLineEdit>
+#include <QJsonObject>
 
 //-----------------------------------------------------------------------------
 //! Editor for CPU details in renode generation.
@@ -43,9 +44,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Pointer to the owner of this widget.
+     *      @param [in] configurationObject     JSON object containing the editor configuration.
+     *      @param [in] parent                  Pointer to the owner of this widget.
      */
-    RenodeCpuEditor(QWidget *parent = 0);
+    RenodeCpuEditor(QJsonObject const& configurationObject, QWidget *parent = 0);
 
     /*!
      *  The destructor.
@@ -130,6 +132,9 @@ private:
 
     //! Editor for CPU time provider.
     QLineEdit* cpuTimeProviderEditor_;
+
+    //! JSON object containing the editor configuration.
+    QJsonObject configurationObject_;
 };
 
 #endif // RENODECPUEDITOR_H
