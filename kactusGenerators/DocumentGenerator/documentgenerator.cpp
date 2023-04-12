@@ -64,8 +64,8 @@ parentWidget_(parent),
 expressionFormatter_(),
 viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
 {
-	Q_ASSERT(handler);
-	Q_ASSERT(parent);
+    Q_ASSERT(handler);
+    Q_ASSERT(parent);
 
     // this function can be called for only the top document generator
     Q_ASSERT(parentWidget_);
@@ -109,21 +109,21 @@ expressionFormatter_(),
 viewDocumentationGenerator_(viewDocumentationGenerator)
 {
     Q_ASSERT(getLibraryHandler());
-	Q_ASSERT(parent);
+    Q_ASSERT(parent);
     Q_ASSERT(getLibraryHandler()->contains(vlnv));
     Q_ASSERT(getLibraryHandler()->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-	connect(this, SIGNAL(errorMessage(const QString&)),
-		parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(noticeMessage(const QString&)),
-		parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    connect(this, SIGNAL(errorMessage(const QString&)),
+        parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+    connect(this, SIGNAL(noticeMessage(const QString&)),
+        parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     QSharedPointer<Document> libComp = getLibraryHandler()->getModel(vlnv);
     setComponent(libComp.staticCast<Component>());
 
     expressionFormatter_ = createExpressionFormatter();
 
-	parseChildItems(objects);
+    parseChildItems(objects);
 }
 
 //-----------------------------------------------------------------------------
@@ -139,31 +139,36 @@ DocumentGenerator::~DocumentGenerator()
 //-----------------------------------------------------------------------------
 void DocumentGenerator::parseChildItems( QList<VLNV>& objects )
 {
-	// ask the component for it's hierarchical references
+    // ask the component for it's hierarchical references
     QList<VLNV> refs = getComponent()->getHierRefs();
     foreach (VLNV ref, refs)
     {
         QSharedPointer<Design> design = getLibraryHandler()->getDesign(ref);
-		if (!design)
+        if (!design)
         {
-			continue;
+            continue;
         }
 
-		foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
+        foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
         {
             if (!objects.contains(*instance->getComponentRef()) &&
                 getLibraryHandler()->contains(*instance->getComponentRef()) &&
                 getLibraryHandler()->getDocumentType(*instance->getComponentRef()) == VLNV::COMPONENT)
             {
-    			// create a new instance of document generator and add it to child list
-			    objects.append(*instance->getComponentRef());
+                // create a new instance of document generator and add it to child list
+                objects.append(*instance->getComponentRef());
                 QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(getLibraryHandler(),
                     *instance->getComponentRef(), objects, getExpressionFormatterFactory(),
                     viewDocumentationGenerator_, this));
-			    childInstances_.append(docGenerator);
+                childInstances_.append(docGenerator);
             }
-		}
-	}
+        }
+    }
+}
+
+void DocumentGenerator::setFormat(DocumentFormat format)
+{
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -184,82 +189,82 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
     Q_ASSERT(getLibraryHandler()->contains(component->getVlnv()));
     Q_ASSERT(getLibraryHandler()->getDocumentType(component->getVlnv()) == VLNV::COMPONENT);
 
-	// this function can only be called for the top document generator
-	Q_ASSERT(parentWidget_);
+    // this function can only be called for the top document generator
+    Q_ASSERT(parentWidget_);
 
     setTargetPath(targetPath);
 
-    writeHtmlHeader(stream);
+    writeHeader(stream);
 
-	// create a running number to create the numbered headers for table of contents
-	unsigned int runningNumber = 0;
+    // create a running number to create the numbered headers for table of contents
+    unsigned int runningNumber = 0;
 
-	stream << "\t\t<p>" << Qt::endl;
-	stream << "\t\t<strong>Table of contents</strong><br>" << Qt::endl;
-	writeTableOfContents(runningNumber, stream);
-	stream << "\t\t</p>" << Qt::endl;
+    stream << "\t\t<p>" << Qt::endl;
+    stream << "\t\t<strong>Table of contents</strong><br>" << Qt::endl;
+    writeTableOfContents(runningNumber, stream);
+    stream << "\t\t</p>" << Qt::endl;
 
-	QStringList pictureList;
+    QStringList pictureList;
 
-	// write the actual documentation for the top component
+    // write the actual documentation for the top component
     writeDocumentation(stream, getTargetPath(), pictureList);
 
     writeEndOfDocument(stream);
 
     QApplication::restoreOverrideCursor();
 
-	// ask user if he wants to save the generated documentation into object metadata
-	QMessageBox::StandardButton button = QMessageBox::question(parentWidget_, 
-		tr("Save generated documentation to metadata?"),
-		tr("Would you like to save the generated documentation to IP-Xact"
-		" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
+    // ask user if he wants to save the generated documentation into object metadata
+    QMessageBox::StandardButton button = QMessageBox::question(parentWidget_, 
+        tr("Save generated documentation to metadata?"),
+        tr("Would you like to save the generated documentation to IP-Xact"
+        " metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
-	// if the generated file is saved
-	if (button == QMessageBox::Yes)
+    // if the generated file is saved
+    if (button == QMessageBox::Yes)
     {
         QString xmlPath = getLibraryHandler()->getPath(component->getVlnv());
 
-		// get the relative path to add to file set
+        // get the relative path to add to file set
         QString relativePath = General::getRelativePath(xmlPath, getTargetPath());
 
-		QString fileSetName("Documentation");
-		QSharedPointer<FileSet> documentationFileSet = component->getFileSet(fileSetName);
+        QString fileSetName("Documentation");
+        QSharedPointer<FileSet> documentationFileSet = component->getFileSet(fileSetName);
 
-		// if the documentation file set was not found. Create one
-		if (!documentationFileSet)
+        // if the documentation file set was not found. Create one
+        if (!documentationFileSet)
         {
-			documentationFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("documentation")));
+            documentationFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("documentation")));
             component->getFileSets()->append(documentationFileSet);
-		}
+        }
 
-		QSettings settings;
+        QSettings settings;
 
-		// create a new file and add it to file set
-		QSharedPointer<File> docFile = documentationFileSet->addFile(relativePath, settings);
-		Q_ASSERT(docFile);
-		docFile->setIncludeFile(false);
-		docFile->setDescription(tr("Html file that contains the documentation "
-			"for this component and subcomponents"));
+        // create a new file and add it to file set
+        QSharedPointer<File> docFile = documentationFileSet->addFile(relativePath, settings);
+        Q_ASSERT(docFile);
+        docFile->setIncludeFile(false);
+        docFile->setDescription(tr("Html file that contains the documentation "
+            "for this component and subcomponents"));
 
-		// add all created pictures to the file set
-		foreach (QString pictureName, pictureList)
+        // add all created pictures to the file set
+        foreach (QString pictureName, pictureList)
         {
-			QString relativePicPath = General::getRelativePath(xmlPath, pictureName);
+            QString relativePicPath = General::getRelativePath(xmlPath, pictureName);
 
-			QSharedPointer<File> picFile = documentationFileSet->addFile(relativePicPath, settings);
-			Q_ASSERT(picFile);
-			picFile->setIncludeFile(false);
-			picFile->setDescription(tr("Preview picture needed by the html document."));
-		}
+            QSharedPointer<File> picFile = documentationFileSet->addFile(relativePicPath, settings);
+            Q_ASSERT(picFile);
+            picFile->setIncludeFile(false);
+            picFile->setDescription(tr("Preview picture needed by the html document."));
+        }
 
         getLibraryHandler()->writeModelToFile(component);
-	}
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: documentgenerator::writeHtmlHeader()
+// Function: documentgenerator::writeHeader()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeHtmlHeader(QTextStream& stream)
+void DocumentGenerator::writeHeader(QTextStream& stream)
 {
     QSettings settings;
 
@@ -282,8 +287,8 @@ void DocumentGenerator::writeHtmlHeader(QTextStream& stream)
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTextStream& stream )
 {
-	// increase the running number and save this instance's number
-	++componentNumber;
+    // increase the running number and save this instance's number
+    ++componentNumber;
     setNumber(componentNumber);
 
     QSharedPointer<Component> component = getComponent();
@@ -292,21 +297,21 @@ void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTex
     stream << "\t\t<a href=\"#" << component->getVlnv().toString() << "\">" << myNumber() << ". Component" <<
         DocumentGeneratorHTML::space() << component->getVlnv().toString(" - ") << "</a><br>" << Qt::endl;
 
-	// subHeader is running number that counts the number of sub headers for component
-	int subHeader = 1;
+    // subHeader is running number that counts the number of sub headers for component
+    int subHeader = 1;
 
 
-	// component always has kactus parameters
+    // component always has kactus parameters
     stream << vlnvHeader << ".kts_params\">" << myNumber() << "." << subHeader << ". Kactus2 attributes</a><br>" <<
         Qt::endl;
-	++subHeader;
+    ++subHeader;
 
-	if (component->hasParameters())
+    if (component->hasParameters())
     {
         stream << vlnvHeader << ".parameters\">" << myNumber() << "." << subHeader <<
             ". General parameters</a><br>" << Qt::endl;
-		++subHeader;
-	}
+        ++subHeader;
+    }
 
     if (!component->getMemoryMaps()->isEmpty())
     {
@@ -315,35 +320,35 @@ void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTex
         ++subHeader;
     }
 
-	if (component->hasPorts())
+    if (component->hasPorts())
     {
         stream << vlnvHeader << ".ports\">" << myNumber() << "." << subHeader << ". Ports</a><br>" << Qt::endl;
-		++subHeader;
-	}
+        ++subHeader;
+    }
 
-	if (component->hasInterfaces())
+    if (component->hasInterfaces())
     {
         stream << vlnvHeader << ".interfaces\">" << myNumber() << "." << subHeader << ". Bus interfaces</a><br>" <<
             Qt::endl;
-		++subHeader;
-	}
+        ++subHeader;
+    }
 
-	if (component->hasFileSets())
+    if (component->hasFileSets())
     {
         stream << vlnvHeader << ".fileSets\">" << myNumber() << "." << subHeader << ". File sets</a><br>" << Qt::endl;
-		++subHeader;
-	}
+        ++subHeader;
+    }
 
-	if (component->hasViews())
+    if (component->hasViews())
     {
         stream << vlnvHeader << ".views\">" << myNumber() << "." << subHeader << ". Views</a><br>" << Qt::endl;
-	}
+    }
 
-	// tell each child to write it's table of contents
-	foreach (QSharedPointer<DocumentGenerator> generator, childInstances_)
+    // tell each child to write it's table of contents
+    foreach (QSharedPointer<DocumentGenerator> generator, childInstances_)
     {
-		generator->writeTableOfContents(componentNumber, stream);
-	}
+        generator->writeTableOfContents(componentNumber, stream);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -352,52 +357,52 @@ void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTex
 void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& targetPath,
     QStringList& filesToInclude)
 {
-	setTargetPath(targetPath);
+    setTargetPath(targetPath);
 
     QSharedPointer<Component> component = getComponent();
 
-	// write the component header
-	stream << "\t\t<h1><a id=\"" << component->getVlnv().toString() << "\">" << myNumber() << ". Component " <<
+    // write the component header
+    stream << "\t\t<h1><a id=\"" << component->getVlnv().toString() << "\">" << myNumber() << ". Component " <<
         component->getVlnv().toString(" - ") << "</a></h1>" << Qt::endl;
 
-	createComponentPicture(filesToInclude);
+    createComponentPicture(filesToInclude);
 
-	stream << "\t\t<p>" << Qt::endl;
+    stream << "\t\t<p>" << Qt::endl;
 
-	stream << "\t\t<img src=\"" << component->getVlnv().toString(".") << ".png\" alt=\"" <<
+    stream << "\t\t<img src=\"" << component->getVlnv().toString(".") << ".png\" alt=\"" <<
         component->getVlnv().toString(" - ") << " preview picture\"><br>" << Qt::endl;
 
-	// if component has description, write it
-	if (!component->getDescription().isEmpty())
+    // if component has description, write it
+    if (!component->getDescription().isEmpty())
     {
-		stream << "\t\t<strong>Description:</strong> " << component->getDescription() << "<br>" << Qt::endl;
-	}
+        stream << "\t\t<strong>Description:</strong> " << component->getDescription() << "<br>" << Qt::endl;
+    }
 
-	// print relative path to the xml file
-	QFileInfo compXmlInfo(getLibraryHandler()->getPath(component->getVlnv()));
-	QString relativeXmlPath = General::getRelativePath(getTargetPath(), compXmlInfo.absoluteFilePath());
-	stream << "\t\t<strong>IP-Xact file: </strong><a href=\"" << 
-		relativeXmlPath << "\">" << compXmlInfo.fileName() <<
-		"</a><br>" << Qt::endl;
-	
-	stream << "\t\t</p>" << Qt::endl;
+    // print relative path to the xml file
+    QFileInfo compXmlInfo(getLibraryHandler()->getPath(component->getVlnv()));
+    QString relativeXmlPath = General::getRelativePath(getTargetPath(), compXmlInfo.absoluteFilePath());
+    stream << "\t\t<strong>IP-Xact file: </strong><a href=\"" << 
+        relativeXmlPath << "\">" << compXmlInfo.fileName() <<
+        "</a><br>" << Qt::endl;
+    
+    stream << "\t\t</p>" << Qt::endl;
 
-	int subHeaderNumber = 1;
+    int subHeaderNumber = 1;
 
     viewDocumentationGenerator_->setComponent(component, myNumber(), getTargetPath());
 
-	writeParameters(stream, subHeaderNumber);
+    writeParameters(stream, subHeaderNumber);
     writeMemoryMaps(stream, subHeaderNumber);
-	writePorts(stream, subHeaderNumber);
-	writeInterfaces(stream, subHeaderNumber);
-	writeFileSets(stream, subHeaderNumber);
+    writePorts(stream, subHeaderNumber);
+    writeInterfaces(stream, subHeaderNumber);
+    writeFileSets(stream, subHeaderNumber);
     viewDocumentationGenerator_->writeViews(stream, subHeaderNumber, filesToInclude);
 
-	// tell each child to write it's documentation
-	foreach (QSharedPointer<DocumentGenerator> generator, childInstances_)
+    // tell each child to write it's documentation
+    foreach (QSharedPointer<DocumentGenerator> generator, childInstances_)
     {
-		generator->writeDocumentation(stream, targetPath, filesToInclude);
-	}
+        generator->writeDocumentation(stream, targetPath, filesToInclude);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -405,32 +410,32 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumber)
 {
-	writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "kts_params");
-	
+    writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "kts_params");
+    
     QSharedPointer<Component> component = getComponent();
 
-	stream << "\t\t<p>" << Qt::endl;
-	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Product hierarchy: </strong>" <<
+    stream << "\t\t<p>" << Qt::endl;
+    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Product hierarchy: </strong>" <<
         KactusAttribute::hierarchyToString(component->getHierarchy()) << "<br>" << Qt::endl;
-	
-	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component implementation: </strong>" <<
+    
+    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component implementation: </strong>" <<
         KactusAttribute::implementationToString(component->getImplementation()) << "<br>" << Qt::endl;
 
-	stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component firmness: </strong>" <<
+    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component firmness: </strong>" <<
         KactusAttribute::firmnessToString(component->getFirmness()) << "<br>" << Qt::endl;
 
-	stream << "\t\t</p>" << Qt::endl;
-	++subHeaderNumber;
+    stream << "\t\t</p>" << Qt::endl;
+    ++subHeaderNumber;
 
-	if (component->hasParameters())
+    if (component->hasParameters())
     {
-		writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
+        writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
 
         QString parameterTabs = QStringLiteral("\t\t\t");
         GeneralDocumentGenerator::writeParameters(stream,
             QStringLiteral("List of parameters defined for the component"), parameterTabs,
             component->getParameters(), expressionFormatter_);
-	}
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -699,9 +704,9 @@ QString DocumentGenerator::getFieldResetInfo(QSharedPointer<Field> field) const
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
 {
-	if (getComponent()->hasPorts())
+    if (getComponent()->hasPorts())
     {
-		writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
+        writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
 
         QString tableTitle = "List of all ports the component has.";
         const QList<QSharedPointer<Port> > ports = *getComponent()->getPorts().data();
@@ -709,7 +714,7 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
         writePortTable(stream, tableTitle, ports);
 
         ++subHeaderNumber;
-	}
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -718,27 +723,27 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
 void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 {
     QSharedPointer<Component> component = getComponent();
-	if (component->hasInterfaces())
+    if (component->hasInterfaces())
     {
-		writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
+        writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
 
-		int interfaceNumber = 1;
-		foreach (QSharedPointer<BusInterface> interface,  *component->getBusInterfaces())
+        int interfaceNumber = 1;
+        foreach (QSharedPointer<BusInterface> interface,  *component->getBusInterfaces())
         {
-			stream << "\t\t\t" << "<h3>" << myNumber() << "." << subHeaderNumber << "." << interfaceNumber++ <<
-				" " << interface->name() << "</h3>" << Qt::endl;
-			
-			stream << "\t\t\t<p>" << Qt::endl;
+            stream << "\t\t\t" << "<h3>" << myNumber() << "." << subHeaderNumber << "." << interfaceNumber++ <<
+                " " << interface->name() << "</h3>" << Qt::endl;
+            
+            stream << "\t\t\t<p>" << Qt::endl;
 
-			if (!interface->description().isEmpty())
+            if (!interface->description().isEmpty())
             {
-				stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " << 
-					interface->description() << "<br>" << Qt::endl;
-			}
+                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " << 
+                    interface->description() << "<br>" << Qt::endl;
+            }
 
-			// write the interface mode of the interface
-			stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Interface mode:</strong> " << 
-				General::interfaceMode2Str(interface->getInterfaceMode()) << "<br>" << Qt::endl;
+            // write the interface mode of the interface
+            stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Interface mode:</strong> " << 
+                General::interfaceMode2Str(interface->getInterfaceMode()) << "<br>" << Qt::endl;
 
             stream << "\t\t\t" << DocumentGeneratorHTML::indent() <<
                 "<strong>Ports used in this interface:</strong>";
@@ -755,9 +760,9 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
             {
                 stream << " None" << Qt::endl;
             }
-		}
-		++subHeaderNumber;
-	}
+        }
+        ++subHeaderNumber;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -766,54 +771,54 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 {
     QSharedPointer<Component> component = getComponent();
-	if (component->hasFileSets())
+    if (component->hasFileSets())
     {
-		writeSubHeader(subHeaderNumber, stream, "File sets", "fileSets");
+        writeSubHeader(subHeaderNumber, stream, "File sets", "fileSets");
 
-		const QList<QSharedPointer<FileSet> > fileSets = *component->getFileSets().data();
-		int fileSetNumber = 1;
-		foreach (QSharedPointer<FileSet> fileSet, fileSets)
+        const QList<QSharedPointer<FileSet> > fileSets = *component->getFileSets().data();
+        int fileSetNumber = 1;
+        foreach (QSharedPointer<FileSet> fileSet, fileSets)
         {
-			stream << "\t\t\t" << "<h3><a id=\"" << component->getVlnv().toString() << ".fileSet." <<
+            stream << "\t\t\t" << "<h3><a id=\"" << component->getVlnv().toString() << ".fileSet." <<
                 fileSet->name() << "\">" << myNumber() << "." << subHeaderNumber << "." << fileSetNumber <<	" " <<
                 fileSet->name() << "</a></h3>" << Qt::endl;
 
-			stream << "\t\t\t<p>" << Qt::endl;
+            stream << "\t\t\t<p>" << Qt::endl;
 
-			if (!fileSet->description().isEmpty())
+            if (!fileSet->description().isEmpty())
             {
-				stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " << 
-					fileSet->description() << "<br>" << Qt::endl;
-			}
+                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " << 
+                    fileSet->description() << "<br>" << Qt::endl;
+            }
 
-			// write the group identifiers
-			QStringList groups = *fileSet->getGroups().data();
-			stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Identifiers:</strong> ";
-			for (int i = 0; i < groups.size(); ++i)
+            // write the group identifiers
+            QStringList groups = *fileSet->getGroups().data();
+            stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Identifiers:</strong> ";
+            for (int i = 0; i < groups.size(); ++i)
             {
-				stream << groups.at(i);
+                stream << groups.at(i);
 
-				if (i != groups.size()-1)
+                if (i != groups.size()-1)
                 {
-					stream << ", ";
+                    stream << ", ";
                 }
-			}
-			stream << "<br>" << Qt::endl;
+            }
+            stream << "<br>" << Qt::endl;
 
-			// if file set has specified default file builders
+            // if file set has specified default file builders
             QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders = fileSet->getDefaultFileBuilders();
             if (!fileBuilders->isEmpty())
             {
-				stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Default file builders:</strong>" <<
+                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Default file builders:</strong>" <<
                     Qt::endl;
-				stream << "\t\t\t</p>" << Qt::endl;
+                stream << "\t\t\t</p>" << Qt::endl;
 
                 writeFileBuildCommands(stream, QString("\t\t\t"), fileBuilders, expressionFormatter_);
-			}
-			else
+            }
+            else
             {
-				stream << "\t\t\t</p>" << Qt::endl;
-			}
+                stream << "\t\t\t</p>" << Qt::endl;
+            }
 
             if (!fileSet->getFiles()->isEmpty())
             {
@@ -838,9 +843,9 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
                 stream << "\t\t\t</table>" << Qt::endl;
             }
             ++fileSetNumber;
-		}
-		++subHeaderNumber;
-	}
+        }
+        ++subHeaderNumber;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -905,51 +910,51 @@ void DocumentGenerator::writePortTable(QTextStream& stream, QString const& title
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeFile( QSharedPointer<File> file, QTextStream& stream )
 {
-	QString relativeFilePath = file->name();
-	QString absFilePath =
+    QString relativeFilePath = file->name();
+    QString absFilePath =
         General::getAbsolutePath(getLibraryHandler()->getPath(getComponent()->getVlnv()), relativeFilePath);
-	QFileInfo fileInfo(absFilePath);
+    QFileInfo fileInfo(absFilePath);
 
-	// get relative path from html file to the file
-	QFileInfo htmlInfo(getTargetPath());
-	QString pathFromhtmlToFile = General::getRelativePath(getTargetPath(), absFilePath);
+    // get relative path from html file to the file
+    QFileInfo htmlInfo(getTargetPath());
+    QString pathFromhtmlToFile = General::getRelativePath(getTargetPath(), absFilePath);
 
     QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
 
-	QStringList fileTypes = *file->getFileTypes();
+    QStringList fileTypes = *file->getFileTypes();
 
-	stream << "\t\t\t\t<tr>" << Qt::endl;
-	stream << "\t\t\t\t\t<td><a href=\"" << pathFromhtmlToFile << "\">" << fileInfo.fileName() << "</a></td>" <<
+    stream << "\t\t\t\t<tr>" << Qt::endl;
+    stream << "\t\t\t\t\t<td><a href=\"" << pathFromhtmlToFile << "\">" << fileInfo.fileName() << "</a></td>" <<
         Qt::endl;
-	stream << "\t\t\t\t\t<td>" << file->getLogicalName() << "</td>" << Qt::endl;
-	
-	stream << "\t\t\t\t\t<td>";
-	if (buildCommand)
+    stream << "\t\t\t\t\t<td>" << file->getLogicalName() << "</td>" << Qt::endl;
+    
+    stream << "\t\t\t\t\t<td>";
+    if (buildCommand)
     {
-		stream << buildCommand->getCommand();
-	}
-	stream << "</td>" << Qt::endl;
+        stream << buildCommand->getCommand();
+    }
+    stream << "</td>" << Qt::endl;
 
-	stream << "\t\t\t\t\t<td>";
-	if (buildCommand)
+    stream << "\t\t\t\t\t<td>";
+    if (buildCommand)
     {
-		stream << buildCommand->getFlags();
-	}
-	stream << "</td>" << Qt::endl;
-	
-	stream << "\t\t\t\t\t<td>";
-	for (int i = 0; i < fileTypes.size(); ++i)
+        stream << buildCommand->getFlags();
+    }
+    stream << "</td>" << Qt::endl;
+    
+    stream << "\t\t\t\t\t<td>";
+    for (int i = 0; i < fileTypes.size(); ++i)
     {
-		stream << fileTypes.at(i);
-		if (i != fileTypes.size() - 1)
+        stream << fileTypes.at(i);
+        if (i != fileTypes.size() - 1)
         {
-			stream << ",<br>";
-		}
-	}
-	stream << "</td>" << Qt::endl;
-	
-	stream << "\t\t\t\t\t<td>" << file->getDescription() << "</td>" << Qt::endl;
-	stream << "\t\t\t\t</tr>" << Qt::endl;
+            stream << ",<br>";
+        }
+    }
+    stream << "</td>" << Qt::endl;
+    
+    stream << "\t\t\t\t\t<td>" << file->getDescription() << "</td>" << Qt::endl;
+    stream << "\t\t\t\t</tr>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -959,41 +964,41 @@ void DocumentGenerator::createComponentPicture(QStringList& pictureList)
 {
     QSharedPointer<Component> component = getComponent();
 
-	ComponentPreviewBox compBox(getLibraryHandler());
-	compBox.hide();
-	compBox.setComponent(component);
+    ComponentPreviewBox compBox(getLibraryHandler());
+    compBox.hide();
+    compBox.setComponent(component);
 
-	QFileInfo htmlInfo(getTargetPath());
-	QString compPicPath = htmlInfo.absolutePath(); 
-	compPicPath += "/";
-	compPicPath += component->getVlnv().toString(".");
-	compPicPath += ".png";
+    QFileInfo htmlInfo(getTargetPath());
+    QString compPicPath = htmlInfo.absolutePath(); 
+    compPicPath += "/";
+    compPicPath += component->getVlnv().toString(".");
+    compPicPath += ".png";
 
-	QFile compPicFile(compPicPath);
+    QFile compPicFile(compPicPath);
 
-	if (compPicFile.exists())
+    if (compPicFile.exists())
     {
-		compPicFile.remove();
-	}
+        compPicFile.remove();
+    }
 
-	// get the rect that bounds all items on box
-	QRectF boundingRect = compBox.itemsBoundingRect();
-	boundingRect.setHeight(boundingRect.height() + 2);
-	boundingRect.setWidth(boundingRect.width() + 2);
+    // get the rect that bounds all items on box
+    QRectF boundingRect = compBox.itemsBoundingRect();
+    boundingRect.setHeight(boundingRect.height() + 2);
+    boundingRect.setWidth(boundingRect.width() + 2);
 
-	// set the size of the picture
-	QPixmap compPic(boundingRect.size().toSize());
+    // set the size of the picture
+    QPixmap compPic(boundingRect.size().toSize());
 
-	// create the picture for the component
-	QPainter painter(&compPic);
-	painter.fillRect(compPic.rect(), QBrush(Qt::white));
-	compBox.scene()->render(&painter, compPic.rect(), boundingRect.toRect());
-	if (!compPic.save(&compPicFile, "PNG"))
+    // create the picture for the component
+    QPainter painter(&compPic);
+    painter.fillRect(compPic.rect(), QBrush(Qt::white));
+    compBox.scene()->render(&painter, compPic.rect(), boundingRect.toRect());
+    if (!compPic.save(&compPicFile, "PNG"))
     {
-		emit errorMessage(tr("Could not save picture %1").arg(compPicPath));
-	}
-	else
+        emit errorMessage(tr("Could not save picture %1").arg(compPicPath));
+    }
+    else
     {
-		pictureList.append(compPicPath);
-	}
+        pictureList.append(compPicPath);
+    }
 }

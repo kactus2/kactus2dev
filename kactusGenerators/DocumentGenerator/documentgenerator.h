@@ -40,40 +40,53 @@ class ViewDocumentGenerator;
 //-----------------------------------------------------------------------------
 class DocumentGenerator : public GeneralDocumentGenerator
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	/*!
-	 *  The constructor.
-	 *
-	 *      @param [in] handler                     Library, where the components reside.
-	 *      @param [in] vlnv                        VLNV of the component or design.
-	 *      @param [in] designWidgetFactory         Factory for making design widgets.
-	 *      @param [in] expressionFormatterFactory  Factory for making expression formatters.
-	 *      @param [in] parent                      The parent widget of the generator.
-	 */
-	DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, DesignWidgetFactory* designWidgetFactory,
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] handler                     Library, where the components reside.
+     *      @param [in] vlnv                        VLNV of the component or design.
+     *      @param [in] designWidgetFactory         Factory for making design widgets.
+     *      @param [in] expressionFormatterFactory  Factory for making expression formatters.
+     *      @param [in] parent                      The parent widget of the generator.
+     */
+    DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, DesignWidgetFactory* designWidgetFactory,
         ExpressionFormatterFactory* expressionFormatterFactory, QWidget* parent);
 
-	/*!
-	 *  The constructor for child generators.
-	 *
-	 *      @param [in] handler                     Library, where the components reside.
-	 *      @param [in] vlnv                        VLNV of the component or design.
-	 *      @param [in] objects                     The vlnvs that have been gone through already.
-	 *      @param [in] expressionFormatterFactory  The factory for making expression formatters.
+    /*!
+     *  The constructor for child generators.
+     *
+     *      @param [in] handler                     Library, where the components reside.
+     *      @param [in] vlnv                        VLNV of the component or design.
+     *      @param [in] objects                     The vlnvs that have been gone through already.
+     *      @param [in] expressionFormatterFactory  The factory for making expression formatters.
      *      @param [in] viewDocumentationGenerator  Generates documentation for views and instantiations.
-	 *      @param [in] parent                      The parent generator.
-	 */
+     *      @param [in] parent                      The parent generator.
+     */
     DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects,
         ExpressionFormatterFactory* expressionFormatterFactory, ViewDocumentGenerator* viewDocumentationGenerator,
         DocumentGenerator* parent);
-	
-	/*!
+    
+    /*!
      *  The destructor
      */
-	virtual ~DocumentGenerator();
+    virtual ~DocumentGenerator();
+    
+    enum DocumentFormat
+    {
+        HTML,
+        MD
+    };
+
+    /*!
+     *  Set the document format
+     *
+     *      @param [in] 
+     */
+    void setFormat(DocumentFormat format);
 
     /*!
      *  Write the documentation to the selected stream.
@@ -88,32 +101,32 @@ public:
      *
      *      @param [in] stream  The text stream to write the table of contents into.
      */
-    void writeHtmlHeader(QTextStream& stream);
-
-	/*!
-	 *  Write the table of contents for the component.
-	 *
-	 *      @param [in] componentNumber     The number for this component.
-	 *      @param [in] stream              The text stream to write the table of contents into.
-	 */
-	void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream);
-
-	/*!
-	 *  Write the documentation for the given component.
-	 *
-	 *      @param [in] stream          The text stream to write the documentation into.
-	 *      @param [in] targetPath      File path to the file to be written.
-	 *      @param [in] filesToInclude  List of file names that contain pictures needed to display the document.
-	 */
-	void writeDocumentation(QTextStream& stream, const QString& targetPath, QStringList& filesToInclude);
+    void writeHeader(QTextStream& stream);
 
     /*!
-	 *  Write the parameters and kactus2 parameters of the component.
-	 *
-	 *      @param [in] stream              The text stream to write the documentation into.
-	 *      @param [in] subHeaderNumber     The number that defines the sub-header.
-	 */
-	void writeParameters(QTextStream& stream, int& subHeaderNumber);
+     *  Write the table of contents for the component.
+     *
+     *      @param [in] componentNumber     The number for this component.
+     *      @param [in] stream              The text stream to write the table of contents into.
+     */
+    void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream);
+
+    /*!
+     *  Write the documentation for the given component.
+     *
+     *      @param [in] stream          The text stream to write the documentation into.
+     *      @param [in] targetPath      File path to the file to be written.
+     *      @param [in] filesToInclude  List of file names that contain pictures needed to display the document.
+     */
+    void writeDocumentation(QTextStream& stream, const QString& targetPath, QStringList& filesToInclude);
+
+    /*!
+     *  Write the parameters and kactus2 parameters of the component.
+     *
+     *      @param [in] stream              The text stream to write the documentation into.
+     *      @param [in] subHeaderNumber     The number that defines the sub-header.
+     */
+    void writeParameters(QTextStream& stream, int& subHeaderNumber);
 
     /*!
      *  Write the memory maps of the component.
@@ -154,29 +167,29 @@ public:
      */
     void writeFields(QSharedPointer <Register> currentRegister, QTextStream& stream);
 
-	/*!
-	 *  Write the ports of the component.
-	 *
-	 *      @param [in] stream              The text stream to write the documentation into.
-	 *      @param [in] subHeaderNumber     The number that defines the sub header.
-	 */
-	void writePorts(QTextStream& stream, int& subHeaderNumber);
+    /*!
+     *  Write the ports of the component.
+     *
+     *      @param [in] stream              The text stream to write the documentation into.
+     *      @param [in] subHeaderNumber     The number that defines the sub header.
+     */
+    void writePorts(QTextStream& stream, int& subHeaderNumber);
 
     /*!
-	 *  Write the interfaces of the component.
-	 *
-	 *      @param [in] stream              The text stream to write the documentation into.
-	 *      @param [in] subHeaderNumber     The number that defines the sub header.
-	 */
-	void writeInterfaces(QTextStream& stream, int& subHeaderNumber);
+     *  Write the interfaces of the component.
+     *
+     *      @param [in] stream              The text stream to write the documentation into.
+     *      @param [in] subHeaderNumber     The number that defines the sub header.
+     */
+    void writeInterfaces(QTextStream& stream, int& subHeaderNumber);
 
-	/*!
-	 *  Write the file sets of the component.
-	 *
-	 *      @param [in] stream              The text stream to write the documentation into.
-	 *      @param [in] subHeaderNumber     The number that defines the sub header.
-	 */
-	void writeFileSets(QTextStream& stream, int& subHeaderNumber);
+    /*!
+     *  Write the file sets of the component.
+     *
+     *      @param [in] stream              The text stream to write the documentation into.
+     *      @param [in] subHeaderNumber     The number that defines the sub header.
+     */
+    void writeFileSets(QTextStream& stream, int& subHeaderNumber);
 
     /*!
      *  Write the end of the document.
@@ -187,18 +200,18 @@ public:
 
 private:
     //! No copying. No assignment
-	DocumentGenerator(const DocumentGenerator& other);
-	DocumentGenerator& operator=(const DocumentGenerator& other);
+    DocumentGenerator(const DocumentGenerator& other);
+    DocumentGenerator& operator=(const DocumentGenerator& other);
 
-	/*!
+    /*!
      *  Write the header to the given stream.
-	 *
-	 *      @param [in] headerNumber    The number of the sub-header.
-	 *      @param [in] stream          The stream to write into.
-	 *      @param [in] text            The textual part of the header.
-	 *      @param [in] headerID        The id-tag for the header element.
-	 */
-	void writeSubHeader(const int headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
+     *
+     *      @param [in] headerNumber    The number of the sub-header.
+     *      @param [in] stream          The stream to write into.
+     *      @param [in] text            The textual part of the header.
+     *      @param [in] headerID        The id-tag for the header element.
+     */
+    void writeSubHeader(const int headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
 
     /*!
      *  Get the information for the reset values of the selected field.
@@ -216,38 +229,38 @@ private:
      */
     void writePortTable(QTextStream& stream, QString const& title, QList <QSharedPointer <Port> > ports);
 
-	/*!
+    /*!
      *  Write the details of a file
-	 *
-	 *      @param [in] file    Pointer to the file.
-	 *      @param [in] stream  The text stream to write into.
-	 */
-	void writeFile(QSharedPointer<File> file, QTextStream& stream);
+     *
+     *      @param [in] file    Pointer to the file.
+     *      @param [in] stream  The text stream to write into.
+     */
+    void writeFile(QSharedPointer<File> file, QTextStream& stream);
 
-	/*!
+    /*!
      *  Parse the child items for the document generator.
-	 *
-	 *      @param [in] objects     List of objects that have already been parsed so there won't be duplicate
+     *
+     *      @param [in] objects     List of objects that have already been parsed so there won't be duplicate
      *                              components in the generated document.
-	 */
-	void parseChildItems(QList<VLNV>& objects);
+     */
+    void parseChildItems(QList<VLNV>& objects);
 
-	/*!
+    /*!
      *  Create a picture for the component.
-	 *
-	 *      @param [in] pictureList     List of file names to add the path of the created picture to.
-	 */
-	void createComponentPicture(QStringList& pictureList);
+     *
+     *      @param [in] pictureList     List of file names to add the path of the created picture to.
+     */
+    void createComponentPicture(QStringList& pictureList);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! List contains pointers to the document generators under this generator.
-	QList<QSharedPointer<DocumentGenerator> > childInstances_;
+    //! List contains pointers to the document generators under this generator.
+    QList<QSharedPointer<DocumentGenerator> > childInstances_;
 
-	//! Pointer to the instance that owns the top document generator.
-	QWidget* parentWidget_;
+    //! Pointer to the instance that owns the top document generator.
+    QWidget* parentWidget_;
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
