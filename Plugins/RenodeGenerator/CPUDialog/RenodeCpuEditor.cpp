@@ -24,14 +24,15 @@
 //-----------------------------------------------------------------------------
 // Function: RenodeCpuEditor::RenodeCpuEditor()
 //-----------------------------------------------------------------------------
-RenodeCpuEditor::RenodeCpuEditor(QWidget *parent):
+RenodeCpuEditor::RenodeCpuEditor(QJsonObject const& configurationObject, QWidget *parent):
 CPUEditor(parent),
 renodeCPU_(),
 peripheralEditor_(new RenodePeripheralsEditor(this)),
 memoryEditor_(new RenodeMemoriesEditor(this)),
 cpuClassCombo_(new QComboBox(this)),
 cpuTypeEditor_(new QLineEdit(this)),
-cpuTimeProviderEditor_(new QLineEdit(this))
+cpuTimeProviderEditor_(new QLineEdit(this)),
+configurationObject_(configurationObject)
 {
     setupCpuClassEditor();
 
@@ -68,6 +69,7 @@ cpuTimeProviderEditor_(new QLineEdit(this))
 //-----------------------------------------------------------------------------
 void RenodeCpuEditor::setupCpuClassEditor()
 {
+    cpuClassCombo_->addItem("");
     cpuClassCombo_->addItem("Arm");
     cpuClassCombo_->addItem("CortexA7");
     cpuClassCombo_->addItem("CortexM");
@@ -84,6 +86,8 @@ void RenodeCpuEditor::setupCpuClassEditor()
     cpuClassCombo_->addItem("VexRiscv");
     cpuClassCombo_->addItem("X86");
     cpuClassCombo_->addItem("Xtensa");
+
+    cpuClassCombo_->setCurrentText("");
 }
 
 //-----------------------------------------------------------------------------
@@ -124,15 +128,18 @@ void RenodeCpuEditor::onHandleTimeProviderChange(QString const& newTimeProvider)
 //-----------------------------------------------------------------------------
 void RenodeCpuEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView)
 {
-    QVector<QSharedPointer<RenodeCPUDetailRoutes> > cpuDetails = RenodeUtilities::getRenodeCpuRoutes(library, component, activeView);
-    renodeCPU_ = cpuDetails.first();
+    QVector<QSharedPointer<RenodeCPUDetailRoutes> > cpuDetails = RenodeUtilities::getRenodeCpuRoutes(configurationObject_, library, component, activeView);
+    if (!cpuDetails.isEmpty())
+    {
+        renodeCPU_ = cpuDetails.first();
 
-    cpuClassCombo_->setCurrentText(renodeCPU_->getClassName());
-    cpuTypeEditor_->setText(renodeCPU_->getCpuType());
-    cpuTimeProviderEditor_->setText(renodeCPU_->getTimeProvider());
+        cpuClassCombo_->setCurrentText(renodeCPU_->getClassName());
+        cpuTypeEditor_->setText(renodeCPU_->getCpuType());
+        cpuTimeProviderEditor_->setText(renodeCPU_->getTimeProvider());
 
-    peripheralEditor_->setupPeripherals(renodeCPU_->getPeripherals());
-    memoryEditor_->setupMemories(renodeCPU_->getMemories());
+        peripheralEditor_->setupPeripherals(renodeCPU_->getPeripherals());
+        memoryEditor_->setupMemories(renodeCPU_->getMemories());
+    }
 
     connect(cpuClassCombo_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onHandleClassChange(QString const&)), Qt::UniqueConnection);
     connect(cpuTypeEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onHandleTypeChange(QString const&)), Qt::UniqueConnection);
@@ -145,7 +152,10 @@ void RenodeCpuEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<
 QVector<QSharedPointer<CPUDetailRoutes> > RenodeCpuEditor::getSelectedCPUs() const
 {
     QVector<QSharedPointer<CPUDetailRoutes> > defaultCPUs;
-    defaultCPUs.append(renodeCPU_);
+    if (renodeCPU_)
+    {
+        defaultCPUs.append(renodeCPU_);
+    }
 
     return defaultCPUs;
 }

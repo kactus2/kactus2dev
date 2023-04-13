@@ -158,7 +158,7 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
     SVDCPUEditor* cpuEditor(new SVDCPUEditor());
 
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames,
-        component->getFileSetNames(), cpuEditor, "SVD", utility->getParentWidget());
+        component->getFileSetNames(), cpuEditor, "SVD", 0, utility->getParentWidget());
     if (selectionDialog.exec() == QDialog::Accepted)
     {
         QVector<QSharedPointer<CPUDetailRoutes> > cpuRoutes = selectionDialog.getSelectedCPUs();

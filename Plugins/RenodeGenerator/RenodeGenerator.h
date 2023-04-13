@@ -55,8 +55,16 @@ public:
      *      @param [in] topComponent            The top component in the hierarchy to generate listing for.
      *      @param [in] componentPath           Path to the component folder.
      *      @param [in] cpuRoutes               CPU and its connected routes.
+     *      @param [in] createCpuFile           Flag for creating a CPU file.
+     *      @param [in] createMemoryFile        Flag for creating a memory file.
+     *      @param [in] createPeripheralFile    Flag for creating a peripherals file.
      */
-    void generate(QSharedPointer<Component> topComponent, QString const& componentPath, QVector<QSharedPointer<RenodeCPUDetailRoutes> > const& cpuRoutes);
+    void generate(QSharedPointer<Component> topComponent,
+        QString const& componentPath,
+        QVector<QSharedPointer<RenodeCPUDetailRoutes> > const& cpuRoutes,
+        bool createCpuFile,
+        bool createMemoryFile,
+        bool createPeripheralFile);
 
     /*!
      *  Get the generated files.
@@ -70,12 +78,21 @@ private:
     /*!
      *  Writes the CPU listing into Renode platform files.
      *
-     *      @param [in] topComponent    Top component of the design.
-     *      @param [in] componentPath   Path to the component folder.
-     *      @param [in] cpuRoute        The selected CPU route container.
-     *      @param [in] fileNames       Names of the generated Renode files.
+     *      @param [in] topComponent            Top component of the design.
+     *      @param [in] componentPath           Path to the component folder.
+     *      @param [in] cpuRoute                The selected CPU route container.
+     *      @param [in] fileNames               Names of the generated Renode files.
+     *      @param [in] createCpuFile           Flag for creating a CPU file.
+     *      @param [in] createMemoryFile        Flag for creating a memory file.
+     *      @param [in] createPeripheralFile    Flag for creating a peripherals file.
      */
-    void writeFile(QSharedPointer<Component> topComponent, QString const& componentPath, QSharedPointer<RenodeCPUDetailRoutes> cpuRoute, QStringList& fileNames);
+    void writeFile(QSharedPointer<Component> topComponent,
+        QString const& componentPath,
+        QSharedPointer<RenodeCPUDetailRoutes> cpuRoute,
+        QStringList& fileNames,
+        bool createCpuFile,
+        bool createMemoryFile,
+        bool createPeripheralFile);
 
     /*!
      *  Get the number of files containing the selected name.

@@ -30,7 +30,10 @@
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::CPUSelectionDialog()
 //-----------------------------------------------------------------------------
-CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library, QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType, QWidget *parent):
+CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
+    QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType,
+    QWidget* extraEditor, QWidget *parent, QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet,
+    QString const& configurationView):
 QDialog(parent),
 viewSelection_(new QComboBox(this)),
 fileSetSelection_(new QComboBox(this)),
@@ -39,7 +42,8 @@ library_(library),
 component_(topComponent),
 graphFactory_(library),
 cpuDetailEditor_(cpuEditor),
-folderLine_(new QLineEdit(this))
+folderLine_(new QLineEdit(this)),
+extraEditor_(extraEditor)
 {
     cpuDetailEditor_->setParent(this);
 
@@ -60,6 +64,8 @@ folderLine_(new QLineEdit(this))
 
     fileSetBox_->setCheckable(true);
 
+    setupConfiguration(configurationFolder, saveToFileSet, configurationFileSet, configurationView);
+
     setupLayout();
 
     connect(viewSelection_, SIGNAL(currentIndexChanged(int)), this, SLOT(onViewChanged()), Qt::UniqueConnection);
@@ -67,6 +73,31 @@ folderLine_(new QLineEdit(this))
     connect(folderLine_, SIGNAL(textChanged(QString const&)), cpuDetailEditor_, SIGNAL(changeInSelectedPath(QString const&)), Qt::UniqueConnection);
 
     setMinimumWidth(840);
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::setupConfiguration()
+//-----------------------------------------------------------------------------
+void CPUSelectionDialog::setupConfiguration(QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet, QString const& configurationView)
+{
+    if (!configurationFolder.isEmpty())
+    {
+        folderLine_->setText(configurationFolder);
+        emit changeInSelectedPath(configurationFolder);
+    }
+
+    fileSetBox_->setChecked(saveToFileSet);
+    if (!configurationFileSet.isEmpty())
+    {
+        fileSetSelection_->setCurrentText(configurationFileSet);
+    }
+
+    if (!configurationView.isEmpty())
+    {
+        viewSelection_->setCurrentText(configurationView);
+    }
+
+    onViewChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -109,6 +140,12 @@ void CPUSelectionDialog::setupLayout()
     leftLayout->addLayout(viewLayout);
     leftLayout->addWidget(fileSetBox_);
     leftLayout->addWidget(folderbox);
+
+    if (extraEditor_ != 0)
+    {
+        leftLayout->addWidget(extraEditor_);
+    }
+
     leftLayout->addStretch(2);
 
     QHBoxLayout* topLayout(new QHBoxLayout());
@@ -171,6 +208,14 @@ QString CPUSelectionDialog::getTargetFileSet() const
 QString CPUSelectionDialog::getTargetFolder() const
 {
     return folderLine_->text();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUSelectionDialog::getView()
+//-----------------------------------------------------------------------------
+QString CPUSelectionDialog::getView() const
+{
+    return viewSelection_->currentText();
 }
 
 //-----------------------------------------------------------------------------
