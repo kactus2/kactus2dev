@@ -378,6 +378,7 @@ void tst_DocumentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 
     unsigned int runningNumber = 0;
 
+    generator->setFormat(DocumentGenerator::DocumentFormat::HTML);
     generator->writeTableOfContents(runningNumber, stream);
 
     targetFile.close();

@@ -300,20 +300,23 @@ void tst_MarkdownGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 
     unsigned int runningNumber = 0;
 
+    generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     generator->writeTableOfContents(runningNumber, stream);
 
     targetFile.close();
-
+    
     QString expectedOutput(
-        "1. Component " + topComponent_->getVlnv().getVendor() + " - " + topComponent_->getVlnv().getLibrary() +
-        " - " + topComponent_->getVlnv().getName() + " - " + topComponent_->getVlnv().getVersion() + "\n" +
-        "\t" + "[1.1 Kactus2 attributes](#" + topComponent_->getVlnv().toString() + ".kts_params)" + "\n" +
-        "\t" + "[1.2 General parameters](#" + topComponent_->getVlnv().toString() + ".parameters)" + "\n" +
-        "\t" + "[1.3 Memory maps](#" + topComponent_->getVlnv().toString() + ".memoryMaps)" + "\n" +
-        "\t" + "[1.4 Ports](#" + topComponent_->getVlnv().toString() + ".ports)" + "\n" +
-        "\t" + "[1.5 Interfaces](#" + topComponent_->getVlnv().toString() + ".interfaces)" + "\n" +
-        "\t" + "[1.6 File sets](#" + topComponent_->getVlnv().toString() + ".fileSets)" + "\n" +
-        "\t" + "[1.7 Views](#" + topComponent_->getVlnv().toString() + ".views)" + "\n"
+        "1. [Component " + topComponent_->getVlnv().getVendor() + " - " + topComponent_->getVlnv().getLibrary() +
+        " - " + topComponent_->getVlnv().getName() + " - " + topComponent_->getVlnv().getVersion() + "]" +
+        "(#" + topComponent_->getVlnv().toString() + ")  " + "\n"
+
+        "\t" + "1.1. [Kactus2 attributes](#" + topComponent_->getVlnv().toString() + ".kts_params)" + "  " + "\n" +
+        "\t" + "1.2. [General parameters](#" + topComponent_->getVlnv().toString() + ".parameters)" + "  " + "\n" +
+        "\t" + "1.3. [Memory maps](#" + topComponent_->getVlnv().toString() + ".memoryMaps)" + "  " + "\n" +
+        "\t" + "1.4. [Ports](#" + topComponent_->getVlnv().toString() + ".ports)" + "  " + "\n" +
+        "\t" + "1.5. [Bus interfaces](#" + topComponent_->getVlnv().toString() + ".interfaces)" + "  " + "\n" +
+        "\t" + "1.6. [File sets](#" + topComponent_->getVlnv().toString() + ".fileSets)" + "  " + "\n" +
+        "\t" + "1.7. [Views](#" + topComponent_->getVlnv().toString() + ".views)" + "  " + "\n"
     );
 
     checkOutputFile(expectedOutput);
