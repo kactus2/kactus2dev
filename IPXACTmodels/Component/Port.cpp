@@ -485,9 +485,12 @@ void Port::setAdHocVisible(bool visible)
         }
     }
 
-    QSharedPointer<Kactus2Placeholder> adHocVisibility (new Kactus2Placeholder(
-        QStringLiteral("kactus2:adHocVisible")));
-    getVendorExtensions()->append(adHocVisibility);
+    if (visible)
+    {
+        QSharedPointer<Kactus2Placeholder> adHocVisibility(new Kactus2Placeholder(
+            QStringLiteral("kactus2:adHocVisible")));
+        getVendorExtensions()->append(adHocVisibility);
+    }
 }
 
 //-----------------------------------------------------------------------------
