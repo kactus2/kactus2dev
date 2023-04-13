@@ -457,7 +457,10 @@ void tst_DocumentGenerator::testParametersWrittenWithOnlyTopComponent()
 
     int subHeaderNumber = 1;
 
+    generator->setFormat(DocumentGenerator::DocumentFormat::HTML);
     generator->writeParameters(stream, subHeaderNumber);
+
+    QFile::copy(targetPath_, "generatedOutputPERSISTENT.html");
 
     targetFile.close();
 

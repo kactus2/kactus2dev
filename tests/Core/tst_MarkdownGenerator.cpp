@@ -324,6 +324,54 @@ void tst_MarkdownGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 
 void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
 {
+    QSharedPointer <Parameter> parameter = createTestParameter("parameter", "10", "Description", "ID_parameter",
+        "1", "0");
+    QSharedPointer <Parameter> refParameter = createTestParameter("refParameter", "ID_parameter", "Describe this",
+        "ID-refer", "", "");
+
+    topComponent_->getParameters()->append(parameter);
+    topComponent_->getParameters()->append(refParameter);
+    topComponent_->setHierarchy(KactusAttribute::FLAT);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+    
+    generator->setFormat(DocumentGenerator::DocumentFormat::MD);
+    generator->writeParameters(stream, subHeaderNumber);
+
+    targetFile.close();
+
+    QString vlnvString(topComponent_->getVlnv().toString());
+
+    QString expectedOutput(
+        "## 0.1 Kactus2 attributes <a id=\"" + vlnvString + ".kts_params\">  \n"
+        "**Product hierarchy:** " +
+            KactusAttribute::hierarchyToString(topComponent_->getHierarchy()) + "  \n"
+        "**Component implementation:** " +
+            KactusAttribute::implementationToString(topComponent_->getImplementation()) + "  \n"
+        "**Component firmness:**" + 
+            KactusAttribute::firmnessToString(topComponent_->getFirmness()) + "  \n"
+        "## 0.2 General parameters <a id=\"" + vlnvString + ".parameters\">  \n\n"
+        "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|\n"
+        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|\n"
+        "|" + parameter->name() + "|" + parameter->getType() + "|" +
+            parameter->getValue() + "|" + parameter->getValueResolve()  + "|" +
+            parameter->getVectorLeft() + "|" + parameter->getVectorRight() + "|" +
+            parameter->getArrayLeft() + "|" + parameter->getArrayRight() + "|" +
+            parameter->description() + "|\n"
+        "|" + refParameter->name() + "|" + refParameter->getType() + "|" +
+            refParameter->getValue() + "|" + refParameter->getValueResolve() + "|" +
+            refParameter->getVectorLeft() + "|" + refParameter->getVectorRight() + "|" +
+            refParameter->getArrayLeft() + "|" + refParameter->getArrayRight() + "|" +
+            refParameter->description() + "|\n"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
