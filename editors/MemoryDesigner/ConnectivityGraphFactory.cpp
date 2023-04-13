@@ -459,7 +459,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
 
     for (auto reset : *field->getResets())
     {
-        fieldItem->addChild(createFieldResetItem(reset, fieldIdentifier, addressableUnitBits));
+        fieldItem->addChild(createFieldResetItem(reset, fieldIdentifier, addressableUnitBits, fieldItem->getWidth()));
     }
 
     return fieldItem;
@@ -488,7 +488,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createEnumeratedValueItem(
 // Function: ConnectivityGraphFactory::createFieldResetItem()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryItem> ConnectivityGraphFactory::createFieldResetItem(QSharedPointer<FieldReset> fieldReset,
-    QString const& fieldIdentifier, int const& addressUnitBits) const
+    QString const& fieldIdentifier, int const& addressUnitBits, QString const& fieldWidth) const
 {
     QString resetType = fieldReset->getResetTypeReference();
     if (resetType.isEmpty())
@@ -506,9 +506,17 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createFieldResetItem(QShare
     qulonglong decimalResetValue = resetValue.toULongLong();
     resetValue.setNum(decimalResetValue, 2);
 
-    QString resetMask = expressionParser_->parseExpression(fieldReset->getResetMask());
-    qulonglong decimalResetMask = resetMask.toULongLong();
-    resetMask.setNum(decimalResetMask, 2);
+    QString resetMask;
+    if (fieldReset->getResetMask().isEmpty())
+    {
+        resetMask = QString("1").repeated(fieldWidth.toInt());
+    } 
+    else
+    {
+        resetMask = expressionParser_->parseExpression(fieldReset->getResetMask());
+        qulonglong decimalResetMask = resetMask.toULongLong();
+        resetMask.setNum(decimalResetMask, 2);
+    } 
 
     resetItem->setResetValue(resetValue);
     resetItem->setResetMask(resetMask);

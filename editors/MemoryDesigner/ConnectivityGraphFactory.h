@@ -218,11 +218,12 @@ private:
      *      @param [in] fieldReset          The selected field reset.
      *      @param [in] fieldIdentifier     Identifier of the containing field.
      *      @param [in] addressUnitBits     The number of address unit bits in the memory map.
+     *      @param [in] fieldWidth          The bit width of the field.
      *
      *      @return Representation of the reset.
      */
     QSharedPointer<MemoryItem> createFieldResetItem(QSharedPointer<FieldReset> fieldReset,
-        QString const& fieldIdentifier, int const& addressUnitBits) const;
+        QString const& fieldIdentifier, int const& addressUnitBits, QString const& fieldWidth) const;
 
     /*!
      *  Create a representation of a reset within a register.
