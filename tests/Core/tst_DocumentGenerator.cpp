@@ -13,6 +13,7 @@
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
 #include <kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h>
+#include <kactusGenerators/DocumentGenerator/HtmlWriter.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 #include <tests/MockObjects/DesignWidgetFactoryMock.h>
@@ -282,8 +283,8 @@ void tst_DocumentGenerator::testFileHeaderIsWritten()
     QTextStream stream(&targetFile);
     
     generationTime_ = QDateTime::currentDateTime();
-
-    generator->writeHtmlHeader(stream);
+    generator->setFormat(DocumentGenerator::DocumentFormat::HTML);
+    generator->writeHeader(stream);
 
     targetFile.close();
 

@@ -3,7 +3,8 @@
 #include <QDateTime>
 #include <QSettings>
 
-MarkdownWriter::MarkdownWriter()
+MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component) :
+    component_(component)
 {
 }
 

@@ -6,11 +6,11 @@
 // Date: 12.4.2023
 //
 // Description:
-// Writes markdown documentation
+// Writes HTML documentation
 //-----------------------------------------------------------------------------
 
-#ifndef MARKDOWNWRITER_H
-#define MARKDOWNWRITER_H
+#ifndef HTMLWRITER_H
+#define HTMLWRITER_H
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -19,15 +19,17 @@
 #include <QTextStream>
 #include <QSharedPointer>
 
-class MarkdownWriter : public DocumentationWriter
+class HtmlWriter : public DocumentationWriter
 {
 public:
-    MarkdownWriter(QSharedPointer<Component> component);
-    virtual ~MarkdownWriter();
+    HtmlWriter(QSharedPointer<Component> component);
+    virtual ~HtmlWriter();
     void writeHeader(QTextStream& stream);
+    //void writeParameters();
 private:
+
     // The current component
     QSharedPointer<Component> component_;
 };
 
-#endif // MARKDOWNWRITER_H
+#endif // HTMLWRITER_H

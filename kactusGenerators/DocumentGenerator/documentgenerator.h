@@ -13,6 +13,7 @@
 #define DOCUMENTGENERATOR_H
 
 #include <kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h>
+#include <kactusGenerators/DocumentGenerator/DocumentationWriter.h>
 
 #include <KactusAPI/include/ExpressionFormatterFactory.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
@@ -204,6 +205,20 @@ private:
     DocumentGenerator& operator=(const DocumentGenerator& other);
 
     /*!
+     *  Get the expression formatter factory.
+     *
+     *      @return The factory used for creating expression formatters.
+     */
+    ExpressionFormatterFactory* getExpressionFormatterFactory() const;
+
+    /*!
+     *  Create an expression formatter using the parameters of the contained component.
+     *
+     *      @return The created expression formatter.
+     */
+    ExpressionFormatter* createExpressionFormatter() const;
+
+    /*!
      *  Write the header to the given stream.
      *
      *      @param [in] headerNumber    The number of the sub-header.
@@ -255,7 +270,22 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+    
+    //! Pointer to the instance that manages the library.
+    LibraryInterface* libraryHandler_;
 
+    //! Pointer to the component whose documentation this generator writes.
+    QSharedPointer<Component> component_;
+
+    //! The running number that used for writing the numbered headers.
+    unsigned int componentNumber_;
+
+    //! The file path to the html-file being written.
+    QString targetPath_;
+
+    //! The factory for creating expression formatters.
+    ExpressionFormatterFactory* expressionFormatterFactory_;
+    
     //! List contains pointers to the document generators under this generator.
     QList<QSharedPointer<DocumentGenerator> > childInstances_;
 
@@ -267,6 +297,8 @@ private:
 
     //! Document generator for component views.
     ViewDocumentGenerator* viewDocumentationGenerator_;
+
+    DocumentationWriter* writer_;
 };
 
 #endif // DOCUMENTGENERATOR_H

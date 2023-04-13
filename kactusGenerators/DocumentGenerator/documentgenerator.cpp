@@ -16,6 +16,8 @@
 
 #include <kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h>
 #include <kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h>
+#include <kactusGenerators/DocumentGenerator/MarkdownWriter.h>
+#include <kactusGenerators/DocumentGenerator/HtmlWriter.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/common/Document.h>
@@ -57,11 +59,13 @@
 //-----------------------------------------------------------------------------
 DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv,
     DesignWidgetFactory* designWidgetFactory, ExpressionFormatterFactory* expressionFormatterFactory,
-    QWidget* parent): 
-GeneralDocumentGenerator(handler, expressionFormatterFactory, parent),
-childInstances_(),
-parentWidget_(parent),
-expressionFormatter_(),
+    QWidget* parent) :
+    GeneralDocumentGenerator(handler, expressionFormatterFactory, parent),
+    expressionFormatterFactory_(expressionFormatterFactory),
+    childInstances_(),
+    parentWidget_(parent),
+    expressionFormatter_(),
+    component_(),
 viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
 {
     Q_ASSERT(handler);
@@ -76,11 +80,9 @@ viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatt
         this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 
     // parse the model for the component
+    component_ = getLibraryHandler()->getModel(vlnv).dynamicCast<Component>();
 
-    QSharedPointer<Component> component = getLibraryHandler()->getModel(vlnv).dynamicCast<Component>();
-    setComponent(component);
-
-    if (!component)
+    if (!component_)
     {
         emit errorMessage("VLNV was not found in the library.");
     }
@@ -119,7 +121,7 @@ viewDocumentationGenerator_(viewDocumentationGenerator)
         parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     QSharedPointer<Document> libComp = getLibraryHandler()->getModel(vlnv);
-    setComponent(libComp.staticCast<Component>());
+    component_ = libComp.staticCast<Component>();
 
     expressionFormatter_ = createExpressionFormatter();
 
@@ -140,7 +142,7 @@ DocumentGenerator::~DocumentGenerator()
 void DocumentGenerator::parseChildItems( QList<VLNV>& objects )
 {
     // ask the component for it's hierarchical references
-    QList<VLNV> refs = getComponent()->getHierRefs();
+    QList<VLNV> refs = component_->getHierRefs();
     foreach (VLNV ref, refs)
     {
         QSharedPointer<Design> design = getLibraryHandler()->getDesign(ref);
@@ -168,7 +170,14 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects )
 
 void DocumentGenerator::setFormat(DocumentFormat format)
 {
-    
+    if (format == DocumentFormat::HTML)
+    {
+        writer_ = new HtmlWriter(component_);
+    }
+    else if (format == DocumentFormat::MD)
+    {
+        writer_ = new MarkdownWriter(component_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -179,15 +188,14 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QApplication::processEvents();
 
-    QSharedPointer<Component> component = getComponent();
-    if (!component)
+    if (!component_)
     {
         emit errorMessage("VLNV was not found in the library.");
         return;
     }
 
-    Q_ASSERT(getLibraryHandler()->contains(component->getVlnv()));
-    Q_ASSERT(getLibraryHandler()->getDocumentType(component->getVlnv()) == VLNV::COMPONENT);
+    Q_ASSERT(getLibraryHandler()->contains(component_->getVlnv()));
+    Q_ASSERT(getLibraryHandler()->getDocumentType(component_->getVlnv()) == VLNV::COMPONENT);
 
     // this function can only be called for the top document generator
     Q_ASSERT(parentWidget_);
@@ -222,19 +230,19 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
     // if the generated file is saved
     if (button == QMessageBox::Yes)
     {
-        QString xmlPath = getLibraryHandler()->getPath(component->getVlnv());
+        QString xmlPath = getLibraryHandler()->getPath(component_->getVlnv());
 
         // get the relative path to add to file set
         QString relativePath = General::getRelativePath(xmlPath, getTargetPath());
 
         QString fileSetName("Documentation");
-        QSharedPointer<FileSet> documentationFileSet = component->getFileSet(fileSetName);
+        QSharedPointer<FileSet> documentationFileSet = component_->getFileSet(fileSetName);
 
         // if the documentation file set was not found. Create one
         if (!documentationFileSet)
         {
             documentationFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("documentation")));
-            component->getFileSets()->append(documentationFileSet);
+            component_->getFileSets()->append(documentationFileSet);
         }
 
         QSettings settings;
@@ -257,7 +265,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
             picFile->setDescription(tr("Preview picture needed by the html document."));
         }
 
-        getLibraryHandler()->writeModelToFile(component);
+        getLibraryHandler()->writeModelToFile(component_);
     }
 }
 
@@ -266,20 +274,21 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeHeader(QTextStream& stream)
 {
-    QSettings settings;
+    writer_->writeHeader(stream);
+    //QSettings settings;
 
-    // write the top of the html document
-    stream << DocumentGeneratorHTML::docType() << Qt::endl;
-    stream << "<html>" << Qt::endl;
-    stream << "\t<head>" << Qt::endl;
-    stream << "\t" << DocumentGeneratorHTML::encoding() << Qt::endl;
-    stream << "\t\t<title>Kactus2 generated documentation for component " <<
-        getComponent()->getVlnv().getName() << " " << getComponent()->getVlnv().getVersion() << "</title>" << Qt::endl;
-    stream << "\t</head>" << Qt::endl;
-    stream << "\t<body>" << Qt::endl;
-    stream << "\t\t<h6>This document was generated by Kactus2 on " <<
-        QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss") << " by user " <<
-        settings.value("General/Username").toString() << "</h6>" << Qt::endl;
+    //// write the top of the html document
+    //stream << DocumentGeneratorHTML::docType() << Qt::endl;
+    //stream << "<html>" << Qt::endl;
+    //stream << "\t<head>" << Qt::endl;
+    //stream << "\t" << DocumentGeneratorHTML::encoding() << Qt::endl;
+    //stream << "\t\t<title>Kactus2 generated documentation for component " <<
+    //    component_->getVlnv().getName() << " " << component_->getVlnv().getVersion() << "</title>" << Qt::endl;
+    //stream << "\t</head>" << Qt::endl;
+    //stream << "\t<body>" << Qt::endl;
+    //stream << "\t\t<h6>This document was generated by Kactus2 on " <<
+    //    QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss") << " by user " <<
+    //    settings.value("General/Username").toString() << "</h6>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -291,7 +300,7 @@ void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTex
     ++componentNumber;
     setNumber(componentNumber);
 
-    QSharedPointer<Component> component = getComponent();
+    QSharedPointer<Component> component = component_;
     QString vlnvHeader = "\t\t" + DocumentGeneratorHTML::indent() + "<a href=\"#" + component->getVlnv().toString();
 
     stream << "\t\t<a href=\"#" << component->getVlnv().toString() << "\">" << myNumber() << ". Component" <<
@@ -359,7 +368,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 {
     setTargetPath(targetPath);
 
-    QSharedPointer<Component> component = getComponent();
+    QSharedPointer<Component> component = component_;
 
     // write the component header
     stream << "\t\t<h1><a id=\"" << component->getVlnv().toString() << "\">" << myNumber() << ". Component " <<
@@ -412,7 +421,7 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 {
     writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "kts_params");
     
-    QSharedPointer<Component> component = getComponent();
+    QSharedPointer<Component> component = component_;
 
     stream << "\t\t<p>" << Qt::endl;
     stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Product hierarchy: </strong>" <<
@@ -443,7 +452,7 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumber)
 {
-    QSharedPointer<Component> component = getComponent();
+    QSharedPointer<Component> component = component_;
     if (!component->getMemoryMaps()->isEmpty())
     {
         writeSubHeader(subHeaderNumber, stream, "Memory maps", "memoryMaps");
@@ -501,7 +510,7 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
 
         foreach (QSharedPointer <AddressBlock> currentAddressBlock, addressBlocks)
         {
-            stream << "\t\t\t<h3><a id=\"" << getComponent()->getVlnv().toString() << ".addressBlock." <<
+            stream << "\t\t\t<h3><a id=\"" << component_->getVlnv().toString() << ".addressBlock." <<
                 currentAddressBlock->name() << "\">" << myNumber() << "." << subHeaderNumber << "." <<
                 memoryMapNumber << "." << addressBlockNumber << " " << currentAddressBlock->name() <<
                 "</a></h3>" << Qt::endl;
@@ -563,7 +572,7 @@ void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > register
 
         foreach (QSharedPointer<Register> currentRegister, registers)
         {
-            stream << "\t\t\t<h3><a id=\"" << getComponent()->getVlnv().toString() << ".register." <<
+            stream << "\t\t\t<h3><a id=\"" << component_->getVlnv().toString() << ".register." <<
                 currentRegister->name() << "\">" << myNumber() << "." << subHeaderNumber << "." <<
                 memoryMapNumber << "." << addressBlockNumber << "." << registerNumber << " " <<
                 currentRegister->name() << "</a></h3>" << Qt::endl;
@@ -635,7 +644,7 @@ void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QT
         foreach (QSharedPointer<Field> currentField, *currentRegister->getFields())
         {
             stream << "\t\t\t\t<tr>" << Qt::endl;
-            stream << "\t\t\t\t\t<td><a id=\"" << getComponent()->getVlnv().toString() << ".field." <<
+            stream << "\t\t\t\t\t<td><a id=\"" << component_->getVlnv().toString() << ".field." <<
                 currentField->name() << "\">" << currentField->name() << "</a></td>" << Qt::endl;
             stream << "\t\t\t\t\t<td>";
             if (!currentField->getBitOffset().isEmpty())
@@ -704,12 +713,12 @@ QString DocumentGenerator::getFieldResetInfo(QSharedPointer<Field> field) const
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
 {
-    if (getComponent()->hasPorts())
+    if (component_->hasPorts())
     {
         writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
 
         QString tableTitle = "List of all ports the component has.";
-        const QList<QSharedPointer<Port> > ports = *getComponent()->getPorts().data();
+        const QList<QSharedPointer<Port> > ports = *component_->getPorts().data();
 
         writePortTable(stream, tableTitle, ports);
 
@@ -722,7 +731,7 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 {
-    QSharedPointer<Component> component = getComponent();
+    QSharedPointer<Component> component = component_;
     if (component->hasInterfaces())
     {
         writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
@@ -770,7 +779,7 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 {
-    QSharedPointer<Component> component = getComponent();
+    QSharedPointer<Component> component = component_;
     if (component->hasFileSets())
     {
         writeSubHeader(subHeaderNumber, stream, "File sets", "fileSets");
@@ -859,12 +868,28 @@ void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
 }
 
 //-----------------------------------------------------------------------------
+// Function: GeneralDocumentGenerator::getExpressionFormatterFactory()
+//-----------------------------------------------------------------------------
+ExpressionFormatterFactory* DocumentGenerator::getExpressionFormatterFactory() const
+{
+    return expressionFormatterFactory_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneralDocumentGenerator::createExpressionFormatter()
+//-----------------------------------------------------------------------------
+ExpressionFormatter* DocumentGenerator::createExpressionFormatter() const
+{
+    return expressionFormatterFactory_->makeExpressionFormatter(component_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: documentgenerator::writeSubHeader()
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeSubHeader( const int headerNumber, QTextStream& stream, const QString& text,
     const QString& headerID)
 {
-   stream << "\t\t<h2><a id=\"" << getComponent()->getVlnv().toString() << "." << headerID << "\">" <<
+   stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerID << "\">" <<
        myNumber() << "." << headerNumber << " " << text << "</a></h2>" << Qt::endl;
 }
 
@@ -882,7 +907,7 @@ void DocumentGenerator::writePortTable(QTextStream& stream, QString const& title
     foreach (QSharedPointer<Port> port, ports)
     {
         stream << "\t\t\t\t<tr>" << Qt::endl;
-        stream << "\t\t\t\t\t<td><a id=\"" << getComponent()->getVlnv().toString() << ".port." << port->name() << 
+        stream << "\t\t\t\t\t<td><a id=\"" << component_->getVlnv().toString() << ".port." << port->name() << 
             "\">" <<  port->name() << "</a></td>" << Qt::endl;
         stream << "\t\t\t\t\t<td>" << DirectionTypes::direction2Str(port->getDirection()) << "</td>" << Qt::endl;
         stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(port->getLeftBound()) <<
@@ -912,7 +937,7 @@ void DocumentGenerator::writeFile( QSharedPointer<File> file, QTextStream& strea
 {
     QString relativeFilePath = file->name();
     QString absFilePath =
-        General::getAbsolutePath(getLibraryHandler()->getPath(getComponent()->getVlnv()), relativeFilePath);
+        General::getAbsolutePath(getLibraryHandler()->getPath(component_->getVlnv()), relativeFilePath);
     QFileInfo fileInfo(absFilePath);
 
     // get relative path from html file to the file
@@ -962,7 +987,7 @@ void DocumentGenerator::writeFile( QSharedPointer<File> file, QTextStream& strea
 //-----------------------------------------------------------------------------
 void DocumentGenerator::createComponentPicture(QStringList& pictureList)
 {
-    QSharedPointer<Component> component = getComponent();
+    QSharedPointer<Component> component = component_;
 
     ComponentPreviewBox compBox(getLibraryHandler());
     compBox.hide();

@@ -171,7 +171,7 @@ tst_MarkdownGenerator::tst_MarkdownGenerator() :
     library_(this),
     designWidgetFactory_(&library_),
     expressionFormatterFactory_(),
-    targetPath_("./generatorOutput.html"),
+    targetPath_("./generatorOutput.md"),
     generatorParentWidget_(new QWidget)
 {
 }
