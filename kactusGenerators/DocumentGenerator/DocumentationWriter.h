@@ -21,6 +21,7 @@ public:
     virtual ~DocumentationWriter() = default;
 
     virtual void writeHeader(QTextStream& stream) = 0;
+    virtual void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream) = 0;
 };
 
 #endif // DOCUMENTATIONWRITER_H

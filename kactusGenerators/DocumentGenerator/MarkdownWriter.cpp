@@ -2,6 +2,7 @@
 
 #include <QDateTime>
 #include <QSettings>
+#include <QString>
 
 MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component) :
     component_(component)
@@ -21,4 +22,64 @@ void MarkdownWriter::writeHeader(QTextStream& stream)
         QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss") <<
         " by user " << settings.value("General/Username").toString() <<
         Qt::endl;
+}
+
+void MarkdownWriter::writeTableOfContents(unsigned int& componentNumber, QTextStream& stream)
+{
+    QString vlnv(component_->getVlnv().toString());
+
+    // Write component header
+    stream << componentNumber << ". [" << "Component " << component_->getVlnv().toString(" - ") << "]" <<
+        "(#" << vlnv << ")  " << Qt::endl;
+
+    // subHeader is running number that counts the number of sub headers for component
+    int subHeader = 1;
+
+    // Write component subheaders. Component has at least kactus parameters.
+    stream << "\t" << componentNumber << "." << subHeader << ". " << "[Kactus2 attributes" <<
+        "](#" << vlnv << ".kts_params)  " << Qt::endl;
+
+    ++subHeader;
+
+    if (component_->hasParameters())
+    {
+        stream << "\t" << componentNumber << "." << subHeader << ". " << "[General parameters]" <<
+            "(#" << vlnv << ".parameters)  " << Qt::endl;
+        ++subHeader;
+    }
+
+    if (!component_->getMemoryMaps()->isEmpty())
+    {
+        stream << "\t" << componentNumber << "." << subHeader << ". " << "[Memory maps]" <<
+            "(#" << vlnv << ".memoryMaps)  " << Qt::endl;
+        ++subHeader;
+    }
+
+    if (component_->hasPorts())
+    {
+        stream << "\t" << componentNumber << "." << subHeader << ". " << "[Ports]" <<
+            "(#" << vlnv << ".ports)  " << Qt::endl;
+        ++subHeader;
+    }
+    
+    if (component_->hasInterfaces())
+    {
+        stream << "\t" << componentNumber << "." << subHeader << ". " << "[Bus interfaces]" <<
+            "(#" << vlnv << ".interfaces)  " << Qt::endl;
+        ++subHeader;
+    }
+    
+    if (component_->hasFileSets())
+    {
+        stream << "\t" << componentNumber << "." << subHeader << ". " << "[File sets]" <<
+            "(#" << vlnv << ".fileSets)  " << Qt::endl;
+        ++subHeader;
+    }
+
+    if (component_->hasViews())
+    {
+        stream << "\t" << componentNumber << "." << subHeader << ". " << "[Views]" <<
+            "(#" << vlnv << ".views)  " << Qt::endl;
+        ++subHeader;
+    }
 }

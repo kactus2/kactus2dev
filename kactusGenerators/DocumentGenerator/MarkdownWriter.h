@@ -25,6 +25,7 @@ public:
     MarkdownWriter(QSharedPointer<Component> component);
     virtual ~MarkdownWriter();
     void writeHeader(QTextStream& stream);
+    void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream);
 private:
     // The current component
     QSharedPointer<Component> component_;

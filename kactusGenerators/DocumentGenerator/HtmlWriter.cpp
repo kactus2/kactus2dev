@@ -32,3 +32,57 @@ void HtmlWriter::writeHeader(QTextStream& stream)
         QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss") << " by user " <<
         settings.value("General/Username").toString() << "</h6>" << Qt::endl;
 }
+
+void HtmlWriter::writeTableOfContents(unsigned int& componentNumber, QTextStream& stream)
+{
+    QString vlnvHeader = "\t\t" + DocumentGeneratorHTML::indent() + "<a href=\"#" + component_->getVlnv().toString();
+
+    stream << "\t\t<a href=\"#" << component_->getVlnv().toString() << "\">" << componentNumber << ". Component" <<
+        DocumentGeneratorHTML::space() << component_->getVlnv().toString(" - ") << "</a><br>" << Qt::endl;
+
+    // subHeader is running number that counts the number of sub headers for component
+    int subHeader = 1;
+
+    // component always has kactus parameters
+    stream << vlnvHeader << ".kts_params\">" << componentNumber << "." << subHeader << ". Kactus2 attributes</a><br>" <<
+        Qt::endl;
+    ++subHeader;
+
+    if (component_->hasParameters())
+    {
+        stream << vlnvHeader << ".parameters\">" << componentNumber << "." << subHeader <<
+            ". General parameters</a><br>" << Qt::endl;
+        ++subHeader;
+    }
+
+    if (!component_->getMemoryMaps()->isEmpty())
+    {
+        stream << vlnvHeader << ".memoryMaps\">" << componentNumber << "." << subHeader << ". Memory maps</a><br>" <<
+            Qt::endl;
+        ++subHeader;
+    }
+
+    if (component_->hasPorts())
+    {
+        stream << vlnvHeader << ".ports\">" << componentNumber << "." << subHeader << ". Ports</a><br>" << Qt::endl;
+        ++subHeader;
+    }
+
+    if (component_->hasInterfaces())
+    {
+        stream << vlnvHeader << ".interfaces\">" << componentNumber << "." << subHeader << ". Bus interfaces</a><br>" <<
+            Qt::endl;
+        ++subHeader;
+    }
+
+    if (component_->hasFileSets())
+    {
+        stream << vlnvHeader << ".fileSets\">" << componentNumber << "." << subHeader << ". File sets</a><br>" << Qt::endl;
+        ++subHeader;
+    }
+
+    if (component_->hasViews())
+    {
+        stream << vlnvHeader << ".views\">" << componentNumber << "." << subHeader << ". Views</a><br>" << Qt::endl;
+    }
+}

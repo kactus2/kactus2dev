@@ -25,6 +25,7 @@ public:
     HtmlWriter(QSharedPointer<Component> component);
     virtual ~HtmlWriter();
     void writeHeader(QTextStream& stream);
+    void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream);
     //void writeParameters();
 private:
 
