@@ -81,6 +81,11 @@ private:
     void readOutputFile();
 
     /*!
+     *  Compare expected output to the actual output
+     */
+    void checkOutputFile(QString const& expectedOutput);
+
+    /*!
      *  Create a parameter used in the tests.
      *
      *      @param [in] name            Name of the parameter.
@@ -247,117 +252,71 @@ void tst_MarkdownGenerator::testFileHeaderIsWritten()
         generationTime_.toString("dd.MM.yyyy hh:mm:ss") + " by user testUser\n"
     );
 
-    readOutputFile();
-
-    if (!output_.contains(expectedOutput))
-    {
-        QStringList outputLines = output_.split("\n");
-        QStringList expectedLines = expectedOutput.split("\n");
-
-        QVERIFY(outputLines.count() >= expectedLines.count());
-
-        int lineOffset = outputLines.indexOf(expectedLines.first());
-        if (lineOffset == -1)
-        {
-            readOutputFile();
-            QCOMPARE(output_, expectedOutput);
-        }
-        else
-        {
-            int lineCount = expectedLines.count();
-            for (int i = 0; i < lineCount; i++)
-            {
-                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
-            }
-        }
-    }
-    else if (output_.count(expectedOutput) != 1)
-    {
-        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
-            " times in output.").toLocal8Bit());
-    }
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 {
-    //QList <QSharedPointer<Parameter> > componentParameters;
-    //QSharedPointer<Parameter> parameter = createTestParameter("parameter", "1", "", "P-ID", "", "");
-    //componentParameters.append(parameter);
+    QList <QSharedPointer<Parameter> > componentParameters;
+    QSharedPointer<Parameter> parameter = createTestParameter("parameter", "1", "", "P-ID", "", "");
+    componentParameters.append(parameter);
 
-    //QList <QSharedPointer <Register> > registers;
-    //QSharedPointer <Register> testRegister = createTestRegister("register", "1", "1", "1", "");
-    //QSharedPointer <Field> testField = createTestField("field", "", "1", "8");
-    //testRegister->getFields()->append(testField);
-    //registers.append(testRegister);
+    QList <QSharedPointer <Register> > registers;
+    QSharedPointer <Register> testRegister = createTestRegister("register", "1", "1", "1", "");
+    QSharedPointer <Field> testField = createTestField("field", "", "1", "8");
+    testRegister->getFields()->append(testField);
+    registers.append(testRegister);
 
-    //QList <QSharedPointer <AddressBlock> > addressBlocks;
-    //QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "", "'h0", "4", "32",
-    //    registers);
-    //addressBlocks.append(testAddressBlock);
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "", "'h0", "4", "32",
+        registers);
+    addressBlocks.append(testAddressBlock);
 
-    //QList <QSharedPointer <MemoryMap> > memoryMaps;
-    //QSharedPointer<MemoryMap> testMemoryMap = createTestMemoryMap("memoryMap", "", 8, addressBlocks);
-    //memoryMaps.append(testMemoryMap);
+    QList <QSharedPointer <MemoryMap> > memoryMaps;
+    QSharedPointer<MemoryMap> testMemoryMap = createTestMemoryMap("memoryMap", "", 8, addressBlocks);
+    memoryMaps.append(testMemoryMap);
 
-    //QSharedPointer<Port> port = createTestPort("port", "10", "1", "", "", "");
+    QSharedPointer<Port> port = createTestPort("port", "10", "1", "", "", "");
 
-    //QSharedPointer<BusInterface> busInterface(new BusInterface());
-    //busInterface->setName("busInterface");
+    QSharedPointer<BusInterface> busInterface(new BusInterface());
+    busInterface->setName("busInterface");
 
-    //QSharedPointer<FileSet> fileset(new FileSet("fileSet"));
+    QSharedPointer<FileSet> fileset(new FileSet("fileSet"));
 
-    //QSharedPointer<View> view(new View("view"));
+    QSharedPointer<View> view(new View("view"));
 
-    //topComponent_->getParameters()->append(componentParameters);
-    //topComponent_->getPorts()->append(port);
-    //topComponent_->getBusInterfaces()->append(busInterface);
-    //topComponent_->getFileSets()->append(fileset);
-    //topComponent_->getViews()->append(view);
-    //topComponent_->getMemoryMaps()->append(memoryMaps);
+    topComponent_->getParameters()->append(componentParameters);
+    topComponent_->getPorts()->append(port);
+    topComponent_->getBusInterfaces()->append(busInterface);
+    topComponent_->getFileSets()->append(fileset);
+    topComponent_->getViews()->append(view);
+    topComponent_->getMemoryMaps()->append(memoryMaps);
 
-    //QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
-    //QFile targetFile(targetPath_);
-    //targetFile.open(QFile::WriteOnly);
-    //QTextStream stream(&targetFile);
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
 
-    //unsigned int runningNumber = 0;
+    unsigned int runningNumber = 0;
 
-    //generator->writeTableOfContents(runningNumber, stream);
+    generator->writeTableOfContents(runningNumber, stream);
 
-    //targetFile.close();
+    targetFile.close();
 
-    //QString expectedOutput(
-    //    /*"\t\t<a href=\"#" + topComponent_->getVlnv().toString() + "\">1. Component" + getSpaceString() +
-    //    topComponent_->getVlnv().getVendor() + " - " + topComponent_->getVlnv().getLibrary() + " - " +
-    //    topComponent_->getVlnv().getName() + " - " + topComponent_->getVlnv().getVersion() + "</a><br>\n"
-    //    "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv().toString() +
-    //    ".kts_params\">1.1. Kactus2 attributes</a><br>\n"
-    //    "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv().toString() +
-    //    ".parameters\">1.2. General parameters</a><br>\n"
-    //    "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv().toString() +
-    //    ".memoryMaps\">1.3. Memory maps</a><br>\n"
-    //    "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv().toString() +
-    //    ".ports\">1.4. Ports</a><br>\n"
-    //    "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv().toString() +
-    //    ".interfaces\">1.5. Bus interfaces</a><br>\n"
-    //    "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv().toString() +
-    //    ".fileSets\">1.6. File sets</a><br>\n"
-    //    "\t\t" + getIndentString() + "<a href=\"#" + topComponent_->getVlnv().toString() +
-    //    ".views\">1.7. Views</a><br>\n"*/
+    QString expectedOutput(
+        "1. Component " + topComponent_->getVlnv().getVendor() + " - " + topComponent_->getVlnv().getLibrary() +
+        " - " + topComponent_->getVlnv().getName() + " - " + topComponent_->getVlnv().getVersion() + "\n" +
+        "\t" + "[1.1 Kactus2 attributes](#" + topComponent_->getVlnv().toString() + ".kts_params)" + "\n" +
+        "\t" + "[1.2 General parameters](#" + topComponent_->getVlnv().toString() + ".parameters)" + "\n" +
+        "\t" + "[1.3 Memory maps](#" + topComponent_->getVlnv().toString() + ".memoryMaps)" + "\n" +
+        "\t" + "[1.4 Ports](#" + topComponent_->getVlnv().toString() + ".ports)" + "\n" +
+        "\t" + "[1.5 Interfaces](#" + topComponent_->getVlnv().toString() + ".interfaces)" + "\n" +
+        "\t" + "[1.6 File sets](#" + topComponent_->getVlnv().toString() + ".fileSets)" + "\n" +
+        "\t" + "[1.7 Views](#" + topComponent_->getVlnv().toString() + ".views)" + "\n"
+    );
 
-    //    "1. Component " + topComponent_->getVlnv().getVendor() + " - " + topComponent_->getVlnv().getLibrary() +
-    //    " - " + topComponent_->getVlnv().getName() + " - " + topComponent_->getVlnv().getVersion() + "\n" +
-    //    "\t" + "[1.1 Kactus2 attributes](#" + topComponent_->getVlnv().toString() + ".kts_params)" + "\n" +
-    //    "\t" + "[1.2 General parameters](#" + topComponent_->getVlnv().toString() + ".parameters)" + "\n" +
-    //    "\t" + "[1.3 Memory maps](#" + topComponent_->getVlnv().toString() + ".memoryMaps)" + "\n" +
-    //    "\t" + "[1.4 Ports](#" + topComponent_->getVlnv().toString() + ".ports)" + "\n" +
-    //    "\t" + "[1.5 Interfaces](#" + topComponent_->getVlnv().toString() + ".interfaces)" + "\n" +
-    //    "\t" + "[1.6 File sets](#" + topComponent_->getVlnv().toString() + ".fileSets)" + "\n" +
-    //    "\t" + "[1.7 Views](#" + topComponent_->getVlnv().toString() + ".views)" + "\n"
-    //);
-
-    //readOutputFile();
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
@@ -433,14 +392,65 @@ void tst_MarkdownGenerator::readOutputFile()
     outputFile.close();
 }
 
+void tst_MarkdownGenerator::checkOutputFile(QString const& expectedOutput)
+{
+    readOutputFile();
+
+    if (!output_.contains(expectedOutput))
+    {
+        QStringList outputLines = output_.split("\n");
+        QStringList expectedLines = expectedOutput.split("\n");
+
+        QVERIFY(outputLines.count() >= expectedLines.count());
+
+        int lineOffset = outputLines.indexOf(expectedLines.first());
+
+        if (lineOffset == -1)
+        {
+            readOutputFile();
+            QCOMPARE(output_, expectedOutput);
+        }
+        else
+        {
+            int lineCount = expectedLines.count();
+            for (int i = 0; i < lineCount; i++)
+            {
+                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
+            }
+        }
+    }
+    else if (output_.count(expectedOutput) != 1)
+    {
+        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput)) +
+            " times in output.").toLocal8Bit());
+    }
+}
+
 QSharedPointer<Parameter> tst_MarkdownGenerator::createTestParameter(QString const& name, QString const& value, QString const& description, QString const& uuID, QString const& arrayLeft, QString const& arrayRight)
 {
-    return QSharedPointer<Parameter>();
+    QSharedPointer<Parameter> parameter(new Parameter);
+    parameter->setName(name);
+    parameter->setValue(value);
+    parameter->setDescription(description);
+    parameter->setValueId(uuID);
+    parameter->setArrayLeft(arrayLeft);
+    parameter->setArrayRight(arrayRight);
+
+    return parameter;
 }
 
 QSharedPointer<Port> tst_MarkdownGenerator::createTestPort(QString const& name, QString const& leftBound, QString const& rightBound, QString const& defaultValue, QString const& arrayLeft, QString const& arrayRight)
 {
-    return QSharedPointer<Port>();
+    QSharedPointer<Port> newPort(new Port);
+    newPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);
+    newPort->setName(name);
+    newPort->setLeftBound(leftBound);
+    newPort->setRightBound(rightBound);
+    newPort->setDefaultValue(defaultValue);
+    newPort->setArrayLeft(arrayLeft);
+    newPort->setArrayRight(arrayRight);
+
+    return newPort;
 }
 
 QList<QSharedPointer<ConfigurableElementValue>> tst_MarkdownGenerator::createConfigurableElementvalues(QSharedPointer<Component> component)
@@ -450,22 +460,64 @@ QList<QSharedPointer<ConfigurableElementValue>> tst_MarkdownGenerator::createCon
 
 QSharedPointer<Field> tst_MarkdownGenerator::createTestField(QString const& name, QString const& description, QString const& offset, QString const& width)
 {
-    return QSharedPointer<Field>();
+    QSharedPointer <Field> testField(new Field);
+    testField->setName(name);
+    testField->setDescription(description);
+    testField->setBitOffset(offset);
+    testField->setBitWidth(width);
+    testField->setVolatile(false);
+    testField->setAccess(AccessTypes::READ_ONLY);
+
+    return testField;
 }
 
 QSharedPointer<Register> tst_MarkdownGenerator::createTestRegister(QString const& name, QString const& offset, QString const& size, QString const& dimension, QString const& description)
 {
-    return QSharedPointer<Register>();
+    QSharedPointer<Register> testRegister(new Register);
+    testRegister->setName(name);
+    testRegister->setAddressOffset(offset);
+    testRegister->setSize(size);
+    testRegister->setDimension(dimension);
+    testRegister->setDescription(description);
+    testRegister->setVolatile(true);
+    testRegister->setAccess(AccessTypes::READ_WRITE);
+
+    return testRegister;
 }
 
 QSharedPointer<AddressBlock> tst_MarkdownGenerator::createTestAddressBlock(QString const& name, QString const& description, QString const& baseAddress, QString const& range, QString const& width, QList<QSharedPointer<Register>> registers)
 {
-    return QSharedPointer<AddressBlock>();
+    QSharedPointer <AddressBlock> testAddressBlock(new AddressBlock);
+    testAddressBlock->setName(name);
+    testAddressBlock->setUsage(General::REGISTER);
+    testAddressBlock->setDescription(description);
+    testAddressBlock->setBaseAddress(baseAddress);
+    testAddressBlock->setRange(range);
+    testAddressBlock->setWidth(width);
+    testAddressBlock->setAccess(AccessTypes::READ_WRITE);
+    testAddressBlock->setVolatile(true);
+
+    for (QSharedPointer<RegisterBase> testRegister : registers)
+    {
+        testAddressBlock->getRegisterData()->append(testRegister);
+    }
+
+    return testAddressBlock;
 }
 
 QSharedPointer<MemoryMap> tst_MarkdownGenerator::createTestMemoryMap(QString const& name, QString const& description, int addressUnitbits, QList<QSharedPointer<AddressBlock>> addressBlocks)
 {
-    return QSharedPointer<MemoryMap>();
+    QSharedPointer<MemoryMap> memoryMap(new MemoryMap);
+    memoryMap->setName(name);
+    memoryMap->setAddressUnitBits(QString::number(addressUnitbits));
+    memoryMap->setDescription(description);
+
+    for (QSharedPointer<AddressBlock> includedAddressBlock : addressBlocks)
+    {
+        memoryMap->getMemoryBlocks()->append(includedAddressBlock);
+    }
+
+    return memoryMap;
 }
 
 QString tst_MarkdownGenerator::getSpaceString()
