@@ -6,6 +6,7 @@
 
 #include <QDateTime>
 #include <QSettings>
+#include <QStringLiteral>
 
 namespace HTML
 {
@@ -13,7 +14,7 @@ namespace HTML
 
     const QString INDENT("&nbsp;&nbsp;&nbsp;");
 
-    const QString TABLE("<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\ title=\"");
+    const QString TABLE("<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\" title=\"");
 
     const QString DOCTYPE("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" "
         "\"http://www.w3.org/TR/html4/strict.dtd\">");
@@ -130,7 +131,62 @@ void HtmlWriter::writeTableOfContents(QTextStream& stream)
 void HtmlWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
     int subHeaderNumber)
 {
+    QStringList headers({
+        QStringLiteral("Name"),
+        QStringLiteral("Type"),
+        QStringLiteral("Value"),
+        QStringLiteral("Resolve"),
+        QStringLiteral("Bit vector left"),
+        QStringLiteral("Bit vector right"),
+        QStringLiteral("Array left"),
+        QStringLiteral("Array right"),
+        QStringLiteral("Description")
+    });
+
+    writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
+
+    // Write table element
+    stream << indent(3) << HTML::TABLE << "List of parameters defined for the component\">" << Qt::endl;
+
+    // Write header row
+    stream << indent(4) << "<tr>" << Qt::endl;
     
+    for (auto const& header : headers)
+    {
+        stream << indent(5) << "<th>" << header << "</th>" << Qt::endl;
+    }
+
+    stream << indent(4) << "</tr>" << Qt::endl;
+
+    // Write parameters
+    for (auto const& parameter : *component_->getParameters())
+    {
+        stream << indent(4) << "<tr>" << Qt::endl;
+        
+        stream << indent(5) << "<td>" << parameter->name() << "</td>" << Qt::endl;
+        stream << indent(5) << "<td>" << parameter->getType() << "</td>" << Qt::endl;
+        stream << indent(5) << "<td>" <<
+            formatter->formatReferringExpression(parameter->getValue()) << "</td>" << Qt::endl;
+        
+        stream << indent(5) << "<td>" << parameter->getValueResolve() << "</td>" << Qt::endl;
+        stream << indent(5) << "<td>" <<
+            formatter->formatReferringExpression(parameter->getVectorLeft()) << "</td>" << Qt::endl;
+        
+        stream << indent(5) << "<td>" <<
+            formatter->formatReferringExpression(parameter->getVectorRight()) << "</td>" << Qt::endl;
+        
+        stream << indent(5) << "<td>" <<
+            formatter->formatReferringExpression(parameter->getArrayLeft()) << "</td>" << Qt::endl;
+        
+        stream << indent(5) << "<td>" <<
+            formatter->formatReferringExpression(parameter->getArrayRight()) << "</td>" << Qt::endl;
+        
+        stream << indent(5) << "<td>" << parameter->description() << "</td>" << Qt::endl;
+
+        stream << indent(4) << "</tr>" << Qt::endl;
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
 }
 
 void HtmlWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream, 
@@ -143,4 +199,10 @@ void HtmlWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& strea
 void HtmlWriter::setComponentNumber(unsigned int componentNumber)
 {
     componentNumber_ = componentNumber;
+}
+
+QString HtmlWriter::indent(int n) const
+{
+    auto tab = QStringLiteral("\t");
+    return tab.repeated(n);
 }

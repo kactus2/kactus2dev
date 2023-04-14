@@ -37,6 +37,9 @@ public:
     void setComponentNumber(unsigned int componentNumber);
 private:
 
+    // Returns n tabs for indenting HTML
+    QString indent(int n) const;
+
     // The current component
     QSharedPointer<Component> component_;
 
