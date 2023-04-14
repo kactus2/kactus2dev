@@ -30,7 +30,7 @@ public:
     void writeKactusAttributes(QTextStream& stream);
     void writeTableOfContents(QTextStream& stream);
     void writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-        unsigned int& subHeaderNumber);
+        int& subHeaderNumber);
     void writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId);
 

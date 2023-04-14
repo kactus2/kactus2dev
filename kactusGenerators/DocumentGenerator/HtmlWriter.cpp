@@ -1,12 +1,32 @@
 #include "HtmlWriter.h"
 
-#include <kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h>
 #include <IPXACTmodels/Component/Component.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QDateTime>
 #include <QSettings>
+
+namespace HTML
+{
+    const QString SPACE("&nbsp;");
+
+    const QString INDENT("&nbsp;&nbsp;&nbsp;");
+
+    const QString TABLE("<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\ title=\"");
+
+    const QString DOCTYPE("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" "
+        "\"http://www.w3.org/TR/html4/strict.dtd\">");
+
+    const QString ENCODING("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
+
+    const QString VALID_W3C_STRICT("\t\t<p>\n"
+        "\t\t\t<a href=\"https://validator.w3.org/#validate_by_upload\">\n"
+        "\t\t\t<img src=\"http://www.w3.org/Icons/valid-html401\""
+        "alt=\"Valid HTML 4.01 Strict\" height=\"31\"""width=\"88\">\n"
+        "\t\t\t</a>\n"
+        "\t\t</p>");
+}
 
 HtmlWriter::HtmlWriter(QSharedPointer<Component> component) :
     component_(component),
@@ -23,10 +43,10 @@ void HtmlWriter::writeHeader(QTextStream& stream)
     QSettings settings;
     
     // write the top of the html document
-    stream << DocumentGeneratorHTML::docType() << Qt::endl;
+    stream << HTML::DOCTYPE << Qt::endl;
     stream << "<html>" << Qt::endl;
     stream << "\t<head>" << Qt::endl;
-    stream << "\t" << DocumentGeneratorHTML::encoding() << Qt::endl;
+    stream << "\t" << HTML::ENCODING << Qt::endl;
     stream << "\t\t<title>Kactus2 generated documentation for component " <<
         component_->getVlnv().getName() << " " << component_->getVlnv().getVersion() << "</title>" << Qt::endl;
     stream << "\t</head>" << Qt::endl;
@@ -39,13 +59,13 @@ void HtmlWriter::writeHeader(QTextStream& stream)
 void HtmlWriter::writeKactusAttributes(QTextStream& stream)
 {
     stream << "\t\t<p>" << Qt::endl;
-    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Product hierarchy: </strong>" <<
+    stream << "\t\t\t<strong>" << HTML::INDENT << "Product hierarchy: </strong>" <<
         KactusAttribute::hierarchyToString(component_->getHierarchy()) << "<br>" << Qt::endl;
 
-    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component implementation: </strong>" <<
+    stream << "\t\t\t<strong>" << HTML::INDENT << "Component implementation: </strong>" <<
         KactusAttribute::implementationToString(component_->getImplementation()) << "<br>" << Qt::endl;
 
-    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component firmness: </strong>" <<
+    stream << "\t\t\t<strong>" << HTML::INDENT << "Component firmness: </strong>" <<
         KactusAttribute::firmnessToString(component_->getFirmness()) << "<br>" << Qt::endl;
 
     stream << "\t\t</p>" << Qt::endl;
@@ -53,10 +73,10 @@ void HtmlWriter::writeKactusAttributes(QTextStream& stream)
 
 void HtmlWriter::writeTableOfContents(QTextStream& stream)
 {
-    QString vlnvHeader = "\t\t" + DocumentGeneratorHTML::indent() + "<a href=\"#" + component_->getVlnv().toString();
+    QString vlnvHeader = "\t\t" + HTML::INDENT + "<a href=\"#" + component_->getVlnv().toString();
 
     stream << "\t\t<a href=\"#" << component_->getVlnv().toString() << "\">" << componentNumber_ << ". Component" <<
-        DocumentGeneratorHTML::space() << component_->getVlnv().toString(" - ") << "</a><br>" << Qt::endl;
+        HTML::SPACE << component_->getVlnv().toString(" - ") << "</a><br>" << Qt::endl;
 
     // subHeader is running number that counts the number of sub headers for component
     int subHeader = 1;
@@ -106,7 +126,7 @@ void HtmlWriter::writeTableOfContents(QTextStream& stream)
 }
 
 void HtmlWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-    unsigned int& subHeaderNumber)
+    int& subHeaderNumber)
 {
     
 }
