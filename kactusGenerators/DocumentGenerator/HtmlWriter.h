@@ -27,14 +27,14 @@ public:
     HtmlWriter(QSharedPointer<Component> component);
     virtual ~HtmlWriter();
     void writeHeader(QTextStream& stream);
-    void writeKactusAttributes(QTextStream& stream);
+    void writeKactusAttributes(QTextStream& stream, int subHeaderNumber);
     void writeTableOfContents(QTextStream& stream);
     void writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-        int& subHeaderNumber);
-    void writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream,
+        int subHeaderNumber);
+    void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId);
 
-    void setComponentNumber(unsigned int const& componentNumber);
+    void setComponentNumber(unsigned int componentNumber);
 private:
 
     // The current component

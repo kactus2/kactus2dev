@@ -56,8 +56,10 @@ void HtmlWriter::writeHeader(QTextStream& stream)
         settings.value("General/Username").toString() << "</h6>" << Qt::endl;
 }
 
-void HtmlWriter::writeKactusAttributes(QTextStream& stream)
+void HtmlWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
 {
+    writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "attributes");
+
     stream << "\t\t<p>" << Qt::endl;
     stream << "\t\t\t<strong>" << HTML::INDENT << "Product hierarchy: </strong>" <<
         KactusAttribute::hierarchyToString(component_->getHierarchy()) << "<br>" << Qt::endl;
@@ -126,19 +128,19 @@ void HtmlWriter::writeTableOfContents(QTextStream& stream)
 }
 
 void HtmlWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-    int& subHeaderNumber)
+    int subHeaderNumber)
 {
     
 }
 
-void HtmlWriter::writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream, 
+void HtmlWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream, 
     QString const& headerText, QString const& headerId)
 {
     stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerId << "\">" <<
         componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
 }
 
-void HtmlWriter::setComponentNumber(unsigned int const& componentNumber)
+void HtmlWriter::setComponentNumber(unsigned int componentNumber)
 {
     componentNumber_ = componentNumber;
 }

@@ -353,8 +353,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeKactusAttributes(QTextStream& stream, int& subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "attributes");
-    writer_->writeKactusAttributes(stream);
+    writer_->writeKactusAttributes(stream, subHeaderNumber);
     ++subHeaderNumber;
 }
 
@@ -366,6 +365,7 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
     if (component_->hasParameters())
     {
         writer_->writeParameters(stream, expressionFormatter_, subHeaderNumber);
+        ++subHeaderNumber;
     }
 }
 

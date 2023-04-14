@@ -25,8 +25,10 @@ void MarkdownWriter::writeHeader(QTextStream& stream)
         Qt::endl;
 }
 
-void MarkdownWriter::writeKactusAttributes(QTextStream& stream)
+void MarkdownWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
 {
+    writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "attributes");
+
     stream << "**Product hierarchy:** " <<
         KactusAttribute::hierarchyToString(component_->getHierarchy()) << "  " << Qt::endl
         << "**Component implementation:** " <<
@@ -96,11 +98,11 @@ void MarkdownWriter::writeTableOfContents(QTextStream& stream)
 }
 
 void MarkdownWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-    int& subHeaderNumber)
+    int subHeaderNumber)
 {
     writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
 
-    QStringList headers({        
+    QStringList headers({
         QStringLiteral("Name"),
         QStringLiteral("Type"),
         QStringLiteral("Value"),
@@ -136,14 +138,14 @@ void MarkdownWriter::writeParameters(QTextStream& stream, ExpressionFormatter* f
     }
 }
 
-void MarkdownWriter::writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream,
+void MarkdownWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
     QString const& headerText, QString const& headerId)
 {
     stream << "## " << componentNumber_ << "." << subHeaderNumber << " " << headerText << " <a id=\"" <<
         component_->getVlnv().toString() << "." << headerId << "\">  " << Qt::endl << Qt::endl;
 }
 
-void MarkdownWriter::setComponentNumber(unsigned int const& componentNumber)
+void MarkdownWriter::setComponentNumber(unsigned int componentNumber)
 {
     componentNumber_ = componentNumber;
 }
