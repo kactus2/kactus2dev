@@ -344,12 +344,10 @@ void tst_MarkdownGenerator::testAttributesWrittenWithOnlyTopComponent()
 
     QString expectedOutput(
         "## 0.1 Kactus2 attributes <a id=\"" + topComponent_->getVlnv().toString() + ".attributes\">  \n"
-        "**Product hierarchy:** " +
-        KactusAttribute::hierarchyToString(topComponent_->getHierarchy()) + "  \n"
-        "**Component implementation:** " +
-        KactusAttribute::implementationToString(topComponent_->getImplementation()) + "  \n"
-        "**Component firmness:** " +
-        KactusAttribute::firmnessToString(topComponent_->getFirmness()) + "  \n"
+        "\n"
+        "**Product hierarchy:** Flat  \n"
+        "**Component implementation:** SW  \n"
+        "**Component firmness:** Fixed  \n"
     );
 
     checkOutputFile(expectedOutput);
