@@ -66,7 +66,8 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     parentWidget_(parent),
     expressionFormatter_(),
     component_(),
-viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
+    componentNumber_(1),
+    viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
 {
     Q_ASSERT(handler);
     Q_ASSERT(parent);
@@ -209,7 +210,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
 
     stream << "\t\t<p>" << Qt::endl;
     stream << "\t\t<strong>Table of contents</strong><br>" << Qt::endl;
-    writeTableOfContents(runningNumber, stream);
+    writeTableOfContents(stream);
     stream << "\t\t</p>" << Qt::endl;
 
     QStringList pictureList;
@@ -280,18 +281,15 @@ void DocumentGenerator::writeHeader(QTextStream& stream)
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeTableOfContents()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTextStream& stream )
+void DocumentGenerator::writeTableOfContents(QTextStream& stream)
 {
-    //// increase the running number and save this instance's number
-    ++componentNumber;
-    componentNumber_ = componentNumber;
-
-    writer_->writeTableOfContents(componentNumber_, stream);
+    writer_->setComponentNumber(componentNumber_);
+    writer_->writeTableOfContents(stream);
 
     // tell each child to write it's table of contents
     foreach (QSharedPointer<DocumentGenerator> generator, childInstances_)
     {
-        generator->writeTableOfContents(componentNumber, stream);
+        generator->writeTableOfContents(stream);
     }
 }
 
@@ -350,18 +348,18 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 }
 
 //-----------------------------------------------------------------------------
-// Function: documentgenerator::writeParameters()
+// Function: documentgenerator::writeKactusAttributes()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumber)
+void DocumentGenerator::writeKactusAttributes(QTextStream& stream, int& subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "kts_params");
-    
+    writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "attributes");
+
     QSharedPointer<Component> component = component_;
 
     stream << "\t\t<p>" << Qt::endl;
     stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Product hierarchy: </strong>" <<
         KactusAttribute::hierarchyToString(component->getHierarchy()) << "<br>" << Qt::endl;
-    
+
     stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component implementation: </strong>" <<
         KactusAttribute::implementationToString(component->getImplementation()) << "<br>" << Qt::endl;
 
@@ -370,15 +368,23 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 
     stream << "\t\t</p>" << Qt::endl;
     ++subHeaderNumber;
+}
 
-    if (component->hasParameters())
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeParameters()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumber)
+{
+    writeKactusAttributes(stream, subHeaderNumber);
+
+    if (component_->hasParameters())
     {
         writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
 
         QString parameterTabs = QStringLiteral("\t\t\t");
         GeneralDocumentGenerator::writeParameters(stream,
             QStringLiteral("List of parameters defined for the component"), parameterTabs,
-            component->getParameters(), expressionFormatter_);
+            component_->getParameters(), expressionFormatter_);
     }
 }
 
@@ -821,11 +827,13 @@ ExpressionFormatter* DocumentGenerator::createExpressionFormatter() const
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeSubHeader()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeSubHeader( const int headerNumber, QTextStream& stream, const QString& text,
+void DocumentGenerator::writeSubHeader(const unsigned int& subHeaderNumber, QTextStream& stream, const QString& text,
     const QString& headerID)
 {
-   stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerID << "\">" <<
-       myNumber() << "." << headerNumber << " " << text << "</a></h2>" << Qt::endl;
+    writer_->writeSubHeader(subHeaderNumber, stream, text, headerID);
+
+    /*stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerID << "\">" <<
+       myNumber() << "." << headerNumber << " " << text << "</a></h2>" << Qt::endl;*/
 }
 
 //-----------------------------------------------------------------------------

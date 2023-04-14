@@ -48,6 +48,7 @@ private slots:
     void testFileHeaderIsWritten();
     void testTableOfContentsIsWrittenWithOnlyTopComponent();
 
+    void testAttributesWrittenWithOnlyTopComponent();
     void testParametersWrittenWithOnlyTopComponent();
 
     void testMemoryMapsWrittenWithTopComponent();
@@ -301,7 +302,7 @@ void tst_MarkdownGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     unsigned int runningNumber = 0;
 
     generator->setFormat(DocumentGenerator::DocumentFormat::MD);
-    generator->writeTableOfContents(runningNumber, stream);
+    generator->writeTableOfContents(stream);
 
     targetFile.close();
     
@@ -310,13 +311,45 @@ void tst_MarkdownGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
         " - " + topComponent_->getVlnv().getName() + " - " + topComponent_->getVlnv().getVersion() + "]" +
         "(#" + topComponent_->getVlnv().toString() + ")  " + "\n"
 
-        "\t" + "1.1. [Kactus2 attributes](#" + topComponent_->getVlnv().toString() + ".kts_params)" + "  " + "\n" +
+        "\t" + "1.1. [Kactus2 attributes](#" + topComponent_->getVlnv().toString() + ".attributes)" + "  " + "\n" +
         "\t" + "1.2. [General parameters](#" + topComponent_->getVlnv().toString() + ".parameters)" + "  " + "\n" +
         "\t" + "1.3. [Memory maps](#" + topComponent_->getVlnv().toString() + ".memoryMaps)" + "  " + "\n" +
         "\t" + "1.4. [Ports](#" + topComponent_->getVlnv().toString() + ".ports)" + "  " + "\n" +
         "\t" + "1.5. [Bus interfaces](#" + topComponent_->getVlnv().toString() + ".interfaces)" + "  " + "\n" +
         "\t" + "1.6. [File sets](#" + topComponent_->getVlnv().toString() + ".fileSets)" + "  " + "\n" +
         "\t" + "1.7. [Views](#" + topComponent_->getVlnv().toString() + ".views)" + "  " + "\n"
+    );
+
+    checkOutputFile(expectedOutput);
+}
+
+void tst_MarkdownGenerator::testAttributesWrittenWithOnlyTopComponent()
+{
+    topComponent_->setHierarchy(KactusAttribute::FLAT);
+    topComponent_->setImplementation(KactusAttribute::SW);
+    topComponent_->setFirmness(KactusAttribute::FIXED);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    int subHeaderNumber = 1;
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    generator->setFormat(DocumentGenerator::DocumentFormat::MD);
+    generator->writeKactusAttributes(stream, subHeaderNumber);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "## 0.1 Kactus2 attributes <a id=\"" + topComponent_->getVlnv().toString() + ".attributes\">  \n"
+        "**Product hierarchy:** " +
+        KactusAttribute::hierarchyToString(topComponent_->getHierarchy()) + "  \n"
+        "**Component implementation:** " +
+        KactusAttribute::implementationToString(topComponent_->getImplementation()) + "  \n"
+        "**Component firmness:**" +
+        KactusAttribute::firmnessToString(topComponent_->getFirmness()) + "  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -331,7 +364,6 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
 
     topComponent_->getParameters()->append(parameter);
     topComponent_->getParameters()->append(refParameter);
-    topComponent_->setHierarchy(KactusAttribute::FLAT);
 
     QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
@@ -339,7 +371,7 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
-    int subHeaderNumber = 1;
+    int subHeaderNumber = 2;
     
     generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     generator->writeParameters(stream, subHeaderNumber);
@@ -349,13 +381,6 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
     QString vlnvString(topComponent_->getVlnv().toString());
 
     QString expectedOutput(
-        "## 0.1 Kactus2 attributes <a id=\"" + vlnvString + ".kts_params\">  \n"
-        "**Product hierarchy:** " +
-            KactusAttribute::hierarchyToString(topComponent_->getHierarchy()) + "  \n"
-        "**Component implementation:** " +
-            KactusAttribute::implementationToString(topComponent_->getImplementation()) + "  \n"
-        "**Component firmness:**" + 
-            KactusAttribute::firmnessToString(topComponent_->getFirmness()) + "  \n"
         "## 0.2 General parameters <a id=\"" + vlnvString + ".parameters\">  \n\n"
         "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|\n"
         "|:----|:----|:----|:----|:----|:----|:----|:----|:----|\n"

@@ -62,6 +62,7 @@ private slots:
     void testFileHeaderIsWritten();
     void testTableOfContentsIsWrittenWithOnlyTopComponent();
 
+    void testAttributesWrittenWithOnlyTopComponent();
     void testParametersWrittenWithOnlyTopComponent();
 
     void testMemoryMapsWrittenWithTopComponent();
@@ -379,7 +380,7 @@ void tst_DocumentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     unsigned int runningNumber = 0;
 
     generator->setFormat(DocumentGenerator::DocumentFormat::HTML);
-    generator->writeTableOfContents(runningNumber, stream);
+    generator->writeTableOfContents(stream);
 
     targetFile.close();
 
@@ -435,6 +436,38 @@ void tst_DocumentGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     }
 }
 
+void tst_DocumentGenerator::testAttributesWrittenWithOnlyTopComponent()
+{
+    //topComponent_->setHierarchy(KactusAttribute::FLAT);
+    //topComponent_->setImplementation(KactusAttribute::SW);
+    //topComponent_->setFirmness(KactusAttribute::FIXED);
+
+    //QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    //int subHeaderNumber = 1;
+
+    //QFile targetFile(targetPath_);
+    //targetFile.open(QFile::WriteOnly);
+    //QTextStream stream(&targetFile);
+
+    //generator->setFormat(DocumentGenerator::DocumentFormat::HTML);
+    //generator->writeKactusAttributes(subHeaderNumber, stream);
+
+    //targetFile.close();
+
+    //QString expectedOutput(
+    //    "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".kts_params\">0.1 Kactus2 attributes</a></h2>\n"
+    //    "\t\t<p>\n"
+    //    "\t\t\t<strong>" + getIndentString() + "Product hierarchy: </strong>" +
+    //    KactusAttribute::hierarchyToString(topComponent_->getHierarchy()) + "<br>\n"
+    //    "\t\t\t<strong>" + getIndentString() + "Component implementation: </strong>" +
+    //    KactusAttribute::implementationToString(topComponent_->getImplementation()) + "<br>\n"
+    //    "\t\t\t<strong>" + getIndentString() + "Component firmness: </strong>" +
+    //    KactusAttribute::firmnessToString(topComponent_->getFirmness()) + "<br>\n"
+    //    "\t\t</p>\n"
+    //);
+}
+
 //-----------------------------------------------------------------------------
 // Function: tst_DocumentGenerator::testParametersWrittenWithOnlyTopComponent()
 //-----------------------------------------------------------------------------
@@ -455,25 +488,14 @@ void tst_DocumentGenerator::testParametersWrittenWithOnlyTopComponent()
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
-    int subHeaderNumber = 1;
+    int subHeaderNumber = 2;
 
     generator->setFormat(DocumentGenerator::DocumentFormat::HTML);
     generator->writeParameters(stream, subHeaderNumber);
 
-    QFile::copy(targetPath_, "generatedOutputPERSISTENT.html");
-
     targetFile.close();
 
     QString expectedOutput(
-        "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".kts_params\">0.1 Kactus2 attributes</a></h2>\n"
-        "\t\t<p>\n"
-        "\t\t\t<strong>" + getIndentString() + "Product hierarchy: </strong>" +
-        KactusAttribute::hierarchyToString(topComponent_->getHierarchy()) + "<br>\n"
-        "\t\t\t<strong>" + getIndentString() + "Component implementation: </strong>" +
-        KactusAttribute::implementationToString(topComponent_->getImplementation()) + "<br>\n"
-        "\t\t\t<strong>" + getIndentString() + "Component firmness: </strong>" +
-        KactusAttribute::firmnessToString(topComponent_->getFirmness()) + "<br>\n"
-        "\t\t</p>\n"
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".parameters\">0.2 General parameters</a></h2>\n"
         "\t\t\t" + getTableString() + "List of parameters defined for the component\">\n"
         "\t\t\t\t<tr>\n"

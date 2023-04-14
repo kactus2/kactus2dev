@@ -110,7 +110,7 @@ public:
      *      @param [in] componentNumber     The number for this component.
      *      @param [in] stream              The text stream to write the table of contents into.
      */
-    void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream);
+    void writeTableOfContents(QTextStream& stream);
 
     /*!
      *  Write the documentation for the given component.
@@ -120,6 +120,8 @@ public:
      *      @param [in] filesToInclude  List of file names that contain pictures needed to display the document.
      */
     void writeDocumentation(QTextStream& stream, const QString& targetPath, QStringList& filesToInclude);
+
+    void writeKactusAttributes(QTextStream& stream, int& subHeaderNumber);
 
     /*!
      *  Write the parameters and kactus2 parameters of the component.
@@ -226,7 +228,7 @@ private:
      *      @param [in] text            The textual part of the header.
      *      @param [in] headerID        The id-tag for the header element.
      */
-    void writeSubHeader(const int headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
+    void writeSubHeader(unsigned const int& headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
 
     /*!
      *  Get the information for the reset values of the selected field.

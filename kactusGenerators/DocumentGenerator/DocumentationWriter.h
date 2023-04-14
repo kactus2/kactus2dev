@@ -14,6 +14,8 @@
 
 #include <QTextStream>
 
+class ExpressionFormatter;
+
 class DocumentationWriter
 {
 public:
@@ -21,7 +23,14 @@ public:
     virtual ~DocumentationWriter() = default;
 
     virtual void writeHeader(QTextStream& stream) = 0;
-    virtual void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream) = 0;
+    virtual void writeKactusAttributes(QTextStream& stream) = 0;
+    virtual void writeTableOfContents(QTextStream& stream) = 0;
+    virtual void writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
+        unsigned int& subHeaderNumber) = 0;
+    virtual void writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream,
+        QString const& headerText, QString const& headerId) = 0;
+    
+    virtual void setComponentNumber(unsigned int const& componentNumber) = 0;
 };
 
 #endif // DOCUMENTATIONWRITER_H
