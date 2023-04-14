@@ -26,7 +26,7 @@ public:
     virtual void writeKactusAttributes(QTextStream& stream) = 0;
     virtual void writeTableOfContents(QTextStream& stream) = 0;
     virtual void writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-        unsigned int& subHeaderNumber) = 0;
+        int& subHeaderNumber) = 0;
     virtual void writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId) = 0;
     

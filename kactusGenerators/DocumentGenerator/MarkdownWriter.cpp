@@ -28,11 +28,11 @@ void MarkdownWriter::writeHeader(QTextStream& stream)
 void MarkdownWriter::writeKactusAttributes(QTextStream& stream)
 {
     stream << "**Product hierarchy:** " <<
-        KactusAttribute::hierarchyToString(component_->getHierarchy()) << "  \n"
+        KactusAttribute::hierarchyToString(component_->getHierarchy()) << "  " << Qt::endl
         << "**Component implementation:** " <<
-        KactusAttribute::implementationToString(component_->getImplementation()) << "  \n"
+        KactusAttribute::implementationToString(component_->getImplementation()) << "  " << Qt::endl
         << "**Component firmness:** " <<
-        KactusAttribute::firmnessToString(component_->getFirmness()) << "  \n";
+        KactusAttribute::firmnessToString(component_->getFirmness()) << "  " << Qt::endl;
 }
 
 void MarkdownWriter::writeTableOfContents(QTextStream& stream)
@@ -96,20 +96,64 @@ void MarkdownWriter::writeTableOfContents(QTextStream& stream)
 }
 
 void MarkdownWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-    unsigned int& subHeaderNumber)
+    int& subHeaderNumber)
 {
     writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
 
+    QStringList headers({        
+        QStringLiteral("Name"),
+        QStringLiteral("Type"),
+        QStringLiteral("Value"),
+        QStringLiteral("Resolve"),
+        QStringLiteral("Bit vector left"),
+        QStringLiteral("Bit vector right"),
+        QStringLiteral("Array left"),
+        QStringLiteral("Array right"),
+        QStringLiteral("Description")
+    });
+    
+    QString tableSeparator(":---- ");
+    QStringList tableSeparators = tableSeparator.repeated(headers.length()).split(" ", Qt::SkipEmptyParts);
+
+    writeTableLine(stream, headers);
+    writeTableLine(stream, tableSeparators);
+
+    for (auto const& parameter : *component_->getParameters())
+    {
+        QStringList paramCells(QStringList()
+            << parameter->name()
+            << parameter->getType()
+            << parameter->getValue()
+            << parameter->getValueResolve()
+            << parameter->getVectorLeft()
+            << parameter->getVectorRight()
+            << parameter->getArrayLeft()
+            << parameter->getArrayRight()
+            << parameter->description()
+        );
+
+        writeTableLine(stream, paramCells);
+    }
 }
 
 void MarkdownWriter::writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream,
     QString const& headerText, QString const& headerId)
 {
     stream << "## " << componentNumber_ << "." << subHeaderNumber << " " << headerText << " <a id=\"" <<
-        component_->getVlnv().toString() << "." << headerId << "\">  " << Qt::endl;
+        component_->getVlnv().toString() << "." << headerId << "\">  " << Qt::endl << Qt::endl;
 }
 
 void MarkdownWriter::setComponentNumber(unsigned int const& componentNumber)
 {
     componentNumber_ = componentNumber;
+}
+
+void MarkdownWriter::writeTableLine(QTextStream& stream, QStringList const& cells) const
+{
+    for (auto const& cell : cells)
+    {
+        stream << "|" << cell;
+    }
+
+    stream << "|" << Qt::endl;
 }

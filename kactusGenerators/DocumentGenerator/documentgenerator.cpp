@@ -365,12 +365,7 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 {
     if (component_->hasParameters())
     {
-        writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
-
-        QString parameterTabs = QStringLiteral("\t\t\t");
-        GeneralDocumentGenerator::writeParameters(stream,
-            QStringLiteral("List of parameters defined for the component"), parameterTabs,
-            component_->getParameters(), expressionFormatter_);
+        writer_->writeParameters(stream, expressionFormatter_, subHeaderNumber);
     }
 }
 
