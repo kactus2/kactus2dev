@@ -3,11 +3,14 @@
 #include <kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h>
 #include <IPXACTmodels/Component/Component.h>
 
+#include <KactusAPI/include/ExpressionFormatter.h>
+
 #include <QDateTime>
 #include <QSettings>
 
 HtmlWriter::HtmlWriter(QSharedPointer<Component> component) :
-    component_(component)
+    component_(component),
+    componentNumber_(0)
 {
 }
 
@@ -33,56 +36,89 @@ void HtmlWriter::writeHeader(QTextStream& stream)
         settings.value("General/Username").toString() << "</h6>" << Qt::endl;
 }
 
-void HtmlWriter::writeTableOfContents(unsigned int& componentNumber, QTextStream& stream)
+void HtmlWriter::writeKactusAttributes(QTextStream& stream)
+{
+    stream << "\t\t<p>" << Qt::endl;
+    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Product hierarchy: </strong>" <<
+        KactusAttribute::hierarchyToString(component_->getHierarchy()) << "<br>" << Qt::endl;
+
+    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component implementation: </strong>" <<
+        KactusAttribute::implementationToString(component_->getImplementation()) << "<br>" << Qt::endl;
+
+    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component firmness: </strong>" <<
+        KactusAttribute::firmnessToString(component_->getFirmness()) << "<br>" << Qt::endl;
+
+    stream << "\t\t</p>" << Qt::endl;
+}
+
+void HtmlWriter::writeTableOfContents(QTextStream& stream)
 {
     QString vlnvHeader = "\t\t" + DocumentGeneratorHTML::indent() + "<a href=\"#" + component_->getVlnv().toString();
 
-    stream << "\t\t<a href=\"#" << component_->getVlnv().toString() << "\">" << componentNumber << ". Component" <<
+    stream << "\t\t<a href=\"#" << component_->getVlnv().toString() << "\">" << componentNumber_ << ". Component" <<
         DocumentGeneratorHTML::space() << component_->getVlnv().toString(" - ") << "</a><br>" << Qt::endl;
 
     // subHeader is running number that counts the number of sub headers for component
     int subHeader = 1;
 
     // component always has kactus parameters
-    stream << vlnvHeader << ".kts_params\">" << componentNumber << "." << subHeader << ". Kactus2 attributes</a><br>" <<
+    stream << vlnvHeader << ".kts_params\">" << componentNumber_ << "." << subHeader << ". Kactus2 attributes</a><br>" <<
         Qt::endl;
     ++subHeader;
 
     if (component_->hasParameters())
     {
-        stream << vlnvHeader << ".parameters\">" << componentNumber << "." << subHeader <<
+        stream << vlnvHeader << ".parameters\">" << componentNumber_ << "." << subHeader <<
             ". General parameters</a><br>" << Qt::endl;
         ++subHeader;
     }
 
     if (!component_->getMemoryMaps()->isEmpty())
     {
-        stream << vlnvHeader << ".memoryMaps\">" << componentNumber << "." << subHeader << ". Memory maps</a><br>" <<
+        stream << vlnvHeader << ".memoryMaps\">" << componentNumber_ << "." << subHeader << ". Memory maps</a><br>" <<
             Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasPorts())
     {
-        stream << vlnvHeader << ".ports\">" << componentNumber << "." << subHeader << ". Ports</a><br>" << Qt::endl;
+        stream << vlnvHeader << ".ports\">" << componentNumber_ << "." << subHeader << ". Ports</a><br>" << Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasInterfaces())
     {
-        stream << vlnvHeader << ".interfaces\">" << componentNumber << "." << subHeader << ". Bus interfaces</a><br>" <<
+        stream << vlnvHeader << ".interfaces\">" << componentNumber_ << "." << subHeader << ". Bus interfaces</a><br>" <<
             Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasFileSets())
     {
-        stream << vlnvHeader << ".fileSets\">" << componentNumber << "." << subHeader << ". File sets</a><br>" << Qt::endl;
+        stream << vlnvHeader << ".fileSets\">" << componentNumber_ << "." << subHeader << ". File sets</a><br>" << Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasViews())
     {
-        stream << vlnvHeader << ".views\">" << componentNumber << "." << subHeader << ". Views</a><br>" << Qt::endl;
+        stream << vlnvHeader << ".views\">" << componentNumber_ << "." << subHeader << ". Views</a><br>" << Qt::endl;
     }
+}
+
+void HtmlWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
+    unsigned int& subHeaderNumber)
+{
+    
+}
+
+void HtmlWriter::writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream, 
+    QString const& headerText, QString const& headerId)
+{
+    stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerId << "\">" <<
+        componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
+}
+
+void HtmlWriter::setComponentNumber(unsigned int const& componentNumber)
+{
+    componentNumber_ = componentNumber;
 }

@@ -333,6 +333,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 
     viewDocumentationGenerator_->setComponent(component, myNumber(), getTargetPath());
 
+    writeKactusAttributes(stream, subHeaderNumber);
     writeParameters(stream, subHeaderNumber);
     writeMemoryMaps(stream, subHeaderNumber);
     writePorts(stream, subHeaderNumber);
@@ -353,20 +354,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 void DocumentGenerator::writeKactusAttributes(QTextStream& stream, int& subHeaderNumber)
 {
     writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "attributes");
-
-    QSharedPointer<Component> component = component_;
-
-    stream << "\t\t<p>" << Qt::endl;
-    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Product hierarchy: </strong>" <<
-        KactusAttribute::hierarchyToString(component->getHierarchy()) << "<br>" << Qt::endl;
-
-    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component implementation: </strong>" <<
-        KactusAttribute::implementationToString(component->getImplementation()) << "<br>" << Qt::endl;
-
-    stream << "\t\t\t<strong>" << DocumentGeneratorHTML::indent() << "Component firmness: </strong>" <<
-        KactusAttribute::firmnessToString(component->getFirmness()) << "<br>" << Qt::endl;
-
-    stream << "\t\t</p>" << Qt::endl;
+    writer_->writeKactusAttributes(stream);
     ++subHeaderNumber;
 }
 
@@ -375,8 +363,6 @@ void DocumentGenerator::writeKactusAttributes(QTextStream& stream, int& subHeade
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumber)
 {
-    writeKactusAttributes(stream, subHeaderNumber);
-
     if (component_->hasParameters())
     {
         writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");

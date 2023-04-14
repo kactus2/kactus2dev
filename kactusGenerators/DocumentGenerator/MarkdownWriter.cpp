@@ -5,7 +5,8 @@
 #include <QString>
 
 MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component) :
-    component_(component)
+    component_(component),
+    componentNumber_(0)
 {
 }
 
@@ -24,62 +25,91 @@ void MarkdownWriter::writeHeader(QTextStream& stream)
         Qt::endl;
 }
 
-void MarkdownWriter::writeTableOfContents(unsigned int& componentNumber, QTextStream& stream)
+void MarkdownWriter::writeKactusAttributes(QTextStream& stream)
+{
+    stream << "**Product hierarchy:** " <<
+        KactusAttribute::hierarchyToString(component_->getHierarchy()) << "  \n"
+        << "**Component implementation:** " <<
+        KactusAttribute::implementationToString(component_->getImplementation()) << "  \n"
+        << "**Component firmness:** " <<
+        KactusAttribute::firmnessToString(component_->getFirmness()) << "  \n";
+}
+
+void MarkdownWriter::writeTableOfContents(QTextStream& stream)
 {
     QString vlnv(component_->getVlnv().toString());
 
     // Write component header
-    stream << componentNumber << ". [" << "Component " << component_->getVlnv().toString(" - ") << "]" <<
+    stream << componentNumber_ << ". [" << "Component " << component_->getVlnv().toString(" - ") << "]" <<
         "(#" << vlnv << ")  " << Qt::endl;
 
     // subHeader is running number that counts the number of sub headers for component
     int subHeader = 1;
 
-    // Write component subheaders. Component has at least kactus parameters.
-    stream << "\t" << componentNumber << "." << subHeader << ". " << "[Kactus2 attributes" <<
-        "](#" << vlnv << ".kts_params)  " << Qt::endl;
+    // Write component subheaders. Component has at least kactus attributes.
+    stream << "\t" << componentNumber_ << "." << subHeader << ". " << "[Kactus2 attributes" <<
+        "](#" << vlnv << ".attributes)  " << Qt::endl;
 
     ++subHeader;
 
     if (component_->hasParameters())
     {
-        stream << "\t" << componentNumber << "." << subHeader << ". " << "[General parameters]" <<
+        stream << "\t" << componentNumber_ << "." << subHeader << ". " << "[General parameters]" <<
             "(#" << vlnv << ".parameters)  " << Qt::endl;
         ++subHeader;
     }
 
     if (!component_->getMemoryMaps()->isEmpty())
     {
-        stream << "\t" << componentNumber << "." << subHeader << ". " << "[Memory maps]" <<
+        stream << "\t" << componentNumber_ << "." << subHeader << ". " << "[Memory maps]" <<
             "(#" << vlnv << ".memoryMaps)  " << Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasPorts())
     {
-        stream << "\t" << componentNumber << "." << subHeader << ". " << "[Ports]" <<
+        stream << "\t" << componentNumber_ << "." << subHeader << ". " << "[Ports]" <<
             "(#" << vlnv << ".ports)  " << Qt::endl;
         ++subHeader;
     }
     
     if (component_->hasInterfaces())
     {
-        stream << "\t" << componentNumber << "." << subHeader << ". " << "[Bus interfaces]" <<
+        stream << "\t" << componentNumber_ << "." << subHeader << ". " << "[Bus interfaces]" <<
             "(#" << vlnv << ".interfaces)  " << Qt::endl;
         ++subHeader;
     }
     
     if (component_->hasFileSets())
     {
-        stream << "\t" << componentNumber << "." << subHeader << ". " << "[File sets]" <<
+        stream << "\t" << componentNumber_ << "." << subHeader << ". " << "[File sets]" <<
             "(#" << vlnv << ".fileSets)  " << Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasViews())
     {
-        stream << "\t" << componentNumber << "." << subHeader << ". " << "[Views]" <<
+        stream << "\t" << componentNumber_ << "." << subHeader << ". " << "[Views]" <<
             "(#" << vlnv << ".views)  " << Qt::endl;
         ++subHeader;
     }
+}
+
+void MarkdownWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
+    unsigned int& subHeaderNumber)
+{
+    writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
+
+}
+
+void MarkdownWriter::writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream,
+    QString const& headerText, QString const& headerId)
+{
+    stream << "## " << componentNumber_ << "." << subHeaderNumber << " " << headerText << " <a id=\"" <<
+        component_->getVlnv().toString() << "." << headerId << "\">  " << Qt::endl;
+}
+
+void MarkdownWriter::setComponentNumber(unsigned int const& componentNumber)
+{
+    componentNumber_ = componentNumber;
 }

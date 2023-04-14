@@ -25,10 +25,22 @@ public:
     MarkdownWriter(QSharedPointer<Component> component);
     virtual ~MarkdownWriter();
     void writeHeader(QTextStream& stream);
-    void writeTableOfContents(unsigned int& componentNumber, QTextStream& stream);
+    void writeKactusAttributes(QTextStream& stream);
+    void writeTableOfContents(QTextStream& stream);
+    void writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
+        unsigned int& subHeaderNumber);
+    void writeSubHeader(unsigned int const& subHeaderNumber, QTextStream& stream,
+        QString const& headerText, QString const& headerId);
+
+    void setComponentNumber(unsigned int const& componentNumber);
+
 private:
+    
     // The current component
     QSharedPointer<Component> component_;
+
+    // Component number for table of contents
+    unsigned int componentNumber_;
 };
 
 #endif // MARKDOWNWRITER_H
