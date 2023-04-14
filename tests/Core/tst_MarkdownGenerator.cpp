@@ -348,7 +348,7 @@ void tst_MarkdownGenerator::testAttributesWrittenWithOnlyTopComponent()
         KactusAttribute::hierarchyToString(topComponent_->getHierarchy()) + "  \n"
         "**Component implementation:** " +
         KactusAttribute::implementationToString(topComponent_->getImplementation()) + "  \n"
-        "**Component firmness:**" +
+        "**Component firmness:** " +
         KactusAttribute::firmnessToString(topComponent_->getFirmness()) + "  \n"
     );
 
