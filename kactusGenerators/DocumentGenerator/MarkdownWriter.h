@@ -45,6 +45,7 @@ public:
 
 private:
 
+    // TODO: Move these "finder" methods to DocumentationWriter
     // Finds the address blocks of a memory map
     QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
 

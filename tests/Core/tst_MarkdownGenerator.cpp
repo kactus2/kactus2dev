@@ -370,6 +370,7 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
     generator->writeParameters(stream, subHeaderNumber);
 
     targetFile.close();
+    targetFile.copy("outputtedMD.md");
 
     QString vlnvString(topComponent_->getVlnv().toString());
 
@@ -382,12 +383,20 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
             parameter->getVectorLeft() + "|" + parameter->getVectorRight() + "|" +
             parameter->getArrayLeft() + "|" + parameter->getArrayRight() + "|" +
             parameter->description() + "|\n"
-        "|" + refParameter->name() + "|" + refParameter->getType() + "|" +
-            refParameter->getValue() + "|" + refParameter->getValueResolve() + "|" +
-            refParameter->getVectorLeft() + "|" + refParameter->getVectorRight() + "|" +
-            refParameter->getArrayLeft() + "|" + refParameter->getArrayRight() + "|" +
+        "|" + refParameter->name() + "|" + "" + "|" +
+            "parameter" + "|" + "" + "|" +
+            "" + "|" + "" + "|" +
+            "" + "|" + "" + "|" +
             refParameter->description() + "|\n"
     );
+
+    QFile testfile("testoutputMD.md");
+    testfile.open(QFile::WriteOnly);
+    QTextStream stream2(&testfile);
+
+    stream2 << expectedOutput;
+
+    testfile.close();
 
     checkOutputFile(expectedOutput);
 }

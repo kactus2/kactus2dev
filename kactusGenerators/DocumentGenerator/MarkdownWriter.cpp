@@ -132,12 +132,12 @@ void MarkdownWriter::writeParameters(QTextStream& stream, ExpressionFormatter* f
         QStringList paramCells(QStringList()
             << parameter->name()
             << parameter->getType()
-            << parameter->getValue()
+            << formatter->formatReferringExpression(parameter->getValue())
             << parameter->getValueResolve()
-            << parameter->getVectorLeft()
-            << parameter->getVectorRight()
-            << parameter->getArrayLeft()
-            << parameter->getArrayRight()
+            << formatter->formatReferringExpression(parameter->getVectorLeft())
+            << formatter->formatReferringExpression(parameter->getVectorRight())
+            << formatter->formatReferringExpression(parameter->getArrayLeft())
+            << formatter->formatReferringExpression(parameter->getArrayRight())
             << parameter->description()
         );
 
