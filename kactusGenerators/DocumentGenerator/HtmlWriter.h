@@ -27,18 +27,17 @@ class Register;
 class HtmlWriter : public DocumentationWriter
 {
 public:
-    HtmlWriter(QSharedPointer<Component> component);
+    HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter);
     virtual ~HtmlWriter();
     void writeHeader(QTextStream& stream);
     void writeKactusAttributes(QTextStream& stream, int subHeaderNumber);
     void writeTableOfContents(QTextStream& stream);
-    void writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-        int subHeaderNumber);
+    void writeParameters(QTextStream& stream, int subHeaderNumber);
     void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId);
-    void writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber);
+    void writeMemoryMaps(QTextStream& stream, int subHeaderNumber);
     void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
-        ExpressionFormatter* formatter, int subHeaderNumber, int memoryMapNumber);
+        int subHeaderNumber, int memoryMapNumber);
 
     void setComponentNumber(unsigned int componentNumber);
 private:
@@ -52,6 +51,9 @@ private:
 
     // Returns n tabs for indenting HTML
     QString indent(int n) const;
+
+    //! The expression formatter, used to change parameter IDs into names.
+    ExpressionFormatter* expressionFormatter_;
 
     // The current component
     QSharedPointer<Component> component_;

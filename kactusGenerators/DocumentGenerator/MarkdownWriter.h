@@ -28,18 +28,17 @@ class ExpressionFormatter;
 class MarkdownWriter : public DocumentationWriter
 {
 public:
-    MarkdownWriter(QSharedPointer<Component> component);
+    MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter);
     virtual ~MarkdownWriter();
     void writeHeader(QTextStream& stream);
     void writeKactusAttributes(QTextStream& stream, int subHeaderNumber);
     void writeTableOfContents(QTextStream& stream);
-    void writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-        int subHeaderNumber);
+    void writeParameters(QTextStream& stream, int subHeaderNumber);
     void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId);
-    virtual void writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber);
+    virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber);
     void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
-        ExpressionFormatter* formatter, int subHeaderNumber,int memoryMapNumber);
+        int subHeaderNumber,int memoryMapNumber);
 
     void setComponentNumber(unsigned int componentNumber);
 
@@ -57,6 +56,9 @@ private:
 
     // Writes the table separator to a MD table
     void writeTableSeparator(QTextStream& stream, int columns);
+    
+    //! The expression formatter, used to change parameter IDs into names.
+    ExpressionFormatter* expressionFormatter_;
     
     // The current component
     QSharedPointer<Component> component_;

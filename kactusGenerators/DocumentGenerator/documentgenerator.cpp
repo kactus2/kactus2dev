@@ -173,11 +173,11 @@ void DocumentGenerator::setFormat(DocumentFormat format)
 {
     if (format == DocumentFormat::HTML)
     {
-        writer_ = new HtmlWriter(component_);
+        writer_ = new HtmlWriter(component_, expressionFormatter_);
     }
     else if (format == DocumentFormat::MD)
     {
-        writer_ = new MarkdownWriter(component_);
+        writer_ = new MarkdownWriter(component_, expressionFormatter_);
     }
 }
 
@@ -364,7 +364,7 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 {
     if (component_->hasParameters())
     {
-        writer_->writeParameters(stream, expressionFormatter_, subHeaderNumber);
+        writer_->writeParameters(stream, subHeaderNumber);
         ++subHeaderNumber;
     }
 }
@@ -374,7 +374,7 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumber)
 {
-    writer_->writeMemoryMaps(stream, expressionFormatter_, subHeaderNumber);
+    writer_->writeMemoryMaps(stream, subHeaderNumber);
     ++subHeaderNumber;
 }
 
@@ -384,7 +384,7 @@ void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumbe
 void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > addressBlocks, QTextStream& stream,
     int& subHeaderNumber, int& memoryMapNumber)
 {
-    writer_->writeAddressBlocks(stream, addressBlocks, expressionFormatter_, subHeaderNumber, memoryMapNumber);
+    writer_->writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
     ++subHeaderNumber;
 }
 

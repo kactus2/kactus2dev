@@ -11,9 +11,10 @@
 #include <QSettings>
 #include <QString>
 
-MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component) :
+MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter) :
     component_(component),
-    componentNumber_(0)
+    componentNumber_(0),
+    expressionFormatter_(formatter)
 {
 }
 
@@ -104,8 +105,7 @@ void MarkdownWriter::writeTableOfContents(QTextStream& stream)
     }
 }
 
-void MarkdownWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-    int subHeaderNumber)
+void MarkdownWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
 {
     writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
 
@@ -132,12 +132,12 @@ void MarkdownWriter::writeParameters(QTextStream& stream, ExpressionFormatter* f
         QStringList paramCells(QStringList()
             << parameter->name()
             << parameter->getType()
-            << formatter->formatReferringExpression(parameter->getValue())
+            << expressionFormatter_->formatReferringExpression(parameter->getValue())
             << parameter->getValueResolve()
-            << formatter->formatReferringExpression(parameter->getVectorLeft())
-            << formatter->formatReferringExpression(parameter->getVectorRight())
-            << formatter->formatReferringExpression(parameter->getArrayLeft())
-            << formatter->formatReferringExpression(parameter->getArrayRight())
+            << expressionFormatter_->formatReferringExpression(parameter->getVectorLeft())
+            << expressionFormatter_->formatReferringExpression(parameter->getVectorRight())
+            << expressionFormatter_->formatReferringExpression(parameter->getArrayLeft())
+            << expressionFormatter_->formatReferringExpression(parameter->getArrayRight())
             << parameter->description()
         );
 
@@ -152,7 +152,7 @@ void MarkdownWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& s
         component_->getVlnv().toString() << "." << headerId << "\">  " << Qt::endl << Qt::endl;
 }
 
-void MarkdownWriter::writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber)
+void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
 {
     if (component_->getMemoryMaps()->isEmpty())
     {
@@ -181,14 +181,14 @@ void MarkdownWriter::writeMemoryMaps(QTextStream& stream, ExpressionFormatter* f
         stream << "**Address unit bits (AUB):** " << memoryMap->getAddressUnitBits() << "  " << Qt::endl;
 
         QList<QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
-        writeAddressBlocks(stream, addressBlocks, formatter, subHeaderNumber, memoryMapNumber);
+        writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
 
         ++memoryMapNumber;
     }
 }
 
 void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<AddressBlock>> addressBlocks,
-    ExpressionFormatter* formatter, int subHeaderNumber, int memoryMapNumber)
+    int subHeaderNumber, int memoryMapNumber)
 {
     if (addressBlocks.isEmpty())
     {
@@ -225,9 +225,9 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
 
         QStringList addressBlockTableCells(QStringList()
             << General::usage2Str(addressBlock->getUsage())
-            << formatter->formatReferringExpression(addressBlock->getBaseAddress())
-            << formatter->formatReferringExpression(addressBlock->getRange())
-            << formatter->formatReferringExpression(addressBlock->getWidth())
+            << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
+            << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
+            << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
             << AccessTypes::access2Str(addressBlock->getAccess())
             << addressBlock->getVolatile()
         );

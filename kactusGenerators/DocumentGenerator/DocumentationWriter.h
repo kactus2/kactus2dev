@@ -26,14 +26,13 @@ public:
     virtual void writeHeader(QTextStream& stream) = 0;
     virtual void writeKactusAttributes(QTextStream& stream, int subHeaderNumber) = 0;
     virtual void writeTableOfContents(QTextStream& stream) = 0;
-    virtual void writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-        int subHeaderNumber) = 0;
+    virtual void writeParameters(QTextStream& stream, int subHeaderNumber) = 0;
     virtual void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId) = 0;
-    virtual void writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber) = 0;
+    virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber) = 0;
     virtual void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
-        ExpressionFormatter* formatter, int subHeaderNumber, int memoryMapNumber) = 0;
-    
+        int subHeaderNumber, int memoryMapNumber) = 0;
+
     virtual void setComponentNumber(unsigned int componentNumber) = 0;
 };
 

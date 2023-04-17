@@ -32,9 +32,10 @@ namespace HTML
         "\t\t</p>");
 }
 
-HtmlWriter::HtmlWriter(QSharedPointer<Component> component) :
+HtmlWriter::HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter) :
     component_(component),
-    componentNumber_(0)
+    componentNumber_(0),
+    expressionFormatter_(formatter)
 {
 }
 
@@ -131,8 +132,7 @@ void HtmlWriter::writeTableOfContents(QTextStream& stream)
     }
 }
 
-void HtmlWriter::writeParameters(QTextStream& stream, ExpressionFormatter* formatter,
-    int subHeaderNumber)
+void HtmlWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
 {
     QStringList headers({
         QStringLiteral("Name"),
@@ -169,20 +169,20 @@ void HtmlWriter::writeParameters(QTextStream& stream, ExpressionFormatter* forma
         stream << indent(5) << "<td>" << parameter->name() << "</td>" << Qt::endl;
         stream << indent(5) << "<td>" << parameter->getType() << "</td>" << Qt::endl;
         stream << indent(5) << "<td>" <<
-            formatter->formatReferringExpression(parameter->getValue()) << "</td>" << Qt::endl;
+            expressionFormatter_->formatReferringExpression(parameter->getValue()) << "</td>" << Qt::endl;
         
         stream << indent(5) << "<td>" << parameter->getValueResolve() << "</td>" << Qt::endl;
         stream << indent(5) << "<td>" <<
-            formatter->formatReferringExpression(parameter->getVectorLeft()) << "</td>" << Qt::endl;
+            expressionFormatter_->formatReferringExpression(parameter->getVectorLeft()) << "</td>" << Qt::endl;
         
         stream << indent(5) << "<td>" <<
-            formatter->formatReferringExpression(parameter->getVectorRight()) << "</td>" << Qt::endl;
+            expressionFormatter_->formatReferringExpression(parameter->getVectorRight()) << "</td>" << Qt::endl;
         
         stream << indent(5) << "<td>" <<
-            formatter->formatReferringExpression(parameter->getArrayLeft()) << "</td>" << Qt::endl;
+            expressionFormatter_->formatReferringExpression(parameter->getArrayLeft()) << "</td>" << Qt::endl;
         
         stream << indent(5) << "<td>" <<
-            formatter->formatReferringExpression(parameter->getArrayRight()) << "</td>" << Qt::endl;
+            expressionFormatter_->formatReferringExpression(parameter->getArrayRight()) << "</td>" << Qt::endl;
         
         stream << indent(5) << "<td>" << parameter->description() << "</td>" << Qt::endl;
 
@@ -199,7 +199,7 @@ void HtmlWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& strea
         componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
 }
 
-void HtmlWriter::writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber)
+void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
 {
     if (component_->getMemoryMaps()->isEmpty())
     {
@@ -231,14 +231,14 @@ void HtmlWriter::writeMemoryMaps(QTextStream& stream, ExpressionFormatter* forma
         stream << indent(3) << "</p>" << Qt::endl;
 
         QList <QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
-        writeAddressBlocks(stream, addressBlocks, formatter, subHeaderNumber, memoryMapNumber);
+        writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
 
         ++memoryMapNumber;
     }
 }
 
 void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<AddressBlock>> addressBlocks,
-    ExpressionFormatter* formatter, int subHeaderNumber, int memoryMapNumber)
+    int subHeaderNumber, int memoryMapNumber)
 {
     if (addressBlocks.isEmpty())
     {
@@ -274,9 +274,9 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
 
         QStringList addressBlockTableCells(QStringList()
             << General::usage2Str(addressBlock->getUsage())
-            << formatter->formatReferringExpression(addressBlock->getBaseAddress())
-            << formatter->formatReferringExpression(addressBlock->getRange())
-            << formatter->formatReferringExpression(addressBlock->getWidth())
+            << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
+            << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
+            << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
             << AccessTypes::access2Str(addressBlock->getAccess())
             << addressBlock->getVolatile()
         );
