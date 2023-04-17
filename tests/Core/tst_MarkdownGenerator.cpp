@@ -370,7 +370,6 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
     generator->writeParameters(stream, subHeaderNumber);
 
     targetFile.close();
-    targetFile.copy("outputtedMD.md");
 
     QString vlnvString(topComponent_->getVlnv().toString());
 
@@ -389,14 +388,6 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
             "" + "|" + "" + "|" +
             refParameter->description() + "|\n"
     );
-
-    QFile testfile("testoutputMD.md");
-    testfile.open(QFile::WriteOnly);
-    QTextStream stream2(&testfile);
-
-    stream2 << expectedOutput;
-
-    testfile.close();
 
     checkOutputFile(expectedOutput);
 }
@@ -455,7 +446,6 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
 
     targetFile.close();
 
-    targetFile.copy("TESTOUTPUT.md");
     QString expectedOutput(
         "### 0.1.1.1 " + testAddressBlock->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." + testAddressBlock->name() + "\">  \n"
         "\n"
