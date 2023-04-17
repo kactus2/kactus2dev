@@ -241,6 +241,69 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
     }
 }
 
+void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Register>> registers, int subHeaderNumber, int memoryMapNumber, int addressBlockNumber)
+{
+    if (registers.isEmpty())
+    {
+        return;
+    }
+
+    int registerNumber = 1;
+
+    for (auto const& currentRegister : registers)
+    {
+        stream << "### " << componentNumber_ << "." << subHeaderNumber << "." << memoryMapNumber
+            << "." << addressBlockNumber << "." << registerNumber << " " << currentRegister->name()
+            << " <a id=\"" << component_->getVlnv().toString() << ".register." << currentRegister->name()
+            << "\">  " << Qt::endl << Qt::endl;
+
+        if (!currentRegister->description().isEmpty())
+        {
+            stream << "**Description:** " << currentRegister->description() << "  " << Qt::endl;
+        }
+
+        QStringList registerHeaders(QStringList()
+            << QStringLiteral("Offset [AUB]")
+            << QStringLiteral("Size [bits]")
+            << QStringLiteral("Dimension")
+            << QStringLiteral("Volatile")
+            << QStringLiteral("Access")
+        );
+
+        writeTableLine(stream, registerHeaders);
+
+        QStringList registerInfo;
+        registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset());
+
+        if (currentRegister->getSize().isEmpty())
+        {
+            registerInfo << currentRegister->getSize();
+        }
+        else
+        {
+            registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getSize());
+        }
+
+        if (currentRegister->getDimension().isEmpty())
+        {
+            registerInfo << currentRegister->getDimension();
+        }
+        else
+        {
+            registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getDimension());
+        }
+
+        registerInfo << currentRegister->getVolatile()
+            << AccessTypes::access2Str(currentRegister->getAccess());
+
+        writeTableLine(stream, registerInfo);
+
+        //writeFields(currentRegister);
+
+        ++registerNumber;
+    }
+}
+
 void MarkdownWriter::setComponentNumber(unsigned int componentNumber)
 {
     componentNumber_ = componentNumber;

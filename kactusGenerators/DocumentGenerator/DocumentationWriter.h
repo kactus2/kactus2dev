@@ -16,6 +16,7 @@
 
 class ExpressionFormatter;
 class AddressBlock;
+class Register;
 
 class DocumentationWriter
 {
@@ -32,6 +33,8 @@ public:
     virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber) = 0;
     virtual void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
         int subHeaderNumber, int memoryMapNumber) = 0;
+    virtual void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
+        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) = 0;
 
     virtual void setComponentNumber(unsigned int componentNumber) = 0;
 };
