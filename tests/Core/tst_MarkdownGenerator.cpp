@@ -505,6 +505,35 @@ void tst_MarkdownGenerator::testExpressionsInAddressBlocks()
 
 void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
 {
+    QList <QSharedPointer <Register> > registers;
+    QSharedPointer <Register> testRegister = createTestRegister("register", "4", "2", "2", "exampleDescription");
+    registers.append(testRegister);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeRegisters(registers, stream, subHeaderNumber, subHeaderNumber, subHeaderNumber);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "### 0.1.1.1.1 " + testRegister->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".register." + testRegister->name() + "\">  \n"
+        "\n"
+        "**Description:** " + testRegister->description() + "  \n"
+        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|\n"
+        "|" + testRegister->getAddressOffset() +
+        "|" + testRegister->getSize() +
+        "|" + testRegister->getDimension() +
+        "|" + testRegister->getVolatile() +
+        "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|\n"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
