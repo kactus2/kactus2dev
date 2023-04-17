@@ -3,6 +3,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Register.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -198,7 +199,7 @@ void HtmlWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& strea
         componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
 }
 
-void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
+void HtmlWriter::writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber)
 {
     if (component_->getMemoryMaps()->isEmpty())
     {
@@ -230,9 +231,86 @@ void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
         stream << indent(3) << "</p>" << Qt::endl;
 
         QList <QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
-        //writeAddressBlocks(addressBlocks, stream, subHeaderNumber, memoryMapNumber);
+        writeAddressBlocks(stream, addressBlocks, formatter, subHeaderNumber, memoryMapNumber);
 
         ++memoryMapNumber;
+    }
+}
+
+void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<AddressBlock>> addressBlocks,
+    ExpressionFormatter* formatter, int subHeaderNumber, int memoryMapNumber)
+{
+    if (addressBlocks.isEmpty())
+    {
+        return;
+    }
+
+    int addressBlockNumber = 1;
+
+    for (auto const& addressBlock : addressBlocks)
+    {
+        // header
+        stream << indent (3) << "<h3><a id=\"" << component_->getVlnv().toString() << ".addressBlock." <<
+            addressBlock->name() << "\">" << componentNumber_ << "." << subHeaderNumber << "." <<
+            memoryMapNumber << "." << addressBlockNumber << " " << addressBlock->name() <<
+            "</a></h3>" << Qt::endl;
+
+        if (!addressBlock->description().isEmpty())
+        {
+            stream << indent(3) << "<p>" << Qt::endl;
+            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
+                addressBlock->description() << "<br>" << Qt::endl;
+            stream << indent(3) << "</p>" << Qt::endl;
+        }
+
+        QStringList headers(QStringList()
+            << QStringLiteral("Usage")
+            << QStringLiteral("Base address [AUB]")
+            << QStringLiteral("Range [AUB]")
+            << QStringLiteral("Width [AUB]")
+            << QStringLiteral("Access")
+            << QStringLiteral("Volatile")
+        );
+
+        QStringList addressBlockTableCells(QStringList()
+            << General::usage2Str(addressBlock->getUsage())
+            << formatter->formatReferringExpression(addressBlock->getBaseAddress())
+            << formatter->formatReferringExpression(addressBlock->getRange())
+            << formatter->formatReferringExpression(addressBlock->getWidth())
+            << AccessTypes::access2Str(addressBlock->getAccess())
+            << addressBlock->getVolatile()
+        );
+
+        QString title = "List of values in " + addressBlock->name() + ".";
+
+        // Table with title
+        stream << indent (3) << HTML::TABLE << title << "\">" << Qt::endl;
+        
+        // Address block table headers
+        stream << indent(4) << "<tr>" << Qt::endl;
+        
+        for (auto const& header :headers)
+        {
+            stream << indent(5) << "<th>" << header << "</th>" << Qt::endl;
+        }
+
+        stream << indent(4) << "</tr>" << Qt::endl;
+        
+        // Address block table body
+        stream << indent(4) << "<tr>" << Qt::endl;
+
+        for (auto const& cell : addressBlockTableCells)
+        {
+            stream << indent(5) << "<td>" << cell << "</td>" << Qt::endl;
+        }
+
+        stream << indent(4) << "</tr>" << Qt::endl
+            << indent(3) << "</table>" << Qt::endl;
+
+        QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
+        // writeRegisters();
+
+        ++addressBlockNumber;
     }
 }
 
@@ -255,6 +333,22 @@ QList<QSharedPointer<AddressBlock>> HtmlWriter::getMemoryMapAddressBlocks(QShare
     }
 
     return addressBlocks;
+}
+
+QList<QSharedPointer<Register>> HtmlWriter::getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const
+{
+    QList <QSharedPointer <Register> > registers;
+    for (auto const& registerModelItem : *addressBlock->getRegisterData())
+    {
+        QSharedPointer <Register> registerItem = registerModelItem.dynamicCast<Register>();
+
+        if (registerItem)
+        {
+            registers.append(registerItem);
+        }
+    }
+
+    return registers;
 }
 
 QString HtmlWriter::indent(int n) const

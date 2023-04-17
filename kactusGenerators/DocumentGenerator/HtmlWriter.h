@@ -22,6 +22,7 @@
 class ExpressionFormatter;
 class AddressBlock;
 class MemoryMap;
+class Register;
 
 class HtmlWriter : public DocumentationWriter
 {
@@ -35,13 +36,19 @@ public:
         int subHeaderNumber);
     void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId);
-    virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber);
+    void writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber);
+    void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
+        ExpressionFormatter* formatter, int subHeaderNumber, int memoryMapNumber);
 
     void setComponentNumber(unsigned int componentNumber);
 private:
-
+    
+    // TODO: Move these "finder" methods to DocumentationWriter
     // Finds the address blocks of the memory map
     QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
+
+    // Finds the registers of an address block
+    QList<QSharedPointer <Register> > getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const;
 
     // Returns n tabs for indenting HTML
     QString indent(int n) const;
