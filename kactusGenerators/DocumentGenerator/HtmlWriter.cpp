@@ -152,41 +152,24 @@ void HtmlWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
     stream << indent(3) << HTML::TABLE << "List of parameters defined for the component\">" << Qt::endl;
 
     // Write header row
-    stream << indent(4) << "<tr>" << Qt::endl;
-    
-    for (auto const& header : headers)
-    {
-        stream << indent(5) << "<th>" << header << "</th>" << Qt::endl;
-    }
-
-    stream << indent(4) << "</tr>" << Qt::endl;
+    writeTableHeader(stream, headers, 4);
 
     // Write parameters
     for (auto const& parameter : *component_->getParameters())
     {
-        stream << indent(4) << "<tr>" << Qt::endl;
-        
-        stream << indent(5) << "<td>" << parameter->name() << "</td>" << Qt::endl;
-        stream << indent(5) << "<td>" << parameter->getType() << "</td>" << Qt::endl;
-        stream << indent(5) << "<td>" <<
-            expressionFormatter_->formatReferringExpression(parameter->getValue()) << "</td>" << Qt::endl;
-        
-        stream << indent(5) << "<td>" << parameter->getValueResolve() << "</td>" << Qt::endl;
-        stream << indent(5) << "<td>" <<
-            expressionFormatter_->formatReferringExpression(parameter->getVectorLeft()) << "</td>" << Qt::endl;
-        
-        stream << indent(5) << "<td>" <<
-            expressionFormatter_->formatReferringExpression(parameter->getVectorRight()) << "</td>" << Qt::endl;
-        
-        stream << indent(5) << "<td>" <<
-            expressionFormatter_->formatReferringExpression(parameter->getArrayLeft()) << "</td>" << Qt::endl;
-        
-        stream << indent(5) << "<td>" <<
-            expressionFormatter_->formatReferringExpression(parameter->getArrayRight()) << "</td>" << Qt::endl;
-        
-        stream << indent(5) << "<td>" << parameter->description() << "</td>" << Qt::endl;
+        QStringList paramFields(QStringList()
+            << parameter->name()
+            << parameter->getType()
+            << expressionFormatter_->formatReferringExpression(parameter->getValue())
+            << parameter->getValueResolve()
+            << expressionFormatter_->formatReferringExpression(parameter->getVectorLeft())
+            << expressionFormatter_->formatReferringExpression(parameter->getVectorRight())
+            << expressionFormatter_->formatReferringExpression(parameter->getArrayLeft())
+            << expressionFormatter_->formatReferringExpression(parameter->getArrayRight())
+            << parameter->description()
+        );
 
-        stream << indent(4) << "</tr>" << Qt::endl;
+        writeTableRow(stream, paramFields, 4);
     }
 
     stream << indent(3) << "</table>" << Qt::endl;
@@ -287,25 +270,12 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
         stream << indent (3) << HTML::TABLE << title << "\">" << Qt::endl;
         
         // Address block table headers
-        stream << indent(4) << "<tr>" << Qt::endl;
-        
-        for (auto const& header :headers)
-        {
-            stream << indent(5) << "<th>" << header << "</th>" << Qt::endl;
-        }
+        writeTableHeader(stream, headers, 4);
 
-        stream << indent(4) << "</tr>" << Qt::endl;
-        
         // Address block table body
-        stream << indent(4) << "<tr>" << Qt::endl;
+        writeTableRow(stream, addressBlockTableCells, 4);
 
-        for (auto const& cell : addressBlockTableCells)
-        {
-            stream << indent(5) << "<td>" << cell << "</td>" << Qt::endl;
-        }
-
-        stream << indent(4) << "</tr>" << Qt::endl
-            << indent(3) << "</table>" << Qt::endl;
+        stream << indent(3) << "</table>" << Qt::endl;
 
         QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
         // writeRegisters();
@@ -355,4 +325,28 @@ QString HtmlWriter::indent(int n) const
 {
     auto tab = QStringLiteral("\t");
     return tab.repeated(n);
+}
+
+void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& fields, int indentation)
+{
+    stream << indent(indentation) << "<tr>" << Qt::endl;
+    
+    for (auto const& field : fields)
+    {
+        stream << indent(indentation + 1) << "<td>" << field << "</td>" << Qt::endl;
+    }
+
+    stream << indent(indentation) << "</tr>" << Qt::endl;
+}
+
+void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& headerFields, int indentation)
+{
+    stream << indent(indentation) << "<tr>" << Qt::endl;
+
+    for (auto const& fields : headerFields)
+    {
+        stream << indent(indentation + 1) << "<th>" << fields << "</th>" << Qt::endl;
+    }
+
+    stream << indent(indentation) << "</tr>" << Qt::endl;
 }

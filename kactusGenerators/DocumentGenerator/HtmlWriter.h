@@ -52,6 +52,12 @@ private:
     // Returns n tabs for indenting HTML
     QString indent(int n) const;
 
+    // Writes a table row
+    void writeTableRow(QTextStream& stream, QStringList const& fields, int indentation);
+
+    // Writes a table header row
+    void writeTableHeader(QTextStream& stream, QStringList const& headerFields, int indentation);
+
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
 
