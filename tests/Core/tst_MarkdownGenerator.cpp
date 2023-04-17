@@ -446,17 +446,18 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
 
     targetFile.close();
 
+    targetFile.copy("TESTOUTPUT.md");
     QString expectedOutput(
-        "## 0.1.1.1 " + testAddressBlock->name() + "<a id = \"" + topComponent_->getVlnv().toString() + ".addressBlock." + testAddressBlock->name() + "\">  \n"
+        "### 0.1.1.1 " + testAddressBlock->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." + testAddressBlock->name() + "\">  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|\n"
         "|:----|:----|:----|:----|:----|:----|\n" +
-        "|" + General::usage2Str(testAddressBlock->getUsage()) + "|" +
-        "|" + testAddressBlock->getBaseAddress() + "|" +
-        "|" + testAddressBlock->getRange() + "|" +
-        "|" + testAddressBlock->getWidth() + "|" +
-        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "|" +
+        "|" + General::usage2Str(testAddressBlock->getUsage()) +
+        "|" + testAddressBlock->getBaseAddress() +
+        "|" + testAddressBlock->getRange() +
+        "|" + testAddressBlock->getWidth() +
+        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
         "|" + testAddressBlock->getVolatile() + "|"
     );
 
