@@ -538,6 +538,41 @@ void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
 
 void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
 {
+    QSharedPointer<Field> testField = createTestField("testField", "Example Field", "2", "8");
+    QSharedPointer<FieldReset> resetValue(new FieldReset());
+    resetValue->setResetValue("testReset");
+    resetValue->setResetMask("testMask");
+
+    testField->getResets()->append(resetValue);
+
+
+    QSharedPointer<Register> fieldRegister = createTestRegister("FieldRegister", "10", "10", "10", "");
+    fieldRegister->getFields()->append(testField);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    generator->writeFields(fieldRegister, stream);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "#### Register " + fieldRegister->name() + " contains the following fields:  \n"
+        "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|\n"
+        "|" + testField->name() + " <a id=\"" + topComponent_->getVlnv().toString() + 
+            ".field." + testField->name() + "\">"
+        "|" + testField->getBitOffset() +
+        "|" + testField->getBitWidth() +
+        "|" + testField->getVolatile().toString() +
+        "|" + AccessTypes::access2Str(testField->getAccess()) +
+        "|" + "HARD : testReset" +
+        "|" + testField->description() + "|\n"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
