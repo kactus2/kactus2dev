@@ -465,6 +465,42 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
 
 void tst_MarkdownGenerator::testExpressionsInAddressBlocks()
 {
+    QSharedPointer <Parameter> targetParameter = createTestParameter("target", "4", "", "ID_TARGET", "", "");
+
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "example", "'h0",
+        "ID_TARGET", "ID_TARGET + 2", QList <QSharedPointer <Register> >());
+    addressBlocks.append(testAddressBlock);
+
+    topComponent_->getParameters()->append(targetParameter);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "### 0.1.1.1 " + testAddressBlock->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." + testAddressBlock->name() + "\">  \n"
+        "\n"
+        "**Description:** " + testAddressBlock->description() + "  \n"
+        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|\n"
+        "|:----|:----|:----|:----|:----|:----|\n" +
+        "|" + General::usage2Str(testAddressBlock->getUsage()) +
+        "|" + "'h0" +
+        "|" + "target" +
+        "|" + "target + 2" +
+        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
+        "|" + testAddressBlock->getVolatile() + "|"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
