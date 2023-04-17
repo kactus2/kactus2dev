@@ -394,63 +394,8 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
 void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > registers, QTextStream& stream,
     int& subHeaderNumber, int& memoryMapNumber, int& addressBlockNumber)
 {
-    if (!registers.isEmpty())
-    {
-        int registerNumber = 1;
-
-        foreach (QSharedPointer<Register> currentRegister, registers)
-        {
-            stream << "\t\t\t<h3><a id=\"" << component_->getVlnv().toString() << ".register." <<
-                currentRegister->name() << "\">" << myNumber() << "." << subHeaderNumber << "." <<
-                memoryMapNumber << "." << addressBlockNumber << "." << registerNumber << " " <<
-                currentRegister->name() << "</a></h3>" << Qt::endl;
-
-            if (!currentRegister->description().isEmpty())
-            {
-                stream << "\t\t\t<p>" << Qt::endl;
-                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " <<
-                    currentRegister->description() << "<br>" << Qt::endl;
-                stream << "\t\t\t</p>" << Qt::endl;
-            }
-
-            QStringList registerHeaders;
-            registerHeaders << "Offset [AUB]" << "Size [bits]" << "Dimension" << "Volatile" << "Access";
-            QString title = "List of values in " + currentRegister->name() + ".";
-            writeTableElement(registerHeaders, title, stream, "\t\t\t");
-
-            stream << "\t\t\t\t<tr>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                currentRegister->getAddressOffset()) << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>";
-            if (!currentRegister->getSize().isEmpty())
-            {
-                stream << expressionFormatter_->formatReferringExpression(currentRegister->getSize());
-            }
-            else
-            {
-                stream << currentRegister->getSize();
-            }
-            stream << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>";
-            if (!currentRegister->getDimension().isEmpty())
-            {
-                stream << expressionFormatter_->formatReferringExpression(currentRegister->getDimension());
-            }
-            else
-            {
-                stream << currentRegister->getDimension();
-            }
-            stream << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << currentRegister->getVolatile() << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentRegister->getAccess()) << "</td>" << Qt::endl;
-            stream << "\t\t\t\t</tr>" << Qt::endl;
-            stream << "\t\t\t</table>" << Qt::endl;
-
-            writeFields(currentRegister, stream);
-
-            ++registerNumber;
-        }
-    }
+    writer_->writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+    ++subHeaderNumber;
 }
 
 //-----------------------------------------------------------------------------

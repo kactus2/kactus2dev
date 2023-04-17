@@ -284,6 +284,79 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
     }
 }
 
+void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Register>> registers,
+    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber)
+{
+    if (registers.isEmpty())
+    {
+        return;
+    }
+
+    int registerNumber = 1;
+
+    for (auto const& currentRegister : registers)
+    {
+        // Register heading
+        stream << indent(3) << "<h3><a id=\"" << component_->getVlnv().toString() << ".register." <<
+            currentRegister->name() << "\">" << componentNumber_ << "." << subHeaderNumber << "." <<
+            memoryMapNumber << "." << addressBlockNumber << "." << registerNumber << " " <<
+            currentRegister->name() << "</a></h3>" << Qt::endl;
+
+        if (!currentRegister->description().isEmpty())
+        {
+            stream << indent(3) << "<p>" << Qt::endl;
+            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
+                currentRegister->description() << "<br>" << Qt::endl;
+            stream << indent(3) << "</p>" << Qt::endl;
+        }
+
+        QStringList registerTableHeaders(QStringList()
+            << QStringLiteral("Offset [AUB]")
+            << QStringLiteral("Size [bits]")
+            << QStringLiteral("Dimension")
+            << QStringLiteral("Volatile")
+            << QStringLiteral("Access")
+        );
+
+        QString tableTitle = "List of values in " + currentRegister->name() + ".";
+        stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+
+        writeTableHeader(stream, registerTableHeaders, 4);
+
+        QStringList registerInfo;
+        registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset());
+
+        if (currentRegister->getSize().isEmpty())
+        {
+            registerInfo << currentRegister->getSize();
+        }
+        else
+        {
+            registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getSize());
+        }
+
+        if (currentRegister->getDimension().isEmpty())
+        {
+            registerInfo << currentRegister->getDimension();
+        }
+        else
+        {
+            registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getDimension());
+        }
+
+        registerInfo << currentRegister->getVolatile()
+            << AccessTypes::access2Str(currentRegister->getAccess());
+        
+        writeTableRow(stream, registerInfo, 4);
+        
+        stream << indent(3) << "</table>" << Qt::endl;
+
+        // writeFields(currentRegister, stream);
+
+        ++registerNumber;
+    }
+}
+
 void HtmlWriter::setComponentNumber(unsigned int componentNumber)
 {
     componentNumber_ = componentNumber;

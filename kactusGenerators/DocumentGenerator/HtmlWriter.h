@@ -38,6 +38,8 @@ public:
     void writeMemoryMaps(QTextStream& stream, int subHeaderNumber);
     void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
         int subHeaderNumber, int memoryMapNumber);
+    void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
+        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber);
 
     void setComponentNumber(unsigned int componentNumber);
 private:
