@@ -374,7 +374,7 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumber)
 {
-    writer_->writeMemoryMaps(stream, subHeaderNumber);
+    writer_->writeMemoryMaps(stream, expressionFormatter_, subHeaderNumber);
     ++subHeaderNumber;
 }
 
@@ -384,60 +384,8 @@ void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumbe
 void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > addressBlocks, QTextStream& stream,
     int& subHeaderNumber, int& memoryMapNumber)
 {
-    if (!addressBlocks.isEmpty())
-    {
-        int addressBlockNumber = 1;
-
-        foreach (QSharedPointer <AddressBlock> currentAddressBlock, addressBlocks)
-        {
-            stream << "\t\t\t<h3><a id=\"" << component_->getVlnv().toString() << ".addressBlock." <<
-                currentAddressBlock->name() << "\">" << myNumber() << "." << subHeaderNumber << "." <<
-                memoryMapNumber << "." << addressBlockNumber << " " << currentAddressBlock->name() <<
-                "</a></h3>" << Qt::endl;
-
-            if (!currentAddressBlock->description().isEmpty())
-            {
-                stream << "\t\t\t<p>" << Qt::endl;
-                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " <<
-                    currentAddressBlock->description() << "<br>" << Qt::endl;
-                stream << "\t\t\t</p>" << Qt::endl;
-            }
-
-            QStringList addressBlockHeaders;
-            addressBlockHeaders << "Usage" << "Base address [AUB]" << "Range [AUB]" << "Width [AUB]" << "Access" <<
-                "Volatile";
-            QString title = "List of values in " + currentAddressBlock->name() + ".";
-            writeTableElement(addressBlockHeaders, title, stream, "\t\t\t");
-
-            stream << "\t\t\t\t<tr>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << General::usage2Str(currentAddressBlock->getUsage()) << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                currentAddressBlock->getBaseAddress()) << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                currentAddressBlock->getRange()) << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                currentAddressBlock->getWidth()) << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentAddressBlock->getAccess()) << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << currentAddressBlock->getVolatile() << "</td>" << Qt::endl;
-            stream << "\t\t\t\t</tr>" << Qt::endl;
-            stream << "\t\t\t</table>" << Qt::endl;
-
-            QList <QSharedPointer <Register> > registers;
-            foreach (QSharedPointer <RegisterBase> registerModelItem, *currentAddressBlock->getRegisterData())
-            {
-                QSharedPointer <Register> registerItem = registerModelItem.dynamicCast<Register>();
-
-                if (registerItem)
-                {
-                    registers.append(registerItem);
-                }
-            }
-
-            writeRegisters(registers, stream, subHeaderNumber, memoryMapNumber, addressBlockNumber);
-
-            ++addressBlockNumber;
-        }
-    }
+    writer_->writeAddressBlocks(stream, addressBlocks, expressionFormatter_, subHeaderNumber, memoryMapNumber);
+    ++subHeaderNumber;
 }
 
 //-----------------------------------------------------------------------------

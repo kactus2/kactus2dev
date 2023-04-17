@@ -1,7 +1,11 @@
 #include "MarkdownWriter.h"
 
-#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Register.h>
+
+#include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QDateTime>
 #include <QSettings>
@@ -121,7 +125,7 @@ void MarkdownWriter::writeParameters(QTextStream& stream, ExpressionFormatter* f
     QStringList tableSeparators = tableSeparator.repeated(headers.length()).split(" ", Qt::SkipEmptyParts);
 
     writeTableLine(stream, headers);
-    writeTableLine(stream, tableSeparators);
+    writeTableSeparator(stream, headers.length());
 
     for (auto const& parameter : *component_->getParameters())
     {
@@ -148,7 +152,7 @@ void MarkdownWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& s
         component_->getVlnv().toString() << "." << headerId << "\">  " << Qt::endl << Qt::endl;
 }
 
-void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
+void MarkdownWriter::writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber)
 {
     if (component_->getMemoryMaps()->isEmpty())
     {
@@ -177,9 +181,63 @@ void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
         stream << "**Address unit bits (AUB):** " << memoryMap->getAddressUnitBits() << "  " << Qt::endl;
 
         QList<QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
-        // call writeAddressBlocks(addressBlocks, stream, subHeaderNumber, memoryMapNumber) here!
+        writeAddressBlocks(stream, addressBlocks, formatter, subHeaderNumber, memoryMapNumber);
 
         ++memoryMapNumber;
+    }
+}
+
+void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<AddressBlock>> addressBlocks,
+    ExpressionFormatter* formatter, int subHeaderNumber, int memoryMapNumber)
+{
+    if (addressBlocks.isEmpty())
+    {
+        return;
+    }
+
+    int addressBlockNumber = 1;
+
+    for (auto const& addressBlock : addressBlocks)
+    {
+        // header
+        stream << "### " << componentNumber_ << "." << subHeaderNumber << "." << memoryMapNumber
+            << "." << addressBlockNumber << " " << addressBlock->name() << " <a id=\""
+            << component_->getVlnv().toString() << ".addressBlock." << addressBlock->name()
+            << "\">  " << Qt::endl << Qt::endl;
+        
+        // description
+        if (!addressBlock->description().isEmpty())
+        {
+            stream << "**Description:** " << addressBlock->description() << "  " << Qt::endl;
+        }
+
+        QStringList headers(QStringList()
+            << QStringLiteral("Usage")
+            << QStringLiteral("Base address [AUB]")
+            << QStringLiteral("Range [AUB]")
+            << QStringLiteral("Width [AUB]")
+            << QStringLiteral("Access")
+            << QStringLiteral("Volatile")
+        );
+
+        writeTableLine(stream, headers);
+        writeTableSeparator(stream, headers.length());
+
+        QStringList addressBlockTableCells(QStringList()
+            << General::usage2Str(addressBlock->getUsage())
+            << formatter->formatReferringExpression(addressBlock->getBaseAddress())
+            << formatter->formatReferringExpression(addressBlock->getRange())
+            << formatter->formatReferringExpression(addressBlock->getWidth())
+            << AccessTypes::access2Str(addressBlock->getAccess())
+            << addressBlock->getVolatile()
+        );
+
+        writeTableLine(stream, addressBlockTableCells);
+
+        QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
+        // writeRegisters();
+
+        ++addressBlockNumber;
     }
 }
 
@@ -204,6 +262,22 @@ QList<QSharedPointer<AddressBlock>> MarkdownWriter::getMemoryMapAddressBlocks(QS
     return addressBlocks;
 }
 
+QList<QSharedPointer<Register>> MarkdownWriter::getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const
+{
+    QList <QSharedPointer <Register> > registers;
+    for (auto const& registerModelItem : *addressBlock->getRegisterData())
+    {
+        QSharedPointer <Register> registerItem = registerModelItem.dynamicCast<Register>();
+
+        if (registerItem)
+        {
+            registers.append(registerItem);
+        }
+    }
+
+    return registers;
+}
+
 void MarkdownWriter::writeTableLine(QTextStream& stream, QStringList const& cells) const
 {
     for (auto const& cell : cells)
@@ -212,4 +286,11 @@ void MarkdownWriter::writeTableLine(QTextStream& stream, QStringList const& cell
     }
 
     stream << "|" << Qt::endl;
+}
+
+void MarkdownWriter::writeTableSeparator(QTextStream& stream, int columns)
+{
+    QString tableSeparator(":---- ");   // :--- aligns text in cells to the left
+    QStringList tableSeparators = tableSeparator.repeated(columns).split(" ", Qt::SkipEmptyParts);
+    writeTableLine(stream, tableSeparators);
 }

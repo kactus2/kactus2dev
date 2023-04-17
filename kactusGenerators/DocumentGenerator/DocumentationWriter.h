@@ -15,6 +15,7 @@
 #include <QTextStream>
 
 class ExpressionFormatter;
+class AddressBlock;
 
 class DocumentationWriter
 {
@@ -29,7 +30,9 @@ public:
         int subHeaderNumber) = 0;
     virtual void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId) = 0;
-    virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber) = 0;
+    virtual void writeMemoryMaps(QTextStream& stream, ExpressionFormatter* formatter, int subHeaderNumber) = 0;
+    virtual void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
+        ExpressionFormatter* formatter, int subHeaderNumber, int memoryMapNumber) = 0;
     
     virtual void setComponentNumber(unsigned int componentNumber) = 0;
 };
