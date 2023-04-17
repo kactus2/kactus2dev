@@ -243,8 +243,6 @@ void tst_MarkdownGenerator::testFileHeaderIsWritten()
 
     generationTime_ = QDateTime::currentDateTime();
 
-    // For MD generation
-    generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     generator->writeHeader(stream);
     targetFile.close();
 
@@ -301,7 +299,6 @@ void tst_MarkdownGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
 
     unsigned int runningNumber = 0;
 
-    generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     generator->writeTableOfContents(stream);
 
     targetFile.close();
@@ -337,7 +334,6 @@ void tst_MarkdownGenerator::testAttributesWrittenWithOnlyTopComponent()
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
-    generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     generator->writeKactusAttributes(stream, subHeaderNumber);
 
     targetFile.close();
@@ -371,7 +367,6 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
 
     int subHeaderNumber = 2;
     
-    generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     generator->writeParameters(stream, subHeaderNumber);
 
     targetFile.close();
@@ -399,6 +394,36 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
 
 void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
 {
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+
+    QSharedPointer<MemoryMap> memoryMap = createTestMemoryMap("memoryMap", "example Description", 8, addressBlocks);
+
+    topComponent_->getMemoryMaps()->append(memoryMap);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeMemoryMaps(stream, subHeaderNumber);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
+        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMap." +
+        memoryMap->name() + "\">0.1.1 " + memoryMap->name() + "</a></h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + memoryMap->description() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " +
+        memoryMap->getAddressUnitBits() + "<br>\n"
+        "\t\t\t</p>"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
@@ -453,6 +478,7 @@ DocumentGenerator* tst_MarkdownGenerator::createTestGenerator()
     DocumentGenerator* generator(new DocumentGenerator(&library_, topComponentVlnv_, &designWidgetFactory_,
         &expressionFormatterFactory_, generatorParentWidget_));
 
+    generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     return generator;
 }
 

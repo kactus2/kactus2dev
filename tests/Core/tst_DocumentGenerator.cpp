@@ -1141,6 +1141,7 @@ DocumentGenerator* tst_DocumentGenerator::createTestGenerator()
     DocumentGenerator* generator (new DocumentGenerator(&library_, topComponentVlnv_, &designWidgetFactory_, 
         &expressionFormatterFactory_, generatorParentWidget_));
 
+    generator->setFormat(DocumentGenerator::HTML);
     return generator;
 }
 
