@@ -1,5 +1,8 @@
 #include "MarkdownWriter.h"
 
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+
 #include <QDateTime>
 #include <QSettings>
 #include <QString>
@@ -143,6 +146,51 @@ void MarkdownWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& s
 {
     stream << "## " << componentNumber_ << "." << subHeaderNumber << " " << headerText << " <a id=\"" <<
         component_->getVlnv().toString() << "." << headerId << "\">  " << Qt::endl << Qt::endl;
+}
+
+void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
+{
+    if (component_->getMemoryMaps()->isEmpty())
+    {
+        return;
+    }
+    
+    writeSubHeader(subHeaderNumber, stream, "Memory maps", "memoryMaps");
+
+    const QList<QSharedPointer<MemoryMap> > componentMemoryMaps = *component_->getMemoryMaps().data();
+    int memoryMapNumber = 1;
+
+    for (auto const& memoryMap : componentMemoryMaps)
+    {
+        // Memory map header
+        stream << "### " << componentNumber_ << "." << subHeaderNumber
+            << "." << memoryMapNumber << " " << memoryMap->name()
+            << " <a id=\"" << component_->getVlnv().toString()
+            << ".memoryMap." << memoryMap->name() << "\">  " << Qt::endl;
+
+        // Memory map description and address unit bits
+        if (!memoryMap->description().isEmpty())
+        {
+            stream << "**Description:** " << memoryMap->description() << "  " << Qt::endl;
+        }
+        
+        stream << "**Address unit bits (AUB):** " << memoryMap->getAddressUnitBits() << "  " << Qt::endl;
+
+        QList<QSharedPointer <AddressBlock> > addressBlocks;
+        for (auto const& memoryMapItem : *memoryMap->getMemoryBlocks())
+        {
+            QSharedPointer<AddressBlock> addressItem = memoryMapItem.dynamicCast<AddressBlock>();
+
+            if (addressItem)
+            {
+                addressBlocks.append(addressItem);
+            }
+        }
+
+        // call writeAddressBlocks(addressBlocks, stream, subHeaderNumber, memoryMapNumber) here!
+
+        ++memoryMapNumber;
+    }
 }
 
 void MarkdownWriter::setComponentNumber(unsigned int componentNumber)

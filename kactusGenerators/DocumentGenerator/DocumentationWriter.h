@@ -29,6 +29,7 @@ public:
         int subHeaderNumber) = 0;
     virtual void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId) = 0;
+    virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber) = 0;
     
     virtual void setComponentNumber(unsigned int componentNumber) = 0;
 };

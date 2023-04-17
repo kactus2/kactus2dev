@@ -374,50 +374,8 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumber)
 {
-    QSharedPointer<Component> component = component_;
-    if (!component->getMemoryMaps()->isEmpty())
-    {
-        writeSubHeader(subHeaderNumber, stream, "Memory maps", "memoryMaps");
-
-        const QList<QSharedPointer<MemoryMap> > componentMemoryMaps = *component->getMemoryMaps().data();
-        int memoryMapNumber = 1;
-        foreach (QSharedPointer<MemoryMap> memoryMap, componentMemoryMaps)
-        {
-            stream << "\t\t\t<h3><a id=\"" << component->getVlnv().toString() << ".memoryMap." <<
-                memoryMap->name() << "\">" << myNumber() << "." << subHeaderNumber << "." << memoryMapNumber <<
-                " " << memoryMap->name() << "</a></h3>" << Qt::endl;
-
-            stream << "\t\t\t<p>" << Qt::endl;
-
-            if (!memoryMap->description().isEmpty())
-            {
-                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " <<
-                    memoryMap->description() << "<br>" << Qt::endl;
-            }
-
-            stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Address unit bits (AUB):</strong> " <<
-                memoryMap->getAddressUnitBits() << "<br>" << Qt::endl;
-
-            stream << "\t\t\t</p>" << Qt::endl;
-            
-            QList <QSharedPointer <AddressBlock> > addressBlocks;
-            foreach (QSharedPointer<MemoryBlockBase> memoryMapItem, *memoryMap->getMemoryBlocks())
-            {
-                QSharedPointer <AddressBlock> addressItem = memoryMapItem.dynamicCast<AddressBlock>();
-
-                if (addressItem)
-                {
-                    addressBlocks.append(addressItem);
-                }
-            }
-
-            writeAddressBlocks(addressBlocks, stream, subHeaderNumber, memoryMapNumber);
-
-            ++memoryMapNumber;
-        }
-
-        ++subHeaderNumber;
-    }
+    writer_->writeMemoryMaps(stream, subHeaderNumber);
+    ++subHeaderNumber;
 }
 
 //-----------------------------------------------------------------------------

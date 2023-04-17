@@ -31,6 +31,7 @@ public:
         int subHeaderNumber);
     void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId);
+    virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber);
 
     void setComponentNumber(unsigned int componentNumber);
 
@@ -41,7 +42,7 @@ private:
     // The current component
     QSharedPointer<Component> component_;
 
-    // Component number for table of contents
+    // Component number in the hierarchy
     unsigned int componentNumber_;
 };
 
