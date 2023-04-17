@@ -413,14 +413,11 @@ void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMap." +
-        memoryMap->name() + "\">0.1.1 " + memoryMap->name() + "</a></h3>\n"
-        "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + memoryMap->description() + "<br>\n"
-        "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " +
-        memoryMap->getAddressUnitBits() + "<br>\n"
-        "\t\t\t</p>"
+        "## 0.1 Memory maps <a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">  \n"
+        "### 0.1.1 " + memoryMap->name() + " <a id=\"" + topComponent_->getVlnv().toString() + 
+            ".memoryMap." + memoryMap->name() + "\">  \n"
+        "Description: " + memoryMap->description() + "  \n"
+        "Address unit bits (AUB): " + memoryMap->getAddressUnitBits() + "  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -621,11 +618,6 @@ QSharedPointer<MemoryMap> tst_MarkdownGenerator::createTestMemoryMap(QString con
 }
 
 QString tst_MarkdownGenerator::getSpaceString()
-{
-    return QString();
-}
-
-QString tst_MarkdownGenerator::getIndentString()
 {
     return QString();
 }
