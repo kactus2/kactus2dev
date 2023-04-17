@@ -413,11 +413,11 @@ void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "## 0.1 Memory maps <a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">  \n"
+        "## 0.1 Memory maps <a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">  \n\n"
         "### 0.1.1 " + memoryMap->name() + " <a id=\"" + topComponent_->getVlnv().toString() + 
             ".memoryMap." + memoryMap->name() + "\">  \n"
-        "Description: " + memoryMap->description() + "  \n"
-        "Address unit bits (AUB): " + memoryMap->getAddressUnitBits() + "  \n"
+        "**Description:** " + memoryMap->description() + "  \n"
+        "**Address unit bits (AUB):** " + memoryMap->getAddressUnitBits() + "  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -425,6 +425,42 @@ void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
 
 void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
 {
+    QList <QSharedPointer <Register> > registers;
+    QSharedPointer <Register> testRegister = createTestRegister("register", "4", "2", "2", "");
+    registers.append(testRegister);
+
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "example", "'h0", "4",
+        "32", registers);
+    addressBlocks.append(testAddressBlock);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "## 0.1.1.1 " + testAddressBlock->name() + "<a id = \"" + topComponent_->getVlnv().toString() + ".addressBlock." + testAddressBlock->name() + "\">  \n"
+        "\n"
+        "**Description:** " + testAddressBlock->description() + "  \n"
+        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|\n"
+        "|:----|:----|:----|:----|:----|:----|\n" +
+        "|" + General::usage2Str(testAddressBlock->getUsage()) + "|" +
+        "|" + testAddressBlock->getBaseAddress() + "|" +
+        "|" + testAddressBlock->getRange() + "|" +
+        "|" + testAddressBlock->getWidth() + "|" +
+        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "|" +
+        "|" + testAddressBlock->getVolatile() + "|"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testExpressionsInAddressBlocks()
