@@ -13,11 +13,14 @@
 #define MARKDOWNWRITER_H
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <kactusGenerators/DocumentGenerator/DocumentationWriter.h>
 
 #include <QTextStream>
 #include <QSharedPointer>
+#include <QList>
 
 class MarkdownWriter : public DocumentationWriter
 {
@@ -36,6 +39,9 @@ public:
     void setComponentNumber(unsigned int componentNumber);
 
 private:
+
+    // Finds the address blocks of the memory map
+    QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
 
     void writeTableLine(QTextStream& stream, QStringList const& cells) const;
     

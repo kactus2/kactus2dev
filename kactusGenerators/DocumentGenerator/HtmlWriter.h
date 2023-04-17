@@ -20,6 +20,8 @@
 #include <QSharedPointer>
 
 class ExpressionFormatter;
+class AddressBlock;
+class MemoryMap;
 
 class HtmlWriter : public DocumentationWriter
 {
@@ -33,9 +35,13 @@ public:
         int subHeaderNumber);
     void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId);
+    virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber);
 
     void setComponentNumber(unsigned int componentNumber);
 private:
+
+    // Finds the address blocks of the memory map
+    QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
 
     // Returns n tabs for indenting HTML
     QString indent(int n) const;

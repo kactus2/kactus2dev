@@ -176,17 +176,7 @@ void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
         
         stream << "**Address unit bits (AUB):** " << memoryMap->getAddressUnitBits() << "  " << Qt::endl;
 
-        QList<QSharedPointer <AddressBlock> > addressBlocks;
-        for (auto const& memoryMapItem : *memoryMap->getMemoryBlocks())
-        {
-            QSharedPointer<AddressBlock> addressItem = memoryMapItem.dynamicCast<AddressBlock>();
-
-            if (addressItem)
-            {
-                addressBlocks.append(addressItem);
-            }
-        }
-
+        QList<QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
         // call writeAddressBlocks(addressBlocks, stream, subHeaderNumber, memoryMapNumber) here!
 
         ++memoryMapNumber;
@@ -196,6 +186,22 @@ void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
 void MarkdownWriter::setComponentNumber(unsigned int componentNumber)
 {
     componentNumber_ = componentNumber;
+}
+
+QList<QSharedPointer<AddressBlock>> MarkdownWriter::getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const
+{
+    QList<QSharedPointer <AddressBlock> > addressBlocks;
+    for (auto const& memoryMapItem : *memoryMap->getMemoryBlocks())
+    {
+        QSharedPointer<AddressBlock> addressItem = memoryMapItem.dynamicCast<AddressBlock>();
+
+        if (addressItem)
+        {
+            addressBlocks.append(addressItem);
+        }
+    }
+
+    return addressBlocks;
 }
 
 void MarkdownWriter::writeTableLine(QTextStream& stream, QStringList const& cells) const

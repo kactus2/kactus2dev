@@ -1,6 +1,8 @@
 #include "HtmlWriter.h"
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -196,9 +198,63 @@ void HtmlWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& strea
         componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
 }
 
+void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
+{
+    if (component_->getMemoryMaps()->isEmpty())
+    {
+        return;
+    }
+
+    writeSubHeader(subHeaderNumber, stream, "Memory maps", "memoryMaps");
+
+    const QList<QSharedPointer<MemoryMap> > componentMemoryMaps = *component_->getMemoryMaps().data();
+    int memoryMapNumber = 1;
+
+    for (auto const& memoryMap : componentMemoryMaps)
+    {
+        stream << indent(3) << "<h3><a id=\"" << component_->getVlnv().toString() << ".memoryMap." <<
+            memoryMap->name() << "\">" << componentNumber_ << "." << subHeaderNumber << "." << memoryMapNumber <<
+            " " << memoryMap->name() << "</a></h3>" << Qt::endl;
+
+        stream << indent(3) << "<p>" << Qt::endl;
+
+        if (!memoryMap->description().isEmpty())
+        {
+            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
+                memoryMap->description() << "<br>" << Qt::endl;
+        }
+        
+        stream << indent(3) << HTML::INDENT << "<strong>Address unit bits (AUB):</strong> " <<
+            memoryMap->getAddressUnitBits() << "<br>" << Qt::endl;
+
+        stream << indent(3) << "</p>" << Qt::endl;
+
+        QList <QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
+        //writeAddressBlocks(addressBlocks, stream, subHeaderNumber, memoryMapNumber);
+
+        ++memoryMapNumber;
+    }
+}
+
 void HtmlWriter::setComponentNumber(unsigned int componentNumber)
 {
     componentNumber_ = componentNumber;
+}
+
+QList<QSharedPointer<AddressBlock>> HtmlWriter::getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const
+{
+    QList<QSharedPointer <AddressBlock> > addressBlocks;
+    for (auto const& memoryMapItem : *memoryMap->getMemoryBlocks())
+    {
+        QSharedPointer<AddressBlock> addressItem = memoryMapItem.dynamicCast<AddressBlock>();
+
+        if (addressItem)
+        {
+            addressBlocks.append(addressItem);
+        }
+    }
+
+    return addressBlocks;
 }
 
 QString HtmlWriter::indent(int n) const
