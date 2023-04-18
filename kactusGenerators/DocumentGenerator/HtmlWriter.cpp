@@ -5,6 +5,7 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -403,44 +404,50 @@ void HtmlWriter::writePorts(QTextStream& stream, int subHeaderNumber)
     writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
 
     const QList<QSharedPointer<Port> > ports = *component_->getPorts().data();
-
-    QStringList portTableHeaders(QStringList()
-        << QStringLiteral("Name")
-        << QStringLiteral("Direction")
-        << QStringLiteral("Left bound")
-        << QStringLiteral("Right bound")
-        << QStringLiteral("Port type")
-        << QStringLiteral("Type definition")
-        << QStringLiteral("Default value")
-        << QStringLiteral("Array left")
-        << QStringLiteral("Array right")
-        << QStringLiteral("Description")
-    );
-    
     QString tableTitle = "List of all ports the component has.";
-    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+    
+    writePortTable(stream, tableTitle, ports);
+}
 
-    writeTableHeader(stream, portTableHeaders, 4);
+void HtmlWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
+{
+    writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
 
-    for (auto const& port : ports)
+    int interfaceNumber = 1;
+
+    for (auto const& interface : *component_->getBusInterfaces())
     {
-        QStringList portTableCells(QStringList()
-            << "<a id=\"" + vlnvString_ + ".port." + port->name() + "\">" + port->name() + "</a>"
-            << DirectionTypes::direction2Str(port->getDirection())
-            << expressionFormatter_->formatReferringExpression(port->getLeftBound())
-            << expressionFormatter_->formatReferringExpression(port->getRightBound())
-            << port->getTypeName()
-            << port->getTypeDefinition(port->getTypeName())
-            << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
-            << expressionFormatter_->formatReferringExpression(port->getArrayLeft())
-            << expressionFormatter_->formatReferringExpression(port->getArrayRight())
-            << port->description()
-        );
+        stream << indent(3) <<"<h3>" << componentNumber_ << "." << subHeaderNumber << "." 
+            << interfaceNumber << " " << interface->name() << "</h3>" << Qt::endl;
 
-        writeTableRow(stream, portTableCells, 4);
+        stream << indent(3) << "<p>" << Qt::endl;
+
+        if (!interface->description().isEmpty())
+        {
+            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
+                interface->description() << "<br>" << Qt::endl;
+        }
+
+        stream << indent(3) << HTML::INDENT << "<strong>Interface mode:</strong> " <<
+            General::interfaceMode2Str(interface->getInterfaceMode()) << "<br>" << Qt::endl;
+
+        stream << indent(3) << HTML::INDENT <<
+            "<strong>Ports used in this interface:</strong>";
+
+        if (auto const& ports = component_->getPortsMappedInInterface(interface->name()); ports.isEmpty())
+        {
+            stream << " None" << Qt::endl;
+        }
+        else
+        {
+            stream << Qt::endl << indent(3) << "</p>" << Qt::endl;
+
+            QString tableTitle("List of ports contained in interface " + (interface->name()) + ".");
+            writePortTable(stream, tableTitle, ports);
+        }
+
+        ++interfaceNumber;
     }
-
-    stream << indent(3) << "</table>" << Qt::endl;
 }
 
 void HtmlWriter::setComponentNumber(unsigned int componentNumber)
@@ -533,4 +540,45 @@ void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& header
     }
 
     stream << indent(indentation) << "</tr>" << Qt::endl;
+}
+
+void HtmlWriter::writePortTable(QTextStream& stream, QString const& tableTitle, QList<QSharedPointer<Port>> ports)
+{
+    QStringList portTableHeaders(QStringList()
+        << QStringLiteral("Name")
+        << QStringLiteral("Direction")
+        << QStringLiteral("Left bound")
+        << QStringLiteral("Right bound")
+        << QStringLiteral("Port type")
+        << QStringLiteral("Type definition")
+        << QStringLiteral("Default value")
+        << QStringLiteral("Array left")
+        << QStringLiteral("Array right")
+        << QStringLiteral("Description")
+    );
+
+    
+    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+
+    writeTableHeader(stream, portTableHeaders, 4);
+
+    for (auto const& port : ports)
+    {
+        QStringList portTableCells(QStringList()
+            << "<a id=\"" + vlnvString_ + ".port." + port->name() + "\">" + port->name() + "</a>"
+            << DirectionTypes::direction2Str(port->getDirection())
+            << expressionFormatter_->formatReferringExpression(port->getLeftBound())
+            << expressionFormatter_->formatReferringExpression(port->getRightBound())
+            << port->getTypeName()
+            << port->getTypeDefinition(port->getTypeName())
+            << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
+            << expressionFormatter_->formatReferringExpression(port->getArrayLeft())
+            << expressionFormatter_->formatReferringExpression(port->getArrayRight())
+            << port->description()
+        );
+
+        writeTableRow(stream, portTableCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
 }

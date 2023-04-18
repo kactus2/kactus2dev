@@ -55,6 +55,8 @@ public:
 
     void writePorts(QTextStream& stream, int subHeaderNumber) override;
 
+    void writeInterfaces(QTextStream& stream, int& subHeaderNumber) override;
+
     void setComponentNumber(unsigned int componentNumber) override;
 
 private:
@@ -79,6 +81,9 @@ private:
     // Writes a table header row with chosen indentation. Indentation is the number of tabs for
     // the parent element.
     void writeTableHeader(QTextStream& stream, QStringList const& headerFields, int indentation);
+
+    // Writes a port table for specified ports
+    void writePortTable(QTextStream& stream, QString const& tableTitle, QList<QSharedPointer<Port> > ports);
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;

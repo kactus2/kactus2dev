@@ -449,8 +449,11 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 {
-    writer_->writeInterfaces(stream, subHeaderNumber);
-    ++subHeaderNumber;
+    if (component_->hasInterfaces())
+    {
+        writer_->writeInterfaces(stream, subHeaderNumber);
+        ++subHeaderNumber;
+    }
 }
 
 //-----------------------------------------------------------------------------

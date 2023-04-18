@@ -79,7 +79,7 @@ private:
     // Writes the table separator to a MD table
     void writeTableSeparator(QTextStream& stream, int columns) const;
 
-    // Writes 
+    // Writes a port table for specified ports
     void writePortTable(QTextStream& stream, QList<QSharedPointer<Port> > ports) const;
 
     //! The expression formatter, used to change parameter IDs into names.
