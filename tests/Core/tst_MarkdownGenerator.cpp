@@ -723,6 +723,35 @@ void tst_MarkdownGenerator::testPortsWrittenWithOnlyTopComponent()
 
 void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
 {
+    QSharedPointer <BusInterface> busInterface(new BusInterface);
+    busInterface->setName("interface");
+    busInterface->setInterfaceMode(General::MASTER);
+
+    topComponent_->getBusInterfaces()->append(busInterface);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeInterfaces(stream, subHeaderNumber);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "## 0.1 Bus interfaces <a id=\"" + topComponent_->getVlnv().toString() + ".interfaces\">  \n"
+        "\n"
+        "### 0.1.1 " + busInterface->name() + "  \n"
+        "\n"
+        "**Interface mode:** " + General::interfaceMode2Str(busInterface->getInterfaceMode()) + "  \n"
+        "**Ports used in this interface:** None  \n"
+        "\n"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
