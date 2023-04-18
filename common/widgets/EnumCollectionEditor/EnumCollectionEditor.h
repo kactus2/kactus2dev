@@ -39,10 +39,11 @@ public:
     /*!
      *  Adds a new enumerable item to the editor.
      *
-     *      @param [in] name      The name of the item.
-     *      @param [in] selected  If true, the item is initially selected.
+     *      @param [in] text                The name of the item.
+     *      @param [in] isExclusivePort     Flag for exclusive ports.
+     *      @param [in] selected            If true, the item is initially selected.
      */
-    void addItem(QString const& text, bool selected = false);
+    void addItem(QString const& text, bool isExclusivePort, bool selected);
 
     /*!
      *  Returns the selected items.
@@ -81,10 +82,34 @@ private slots:
      */
     void onItemClicked(bool newState);
 
+    /*!
+     *  Handle the state change in an exclusive enumeration check box.
+     *
+     *      @param [in] newState    New state of the exclusive enumeration check box.
+     */
+    void onExclusiveItemClicked(bool newState);
+
 private:
     // Disable copying.
     EnumCollectionEditor(EnumCollectionEditor const& rhs);
     EnumCollectionEditor& operator=(EnumCollectionEditor const& rhs);
+
+    /*!
+     *  Create an enumeration check box.
+     *
+     *      @param [in] text        The name of the item.
+     *      @param [in] selected    If true, the item is initially selected.
+     *
+     *      @return The created enumeration check box.
+     */
+    QCheckBox* createCheckBox(QString const& text, bool isSelected);
+
+    /*!
+     *  Handle the change in the state of the check all check box.
+     *
+     *      @param [in] newState    New state of the item initiating this change.
+     */
+    void handleCheckAllStateChangeFromItemClick(bool newState);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -95,6 +120,9 @@ private:
 
     //! The check boxes for the items.
     QList<QCheckBox*> items_;
+
+    //! List of exclusive check boxes.
+    QList<QCheckBox*> exclusiveItems_;
 };
 
 #endif // ENUMCOLLECTIONEDITOR_H

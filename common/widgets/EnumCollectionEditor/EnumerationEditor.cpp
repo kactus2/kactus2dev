@@ -19,11 +19,16 @@
 //-----------------------------------------------------------------------------
 // Function: EnumerationEditor::EnumerationEditor()
 //-----------------------------------------------------------------------------
-EnumerationEditor::EnumerationEditor(QWidget* parent):
+EnumerationEditor::EnumerationEditor(bool hideCheckAll, QWidget* parent):
 QFrame(parent),
 enumCollectionEditor_(new EnumCollectionEditor(this)),
 selectAllCheck_(new QCheckBox("All"))
 {
+    if (hideCheckAll)
+    {
+        selectAllCheck_->hide();
+    }
+
     selectAllCheck_->setToolTip("Select / deselect all");
 
     selectAllCheck_->setTristate(true);
@@ -117,7 +122,7 @@ QStringList EnumerationEditor::getSelectedItems() const
 //-----------------------------------------------------------------------------
 // Function: EnumerationEditor::setupItems()
 //-----------------------------------------------------------------------------
-void EnumerationEditor::setupItems(QStringList const& availableItems, QStringList const& selectedItems)
+void EnumerationEditor::setupItems(QStringList const& availableItems, QStringList const& exclusiveItems, QStringList const& selectedItems)
 {
     int includedItemCount = 0;
 
@@ -129,7 +134,13 @@ void EnumerationEditor::setupItems(QStringList const& availableItems, QStringLis
             includedItemCount++;
         }
 
-        enumCollectionEditor_->addItem(name, nameIsSelected);
+        bool portIsExclusive = false;
+        if (exclusiveItems.contains(name))
+        {
+            portIsExclusive = true;
+        }
+
+        enumCollectionEditor_->addItem(name, portIsExclusive, nameIsSelected);
     }
 
     Qt::CheckState selectAllState = Qt::PartiallyChecked;

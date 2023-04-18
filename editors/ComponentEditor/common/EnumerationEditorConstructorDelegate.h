@@ -38,6 +38,13 @@ public:
      */
     EnumerationEditorConstructorDelegate(QObject* parent);
 
+    /*!
+     *  Set the flag for hiding the check all enumerations check box.
+     *
+     *      @param [in] newValue    The new flag.
+     */
+    void setHideCheckAll(bool newValue);
+
 	/*!
      *  The destructor
      */
@@ -138,6 +145,13 @@ private:
     virtual QStringList getAvailableItems() const = 0;
 
     /*!
+     *  Get the list of exclusive enumerations.
+     *
+     *      @return List of the exclusvie enumerations.
+     */
+    virtual QStringList getExclusiveItems() const;
+
+    /*!
      *  Set the selected enumerations to the selected item.
      *
      *      @param [in] index           Model index identifying the item that's data is to be saved.
@@ -145,6 +159,13 @@ private:
      *      @param [in] selectedItems   List of the selected enumerations.
      */
     virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const = 0;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Flag for hiding the check all enumerations check box.
+    bool hideCheckAll_;
 };
 
 #endif // ENUMERATIONEDITORCONSTRUCTORDELEGATE_H

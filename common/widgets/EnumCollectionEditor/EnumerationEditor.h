@@ -28,9 +28,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] parent The parent widget.
+     *      @param [in] hideCheckAll    Flag for hiding the check all enumerations check box.
+     *      @param [in] parent          The parent widget.
      */
-    EnumerationEditor(QWidget* parent);
+    EnumerationEditor(bool hideCheckAll, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -46,9 +47,10 @@ public:
      *  Setup the list of selected enumerations.
      *
      *      @param [in] availableItems  List of the available enumerations.
+     *      @param [in] exclusiveItems  List of exclusive enumerations.
      *      @param [in] selectedItems   List of the selected enumerations.
      */
-    void setupItems(QStringList const& availableItems, QStringList const& selectedItems);
+    void setupItems(QStringList const& availableItems, QStringList const& exclusiveItems, QStringList const& selectedItems);
 
 signals:
 

@@ -27,11 +27,11 @@
 // Function: AbstractionPortsDelegate::AbstractionPortsDelegate()
 //-----------------------------------------------------------------------------
 AbstractionPortsDelegate::AbstractionPortsDelegate(LibraryInterface* libraryAcces, QObject *parent):
-QStyledItemDelegate(parent),
+EnumerationEditorConstructorDelegate(parent),
 libraryAccess_(libraryAcces),
 busDefinition_(0)
 {
-
+    setHideCheckAll(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -40,16 +40,7 @@ busDefinition_(0)
 QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     const QModelIndex& index ) const
 {
-    if (index.column() == LogicalPortColumns::QUALIFIER)
-    {
-        QComboBox* box = new QComboBox(parent);
-        QStringList list = getQualifierList();
-        box->addItems(list);
-
-        connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-        return box;
-    }
-    else if (index.column() == LogicalPortColumns::BUSWIDTH)
+    if (index.column() == LogicalPortColumns::BUSWIDTH)
     {
         QLineEdit* line = new QLineEdit(parent);
         connect(line, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
@@ -91,8 +82,10 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
             return 0;
         }
     }
-
-    return QStyledItemDelegate::createEditor(parent, option, index);
+    else
+    {
+        return EnumerationEditorConstructorDelegate::createEditor(parent, option, index);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +125,7 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
 
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        EnumerationEditorConstructorDelegate::setEditorData(editor, index);
     }
 }
 
@@ -151,9 +144,9 @@ bool AbstractionPortsDelegate::editorIsLineEditor(int indexColumn) const
 //-----------------------------------------------------------------------------
 bool AbstractionPortsDelegate::editorIsComboBox(int indexColumn) const
 {
-    return indexColumn == LogicalPortColumns::QUALIFIER || indexColumn == LogicalPortColumns::MODE ||
-        indexColumn == LogicalPortColumns::PRESENCE || indexColumn == LogicalPortColumns::SYSTEM_GROUP ||
-        indexColumn == LogicalPortColumns::PROTOCOLTYPE || indexColumn == LogicalPortColumns::PAYLOADTYPE;
+    return indexColumn == LogicalPortColumns::MODE || indexColumn == LogicalPortColumns::PRESENCE ||
+        indexColumn == LogicalPortColumns::SYSTEM_GROUP || indexColumn == LogicalPortColumns::PROTOCOLTYPE ||
+        indexColumn == LogicalPortColumns::PAYLOADTYPE;
 }
 
 //-----------------------------------------------------------------------------
@@ -179,7 +172,7 @@ void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
 
     else
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        EnumerationEditorConstructorDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -210,6 +203,43 @@ void AbstractionPortsDelegate::setBusDef(QSharedPointer<const BusDefinition> bus
 //-----------------------------------------------------------------------------
 QStringList AbstractionPortsDelegate::getQualifierList() const
 {
-    QStringList list = { "none", "address", "data", "data/address" };
+    QStringList list = { "address", "data", };
     return list;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::isEnumerationEditorColumn()
+//-----------------------------------------------------------------------------
+bool AbstractionPortsDelegate::isEnumerationEditorColumn(QModelIndex const& index) const
+{
+    if (index.column() == LogicalPortColumns::QUALIFIER)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::getCurrentSelection()
+//-----------------------------------------------------------------------------
+QStringList AbstractionPortsDelegate::getCurrentSelection(QModelIndex const& index) const
+{
+    return index.data().toString().split(" ");
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::getAvailableItems()
+//-----------------------------------------------------------------------------
+QStringList AbstractionPortsDelegate::getAvailableItems() const
+{
+    return getQualifierList();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::setEnumerationDataToModel()
+//-----------------------------------------------------------------------------
+void AbstractionPortsDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
+{
+    model->setData(index, selectedItems);
 }

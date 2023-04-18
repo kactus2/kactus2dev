@@ -555,6 +555,47 @@ std::string PortAbstractionInterface::getQualifierString(int const& portIndex) c
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getQualifierList()
+//-----------------------------------------------------------------------------
+std::vector<std::string> PortAbstractionInterface::getQualifierStringList(int const& portIndex) const
+{
+    std::vector<std::string> qualifierList;
+
+    QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
+    if (selectedSignal)
+    {
+        Qualifier portQualifier;
+        if (selectedSignal->wire_)
+        {
+            portQualifier = selectedSignal->abstraction_->getWire()->getQualifier();
+        }
+        if (selectedSignal->transactional_)
+        {
+            portQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
+        }
+
+        if (portQualifier.isAddress())
+        {
+            qualifierList.push_back("address");
+        }
+        if (portQualifier.isData())
+        {
+            qualifierList.push_back("data");
+        }
+        if (portQualifier.isClock())
+        {
+            qualifierList.push_back("clock");
+        }
+        if (portQualifier.isReset())
+        {
+            qualifierList.push_back("reset");
+        }
+    }
+
+    return qualifierList;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::qualifierToString()
 //-----------------------------------------------------------------------------
 QString PortAbstractionInterface::qualifierToString(Qualifier const& qualifier) const
@@ -600,6 +641,54 @@ bool PortAbstractionInterface::setQualifier(int const& portIndex, std::string co
         else if (selectedSignal->transactional_)
         {
             selectedSignal->abstraction_->getTransactional()->setQualifier(stringToQualifier(newQualifier));
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::setQualifierList()
+//-----------------------------------------------------------------------------
+bool PortAbstractionInterface::setQualifierList(int const& portIndex, std::vector<std::string> const& newQualifierList)
+{
+    QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
+    if (selectedSignal)
+    {
+        Qualifier::Type newQualifierType = Qualifier::Any;
+
+        if (!newQualifierList.empty())
+        {
+            for (auto newQualifier : newQualifierList)
+            {
+                Qualifier::Type comparisonQualifier = stringToQualifier(newQualifier);
+                if ((newQualifierType == Qualifier::Data && comparisonQualifier == Qualifier::Address) ||
+                    (newQualifierType == Qualifier::Address && comparisonQualifier == Qualifier::Data))
+                {
+                    newQualifierType = Qualifier::Data_Address;
+                }
+                else
+                {
+                    if (newQualifierType != Qualifier::Any && newQualifierType != comparisonQualifier)
+                    {
+                        newQualifierType = Qualifier::Any;
+                        break;
+                    }
+
+                    newQualifierType = comparisonQualifier;
+                }
+            }
+        }
+
+        if (selectedSignal->wire_)
+        {
+            selectedSignal->abstraction_->getWire()->setQualifier(newQualifierType);
+        }
+        if (selectedSignal->transactional_)
+        {
+            selectedSignal->abstraction_->getTransactional()->setQualifier(newQualifierType);
         }
 
         return true;
