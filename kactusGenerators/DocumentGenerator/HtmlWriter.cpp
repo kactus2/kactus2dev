@@ -325,31 +325,21 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
 
         writeTableHeader(stream, registerTableHeaders, 4);
 
-        QStringList registerInfo;
-        registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset());
+        QStringList registerInfoTableCells(QStringList()
+            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
+            << (currentRegister->getSize().isEmpty()
+                ? currentRegister->getSize()
+                : expressionFormatter_->formatReferringExpression(currentRegister->getSize()))
 
-        if (currentRegister->getSize().isEmpty())
-        {
-            registerInfo << currentRegister->getSize();
-        }
-        else
-        {
-            registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getSize());
-        }
+            << (currentRegister->getDimension().isEmpty()
+                ? currentRegister->getDimension()
+                : expressionFormatter_->formatReferringExpression(currentRegister->getDimension()))
 
-        if (currentRegister->getDimension().isEmpty())
-        {
-            registerInfo << currentRegister->getDimension();
-        }
-        else
-        {
-            registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getDimension());
-        }
-
-        registerInfo << currentRegister->getVolatile()
-            << AccessTypes::access2Str(currentRegister->getAccess());
+            << currentRegister->getVolatile()
+            << AccessTypes::access2Str(currentRegister->getAccess())
+        );
         
-        writeTableRow(stream, registerInfo, 4);
+        writeTableRow(stream, registerInfoTableCells, 4);
         
         stream << indent(3) << "</table>" << Qt::endl;
 
@@ -403,6 +393,51 @@ void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> curre
         );
 
         writeTableRow(stream, fieldTableCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
+void HtmlWriter::writePorts(QTextStream& stream, int subHeaderNumber)
+{
+    writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
+
+    const QList<QSharedPointer<Port> > ports = *component_->getPorts().data();
+
+    QStringList portTableHeaders(QStringList()
+        << QStringLiteral("Name")
+        << QStringLiteral("Direction")
+        << QStringLiteral("Left bound")
+        << QStringLiteral("Right bound")
+        << QStringLiteral("Port type")
+        << QStringLiteral("Type definition")
+        << QStringLiteral("Default value")
+        << QStringLiteral("Array left")
+        << QStringLiteral("Array right")
+        << QStringLiteral("Description")
+    );
+    
+    QString tableTitle = "List of all ports the component has.";
+    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+
+    writeTableHeader(stream, portTableHeaders, 4);
+
+    for (auto const& port : ports)
+    {
+        QStringList portTableCells(QStringList()
+            << "<a id=\"" + vlnvString_ + ".port." + port->name() + "\">" + port->name() + "</a>"
+            << DirectionTypes::direction2Str(port->getDirection())
+            << expressionFormatter_->formatReferringExpression(port->getLeftBound())
+            << expressionFormatter_->formatReferringExpression(port->getRightBound())
+            << port->getTypeName()
+            << port->getTypeDefinition(port->getTypeName())
+            << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
+            << expressionFormatter_->formatReferringExpression(port->getArrayLeft())
+            << expressionFormatter_->formatReferringExpression(port->getArrayRight())
+            << port->description()
+        );
+
+        writeTableRow(stream, portTableCells, 4);
     }
 
     stream << indent(3) << "</table>" << Qt::endl;

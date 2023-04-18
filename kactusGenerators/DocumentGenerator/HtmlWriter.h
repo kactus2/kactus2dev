@@ -53,6 +53,8 @@ public:
 
     void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) override;
 
+    void writePorts(QTextStream& stream, int subHeaderNumber) override;
+
     void setComponentNumber(unsigned int componentNumber) override;
 
 private:
@@ -70,10 +72,12 @@ private:
     // Returns n tabs for indenting HTML
     QString indent(int n) const;
 
-    // Writes a table row
+    // Writes a table row with chosen indentation. Indentation is the number of tabs for
+    // the parent element.
     void writeTableRow(QTextStream& stream, QStringList const& fields, int indentation);
 
-    // Writes a table header row
+    // Writes a table header row with chosen indentation. Indentation is the number of tabs for
+    // the parent element.
     void writeTableHeader(QTextStream& stream, QStringList const& headerFields, int indentation);
 
     //! The expression formatter, used to change parameter IDs into names.
