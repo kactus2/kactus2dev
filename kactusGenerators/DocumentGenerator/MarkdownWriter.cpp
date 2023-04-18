@@ -339,6 +339,47 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
     }
 }
 
+void MarkdownWriter::writePorts(QTextStream& stream, int subHeaderNumber)
+{
+    writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
+
+    const QList<QSharedPointer<Port> > ports = *component_->getPorts().data();
+
+    QStringList portTableHeaders(QStringList()
+        << QStringLiteral("Name")
+        << QStringLiteral("Direction")
+        << QStringLiteral("Left bound")
+        << QStringLiteral("Right bound")
+        << QStringLiteral("Port type")
+        << QStringLiteral("Type definition")
+        << QStringLiteral("Default value")
+        << QStringLiteral("Array left")
+        << QStringLiteral("Array right")
+        << QStringLiteral("Description")
+    );
+
+    writeTableLine(stream, portTableHeaders);
+    writeTableSeparator(stream, portTableHeaders.length());
+
+    for (auto const& port : ports)
+    {
+        QStringList portTableCells(QStringList()
+            << port->name() + " <a id=\"" + vlnvString_ + ".port." + port->name() + "\">"
+            << DirectionTypes::direction2Str(port->getDirection())
+            << expressionFormatter_->formatReferringExpression(port->getLeftBound())
+            << expressionFormatter_->formatReferringExpression(port->getRightBound())
+            << port->getTypeName()
+            << port->getTypeDefinition(port->getTypeName())
+            << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
+            << expressionFormatter_->formatReferringExpression(port->getArrayLeft())
+            << expressionFormatter_->formatReferringExpression(port->getArrayRight())
+            << port->description()
+        );
+
+        writeTableLine(stream, portTableCells);
+    }
+}
+
 void MarkdownWriter::setComponentNumber(unsigned int componentNumber)
 {
     componentNumber_ = componentNumber;
@@ -411,7 +452,7 @@ void MarkdownWriter::writeTableLine(QTextStream& stream, QStringList const& cell
     stream << "|" << Qt::endl;
 }
 
-void MarkdownWriter::writeTableSeparator(QTextStream& stream, int columns)
+void MarkdownWriter::writeTableSeparator(QTextStream& stream, int columns) const
 {
     QString tableSeparator(":---- ");   // :--- aligns text in cells to the left
     QStringList tableSeparators = tableSeparator.repeated(columns).split(" ", Qt::SkipEmptyParts);

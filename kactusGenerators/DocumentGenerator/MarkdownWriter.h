@@ -54,6 +54,8 @@ public:
 
     void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) override;
 
+    void writePorts(QTextStream& stream, int subHeaderNumber) override;
+
     void setComponentNumber(unsigned int componentNumber) override;
 
 private:
@@ -72,7 +74,7 @@ private:
     void writeTableLine(QTextStream& stream, QStringList const& cells) const;
 
     // Writes the table separator to a MD table
-    void writeTableSeparator(QTextStream& stream, int columns);
+    void writeTableSeparator(QTextStream& stream, int columns) const;
     
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;

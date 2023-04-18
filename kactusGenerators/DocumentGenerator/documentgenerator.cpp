@@ -439,13 +439,7 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
 {
     if (component_->hasPorts())
     {
-        writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
-
-        QString tableTitle = "List of all ports the component has.";
-        const QList<QSharedPointer<Port> > ports = *component_->getPorts().data();
-
-        writePortTable(stream, tableTitle, ports);
-
+        writer_->writePorts(stream, subHeaderNumber);
         ++subHeaderNumber;
     }
 }

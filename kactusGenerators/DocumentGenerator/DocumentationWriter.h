@@ -45,6 +45,8 @@ public:
 
     virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) = 0;
 
+    virtual void writePorts(QTextStream& stream, int subHeaderNumber) = 0;
+
 
     virtual void setComponentNumber(unsigned int componentNumber) = 0;
 };
