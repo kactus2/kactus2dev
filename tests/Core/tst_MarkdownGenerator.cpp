@@ -756,6 +756,39 @@ void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
 
 void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
 {
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QSharedPointer<FileSet> testFileSet(new FileSet);
+    testFileSet->setName("testFileSet");
+    testFileSet->setDescription("example description");
+    testFileSet->setGroups("documentation");
+
+    topComponent_->getFileSets()->append(testFileSet);
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeFileSets(stream, subHeaderNumber);
+
+    targetFile.close();
+
+    QString groups = testFileSet->getGroups()->join(", ");
+
+    QString expectedOutput(
+        "## 0.1 File sets <a id=\"" + topComponent_->getVlnv().toString() + ".fileSets\">  \n"
+        "\n"
+        "### 0.1.1 " + testFileSet->name() + " <a id=\"" + topComponent_->getVlnv().toString()
+            + ".fileSet." + testFileSet->name() + "\">  \n"
+        "\n"
+        "**Description:** " + testFileSet->description() + "  \n"
+        "**Identifiers:** " + groups + "  \n"
+        "\n"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
