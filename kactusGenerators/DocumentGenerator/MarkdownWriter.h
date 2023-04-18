@@ -30,21 +30,31 @@ class MarkdownWriter : public DocumentationWriter
 {
 public:
     MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter);
-    virtual ~MarkdownWriter();
-    void writeHeader(QTextStream& stream);
-    void writeKactusAttributes(QTextStream& stream, int subHeaderNumber);
-    void writeTableOfContents(QTextStream& stream);
-    void writeParameters(QTextStream& stream, int subHeaderNumber);
-    void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
-        QString const& headerText, QString const& headerId);
-    virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber);
-    void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
-        int subHeaderNumber,int memoryMapNumber);
-    void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
-        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber);
-    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister);
 
-    void setComponentNumber(unsigned int componentNumber);
+    ~MarkdownWriter() override;
+
+    void writeHeader(QTextStream& stream) override;
+
+    void writeKactusAttributes(QTextStream& stream, int subHeaderNumber) override;
+
+    void writeTableOfContents(QTextStream& stream) override;
+
+    void writeParameters(QTextStream& stream, int subHeaderNumber) override;
+
+    void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
+        QString const& headerText, QString const& headerId) override;
+
+    void writeMemoryMaps(QTextStream& stream, int subHeaderNumber) override;
+
+    void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
+        int subHeaderNumber,int memoryMapNumber) override;
+
+    void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
+        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) override;
+
+    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) override;
+
+    void setComponentNumber(unsigned int componentNumber) override;
 
 private:
 

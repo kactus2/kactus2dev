@@ -25,16 +25,24 @@ public:
     virtual ~DocumentationWriter() = default;
 
     virtual void writeHeader(QTextStream& stream) = 0;
+
     virtual void writeKactusAttributes(QTextStream& stream, int subHeaderNumber) = 0;
+
     virtual void writeTableOfContents(QTextStream& stream) = 0;
+
     virtual void writeParameters(QTextStream& stream, int subHeaderNumber) = 0;
+
     virtual void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
         QString const& headerText, QString const& headerId) = 0;
+
     virtual void writeMemoryMaps(QTextStream& stream, int subHeaderNumber) = 0;
+
     virtual void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
         int subHeaderNumber, int memoryMapNumber) = 0;
+
     virtual void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
         int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) = 0;
+
     virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) = 0;
 
 
