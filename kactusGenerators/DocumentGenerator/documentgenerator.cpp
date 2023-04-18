@@ -385,7 +385,6 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
     int& subHeaderNumber, int& memoryMapNumber)
 {
     writer_->writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
-    ++subHeaderNumber;
 }
 
 //-----------------------------------------------------------------------------
@@ -395,7 +394,6 @@ void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > register
     int& subHeaderNumber, int& memoryMapNumber, int& addressBlockNumber)
 {
     writer_->writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
-    ++subHeaderNumber;
 }
 
 //-----------------------------------------------------------------------------
@@ -403,54 +401,7 @@ void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > register
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QTextStream& stream)
 {
-    if (!currentRegister->getFields()->isEmpty())
-    {
-        stream << "\t\t\t<h4>Register " << currentRegister->name() << " contains the following fields:</h4>" <<
-            Qt::endl;
-
-        QStringList fieldHeaders;
-        fieldHeaders << "Field name" << "Offset [bits]" << "Width [bits]" << "Volatile" << "Access" <<
-            "Resets" << "Description";
-        QString title = "List of fields contained within register " + currentRegister->name() + ".";
-        writeTableElement(fieldHeaders, title, stream, "\t\t\t");
-
-        foreach (QSharedPointer<Field> currentField, *currentRegister->getFields())
-        {
-            stream << "\t\t\t\t<tr>" << Qt::endl;
-            stream << "\t\t\t\t\t<td><a id=\"" << component_->getVlnv().toString() << ".field." <<
-                currentField->name() << "\">" << currentField->name() << "</a></td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>";
-            if (!currentField->getBitOffset().isEmpty())
-            {
-                stream << expressionFormatter_->formatReferringExpression(currentField->getBitOffset());
-            }
-            else
-            {
-                stream << currentField->getBitOffset();
-            }
-            stream << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>";
-            if (!currentField->getBitWidth().isEmpty())
-            {
-                stream << expressionFormatter_->formatReferringExpression(currentField->getBitWidth());
-            }
-            else
-            {
-                stream << currentField->getBitWidth();
-            }
-            stream << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << currentField->getVolatile().toString()  << "</td>" << Qt::endl;
-            stream << "\t\t\t\t\t<td>" << AccessTypes::access2Str(currentField->getAccess()) << "</td>" << Qt::endl;
-
-            QString resetInfo = getFieldResetInfo(currentField);
-            stream << "\t\t\t\t\t<td>" << resetInfo << "</td>" << Qt::endl;
-
-            stream << "\t\t\t\t\t<td>" << currentField->description() << "</td>" << Qt::endl;
-            stream << "\t\t\t\t</tr>" << Qt::endl;
-        }
-
-        stream << "\t\t\t</table>" << Qt::endl;
-    }
+    writer_->writeFields(stream, currentRegister);
 }
 
 //-----------------------------------------------------------------------------
@@ -477,7 +428,7 @@ QString DocumentGenerator::getFieldResetInfo(QSharedPointer<Field> field) const
 
         resetInfo.append(resetTypeReference + " : " + resetValue);
     }
-
+    
     return resetInfo;
 }
 
@@ -665,7 +616,7 @@ void DocumentGenerator::writeSubHeader(const unsigned int& subHeaderNumber, QTex
     writer_->writeSubHeader(subHeaderNumber, stream, text, headerID);
 
     /*stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerID << "\">" <<
-       myNumber() << "." << headerNumber << " " << text << "</a></h2>" << Qt::endl;*/
+        myNumber() << "." << headerNumber << " " << text << "</a></h2>" << Qt::endl;*/
 }
 
 //-----------------------------------------------------------------------------

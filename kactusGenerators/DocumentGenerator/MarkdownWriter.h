@@ -16,6 +16,7 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
 
 #include <kactusGenerators/DocumentGenerator/DocumentationWriter.h>
 
@@ -41,6 +42,7 @@ public:
         int subHeaderNumber,int memoryMapNumber);
     void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
         int subHeaderNumber, int memoryMapNumber, int addressBlockNumber);
+    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister);
 
     void setComponentNumber(unsigned int componentNumber);
 
@@ -52,6 +54,9 @@ private:
 
     // Finds the registers of an address block
     QList<QSharedPointer <Register> > getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const;
+
+    // Get the information for the reset values of the selected field.
+    QString getFieldResetInfo(QSharedPointer<Field> field) const;
 
     // Writes a line with specified cells to a MD table
     void writeTableLine(QTextStream& stream, QStringList const& cells) const;

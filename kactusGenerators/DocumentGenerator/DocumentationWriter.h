@@ -35,6 +35,8 @@ public:
         int subHeaderNumber, int memoryMapNumber) = 0;
     virtual void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
         int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) = 0;
+    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) = 0;
+
 
     virtual void setComponentNumber(unsigned int componentNumber) = 0;
 };

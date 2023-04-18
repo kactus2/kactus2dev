@@ -4,6 +4,7 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -235,7 +236,7 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
         writeTableLine(stream, addressBlockTableCells);
 
         QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
-        // writeRegisters();
+        writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
 
         ++addressBlockNumber;
     }
@@ -272,35 +273,79 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
 
         writeTableLine(stream, registerHeaders);
 
-        QStringList registerInfo;
-        registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset());
+        QStringList registerInfoTableCells;
+        registerInfoTableCells << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset());
 
         if (currentRegister->getSize().isEmpty())
         {
-            registerInfo << currentRegister->getSize();
+            registerInfoTableCells << currentRegister->getSize();
         }
         else
         {
-            registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getSize());
+            registerInfoTableCells << expressionFormatter_->formatReferringExpression(currentRegister->getSize());
         }
 
         if (currentRegister->getDimension().isEmpty())
         {
-            registerInfo << currentRegister->getDimension();
+            registerInfoTableCells << currentRegister->getDimension();
         }
         else
         {
-            registerInfo << expressionFormatter_->formatReferringExpression(currentRegister->getDimension());
+            registerInfoTableCells << expressionFormatter_->formatReferringExpression(currentRegister->getDimension());
         }
 
-        registerInfo << currentRegister->getVolatile()
+        registerInfoTableCells << currentRegister->getVolatile()
             << AccessTypes::access2Str(currentRegister->getAccess());
 
-        writeTableLine(stream, registerInfo);
+        writeTableLine(stream, registerInfoTableCells);
 
-        //writeFields(currentRegister);
+        writeFields(stream, currentRegister);
 
         ++registerNumber;
+    }
+}
+
+void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> currentRegister)
+{
+    if (currentRegister->getFields()->isEmpty())
+    {
+        return;
+    }
+
+    stream << "#### Register " << currentRegister->name() << " contains the following fields:  " << Qt::endl;
+
+    QStringList fieldTableHeaders(QStringList()
+        << QStringLiteral("Field name")
+        << QStringLiteral("Offset [bits]")
+        << QStringLiteral("Width [bits]")
+        << QStringLiteral("Volatile")
+        << QStringLiteral("Access")
+        << QStringLiteral("Resets")
+        << QStringLiteral("Description")
+    );
+
+    writeTableLine(stream, fieldTableHeaders);
+    writeTableSeparator(stream, fieldTableHeaders.length());
+
+    for (auto const& field : *currentRegister->getFields())
+    {
+        QStringList fieldTableCells(QStringList()
+            << field->name() + " <a id=\"" + component_->getVlnv().toString() + ".field." + field->name() + "\">"
+            << (field->getBitOffset().isEmpty() 
+                ? field->getBitOffset()
+                : expressionFormatter_->formatReferringExpression(field->getBitOffset()))
+
+            << (field->getBitWidth().isEmpty()
+                ? field->getBitWidth()
+                : expressionFormatter_->formatReferringExpression(field->getBitWidth()))
+
+            << field->getVolatile().toString()
+            << AccessTypes::access2Str(field->getAccess())
+            << getFieldResetInfo(field)
+            << field->description()
+        );
+
+        writeTableLine(stream, fieldTableCells);
     }
 }
 
@@ -339,6 +384,31 @@ QList<QSharedPointer<Register>> MarkdownWriter::getAddressBlockRegisters(QShared
     }
 
     return registers;
+}
+
+QString MarkdownWriter::getFieldResetInfo(QSharedPointer<Field> field) const
+{
+    QString resetInfo = "";
+
+    for (auto singleRest : *field->getResets())
+    {
+        if (singleRest != field->getResets()->first())
+        {
+            resetInfo.append("<br>");
+        }
+
+        QString resetTypeReference = singleRest->getResetTypeReference();
+        if (resetTypeReference.isEmpty())
+        {
+            resetTypeReference = QLatin1String("HARD");
+        }
+
+        QString resetValue = expressionFormatter_->formatReferringExpression(singleRest->getResetValue());
+
+        resetInfo.append(resetTypeReference + " : " + resetValue);
+    }
+
+    return resetInfo;
 }
 
 void MarkdownWriter::writeTableLine(QTextStream& stream, QStringList const& cells) const
