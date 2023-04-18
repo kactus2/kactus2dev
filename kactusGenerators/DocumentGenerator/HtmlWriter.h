@@ -23,6 +23,7 @@ class ExpressionFormatter;
 class AddressBlock;
 class MemoryMap;
 class Register;
+class Field;
 
 class HtmlWriter : public DocumentationWriter
 {
@@ -63,6 +64,9 @@ private:
     // Finds the registers of an address block
     QList<QSharedPointer <Register> > getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const;
 
+    // Get the information for the reset values of the selected field.
+    QString getFieldResetInfo(QSharedPointer<Field> field) const;
+
     // Returns n tabs for indenting HTML
     QString indent(int n) const;
 
@@ -77,6 +81,9 @@ private:
 
     // The current component
     QSharedPointer<Component> component_;
+
+    // Stringified VLNV of the component
+    QString vlnvString_;
 
     // Component number for table of contents
     unsigned int componentNumber_;

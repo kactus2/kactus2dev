@@ -4,6 +4,7 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -37,6 +38,7 @@ HtmlWriter::HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter*
     componentNumber_(0),
     expressionFormatter_(formatter)
 {
+    vlnvString_ = component_->getVlnv().toString();
 }
 
 HtmlWriter::~HtmlWriter()
@@ -278,7 +280,7 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
         stream << indent(3) << "</table>" << Qt::endl;
 
         QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
-        // writeRegisters();
+        writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
 
         ++addressBlockNumber;
     }
@@ -351,10 +353,59 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
         
         stream << indent(3) << "</table>" << Qt::endl;
 
-        // writeFields(currentRegister, stream);
+        writeFields(stream, currentRegister);
 
         ++registerNumber;
     }
+}
+
+void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> currentRegister)
+{
+    if (currentRegister->getFields()->isEmpty())
+    {
+        return;
+    }
+
+    stream << indent(3) << "<h4>Register " << currentRegister->name() << " contains the following fields:</h4>" <<
+        Qt::endl;
+
+    QString tableTitle = "List of fields contained within register " + currentRegister->name() + ".";
+    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+
+    QStringList fieldTableHeaders(QStringList()
+        << QStringLiteral("Field name")
+        << QStringLiteral("Offset [bits]")
+        << QStringLiteral("Width [bits]")
+        << QStringLiteral("Volatile")
+        << QStringLiteral("Access")
+        << QStringLiteral("Resets")
+        << QStringLiteral("Description")
+    );
+
+    writeTableHeader(stream, fieldTableHeaders, 4);
+
+    for (auto const& field : *currentRegister->getFields())
+    {
+        QStringList fieldTableCells(QStringList()
+            << "<a id=\"" + vlnvString_ + ".field." + field->name() + "\">" + field->name() + "</a>"
+            << (field->getBitOffset().isEmpty()
+                ? field->getBitOffset()
+                : expressionFormatter_->formatReferringExpression(field->getBitOffset()))
+
+            << (field->getBitWidth().isEmpty()
+                ? field->getBitWidth()
+                : expressionFormatter_->formatReferringExpression(field->getBitWidth()))
+
+            << field->getVolatile().toString()
+            << AccessTypes::access2Str(field->getAccess())
+            << getFieldResetInfo(field)
+            << field->description()
+        );
+
+        writeTableRow(stream, fieldTableCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
 }
 
 void HtmlWriter::setComponentNumber(unsigned int componentNumber)
@@ -392,6 +443,31 @@ QList<QSharedPointer<Register>> HtmlWriter::getAddressBlockRegisters(QSharedPoin
     }
 
     return registers;
+}
+
+QString HtmlWriter::getFieldResetInfo(QSharedPointer<Field> field) const
+{
+    QString resetInfo = "";
+
+    for (auto const& singleRest : *field->getResets())
+    {
+        if (singleRest != field->getResets()->first())
+        {
+            resetInfo.append("<br>");
+        }
+
+        QString resetTypeReference = singleRest->getResetTypeReference();
+        if (resetTypeReference.isEmpty())
+        {
+            resetTypeReference = QLatin1String("HARD");
+        }
+
+        QString resetValue = expressionFormatter_->formatReferringExpression(singleRest->getResetValue());
+
+        resetInfo.append(resetTypeReference + " : " + resetValue);
+    }
+
+    return resetInfo;
 }
 
 QString HtmlWriter::indent(int n) const
