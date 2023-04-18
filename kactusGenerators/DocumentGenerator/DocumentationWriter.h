@@ -47,6 +47,7 @@ public:
 
     virtual void writePorts(QTextStream& stream, int subHeaderNumber) = 0;
 
+    virtual void writeInterfaces(QTextStream& stream, int& subHeaderNumber) = 0;
 
     virtual void setComponentNumber(unsigned int componentNumber) = 0;
 };

@@ -449,47 +449,8 @@ void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 {
-    QSharedPointer<Component> component = component_;
-    if (component->hasInterfaces())
-    {
-        writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
-
-        int interfaceNumber = 1;
-        foreach (QSharedPointer<BusInterface> interface,  *component->getBusInterfaces())
-        {
-            stream << "\t\t\t" << "<h3>" << myNumber() << "." << subHeaderNumber << "." << interfaceNumber++ <<
-                " " << interface->name() << "</h3>" << Qt::endl;
-            
-            stream << "\t\t\t<p>" << Qt::endl;
-
-            if (!interface->description().isEmpty())
-            {
-                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " << 
-                    interface->description() << "<br>" << Qt::endl;
-            }
-
-            // write the interface mode of the interface
-            stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Interface mode:</strong> " << 
-                General::interfaceMode2Str(interface->getInterfaceMode()) << "<br>" << Qt::endl;
-
-            stream << "\t\t\t" << DocumentGeneratorHTML::indent() <<
-                "<strong>Ports used in this interface:</strong>";
-
-            const QList<QSharedPointer<Port> > ports = component->getPortsMappedInInterface(interface->name());
-            if (!ports.isEmpty())
-            {
-                stream << Qt::endl << "\t\t\t</p>" << Qt::endl;
-
-                QString tableTitle ("List of ports contained in interface " + (interface->name()) + ".");
-                writePortTable(stream, tableTitle, ports);
-            }
-            else
-            {
-                stream << " None" << Qt::endl;
-            }
-        }
-        ++subHeaderNumber;
-    }
+    writer_->writeInterfaces(stream, subHeaderNumber);
+    ++subHeaderNumber;
 }
 
 //-----------------------------------------------------------------------------

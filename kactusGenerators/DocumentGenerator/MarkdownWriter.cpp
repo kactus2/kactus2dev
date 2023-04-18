@@ -5,6 +5,7 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -345,38 +346,40 @@ void MarkdownWriter::writePorts(QTextStream& stream, int subHeaderNumber)
 
     const QList<QSharedPointer<Port> > ports = *component_->getPorts().data();
 
-    QStringList portTableHeaders(QStringList()
-        << QStringLiteral("Name")
-        << QStringLiteral("Direction")
-        << QStringLiteral("Left bound")
-        << QStringLiteral("Right bound")
-        << QStringLiteral("Port type")
-        << QStringLiteral("Type definition")
-        << QStringLiteral("Default value")
-        << QStringLiteral("Array left")
-        << QStringLiteral("Array right")
-        << QStringLiteral("Description")
-    );
+    writePortTable(stream, ports);
+}
 
-    writeTableLine(stream, portTableHeaders);
-    writeTableSeparator(stream, portTableHeaders.length());
+void MarkdownWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
+{
+    writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
 
-    for (auto const& port : ports)
+    int interfaceNumber = 1;
+
+    for (auto const& interface : *component_->getBusInterfaces())
     {
-        QStringList portTableCells(QStringList()
-            << port->name() + " <a id=\"" + vlnvString_ + ".port." + port->name() + "\">"
-            << DirectionTypes::direction2Str(port->getDirection())
-            << expressionFormatter_->formatReferringExpression(port->getLeftBound())
-            << expressionFormatter_->formatReferringExpression(port->getRightBound())
-            << port->getTypeName()
-            << port->getTypeDefinition(port->getTypeName())
-            << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
-            << expressionFormatter_->formatReferringExpression(port->getArrayLeft())
-            << expressionFormatter_->formatReferringExpression(port->getArrayRight())
-            << port->description()
-        );
+        stream << "### " << componentNumber_ << "." << subHeaderNumber << "." << interfaceNumber << " "
+            << interface->name() << "  " << Qt::endl << Qt::endl;
 
-        writeTableLine(stream, portTableCells);
+        if (!interface->description().isEmpty())
+        {
+            stream << "**Description:** " + interface->description() << "  " << Qt::endl;
+        }
+
+        stream << "**Interface mode:** " << General::interfaceMode2Str(interface->getInterfaceMode()) << "  " << Qt::endl;
+
+        stream << "**Ports used in this interface:** ";
+
+        if (auto const& ports = component_->getPortsMappedInInterface(interface->name()); ports.isEmpty())
+        {
+            stream << "None  " << Qt::endl << Qt::endl;
+        }
+        else
+        {
+            stream << Qt::endl << Qt::endl;
+            writePortTable(stream, ports);
+        }
+
+        ++interfaceNumber;
     }
 }
 
@@ -457,4 +460,41 @@ void MarkdownWriter::writeTableSeparator(QTextStream& stream, int columns) const
     QString tableSeparator(":---- ");   // :--- aligns text in cells to the left
     QStringList tableSeparators = tableSeparator.repeated(columns).split(" ", Qt::SkipEmptyParts);
     writeTableLine(stream, tableSeparators);
+}
+
+void MarkdownWriter::writePortTable(QTextStream& stream, QList<QSharedPointer<Port>> ports) const
+{
+    QStringList portTableHeaders(QStringList()
+        << QStringLiteral("Name")
+        << QStringLiteral("Direction")
+        << QStringLiteral("Left bound")
+        << QStringLiteral("Right bound")
+        << QStringLiteral("Port type")
+        << QStringLiteral("Type definition")
+        << QStringLiteral("Default value")
+        << QStringLiteral("Array left")
+        << QStringLiteral("Array right")
+        << QStringLiteral("Description")
+    );
+
+    writeTableLine(stream, portTableHeaders);
+    writeTableSeparator(stream, portTableHeaders.length());
+
+    for (auto const& port : ports)
+    {
+        QStringList portTableCells(QStringList()
+            << port->name() + " <a id=\"" + vlnvString_ + ".port." + port->name() + "\">"
+            << DirectionTypes::direction2Str(port->getDirection())
+            << expressionFormatter_->formatReferringExpression(port->getLeftBound())
+            << expressionFormatter_->formatReferringExpression(port->getRightBound())
+            << port->getTypeName()
+            << port->getTypeDefinition(port->getTypeName())
+            << expressionFormatter_->formatReferringExpression(port->getDefaultValue())
+            << expressionFormatter_->formatReferringExpression(port->getArrayLeft())
+            << expressionFormatter_->formatReferringExpression(port->getArrayRight())
+            << port->description()
+        );
+
+        writeTableLine(stream, portTableCells);
+    }
 }

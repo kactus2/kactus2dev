@@ -25,6 +25,7 @@
 #include <QList>
 
 class ExpressionFormatter;
+class Port;
 
 class MarkdownWriter : public DocumentationWriter
 {
@@ -56,6 +57,8 @@ public:
 
     void writePorts(QTextStream& stream, int subHeaderNumber) override;
 
+    void writeInterfaces(QTextStream& stream, int& subHeaderNumber) override;
+
     void setComponentNumber(unsigned int componentNumber) override;
 
 private:
@@ -75,7 +78,10 @@ private:
 
     // Writes the table separator to a MD table
     void writeTableSeparator(QTextStream& stream, int columns) const;
-    
+
+    // Writes 
+    void writePortTable(QTextStream& stream, QList<QSharedPointer<Port> > ports) const;
+
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
 
