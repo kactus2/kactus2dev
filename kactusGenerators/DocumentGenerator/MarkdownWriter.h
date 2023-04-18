@@ -66,6 +66,9 @@ private:
     
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
+
+    // Stringified VLNV of the component
+    QString vlnvString_;
     
     // The current component
     QSharedPointer<Component> component_;
