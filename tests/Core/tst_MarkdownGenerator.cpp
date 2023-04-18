@@ -562,6 +562,7 @@ void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
     QString expectedOutput(
         "#### Register " + fieldRegister->name() + " contains the following fields:  \n"
         "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|\n"
+        "|:----|:----|:----|:----|:----|:----|:----|\n"
         "|" + testField->name() + " <a id=\"" + topComponent_->getVlnv().toString() + 
             ".field." + testField->name() + "\">"
         "|" + testField->getBitOffset() +
