@@ -675,6 +675,50 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 
 void tst_MarkdownGenerator::testPortsWrittenWithOnlyTopComponent()
 {
+    QList <QSharedPointer <Parameter> > componentParameters;
+    QSharedPointer <Parameter> parameter = createTestParameter("parameter", "10", "Description", "ID_parameter",
+        "", "");
+    componentParameters.append(parameter);
+
+    QSharedPointer <Port> portRef = createTestPort("portRef", "ID_parameter", "4", "ID_parameter", "2",
+        "ID_parameter");
+
+    topComponent_->getPorts()->append(portRef);
+
+    topComponent_->getParameters()->append(componentParameters);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writePorts(stream, subHeaderNumber);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "## 0.1 Ports <a id=\"" + topComponent_->getVlnv().toString() + ".ports\">  \n"
+        "\n"
+        "|Name|Direction|Left bound|Right bound|Port type|Type definition|Default value|"
+        "Array left|Array right|Description|\n"
+        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|\n"
+        "|" + portRef->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".port."
+        + portRef->name() + "\">" +
+        "|" + DirectionTypes::direction2Str(portRef->getDirection()) +
+        "|" + "parameter" +
+        "|" + portRef->getRightBound() +
+        "|" + portRef->getTypeName() +
+        "|" + portRef->getTypeDefinition(portRef->getTypeName()) +
+        "|" + "parameter" +
+        "|" + portRef->getArrayLeft() +
+        "|" + "parameter" +
+        "|" + portRef->description() + "|\n"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
