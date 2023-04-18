@@ -632,6 +632,7 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "### 0.1.1 " + testMemoryMap->name() + " <a id=\"" + vlnvString + ".memoryMap." + testMemoryMap->name() + "\">  \n"
         "\n"
         "**Address unit bits (AUB):** " + testMemoryMap->getAddressUnitBits() + "  \n"
+        "\n"
         "### 0.1.1.1 " + testAddressBlock->name() + " <a id=\"" + vlnvString + ".addressBlock." + testAddressBlock->name() + "\">  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
@@ -649,6 +650,7 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
         "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|\n"
+        "|:----|:----|:----|:----|:----|\n"
         "|" + testRegister->getAddressOffset() +
         "|" + testRegister->getSize() +
         "|" + testRegister->getDimension() +
