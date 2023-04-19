@@ -67,6 +67,7 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     expressionFormatter_(),
     component_(),
     componentNumber_(1),
+    libraryHandler_(handler),
     viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
 {
     Q_ASSERT(handler);
@@ -177,7 +178,7 @@ void DocumentGenerator::setFormat(DocumentFormat format)
     }
     else if (format == DocumentFormat::MD)
     {
-        writer_ = new MarkdownWriter(component_, expressionFormatter_);
+        writer_ = new MarkdownWriter(component_, expressionFormatter_, libraryHandler_);
     }
 }
 
@@ -299,7 +300,7 @@ void DocumentGenerator::writeTableOfContents(QTextStream& stream)
 void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& targetPath,
     QStringList& filesToInclude)
 {
-    setTargetPath(targetPath);
+    writer_->setTargetPath(targetPath);
 
     QSharedPointer<Component> component = component_;
 
@@ -461,80 +462,9 @@ void DocumentGenerator::writeInterfaces(QTextStream& stream, int& subHeaderNumbe
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 {
-    QSharedPointer<Component> component = component_;
-    if (component->hasFileSets())
+    if (component_->hasFileSets())
     {
-        writeSubHeader(subHeaderNumber, stream, "File sets", "fileSets");
-
-        const QList<QSharedPointer<FileSet> > fileSets = *component->getFileSets().data();
-        int fileSetNumber = 1;
-        foreach (QSharedPointer<FileSet> fileSet, fileSets)
-        {
-            stream << "\t\t\t" << "<h3><a id=\"" << component->getVlnv().toString() << ".fileSet." <<
-                fileSet->name() << "\">" << myNumber() << "." << subHeaderNumber << "." << fileSetNumber <<	" " <<
-                fileSet->name() << "</a></h3>" << Qt::endl;
-
-            stream << "\t\t\t<p>" << Qt::endl;
-
-            if (!fileSet->description().isEmpty())
-            {
-                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Description:</strong> " << 
-                    fileSet->description() << "<br>" << Qt::endl;
-            }
-
-            // write the group identifiers
-            QStringList groups = *fileSet->getGroups().data();
-            stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Identifiers:</strong> ";
-            for (int i = 0; i < groups.size(); ++i)
-            {
-                stream << groups.at(i);
-
-                if (i != groups.size()-1)
-                {
-                    stream << ", ";
-                }
-            }
-            stream << "<br>" << Qt::endl;
-
-            // if file set has specified default file builders
-            QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders = fileSet->getDefaultFileBuilders();
-            if (!fileBuilders->isEmpty())
-            {
-                stream << "\t\t\t" << DocumentGeneratorHTML::indent() << "<strong>Default file builders:</strong>" <<
-                    Qt::endl;
-                stream << "\t\t\t</p>" << Qt::endl;
-
-                writeFileBuildCommands(stream, QString("\t\t\t"), fileBuilders, expressionFormatter_);
-            }
-            else
-            {
-                stream << "\t\t\t</p>" << Qt::endl;
-            }
-
-            if (!fileSet->getFiles()->isEmpty())
-            {
-                stream << "\t\t\t" << "<h4>" << DocumentGeneratorHTML::indent() << myNumber() << "." <<
-                    subHeaderNumber << "." << fileSetNumber << ".1 Files</h4>" << Qt::endl;
-
-                QStringList fileHeaders;
-                fileHeaders.append("File name");
-                fileHeaders.append("Logical name");
-                fileHeaders.append("Build command");
-                fileHeaders.append("Build flags");
-                fileHeaders.append("Specified file types");
-                fileHeaders.append("Description");
-                writeTableElement(fileHeaders, "List of files contained in this file set.", stream, "\t\t\t");
-
-                // get the files contained in this file set.
-                const QList<QSharedPointer<File> > files = *fileSet->getFiles().data();
-                foreach (QSharedPointer<File> file, files)
-                {
-                    writeFile(file, stream);
-                }
-                stream << "\t\t\t</table>" << Qt::endl;
-            }
-            ++fileSetNumber;
-        }
+        writer_->writeFileSets(stream, subHeaderNumber);
         ++subHeaderNumber;
     }
 }

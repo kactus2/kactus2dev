@@ -9,15 +9,19 @@
 #include <IPXACTmodels/Component/FileSet.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
+#include <QFileInfo>
 #include <QDateTime>
 #include <QSettings>
 #include <QString>
 
-MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter) :
+MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter,
+    LibraryInterface* libraryHandler) :
     component_(component),
     componentNumber_(0),
     expressionFormatter_(formatter),
+    libraryHandler_(libraryHandler),
     DocumentationWriter(formatter)
 {
     vlnvString_ = component_->getVlnv().toString();
@@ -372,37 +376,32 @@ void MarkdownWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 
 void MarkdownWriter::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 {
-    //writeSubHeader(stream, subHeaderNumber, "File sets", "fileSets");
+    writeSubHeader(stream, subHeaderNumber, "File sets", "fileSets");
 
-    //const QList<QSharedPointer<FileSet> > fileSets = *component_->getFileSets();
+    const QList<QSharedPointer<FileSet> > fileSets = *component_->getFileSets();
 
-    //int fileSetNumber = 1;
+    int fileSetNumber = 1;
 
-    //for (auto const& fileSet : fileSets)
-    //{
-    //    // header
-    //    stream << "### " << componentNumber_ << "." << subHeaderNumber << "." << fileSetNumber << " "
-    //        << fileSet->name() << " <a id=\"" << vlnvString_ << ".fileSet." << fileSet->name() << "\">  "
-    //        << Qt::endl << Qt::endl;
+    for (auto const& fileSet : fileSets)
+    {
+        writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, fileSetNumber }), fileSet->name(), 3);
 
-    //    // description
-    //    if (!fileSet->description().isEmpty())
-    //    {
-    //        stream << "**Description:** " << fileSet->description() << "  " << Qt::endl;
-    //    }
+        // description
+        if (!fileSet->description().isEmpty())
+        {
+            writeDescription(stream, fileSet->description());
+        }
 
-    //    // identifiers
-    //    stream << "**Identifiers:** ";
+        // identifiers
+        writeFileSetGroupdIdentifiers(stream, fileSet);
 
-    //    QStringList groups = *fileSet->getGroups();
+        // Default file builders table
+        writeDefaultFileBuilders(stream, fileSet);
 
-    //    for ()
+        writeFiles(stream, fileSet, subHeaderNumber, fileSetNumber);
 
-    //    // build commands table
-
-    //    // files table
-    //}
-
+        ++fileSetNumber;
+    }
 }
 
 void MarkdownWriter::setComponentNumber(int componentNumber)
@@ -502,4 +501,103 @@ void MarkdownWriter::writePortTable(QTextStream& stream, QList<QSharedPointer<Po
 void MarkdownWriter::writeDescription(QTextStream& stream, QString const& description) const
 {
     stream << "**Description:** " << description << "  " << Qt::endl << Qt::endl;
+}
+
+void MarkdownWriter::writeFileSetGroupdIdentifiers(QTextStream& stream, QSharedPointer<FileSet> fileSet) const
+{
+    stream << "**Identifiers:** ";
+
+    QStringList groups = *fileSet->getGroups();
+    
+    stream << groups.join(", ") << "  " << Qt::endl << Qt::endl;
+}
+
+void MarkdownWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet) const
+{
+    const auto fileBuilders = fileSet->getDefaultFileBuilders();
+
+    if (fileBuilders->isEmpty())
+    {
+        return;
+    }
+
+    stream << "**Default file builders:** " << Qt::endl << Qt::endl;
+
+    QStringList buildCommandTableHeaders(QStringList()
+        << QStringLiteral("File type")
+        << QStringLiteral("Command")
+        << QStringLiteral("Flags")
+        << QStringLiteral("Replace default flags")
+    );
+    
+    writeTableHeader(stream, buildCommandTableHeaders);
+
+    for (auto const& builder : *fileBuilders)
+    {
+        QStringList builderCells(QStringList()
+            << builder->getFileType()
+            << builder->getCommand()
+            << builder->getFlags()
+            << expressionFormatter_->formatReferringExpression(builder->getReplaceDefaultFlags())
+        );
+        
+        writeTableRow(stream, builderCells);
+    }
+}
+
+void MarkdownWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet,
+    int subHeaderNumber, int fileSetNumber)
+{
+    QList<QSharedPointer<File> > files = *fileSet->getFiles();
+
+    if (files.isEmpty())
+    {
+        return;
+    }
+
+    int filesSubheaderNumber = 1;
+
+    writeSubHeader(stream, QList({ subHeaderNumber, fileSetNumber, filesSubheaderNumber }), "Files", 4);
+
+    QStringList fileHeaders(QStringList()
+        << QStringLiteral("File name")
+        << QStringLiteral("Logical name")
+        << QStringLiteral("Build command")
+        << QStringLiteral("Specified file types")
+        << QStringLiteral("Description")
+    );
+
+    writeTableHeader(stream, fileHeaders);
+
+    for (auto const& file : files)
+    {
+        writeSingleFile(stream, file);
+    }
+}
+
+void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file)
+{
+    QString relativeFilePath = file->name();
+    QString absFilePath = General::getAbsolutePath(libraryHandler_->getPath(component_->getVlnv()), relativeFilePath);
+
+    QFileInfo fileInfo(absFilePath);
+
+    // get relative path from html file to the file
+    QFileInfo htmlInfo(getTargetPath());
+    QString pathFromhtmlToFile = General::getRelativePath(getTargetPath(), absFilePath);
+
+    QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
+
+    QStringList fileTypes = *file->getFileTypes();
+
+    QStringList fileTableCells(QStringList()
+        << fileInfo.fileName() + " <a href=\"" + pathFromhtmlToFile + "\">"
+        << file->getLogicalName()
+        << (buildCommand ? buildCommand->getCommand() : QStringLiteral(""))
+        << (buildCommand ? buildCommand->getFlags() : QStringLiteral(""))
+        << fileTypes.join(",<br>")
+        << file->getDescription()
+    );
+
+    writeTableRow(stream, fileTableCells);
 }

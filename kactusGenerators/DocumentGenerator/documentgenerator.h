@@ -282,7 +282,7 @@ private:
     //! The running number that used for writing the numbered headers.
     unsigned int componentNumber_;
 
-    //! The file path to the html-file being written.
+    //! The file path to the documentation file being written.
     QString targetPath_;
 
     //! The factory for creating expression formatters.

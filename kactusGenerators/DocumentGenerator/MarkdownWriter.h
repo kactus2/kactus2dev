@@ -26,11 +26,12 @@
 
 class ExpressionFormatter;
 class Port;
+class LibraryInterface;
 
 class MarkdownWriter : public DocumentationWriter
 {
 public:
-    MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter);
+    MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter, LibraryInterface* libraryHandler);
 
     ~MarkdownWriter() override;
 
@@ -84,8 +85,20 @@ private:
     // Writes a **Description:** <text> line
     void writeDescription(QTextStream& stream, QString const& description) const;
 
+    void writeFileSetGroupdIdentifiers(QTextStream& stream, QSharedPointer<FileSet> fileSet) const;
+
+    void writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet) const;
+
+    void writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet,
+        int subHeaderNumber, int fileSetNumber);
+
+    void writeSingleFile(QTextStream& stream, QSharedPointer<File> file);
+
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
+
+    // The library handler
+    LibraryInterface* libraryHandler_;
 
     // Stringified VLNV of the component
     QString vlnvString_;

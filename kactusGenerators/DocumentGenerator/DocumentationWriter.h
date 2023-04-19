@@ -13,6 +13,7 @@
 #define DOCUMENTATIONWRITER_H
 
 #include <QTextStream>
+#include <QString>
 #include <QSharedPointer>
 
 class ExpressionFormatter;
@@ -53,6 +54,9 @@ public:
 
     virtual void setComponentNumber(int componentNumber) = 0;
 
+    void setTargetPath(QString const& path);
+
+    QString getTargetPath() const;
 protected:
     // Finds the address blocks of a memory map
     QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
@@ -66,6 +70,8 @@ protected:
 private:
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
+
+    QString targetPath_;
 };
 
 #endif // DOCUMENTATIONWRITER_H

@@ -17,6 +17,16 @@ DocumentationWriter::DocumentationWriter(ExpressionFormatter* formatter) :
 {
 }
 
+void DocumentationWriter::setTargetPath(QString const& path)
+{
+    targetPath_ = path;
+}
+
+QString DocumentationWriter::getTargetPath() const
+{
+    return targetPath_;
+}
+
 QList<QSharedPointer<AddressBlock>> DocumentationWriter::getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const
 {
     QList<QSharedPointer <AddressBlock> > addressBlocks;
