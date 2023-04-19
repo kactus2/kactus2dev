@@ -42,9 +42,6 @@ public:
 
     void writeParameters(QTextStream& stream, int subHeaderNumber) override;
 
-    void writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
-        QString const& headerText, QString const& headerId) override;
-
     void writeMemoryMaps(QTextStream& stream, int subHeaderNumber) override;
 
     void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
@@ -59,7 +56,9 @@ public:
 
     void writeInterfaces(QTextStream& stream, int& subHeaderNumber) override;
 
-    void setComponentNumber(unsigned int componentNumber) override;
+    void writeFileSets(QTextStream& stream, int& subHeaderNumber) override;
+
+    void setComponentNumber(int componentNumber) override;
 
 private:
 
@@ -73,6 +72,14 @@ private:
     // Get the information for the reset values of the selected field.
     QString getFieldResetInfo(QSharedPointer<Field> field) const;
 
+    // Writes a subheader of specified level and numbering for non-linked subheaders
+    void writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
+        QString const& title, int level) const;
+
+    // Writes a component subheader for linked subheaders
+    void writeSubHeader(QTextStream& stream, int subHeaderNumber,
+        QString const& title, QString const& headerId) const;
+
     // Writes a line with specified cells to a MD table
     void writeTableLine(QTextStream& stream, QStringList const& cells) const;
 
@@ -81,6 +88,9 @@ private:
 
     // Writes a port table for specified ports
     void writePortTable(QTextStream& stream, QList<QSharedPointer<Port> > ports) const;
+
+    // Writes a **Description:** <text> line
+    void writeDescription(QTextStream& stream, QString const& description) const;
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
@@ -92,7 +102,7 @@ private:
     QSharedPointer<Component> component_;
 
     // Component number in the hierarchy
-    unsigned int componentNumber_;
+    int componentNumber_;
 };
 
 #endif // MARKDOWNWRITER_H

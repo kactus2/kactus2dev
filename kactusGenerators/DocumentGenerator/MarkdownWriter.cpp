@@ -6,6 +6,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -38,7 +39,7 @@ void MarkdownWriter::writeHeader(QTextStream& stream)
 
 void MarkdownWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "attributes");
+    writeSubHeader(stream, subHeaderNumber, "Kactus2 attributes", "attributes");
 
     stream << "**Product hierarchy:** " <<
         KactusAttribute::hierarchyToString(component_->getHierarchy()) << "  " << Qt::endl
@@ -108,7 +109,7 @@ void MarkdownWriter::writeTableOfContents(QTextStream& stream)
 
 void MarkdownWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
+    writeSubHeader(stream, subHeaderNumber, "General parameters", "parameters");
 
     QStringList headers({
         QStringLiteral("Name"),
@@ -146,13 +147,6 @@ void MarkdownWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
     }
 }
 
-void MarkdownWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream,
-    QString const& headerText, QString const& headerId)
-{
-    stream << "## " << componentNumber_ << "." << subHeaderNumber << " " << headerText << " <a id=\"" <<
-        vlnvString_ << "." << headerId << "\">  " << Qt::endl << Qt::endl;
-}
-
 void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
 {
     if (component_->getMemoryMaps()->isEmpty())
@@ -160,23 +154,25 @@ void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
         return;
     }
     
-    writeSubHeader(subHeaderNumber, stream, "Memory maps", "memoryMaps");
+    writeSubHeader(stream, subHeaderNumber, "Memory maps", "memoryMaps");
 
-    const QList<QSharedPointer<MemoryMap> > componentMemoryMaps = *component_->getMemoryMaps().data();
+    const QList<QSharedPointer<MemoryMap> > componentMemoryMaps = *component_->getMemoryMaps();
     int memoryMapNumber = 1;
 
     for (auto const& memoryMap : componentMemoryMaps)
     {
-        // Memory map header
-        stream << "### " << componentNumber_ << "." << subHeaderNumber
-            << "." << memoryMapNumber << " " << memoryMap->name()
-            << " <a id=\"" << vlnvString_
-            << ".memoryMap." << memoryMap->name() << "\">  " << Qt::endl << Qt::endl;
+        QList subHeaderNumbers({
+            componentNumber_,
+            subHeaderNumber,
+            memoryMapNumber
+        });
+
+        writeSubHeader(stream, subHeaderNumbers, memoryMap->name(), 3);
 
         // Memory map description and address unit bits
         if (!memoryMap->description().isEmpty())
         {
-            stream << "**Description:** " << memoryMap->description() << "  " << Qt::endl;
+            writeDescription(stream, memoryMap->description());
         }
         
         stream << "**Address unit bits (AUB):** " << memoryMap->getAddressUnitBits() << "  " << Qt::endl << Qt::endl;
@@ -200,16 +196,18 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
 
     for (auto const& addressBlock : addressBlocks)
     {
-        // header
-        stream << "### " << componentNumber_ << "." << subHeaderNumber << "." << memoryMapNumber
-            << "." << addressBlockNumber << " " << addressBlock->name() << " <a id=\""
-            << vlnvString_ << ".addressBlock." << addressBlock->name()
-            << "\">  " << Qt::endl << Qt::endl;
+        QList subHeaderNumbers({
+            componentNumber_,
+            subHeaderNumber,
+            memoryMapNumber,
+            addressBlockNumber
+        });
+
+        writeSubHeader(stream, subHeaderNumbers, addressBlock->name(), 3);
         
-        // description
         if (!addressBlock->description().isEmpty())
         {
-            stream << "**Description:** " << addressBlock->description() << "  " << Qt::endl << Qt::endl;
+            writeDescription(stream, addressBlock->description());
         }
 
         QStringList headers(QStringList()
@@ -253,14 +251,19 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
 
     for (auto const& currentRegister : registers)
     {
-        stream << "### " << componentNumber_ << "." << subHeaderNumber << "." << memoryMapNumber
-            << "." << addressBlockNumber << "." << registerNumber << " " << currentRegister->name()
-            << " <a id=\"" << vlnvString_ << ".register." << currentRegister->name()
-            << "\">  " << Qt::endl << Qt::endl;
+        QList subHeaderNumbers({
+            componentNumber_,
+            subHeaderNumber,
+            memoryMapNumber,
+            addressBlockNumber,
+            registerNumber
+        });
+
+        writeSubHeader(stream, subHeaderNumbers, currentRegister->name(), 3);
 
         if (!currentRegister->description().isEmpty())
         {
-            stream << "**Description:** " << currentRegister->description() << "  " << Qt::endl << Qt::endl;
+            writeDescription(stream, currentRegister->description());
         }
 
         QStringList registerHeaders(QStringList()
@@ -271,25 +274,17 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
             << QStringLiteral("Access")
         );
 
-        writeTableLine(stream, registerHeaders);
-        writeTableSeparator(stream, registerHeaders.length());
-
         QStringList registerInfoTableCells(QStringList()
             << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
-            << (currentRegister->getSize().isEmpty()
-                ? currentRegister->getSize()
-                : expressionFormatter_->formatReferringExpression(currentRegister->getSize()))
-
-            << (currentRegister->getDimension().isEmpty()
-                ? currentRegister->getDimension()
-                : expressionFormatter_->formatReferringExpression(currentRegister->getDimension()))
-
+            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
             << currentRegister->getVolatile()
             << AccessTypes::access2Str(currentRegister->getAccess())
         );
 
+        writeTableLine(stream, registerHeaders);
+        writeTableSeparator(stream, registerHeaders.length());
         writeTableLine(stream, registerInfoTableCells);
-
         writeFields(stream, currentRegister);
 
         ++registerNumber;
@@ -303,7 +298,11 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
         return;
     }
 
-    stream << "#### Register " << currentRegister->name() << " contains the following fields:  " << Qt::endl << Qt::endl;
+    QString headerTitle = QStringLiteral("Register ")
+        + currentRegister->name()
+        + QStringLiteral(" contains the following fields:");
+
+    writeSubHeader(stream, QList <int>(), headerTitle, 4);
 
     QStringList fieldTableHeaders(QStringList()
         << QStringLiteral("Field name")
@@ -322,14 +321,8 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
     {
         QStringList fieldTableCells(QStringList()
             << field->name() + " <a id=\"" + vlnvString_ + ".field." + field->name() + "\">"
-            << (field->getBitOffset().isEmpty() 
-                ? field->getBitOffset()
-                : expressionFormatter_->formatReferringExpression(field->getBitOffset()))
-
-            << (field->getBitWidth().isEmpty()
-                ? field->getBitWidth()
-                : expressionFormatter_->formatReferringExpression(field->getBitWidth()))
-
+            << expressionFormatter_->formatReferringExpression(field->getBitOffset())
+            << expressionFormatter_->formatReferringExpression(field->getBitWidth())
             << field->getVolatile().toString()
             << AccessTypes::access2Str(field->getAccess())
             << getFieldResetInfo(field)
@@ -342,30 +335,32 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
 
 void MarkdownWriter::writePorts(QTextStream& stream, int subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
+    writeSubHeader(stream, subHeaderNumber, "Ports", "ports");
 
-    const QList<QSharedPointer<Port> > ports = *component_->getPorts().data();
+    const QList<QSharedPointer<Port> > ports = *component_->getPorts();
 
     writePortTable(stream, ports);
 }
 
 void MarkdownWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
+    writeSubHeader(stream, subHeaderNumber, "Bus interfaces", "interfaces");
 
     int interfaceNumber = 1;
 
     for (auto const& interface : *component_->getBusInterfaces())
-    {
-        stream << "### " << componentNumber_ << "." << subHeaderNumber << "." << interfaceNumber << " "
-            << interface->name() << "  " << Qt::endl << Qt::endl;
+    {        
+        QList subHeaderNumbers({ componentNumber_, subHeaderNumber, interfaceNumber });
+
+        writeSubHeader(stream, subHeaderNumbers, interface->name(), 3);
 
         if (!interface->description().isEmpty())
         {
-            stream << "**Description:** " + interface->description() << "  " << Qt::endl;
+            writeDescription(stream, interface->description());
         }
 
-        stream << "**Interface mode:** " << General::interfaceMode2Str(interface->getInterfaceMode()) << "  " << Qt::endl;
+        stream << "**Interface mode:** " << General::interfaceMode2Str(interface->getInterfaceMode())
+            << "  " << Qt::endl;
 
         stream << "**Ports used in this interface:** ";
 
@@ -383,7 +378,42 @@ void MarkdownWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
     }
 }
 
-void MarkdownWriter::setComponentNumber(unsigned int componentNumber)
+void MarkdownWriter::writeFileSets(QTextStream& stream, int& subHeaderNumber)
+{
+    //writeSubHeader(stream, subHeaderNumber, "File sets", "fileSets");
+
+    //const QList<QSharedPointer<FileSet> > fileSets = *component_->getFileSets();
+
+    //int fileSetNumber = 1;
+
+    //for (auto const& fileSet : fileSets)
+    //{
+    //    // header
+    //    stream << "### " << componentNumber_ << "." << subHeaderNumber << "." << fileSetNumber << " "
+    //        << fileSet->name() << " <a id=\"" << vlnvString_ << ".fileSet." << fileSet->name() << "\">  "
+    //        << Qt::endl << Qt::endl;
+
+    //    // description
+    //    if (!fileSet->description().isEmpty())
+    //    {
+    //        stream << "**Description:** " << fileSet->description() << "  " << Qt::endl;
+    //    }
+
+    //    // identifiers
+    //    stream << "**Identifiers:** ";
+
+    //    QStringList groups = *fileSet->getGroups();
+
+    //    for ()
+
+    //    // build commands table
+
+    //    // files table
+    //}
+
+}
+
+void MarkdownWriter::setComponentNumber(int componentNumber)
 {
     componentNumber_ = componentNumber;
 }
@@ -445,6 +475,35 @@ QString MarkdownWriter::getFieldResetInfo(QSharedPointer<Field> field) const
     return resetInfo;
 }
 
+void MarkdownWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
+    QString const& title, int level) const
+{
+    // Writes the header level
+    QString headerTag = QStringLiteral("#").repeated(level) + " ";
+
+    QStringList subHeaderNumberParts;
+    for (int number : subHeaderNumbers)
+    {
+        subHeaderNumberParts << QString::number(number);
+    }
+    
+    QString headerTitle = title;
+
+    if (!subHeaderNumberParts.isEmpty())
+    {
+        headerTitle = subHeaderNumberParts.join(".") + " " + title;
+    }
+
+    stream << headerTag << headerTitle << "  " << Qt::endl << Qt::endl;
+}
+
+void MarkdownWriter::writeSubHeader(QTextStream& stream, int subHeaderNumber,
+    QString const& headerText, QString const& headerId) const
+{
+    stream << "## " << componentNumber_ << "." << subHeaderNumber << " " << headerText << " <a id=\"" <<
+        vlnvString_ << "." << headerId << "\">  " << Qt::endl << Qt::endl;
+}
+
 void MarkdownWriter::writeTableLine(QTextStream& stream, QStringList const& cells) const
 {
     for (auto const& cell : cells)
@@ -497,4 +556,9 @@ void MarkdownWriter::writePortTable(QTextStream& stream, QList<QSharedPointer<Po
 
         writeTableLine(stream, portTableCells);
     }
+}
+
+void MarkdownWriter::writeDescription(QTextStream& stream, QString const& description) const
+{
+    stream << "**Description:** " << description << "  " << Qt::endl << Qt::endl;
 }
