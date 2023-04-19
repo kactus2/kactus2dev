@@ -81,10 +81,13 @@ private:
         QString const& title, QString const& headerId) const;
 
     // Writes a line with specified cells to a MD table
-    void writeTableLine(QTextStream& stream, QStringList const& cells) const;
+    void writeTableRow(QTextStream& stream, QStringList const& cells) const;
 
     // Writes the table separator to a MD table
     void writeTableSeparator(QTextStream& stream, int columns) const;
+
+    // Writes the table header and separator lines
+    void writeTableHeader(QTextStream& stream, QStringList const& headers) const;
 
     // Writes a port table for specified ports
     void writePortTable(QTextStream& stream, QList<QSharedPointer<Port> > ports) const;

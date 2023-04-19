@@ -123,11 +123,7 @@ void MarkdownWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
         QStringLiteral("Description")
     });
     
-    QString tableSeparator(":---- ");
-    QStringList tableSeparators = tableSeparator.repeated(headers.length()).split(" ", Qt::SkipEmptyParts);
-
-    writeTableLine(stream, headers);
-    writeTableSeparator(stream, headers.length());
+    writeTableHeader(stream, headers);
 
     for (auto const& parameter : *component_->getParameters())
     {
@@ -143,7 +139,7 @@ void MarkdownWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
             << parameter->description()
         );
 
-        writeTableLine(stream, paramCells);
+        writeTableRow(stream, paramCells);
     }
 }
 
@@ -203,13 +199,6 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
             addressBlockNumber
         });
 
-        writeSubHeader(stream, subHeaderNumbers, addressBlock->name(), 3);
-        
-        if (!addressBlock->description().isEmpty())
-        {
-            writeDescription(stream, addressBlock->description());
-        }
-
         QStringList headers(QStringList()
             << QStringLiteral("Usage")
             << QStringLiteral("Base address [AUB]")
@@ -218,10 +207,7 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
             << QStringLiteral("Access")
             << QStringLiteral("Volatile")
         );
-
-        writeTableLine(stream, headers);
-        writeTableSeparator(stream, headers.length());
-
+        
         QStringList addressBlockTableCells(QStringList()
             << General::usage2Str(addressBlock->getUsage())
             << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
@@ -230,10 +216,18 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
             << AccessTypes::access2Str(addressBlock->getAccess())
             << addressBlock->getVolatile()
         );
-
-        writeTableLine(stream, addressBlockTableCells);
-
+        
         QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
+
+        writeSubHeader(stream, subHeaderNumbers, addressBlock->name(), 3);
+        
+        if (!addressBlock->description().isEmpty())
+        {
+            writeDescription(stream, addressBlock->description());
+        }
+
+        writeTableHeader(stream, headers);
+        writeTableRow(stream, addressBlockTableCells);
         writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
 
         ++addressBlockNumber;
@@ -259,13 +253,6 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
             registerNumber
         });
 
-        writeSubHeader(stream, subHeaderNumbers, currentRegister->name(), 3);
-
-        if (!currentRegister->description().isEmpty())
-        {
-            writeDescription(stream, currentRegister->description());
-        }
-
         QStringList registerHeaders(QStringList()
             << QStringLiteral("Offset [AUB]")
             << QStringLiteral("Size [bits]")
@@ -282,9 +269,15 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
             << AccessTypes::access2Str(currentRegister->getAccess())
         );
 
-        writeTableLine(stream, registerHeaders);
-        writeTableSeparator(stream, registerHeaders.length());
-        writeTableLine(stream, registerInfoTableCells);
+        writeSubHeader(stream, subHeaderNumbers, currentRegister->name(), 3);
+
+        if (!currentRegister->description().isEmpty())
+        {
+            writeDescription(stream, currentRegister->description());
+        }
+
+        writeTableHeader(stream, registerHeaders);
+        writeTableRow(stream, registerInfoTableCells);
         writeFields(stream, currentRegister);
 
         ++registerNumber;
@@ -302,8 +295,6 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
         + currentRegister->name()
         + QStringLiteral(" contains the following fields:");
 
-    writeSubHeader(stream, QList <int>(), headerTitle, 4);
-
     QStringList fieldTableHeaders(QStringList()
         << QStringLiteral("Field name")
         << QStringLiteral("Offset [bits]")
@@ -314,8 +305,8 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
         << QStringLiteral("Description")
     );
 
-    writeTableLine(stream, fieldTableHeaders);
-    writeTableSeparator(stream, fieldTableHeaders.length());
+    writeSubHeader(stream, QList <int>(), headerTitle, 4);
+    writeTableHeader(stream, fieldTableHeaders);
 
     for (auto const& field : *currentRegister->getFields())
     {
@@ -329,7 +320,7 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
             << field->description()
         );
 
-        writeTableLine(stream, fieldTableCells);
+        writeTableRow(stream, fieldTableCells);
     }
 }
 
@@ -504,7 +495,7 @@ void MarkdownWriter::writeSubHeader(QTextStream& stream, int subHeaderNumber,
         vlnvString_ << "." << headerId << "\">  " << Qt::endl << Qt::endl;
 }
 
-void MarkdownWriter::writeTableLine(QTextStream& stream, QStringList const& cells) const
+void MarkdownWriter::writeTableRow(QTextStream& stream, QStringList const& cells) const
 {
     for (auto const& cell : cells)
     {
@@ -518,7 +509,13 @@ void MarkdownWriter::writeTableSeparator(QTextStream& stream, int columns) const
 {
     QString tableSeparator(":---- ");   // :--- aligns text in cells to the left
     QStringList tableSeparators = tableSeparator.repeated(columns).split(" ", Qt::SkipEmptyParts);
-    writeTableLine(stream, tableSeparators);
+    writeTableRow(stream, tableSeparators);
+}
+
+void MarkdownWriter::writeTableHeader(QTextStream& stream, QStringList const& headers) const
+{
+    writeTableRow(stream, headers);
+    writeTableSeparator(stream, headers.length());
 }
 
 void MarkdownWriter::writePortTable(QTextStream& stream, QList<QSharedPointer<Port>> ports) const
@@ -536,7 +533,7 @@ void MarkdownWriter::writePortTable(QTextStream& stream, QList<QSharedPointer<Po
         << QStringLiteral("Description")
     );
 
-    writeTableLine(stream, portTableHeaders);
+    writeTableRow(stream, portTableHeaders);
     writeTableSeparator(stream, portTableHeaders.length());
 
     for (auto const& port : ports)
@@ -554,7 +551,7 @@ void MarkdownWriter::writePortTable(QTextStream& stream, QList<QSharedPointer<Po
             << port->description()
         );
 
-        writeTableLine(stream, portTableCells);
+        writeTableRow(stream, portTableCells);
     }
 }
 
