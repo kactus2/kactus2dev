@@ -66,7 +66,7 @@ void HtmlWriter::writeHeader(QTextStream& stream)
 
 void HtmlWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "Kactus2 attributes", "attributes");
+    writeSubHeader(stream, subHeaderNumber, "Kactus2 attributes", "attributes");
 
     stream << "\t\t<p>" << Qt::endl;
     stream << "\t\t\t<strong>" << HTML::INDENT << "Product hierarchy: </strong>" <<
@@ -149,7 +149,7 @@ void HtmlWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
         QStringLiteral("Description")
     });
 
-    writeSubHeader(subHeaderNumber, stream, "General parameters", "parameters");
+    writeSubHeader(stream, subHeaderNumber, "General parameters", "parameters");
 
     // Write table element
     stream << indent(3) << HTML::TABLE << "List of parameters defined for the component\">" << Qt::endl;
@@ -178,13 +178,6 @@ void HtmlWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
     stream << indent(3) << "</table>" << Qt::endl;
 }
 
-void HtmlWriter::writeSubHeader(unsigned int subHeaderNumber, QTextStream& stream, 
-    QString const& headerText, QString const& headerId)
-{
-    stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerId << "\">" <<
-        componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
-}
-
 void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
 {
     if (component_->getMemoryMaps()->isEmpty())
@@ -192,16 +185,20 @@ void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
         return;
     }
 
-    writeSubHeader(subHeaderNumber, stream, "Memory maps", "memoryMaps");
+    writeSubHeader(stream, subHeaderNumber, "Memory maps", "memoryMaps");
 
     const QList<QSharedPointer<MemoryMap> > componentMemoryMaps = *component_->getMemoryMaps().data();
     int memoryMapNumber = 1;
 
     for (auto const& memoryMap : componentMemoryMaps)
     {
-        stream << indent(3) << "<h3><a id=\"" << component_->getVlnv().toString() << ".memoryMap." <<
-            memoryMap->name() << "\">" << componentNumber_ << "." << subHeaderNumber << "." << memoryMapNumber <<
-            " " << memoryMap->name() << "</a></h3>" << Qt::endl;
+        QList subHeaderNumbers({
+            componentNumber_,
+            subHeaderNumber,
+            memoryMapNumber,
+        });
+
+        writeSubHeader(stream, subHeaderNumbers, memoryMap->name(), 3);
 
         stream << indent(3) << "<p>" << Qt::endl;
 
@@ -234,12 +231,15 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
     int addressBlockNumber = 1;
 
     for (auto const& addressBlock : addressBlocks)
-    {
-        // header
-        stream << indent (3) << "<h3><a id=\"" << component_->getVlnv().toString() << ".addressBlock." <<
-            addressBlock->name() << "\">" << componentNumber_ << "." << subHeaderNumber << "." <<
-            memoryMapNumber << "." << addressBlockNumber << " " << addressBlock->name() <<
-            "</a></h3>" << Qt::endl;
+    {        
+        QList subHeaderNumbers({
+            componentNumber_,
+            subHeaderNumber,
+            memoryMapNumber,
+            addressBlockNumber
+        });
+        
+        writeSubHeader(stream, subHeaderNumbers, addressBlock->name(), 3);
 
         if (!addressBlock->description().isEmpty())
         {
@@ -299,11 +299,15 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
 
     for (auto const& currentRegister : registers)
     {
-        // Register heading
-        stream << indent(3) << "<h3><a id=\"" << component_->getVlnv().toString() << ".register." <<
-            currentRegister->name() << "\">" << componentNumber_ << "." << subHeaderNumber << "." <<
-            memoryMapNumber << "." << addressBlockNumber << "." << registerNumber << " " <<
-            currentRegister->name() << "</a></h3>" << Qt::endl;
+        QList subHeaderNumbers({
+            componentNumber_,
+            subHeaderNumber,
+            memoryMapNumber,
+            addressBlockNumber,
+            registerNumber
+        });
+
+        writeSubHeader(stream, subHeaderNumbers, currentRegister->name(), 3);
 
         if (!currentRegister->description().isEmpty())
         {
@@ -328,14 +332,8 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
 
         QStringList registerInfoTableCells(QStringList()
             << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
-            << (currentRegister->getSize().isEmpty()
-                ? currentRegister->getSize()
-                : expressionFormatter_->formatReferringExpression(currentRegister->getSize()))
-
-            << (currentRegister->getDimension().isEmpty()
-                ? currentRegister->getDimension()
-                : expressionFormatter_->formatReferringExpression(currentRegister->getDimension()))
-
+            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
             << currentRegister->getVolatile()
             << AccessTypes::access2Str(currentRegister->getAccess())
         );
@@ -379,14 +377,8 @@ void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> curre
     {
         QStringList fieldTableCells(QStringList()
             << "<a id=\"" + vlnvString_ + ".field." + field->name() + "\">" + field->name() + "</a>"
-            << (field->getBitOffset().isEmpty()
-                ? field->getBitOffset()
-                : expressionFormatter_->formatReferringExpression(field->getBitOffset()))
-
-            << (field->getBitWidth().isEmpty()
-                ? field->getBitWidth()
-                : expressionFormatter_->formatReferringExpression(field->getBitWidth()))
-
+            << expressionFormatter_->formatReferringExpression(field->getBitOffset())
+            << expressionFormatter_->formatReferringExpression(field->getBitWidth())
             << field->getVolatile().toString()
             << AccessTypes::access2Str(field->getAccess())
             << getFieldResetInfo(field)
@@ -401,7 +393,7 @@ void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> curre
 
 void HtmlWriter::writePorts(QTextStream& stream, int subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "Ports", "ports");
+    writeSubHeader(stream, subHeaderNumber, "Ports", "ports");
 
     const QList<QSharedPointer<Port> > ports = *component_->getPorts().data();
     QString tableTitle = "List of all ports the component has.";
@@ -411,14 +403,19 @@ void HtmlWriter::writePorts(QTextStream& stream, int subHeaderNumber)
 
 void HtmlWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 {
-    writeSubHeader(subHeaderNumber, stream, "Bus interfaces", "interfaces");
+    writeSubHeader(stream, subHeaderNumber, "Bus interfaces", "interfaces");
 
     int interfaceNumber = 1;
 
     for (auto const& interface : *component_->getBusInterfaces())
     {
-        stream << indent(3) <<"<h3>" << componentNumber_ << "." << subHeaderNumber << "." 
-            << interfaceNumber << " " << interface->name() << "</h3>" << Qt::endl;
+        QList subHeaderNumbers({
+            componentNumber_,
+            subHeaderNumber,
+            interfaceNumber,
+        });
+
+        writeSubHeader(stream, subHeaderNumbers, interface->name(), 3);
 
         stream << indent(3) << "<p>" << Qt::endl;
 
@@ -450,7 +447,11 @@ void HtmlWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
     }
 }
 
-void HtmlWriter::setComponentNumber(unsigned int componentNumber)
+void HtmlWriter::writeFileSets(QTextStream& stream, int& subHeaderNumber)
+{
+}
+
+void HtmlWriter::setComponentNumber(int componentNumber)
 {
     componentNumber_ = componentNumber;
 }
@@ -516,6 +517,35 @@ QString HtmlWriter::indent(int n) const
 {
     auto tab = QStringLiteral("\t");
     return tab.repeated(n);
+}
+
+void HtmlWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers, QString const& title, int level) const
+{
+    // Writes the header level
+    QString headerTag = QStringLiteral("<h") + QString::number(level) + QStringLiteral(">");
+    QString headerClosingTag = QStringLiteral("</h") + QString::number(level) + QStringLiteral(">");
+
+    QStringList subHeaderNumberParts;
+    for (int number : subHeaderNumbers)
+    {
+        subHeaderNumberParts << QString::number(number);
+    }
+
+    QString headerTitle = title;
+
+    if (!subHeaderNumberParts.isEmpty())
+    {
+        headerTitle = subHeaderNumberParts.join(".") + " " + title;
+    }
+
+    stream << indent(3) << headerTag << headerTitle << headerClosingTag << Qt::endl;
+}
+
+void HtmlWriter::writeSubHeader(QTextStream& stream, int subHeaderNumber,
+    QString const& headerText, QString const& headerId) const
+{
+    stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerId << "\">" <<
+        componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
 }
 
 void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& fields, int indentation)

@@ -512,8 +512,7 @@ void tst_DocumentGenerator::testMemoryMapsWrittenWithTopComponent()
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
-        "\t\t\t<h3><a id=\""+ topComponent_->getVlnv().toString() + ".memoryMap." +
-        memoryMap->name() + "\">0.1.1 " + memoryMap->name() + "</a></h3>\n"
+        "\t\t\t<h3>0.1.1 " + memoryMap->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + memoryMap->description() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " + 
@@ -551,8 +550,7 @@ void tst_DocumentGenerator::testAddressBlocksWrittenWithTopComponent()
     targetFile.close();
     
     QString expectedOutput(
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." +
-        testAddressBlock->name() + "\">0.1.1.1 " + testAddressBlock->name() + "</a></h3>\n"
+        "\t\t\t<h3>0.1.1.1 " + testAddressBlock->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
         "<br>\n"
@@ -607,8 +605,7 @@ void tst_DocumentGenerator::testExpressionsInAddressBlocks()
     targetFile.close();
 
     QString expectedOutput(
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." +
-        testAddressBlock->name() + "\">0.1.1.1 " + testAddressBlock->name() + "</a></h3>\n"
+        "\t\t\t<h3>0.1.1.1 " + testAddressBlock->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
         "<br>\n"
@@ -658,8 +655,7 @@ void tst_DocumentGenerator::testRegistersWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".register." + testRegister->name() +
-        "\">0.1.1.1.1 " + testRegister->name() + "</a></h3>\n"
+        "\t\t\t<h3>0.1.1.1.1 " + testRegister->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->description() + "<br>\n"
         "\t\t\t</p>\n"
@@ -781,14 +777,12 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">0.1 Memory maps</a></h2>\n"
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMap." + testMemoryMap->name() +
-        "\">0.1.1 " + testMemoryMap->name() + "</a></h3>\n"
+        "\t\t\t<h3>0.1.1 " + testMemoryMap->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " +
         testMemoryMap->getAddressUnitBits() + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." +
-        testAddressBlock->name() + "\">0.1.1.1 " + testAddressBlock->name() + "</a></h3>\n"
+        "\t\t\t<h3>0.1.1.1 " + testAddressBlock->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
         "<br>\n"
@@ -811,8 +805,7 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + testAddressBlock->getVolatile() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".register." + testRegister->name() +
-        "\">0.1.1.1.1 " + testRegister->name() + "</a></h3>\n"
+        "\t\t\t<h3>0.1.1.1.1 " + testRegister->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->description() + "<br>\n"
         "\t\t\t</p>\n"
@@ -985,8 +978,7 @@ void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
 
     QString expectedOutput(
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".fileSets\">0.1 File sets</a></h2>\n"
-        "\t\t\t<h3><a id=\"" + topComponent_->getVlnv().toString() + ".fileSet." + testFileSet->name() +
-        "\">0.1.1 " + testFileSet->name() + "</a></h3>\n"
+        "\t\t\t<h3>0.1.1 " + testFileSet->name() + "</h3>\n"
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testFileSet->description() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Identifiers:</strong> " + groups + "<br>\n"
