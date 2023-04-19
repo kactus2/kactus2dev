@@ -418,8 +418,7 @@ void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
     QString expectedOutput(
         "## 0.1 Memory maps <a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">  \n"
         "\n"
-        "### 0.1.1 " + memoryMap->name() + " <a id=\"" + topComponent_->getVlnv().toString() + 
-            ".memoryMap." + memoryMap->name() + "\">  \n"
+        "### 0.1.1 " + memoryMap->name() + "  \n"
         "\n"
         "**Description:** " + memoryMap->description() + "  \n"
         "**Address unit bits (AUB):** " + memoryMap->getAddressUnitBits() + "  \n"
@@ -453,7 +452,7 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "### 0.1.1.1 " + testAddressBlock->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." + testAddressBlock->name() + "\">  \n"
+        "### 0.1.1.1 " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -494,7 +493,7 @@ void tst_MarkdownGenerator::testExpressionsInAddressBlocks()
     targetFile.close();
 
     QString expectedOutput(
-        "### 0.1.1.1 " + testAddressBlock->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".addressBlock." + testAddressBlock->name() + "\">  \n"
+        "### 0.1.1.1 " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -530,7 +529,7 @@ void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "### 0.1.1.1.1 " + testRegister->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".register." + testRegister->name() + "\">  \n"
+        "### 0.1.1.1.1 " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
@@ -623,17 +622,18 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
     generator->writeMemoryMaps(stream, subHeaderNumber);
 
     targetFile.close();
+    targetFile.copy("OUTPUTTED.md");
 
     QString vlnvString(topComponent_->getVlnv().toString());
 
     QString expectedOutput(
         "## 0.1 Memory maps <a id=\"" + vlnvString + ".memoryMaps\">  \n"
         "\n"
-        "### 0.1.1 " + testMemoryMap->name() + " <a id=\"" + vlnvString + ".memoryMap." + testMemoryMap->name() + "\">  \n"
+        "### 0.1.1 " + testMemoryMap->name() + "  \n"
         "\n"
         "**Address unit bits (AUB):** " + testMemoryMap->getAddressUnitBits() + "  \n"
         "\n"
-        "### 0.1.1.1 " + testAddressBlock->name() + " <a id=\"" + vlnvString + ".addressBlock." + testAddressBlock->name() + "\">  \n"
+        "### 0.1.1.1 " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -645,7 +645,7 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + testAddressBlock->getWidth() +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
         "|" + testAddressBlock->getVolatile() + "|\n"
-        "### 0.1.1.1.1 " + testRegister->name() + " <a id=\"" + vlnvString + ".register." + testRegister->name() + "\">  \n"
+        "### 0.1.1.1.1 " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
@@ -669,6 +669,14 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + "HARD : 8'h3" +
         "|" + testField->description() + "|\n"
     );
+
+
+    QFile testFile("TESTOUTPUT.md");
+    testFile.open(QFile::WriteOnly);
+    QTextStream stream2(&testFile);
+
+    stream2 << expectedOutput;
+    testFile.close();
 
     checkOutputFile(expectedOutput);
 }
@@ -780,8 +788,7 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
     QString expectedOutput(
         "## 0.1 File sets <a id=\"" + topComponent_->getVlnv().toString() + ".fileSets\">  \n"
         "\n"
-        "### 0.1.1 " + testFileSet->name() + " <a id=\"" + topComponent_->getVlnv().toString()
-            + ".fileSet." + testFileSet->name() + "\">  \n"
+        "### 0.1.1 " + testFileSet->name() + "  \n"
         "\n"
         "**Description:** " + testFileSet->description() + "  \n"
         "**Identifiers:** " + groups + "  \n"
