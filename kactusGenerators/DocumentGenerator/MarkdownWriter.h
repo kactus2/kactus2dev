@@ -61,17 +61,6 @@ public:
     void setComponentNumber(int componentNumber) override;
 
 private:
-
-    // TODO: Move these "finder" methods to DocumentationWriter
-    // Finds the address blocks of a memory map
-    QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
-
-    // Finds the registers of an address block
-    QList<QSharedPointer <Register> > getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const;
-
-    // Get the information for the reset values of the selected field.
-    QString getFieldResetInfo(QSharedPointer<Field> field) const;
-
     // Writes a subheader of specified level and numbering for non-linked subheaders
     void writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
         QString const& title, int level) const;

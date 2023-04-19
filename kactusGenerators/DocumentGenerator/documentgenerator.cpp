@@ -571,10 +571,6 @@ ExpressionFormatter* DocumentGenerator::createExpressionFormatter() const
 void DocumentGenerator::writeSubHeader(const unsigned int& subHeaderNumber, QTextStream& stream, const QString& text,
     const QString& headerID)
 {
-    writer_->writeSubHeader(subHeaderNumber, stream, text, headerID);
-
-    /*stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerID << "\">" <<
-        myNumber() << "." << headerNumber << " " << text << "</a></h2>" << Qt::endl;*/
 }
 
 //-----------------------------------------------------------------------------

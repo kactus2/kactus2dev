@@ -17,7 +17,8 @@
 MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter) :
     component_(component),
     componentNumber_(0),
-    expressionFormatter_(formatter)
+    expressionFormatter_(formatter),
+    DocumentationWriter(formatter)
 {
     vlnvString_ = component_->getVlnv().toString();
 }
@@ -407,63 +408,6 @@ void MarkdownWriter::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 void MarkdownWriter::setComponentNumber(int componentNumber)
 {
     componentNumber_ = componentNumber;
-}
-
-QList<QSharedPointer<AddressBlock>> MarkdownWriter::getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const
-{
-    QList<QSharedPointer <AddressBlock> > addressBlocks;
-    for (auto const& memoryMapItem : *memoryMap->getMemoryBlocks())
-    {
-        QSharedPointer<AddressBlock> addressItem = memoryMapItem.dynamicCast<AddressBlock>();
-
-        if (addressItem)
-        {
-            addressBlocks.append(addressItem);
-        }
-    }
-
-    return addressBlocks;
-}
-
-QList<QSharedPointer<Register>> MarkdownWriter::getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const
-{
-    QList <QSharedPointer <Register> > registers;
-    for (auto const& registerModelItem : *addressBlock->getRegisterData())
-    {
-        QSharedPointer <Register> registerItem = registerModelItem.dynamicCast<Register>();
-
-        if (registerItem)
-        {
-            registers.append(registerItem);
-        }
-    }
-
-    return registers;
-}
-
-QString MarkdownWriter::getFieldResetInfo(QSharedPointer<Field> field) const
-{
-    QString resetInfo = "";
-
-    for (auto const& singleRest : *field->getResets())
-    {
-        if (singleRest != field->getResets()->first())
-        {
-            resetInfo.append("<br>");
-        }
-
-        QString resetTypeReference = singleRest->getResetTypeReference();
-        if (resetTypeReference.isEmpty())
-        {
-            resetTypeReference = QLatin1String("HARD");
-        }
-
-        QString resetValue = expressionFormatter_->formatReferringExpression(singleRest->getResetValue());
-
-        resetInfo.append(resetTypeReference + " : " + resetValue);
-    }
-
-    return resetInfo;
 }
 
 void MarkdownWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,

@@ -13,15 +13,18 @@
 #define DOCUMENTATIONWRITER_H
 
 #include <QTextStream>
+#include <QSharedPointer>
 
 class ExpressionFormatter;
 class AddressBlock;
 class Register;
+class Field;
+class MemoryMap;
 
 class DocumentationWriter
 {
 public:
-    DocumentationWriter() = default;
+    DocumentationWriter(ExpressionFormatter* formatter);
     virtual ~DocumentationWriter() = default;
 
     virtual void writeHeader(QTextStream& stream) = 0;
@@ -49,6 +52,20 @@ public:
     virtual void writeFileSets(QTextStream& stream, int& subHeaderNumber) = 0;
 
     virtual void setComponentNumber(int componentNumber) = 0;
+
+protected:
+    // Finds the address blocks of a memory map
+    QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
+
+    // Finds the registers of an address block
+    QList<QSharedPointer <Register> > getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const;
+
+    // Get the information for the reset values of the selected field.
+    QString getFieldResetInfo(QSharedPointer<Field> field) const;
+
+private:
+    //! The expression formatter, used to change parameter IDs into names.
+    ExpressionFormatter* expressionFormatter_;
 };
 
 #endif // DOCUMENTATIONWRITER_H
