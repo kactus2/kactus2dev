@@ -521,7 +521,7 @@ void MarkdownWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointe
         return;
     }
 
-    stream << "**Default file builders:** " << Qt::endl << Qt::endl;
+    stream << "**Default file builders:**  " << Qt::endl << Qt::endl;
 
     QStringList buildCommandTableHeaders(QStringList()
         << QStringLiteral("File type")
@@ -555,14 +555,22 @@ void MarkdownWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fil
         return;
     }
 
-    int filesSubheaderNumber = 1;
+    int filesSubHeaderNumber = 1;
 
-    writeSubHeader(stream, QList({ subHeaderNumber, fileSetNumber, filesSubheaderNumber }), "Files", 4);
+    QList filesSubHeaderNumbers({
+        componentNumber_,
+        subHeaderNumber,
+        fileSetNumber,
+        filesSubHeaderNumber
+    });
+
+    writeSubHeader(stream, filesSubHeaderNumbers, "Files", 4);
 
     QStringList fileHeaders(QStringList()
         << QStringLiteral("File name")
         << QStringLiteral("Logical name")
         << QStringLiteral("Build command")
+        << QStringLiteral("Build Flags")
         << QStringLiteral("Specified file types")
         << QStringLiteral("Description")
     );
@@ -584,14 +592,14 @@ void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> f
 
     // get relative path from html file to the file
     QFileInfo htmlInfo(getTargetPath());
-    QString pathFromhtmlToFile = General::getRelativePath(getTargetPath(), absFilePath);
+    QString pathFromDocToFile = General::getRelativePath(getTargetPath(), absFilePath);
 
     QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
 
     QStringList fileTypes = *file->getFileTypes();
 
     QStringList fileTableCells(QStringList()
-        << fileInfo.fileName() + " <a href=\"" + pathFromhtmlToFile + "\">"
+        << fileInfo.fileName() + " <a href=\"" + pathFromDocToFile + "\">"
         << file->getLogicalName()
         << (buildCommand ? buildCommand->getCommand() : QStringLiteral(""))
         << (buildCommand ? buildCommand->getFlags() : QStringLiteral(""))
