@@ -115,20 +115,8 @@ void MarkdownWriter::writeTableOfContents(QTextStream& stream)
 void MarkdownWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
 {
     writeSubHeader(stream, subHeaderNumber, "General parameters", "parameters");
-
-    QStringList headers({
-        QStringLiteral("Name"),
-        QStringLiteral("Type"),
-        QStringLiteral("Value"),
-        QStringLiteral("Resolve"),
-        QStringLiteral("Bit vector left"),
-        QStringLiteral("Bit vector right"),
-        QStringLiteral("Array left"),
-        QStringLiteral("Array right"),
-        QStringLiteral("Description")
-    });
     
-    writeTableHeader(stream, headers);
+    writeTableHeader(stream, DocumentationWriter::PARAMETER_HEADERS);
 
     for (auto const& parameter : *component_->getParameters())
     {
@@ -203,15 +191,6 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
             memoryMapNumber,
             addressBlockNumber
         });
-
-        QStringList headers(QStringList()
-            << QStringLiteral("Usage")
-            << QStringLiteral("Base address [AUB]")
-            << QStringLiteral("Range [AUB]")
-            << QStringLiteral("Width [AUB]")
-            << QStringLiteral("Access")
-            << QStringLiteral("Volatile")
-        );
         
         QStringList addressBlockTableCells(QStringList()
             << General::usage2Str(addressBlock->getUsage())
@@ -231,7 +210,7 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
             writeDescription(stream, addressBlock->description());
         }
 
-        writeTableHeader(stream, headers);
+        writeTableHeader(stream, DocumentationWriter::ADDRESS_BLOCK_HEADERS);
         writeTableRow(stream, addressBlockTableCells);
         writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
 
@@ -258,14 +237,6 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
             registerNumber
         });
 
-        QStringList registerHeaders(QStringList()
-            << QStringLiteral("Offset [AUB]")
-            << QStringLiteral("Size [bits]")
-            << QStringLiteral("Dimension")
-            << QStringLiteral("Volatile")
-            << QStringLiteral("Access")
-        );
-
         QStringList registerInfoTableCells(QStringList()
             << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
             << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
@@ -281,7 +252,7 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
             writeDescription(stream, currentRegister->description());
         }
 
-        writeTableHeader(stream, registerHeaders);
+        writeTableHeader(stream, DocumentationWriter::REGISTER_HEADERS);
         writeTableRow(stream, registerInfoTableCells);
         writeFields(stream, currentRegister);
 
@@ -300,18 +271,8 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
         + currentRegister->name()
         + QStringLiteral(" contains the following fields:");
 
-    QStringList fieldTableHeaders(QStringList()
-        << QStringLiteral("Field name")
-        << QStringLiteral("Offset [bits]")
-        << QStringLiteral("Width [bits]")
-        << QStringLiteral("Volatile")
-        << QStringLiteral("Access")
-        << QStringLiteral("Resets")
-        << QStringLiteral("Description")
-    );
-
     writeSubHeader(stream, QList <int>(), headerTitle, 4);
-    writeTableHeader(stream, fieldTableHeaders);
+    writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS);
 
     for (auto const& field : *currentRegister->getFields())
     {
@@ -463,21 +424,7 @@ void MarkdownWriter::writeTableHeader(QTextStream& stream, QStringList const& he
 
 void MarkdownWriter::writePortTable(QTextStream& stream, QList<QSharedPointer<Port>> ports) const
 {
-    QStringList portTableHeaders(QStringList()
-        << QStringLiteral("Name")
-        << QStringLiteral("Direction")
-        << QStringLiteral("Left bound")
-        << QStringLiteral("Right bound")
-        << QStringLiteral("Port type")
-        << QStringLiteral("Type definition")
-        << QStringLiteral("Default value")
-        << QStringLiteral("Array left")
-        << QStringLiteral("Array right")
-        << QStringLiteral("Description")
-    );
-
-    writeTableRow(stream, portTableHeaders);
-    writeTableSeparator(stream, portTableHeaders.length());
+    writeTableHeader(stream, DocumentationWriter::PORT_HEADERS);
 
     for (auto const& port : ports)
     {
@@ -514,31 +461,24 @@ void MarkdownWriter::writeFileSetGroupdIdentifiers(QTextStream& stream, QSharedP
 
 void MarkdownWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet) const
 {
-    const auto fileBuilders = fileSet->getDefaultFileBuilders();
+    const auto defaultFileBuilders = fileSet->getDefaultFileBuilders();
 
-    if (fileBuilders->isEmpty())
+    if (defaultFileBuilders->isEmpty())
     {
         return;
     }
 
     stream << "**Default file builders:**  " << Qt::endl << Qt::endl;
-
-    QStringList buildCommandTableHeaders(QStringList()
-        << QStringLiteral("File type")
-        << QStringLiteral("Command")
-        << QStringLiteral("Flags")
-        << QStringLiteral("Replace default flags")
-    );
     
-    writeTableHeader(stream, buildCommandTableHeaders);
+    writeTableHeader(stream, DocumentationWriter::DEFAULT_FILE_BUILDER_HEADERS);
 
-    for (auto const& builder : *fileBuilders)
+    for (auto const& defaultBuilder : *defaultFileBuilders)
     {
         QStringList builderCells(QStringList()
-            << builder->getFileType()
-            << builder->getCommand()
-            << builder->getFlags()
-            << expressionFormatter_->formatReferringExpression(builder->getReplaceDefaultFlags())
+            << defaultBuilder->getFileType()
+            << defaultBuilder->getCommand()
+            << defaultBuilder->getFlags()
+            << expressionFormatter_->formatReferringExpression(defaultBuilder->getReplaceDefaultFlags())
         );
         
         writeTableRow(stream, builderCells);
@@ -566,16 +506,7 @@ void MarkdownWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fil
 
     writeSubHeader(stream, filesSubHeaderNumbers, "Files", 4);
 
-    QStringList fileHeaders(QStringList()
-        << QStringLiteral("File name")
-        << QStringLiteral("Logical name")
-        << QStringLiteral("Build command")
-        << QStringLiteral("Build flags")
-        << QStringLiteral("Specified file types")
-        << QStringLiteral("Description")
-    );
-
-    writeTableHeader(stream, fileHeaders);
+    writeTableHeader(stream, DocumentationWriter::FILE_HEADERS);
 
     for (auto const& file : files)
     {

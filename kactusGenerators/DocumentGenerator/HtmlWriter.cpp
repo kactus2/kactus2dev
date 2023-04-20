@@ -143,25 +143,13 @@ void HtmlWriter::writeTableOfContents(QTextStream& stream)
 
 void HtmlWriter::writeParameters(QTextStream& stream, int subHeaderNumber)
 {
-    QStringList headers({
-        QStringLiteral("Name"),
-        QStringLiteral("Type"),
-        QStringLiteral("Value"),
-        QStringLiteral("Resolve"),
-        QStringLiteral("Bit vector left"),
-        QStringLiteral("Bit vector right"),
-        QStringLiteral("Array left"),
-        QStringLiteral("Array right"),
-        QStringLiteral("Description")
-    });
-
     writeSubHeader(stream, subHeaderNumber, "General parameters", "parameters");
 
     // Write table element
     stream << indent(3) << HTML::TABLE << "List of parameters defined for the component\">" << Qt::endl;
 
     // Write header row
-    writeTableHeader(stream, headers, 4);
+    writeTableHeader(stream, DocumentationWriter::PARAMETER_HEADERS, 4);
 
     // Write parameters
     for (auto const& parameter : *component_->getParameters())
@@ -255,15 +243,6 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
             stream << indent(3) << "</p>" << Qt::endl;
         }
 
-        QStringList headers(QStringList()
-            << QStringLiteral("Usage")
-            << QStringLiteral("Base address [AUB]")
-            << QStringLiteral("Range [AUB]")
-            << QStringLiteral("Width [AUB]")
-            << QStringLiteral("Access")
-            << QStringLiteral("Volatile")
-        );
-
         QStringList addressBlockTableCells(QStringList()
             << General::usage2Str(addressBlock->getUsage())
             << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
@@ -279,7 +258,7 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
         stream << indent (3) << HTML::TABLE << title << "\">" << Qt::endl;
         
         // Address block table headers
-        writeTableHeader(stream, headers, 4);
+        writeTableHeader(stream, DocumentationWriter::ADDRESS_BLOCK_HEADERS, 4);
 
         // Address block table body
         writeTableRow(stream, addressBlockTableCells, 4);
@@ -323,18 +302,10 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
             stream << indent(3) << "</p>" << Qt::endl;
         }
 
-        QStringList registerTableHeaders(QStringList()
-            << QStringLiteral("Offset [AUB]")
-            << QStringLiteral("Size [bits]")
-            << QStringLiteral("Dimension")
-            << QStringLiteral("Volatile")
-            << QStringLiteral("Access")
-        );
-
         QString tableTitle = "List of values in " + currentRegister->name() + ".";
         stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
 
-        writeTableHeader(stream, registerTableHeaders, 4);
+        writeTableHeader(stream, DocumentationWriter::REGISTER_HEADERS, 4);
 
         QStringList registerInfoTableCells(QStringList()
             << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
@@ -367,17 +338,7 @@ void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> curre
     QString tableTitle = "List of fields contained within register " + currentRegister->name() + ".";
     stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
 
-    QStringList fieldTableHeaders(QStringList()
-        << QStringLiteral("Field name")
-        << QStringLiteral("Offset [bits]")
-        << QStringLiteral("Width [bits]")
-        << QStringLiteral("Volatile")
-        << QStringLiteral("Access")
-        << QStringLiteral("Resets")
-        << QStringLiteral("Description")
-    );
-
-    writeTableHeader(stream, fieldTableHeaders, 4);
+    writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS, 4);
 
     for (auto const& field : *currentRegister->getFields())
     {
@@ -551,24 +512,10 @@ void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& header
 }
 
 void HtmlWriter::writePortTable(QTextStream& stream, QString const& tableTitle, QList<QSharedPointer<Port>> ports)
-{
-    QStringList portTableHeaders(QStringList()
-        << QStringLiteral("Name")
-        << QStringLiteral("Direction")
-        << QStringLiteral("Left bound")
-        << QStringLiteral("Right bound")
-        << QStringLiteral("Port type")
-        << QStringLiteral("Type definition")
-        << QStringLiteral("Default value")
-        << QStringLiteral("Array left")
-        << QStringLiteral("Array right")
-        << QStringLiteral("Description")
-    );
-
-    
+{   
     stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
 
-    writeTableHeader(stream, portTableHeaders, 4);
+    writeTableHeader(stream, DocumentationWriter::PORT_HEADERS, 4);
 
     for (auto const& port : ports)
     {
@@ -613,17 +560,10 @@ void HtmlWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<Fi
     stream << indent(3) << HTML::INDENT << "<strong>Default file builders:</strong>" << Qt::endl;
     stream << indent(3) << "</p>" << Qt::endl;
 
-    QStringList defaultBuilderHeaders(QStringList()
-        << QStringLiteral("File type")
-        << QStringLiteral("Command")
-        << QStringLiteral("Flags")
-        << QStringLiteral("Replace default flags")
-    );
-
     QString tableTitle = QStringLiteral("Default file build commands");
     stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
 
-    writeTableHeader(stream, defaultBuilderHeaders, 4);
+    writeTableHeader(stream, DocumentationWriter::DEFAULT_FILE_BUILDER_HEADERS, 4);
 
     for (auto const& defaultBuilder : *defaultFileBuilders)
     {
@@ -660,19 +600,10 @@ void HtmlWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet
 
     writeSubHeader(stream, filesSubHeaderNumbers, "Files", 4);
 
-    QStringList fileHeaders(QStringList()
-        << QStringLiteral("File name")
-        << QStringLiteral("Logical name")
-        << QStringLiteral("Build command")
-        << QStringLiteral("Build flags")
-        << QStringLiteral("Specified file types")
-        << QStringLiteral("Description")
-    );
-
     QString tableTitle = QStringLiteral("List of files contained in this file set.");
     stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
 
-    writeTableHeader(stream, fileHeaders, 4);
+    writeTableHeader(stream, DocumentationWriter::FILE_HEADERS, 4);
 
     for (auto const& file : files)
     {

@@ -25,6 +25,20 @@ class MemoryMap;
 class DocumentationWriter
 {
 public:
+    static const QStringList ADDRESS_BLOCK_HEADERS;
+
+    static const QStringList DEFAULT_FILE_BUILDER_HEADERS;
+
+    static const QStringList FIELD_HEADERS;
+    
+    static const QStringList FILE_HEADERS;
+
+    static const QStringList PARAMETER_HEADERS;
+
+    static const QStringList PORT_HEADERS;
+
+    static const QStringList REGISTER_HEADERS;
+    
     DocumentationWriter(ExpressionFormatter* formatter);
     virtual ~DocumentationWriter() = default;
 
@@ -57,6 +71,7 @@ public:
     void setTargetPath(QString const& path);
 
     QString getTargetPath() const;
+
 protected:
     // Finds the address blocks of a memory map
     QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;

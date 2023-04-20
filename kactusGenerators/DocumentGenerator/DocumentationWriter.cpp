@@ -12,6 +12,74 @@
 #include <QSharedPointer>
 #include <QTextStream>
 
+const QStringList DocumentationWriter::ADDRESS_BLOCK_HEADERS = {
+    QStringLiteral("Usage"),
+    QStringLiteral("Base address [AUB]"),
+    QStringLiteral("Range [AUB]"),
+    QStringLiteral("Width [AUB]"),
+    QStringLiteral("Access"),
+    QStringLiteral("Volatile")
+};
+
+const QStringList DocumentationWriter::DEFAULT_FILE_BUILDER_HEADERS = {
+    QStringLiteral("File type"),
+    QStringLiteral("Command"),
+    QStringLiteral("Flags"),
+    QStringLiteral("Replace default flags")
+};
+
+const QStringList DocumentationWriter::FIELD_HEADERS = {
+    QStringLiteral("Field name"),
+    QStringLiteral("Offset [bits]"),
+    QStringLiteral("Width [bits]"),
+    QStringLiteral("Volatile"),
+    QStringLiteral("Access"),
+    QStringLiteral("Resets"),
+    QStringLiteral("Description")
+};
+
+const QStringList DocumentationWriter::FILE_HEADERS = {
+    QStringLiteral("File name"),
+    QStringLiteral("Logical name"),
+    QStringLiteral("Build command"),
+    QStringLiteral("Build flags"),
+    QStringLiteral("Specified file types"),
+    QStringLiteral("Description")
+};
+
+const QStringList DocumentationWriter::PARAMETER_HEADERS = {
+    QStringLiteral("Name"),
+    QStringLiteral("Type"),
+    QStringLiteral("Value"),
+    QStringLiteral("Resolve"),
+    QStringLiteral("Bit vector left"),
+    QStringLiteral("Bit vector right"),
+    QStringLiteral("Array left"),
+    QStringLiteral("Array right"),
+    QStringLiteral("Description")
+};
+
+const QStringList DocumentationWriter::PORT_HEADERS = {
+    QStringLiteral("Name"),
+    QStringLiteral("Direction"),
+    QStringLiteral("Left bound"),
+    QStringLiteral("Right bound"),
+    QStringLiteral("Port type"),
+    QStringLiteral("Type definition"),
+    QStringLiteral("Default value"),
+    QStringLiteral("Array left"),
+    QStringLiteral("Array right"),
+    QStringLiteral("Description")
+};
+
+const QStringList DocumentationWriter::REGISTER_HEADERS = {
+    QStringLiteral("Offset [AUB]"),
+    QStringLiteral("Size [bits]"),
+    QStringLiteral("Dimension"),
+    QStringLiteral("Volatile"),
+    QStringLiteral("Access")
+};
+
 DocumentationWriter::DocumentationWriter(ExpressionFormatter* formatter) :
     expressionFormatter_(formatter)
 {
