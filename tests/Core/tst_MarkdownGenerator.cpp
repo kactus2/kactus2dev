@@ -29,6 +29,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <QWidget>
+#include <QList>
 
 class tst_MarkdownGenerator : public QObject
 {
@@ -421,6 +422,7 @@ void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
         "### 0.1.1 " + memoryMap->name() + "  \n"
         "\n"
         "**Description:** " + memoryMap->description() + "  \n"
+        "\n"
         "**Address unit bits (AUB):** " + memoryMap->getAddressUnitBits() + "  \n"
         "\n"
     );
@@ -622,7 +624,6 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
     generator->writeMemoryMaps(stream, subHeaderNumber);
 
     targetFile.close();
-    targetFile.copy("OUTPUTTED.md");
 
     QString vlnvString(topComponent_->getVlnv().toString());
 
@@ -669,14 +670,6 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + "HARD : 8'h3" +
         "|" + testField->description() + "|\n"
     );
-
-
-    QFile testFile("TESTOUTPUT.md");
-    testFile.open(QFile::WriteOnly);
-    QTextStream stream2(&testFile);
-
-    stream2 << expectedOutput;
-    testFile.close();
 
     checkOutputFile(expectedOutput);
 }
@@ -769,9 +762,51 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
     QSharedPointer<FileSet> testFileSet(new FileSet);
     testFileSet->setName("testFileSet");
     testFileSet->setDescription("example description");
-    testFileSet->setGroups("documentation");
+    
+    QSharedPointer <QStringList> testFileSetGroups(new QStringList({ "documentation", "testing" }));
+    
+    testFileSet->setGroups(testFileSetGroups);
 
+    QSharedPointer<FileBuilder> testFileBuilder(new FileBuilder);
+    testFileBuilder->setFileType("vhdlSource");
+    testFileBuilder->setCommand("vcom");
+
+    QSharedPointer<File> testFile1(new File);
+    testFile1->setName("testFile1.vhd");
+    testFile1->setDescription("a test file 1");
+    testFile1->addFileType("vhdlSource");
+    testFile1->addFileType("vhdlSource-87");
+    
+    QSharedPointer<BuildCommand> testFile1BuildCommand(new BuildCommand);
+    testFile1BuildCommand->setCommand("vcom");
+    testFile1BuildCommand->setFlags("");
+    testFile1->setBuildcommand(testFile1BuildCommand);
+
+    QSharedPointer<File> testFile2(new File);
+    testFile2->setName("testFile2.v");
+    testFile2->setDescription("a test file 2");
+    testFile2->addFileType("verilogSource");
+    testFile2->addFileType("vhdlSource");
+
+    QSharedPointer<BuildCommand> testFile2BuildCommand(new BuildCommand);
+    testFile2BuildCommand->setCommand("make");
+    testFile2BuildCommand->setFlags("");
+    testFile2->setBuildcommand(testFile2BuildCommand);
+
+    testFileSet->addFile(testFile1);
+    testFileSet->addFile(testFile2);
+
+    testFileBuilder->setFlags("");
+
+    QSharedPointer<QList <QSharedPointer<FileBuilder>>> defaultFileBuilders(new QList<QSharedPointer<FileBuilder> >({ testFileBuilder }));
+    testFileSet->setDefaultFileBuilders(defaultFileBuilders);
     topComponent_->getFileSets()->append(testFileSet);
+
+    QString testFile1AbsPath = General::getAbsolutePath(library_.getPath(topComponent_->getVlnv()), testFile1->name());
+    QString testFile1PathFromDoc = General::getRelativePath(targetPath_, testFile1AbsPath);
+    
+    QString testFile2AbsPath = General::getAbsolutePath(library_.getPath(topComponent_->getVlnv()), testFile2->name());
+    QString testFile2PathFromDoc = General::getRelativePath(targetPath_, testFile2AbsPath);
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -791,8 +826,30 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
         "### 0.1.1 " + testFileSet->name() + "  \n"
         "\n"
         "**Description:** " + testFileSet->description() + "  \n"
+        "\n"
         "**Identifiers:** " + groups + "  \n"
         "\n"
+        "**Default file builders:**  \n"
+        "\n"
+        "|File type|Command|Flags|Replace default flags|\n"
+        "|:----|:----|:----|:----|\n"
+        "|vhdlSource|vcom|||\n"
+        "#### 0.1.1.1 Files  \n"
+        "\n"
+        "|File name|Logical name|Build command|Build Flags|Specified file types|Description|\n"
+        "|:----|:----|:----|:----|:----|:----|\n"
+        "|" + testFile1->name() + " <a href=\"" + testFile1PathFromDoc + "\">"
+           "|" + testFile1->getLogicalName() +
+           "|" + testFile1->getBuildCommand()->getCommand() +
+           "|" + testFile1->getBuildCommand()->getFlags() +
+           "|" + testFile1->getFileTypes()->join(",<br>") +
+           "|" + testFile1->getDescription() + "|\n"
+        "|" + testFile2->name() + " <a href=\"" + testFile2PathFromDoc + "\">"
+            "|" + testFile2->getLogicalName() +
+            "|" + testFile2->getBuildCommand()->getCommand() +
+            "|" + testFile2->getBuildCommand()->getFlags() +
+            "|" + testFile2->getFileTypes()->join(",<br>") +
+            "|" + testFile2->getDescription() + "|\n"
     );
 
     checkOutputFile(expectedOutput);
