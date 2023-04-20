@@ -6,10 +6,13 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QDateTime>
+#include <QFileInfo>
 #include <QSettings>
 #include <QStringLiteral>
 
@@ -34,10 +37,12 @@ namespace HTML
         "\t\t</p>");
 }
 
-HtmlWriter::HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter) :
+HtmlWriter::HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter,
+    LibraryInterface* libraryHandler) :
     component_(component),
     componentNumber_(0),
     expressionFormatter_(formatter),
+    libraryHandler_(libraryHandler),
     DocumentationWriter(formatter)
 {
     vlnvString_ = component_->getVlnv().toString();
@@ -450,6 +455,35 @@ void HtmlWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 
 void HtmlWriter::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 {
+    writeSubHeader(stream, subHeaderNumber, "File sets", "fileSets");
+
+    const QList<QSharedPointer<FileSet> > fileSets = *component_->getFileSets();
+
+    int fileSetNumber = 1;
+
+    for (auto const& fileSet : fileSets)
+    {
+        writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, fileSetNumber }), fileSet->name(), 3);
+
+        stream << indent(3) << "<p>" << Qt::endl;
+
+        // description
+        if (!fileSet->description().isEmpty())
+        {
+            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
+                fileSet->description() << "<br>" << Qt::endl;
+        }
+
+        // identifiers
+        writeFileSetGroupdIdentifiers(stream, fileSet);
+
+        // Default file builders table
+        writeDefaultFileBuilders(stream, fileSet);
+
+        writeFiles(stream, fileSet, subHeaderNumber, fileSetNumber);
+
+        ++fileSetNumber;
+    }
 }
 
 void HtmlWriter::setComponentNumber(int componentNumber)
@@ -555,4 +589,122 @@ void HtmlWriter::writePortTable(QTextStream& stream, QString const& tableTitle, 
     }
 
     stream << indent(3) << "</table>" << Qt::endl;
+}
+
+void HtmlWriter::writeFileSetGroupdIdentifiers(QTextStream& stream, QSharedPointer<FileSet> fileSet) const
+{
+    stream << indent(3) << HTML::INDENT << "<strong>Identifiers:</strong> ";
+    
+    QStringList groups = *fileSet->getGroups();
+    
+    stream << groups.join(", ") << "<br>" << Qt::endl;
+}
+
+void HtmlWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet)
+{
+    const auto defaultFileBuilders = fileSet->getDefaultFileBuilders();
+
+    if (defaultFileBuilders->isEmpty())
+    {
+        stream << indent(3) << "</p>" << Qt::endl;
+        return;
+    }
+
+    stream << indent(3) << HTML::INDENT << "<strong>Default file builders:</strong>" << Qt::endl;
+    stream << indent(3) << "</p>" << Qt::endl;
+
+    QStringList defaultBuilderHeaders(QStringList()
+        << QStringLiteral("File type")
+        << QStringLiteral("Command")
+        << QStringLiteral("Flags")
+        << QStringLiteral("Replace default flags")
+    );
+
+    QString tableTitle = QStringLiteral("Default file build commands");
+    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+
+    writeTableHeader(stream, defaultBuilderHeaders, 4);
+
+    for (auto const& defaultBuilder : *defaultFileBuilders)
+    {
+        QStringList builderCells(QStringList()
+            << defaultBuilder->getFileType()
+            << defaultBuilder->getCommand()
+            << defaultBuilder->getFlags()
+            << expressionFormatter_->formatReferringExpression(defaultBuilder->getReplaceDefaultFlags())
+        );
+
+        writeTableRow(stream, builderCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
+void HtmlWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet, int subHeaderNumber, int fileSetNumber)
+{
+    QList<QSharedPointer<File> > files = *fileSet->getFiles();
+
+    if (files.isEmpty())
+    {
+        return;
+    }
+
+    int filesSubHeaderNumber = 1;
+
+    QList filesSubHeaderNumbers({
+        componentNumber_,
+        subHeaderNumber,
+        fileSetNumber,
+        filesSubHeaderNumber
+    });
+
+    writeSubHeader(stream, filesSubHeaderNumbers, "Files", 4);
+
+    QStringList fileHeaders(QStringList()
+        << QStringLiteral("File name")
+        << QStringLiteral("Logical name")
+        << QStringLiteral("Build command")
+        << QStringLiteral("Build flags")
+        << QStringLiteral("Specified file types")
+        << QStringLiteral("Description")
+    );
+
+    QString tableTitle = QStringLiteral("List of files contained in this file set.");
+    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+
+    writeTableHeader(stream, fileHeaders, 4);
+
+    for (auto const& file : files)
+    {
+        writeSingleFile(stream, file);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
+void HtmlWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file)
+{
+    QString relativeFilePath = file->name();
+    QString absFilePath = General::getAbsolutePath(libraryHandler_->getPath(component_->getVlnv()), relativeFilePath);
+
+    QFileInfo fileInfo(absFilePath);
+
+    // get relative path from html file to the file
+    QFileInfo htmlInfo(getTargetPath());
+    QString pathFromDocToFile = General::getRelativePath(getTargetPath(), absFilePath);
+
+    QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
+
+    QStringList fileTypes = *file->getFileTypes();
+
+    QStringList fileTableCells(QStringList()
+        << "<a href=\"" + pathFromDocToFile + "\">" + file->name() + "</a>"
+        << file->getLogicalName()
+        << (buildCommand ? buildCommand->getCommand() : QStringLiteral(""))
+        << (buildCommand ? buildCommand->getFlags() : QStringLiteral(""))
+        << fileTypes.join(",<br>")
+        << file->getDescription()
+    );
+
+    writeTableRow(stream, fileTableCells, 4);
 }

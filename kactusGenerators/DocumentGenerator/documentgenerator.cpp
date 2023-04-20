@@ -174,7 +174,7 @@ void DocumentGenerator::setFormat(DocumentFormat format)
 {
     if (format == DocumentFormat::HTML)
     {
-        writer_ = new HtmlWriter(component_, expressionFormatter_);
+        writer_ = new HtmlWriter(component_, expressionFormatter_, libraryHandler_);
     }
     else if (format == DocumentFormat::MD)
     {

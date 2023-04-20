@@ -570,7 +570,7 @@ void MarkdownWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fil
         << QStringLiteral("File name")
         << QStringLiteral("Logical name")
         << QStringLiteral("Build command")
-        << QStringLiteral("Build Flags")
+        << QStringLiteral("Build flags")
         << QStringLiteral("Specified file types")
         << QStringLiteral("Description")
     );

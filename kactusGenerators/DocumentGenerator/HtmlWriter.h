@@ -20,6 +20,7 @@
 #include <QSharedPointer>
 
 class ExpressionFormatter;
+class LibraryInterface;
 class AddressBlock;
 class MemoryMap;
 class Register;
@@ -28,7 +29,7 @@ class Field;
 class HtmlWriter : public DocumentationWriter
 {
 public:
-    HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter);
+    HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter, LibraryInterface* libraryHhandler);
 
     ~HtmlWriter() override;
 
@@ -80,9 +81,21 @@ private:
 
     // Writes a port table for specified ports
     void writePortTable(QTextStream& stream, QString const& tableTitle, QList<QSharedPointer<Port> > ports);
+    
+    void writeFileSetGroupdIdentifiers(QTextStream& stream, QSharedPointer<FileSet> fileSet) const;
+
+    void writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet);
+
+    void writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet,
+        int subHeaderNumber, int fileSetNumber);
+
+    void writeSingleFile(QTextStream& stream, QSharedPointer<File> file);
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
+
+    // The library handler
+    LibraryInterface* libraryHandler_;
 
     // The current component
     QSharedPointer<Component> component_;
