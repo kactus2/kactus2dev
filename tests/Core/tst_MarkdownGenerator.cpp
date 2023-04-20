@@ -776,6 +776,7 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
     testFile1->setDescription("a test file 1");
     testFile1->addFileType("vhdlSource");
     testFile1->addFileType("vhdlSource-87");
+    testFile1->setLogicalName("testLogicalName");
     
     QSharedPointer<BuildCommand> testFile1BuildCommand(new BuildCommand);
     testFile1BuildCommand->setCommand("vcom");
@@ -790,7 +791,7 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
 
     QSharedPointer<BuildCommand> testFile2BuildCommand(new BuildCommand);
     testFile2BuildCommand->setCommand("make");
-    testFile2BuildCommand->setFlags("");
+    testFile2BuildCommand->setFlags("--verbose");
     testFile2->setBuildcommand(testFile2BuildCommand);
 
     testFileSet->addFile(testFile1);
