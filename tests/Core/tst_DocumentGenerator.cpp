@@ -957,12 +957,55 @@ void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
 {
     QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
-    QSharedPointer<FileSet> testFileSet (new FileSet);
+    QSharedPointer<FileSet> testFileSet(new FileSet);
     testFileSet->setName("testFileSet");
     testFileSet->setDescription("example description");
-    testFileSet->setGroups("documentation");
 
+    QSharedPointer <QStringList> testFileSetGroups(new QStringList({ "documentation", "testing" }));
+
+    testFileSet->setGroups(testFileSetGroups);
+
+    QSharedPointer<FileBuilder> testFileBuilder(new FileBuilder);
+    testFileBuilder->setFileType("vhdlSource");
+    testFileBuilder->setCommand("vcom");
+
+    QSharedPointer<File> testFile1(new File);
+    testFile1->setName("testFile1.vhd");
+    testFile1->setDescription("a test file 1");
+    testFile1->addFileType("vhdlSource");
+    testFile1->addFileType("vhdlSource-87");
+    testFile1->setLogicalName("testLogicalName");
+
+    QSharedPointer<BuildCommand> testFile1BuildCommand(new BuildCommand);
+    testFile1BuildCommand->setCommand("vcom");
+    testFile1BuildCommand->setFlags("");
+    testFile1->setBuildcommand(testFile1BuildCommand);
+
+    QSharedPointer<File> testFile2(new File);
+    testFile2->setName("testFile2.v");
+    testFile2->setDescription("a test file 2");
+    testFile2->addFileType("verilogSource");
+    testFile2->addFileType("vhdlSource");
+
+    QSharedPointer<BuildCommand> testFile2BuildCommand(new BuildCommand);
+    testFile2BuildCommand->setCommand("make");
+    testFile2BuildCommand->setFlags("--verbose");
+    testFile2->setBuildcommand(testFile2BuildCommand);
+
+    testFileSet->addFile(testFile1);
+    testFileSet->addFile(testFile2);
+
+    testFileBuilder->setFlags("");
+
+    QSharedPointer<QList <QSharedPointer<FileBuilder>>> defaultFileBuilders(new QList<QSharedPointer<FileBuilder> >({ testFileBuilder }));
+    testFileSet->setDefaultFileBuilders(defaultFileBuilders);
     topComponent_->getFileSets()->append(testFileSet);
+
+    QString testFile1AbsPath = General::getAbsolutePath(library_.getPath(topComponent_->getVlnv()), testFile1->name());
+    QString testFile1PathFromDoc = General::getRelativePath(targetPath_, testFile1AbsPath);
+
+    QString testFile2AbsPath = General::getAbsolutePath(library_.getPath(topComponent_->getVlnv()), testFile2->name());
+    QString testFile2PathFromDoc = General::getRelativePath(targetPath_, testFile2AbsPath);
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -982,8 +1025,42 @@ void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testFileSet->description() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Identifiers:</strong> " + groups + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Default file builders:</strong> " + groups + "\n"
         "\t\t\t</p>\n"
-        );
+        "\t\t\t" + getTableString() + "Default file build commands" + "\">\n"
+        "\t\t\t\t<th>\n"
+        "\t\t\t\t\t<td>File type</td>\n"
+        "\t\t\t\t\t<td>Command</td>\n"
+        "\t\t\t\t\t<td>Flags</td>\n"
+        "\t\t\t\t\t<td>Replace default flags</td>\n"
+        "\t\t\t\t</th>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>" + testFileBuilder->getFileType() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFileBuilder->getCommand() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFileBuilder->getFlags() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFileBuilder->getReplaceDefaultFlags() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        "\t\t\t<h4>0.1.1.1 Files</h4>\n"
+        "\t\t\t" + getTableString() + "List of files contained in this file set." + "\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td><a href=\"" + testFile1PathFromDoc + "\">" + testFile1->name() + "</a></td>\n"
+        "\t\t\t\t\t<td>" + testFile1->getLogicalName() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile1->getBuildCommand()->getCommand() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile1->getBuildCommand()->getFlags() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile1->getFileTypes()->join(",<br>") + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile1->getDescription() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td><a href=\"" + testFile2PathFromDoc + "\">" + testFile2->name() + "</a></td>\n"
+        "\t\t\t\t\t<td>" + testFile2->getLogicalName() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile2->getBuildCommand()->getCommand() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile2->getBuildCommand()->getFlags() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile2->getFileTypes()->join(",<br>") + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile2->getDescription() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+    );
 
     checkOutputFile(expectedOutput);
 }
