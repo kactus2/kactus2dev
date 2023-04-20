@@ -839,13 +839,13 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
         "\n"
         "|File name|Logical name|Build command|Build Flags|Specified file types|Description|\n"
         "|:----|:----|:----|:----|:----|:----|\n"
-        "|" + testFile1->name() + " <a href=\"" + testFile1PathFromDoc + "\">"
-           "|" + testFile1->getLogicalName() +
-           "|" + testFile1->getBuildCommand()->getCommand() +
-           "|" + testFile1->getBuildCommand()->getFlags() +
-           "|" + testFile1->getFileTypes()->join(",<br>") +
-           "|" + testFile1->getDescription() + "|\n"
-        "|" + testFile2->name() + " <a href=\"" + testFile2PathFromDoc + "\">"
+        "|[" + testFile1->name() + "](" + testFile1PathFromDoc + ")"
+            "|" + testFile1->getLogicalName() +
+            "|" + testFile1->getBuildCommand()->getCommand() +
+            "|" + testFile1->getBuildCommand()->getFlags() +
+            "|" + testFile1->getFileTypes()->join(",<br>") +
+            "|" + testFile1->getDescription() + "|\n"
+        "|[" + testFile2->name() + "](" + testFile2PathFromDoc + ")"
             "|" + testFile2->getLogicalName() +
             "|" + testFile2->getBuildCommand()->getCommand() +
             "|" + testFile2->getBuildCommand()->getFlags() +

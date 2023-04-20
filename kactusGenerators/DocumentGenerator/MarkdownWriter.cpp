@@ -599,7 +599,7 @@ void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> f
     QStringList fileTypes = *file->getFileTypes();
 
     QStringList fileTableCells(QStringList()
-        << fileInfo.fileName() + " <a href=\"" + pathFromDocToFile + "\">"
+        << "[" + fileInfo.fileName() + "]" + "(" + pathFromDocToFile + ")"
         << file->getLogicalName()
         << (buildCommand ? buildCommand->getCommand() : QStringLiteral(""))
         << (buildCommand ? buildCommand->getFlags() : QStringLiteral(""))
