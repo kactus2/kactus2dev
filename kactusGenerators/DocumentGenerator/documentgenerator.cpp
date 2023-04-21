@@ -12,6 +12,9 @@
 #include "documentgenerator.h"
 
 #include <KactusAPI/include/utils.h>
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/MultipleParameterFinder.h>
+
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
 #include <kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h>
@@ -68,6 +71,7 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     component_(),
     componentNumber_(1),
     libraryHandler_(handler),
+    componentFinder_(nullptr),
     viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
 {
     Q_ASSERT(handler);
@@ -83,6 +87,8 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
 
     // parse the model for the component
     component_ = getLibraryHandler()->getModel(vlnv).dynamicCast<Component>();
+
+    componentFinder_ = QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(component_));
 
     if (!component_)
     {
@@ -124,6 +130,8 @@ viewDocumentationGenerator_(viewDocumentationGenerator)
 
     QSharedPointer<Document> libComp = getLibraryHandler()->getModel(vlnv);
     component_ = libComp.staticCast<Component>();
+
+    componentFinder_ = QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(component_));
 
     expressionFormatter_ = createExpressionFormatter();
 
@@ -174,11 +182,11 @@ void DocumentGenerator::setFormat(DocumentFormat format)
 {
     if (format == DocumentFormat::HTML)
     {
-        writer_ = new HtmlWriter(component_, expressionFormatter_, libraryHandler_);
+        writer_ = new HtmlWriter(component_, expressionFormatter_, libraryHandler_, componentNumber_);
     }
     else if (format == DocumentFormat::MD)
     {
-        writer_ = new MarkdownWriter(component_, expressionFormatter_, libraryHandler_);
+        writer_ = new MarkdownWriter(component_, expressionFormatter_, libraryHandler_, componentNumber_);
     }
 }
 
@@ -406,34 +414,6 @@ void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QT
 }
 
 //-----------------------------------------------------------------------------
-// Function: documentgenerator::getFieldResetInfo()
-//-----------------------------------------------------------------------------
-QString DocumentGenerator::getFieldResetInfo(QSharedPointer<Field> field) const
-{
-    QString resetInfo = "";
-
-    for (auto singleRest : *field->getResets())
-    {
-        if (singleRest != field->getResets()->first())
-        {
-            resetInfo.append("<br>");
-        }
-
-        QString resetTypeReference = singleRest->getResetTypeReference();
-        if (resetTypeReference.isEmpty())
-        {
-            resetTypeReference = QLatin1String("HARD");
-        }
-
-        QString resetValue = expressionFormatter_->formatReferringExpression(singleRest->getResetValue());
-
-        resetInfo.append(resetTypeReference + " : " + resetValue);
-    }
-    
-    return resetInfo;
-}
-
-//-----------------------------------------------------------------------------
 // Function: documentgenerator::writePorts()
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writePorts(QTextStream& stream, int& subHeaderNumber)
@@ -467,6 +447,26 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
         writer_->writeFileSets(stream, subHeaderNumber);
         ++subHeaderNumber;
     }
+}
+
+void DocumentGenerator::writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList)
+{
+    if (!component_->hasViews())
+    {
+        return;
+    }
+
+    writer_->writeSubHeader(stream, subHeaderNumber, "Views", "views");
+
+    int viewNumber = 1;
+
+    for (auto const& view : *component_->getViews())
+    {
+        writeSingleView(stream, view, subHeaderNumber, viewNumber, pictureList);
+        ++viewNumber;
+    }
+
+    ++subHeaderNumber;
 }
 
 //-----------------------------------------------------------------------------
@@ -590,6 +590,93 @@ void DocumentGenerator::writeFile( QSharedPointer<File> file, QTextStream& strea
     
     stream << "\t\t\t\t\t<td>" << file->getDescription() << "</td>" << Qt::endl;
     stream << "\t\t\t\t</tr>" << Qt::endl;
+}
+
+void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View> view, int const& subHeaderNumber, int const& viewNumber, QStringList& pictureList)
+{
+    QList subHeaderNumbers({ componentNumber_, subHeaderNumber, viewNumber });
+    writer_->writeSubHeader(stream, subHeaderNumbers, "View: " + view->name(), 3);
+
+    writer_->writeViewDescription(stream, view->description());
+    
+    int instantiationNumber = 1;
+
+    QString viewComponentInstantiationRef = view->getComponentInstantiationRef();
+    
+    if (!viewComponentInstantiationRef.isEmpty())
+    {
+        writeReferencedComponentInstantiation(stream,
+            view->getComponentInstantiationRef(), subHeaderNumber, viewNumber, instantiationNumber);
+        instantiationNumber++;
+    }
+}
+
+void DocumentGenerator::writeReferencedComponentInstantiation(QTextStream& stream, QString const& instantiationReference, int const& subHeaderNumber, int const& viewNumber, int const& instantiationNumber)
+{
+    writer_->writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, viewNumber, instantiationNumber }),
+        "Component instantiation: " + instantiationReference, 4);
+
+    QSharedPointer<ComponentInstantiation> instantiation = getComponentInstantiation(instantiationReference);
+    if (!instantiation)
+    {
+        QString errorMsg(tr("Referenced component instantiation %1 was not found.").
+            arg(instantiationReference));
+        writer_->writeErrorMessage(stream, errorMsg);
+        emit errorMessage(errorMsg);
+        return;
+    }
+
+    QSharedPointer<ListParameterFinder> parameterFinder(new ListParameterFinder());
+    ParameterList parameters = instantiation->getParameters();
+    parameterFinder->setParameterList(parameters);
+
+    QSharedPointer<ListParameterFinder> moduleParameterFinder(new ListParameterFinder());
+    ParameterList moduleParameters =
+        getModuleParametersAsParameters(instantiation->getModuleParameters());
+    moduleParameterFinder->setParameterList(moduleParameters);
+
+    QSharedPointer<MultipleParameterFinder> instantiationParameterFinder(new MultipleParameterFinder());
+    instantiationParameterFinder->addFinder(componentFinder_);
+    instantiationParameterFinder->addFinder(parameterFinder);
+    instantiationParameterFinder->addFinder(moduleParameterFinder);
+
+    QSharedPointer<ExpressionFormatter> instantiationFormatter(
+        new ExpressionFormatter(instantiationParameterFinder));
+
+    QString moduleParameterToolTip = QString("Module parameters of component instantiation ") +
+        instantiation->name();
+    QString parameterToolTip = QString("Parameters of component instantiation ") + instantiation->name();
+
+    writer_->writeReferencedComponentInstantiation(stream, instantiation, instantiationFormatter,
+       moduleParameters, parameters
+    );
+}
+
+QSharedPointer<ComponentInstantiation> DocumentGenerator::getComponentInstantiation(QString const& instantiationReference) const
+{
+    for (auto const& instantiation : *component_->getComponentInstantiations())
+    {
+        if (instantiation->name() == instantiationReference)
+        {
+            return instantiation;
+        }
+    }
+
+    return QSharedPointer<ComponentInstantiation>(nullptr);
+}
+
+ParameterList DocumentGenerator::getModuleParametersAsParameters(
+    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters)
+{
+    ParameterList newModuleParameters(
+        new QList<QSharedPointer<Parameter> >());
+
+    for (QSharedPointer<Parameter> parameter : *moduleParameters)
+    {
+        newModuleParameters->append(parameter);
+    }
+
+    return newModuleParameters;
 }
 
 //-----------------------------------------------------------------------------

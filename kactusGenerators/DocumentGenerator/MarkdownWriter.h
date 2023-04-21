@@ -27,11 +27,13 @@
 class ExpressionFormatter;
 class Port;
 class LibraryInterface;
+class ComponentInstantiation;
 
 class MarkdownWriter : public DocumentationWriter
 {
 public:
-    MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter, LibraryInterface* libraryHandler);
+    MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter,
+        LibraryInterface* libraryHandler, int componentNumber);
 
     ~MarkdownWriter() override;
 
@@ -61,14 +63,26 @@ public:
 
     void setComponentNumber(int componentNumber) override;
 
-private:
-    // Writes a subheader of specified level and numbering for non-linked subheaders
-    void writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
-        QString const& title, int level) const;
-
     // Writes a component subheader for linked subheaders
     void writeSubHeader(QTextStream& stream, int subHeaderNumber,
-        QString const& title, QString const& headerId) const;
+        QString const& title, QString const& headerId) const override;
+
+    // Writes a subheader of specified level and numbering for non-linked subheaders
+    void writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
+        QString const& title, int level) const override;
+
+    void writeViewDescription(QTextStream& stream, QString const& description) override;
+    
+    void writeErrorMessage(QTextStream& stream, QString const& message) override;
+
+    void writeReferencedComponentInstantiation(
+        QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) override;
+private:
+
 
     // Writes a line with specified cells to a MD table
     void writeTableRow(QTextStream& stream, QStringList const& cells) const;
@@ -93,6 +107,18 @@ private:
         int subHeaderNumber, int fileSetNumber);
 
     void writeSingleFile(QTextStream& stream, QSharedPointer<File> file);
+
+    void writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation);
+
+    void writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation);
+
+    void writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
+        ExpressionFormatter* formatter);
+
+    // Writes a parameter table for given parameters
+    void writeParameterTable(QTextStream& stream, QString const& tableHeading,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+        ExpressionFormatter* formatter);
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;

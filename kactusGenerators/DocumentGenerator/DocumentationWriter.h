@@ -21,6 +21,10 @@ class AddressBlock;
 class Register;
 class Field;
 class MemoryMap;
+class Parameter;
+class ComponentInstantiation;
+
+using ParameterList = QSharedPointer<QList<QSharedPointer<Parameter> > >;
 
 class DocumentationWriter
 {
@@ -67,6 +71,26 @@ public:
     virtual void writeFileSets(QTextStream& stream, int& subHeaderNumber) = 0;
 
     virtual void setComponentNumber(int componentNumber) = 0;
+
+    // Writes a component subheader for linked subheaders
+    virtual void writeSubHeader(QTextStream& stream, int subHeaderNumber,
+        QString const& headerText, QString const& headerId) const = 0;
+    
+    // Writes a subheader of specified level and numbering for non-linked subheaders
+    virtual void writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
+        QString const& title, int level) const = 0;
+
+    virtual void writeViewDescription(QTextStream& stream, QString const& description) = 0;
+
+    virtual void writeErrorMessage(QTextStream& stream, QString const& message) = 0;
+
+    virtual void writeReferencedComponentInstantiation(
+        QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter,
+        ParameterList moduleParameters,
+        ParameterList parameters
+    ) = 0;
 
     void setTargetPath(QString const& path);
 

@@ -17,6 +17,7 @@
 
 #include <KactusAPI/include/ExpressionFormatterFactory.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <editors/common/DesignWidgetFactory.h>
 
@@ -34,6 +35,7 @@
 class AddressBlock;
 class Register;
 class Field;
+class View;
 class ViewDocumentGenerator;
 
 //-----------------------------------------------------------------------------
@@ -195,6 +197,15 @@ public:
     void writeFileSets(QTextStream& stream, int& subHeaderNumber);
 
     /*!
+     *  Write the views of the component.
+     *
+     *      @param [in] stream              The text stream to write the component views.
+     *      @param [in] subHeaderNumber     The number that defines the sub header.
+     *      @param [in] pictureList         List of file names to add the pictures of the referenced designs to.
+     */
+    void writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList);
+
+    /*!
      *  Write the end of the document.
      *
      *      @param [in] stream  The text stream to write the documentation into.
@@ -231,13 +242,6 @@ private:
     void writeSubHeader(unsigned const int& headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
 
     /*!
-     *  Get the information for the reset values of the selected field.
-     *
-     *      @param [in] field   The selected field.
-     */
-    QString getFieldResetInfo(QSharedPointer<Field> field) const;
-
-    /*!
      *  Write the port table for the selected ports.
      *
      *      @param [in] stream  The stream to write into.
@@ -253,6 +257,49 @@ private:
      *      @param [in] stream  The text stream to write into.
      */
     void writeFile(QSharedPointer<File> file, QTextStream& stream);
+
+    /*!
+     *  Write the selected view.
+     *
+     *      @param [in] stream              The text stream to write the view.
+     *      @param [in] view                The selected view.
+     *      @param [in] subHeaderNumber     Number for the sub header.
+     *      @param [in] viewNumber          Number defining the selected view.
+     *      @param [in] pictureList         List of file names to add the pictures of the referenced designs to.
+     */
+    void writeSingleView(QTextStream& stream, QSharedPointer<View> view,
+        int const& subHeaderNumber, int const& viewNumber, QStringList& pictureList);
+
+    /*!
+     *  Write the referenced component instantiation.
+     *
+     *      @param [in] stream                  Text stream to write the component instantiation.
+     *      @param [in] instantiationReference  Name of the selected component instantiation.
+     *      @param [in] subHeaderNumber         Number for the sub header.
+     *      @param [in] viewNumber              Number defining the selected view.
+     *      @param [in] instantiationNumber     Number defining the component instantiation.
+     */
+    void writeReferencedComponentInstantiation(QTextStream& stream, QString const& instantiationReference,
+        int const& subHeaderNumber, int const& viewNumber, int const& instantiationNumber);
+
+    /*!
+     *  Get the referenced component instantiation.
+     *
+     *      @param [in] instantiationReference  Name of the selected component instantiation.
+     *
+     *      @return Component instantiation containing the selected name.
+     */
+    QSharedPointer<ComponentInstantiation> getComponentInstantiation(QString const& instantiationReference) const;
+
+    /*!
+     *  Get the selected module parameters as a list of parameters.
+     *
+     *      @param [in] moduleParameters    The selected module parameters.
+     *
+     *      @return The module parameters as a list of parameters
+     */
+    QSharedPointer<QList<QSharedPointer<Parameter> > > getModuleParametersAsParameters(
+        QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
 
     /*!
      *  Parse the child items for the document generator.
@@ -280,7 +327,7 @@ private:
     QSharedPointer<Component> component_;
 
     //! The running number that used for writing the numbered headers.
-    unsigned int componentNumber_;
+    int componentNumber_;
 
     //! The file path to the documentation file being written.
     QString targetPath_;
@@ -301,6 +348,8 @@ private:
     ViewDocumentGenerator* viewDocumentationGenerator_;
 
     DocumentationWriter* writer_;
+
+    QSharedPointer<ComponentParameterFinder> componentFinder_;
 };
 
 #endif // DOCUMENTGENERATOR_H

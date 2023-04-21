@@ -17,9 +17,9 @@
 #include <QString>
 
 MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter,
-    LibraryInterface* libraryHandler) :
+    LibraryInterface* libraryHandler, int componentNumber) :
     component_(component),
-    componentNumber_(0),
+    componentNumber_(componentNumber),
     expressionFormatter_(formatter),
     libraryHandler_(libraryHandler),
     DocumentationWriter(formatter)
@@ -370,6 +370,13 @@ void MarkdownWriter::setComponentNumber(int componentNumber)
     componentNumber_ = componentNumber;
 }
 
+void MarkdownWriter::writeSubHeader(QTextStream& stream, int subHeaderNumber,
+    QString const& headerText, QString const& headerId) const
+{
+    stream << "## " << componentNumber_ << "." << subHeaderNumber << " " << headerText << " <a id=\"" <<
+        vlnvString_ << "." << headerId << "\">  " << Qt::endl << Qt::endl;
+}
+
 void MarkdownWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
     QString const& title, int level) const
 {
@@ -392,11 +399,40 @@ void MarkdownWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHe
     stream << headerTag << headerTitle << "  " << Qt::endl << Qt::endl;
 }
 
-void MarkdownWriter::writeSubHeader(QTextStream& stream, int subHeaderNumber,
-    QString const& headerText, QString const& headerId) const
+void MarkdownWriter::writeViewDescription(QTextStream& stream, QString const& description)
 {
-    stream << "## " << componentNumber_ << "." << subHeaderNumber << " " << headerText << " <a id=\"" <<
-        vlnvString_ << "." << headerId << "\">  " << Qt::endl << Qt::endl;
+    if (!description.isEmpty())
+    {
+        writeDescription(stream, description);
+    }
+}
+
+void MarkdownWriter::writeErrorMessage(QTextStream& stream, QString const& message)
+{
+    stream << "<span style=\"color:red\">" << message << "</span>  " << Qt::endl;
+}
+
+void MarkdownWriter::writeReferencedComponentInstantiation(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
+    QSharedPointer<ExpressionFormatter> instantiationFormatter,
+    ParameterList moduleParameters,
+    ParameterList parameters)
+{
+    QString moduleParameterToolTip = QString("Module parameters of component instantiation ") +
+        instantiation->name();
+    QString parameterToolTip = QString("Parameters of component instantiation ") + instantiation->name();
+
+    if (!instantiation->description().isEmpty())
+    {
+        writeDescription(stream, instantiation->description());
+    }
+
+    writeImplementationDetails(stream, instantiation);
+    //writeFileSetReferences(stream, instantiation);
+    //writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
+    writeParameterTable(stream, QString("Module parameters:"),
+        moduleParameters, instantiationFormatter.data());
+    writeParameterTable(stream, QString("Parameters:"), parameters,
+        instantiationFormatter.data());
 }
 
 void MarkdownWriter::writeTableRow(QTextStream& stream, QStringList const& cells) const
@@ -539,4 +575,82 @@ void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> f
     );
 
     writeTableRow(stream, fileTableCells);
+}
+
+void MarkdownWriter::writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
+{
+    QString language = instantiation->getLanguage();
+    QString library = instantiation->getLibraryName();
+    QString package = instantiation->getPackageName();
+    QString module = instantiation->getModuleName();
+    QString architecture = instantiation->getArchitectureName();
+    QString configuration = instantiation->getConfigurationName();
+
+    if (!language.isEmpty())
+    {
+        stream << "**Language:** " << language << "  " << Qt::endl << Qt::endl;
+    }
+    
+    if (!library.isEmpty())
+    {
+        stream << "**Library:** " << library << "  " << Qt::endl << Qt::endl;
+    }
+
+    if (!package.isEmpty())
+    {
+        stream << "**Package:** " << package << "  " << Qt::endl << Qt::endl;
+    }
+
+    if (!module.isEmpty())
+    {
+        stream << "**Module name:** " << module << "  " << Qt::endl << Qt::endl;
+    }
+
+    if (!architecture.isEmpty())
+    {
+        stream << "**Architecture:** " << architecture << "  " << Qt::endl << Qt::endl;
+    }
+
+    if (!configuration.isEmpty())
+    {
+        stream << "**Configuration:** " << configuration << "  " << Qt::endl << Qt::endl;
+    }
+}
+
+void MarkdownWriter::writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
+{
+}
+
+void MarkdownWriter::writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation, ExpressionFormatter* formatter)
+{
+}
+
+void MarkdownWriter::writeParameterTable(QTextStream& stream, QString const& tableHeading,
+    ParameterList parameters, ExpressionFormatter* formatter)
+{
+    if (!parameters || parameters->isEmpty())
+    {
+        return;
+    }
+
+    stream << tableHeading << "  " << Qt::endl << Qt::endl;
+
+    writeTableHeader(stream, DocumentationWriter::PARAMETER_HEADERS);
+
+    for (auto const& parameter : *parameters)
+    {
+        QStringList paramCells(QStringList()
+            << parameter->name()
+            << parameter->getType()
+            << formatter->formatReferringExpression(parameter->getValue())
+            << parameter->getValueResolve()
+            << formatter->formatReferringExpression(parameter->getVectorLeft())
+            << formatter->formatReferringExpression(parameter->getVectorRight())
+            << formatter->formatReferringExpression(parameter->getArrayLeft())
+            << formatter->formatReferringExpression(parameter->getArrayRight())
+            << parameter->description()
+        );
+
+        writeTableRow(stream, paramCells);
+    }
 }
