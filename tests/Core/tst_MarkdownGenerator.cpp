@@ -73,47 +73,47 @@ private slots:
 
 private:
     /*!
-     *  Create the generator used in most test cases.
-     */
+        *  Create the generator used in most test cases.
+        */
     DocumentGenerator* createTestGenerator();
 
     /*!
-     *  Read the output file of the generator.
-     */
+        *  Read the output file of the generator.
+        */
     void readOutputFile();
 
     /*!
-     *  Compare expected output to the actual output
-     */
+        *  Compare expected output to the actual output
+        */
     void checkOutputFile(QString const& expectedOutput);
 
     /*!
-     *  Create a parameter used in the tests.
-     *
-     *      @param [in] name            Name of the parameter.
-     *      @param [in] value           Value of the parameter.
-     *      @param [in] description     Description of the parameter.
-     *      @param [in] uuID            Id of the parameter.
-     */
+        *  Create a parameter used in the tests.
+        *
+        *      @param [in] name            Name of the parameter.
+        *      @param [in] value           Value of the parameter.
+        *      @param [in] description     Description of the parameter.
+        *      @param [in] uuID            Id of the parameter.
+        */
     QSharedPointer<Parameter> createTestParameter(QString const& name, QString const& value,
         QString const& description, QString const& uuID, QString const& arrayLeft, QString const& arrayRight);
 
     /*!
-     *  Create a port used in the tests.
-     *
-     *      @param [in] name            Name of the port.
-     *      @param [in] leftBound       The left bound of the port.
-     *      @param [in] rightBound      The right bound of the port.
-     *      @param [in] defaultValue    The default value of the port.
-     */
+        *  Create a port used in the tests.
+        *
+        *      @param [in] name            Name of the port.
+        *      @param [in] leftBound       The left bound of the port.
+        *      @param [in] rightBound      The right bound of the port.
+        *      @param [in] defaultValue    The default value of the port.
+        */
     QSharedPointer<Port> createTestPort(QString const& name, QString const& leftBound, QString const& rightBound,
         QString const& defaultValue, QString const& arrayLeft, QString const& arrayRight);
 
     /*!
-     *  Create a map for configurable element values.
-     *
-     *      @param [in] component   The component, whose configurable element values are being created.
-     */
+        *  Create a map for configurable element values.
+        *
+        *      @param [in] component   The component, whose configurable element values are being created.
+        */
     QList<QSharedPointer<ConfigurableElementValue> > createConfigurableElementvalues(QSharedPointer <Component> component);
 
     QSharedPointer<Field> createTestField(QString const& name, QString const& description, QString const& offset,
@@ -858,9 +858,33 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
 
 void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
 {
-    QSharedPointer<View> flatView(new View());
+    QSharedPointer<View> flatView(new View("testView"));
 
     topComponent_->getViews()->append(flatView);
+
+    VLNV firstVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "FirstComponent", "1.0");
+    QSharedPointer<ConfigurableVLNVReference> instanceVLNV(new ConfigurableVLNVReference(firstVlnv));
+    QSharedPointer<ComponentInstance> firstInstance(new ComponentInstance("firstInstance", instanceVLNV));
+
+    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv));
+
+    QList <QSharedPointer<Parameter> > componentParameters;
+
+    QSharedPointer<Parameter> targetParameter = createTestParameter("firstParameter", "10",
+        "", "ID_TARGET", "", "");
+
+    QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation());
+    componentInstantiation->setName("testInstantiation");
+    componentInstantiation->getParameters()->append(targetParameter);
+    componentInstantiation->setLanguage("C");
+    componentInstantiation->setLanguageStrictness(true);
+    componentInstantiation->setLibraryName("testLibrary");
+    componentInstantiation->setPackageName("testPackage");
+    componentInstantiation->setModuleName("testModuleName");
+
+
+    topComponent_->getComponentInstantiations()->append(componentInstantiation);
+    flatView->setComponentInstantiationRef("testInstantiation");
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -876,10 +900,25 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "## 0.1 Views <a id=\"" + topComponent_->getVlnv().toString() + "\">  \n"
+        "## 1.1 Views <a id=\"" + topComponent_->getVlnv().toString() + ".views\">  \n"
         "\n"
-        "### 0.1.1 View: " + flatView->name() + "  \n"
+        "### 1.1.1 View: testView  \n"
         "\n"
+        "#### 1.1.1.1 Component instantiation: testInstantiation  \n"
+        "\n"
+        "**Language:** C  \n"
+        "\n"
+        "**Library:** testLibrary  \n"
+        "\n"
+        "**Package:** testPackage  \n"
+        "\n"
+        "**Module name:** testModuleName  \n"
+        "\n"
+        "Parameters:  \n"
+        "\n"
+        "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|\n"
+        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|\n"
+        "|firstParameter||10|||||||\n"
     );
 
     checkOutputFile(expectedOutput);
