@@ -242,23 +242,6 @@ private:
     void writeSubHeader(unsigned const int& headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
 
     /*!
-     *  Write the port table for the selected ports.
-     *
-     *      @param [in] stream  The stream to write into.
-     *      @param [in] title   The title of the port table.
-     *      @param [in] ports   The selected ports.
-     */
-    void writePortTable(QTextStream& stream, QString const& title, QList <QSharedPointer <Port> > ports);
-
-    /*!
-     *  Write the details of a file
-     *
-     *      @param [in] file    Pointer to the file.
-     *      @param [in] stream  The text stream to write into.
-     */
-    void writeFile(QSharedPointer<File> file, QTextStream& stream);
-
-    /*!
      *  Write the selected view.
      *
      *      @param [in] stream              The text stream to write the view.
