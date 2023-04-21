@@ -1078,9 +1078,34 @@ void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
 //-----------------------------------------------------------------------------
 void tst_DocumentGenerator::testViewsWrittenForTopComponent()
 {
-    QSharedPointer<View> flatView(new View());
+    QSharedPointer<View> flatView(new View("testView"));
 
     topComponent_->getViews()->append(flatView);
+
+    VLNV firstVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "FirstComponent", "1.0");
+    QSharedPointer<ConfigurableVLNVReference> instanceVLNV(new ConfigurableVLNVReference(firstVlnv));
+    QSharedPointer<ComponentInstance> firstInstance(new ComponentInstance("firstInstance", instanceVLNV));
+
+    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv));
+
+    QList <QSharedPointer<Parameter> > componentParameters;
+
+    QSharedPointer<Parameter> targetParameter = createTestParameter("firstParameter", "10",
+        "", "ID_TARGET", "", "");
+
+    QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation());
+    componentInstantiation->setName("testInstantiation");
+    componentInstantiation->getParameters()->append(targetParameter);
+    componentInstantiation->setLanguage("C");
+    componentInstantiation->setLanguageStrictness(true);
+    componentInstantiation->setLibraryName("testLibrary");
+    componentInstantiation->setPackageName("testPackage");
+    componentInstantiation->setModuleName("testModuleName");
+
+
+    topComponent_->getComponentInstantiations()->append(componentInstantiation);
+    flatView->setComponentInstantiationRef("testInstantiation");
+    
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -1098,9 +1123,41 @@ void tst_DocumentGenerator::testViewsWrittenForTopComponent()
 
     QString expectedOutput(
         "\t\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".views\">1.1 Views</a></h2>\n"
-        "\t\t\t<h3>1.1.1 View: " + flatView->name() + "</h3>\n"
+        "\t\t\t<h3>1.1.1 View: testView</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t</p>"
+        "\t\t\t</p>\n"
+        "\t\t\t\t<h4>1.1.1.1 Component instantiation: testInstantiation</h4>\n"
+        "\t\t\t\t<p>\n"
+        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Language: </strong>C <strong>strict</strong><br>\n" 
+        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Library: </strong>testLibrary<br>\n" 
+        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Package: </strong>testPackage<br>\n" 
+        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Module name: </strong>testModuleName<br>\n" 
+        "\t\t\t\t</p>\n"
+        "\t\t\t\t<p>Parameters:</p>\n"
+        "\t\t\t\t<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\" title=\"Parameters of component instantiation testInstantiation\">\n"
+        "\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t<th>Name</th>\n"
+        "\t\t\t\t\t\t<th>Type</th>\n"
+        "\t\t\t\t\t\t<th>Value</th>\n"
+        "\t\t\t\t\t\t<th>Resolve</th>\n"
+        "\t\t\t\t\t\t<th>Bit vector left</th>\n"
+        "\t\t\t\t\t\t<th>Bit vector right</th>\n"
+        "\t\t\t\t\t\t<th>Array left</th>\n"
+        "\t\t\t\t\t\t<th>Array right</th>\n"
+        "\t\t\t\t\t\t<th>Description</th>\n"
+        "\t\t\t\t\t</tr>\n"
+        "\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t<td>firstParameter</td>\n"
+        "\t\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t\t<td>10</td>\n"
+        "\t\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t</tr>\n"
+        "\t\t\t\t</table>\n"
         );
 
     checkOutputFile(expectedOutput);
