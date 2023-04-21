@@ -561,9 +561,9 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setFilterSettings()
+// Function: DockWidgetHandler::loadFilterSettings()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::setFilterSettings(QSettings& settings)
+void DockWidgetHandler::loadFilterSettings(QSettings& settings)
 {
     Utils::FilterOptions filters;
     settings.beginGroup("LibraryFilters");
@@ -1227,12 +1227,10 @@ Utils::FilterOptions DockWidgetHandler::getLibraryFilters() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::createSettingsForNewWorkspace()
+// Function: DockWidgetHandler::saveVisibilitySettings()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::createVisibilityAndFilterSettings(QSettings& settings) const
+void DockWidgetHandler::saveVisibilitySettings(QSettings& settings) const
 {
-    Utils::FilterOptions filters = libraryWidget_->getFilters();
-
     settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
     settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
     settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
@@ -1248,7 +1246,14 @@ void DockWidgetHandler::createVisibilityAndFilterSettings(QSettings& settings) c
     settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
     settings.setValue("VendorExtensionVisibility", visibilities_.value(TabDocument::VENDOREXTENSIONWINDOW));
     settings.setValue("ScriptVisibility", visibilities_.value(TabDocument::SCRIPTWINDOW));
+}
 
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::saveFilterSettings()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::saveFilterSettings(QSettings& settings) const
+{
+    Utils::FilterOptions filters = libraryWidget_->getFilters();
     // Save filters.
     settings.beginGroup("LibraryFilters");
     settings.beginGroup("Type");

@@ -51,13 +51,6 @@ NewWorkspaceDialog::NewWorkspaceDialog(QWidget* parent) : QDialog(parent), nameE
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewWorkspaceDialog()
-//-----------------------------------------------------------------------------
-NewWorkspaceDialog::~NewWorkspaceDialog()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: name()
 //----------------------------------------------------------------------------- 
 QString NewWorkspaceDialog::name() const

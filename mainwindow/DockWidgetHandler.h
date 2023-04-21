@@ -95,7 +95,7 @@ public:
      *
      *      @param [in] settings    Settings containing the library filters.
      */
-    void setFilterSettings(QSettings& settings);
+    void loadFilterSettings(QSettings& settings);
 
     /*!
      *  Setup the visibility actions for the visibility menu.
@@ -226,11 +226,18 @@ public:
     Utils::FilterOptions getLibraryFilters() const;
 
     /*!
-     *  Create settings for dock widget visibility and filters.
+     *  Save settings for dock widget filters.
      *
      *      @param [in] settings    The settings.
      */
-    void createVisibilityAndFilterSettings(QSettings& settings) const;
+    void saveFilterSettings(QSettings& settings) const;
+
+    /*!
+     *  Save settings for dock widget visibilities.
+     *
+     *      @param [in] settings    The settings.
+     */
+    void saveVisibilitySettings(QSettings& settings) const;
 
     /*!
      *  Setup the design parameter finder.

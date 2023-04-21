@@ -15,9 +15,6 @@
 
 #include "VersionHelper.h"
 
-#include "NewWorkspaceDialog.h"
-#include "DeleteWorkspaceDialog.h"
-
 #include <mainwindow/DockWidgetHandler.h>
 #include <mainwindow/Ribbon/Ribbon.h>
 #include <mainwindow/Ribbon/RibbonGroup.h>
@@ -179,7 +176,7 @@ actionFilterUnconnectedMemoryItems_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
-curWorkspaceName_("Default"),
+workspace_(this, dockHandler_),
 messageChannel_(messageChannel)
 {    
     setWindowTitle(QCoreApplication::applicationName());
@@ -243,31 +240,7 @@ void MainWindow::onLibrarySearch()
 //-----------------------------------------------------------------------------
 void MainWindow::restoreSettings()
 {
-    QSettings settings;
-
-    // Load the active workspace.
-    curWorkspaceName_ = settings.value("Workspaces/CurrentWorkspace", QString("Default")).toString();
-    loadWorkspace(curWorkspaceName_);
-
-    // Create default workspaces if the workspaces registry group is not found.
-    settings.beginGroup("Workspaces");
-
-    if (settings.childGroups().empty())
-    {
-        settings.endGroup();
-
-        Utils::FilterOptions defaultOptions;
-        defaultOptions.type.advanced_ = false;
-
-        dockHandler_->setLibraryFilters(defaultOptions);
-
-        createNewWorkspace("Default");
-        createNewWorkspace("Design");
-    }
-    else
-    {
-        settings.endGroup();
-    }
+    workspace_.restoreSettings();
 
     // Update the workspace menu.
     updateWorkspaceMenu();
@@ -280,93 +253,7 @@ void MainWindow::restoreSettings()
 //-----------------------------------------------------------------------------
 void MainWindow::saveSettings()
 {
-    QSettings settings;
-
-    // Save the active workspace.
-    settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
-    saveWorkspace(curWorkspaceName_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::copyComponentEditorSettings()
-//-----------------------------------------------------------------------------
-void MainWindow::copyComponentEditorSettings(QString workspaceName)
-{
-    QSettings settings;
-
-    QString activeWorkspacePath = "Workspaces/" + curWorkspaceName_ + "/ComponentEditorFilters/";
-    QString newWorkspacePath = "Workspaces/" + workspaceName + "/ComponentEditorFilters/";
-
-    for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
-    {
-        KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
-        QString hwHierarchyName(KactusAttribute::hierarchyToString(val));
-
-        hwHierarchyName = "HW/" + hwHierarchyName;
-
-        for (QString const& name : ComponentEditor::getHwItemNames())
-        {
-            settings.setValue(newWorkspacePath + hwHierarchyName + "/" + name,
-                settings.value(activeWorkspacePath + hwHierarchyName + "/" + name).toBool());
-        }
-    }
-
-    activeWorkspacePath = activeWorkspacePath + "SW/";
-    newWorkspacePath = newWorkspacePath + "SW/";
-
-    for (QString const& itemName : ComponentEditor::getSwItemNames())
-    {
-        settings.setValue(newWorkspacePath + itemName, settings.value(activeWorkspacePath + itemName).toBool());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::createNewWorkspace()
-//-----------------------------------------------------------------------------
-void MainWindow::createNewWorkspace(QString workspaceName)
-{
-    QString workspacePath = "Workspaces/" + workspaceName;
-
-    QSettings settings;
-
-    // Save the geometry and state of windows.
-    settings.beginGroup(workspacePath);
-
-    settings.setValue("WindowState", saveState());
-    settings.setValue("Geometry", saveGeometry());
-    settings.setValue("WindowPosition", pos());
-
-    dockHandler_->createVisibilityAndFilterSettings(settings);
-
-    // Create the component editor filters.
-    settings.beginGroup("ComponentEditorFilters");
-    settings.beginGroup("HW");
-
-    for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
-    {
-        KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
-        QString hwHierarchyName(KactusAttribute::hierarchyToString(val));
-        settings.beginGroup(hwHierarchyName);
-
-        for (QString const& itemName : ComponentEditor::getHwItemNames())
-        {
-            settings.setValue(itemName, true);
-        }
-
-        settings.endGroup(); // hwHierarchyName
-    }
-
-    settings.endGroup(); // HW
-    settings.beginGroup("SW");
-
-    for (QString const& itemName : ComponentEditor::getSwItemNames())
-    {
-        settings.setValue(itemName, true);
-    }
-
-    settings.endGroup(); // SW
-    settings.endGroup(); // ComponentEditorFilters
-    settings.endGroup(); // Workspace/workspaceName
+    workspace_.saveSettings();
 }
 
 //-----------------------------------------------------------------------------
@@ -377,41 +264,34 @@ void MainWindow::updateWorkspaceMenu()
     // Create the workspace menu based on the settings.
     workspaceMenu_.clear();
 
-    QSettings settings;
-    settings.beginGroup("Workspaces");
+    QString currentWorkspace = workspace_.getCurrentWorkspace();
 
-    QStringList workspaceIDs = settings.childGroups();
     QActionGroup* workspaceGroup = new QActionGroup(this);
     workspaceGroup->setExclusive(true);
-
-    for (QString const& workspaceID : workspaceIDs)
+    for (QString const& workspaceName : workspace_.getWorkspaces())
     {
-        QString workspaceName = workspaceID;
-
         QAction* action = new QAction(workspaceName, this);
         action->setCheckable(true);
-        action->setChecked(curWorkspaceName_ == workspaceName);
+        action->setChecked(workspaceName == currentWorkspace);
 
         workspaceGroup->addAction(action);
         workspaceMenu_.addAction(action);
     }
 
-    settings.endGroup();
-
     connect(workspaceGroup, SIGNAL(triggered(QAction *)), this, SLOT(onWorkspaceChanged(QAction *)));
 
     // Add actions for creating and deleting new workspaces.
     QAction* addAction = new QAction(tr("New Workspace..."), this);
-    connect(addAction, SIGNAL(triggered()), this, SLOT(onNewWorkspace()), Qt::UniqueConnection);
+    connect(addAction, SIGNAL(triggered()), &workspace_, SLOT(onNewWorkspace()), Qt::UniqueConnection);
 
     QAction* deleteAction = new QAction(tr("Delete Workspace..."), this);
-    connect(deleteAction, SIGNAL(triggered()), this, SLOT(onDeleteWorkspace()), Qt::UniqueConnection);
+    connect(deleteAction, SIGNAL(triggered()), &workspace_, SLOT(onDeleteWorkspace()), Qt::UniqueConnection);
 
     workspaceMenu_.addSeparator();
     workspaceMenu_.addAction(addAction);
     workspaceMenu_.addAction(deleteAction);
 
-    actWorkspaces_->setText(curWorkspaceName_);
+    actWorkspaces_->setText(currentWorkspace);
 }
 
 //-----------------------------------------------------------------------------
@@ -419,58 +299,9 @@ void MainWindow::updateWorkspaceMenu()
 //-----------------------------------------------------------------------------
 void MainWindow::loadWorkspace(QString const& workspaceName)
 {
-    QSettings settings;
-
-    // Create the registry key name.
-    QString keyName = "Workspaces/" + workspaceName;
-    settings.beginGroup(keyName);
-
-    // Set the window to normal state (this fixed a weird error with window state).
-    setWindowState(Qt::WindowNoState);
-
-    if (settings.contains("WindowPosition"))
-    {
-        move(settings.value("WindowPosition").toPoint());
-    }
-
-    if (settings.contains("Geometry"))
-    {
-        restoreGeometry(settings.value("Geometry").toByteArray());
-    }
-
-    if (settings.contains("WindowState"))
-    {
-        restoreState(settings.value("WindowState").toByteArray());
-    }
-
-    dockHandler_->loadVisiblities(settings);
+    workspace_.loadWorkspace(workspaceName);
 
     updateWindows();
-
-    dockHandler_->setFilterSettings(settings);
-}
-
-//-----------------------------------------------------------------------------
-// Function: saveWorkspace()
-//-----------------------------------------------------------------------------
-void MainWindow::saveWorkspace(QString const& workspaceName)
-{
-    // Instance to save the settings.
-    QSettings settings;
-
-    // Create the registry group name.
-    QString keyName = "Workspaces/" + workspaceName;
-
-    // Save the geometry and state of windows.
-    settings.beginGroup(keyName);
-
-    settings.setValue("WindowState", saveState());
-    settings.setValue("Geometry", saveGeometry());
-    settings.setValue("WindowPosition", pos());
-
-    dockHandler_->createVisibilityAndFilterSettings(settings);
-
-    settings.endGroup(); // Workspaces/keyName
 }
 
 //-----------------------------------------------------------------------------
@@ -892,6 +723,8 @@ void MainWindow::setupMenus()
     workspacesGroup->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
     workspacesGroup->widgetForAction(actWorkspaces_)->installEventFilter(ribbon_);
+
+    connect(&workspace_, SIGNAL(updateWorkspaceMenu()), this, SLOT(updateWorkspaceMenu()), Qt::UniqueConnection);
 
     //! The "System" group.
     RibbonGroup* sysGroup = ribbon_->addGroup(tr("System"));
@@ -3417,74 +3250,14 @@ void MainWindow::openWorkspaceMenu()
 //-----------------------------------------------------------------------------
 void MainWindow::onWorkspaceChanged(QAction* action)
 {
-    saveWorkspace(curWorkspaceName_);
+    QString workspaceName = action->text();
 
-    curWorkspaceName_ = action->text();
+    workspace_.saveWorkspace(workspace_.getCurrentWorkspace());
+    loadWorkspace(workspaceName);
 
-    QSettings settings;
-    settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
-
-    loadWorkspace(curWorkspaceName_);
-
-    actWorkspaces_->setText(curWorkspaceName_);
+    actWorkspaces_->setText(workspaceName);
 
     designTabs_->applySettings();
-}
-
-//-----------------------------------------------------------------------------
-// Function: onNewWorkspace()
-//-----------------------------------------------------------------------------
-void MainWindow::onNewWorkspace()
-{
-    NewWorkspaceDialog saveDialog(this);
-
-    if (saveDialog.exec() == QDialog::Accepted)
-    {
-        saveWorkspace(curWorkspaceName_);
-
-        createNewWorkspace(saveDialog.name());
-        copyComponentEditorSettings(saveDialog.name());
-
-        saveWorkspace(saveDialog.name());
-        curWorkspaceName_ = saveDialog.name();
-
-        QSettings settings;
-        settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
-
-        updateWorkspaceMenu();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onDeleteWorkspace()
-//-----------------------------------------------------------------------------
-void MainWindow::onDeleteWorkspace()
-{
-    DeleteWorkspaceDialog saveDialog(this);
-
-    // Fill in the dialog with existing workspace names.
-    QSettings settings;
-    settings.beginGroup("Workspaces");
-
-    QStringList workspaces = settings.childGroups();
-
-    for (QString const& workspace : workspaces)
-    {
-        if (workspace != "Default" && workspace != curWorkspaceName_)
-        {
-            saveDialog.addWorkspaceName(workspace);
-        }
-    }
-
-    settings.endGroup();
-
-    // Execute the dialog.
-    if (saveDialog.exec() == QDialog::Accepted)
-    {
-        // Remove the workspace from the settings and update the workspace menu.
-        settings.remove("Workspaces/" + saveDialog.name());
-        updateWorkspaceMenu();
-    }
 }
 
 //-----------------------------------------------------------------------------

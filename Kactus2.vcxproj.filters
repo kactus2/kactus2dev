@@ -3172,6 +3172,9 @@
     <ClCompile Include="Plugins\common\CPUDetailRoutes.cpp">
       <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\WorkspaceSettings.cpp">
+      <Filter>Source Files\mainwindow</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5653,6 +5656,9 @@
     </QtMoc>
     <QtMoc Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.h">
       <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="mainwindow\WorkspaceSettings.h">
+      <Filter>Header Files\mainwindow</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

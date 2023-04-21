@@ -22,6 +22,8 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include "WorkspaceSettings.h"
+
 #include <QMainWindow>
 #include <QActionGroup>
 #include <QMenu>
@@ -421,16 +423,6 @@ private slots:
     void onWorkspaceChanged(QAction* action);
 
     /*!
-     *  Creates a new workspace, requesting a name for the workspace from the user using a dialog.
-     */
-    void onNewWorkspace();
-
-    /*!
-     *  Deletes a workspace, asking the user which workspace to delete using a dialog.
-     */
-    void onDeleteWorkspace();
-
-    /*!
      *  Handles the toggling of visibility controls.
      */
     void onVisibilityControlToggled(QAction*);
@@ -526,6 +518,11 @@ private slots:
      */
     void onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show);
 
+    /*!
+     *  Updates the workspace menu.
+     */
+    void updateWorkspaceMenu();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -558,38 +555,12 @@ private:
 	 */
 	void saveSettings();
 
-	/*!
-	 *  Copy the component editor settings from the current workspace.
-	 *
-	 *      @param [in] workspaceName   The name of the new workspace.
-	 */
-	void copyComponentEditorSettings(QString workspaceName);
-
-	/*!
-	 *  Creates a new workspace.
-	 *
-	 *      @param [in] workspaceName   The name of the new workspace.
-	 */
-	void createNewWorkspace(QString workspaceName);
-
-    /*!
-     *  Updates the workspace menu.
-     */
-    void updateWorkspaceMenu();
-
     /*!
      *  Restores the settings for the given workspace.
      *
      *      @param [in] workspaceName The name of the workspace.
      */
     void loadWorkspace(QString const& workspaceName);
-
-    /*!
-     *  Saves the settings for the given workspace.
-     *
-     *      @param [in] workspaceName The name of the workspace.
-     */
-    void saveWorkspace(QString const& workspaceName);
 
 	/*!
      *  Set up the actions in the tool bars
@@ -860,9 +831,9 @@ private:
     //! Menu which contains the actions for managing workspaces.
     QMenu workspaceMenu_;
 
-    //! The name of the currently active workspace.
-    QString curWorkspaceName_;
-    
+    //! Settings for workspaces.
+    WorkspaceSettings workspace_;
+
     MessageMediator* messageChannel_;
 };
 

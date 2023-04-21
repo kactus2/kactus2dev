@@ -199,6 +199,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
     ./Plugins/common/ConnectivityGraphUtilities.h \
+    ./Plugins/common/CPUDetailRoutes.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./library/LibraryInterface.h \
@@ -818,7 +819,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./Plugins/common/CPUDetailRoutes.h
+    ./mainwindow/WorkspaceSettings.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -985,6 +986,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
     ./Plugins/common/ConnectivityGraphUtilities.cpp \
+    ./Plugins/common/CPUDetailRoutes.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
     ./library/ItemExporter.cpp \
@@ -1543,5 +1545,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./Plugins/common/CPUDetailRoutes.cpp
+    ./mainwindow/WorkspaceSettings.cpp
 RESOURCES += kactus.qrc
