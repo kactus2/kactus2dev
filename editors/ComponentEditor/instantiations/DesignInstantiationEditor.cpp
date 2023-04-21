@@ -11,8 +11,6 @@
 
 #include "DesignInstantiationEditor.h"
 
-#include <mainwindow/mainwindow.h>
-
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
 #include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
@@ -29,6 +27,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 
 #include <QApplication>
+#include <QMainWindow>
 #include <QScrollArea>
 #include <QHBoxLayout>
 
@@ -45,14 +44,14 @@ designEditor_(0),
 elementEditor_(0),
 designParameterFinder_(new ListParameterFinder())
 {
-    // find the main window for VLNV editor.
-    QWidget* parentW = NULL;
-    foreach (QWidget* widget, QApplication::topLevelWidgets())
+    // find the main window for VLNV editor
+    QWidget* parentWindow = nullptr;
+    foreach(QWidget * widget, QApplication::topLevelWidgets())
     {
-        MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
+        QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
         if (mainWnd)
         {
-            parentW = mainWnd;
+            parentWindow = mainWnd;
             break;
         }
     }
@@ -75,7 +74,7 @@ designParameterFinder_(new ListParameterFinder())
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designParameterFinder_)), multiParser,
         designParameterParser, designParametersModel, this);
 
-    designEditor_ = new VLNVEditor(VLNV::DESIGN, libHandler, parentW, this);
+    designEditor_ = new VLNVEditor(VLNV::DESIGN, libHandler, parentWindow, this);
     designEditor_->setTitle(tr("Design reference"));
     designEditor_->setMandatory(true);
     designEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

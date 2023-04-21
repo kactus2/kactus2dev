@@ -14,13 +14,12 @@
 #include <KactusAPI/include/LibraryInterface.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
-#include <mainwindow/mainwindow.h>
-
-#include <QScrollArea>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QGridLayout>
 #include <QApplication>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QMainWindow>
+#include <QLabel>
+#include <QScrollArea>
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterfaceEditor::ApiInterfaceEditor()
@@ -41,18 +40,18 @@ ItemEditor(component, libHandler, parent),
     Q_ASSERT(libHandler != 0);
 
 	// find the main window for VLNV editor
-	QWidget* parentW = NULL;
+	QWidget* parentWindow = nullptr;
 	foreach (QWidget* widget, QApplication::topLevelWidgets())
     {
-		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
+		QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
 		if (mainWnd)
         {
-			parentW = mainWnd;
+			parentWindow = mainWnd;
 			break;
 		}
 	}
 
-	apiType_ = new VLNVEditor(VLNV::APIDEFINITION, libHandler, parentW, this);
+	apiType_ = new VLNVEditor(VLNV::APIDEFINITION, libHandler, parentWindow, this);
     
     // Set VLNV editor settings.
     apiType_->setTitle(tr("API definition"));
