@@ -837,7 +837,7 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
         "|vhdlSource|vcom|||\n"
         "#### 0.1.1.1 Files  \n"
         "\n"
-        "|File name|Logical name|Build command|Build Flags|Specified file types|Description|\n"
+        "|File name|Logical name|Build command|Build flags|Specified file types|Description|\n"
         "|:----|:----|:----|:----|:----|:----|\n"
         "|[" + testFile1->name() + "](" + testFile1PathFromDoc + ")"
             "|" + testFile1->getLogicalName() +
@@ -858,10 +858,101 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
 
 void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
 {
+    QSharedPointer<View> flatView(new View());
+
+    topComponent_->getViews()->append(flatView);
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+    QStringList pictureList;
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    generator->writeViews(stream, subHeaderNumber, pictureList);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "## 0.1 Views <a id=\"" + topComponent_->getVlnv().toString() + "\">  \n"
+        "\n"
+        "### 0.1.1 View: " + flatView->name() + "  \n"
+        "\n"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testDesignIsWritten()
 {
+    VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
+    QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVlnv));
+    library_.writeModelToFile("C:/Test/TestLibrary/TestDesign/1.0/TestDesign.1.0.xml", design);
+    library_.addComponent(design);
+
+    VLNV firstVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "FirstComponent", "1.0");
+    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv));
+
+    QList <QSharedPointer<Parameter> > componentParameters;
+
+    QSharedPointer<Parameter> targetParameter = createTestParameter("firstParameter", "10", "", "ID_TARGET", "",
+        "");
+    QSharedPointer<Parameter> referParameter = createTestParameter("referer", "ID_TARGET", "", "ID-REF", "", "");
+    componentParameters.append(targetParameter);
+    componentParameters.append(referParameter);
+
+    refComponent->getParameters()->append(componentParameters);
+
+    library_.addComponent(refComponent);
+
+    QSharedPointer<ConfigurableVLNVReference> instanceVLNV(new ConfigurableVLNVReference(firstVlnv));
+    QSharedPointer<ComponentInstance> firstInstance(new ComponentInstance("firstInstance", instanceVLNV));
+    firstInstance->getConfigurableElementValues()->append(createConfigurableElementvalues(refComponent));
+
+    design->getComponentInstances()->append(firstInstance);
+
+    QSharedPointer<View> hierarchicalView(new View);
+    hierarchicalView->setName("HierarchicalView");
+    hierarchicalView->setDesignInstantiationRef("design_instantiation");
+    
+    
+    topComponent_->getViews()->append(hierarchicalView);
+
+    QSharedPointer<DesignInstantiation> designInstantiation(new DesignInstantiation("design_instantiation"));
+    designInstantiation->setDesignReference(
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(designVlnv)));
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+    
+    topComponent_->getDesignInstantiations()->append(designInstantiation);
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+    QStringList files;
+
+    generator->writeViews(stream, subHeaderNumber, files);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "## 0.1 Views <a id=\"Test:TestLibrary:TestComponent:1.0.views\">  \n"
+        "\n"
+        "### 0.1.1 View: HierarchicalView  \n"
+        "\n"
+        "#### 0.1.1.1 Design instantiation: design_instantiation  \n"
+        "\n"
+        "**Design:** Test:TestLibrary:TestDesign:1.0  \n"
+        "**IP-Xact file:** [TestDesign.1.0.xml]()  \n"
+        "Diagram of design Test:TestLibrary:TestDesign:1.0:  \n"
+        "![View: HierarchicalView preview picture](Test.TestLibrary.TestComponent.1.0.HierarchicalView.png)  \n"
+    );
+
+    checkOutputFile(expectedOutput);
 }
 
 void tst_MarkdownGenerator::testEndOfDocumentWrittenForTopComponent()
