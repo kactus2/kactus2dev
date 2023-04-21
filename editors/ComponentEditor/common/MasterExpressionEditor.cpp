@@ -27,12 +27,11 @@ MasterExpressionEditor::MasterExpressionEditor(QSharedPointer<ParameterFinder> p
 nameCompleter_(new QCompleter(parentWidget)),
 parameterFinder_(parameterFinder),
 notSelectingText_(true),
-reservedWords_(),
-parentWidget_(parentWidget)
+reservedWords_()
 {
     reservedWords_ << "true" << "false";
 
-    nameCompleter_->setWidget(parentWidget_);
+    nameCompleter_->setWidget(parentWidget);
 }
 
 //-----------------------------------------------------------------------------
@@ -41,7 +40,6 @@ parentWidget_(parentWidget)
 void MasterExpressionEditor::setAppendingCompleter(QCompleter* completer)
 {
     nameCompleter_ = completer;
-    nameCompleter_->setWidget(parentWidget_);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,10 +123,6 @@ void MasterExpressionEditor::handleKeyPressEvent(QKeyEvent* keyEvent)
         {
             removeSelectionInExpression();
         }
-        if (removesLastCharacterOfWord(keyEvent))
-        {
-            removeTermUnderCursor();
-        }
         else if (removesOperatorBeforeWord(keyEvent))
         {
             removeOperatorBeforeCursorInExpression();
@@ -136,6 +130,10 @@ void MasterExpressionEditor::handleKeyPressEvent(QKeyEvent* keyEvent)
         else if (removesOperatorAfterCursor(keyEvent))
         {
             removeOperatorAfterCursorInExpression();
+        }
+        if (removesLastCharacterOfWord(keyEvent))
+        {
+            removeTermUnderCursor();
         }
     }
     else if (isWordDelimiter(keyEvent->text()))

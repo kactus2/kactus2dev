@@ -48,6 +48,7 @@ MasterExpressionEditor(parameterFinder, this)
 void ExpressionEditor::setAppendingCompleter(QCompleter* completer)
 {
     MasterExpressionEditor::setAppendingCompleter(completer);
+    completer->setWidget(this);
 
     connect(completer, SIGNAL(activated(QModelIndex const&)), this, SLOT(complete(QModelIndex const&)), Qt::UniqueConnection);
 }
@@ -259,7 +260,7 @@ void ExpressionEditor::setCompletedParameterName(QString const& parameterName)
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
     cursor.insertText(parameterName, colorFormat("darkGreen"));
 
-    cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::MoveAnchor);    
     setTextCursor(cursor);
 }
 

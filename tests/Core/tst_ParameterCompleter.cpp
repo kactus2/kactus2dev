@@ -13,9 +13,9 @@
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
-#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <KactusAPI/include/ParameterFinder.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 

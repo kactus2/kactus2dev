@@ -458,8 +458,6 @@ private:
     //! The list of the reserved words for this editor.
     QStringList reservedWords_;
 
-    //! The parent widget.
-    QWidget* parentWidget_;
 };
 
 #endif // MASTEREXPRESSIONEDITOR_H
