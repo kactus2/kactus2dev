@@ -341,7 +341,7 @@ void tst_MarkdownGenerator::testAttributesWrittenWithOnlyTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "## 0.1 Kactus2 attributes <a id=\"" + topComponent_->getVlnv().toString() + ".attributes\">  \n"
+        "## 1.1 Kactus2 attributes <a id=\"" + topComponent_->getVlnv().toString() + ".attributes\">  \n"
         "\n"
         "**Product hierarchy:** Flat  \n"
         "**Component implementation:** SW  \n"
@@ -377,7 +377,7 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
     QString vlnvString(topComponent_->getVlnv().toString());
 
     QString expectedOutput(
-        "## 0.2 General parameters <a id=\"" + vlnvString + ".parameters\">  \n"
+        "## 1.2 General parameters <a id=\"" + vlnvString + ".parameters\">  \n"
         "\n"
         "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|\n"
         "|:----|:----|:----|:----|:----|:----|:----|:----|:----|\n"
@@ -417,9 +417,9 @@ void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "## 0.1 Memory maps <a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">  \n"
+        "## 1.1 Memory maps <a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">  \n"
         "\n"
-        "### 0.1.1 " + memoryMap->name() + "  \n"
+        "### 1.1.1 " + memoryMap->name() + "  \n"
         "\n"
         "**Description:** " + memoryMap->description() + "  \n"
         "\n"
@@ -454,7 +454,7 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "### 0.1.1.1 " + testAddressBlock->name() + "  \n"
+        "### 1.1.1.1 " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -495,7 +495,7 @@ void tst_MarkdownGenerator::testExpressionsInAddressBlocks()
     targetFile.close();
 
     QString expectedOutput(
-        "### 0.1.1.1 " + testAddressBlock->name() + "  \n"
+        "### 1.1.1.1 " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -531,7 +531,7 @@ void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "### 0.1.1.1.1 " + testRegister->name() + "  \n"
+        "### 1.1.1.1.1 " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
@@ -628,13 +628,13 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
     QString vlnvString(topComponent_->getVlnv().toString());
 
     QString expectedOutput(
-        "## 0.1 Memory maps <a id=\"" + vlnvString + ".memoryMaps\">  \n"
+        "## 1.1 Memory maps <a id=\"" + vlnvString + ".memoryMaps\">  \n"
         "\n"
-        "### 0.1.1 " + testMemoryMap->name() + "  \n"
+        "### 1.1.1 " + testMemoryMap->name() + "  \n"
         "\n"
         "**Address unit bits (AUB):** " + testMemoryMap->getAddressUnitBits() + "  \n"
         "\n"
-        "### 0.1.1.1 " + testAddressBlock->name() + "  \n"
+        "### 1.1.1.1 " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -646,7 +646,7 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + testAddressBlock->getWidth() +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
         "|" + testAddressBlock->getVolatile() + "|\n"
-        "### 0.1.1.1.1 " + testRegister->name() + "  \n"
+        "### 1.1.1.1.1 " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
@@ -701,7 +701,7 @@ void tst_MarkdownGenerator::testPortsWrittenWithOnlyTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "## 0.1 Ports <a id=\"" + topComponent_->getVlnv().toString() + ".ports\">  \n"
+        "## 1.1 Ports <a id=\"" + topComponent_->getVlnv().toString() + ".ports\">  \n"
         "\n"
         "|Name|Direction|Left bound|Right bound|Port type|Type definition|Default value|"
         "Array left|Array right|Description|\n"
@@ -743,9 +743,9 @@ void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
     targetFile.close();
 
     QString expectedOutput(
-        "## 0.1 Bus interfaces <a id=\"" + topComponent_->getVlnv().toString() + ".interfaces\">  \n"
+        "## 1.1 Bus interfaces <a id=\"" + topComponent_->getVlnv().toString() + ".interfaces\">  \n"
         "\n"
-        "### 0.1.1 " + busInterface->name() + "  \n"
+        "### 1.1.1 " + busInterface->name() + "  \n"
         "\n"
         "**Interface mode:** " + General::interfaceMode2Str(busInterface->getInterfaceMode()) + "  \n"
         "**Ports used in this interface:** None  \n"
@@ -822,9 +822,9 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
     QString groups = testFileSet->getGroups()->join(", ");
 
     QString expectedOutput(
-        "## 0.1 File sets <a id=\"" + topComponent_->getVlnv().toString() + ".fileSets\">  \n"
+        "## 1.1 File sets <a id=\"" + topComponent_->getVlnv().toString() + ".fileSets\">  \n"
         "\n"
-        "### 0.1.1 " + testFileSet->name() + "  \n"
+        "### 1.1.1 " + testFileSet->name() + "  \n"
         "\n"
         "**Description:** " + testFileSet->description() + "  \n"
         "\n"
@@ -835,7 +835,7 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
         "|File type|Command|Flags|Replace default flags|\n"
         "|:----|:----|:----|:----|\n"
         "|vhdlSource|vcom|||\n"
-        "#### 0.1.1.1 Files  \n"
+        "#### 1.1.1.1 Files  \n"
         "\n"
         "|File name|Logical name|Build command|Build flags|Specified file types|Description|\n"
         "|:----|:----|:----|:----|:----|:----|\n"
