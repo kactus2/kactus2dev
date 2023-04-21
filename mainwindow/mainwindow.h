@@ -420,7 +420,7 @@ private slots:
     /*!
      *  Handles the situation when a workspace has been changed.
      */
-    void onWorkspaceChanged(QAction* action);
+    void onWorkspaceChanged(QString const& workspace);
 
     /*!
      *  Handles the toggling of visibility controls.

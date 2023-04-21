@@ -241,9 +241,8 @@ void MainWindow::onLibrarySearch()
 void MainWindow::restoreSettings()
 {
     workspace_.restoreSettings();
-
-    // Update the workspace menu.
     updateWorkspaceMenu();
+    actWorkspaces_->setText(workspace_.getCurrentWorkspace());
 
     dockHandler_->applySettings();
 }
@@ -261,37 +260,7 @@ void MainWindow::saveSettings()
 //-----------------------------------------------------------------------------
 void MainWindow::updateWorkspaceMenu()
 {
-    // Create the workspace menu based on the settings.
-    workspaceMenu_.clear();
-
-    QString currentWorkspace = workspace_.getCurrentWorkspace();
-
-    QActionGroup* workspaceGroup = new QActionGroup(this);
-    workspaceGroup->setExclusive(true);
-    for (QString const& workspaceName : workspace_.getWorkspaces())
-    {
-        QAction* action = new QAction(workspaceName, this);
-        action->setCheckable(true);
-        action->setChecked(workspaceName == currentWorkspace);
-
-        workspaceGroup->addAction(action);
-        workspaceMenu_.addAction(action);
-    }
-
-    connect(workspaceGroup, SIGNAL(triggered(QAction *)), this, SLOT(onWorkspaceChanged(QAction *)));
-
-    // Add actions for creating and deleting new workspaces.
-    QAction* addAction = new QAction(tr("New Workspace..."), this);
-    connect(addAction, SIGNAL(triggered()), &workspace_, SLOT(onNewWorkspace()), Qt::UniqueConnection);
-
-    QAction* deleteAction = new QAction(tr("Delete Workspace..."), this);
-    connect(deleteAction, SIGNAL(triggered()), &workspace_, SLOT(onDeleteWorkspace()), Qt::UniqueConnection);
-
-    workspaceMenu_.addSeparator();
-    workspaceMenu_.addAction(addAction);
-    workspaceMenu_.addAction(deleteAction);
-
-    actWorkspaces_->setText(currentWorkspace);
+    workspace_.updateWorkspaceMenu(&workspaceMenu_);
 }
 
 //-----------------------------------------------------------------------------
@@ -724,7 +693,9 @@ void MainWindow::setupMenus()
 
     workspacesGroup->widgetForAction(actWorkspaces_)->installEventFilter(ribbon_);
 
-    connect(&workspace_, SIGNAL(updateWorkspaceMenu()), this, SLOT(updateWorkspaceMenu()), Qt::UniqueConnection);
+    connect(&workspace_, SIGNAL(requestMenuUpdate()), this, SLOT(updateWorkspaceMenu()), Qt::UniqueConnection);
+    connect(&workspace_, SIGNAL(workspaceChanged(QString const&)), 
+        this, SLOT(onWorkspaceChanged(QString const&)), Qt::UniqueConnection);
 
     //! The "System" group.
     RibbonGroup* sysGroup = ribbon_->addGroup(tr("System"));
@@ -3248,14 +3219,9 @@ void MainWindow::openWorkspaceMenu()
 //-----------------------------------------------------------------------------
 // Function: MainWindow::onWorkspaceChanged()
 //-----------------------------------------------------------------------------
-void MainWindow::onWorkspaceChanged(QAction* action)
+void MainWindow::onWorkspaceChanged(QString const& workspace)
 {
-    QString workspaceName = action->text();
-
-    workspace_.saveWorkspace(workspace_.getCurrentWorkspace());
-    loadWorkspace(workspaceName);
-
-    actWorkspaces_->setText(workspaceName);
+    actWorkspaces_->setText(workspace);
 
     designTabs_->applySettings();
 }
