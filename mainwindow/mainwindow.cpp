@@ -195,6 +195,7 @@ messageChannel_(messageChannel)
         "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
         "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
         "QTableView::indicator:unchecked {image: none;}"
+        "QDockWidget::title {background-color: #A0C1E2; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
         "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     setStyleSheet(defaultStyleSheet);
 
@@ -2813,7 +2814,7 @@ void MainWindow::updateVisibilityControlMenu(TabDocument* document)
     {
         iter.next();
 
-        QAction* action = new QAction(tr(qPrintable(iter.key())), this);
+        QAction* action = new QAction(iter.key(), this);
         action->setCheckable(true);
         action->setChecked(iter.value());
 
