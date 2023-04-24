@@ -8,8 +8,11 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <QFileInfo>
 #include <QDateTime>
@@ -435,6 +438,46 @@ void MarkdownWriter::writeReferencedComponentInstantiation(QTextStream& stream, 
         instantiationFormatter.data());
 }
 
+void MarkdownWriter::writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
+    QSharedPointer<ListParameterFinder> configurationFinder,
+    QSharedPointer<DesignConfigurationInstantiation> instantiation,
+    QSharedPointer<ExpressionFormatter> instantiationFormatter)
+{
+    if (!instantiation->description().isEmpty())
+    {
+        writeDescription(stream, instantiation->description());
+    }
+    
+    QSharedPointer<ConfigurableVLNVReference> configurationVLNV = instantiation->getDesignConfigurationReference();
+
+    writeDocumentReference(stream, QString("Design configuration"), configurationVLNV);
+
+    if (configurationVLNV)
+    {
+        QSharedPointer<Document> configurationDocument = libraryHandler_->getModel(*configurationVLNV);
+        if (configurationDocument)
+        {
+            QSharedPointer<DesignConfiguration> configuration =
+                configurationDocument.dynamicCast<DesignConfiguration>();
+            if (configuration)
+            {
+                configurationFinder->setParameterList(configuration->getParameters());
+
+                QString header = QString("Parameters of the referenced design configuration %1:").
+                    arg(configurationVLNV->toString());
+                QSharedPointer<ExpressionFormatter> configurationFormatter(new ExpressionFormatter(configurationFinder));
+
+                writeParameterTable(stream, header, configuration->getParameters(), configurationFormatter.data());
+                writeConfigurableElementValues(stream,
+                    instantiation->getDesignConfigurationReference(), instantiationFormatter.data());
+            }
+        }
+    }
+
+    writeParameterTable(stream, QString("Design configuration instantiation parameters:"),
+        instantiation->getParameters(), instantiationFormatter.data());
+}
+
 void MarkdownWriter::writeTableRow(QTextStream& stream, QStringList const& cells) const
 {
     for (auto const& cell : cells)
@@ -652,5 +695,52 @@ void MarkdownWriter::writeParameterTable(QTextStream& stream, QString const& tab
         );
 
         writeTableRow(stream, paramCells);
+    }
+}
+
+void MarkdownWriter::writeDocumentReference(QTextStream& stream, QString const& documentType,
+    QSharedPointer<ConfigurableVLNVReference> vlnvReference)
+{
+    if (!vlnvReference)
+    {
+        return;
+    }
+
+    if (!libraryHandler_->getModelReadOnly(*vlnvReference.data()))
+    {
+        QString errorMsg(QObject::tr("VLNV: %1 was not found in library.").arg(vlnvReference->toString()));
+        writeErrorMessage(stream, errorMsg);
+        return;
+    }
+
+    stream << "**" << documentType << ":** " << vlnvReference->toString() << "  " << Qt::endl;
+
+    QFileInfo vlnvXMLInfo(libraryHandler_->getPath(*vlnvReference.data()));
+    QString relativeXmlPath = General::getRelativePath(getTargetPath(), vlnvXMLInfo.absoluteFilePath());
+
+    stream << "**IP-Xact file: [" << vlnvXMLInfo.fileName() << "](" << relativeXmlPath << ")  " << Qt::endl;
+}
+
+void MarkdownWriter::writeConfigurableElementValues(QTextStream& stream,
+    QSharedPointer<ConfigurableVLNVReference> vlnvReference, ExpressionFormatter* instantiationFormatter)
+{
+    if (!vlnvReference || !vlnvReference->getConfigurableElementValues() ||
+        vlnvReference->getConfigurableElementValues()->isEmpty())
+    {
+        return;
+    }
+
+    stream << "Configurable element values:  " << Qt::endl;
+
+    QStringList paramHeaders({ QStringLiteral("Name"), QStringLiteral("Value") });
+    writeTableHeader(stream, paramHeaders);
+
+    for (auto const& element : *vlnvReference->getConfigurableElementValues())
+    {
+        QStringList rowCells(QStringList()
+            << instantiationFormatter->formatReferringExpression(element->getReferenceId())
+            << instantiationFormatter->formatReferringExpression(element->getConfigurableValue())
+        );
+        writeTableRow(stream, rowCells);
     }
 }

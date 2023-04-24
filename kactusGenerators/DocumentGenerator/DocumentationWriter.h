@@ -23,6 +23,8 @@ class Field;
 class MemoryMap;
 class Parameter;
 class ComponentInstantiation;
+class ListParameterFinder;
+class DesignConfigurationInstantiation;
 
 using ParameterList = QSharedPointer<QList<QSharedPointer<Parameter> > >;
 
@@ -91,6 +93,11 @@ public:
         ParameterList moduleParameters,
         ParameterList parameters
     ) = 0;
+
+    virtual void writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
+        QSharedPointer<ListParameterFinder> configurationFinder,
+        QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter) = 0;
 
     void setTargetPath(QString const& path);
 

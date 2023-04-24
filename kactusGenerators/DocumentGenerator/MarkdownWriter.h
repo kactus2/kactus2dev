@@ -28,6 +28,7 @@ class ExpressionFormatter;
 class Port;
 class LibraryInterface;
 class ComponentInstantiation;
+class ListParameterFinder;
 
 class MarkdownWriter : public DocumentationWriter
 {
@@ -81,6 +82,12 @@ public:
         QSharedPointer<ExpressionFormatter> instantiationFormatter,
         QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) override;
+
+    void writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
+        QSharedPointer<ListParameterFinder> configurationFinder,
+        QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
+
 private:
 
 
@@ -119,6 +126,13 @@ private:
     void writeParameterTable(QTextStream& stream, QString const& tableHeading,
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         ExpressionFormatter* formatter);
+
+    void writeDocumentReference(QTextStream& stream, QString const& documentType,
+        QSharedPointer<ConfigurableVLNVReference> vlnvReference);
+
+    void writeConfigurableElementValues(QTextStream& stream,
+        QSharedPointer<ConfigurableVLNVReference> vlnvReference,
+        ExpressionFormatter* instantiationFormatter);
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;

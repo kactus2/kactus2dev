@@ -517,7 +517,16 @@ void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View
     if (!viewComponentInstantiationRef.isEmpty())
     {
         writeReferencedComponentInstantiation(stream,
-            view->getComponentInstantiationRef(), subHeaderNumber, viewNumber, instantiationNumber);
+            viewComponentInstantiationRef, subHeaderNumber, viewNumber, instantiationNumber);
+        instantiationNumber++;
+    }
+
+    QString viewDesignConfigurationInstantiationRef = view->getDesignConfigurationInstantiationRef();
+
+    if (!viewComponentInstantiationRef.isEmpty())
+    {
+        writeReferencedDesignConfigurationInstantiation(stream,
+           viewDesignConfigurationInstantiationRef, subHeaderNumber, viewNumber, instantiationNumber);
         instantiationNumber++;
     }
 }
@@ -559,8 +568,41 @@ void DocumentGenerator::writeReferencedComponentInstantiation(QTextStream& strea
     QString parameterToolTip = QString("Parameters of component instantiation ") + instantiation->name();
 
     writer_->writeReferencedComponentInstantiation(stream, instantiation, instantiationFormatter,
-       moduleParameters, parameters
-    );
+       moduleParameters, parameters);
+}
+
+void DocumentGenerator::writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
+    QString const& configurationReference, int const& subHeaderNumber, int const& viewNumber,
+    int const& instantiationNumber)
+{
+    writer_->writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, viewNumber, instantiationNumber }),
+        "Design configuration instantiation: " + configurationReference, 4);
+
+    QSharedPointer<DesignConfigurationInstantiation> instantiation =
+        getDesignConfigurationInstantiation(configurationReference);
+
+    if (!instantiation)
+    {
+        QString errorMessage(tr("Referenced design configuration instantiation %1 was not found.").
+            arg(configurationReference));
+        writer_->writeErrorMessage(stream, errorMessage);
+        return;
+    }
+    
+    QSharedPointer<ListParameterFinder> configurationInstantiationParameterFinder(new ListParameterFinder());
+    configurationInstantiationParameterFinder->setParameterList(instantiation->getParameters());
+
+    QSharedPointer<ListParameterFinder> configurationFinder(new ListParameterFinder());
+
+    QSharedPointer<MultipleParameterFinder> instantiationParameterFinder(new MultipleParameterFinder());
+    instantiationParameterFinder->addFinder(componentFinder_);
+    instantiationParameterFinder->addFinder(configurationInstantiationParameterFinder);
+    instantiationParameterFinder->addFinder(configurationFinder);
+
+    QSharedPointer<ExpressionFormatter> instantiationFormatter(new ExpressionFormatter(instantiationParameterFinder));
+
+    writer_->writeReferencedDesignConfigurationInstantiation(stream, configurationFinder,
+        instantiation, instantiationFormatter);
 }
 
 QSharedPointer<ComponentInstantiation> DocumentGenerator::getComponentInstantiation(QString const& instantiationReference) const
@@ -588,6 +630,20 @@ ParameterList DocumentGenerator::getModuleParametersAsParameters(
     }
 
     return newModuleParameters;
+}
+
+QSharedPointer<DesignConfigurationInstantiation> DocumentGenerator::getDesignConfigurationInstantiation(
+    QString const& instantiationReference) const
+{
+    for (auto const& instantiation : *component_->getDesignConfigurationInstantiations())
+    {
+        if (instantiation->name() == instantiationReference)
+        {
+           return instantiation;
+        }
+    }
+
+    return QSharedPointer<DesignConfigurationInstantiation>();
 }
 
 //-----------------------------------------------------------------------------

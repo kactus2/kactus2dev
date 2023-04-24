@@ -266,6 +266,20 @@ private:
         int const& subHeaderNumber, int const& viewNumber, int const& instantiationNumber);
 
     /*!
+     *  Write the referenced design configuration instantiation.
+     *
+     *      @param [in] instantiationTabs       Design configuration instantiation indentation in the file.
+     *      @param [in] stream                  Text stream to write the component instantiation.
+     *      @param [in] configurationReference  Name of the selected design configuration instantiation.
+     *      @param [in] subHeaderNumber         Number for the sub header.
+     *      @param [in] viewNumber              Number defining the selected view.
+     *      @param [in] instantiationNumber     Number defining the component instantiation.
+     */
+    void writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
+        QString const& configurationReference, int const& subHeaderNumber, int const& viewNumber,
+        int const& instantiationNumber);
+
+    /*!
      *  Get the referenced component instantiation.
      *
      *      @param [in] instantiationReference  Name of the selected component instantiation.
@@ -283,6 +297,14 @@ private:
      */
     QSharedPointer<QList<QSharedPointer<Parameter> > > getModuleParametersAsParameters(
         QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
+
+    /*!
+     *  Get the selected design configuration instantiation.
+     *
+     *      @param [in] instantiationReference  Name of the selected design configuration instantiation.
+     */
+    QSharedPointer<DesignConfigurationInstantiation> getDesignConfigurationInstantiation(
+        QString const& instantiationReference) const;
 
     /*!
      *  Parse the child items for the document generator.
