@@ -290,6 +290,24 @@ private:
         int const& subHeaderNumber, int const& viewNumber, int const& instantiationNumber);
 
     /*!
+        *  Write the design diagram referenced by the design instantiation or the design configuration.
+        *
+        *      @param [in] stream          Text stream to write the design diagram.
+        *      @param [in] viewTabs        Design diagram indentation in the file.
+        *      @param [in] view            View containing the design and design configuration references.
+        *      @param [in] pictureList     List of file names to add the pictures of the referenced designs to.
+        */
+    void writeDesign(QTextStream& stream, QSharedPointer<View> view, QStringList& pictureList);
+
+    /*!
+    *  Create a picture for the design
+    *
+    *      @param [in] pictureList     List of file names to add the path of the created picture to.
+    *      @param [in] viewName        Name of the view to create the design picture for.
+    */
+    void createDesignPicture(QStringList& pictureList, const QString& viewName);
+
+    /*!
      *  Get the selected design instantiation.
      *
      *      @param [in] designReference     Name of the selected design instantiation.
@@ -322,6 +340,25 @@ private:
      */
     QSharedPointer<DesignConfigurationInstantiation> getDesignConfigurationInstantiation(
         QString const& instantiationReference) const;
+
+    /*!
+        *  Get the design configuration referenced by the selected view.
+        *
+        *      @param [in] view    The selected view.
+        *
+        *      @return The design configuration referenced by the selected view.
+        */
+    QSharedPointer<DesignConfiguration> getDesignConfiguration(QSharedPointer<View> view) const;
+
+    /*!
+        *  Get the design referenced by the selected view.
+        *
+        *      @param [in] view    The selected view.
+        *
+        *      @return The design referenced by the selected view.
+        */
+    QSharedPointer<Design> getDesign(QSharedPointer<View> view, QSharedPointer<DesignConfiguration> configuration)
+        const;
 
     /*!
      *  Parse the child items for the document generator.
@@ -368,6 +405,9 @@ private:
 
     //! Document generator for component views.
     ViewDocumentGenerator* viewDocumentationGenerator_;
+
+    //! Factory for constructing design widgets used to create a picture of the design diagram.
+    DesignWidgetFactory* designWidgetFactory_;
 
     DocumentationWriter* writer_;
 

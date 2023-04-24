@@ -23,6 +23,10 @@
 #include <kactusGenerators/DocumentGenerator/HtmlWriter.h>
 
 #include <IPXACTmodels/Design/Design.h>
+#include <editors/common/DesignWidget.h>
+#include <editors/common/DesignWidgetFactory.h>
+#include <editors/common/DesignDiagram.h>
+
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/Parameter.h>
@@ -71,6 +75,7 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     component_(),
     componentNumber_(1),
     libraryHandler_(handler),
+    designWidgetFactory_(designWidgetFactory),
     componentFinder_(nullptr),
     viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
 {
@@ -515,31 +520,34 @@ void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View
     
     int instantiationNumber = 1;
 
-    QString viewComponentInstantiationRef = view->getComponentInstantiationRef();
     
-    if (!viewComponentInstantiationRef.isEmpty())
+    if (QString viewComponentInstantiationRef = view->getComponentInstantiationRef();
+        !viewComponentInstantiationRef.isEmpty())
     {
         writeReferencedComponentInstantiation(stream,
             viewComponentInstantiationRef, subHeaderNumber, viewNumber, instantiationNumber);
         instantiationNumber++;
     }
 
-    QString viewDesignConfigurationInstantiationRef = view->getDesignConfigurationInstantiationRef();
-
-    if (!viewComponentInstantiationRef.isEmpty())
+    if (QString viewDesignConfigurationInstantiationRef = view->getDesignConfigurationInstantiationRef();
+        !viewDesignConfigurationInstantiationRef.isEmpty())
     {
         writeReferencedDesignConfigurationInstantiation(stream,
            viewDesignConfigurationInstantiationRef, subHeaderNumber, viewNumber, instantiationNumber);
         instantiationNumber++;
     }
 
-    QString viewDesignInstantiationRef = view->getDesignInstantiationRef();
-
-    if (!viewDesignInstantiationRef.isEmpty())
+    if (QString viewDesignInstantiationRef = view->getDesignInstantiationRef();
+        !viewDesignInstantiationRef.isEmpty())
     {
-        writeReferencedDesignInstantiation(stream, view->getDesignInstantiationRef(),
+        writeReferencedDesignInstantiation(stream, viewDesignInstantiationRef,
             subHeaderNumber, viewNumber, instantiationNumber);
         instantiationNumber++;
+    }
+
+    if (view->isHierarchical())
+    {
+        writeDesign(stream, view, pictureList);
     }
 }
 
@@ -690,6 +698,70 @@ void DocumentGenerator::writeReferencedDesignInstantiation(QTextStream& stream,
     }
 }
 
+void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> view, QStringList& pictureList)
+{
+    QSharedPointer<DesignConfiguration> configuration = getDesignConfiguration(view);
+    QSharedPointer<Design> design = getDesign(view, configuration);
+
+    if (view->isHierarchical() && !design)
+    {
+        QString errorMessage = QString("Design reference %1 does not contain a valid design.").
+            arg(view->getDesignInstantiationRef());
+        writer_->writeErrorMessage(stream, errorMessage);
+        return;
+    }
+
+    createDesignPicture(pictureList, view->name());
+    // writer_->writeDiagram()
+    // writer_->writeDesignInstances()
+}
+
+void DocumentGenerator::createDesignPicture(QStringList& pictureList, const QString& viewName)
+{
+    DesignWidget* designWidget(designWidgetFactory_->makeHWDesignWidget());
+
+    QSharedPointer<Component> component = getComponent();
+
+    designWidget->hide();
+    designWidget->setDesign(component->getVlnv(), viewName);
+
+    QFileInfo htmlInfo(getTargetPath());
+    QString designPicPath = htmlInfo.absolutePath()
+        + QStringLiteral("/")
+        + component->getVlnv().toString(".")
+        + QStringLiteral(".")
+        + viewName
+        + QStringLiteral(".png");
+
+    QFile designPicFile(designPicPath);
+
+    if (designPicFile.exists())
+    {
+        designPicFile.remove();
+    }
+
+    // get the rect that bounds all items on box
+    QRectF boundingRect = designWidget->getDiagram()->itemsBoundingRect();
+    boundingRect.setHeight(boundingRect.height() + 2);
+    boundingRect.setWidth(boundingRect.width() + 2);
+
+    // set the size of the picture
+    QPixmap designPic(boundingRect.size().toSize());
+
+    // create the picture for the component
+    QPainter painter(&designPic);
+    painter.fillRect(designPic.rect(), QBrush(Qt::white));
+    designWidget->getDiagram()->render(&painter, designPic.rect(), boundingRect.toRect());
+    if (!designPic.save(&designPicFile, "PNG"))
+    {
+        emit errorMessage(tr("Could not save picture %1").arg(designPicPath));
+    }
+    else
+    {
+        pictureList.append(designPicPath);
+    }
+}
+
 QSharedPointer<DesignInstantiation> DocumentGenerator::getDesignInstantiation(QString const& designReference) const
 {
     for(auto const& instantiation : *component_->getDesignInstantiations())
@@ -742,6 +814,68 @@ QSharedPointer<DesignConfigurationInstantiation> DocumentGenerator::getDesignCon
     }
 
     return QSharedPointer<DesignConfigurationInstantiation>();
+}
+
+QSharedPointer<DesignConfiguration> DocumentGenerator::getDesignConfiguration(QSharedPointer<View> view) const
+{
+    QSharedPointer<DesignConfiguration> designConf(nullptr);
+
+    QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation =
+        getDesignConfigurationInstantiation(view->getDesignConfigurationInstantiationRef());
+    
+    if (!configurationInstantiation)
+    {
+        return designConf;
+    }
+
+    QSharedPointer<ConfigurableVLNVReference> configurationVLNV =
+        configurationInstantiation->getDesignConfigurationReference();
+    if (configurationVLNV)
+    {
+        QSharedPointer<Document> configurationDocument =
+            getLibraryHandler()->getModel(*configurationVLNV.data());
+        if (configurationDocument && configurationVLNV->getType() == VLNV::DESIGNCONFIGURATION)
+        {
+            designConf = configurationDocument.dynamicCast<DesignConfiguration>();
+        }
+    }
+
+    return designConf;
+}
+
+QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view, QSharedPointer<DesignConfiguration> configuration) const
+{
+    QSharedPointer<ConfigurableVLNVReference> designVLNV(nullptr);
+    if (!view->getDesignInstantiationRef().isEmpty())
+    {
+        QSharedPointer<DesignInstantiation> designInstantiation =
+            getDesignInstantiation(view->getDesignInstantiationRef());
+        if (designInstantiation)
+        {
+            designVLNV = designInstantiation->getDesignReference();
+        }
+    }
+
+    if (!designVLNV && configuration)
+    {
+        VLNV referenceVLNV = configuration->getDesignRef();
+        if (referenceVLNV.isValid() && referenceVLNV.getType() == VLNV::DESIGN)
+        {
+            designVLNV = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(referenceVLNV));
+        }
+    }
+
+    if (designVLNV)
+    {
+        QSharedPointer<Document> designDocument = getLibraryHandler()->getModel(*designVLNV.data());
+        if (designDocument && designVLNV->getType() == VLNV::DESIGN)
+        {
+            QSharedPointer<Design> design = designDocument.dynamicCast<Design>();
+            return design;
+        }
+    }
+
+    return QSharedPointer<Design>();
 }
 
 //-----------------------------------------------------------------------------
