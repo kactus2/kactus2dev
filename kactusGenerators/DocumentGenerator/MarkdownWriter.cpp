@@ -430,8 +430,8 @@ void MarkdownWriter::writeReferencedComponentInstantiation(QTextStream& stream, 
     }
 
     writeImplementationDetails(stream, instantiation);
-    //writeFileSetReferences(stream, instantiation);
-    //writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
+    writeFileSetReferences(stream, instantiation);
+    writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
     writeParameterTable(stream, QString("Module parameters:"),
         moduleParameters, instantiationFormatter.data());
     writeParameterTable(stream, QString("Parameters:"), parameters,
@@ -662,10 +662,47 @@ void MarkdownWriter::writeImplementationDetails(QTextStream& stream, QSharedPoin
 
 void MarkdownWriter::writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
 {
+    QStringList fileSetRefs = *instantiation->getFileSetReferences();
+
+    if (fileSetRefs.isEmpty())
+    {
+        return;
+    }
+
+    stream << "**File sets containend in this instantiation:**  " << Qt::endl;
+
+    for (auto const& fileSetRef : fileSetRefs)
+    {
+        // Link won't work until writeSubHeader is fixed
+        stream << "- [" << fileSetRef << "](#" << vlnvString_ << ".fileSet." << fileSetRef + ")  " << Qt::endl;
+    }
+
+    stream << Qt::endl;
 }
 
-void MarkdownWriter::writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation, ExpressionFormatter* formatter)
+void MarkdownWriter::writeFileBuildCommands(QTextStream& stream,
+    QSharedPointer<ComponentInstantiation> instantiation, ExpressionFormatter* formatter)
 {
+    if (instantiation->getDefaultFileBuilders()->isEmpty())
+    {
+        return;
+    }
+
+    stream << "**Default file build commands:**  " << Qt::endl << Qt::endl;
+
+    writeTableHeader(stream, DocumentationWriter::DEFAULT_FILE_BUILDER_HEADERS);
+
+    for (auto const& defaultBuilder : *instantiation->getDefaultFileBuilders())
+    {
+        QStringList builderCells(QStringList()
+            << defaultBuilder->getFileType()
+            << defaultBuilder->getCommand()
+            << defaultBuilder->getFlags()
+            << formatter->formatReferringExpression(defaultBuilder->getReplaceDefaultFlags())
+        );
+
+        writeTableRow(stream, builderCells);
+    }
 }
 
 void MarkdownWriter::writeParameterTable(QTextStream& stream, QString const& tableHeading,
