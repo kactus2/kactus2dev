@@ -72,7 +72,7 @@ public:
     void writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
         QString const& title, int level) const override;
 
-    void writeViewDescription(QTextStream& stream, QString const& description) override;
+    void writeDescription(QTextStream& stream, QString const& description) override;
     
     void writeErrorMessage(QTextStream& stream, QString const& message) override;
 
@@ -88,6 +88,14 @@ public:
         QSharedPointer<DesignConfigurationInstantiation> instantiation,
         QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
 
+    void writeReferencedDesignInstantiation(QTextStream& stream,
+        QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
+        ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
+        override;
+
+    void writeDocumentReference(QTextStream& stream, QString const& documentType,
+        QSharedPointer<ConfigurableVLNVReference> vlnvReference) override;
+
 private:
 
 
@@ -102,9 +110,6 @@ private:
 
     // Writes a port table for specified ports
     void writePortTable(QTextStream& stream, QList<QSharedPointer<Port> > ports) const;
-
-    // Writes a **Description:** <text> line
-    void writeDescription(QTextStream& stream, QString const& description) const;
 
     void writeFileSetGroupdIdentifiers(QTextStream& stream, QSharedPointer<FileSet> fileSet) const;
 
@@ -126,9 +131,6 @@ private:
     void writeParameterTable(QTextStream& stream, QString const& tableHeading,
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         ExpressionFormatter* formatter);
-
-    void writeDocumentReference(QTextStream& stream, QString const& documentType,
-        QSharedPointer<ConfigurableVLNVReference> vlnvReference);
 
     void writeConfigurableElementValues(QTextStream& stream,
         QSharedPointer<ConfigurableVLNVReference> vlnvReference,

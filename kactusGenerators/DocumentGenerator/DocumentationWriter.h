@@ -19,12 +19,14 @@
 class ExpressionFormatter;
 class AddressBlock;
 class Register;
+class Design;
 class Field;
 class MemoryMap;
 class Parameter;
 class ComponentInstantiation;
 class ListParameterFinder;
 class DesignConfigurationInstantiation;
+class ConfigurableVLNVReference;
 
 using ParameterList = QSharedPointer<QList<QSharedPointer<Parameter> > >;
 
@@ -82,9 +84,12 @@ public:
     virtual void writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
         QString const& title, int level) const = 0;
 
-    virtual void writeViewDescription(QTextStream& stream, QString const& description) = 0;
+    virtual void writeDescription(QTextStream& stream, QString const& description) = 0;
 
     virtual void writeErrorMessage(QTextStream& stream, QString const& message) = 0;
+
+    virtual void writeDocumentReference(QTextStream& stream, QString const& documentType,
+        QSharedPointer<ConfigurableVLNVReference> vlnvReference) = 0;
 
     virtual void writeReferencedComponentInstantiation(
         QTextStream& stream,
@@ -98,6 +103,10 @@ public:
         QSharedPointer<ListParameterFinder> configurationFinder,
         QSharedPointer<DesignConfigurationInstantiation> instantiation,
         QSharedPointer<ExpressionFormatter> instantiationFormatter) = 0;
+
+    virtual void writeReferencedDesignInstantiation(QTextStream& stream,
+        QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
+        ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter) = 0;
 
     void setTargetPath(QString const& path);
 

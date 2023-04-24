@@ -7,6 +7,7 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
@@ -402,14 +403,6 @@ void MarkdownWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHe
     stream << headerTag << headerTitle << "  " << Qt::endl << Qt::endl;
 }
 
-void MarkdownWriter::writeViewDescription(QTextStream& stream, QString const& description)
-{
-    if (!description.isEmpty())
-    {
-        writeDescription(stream, description);
-    }
-}
-
 void MarkdownWriter::writeErrorMessage(QTextStream& stream, QString const& message)
 {
     stream << "<span style=\"color:red\">" << message << "</span>  " << Qt::endl;
@@ -423,11 +416,6 @@ void MarkdownWriter::writeReferencedComponentInstantiation(QTextStream& stream, 
     QString moduleParameterToolTip = QString("Module parameters of component instantiation ") +
         instantiation->name();
     QString parameterToolTip = QString("Parameters of component instantiation ") + instantiation->name();
-
-    if (!instantiation->description().isEmpty())
-    {
-        writeDescription(stream, instantiation->description());
-    }
 
     writeImplementationDetails(stream, instantiation);
     writeFileSetReferences(stream, instantiation);
@@ -443,16 +431,7 @@ void MarkdownWriter::writeReferencedDesignConfigurationInstantiation(QTextStream
     QSharedPointer<DesignConfigurationInstantiation> instantiation,
     QSharedPointer<ExpressionFormatter> instantiationFormatter)
 {
-    if (!instantiation->description().isEmpty())
-    {
-        writeDescription(stream, instantiation->description());
-    }
-    
-    QSharedPointer<ConfigurableVLNVReference> configurationVLNV = instantiation->getDesignConfigurationReference();
-
-    writeDocumentReference(stream, QString("Design configuration"), configurationVLNV);
-
-    if (configurationVLNV)
+    if (auto const& configurationVLNV = instantiation->getDesignConfigurationReference(); configurationVLNV)
     {
         QSharedPointer<Document> configurationDocument = libraryHandler_->getModel(*configurationVLNV);
         if (configurationDocument)
@@ -476,6 +455,39 @@ void MarkdownWriter::writeReferencedDesignConfigurationInstantiation(QTextStream
 
     writeParameterTable(stream, QString("Design configuration instantiation parameters:"),
         instantiation->getParameters(), instantiationFormatter.data());
+}
+
+void MarkdownWriter::writeReferencedDesignInstantiation(QTextStream& stream, QSharedPointer<ConfigurableVLNVReference> designVLNV,
+    QSharedPointer<Design> instantiatedDesign, ExpressionFormatter* designFormatter,
+    QSharedPointer<ExpressionFormatter> instantiationFormatter)
+{
+    QString header = QString("Parameters of the referenced design %1:").arg(designVLNV->toString());
+    writeParameterTable(stream, header, instantiatedDesign->getParameters(), designFormatter);
+
+    writeConfigurableElementValues(stream, designVLNV, instantiationFormatter.data());
+}
+
+void MarkdownWriter::writeDocumentReference(QTextStream& stream, QString const& documentType,
+    QSharedPointer<ConfigurableVLNVReference> vlnvReference)
+{
+    if (!vlnvReference)
+    {
+        return;
+    }
+
+    if (!libraryHandler_->getModelReadOnly(*vlnvReference.data()))
+    {
+        QString errorMsg(QObject::tr("VLNV: %1 was not found in library.").arg(vlnvReference->toString()));
+        writeErrorMessage(stream, errorMsg);
+        return;
+    }
+
+    stream << "**" << documentType << ":** " << vlnvReference->toString() << "  " << Qt::endl;
+
+    QFileInfo vlnvXMLInfo(libraryHandler_->getPath(*vlnvReference.data()));
+    QString relativeXmlPath = General::getRelativePath(getTargetPath(), vlnvXMLInfo.absoluteFilePath());
+
+    stream << "**IP-Xact file: [" << vlnvXMLInfo.fileName() << "](" << relativeXmlPath << ")  " << Qt::endl;
 }
 
 void MarkdownWriter::writeTableRow(QTextStream& stream, QStringList const& cells) const
@@ -524,7 +536,7 @@ void MarkdownWriter::writePortTable(QTextStream& stream, QList<QSharedPointer<Po
     }
 }
 
-void MarkdownWriter::writeDescription(QTextStream& stream, QString const& description) const
+void MarkdownWriter::writeDescription(QTextStream& stream, QString const& description)
 {
     stream << "**Description:** " << description << "  " << Qt::endl << Qt::endl;
 }
@@ -733,29 +745,6 @@ void MarkdownWriter::writeParameterTable(QTextStream& stream, QString const& tab
 
         writeTableRow(stream, paramCells);
     }
-}
-
-void MarkdownWriter::writeDocumentReference(QTextStream& stream, QString const& documentType,
-    QSharedPointer<ConfigurableVLNVReference> vlnvReference)
-{
-    if (!vlnvReference)
-    {
-        return;
-    }
-
-    if (!libraryHandler_->getModelReadOnly(*vlnvReference.data()))
-    {
-        QString errorMsg(QObject::tr("VLNV: %1 was not found in library.").arg(vlnvReference->toString()));
-        writeErrorMessage(stream, errorMsg);
-        return;
-    }
-
-    stream << "**" << documentType << ":** " << vlnvReference->toString() << "  " << Qt::endl;
-
-    QFileInfo vlnvXMLInfo(libraryHandler_->getPath(*vlnvReference.data()));
-    QString relativeXmlPath = General::getRelativePath(getTargetPath(), vlnvXMLInfo.absoluteFilePath());
-
-    stream << "**IP-Xact file: [" << vlnvXMLInfo.fileName() << "](" << relativeXmlPath << ")  " << Qt::endl;
 }
 
 void MarkdownWriter::writeConfigurableElementValues(QTextStream& stream,
