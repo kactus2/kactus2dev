@@ -134,6 +134,7 @@
         <file>common/graphics/script-run-all.png</file>
         <file>common/graphics/script-run-file.png</file>
         <file>common/graphics/script-new.png</file>
+		<file>common/graphics/filter.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

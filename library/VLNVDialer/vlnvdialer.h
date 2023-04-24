@@ -20,6 +20,7 @@
 #include <KactusAPI/include/utils.h>
 
 #include <QWidget>
+#include <QGroupBox>
 #include <QPushButton>
 #include <QString>
 
@@ -44,6 +45,12 @@ public:
 	
 	//! The destructor
 	virtual ~VLNVDialer() = default;
+
+    //! No copying
+    VLNVDialer(VLNVDialer const& other) = delete;
+
+    //! No assignment
+    VLNVDialer& operator=(VLNVDialer const& other) = delete;
 
 	/*! Set the root item used to create the suggestions for dialer.
 	 *
@@ -113,11 +120,9 @@ private slots:
 	void onHideShowClick();
 
 private:
-	//! No copying
-	VLNVDialer(VLNVDialer const& other);
 
-	//! No assignment
-	VLNVDialer& operator=(VLNVDialer const& other);
+
+    void setupLayout();
 
 	//! Contains the items to set filters for search.
 	FilterWidget filters_;
@@ -128,11 +133,14 @@ private:
 	//! Button to hide/show filters.
 	QPushButton hideButton_;
 
+	//! Group box for tag filters.
+    QGroupBox tagGroup_;
+
     //! Tag filter.
     TagContainer* tagFilter_;
 
 	//! Contains the value to know if filters are currently hidden or visible
-	bool hidden_;
+	bool hideFilters_ = false;
 };
 
 #endif // VLNVDIALER_H

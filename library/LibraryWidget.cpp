@@ -444,8 +444,8 @@ void LibraryWidget::setupLayout()
     navigationTabs->addTab(hierarchyWidget_, tr("Hierarchy"));
 
     QVBoxLayout* containerLayout = new QVBoxLayout(this);
-    containerLayout->addWidget(dialer_, 0);
     containerLayout->addWidget(navigationTabs, 1);
+    containerLayout->addWidget(dialer_, 0);
     containerLayout->addWidget(statusBar_);
     containerLayout->setSpacing(0);
     containerLayout->setContentsMargins(0, 0, 0, 0);

@@ -11,7 +11,8 @@
 
 #include "vlnvdialer.h"
 
-#include <QVBoxLayout>
+#include <QLabel>
+#include <QGridLayout>
 #include <QIcon>
 #include <QSettings>
 
@@ -24,33 +25,16 @@ VLNVDialer::VLNVDialer(QWidget *parent):
 QWidget(parent),
 filters_(this),
 dialer_(this),
-hideButton_(QIcon(":/icons/common/graphics/triangle_arrow_up.png"), QString(), this),
-tagFilter_(new TagSelectorContainer(this)),
-hidden_(false)
+hideButton_(QIcon(":/icons/common/graphics/filter.png"), QString(), this),
+tagGroup_(tr("Tags"), this),
+tagFilter_(new TagSelectorContainer(this))
 {
-	// set visual options for the hide/show button
-	hideButton_.setFlat(true);
-	hideButton_.setMaximumHeight(10);
+    hideButton_.setFlat(true);
 
 	// check if the filters were visible or not previously
 	QSettings settings;
-	hidden_ = !settings.value("FilterWidget/Hidden", false).toBool();
+	hideFilters_ = !settings.value("FilterWidget/Hidden", false).toBool();
 	onHideShowClick();
-
-    QVBoxLayout* tagGroupLayout(new QVBoxLayout());
-    tagGroupLayout->addWidget(tagFilter_);
-
-    QGroupBox* tagGroup(new QGroupBox(QLatin1String("Tags"), this));
-    tagGroup->setLayout(tagGroupLayout);
-
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&filters_, 0);
-	layout->addWidget(&hideButton_, 0);
-    layout->addWidget(&dialer_, 0);
-    layout->addWidget(tagGroup, 1);
-
-	layout->setSpacing(0);
-	layout->setContentsMargins(4, 4, 4, 4);
 
 	connect(&hideButton_, SIGNAL(clicked(bool)), this, SLOT(onHideShowClick()), Qt::UniqueConnection);
 
@@ -74,6 +58,8 @@ hidden_(false)
     connect(&filters_, SIGNAL(optionsChanged(Utils::FilterOptions const&)),
         this, SIGNAL(filtersChanged(Utils::FilterOptions const&)), Qt::UniqueConnection);
     connect(tagFilter_, SIGNAL(contentChanged()), this, SLOT(onHandleTagFilterChange()), Qt::UniqueConnection);
+
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -122,20 +108,21 @@ void VLNVDialer::onHandleTagFilterChange()
 //-----------------------------------------------------------------------------
 void VLNVDialer::onHideShowClick()
 {
-	// if filters were hidden
-	if (hidden_)
-    {
-		hideButton_.setIcon(QIcon(":/icons/common/graphics/triangle_arrow_up.png"));
-	}
-	// if filters were visible
-	else
-    {
-		hideButton_.setIcon(QIcon(":/icons/common/graphics/triangle_arrow_down.png"));
-	}
+	hideFilters_ = !hideFilters_;
 
-	// change the hidden value
-	hidden_ = !hidden_;
-    filters_.setVisible(!hidden_);
+    filters_.setHidden(hideFilters_);
+    dialer_.setHidden(hideFilters_);
+    tagGroup_.setHidden(hideFilters_);
+
+    if (hideFilters_)
+    {
+        hideButton_.setToolTip(tr("Show filters"));
+    }
+    else
+    {
+        hideButton_.setToolTip(tr("Hide filters"));
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -144,6 +131,27 @@ void VLNVDialer::onHideShowClick()
 void VLNVDialer::closeEvent(QCloseEvent *event)
 {
     QSettings settings;
-    settings.setValue("FilterWidget/Hidden", hidden_);
+    settings.setValue("FilterWidget/Hidden", hideFilters_);
     QWidget::closeEvent(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::setupLayout()
+//-----------------------------------------------------------------------------
+void VLNVDialer::setupLayout()
+{
+    QVBoxLayout* tagGroupLayout(new QVBoxLayout());
+    tagGroupLayout->addWidget(tagFilter_);
+
+    tagGroup_.setLayout(tagGroupLayout);
+
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(new QLabel(tr("Library Filters"), this), 0, 0, 1, 1, Qt::AlignLeft);
+    layout->addWidget(&hideButton_, 0, 1, 1, 1, Qt::AlignRight);
+    layout->addWidget(&filters_, 1, 0, 1, 2);
+    layout->addWidget(&dialer_, 2, 0, 1, 2);
+    layout->addWidget(&tagGroup_, 3, 0, 1, 2);
+
+    layout->setSpacing(0);
+    layout->setContentsMargins(4, 4, 4, 4);
 }
