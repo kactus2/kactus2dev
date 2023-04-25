@@ -112,6 +112,7 @@
 #include <QDesktopServices>
 #include <QPainter>
 #include <QDateTime>
+#include <QStatusBar>
 
 //-----------------------------------------------------------------------------
 // Function: MainWindow::MainWindow()
@@ -121,7 +122,8 @@ QMainWindow(parent),
 libraryHandler_(library),
 designTabs_(0),
 dockHandler_(new DockWidgetHandler(library, messageChannel, this)),
-ribbon_(0),
+ribbon_(0), 
+statusBar_(new QStatusBar(this)),
 actNew_(0),
 actSave_(0),
 actSaveAs_(0),
@@ -204,6 +206,8 @@ messageChannel_(messageChannel)
     dockHandler_->setupDockWidgets();
     connectDockHandler();
     setupAndConnectLibraryHandler();
+
+    setStatusBar(statusBar_);
 
     // some actions need the editors so set them up before the actions
     setupActions();
@@ -754,6 +758,9 @@ void MainWindow::connectDockHandler()
         dockHandler_, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
     connect(dockHandler_, SIGNAL(designChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+
+    connect(dockHandler_, SIGNAL(statusMessage(QString const&)),
+        statusBar_, SLOT(showMessage(QString const&)));
 }
 
 //-----------------------------------------------------------------------------
@@ -761,13 +768,10 @@ void MainWindow::connectDockHandler()
 //-----------------------------------------------------------------------------
 void MainWindow::setupAndConnectLibraryHandler()
 {
-
     connect(libraryHandler_, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SLOT(openDesign(const VLNV&, const QString&)));
     connect(libraryHandler_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(openMemoryDesign(const VLNV&, const QString&)));
-
-
 
     connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -784,7 +788,8 @@ void MainWindow::setupAndConnectLibraryHandler()
     connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
         this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 
-
+    connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
+        this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

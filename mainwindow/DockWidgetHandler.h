@@ -272,6 +272,8 @@ signals:
      */
     void noticeMessage(QString const& message);
 
+    void statusMessage(QString const& message);
+
     /*!
      *  Transfers URL context help requirement between the main window and the message console.
      *

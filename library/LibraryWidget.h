@@ -110,6 +110,8 @@ signals:
     //! Signal that user wants to create a new system design for the given component.
     void createSystemDesign(VLNV const& vlnv);
 
+    void statusMessage(QString const& message);
+
 public slots:
 
     /*!
@@ -150,10 +152,6 @@ public slots:
 
     void onRemoveVLNV(const QList<VLNV>);
 
-private slots:
-
-    void statusMessage(QString const& message);
-
 private:
     //! No copying
     LibraryWidget(const LibraryWidget& other);
@@ -191,7 +189,6 @@ private:
     //! Widget for showing integrity report on-demand.
     TableViewDialog* integrityWidget_;
 
-    QStatusBar* statusBar_;
 
 };
 

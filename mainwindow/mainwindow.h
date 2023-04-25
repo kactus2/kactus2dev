@@ -665,6 +665,9 @@ private:
 
     Ribbon* ribbon_;
 
+
+    QStatusBar* statusBar_;
+
 	//! Create a new document in the IP-Xact library
 	QAction* actNew_;
 
