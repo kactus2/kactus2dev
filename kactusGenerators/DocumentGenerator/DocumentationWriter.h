@@ -58,6 +58,10 @@ public:
 
     virtual void writeHeader(QTextStream& stream) = 0;
 
+    virtual void writeComponentHeader(QTextStream& stream) = 0;
+
+    virtual void writeComponentInfo(QTextStream& stream) = 0;
+
     virtual void writeKactusAttributes(QTextStream& stream, int subHeaderNumber) = 0;
 
     virtual void writeTableOfContents(QTextStream& stream) = 0;

@@ -330,33 +330,12 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 {
     writer_->setTargetPath(targetPath);
 
-    QSharedPointer<Component> component = component_;
-
-    // write the component header
-    stream << "\t\t<h1><a id=\"" << component->getVlnv().toString() << "\">" << myNumber() << ". Component " <<
-        component->getVlnv().toString(" - ") << "</a></h1>" << Qt::endl;
+    // write the component header, picture and info
+    writer_->writeComponentHeader(stream);
 
     createComponentPicture(filesToInclude);
 
-    stream << "\t\t<p>" << Qt::endl;
-
-    stream << "\t\t<img src=\"" << component->getVlnv().toString(".") << ".png\" alt=\"" <<
-        component->getVlnv().toString(" - ") << " preview picture\"><br>" << Qt::endl;
-
-    // if component has description, write it
-    if (!component->getDescription().isEmpty())
-    {
-        stream << "\t\t<strong>Description:</strong> " << component->getDescription() << "<br>" << Qt::endl;
-    }
-
-    // print relative path to the xml file
-    QFileInfo compXmlInfo(libraryHandler_->getPath(component->getVlnv()));
-    QString relativeXmlPath = General::getRelativePath(getTargetPath(), compXmlInfo.absoluteFilePath());
-    stream << "\t\t<strong>IP-Xact file: </strong><a href=\"" << 
-        relativeXmlPath << "\">" << compXmlInfo.fileName() <<
-        "</a><br>" << Qt::endl;
-    
-    stream << "\t\t</p>" << Qt::endl;
+    writer_->writeComponentInfo(stream);
 
     int subHeaderNumber = 1;
 
@@ -369,7 +348,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
     writeViews(stream, subHeaderNumber, filesToInclude);
 
     // tell each child to write it's documentation
-    foreach (QSharedPointer<DocumentGenerator> generator, childInstances_)
+    for (auto const& generator : childInstances_)
     {
         generator->writeDocumentation(stream, targetPath, filesToInclude);
     }

@@ -47,6 +47,29 @@ void MarkdownWriter::writeHeader(QTextStream& stream)
         << "  " << Qt::endl << Qt::endl;
 }
 
+void MarkdownWriter::writeComponentHeader(QTextStream& stream)
+{
+    stream << "# " << componentNumber_ << ". Component " << vlnvString_ << "  " << Qt::endl << Qt::endl;
+}
+
+void MarkdownWriter::writeComponentInfo(QTextStream& stream)
+{
+    stream << "![Component " << component_->getVlnv().toString(".") << "]("
+        << component_->getVlnv().toString(".") << ".png)" << Qt::endl << Qt::endl;
+
+    if (auto const& description = component_->getDescription(); !description.isEmpty())
+    {
+        writeDescription(stream, description);
+    }
+    
+    // print relative path to the xml file
+    QFileInfo compXmlInfo(libraryHandler_->getPath(component_->getVlnv()));
+    QString relativeXmlPath = General::getRelativePath(getTargetPath(), compXmlInfo.absoluteFilePath());
+
+    stream << "**IP-Xact file:** " << "[" << compXmlInfo.fileName() << "](" << relativeXmlPath << ")  "
+        << Qt::endl << Qt::endl;
+}
+
 void MarkdownWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
 {
     writeSubHeader(stream, subHeaderNumber, "Kactus2 attributes", "attributes");

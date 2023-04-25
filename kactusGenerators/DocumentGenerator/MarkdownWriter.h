@@ -43,6 +43,10 @@ public:
 
     void writeHeader(QTextStream& stream) override;
 
+    void writeComponentHeader(QTextStream& stream) override;
+
+    void writeComponentInfo(QTextStream& stream) override;
+
     void writeKactusAttributes(QTextStream& stream, int subHeaderNumber) override;
 
     void writeTableOfContents(QTextStream& stream) override;
