@@ -146,8 +146,8 @@ void TypeGroup::setupLayout()
     layout->addWidget(&busBox_, 0, 0, 1, 1);
     layout->addWidget(&catalogBox_, 0, 1, 1, 1);
     layout->addWidget(&componentBox_, 0, 2, 1, 1);
-    layout->addWidget(&apiComBox_, 0, 3, 1, 1);
-    layout->addWidget(&advancedBox_, 0, 4, 1, 1);
+    layout->addWidget(&apiComBox_, 1, 0, 1, 1);
+    layout->addWidget(&advancedBox_, 1, 1, 1, 1);
     layout->setSpacing(0);
     layout->setColumnStretch(5, 1);
     layout->setContentsMargins(4, 4, 4, 4);
