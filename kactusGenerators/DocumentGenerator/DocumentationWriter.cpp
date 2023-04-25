@@ -90,7 +90,8 @@ const QStringList DocumentationWriter::DESIGN_INSTANCE_HEADERS = {
 
 DocumentationWriter::DocumentationWriter(ExpressionFormatter* formatter, ExpressionFormatterFactory* expressionFormatterFactory) :
     expressionFormatter_(formatter),
-    expressionFormatterFactory_(expressionFormatterFactory)
+    expressionFormatterFactory_(expressionFormatterFactory),
+    targetPath_()
 {
 }
 

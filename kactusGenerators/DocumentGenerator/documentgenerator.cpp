@@ -67,6 +67,7 @@
 //-----------------------------------------------------------------------------
 DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv,
     DesignWidgetFactory* designWidgetFactory, ExpressionFormatterFactory* expressionFormatterFactory,
+    DocumentFormat format,
     QWidget* parent) :
     GeneralDocumentGenerator(handler, expressionFormatterFactory, parent),
     expressionFormatterFactory_(expressionFormatterFactory),
@@ -78,6 +79,7 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     libraryHandler_(handler),
     designWidgetFactory_(designWidgetFactory),
     componentFinder_(nullptr),
+    currentFormat_(format),
     viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
 {
     Q_ASSERT(handler);
@@ -92,7 +94,7 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
         this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 
     // parse the model for the component
-    component_ = getLibraryHandler()->getModel(vlnv).dynamicCast<Component>();
+    component_ = libraryHandler_->getModel(vlnv).dynamicCast<Component>();
 
     componentFinder_ = QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(component_));
 
@@ -102,46 +104,59 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     }
     else
     {
-        expressionFormatter_ = createExpressionFormatter();
+        expressionFormatter_ = DocumentGenerator::createExpressionFormatter();
+
+        // set the document format and create document writer
+        setFormat(currentFormat_);
 
         // list of objects that have already been processed to avoid duplicates
         QList<VLNV> objects;
         objects.append(vlnv);
 
-        parseChildItems(objects);
+        // Component number
+        int currentComponentNumber = 1;
+
+        parseChildItems(objects, currentComponentNumber);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::DocumentGenerator()
 //-----------------------------------------------------------------------------
-DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects,
+DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects, DesignWidgetFactory* designWidgetFactory,
     ExpressionFormatterFactory* expressionFormatterFactory, ViewDocumentGenerator* viewDocumentationGenerator,
-    DocumentGenerator* parent):
+    DocumentGenerator* parent, int& currentComponentNumber, DocumentFormat format) :
 GeneralDocumentGenerator(handler, expressionFormatterFactory, parent),
 childInstances_(),
+libraryHandler_(handler),
 parentWidget_(NULL),
+expressionFormatterFactory_(expressionFormatterFactory),
 expressionFormatter_(),
+componentNumber_(currentComponentNumber),
+currentFormat_(format),
+designWidgetFactory_(designWidgetFactory),
 viewDocumentationGenerator_(viewDocumentationGenerator)
 {
-    Q_ASSERT(getLibraryHandler());
+    Q_ASSERT(libraryHandler_);
     Q_ASSERT(parent);
-    Q_ASSERT(getLibraryHandler()->contains(vlnv));
-    Q_ASSERT(getLibraryHandler()->getDocumentType(vlnv) == VLNV::COMPONENT);
+    Q_ASSERT(libraryHandler_->contains(vlnv));
+    Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
 
     connect(this, SIGNAL(errorMessage(const QString&)),
         parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(this, SIGNAL(noticeMessage(const QString&)),
         parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-    QSharedPointer<Document> libComp = getLibraryHandler()->getModel(vlnv);
+    QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
     component_ = libComp.staticCast<Component>();
 
     componentFinder_ = QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(component_));
 
-    expressionFormatter_ = createExpressionFormatter();
+    expressionFormatter_ = DocumentGenerator::createExpressionFormatter();
 
-    parseChildItems(objects);
+    setFormat(currentFormat_);
+
+    parseChildItems(objects, currentComponentNumber);
 }
 
 //-----------------------------------------------------------------------------
@@ -155,13 +170,13 @@ DocumentGenerator::~DocumentGenerator()
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::parseChildItems()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::parseChildItems( QList<VLNV>& objects )
+void DocumentGenerator::parseChildItems( QList<VLNV>& objects, int& currentComponentNumber)
 {
     // ask the component for it's hierarchical references
     QList<VLNV> refs = component_->getHierRefs();
     foreach (VLNV ref, refs)
     {
-        QSharedPointer<Design> design = getLibraryHandler()->getDesign(ref);
+        QSharedPointer<Design> design = libraryHandler_->getDesign(ref);
         if (!design)
         {
             continue;
@@ -170,14 +185,17 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects )
         foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
         {
             if (!objects.contains(*instance->getComponentRef()) &&
-                getLibraryHandler()->contains(*instance->getComponentRef()) &&
-                getLibraryHandler()->getDocumentType(*instance->getComponentRef()) == VLNV::COMPONENT)
+                libraryHandler_->contains(*instance->getComponentRef()) &&
+                libraryHandler_->getDocumentType(*instance->getComponentRef()) == VLNV::COMPONENT)
             {
                 // create a new instance of document generator and add it to child list
                 objects.append(*instance->getComponentRef());
-                QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(getLibraryHandler(),
-                    *instance->getComponentRef(), objects, getExpressionFormatterFactory(),
-                    viewDocumentationGenerator_, this));
+                
+                currentComponentNumber++;
+
+                QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(libraryHandler_,
+                    *instance->getComponentRef(), objects, designWidgetFactory_, expressionFormatterFactory_,
+                    viewDocumentationGenerator_, this, currentComponentNumber, currentFormat_));
                 childInstances_.append(docGenerator);
             }
         }
@@ -210,30 +228,26 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
         return;
     }
 
-    Q_ASSERT(getLibraryHandler()->contains(component_->getVlnv()));
-    Q_ASSERT(getLibraryHandler()->getDocumentType(component_->getVlnv()) == VLNV::COMPONENT);
+    Q_ASSERT(libraryHandler_->contains(component_->getVlnv()));
+    Q_ASSERT(libraryHandler_->getDocumentType(component_->getVlnv()) == VLNV::COMPONENT);
 
     // this function can only be called for the top document generator
     Q_ASSERT(parentWidget_);
 
-    setTargetPath(targetPath);
-
+    targetPath_ = targetPath;
     writeHeader(stream);
 
-    // create a running number to create the numbered headers for table of contents
-    unsigned int runningNumber = 0;
-
-    stream << "\t\t<p>" << Qt::endl;
+    /*stream << "\t\t<p>" << Qt::endl;
     stream << "\t\t<strong>Table of contents</strong><br>" << Qt::endl;
-    writeTableOfContents(stream);
-    stream << "\t\t</p>" << Qt::endl;
+    stream << "\t\t</p>" << Qt::endl;*/
 
+    writeTableOfContents(stream);
     QStringList pictureList;
 
     // write the actual documentation for the top component
-    writeDocumentation(stream, getTargetPath(), pictureList);
+    writeDocumentation(stream, targetPath_, pictureList);
 
-    writeEndOfDocument(stream);
+    //writeEndOfDocument(stream);
 
     QApplication::restoreOverrideCursor();
 
@@ -246,7 +260,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
     // if the generated file is saved
     if (button == QMessageBox::Yes)
     {
-        QString xmlPath = getLibraryHandler()->getPath(component_->getVlnv());
+        QString xmlPath = libraryHandler_->getPath(component_->getVlnv());
 
         // get the relative path to add to file set
         QString relativePath = General::getRelativePath(xmlPath, getTargetPath());
@@ -281,7 +295,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
             picFile->setDescription(tr("Preview picture needed by the html document."));
         }
 
-        getLibraryHandler()->writeModelToFile(component_);
+        libraryHandler_->writeModelToFile(component_);
     }
 }
 
@@ -336,7 +350,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
     }
 
     // print relative path to the xml file
-    QFileInfo compXmlInfo(getLibraryHandler()->getPath(component->getVlnv()));
+    QFileInfo compXmlInfo(libraryHandler_->getPath(component->getVlnv()));
     QString relativeXmlPath = General::getRelativePath(getTargetPath(), compXmlInfo.absoluteFilePath());
     stream << "\t\t<strong>IP-Xact file: </strong><a href=\"" << 
         relativeXmlPath << "\">" << compXmlInfo.fileName() <<
@@ -346,15 +360,13 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 
     int subHeaderNumber = 1;
 
-    viewDocumentationGenerator_->setComponent(component, myNumber(), getTargetPath());
-
     writeKactusAttributes(stream, subHeaderNumber);
     writeParameters(stream, subHeaderNumber);
     writeMemoryMaps(stream, subHeaderNumber);
     writePorts(stream, subHeaderNumber);
     writeInterfaces(stream, subHeaderNumber);
     writeFileSets(stream, subHeaderNumber);
-    viewDocumentationGenerator_->writeViews(stream, subHeaderNumber, filesToInclude);
+    writeViews(stream, subHeaderNumber, filesToInclude);
 
     // tell each child to write it's documentation
     foreach (QSharedPointer<DocumentGenerator> generator, childInstances_)
@@ -678,7 +690,7 @@ void DocumentGenerator::writeReferencedDesignInstantiation(QTextStream& stream,
     QSharedPointer<ExpressionFormatter> instantiationFormatter(new ExpressionFormatter(instantiationParameterFinder));
 
     QSharedPointer<Document> designDocument =
-        getLibraryHandler()->getModel(*instantiation->getDesignReference());
+        libraryHandler_->getModel(*instantiation->getDesignReference());
 
     if (!designDocument)
     {
@@ -838,7 +850,7 @@ QSharedPointer<DesignConfiguration> DocumentGenerator::getDesignConfiguration(QS
     if (configurationVLNV)
     {
         QSharedPointer<Document> configurationDocument =
-            getLibraryHandler()->getModel(*configurationVLNV.data());
+            libraryHandler_->getModel(*configurationVLNV.data());
         if (configurationDocument && configurationVLNV->getType() == VLNV::DESIGNCONFIGURATION)
         {
             designConf = configurationDocument.dynamicCast<DesignConfiguration>();
@@ -872,7 +884,7 @@ QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view, Q
 
     if (designVLNV)
     {
-        QSharedPointer<Document> designDocument = getLibraryHandler()->getModel(*designVLNV.data());
+        QSharedPointer<Document> designDocument = libraryHandler_->getModel(*designVLNV.data());
         if (designDocument && designVLNV->getType() == VLNV::DESIGN)
         {
             QSharedPointer<Design> design = designDocument.dynamicCast<Design>();
@@ -890,12 +902,12 @@ void DocumentGenerator::createComponentPicture(QStringList& pictureList)
 {
     QSharedPointer<Component> component = component_;
 
-    ComponentPreviewBox compBox(getLibraryHandler());
+    ComponentPreviewBox compBox(libraryHandler_);
     compBox.hide();
     compBox.setComponent(component);
 
-    QFileInfo htmlInfo(getTargetPath());
-    QString compPicPath = htmlInfo.absolutePath(); 
+    QFileInfo docInfo(targetPath_);
+    QString compPicPath = docInfo.absolutePath();
     compPicPath += "/";
     compPicPath += component->getVlnv().toString(".");
     compPicPath += ".png";

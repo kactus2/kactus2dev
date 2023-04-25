@@ -47,6 +47,11 @@ class DocumentGenerator : public GeneralDocumentGenerator
     Q_OBJECT
 
 public:
+    enum DocumentFormat
+    {
+        HTML,
+        MD
+    };
 
     /*!
      *  The constructor.
@@ -58,7 +63,7 @@ public:
      *      @param [in] parent                      The parent widget of the generator.
      */
     DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, DesignWidgetFactory* designWidgetFactory,
-        ExpressionFormatterFactory* expressionFormatterFactory, QWidget* parent);
+        ExpressionFormatterFactory* expressionFormatterFactory, DocumentFormat format, QWidget* parent);
 
     /*!
      *  The constructor for child generators.
@@ -70,20 +75,16 @@ public:
      *      @param [in] viewDocumentationGenerator  Generates documentation for views and instantiations.
      *      @param [in] parent                      The parent generator.
      */
-    DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects,
+    DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects, DesignWidgetFactory* designWidgetFactory,
         ExpressionFormatterFactory* expressionFormatterFactory, ViewDocumentGenerator* viewDocumentationGenerator,
-        DocumentGenerator* parent);
+        DocumentGenerator* parent, int& currentComponentNumber, DocumentFormat format);
     
     /*!
      *  The destructor
      */
     virtual ~DocumentGenerator();
     
-    enum DocumentFormat
-    {
-        HTML,
-        MD
-    };
+    
 
     /*!
      *  Set the document format
@@ -367,7 +368,7 @@ private:
      *      @param [in] objects     List of objects that have already been parsed so there won't be duplicate
      *                              components in the generated document.
      */
-    void parseChildItems(QList<VLNV>& objects);
+    void parseChildItems(QList<VLNV>& objects, int& currentComponentNumber);
 
     /*!
      *  Create a picture for the component.
@@ -413,6 +414,8 @@ private:
     DocumentationWriter* writer_;
 
     QSharedPointer<ComponentParameterFinder> componentFinder_;
+
+    DocumentFormat currentFormat_;
 };
 
 #endif // DOCUMENTGENERATOR_H
