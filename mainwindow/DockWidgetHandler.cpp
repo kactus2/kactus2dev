@@ -334,7 +334,8 @@ void DockWidgetHandler::setupDesignParametersEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::applySettings()
 {
-    scriptConsole_->applySettings();
+    QSettings settings;
+    //scriptConsole_->applySettings(settings);
 }
 
 //-----------------------------------------------------------------------------
@@ -475,7 +476,7 @@ void DockWidgetHandler::setupConnectionEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupConsole()
 {
-    scriptConsoleDock_ = new QDockWidget(tr("Script"), mainWindow_);
+    /*scriptConsoleDock_ = new QDockWidget(tr("Script"), mainWindow_);
     scriptConsoleDock_->setObjectName(tr("Python console"));
     scriptConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | 
         Qt::BottomDockWidgetArea);
@@ -485,7 +486,7 @@ void DockWidgetHandler::setupConsole()
     scriptConsole_ = new PythonSourceEditor(scriptConsoleDock_);
     scriptConsoleDock_->setWidget(scriptConsole_);
 
-    mainWindow_->addDockWidget(Qt::RightDockWidgetArea, scriptConsoleDock_);
+    mainWindow_->addDockWidget(Qt::RightDockWidgetArea, scriptConsoleDock_);*/
 }
 
 //-----------------------------------------------------------------------------
@@ -563,7 +564,7 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
 
     const bool consoleVisible = settings.value("ScriptVisibility", true).toBool();
     visibilities_.insert(TabDocument::SCRIPTWINDOW, consoleVisible);
-    scriptConsoleDock_->toggleViewAction()->setChecked(consoleVisible);
+    //scriptConsoleDock_->toggleViewAction()->setChecked(consoleVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -619,7 +620,7 @@ void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu) const
     visibilityMenu.addAction(libraryDock_->toggleViewAction());
     visibilityMenu.addAction(interfaceDock_->toggleViewAction());
     visibilityMenu.addAction(consoleDock_->toggleViewAction());
-    visibilityMenu.addAction(scriptConsoleDock_->toggleViewAction());
+    //visibilityMenu.addAction(scriptConsoleDock_->toggleViewAction());
     visibilityMenu.addAction(extensionDock_->toggleViewAction());
 }
 
@@ -776,7 +777,7 @@ void DockWidgetHandler::updateWindows(int const& tabCount, QWidget* currentTabWi
         tabCount, currentTabWidget, TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::ADHOC_WINDOW, adhocDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::VENDOREXTENSIONWINDOW, extensionDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::SCRIPTWINDOW, scriptConsoleDock_);
+    //updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::SCRIPTWINDOW, scriptConsoleDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -978,8 +979,8 @@ void DockWidgetHandler::connectVisibilityControls()
         this, SLOT(onAdHocEditorAction(bool)), Qt::UniqueConnection);
     connect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)), Qt::UniqueConnection);
-    connect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onScriptConsoleVisibilityAction(bool)), Qt::UniqueConnection);
+    /*connect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        this, SLOT(onScriptConsoleVisibilityAction(bool)), Qt::UniqueConnection);*/
 }
 
 //-----------------------------------------------------------------------------
@@ -1005,8 +1006,8 @@ void DockWidgetHandler::disconnectVisibilityControls()
     disconnect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
     disconnect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
         this, SLOT(onVendorExtensionVisibilityAction(bool)));
-    disconnect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onScriptConsoleVisibilityAction(bool)));
+   // disconnect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+   //     this, SLOT(onScriptConsoleVisibilityAction(bool)));
 }
 
 //-----------------------------------------------------------------------------

@@ -33,7 +33,7 @@
 // Function: PythonSourceEditor::PythonSourceEditor()
 //-----------------------------------------------------------------------------
 PythonSourceEditor::PythonSourceEditor(QWidget* parent):
-    QWidget(parent),
+    TabDocument(parent),
     outputChannel_(this),
     errorChannel_(this),
     tabs_(this),
@@ -80,10 +80,8 @@ PythonSourceEditor::~PythonSourceEditor()
 //-----------------------------------------------------------------------------
 // Function: PythonSourceEditor::applySettings()
 //-----------------------------------------------------------------------------
-void PythonSourceEditor::applySettings()
+void PythonSourceEditor::applySettings(QSettings& settings)
 {
-    QSettings settings;
-
     // Read font settings.
     QFont font = settings.value("Editor/Font", QFont("Consolas", 10)).value<QFont>();
     scriptView_.setFont(font);
@@ -105,6 +103,56 @@ void PythonSourceEditor::applySettings()
     }
 
     highlighter_.rehighlight();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV PythonSourceEditor::getIdentifyingVLNV() const
+{
+    return VLNV();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::refresh()
+//-----------------------------------------------------------------------------
+void PythonSourceEditor::refresh()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::getEditProvider()
+//-----------------------------------------------------------------------------
+QSharedPointer<IEditProvider> PythonSourceEditor::getEditProvider() const
+{
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::getSupportedWindows()
+//-----------------------------------------------------------------------------
+unsigned int PythonSourceEditor::getSupportedWindows() const
+{
+    return (OUTPUTWINDOW | PREVIEWWINDOW | LIBRARYWINDOW | CONTEXT_HELP_WINDOW);  
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::save()
+//-----------------------------------------------------------------------------
+bool PythonSourceEditor::save()
+{
+    onSaveAction();
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonSourceEditor::saveAs()
+//-----------------------------------------------------------------------------
+bool PythonSourceEditor::saveAs()
+{
+    onSaveAsAction();
+    return true;
 }
 
 //-----------------------------------------------------------------------------

@@ -28,12 +28,14 @@
 
 #include <Plugins/common/LanguageHighlighter.h>
 
+#include <common/widgets/tabDocument/TabDocument.h>
+
 class PythonInterpreter;
 
 //-----------------------------------------------------------------------------
 //! Widget for Python scripting.
 //-----------------------------------------------------------------------------
-class PythonSourceEditor : public QWidget
+class PythonSourceEditor : public TabDocument
 {
     Q_OBJECT
 public:
@@ -51,7 +53,27 @@ public:
     virtual ~PythonSourceEditor();
 
     //! Apply the application settings.
-    void applySettings();
+    void applySettings(QSettings& settings) override;
+
+
+    VLNV getIdentifyingVLNV() const override;
+
+
+    void refresh() override;
+
+
+    QSharedPointer<IEditProvider> getEditProvider() const override;
+
+
+    unsigned int getSupportedWindows() const override;
+
+
+    bool save() override;
+
+
+    bool saveAs() override;
+
+
 
 signals:
     

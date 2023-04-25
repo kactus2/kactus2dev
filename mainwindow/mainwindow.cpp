@@ -218,6 +218,9 @@ messageChannel_(messageChannel)
     // don't display empty editors
     updateWindows();
 
+    designTabs_->addTab(new PythonSourceEditor(this), tr("Script"));
+
+
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 }
@@ -742,6 +745,7 @@ void MainWindow::setupDrawBoard()
         dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(designTabs_, SIGNAL(noticeMessage(const QString&)),
         dockHandler_, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
