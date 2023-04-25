@@ -213,7 +213,7 @@ void tst_MarkdownGenerator::testInvalidVlnvInConstructor()
     VLNV invalidVlnv(VLNV::COMPONENT, "invalid", "library", "component", "0");
     
     DocumentGenerator generator(&library_, invalidVlnv, &designWidgetFactory_,
-        &expressionFormatterFactory_, generatorParentWidget_);
+        &expressionFormatterFactory_, DocumentGenerator::MD, generatorParentWidget_);
     
     QSignalSpy spy(&generator, SIGNAL(errorMessage(QString const&)));
     
@@ -379,18 +379,18 @@ void tst_MarkdownGenerator::testParametersWrittenWithOnlyTopComponent()
     QString expectedOutput(
         "## 1.2 General parameters <a id=\"" + vlnvString + ".parameters\">  \n"
         "\n"
-        "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|\n"
-        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|\n"
+        "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|  \n"
+        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|  \n"
         "|" + parameter->name() + "|" + parameter->getType() + "|" +
             parameter->getValue() + "|" + parameter->getValueResolve()  + "|" +
             parameter->getVectorLeft() + "|" + parameter->getVectorRight() + "|" +
             parameter->getArrayLeft() + "|" + parameter->getArrayRight() + "|" +
-            parameter->description() + "|\n"
+            parameter->description() + "|  \n"
         "|" + refParameter->name() + "|" + "" + "|" +
             "parameter" + "|" + "" + "|" +
             "" + "|" + "" + "|" +
             "" + "|" + "" + "|" +
-            refParameter->description() + "|\n"
+            refParameter->description() + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -458,14 +458,14 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
-        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|\n"
-        "|:----|:----|:----|:----|:----|:----|\n" +
+        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n" +
         "|" + General::usage2Str(testAddressBlock->getUsage()) +
         "|" + testAddressBlock->getBaseAddress() +
         "|" + testAddressBlock->getRange() +
         "|" + testAddressBlock->getWidth() +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
-        "|" + testAddressBlock->getVolatile() + "|\n"
+        "|" + testAddressBlock->getVolatile() + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -499,14 +499,14 @@ void tst_MarkdownGenerator::testExpressionsInAddressBlocks()
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
-        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|\n"
-        "|:----|:----|:----|:----|:----|:----|\n" +
+        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n" +
         "|" + General::usage2Str(testAddressBlock->getUsage()) +
         "|" + "'h0" +
         "|" + "target" +
         "|" + "target + 2" +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
-        "|" + testAddressBlock->getVolatile() + "|\n"
+        "|" + testAddressBlock->getVolatile() + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -535,13 +535,13 @@ void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
-        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|\n"
-        "|:----|:----|:----|:----|:----|\n"
+        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|  \n"
         "|" + testRegister->getAddressOffset() +
         "|" + testRegister->getSize() +
         "|" + testRegister->getDimension() +
         "|" + testRegister->getVolatile() +
-        "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|\n"
+        "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -573,8 +573,8 @@ void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
     QString expectedOutput(
         "#### Register " + fieldRegister->name() + " contains the following fields:  \n"
         "\n"
-        "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|\n"
-        "|:----|:----|:----|:----|:----|:----|:----|\n"
+        "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|  \n"
+        "|:----|:----|:----|:----|:----|:----|:----|  \n"
         "|" + testField->name() + " <a id=\"" + topComponent_->getVlnv().toString() + 
             ".field." + testField->name() + "\">"
         "|" + testField->getBitOffset() +
@@ -582,7 +582,7 @@ void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
         "|" + testField->getVolatile().toString() +
         "|" + AccessTypes::access2Str(testField->getAccess()) +
         "|" + "HARD : testReset" +
-        "|" + testField->description() + "|\n"
+        "|" + testField->description() + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -638,29 +638,29 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
-        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|\n"
-        "|:----|:----|:----|:----|:----|:----|\n"
+        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n"
         "|" + General::usage2Str(testAddressBlock->getUsage()) +
         "|" + testAddressBlock->getBaseAddress() +
         "|" + testAddressBlock->getRange() +
         "|" + testAddressBlock->getWidth() +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
-        "|" + testAddressBlock->getVolatile() + "|\n"
+        "|" + testAddressBlock->getVolatile() + "|  \n"
         "### 1.1.1.1.1 " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
-        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|\n"
-        "|:----|:----|:----|:----|:----|\n"
+        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|  \n"
         "|" + testRegister->getAddressOffset() +
         "|" + testRegister->getSize() +
         "|" + testRegister->getDimension() +
         "|" + testRegister->getVolatile() +
-        "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|\n"
+        "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
         "#### Register " + testRegister->name() + " contains the following fields:  \n"
         "\n"
-        "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|\n"
-        "|:----|:----|:----|:----|:----|:----|:----|\n"
+        "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|  \n"
+        "|:----|:----|:----|:----|:----|:----|:----|  \n"
         "|" + testField->name() + " <a id=\"" + topComponent_->getVlnv().toString() +
         ".field." + testField->name() + "\">"
         "|" + testField->getBitOffset() +
@@ -668,7 +668,7 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + testField->getVolatile().toString() +
         "|" + AccessTypes::access2Str(testField->getAccess()) +
         "|" + "HARD : 8'h3" +
-        "|" + testField->description() + "|\n"
+        "|" + testField->description() + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -704,8 +704,8 @@ void tst_MarkdownGenerator::testPortsWrittenWithOnlyTopComponent()
         "## 1.1 Ports <a id=\"" + topComponent_->getVlnv().toString() + ".ports\">  \n"
         "\n"
         "|Name|Direction|Left bound|Right bound|Port type|Type definition|Default value|"
-        "Array left|Array right|Description|\n"
-        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|\n"
+        "Array left|Array right|Description|  \n"
+        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|  \n"
         "|" + portRef->name() + " <a id=\"" + topComponent_->getVlnv().toString() + ".port."
         + portRef->name() + "\">" +
         "|" + DirectionTypes::direction2Str(portRef->getDirection()) +
@@ -716,7 +716,7 @@ void tst_MarkdownGenerator::testPortsWrittenWithOnlyTopComponent()
         "|" + "parameter" +
         "|" + portRef->getArrayLeft() +
         "|" + "parameter" +
-        "|" + portRef->description() + "|\n"
+        "|" + portRef->description() + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -832,25 +832,25 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
         "\n"
         "**Default file builders:**  \n"
         "\n"
-        "|File type|Command|Flags|Replace default flags|\n"
-        "|:----|:----|:----|:----|\n"
-        "|vhdlSource|vcom|||\n"
+        "|File type|Command|Flags|Replace default flags|  \n"
+        "|:----|:----|:----|:----|  \n"
+        "|vhdlSource|vcom|||  \n"
         "#### 1.1.1.1 Files  \n"
         "\n"
-        "|File name|Logical name|Build command|Build flags|Specified file types|Description|\n"
-        "|:----|:----|:----|:----|:----|:----|\n"
+        "|File name|Logical name|Build command|Build flags|Specified file types|Description|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n"
         "|[" + testFile1->name() + "](" + testFile1PathFromDoc + ")"
             "|" + testFile1->getLogicalName() +
             "|" + testFile1->getBuildCommand()->getCommand() +
             "|" + testFile1->getBuildCommand()->getFlags() +
             "|" + testFile1->getFileTypes()->join(",<br>") +
-            "|" + testFile1->getDescription() + "|\n"
+            "|" + testFile1->getDescription() + "|  \n"
         "|[" + testFile2->name() + "](" + testFile2PathFromDoc + ")"
             "|" + testFile2->getLogicalName() +
             "|" + testFile2->getBuildCommand()->getCommand() +
             "|" + testFile2->getBuildCommand()->getFlags() +
             "|" + testFile2->getFileTypes()->join(",<br>") +
-            "|" + testFile2->getDescription() + "|\n"
+            "|" + testFile2->getDescription() + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -875,13 +875,13 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
 
     QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation());
     componentInstantiation->setName("testInstantiation");
-    componentInstantiation->getParameters()->append(targetParameter);
     componentInstantiation->setLanguage("C");
     componentInstantiation->setLanguageStrictness(true);
     componentInstantiation->setLibraryName("testLibrary");
     componentInstantiation->setPackageName("testPackage");
     componentInstantiation->setModuleName("testModuleName");
 
+    componentInstantiation->getParameters()->append(targetParameter);
 
     topComponent_->getComponentInstantiations()->append(componentInstantiation);
     flatView->setComponentInstantiationRef("testInstantiation");
@@ -916,9 +916,9 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
         "\n"
         "Parameters:  \n"
         "\n"
-        "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|\n"
-        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|\n"
-        "|firstParameter||10|||||||\n"
+        "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|  \n"
+        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|  \n"
+        "|firstParameter||10|||||||  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -977,13 +977,13 @@ void tst_MarkdownGenerator::testDesignIsWritten()
     generator->writeViews(stream, subHeaderNumber, files);
 
     targetFile.close();
-
+    targetFile.copy("OUTPUT.md");
     QString expectedOutput(
-        "## 0.1 Views <a id=\"Test:TestLibrary:TestComponent:1.0.views\">  \n"
+        "## 1.1 Views <a id=\"Test:TestLibrary:TestComponent:1.0.views\">  \n"
         "\n"
-        "### 0.1.1 View: HierarchicalView  \n"
+        "### 1.1.1 View: HierarchicalView  \n"
         "\n"
-        "#### 0.1.1.1 Design instantiation: design_instantiation  \n"
+        "#### 1.1.1.1 Design instantiation: design_instantiation  \n"
         "\n"
         "**Design:** Test:TestLibrary:TestDesign:1.0  \n"
         "**IP-Xact file:** [TestDesign.1.0.xml]()  \n"
@@ -1004,7 +1004,7 @@ DocumentGenerator* tst_MarkdownGenerator::createTestGenerator()
     library_.addComponent(topComponent_);
 
     DocumentGenerator* generator(new DocumentGenerator(&library_, topComponentVlnv_, &designWidgetFactory_,
-        &expressionFormatterFactory_, generatorParentWidget_));
+        &expressionFormatterFactory_, DocumentGenerator::MD, generatorParentWidget_));
 
     generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     return generator;
@@ -1083,7 +1083,20 @@ QSharedPointer<Port> tst_MarkdownGenerator::createTestPort(QString const& name, 
 
 QList<QSharedPointer<ConfigurableElementValue>> tst_MarkdownGenerator::createConfigurableElementvalues(QSharedPointer<Component> component)
 {
-    return QList<QSharedPointer<ConfigurableElementValue>>();
+    ExpressionFormatter* refExpressionFormatter = expressionFormatterFactory_.makeExpressionFormatter(component);
+
+    QList<QSharedPointer<ConfigurableElementValue> > instanceConfigurableElementValues;
+
+    foreach(QSharedPointer<Parameter> parameter, *component->getParameters())
+    {
+        instanceConfigurableElementValues.append(QSharedPointer<ConfigurableElementValue>(
+            new ConfigurableElementValue(refExpressionFormatter->formatReferringExpression(parameter->getValue()), parameter->name())));
+    }
+
+    delete refExpressionFormatter;
+    refExpressionFormatter = nullptr;
+
+    return instanceConfigurableElementValues;
 }
 
 QSharedPointer<Field> tst_MarkdownGenerator::createTestField(QString const& name, QString const& description, QString const& offset, QString const& width)
