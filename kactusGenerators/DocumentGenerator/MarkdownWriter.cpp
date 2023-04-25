@@ -568,7 +568,7 @@ void MarkdownWriter::writeTableRow(QTextStream& stream, QStringList const& cells
         stream << "|" << cell;
     }
 
-    stream << "|" << Qt::endl;
+    stream << "|  " << Qt::endl;
 }
 
 void MarkdownWriter::writeTableSeparator(QTextStream& stream, int columns) const
@@ -816,6 +816,8 @@ void MarkdownWriter::writeParameterTable(QTextStream& stream, QString const& tab
 
         writeTableRow(stream, paramCells);
     }
+
+    stream << Qt::endl;
 }
 
 void MarkdownWriter::writeConfigurableElementValues(QTextStream& stream,
@@ -827,7 +829,7 @@ void MarkdownWriter::writeConfigurableElementValues(QTextStream& stream,
         return;
     }
 
-    stream << "Configurable element values:  " << Qt::endl;
+    stream << "Configurable element values:  " << Qt::endl << Qt::endl;
 
     QStringList paramHeaders({ QStringLiteral("Name"), QStringLiteral("Value") });
     writeTableHeader(stream, paramHeaders);
@@ -840,6 +842,8 @@ void MarkdownWriter::writeConfigurableElementValues(QTextStream& stream,
         );
         writeTableRow(stream, rowCells);
     }
+
+    stream << Qt::endl;
 }
 
 QString MarkdownWriter::getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance, QSharedPointer<Design> design)
