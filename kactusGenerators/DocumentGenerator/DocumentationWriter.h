@@ -108,6 +108,8 @@ public:
         QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
         ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter) = 0;
 
+    virtual void writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText) = 0;
+
     void setTargetPath(QString const& path);
 
     QString getTargetPath() const;

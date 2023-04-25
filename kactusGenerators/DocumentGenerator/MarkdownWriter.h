@@ -96,6 +96,9 @@ public:
     void writeDocumentReference(QTextStream& stream, QString const& documentType,
         QSharedPointer<ConfigurableVLNVReference> vlnvReference) override;
 
+    void writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText)
+        override;
+
 private:
 
 

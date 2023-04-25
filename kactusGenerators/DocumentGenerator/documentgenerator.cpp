@@ -23,6 +23,7 @@
 #include <kactusGenerators/DocumentGenerator/HtmlWriter.h>
 
 #include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <editors/common/DesignWidget.h>
 #include <editors/common/DesignWidgetFactory.h>
 #include <editors/common/DesignDiagram.h>
@@ -711,27 +712,31 @@ void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> vi
         return;
     }
 
-    createDesignPicture(pictureList, view->name());
-    // writer_->writeDiagram()
+    QFileInfo documentInfo(targetPath_);
+    QString documentPath = documentInfo.absolutePath();
+
+    QString designPicPath = documentPath
+        + (documentPath.isEmpty() ? QStringLiteral("") : QStringLiteral("/"))
+        + component_->getVlnv().toString(".")
+        + QStringLiteral(".")
+        + view->name()
+        + QStringLiteral(".png");
+
+    createDesignPicture(pictureList, view->name(), designPicPath);
+
+    QString designDiagramTitle = QString("Diagram of design %1:").arg(design->getVlnv().toString());
+    QString designDiagramAltText = QString("View: %1 preview picture").arg(view->name());
+
+    writer_->writeDiagram(stream, designDiagramTitle, designPicPath, designDiagramAltText);
     // writer_->writeDesignInstances()
 }
 
-void DocumentGenerator::createDesignPicture(QStringList& pictureList, const QString& viewName)
+void DocumentGenerator::createDesignPicture(QStringList& pictureList, QString const& viewName, QString const& designPicPath)
 {
     DesignWidget* designWidget(designWidgetFactory_->makeHWDesignWidget());
 
-    QSharedPointer<Component> component = getComponent();
-
     designWidget->hide();
-    designWidget->setDesign(component->getVlnv(), viewName);
-
-    QFileInfo htmlInfo(getTargetPath());
-    QString designPicPath = htmlInfo.absolutePath()
-        + QStringLiteral("/")
-        + component->getVlnv().toString(".")
-        + QStringLiteral(".")
-        + viewName
-        + QStringLiteral(".png");
+    designWidget->setDesign(component_->getVlnv(), viewName);
 
     QFile designPicFile(designPicPath);
 

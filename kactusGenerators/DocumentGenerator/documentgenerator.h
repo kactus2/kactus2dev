@@ -23,6 +23,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
 
@@ -305,7 +306,7 @@ private:
     *      @param [in] pictureList     List of file names to add the path of the created picture to.
     *      @param [in] viewName        Name of the view to create the design picture for.
     */
-    void createDesignPicture(QStringList& pictureList, const QString& viewName);
+    void createDesignPicture(QStringList& pictureList, QString const& viewName, QString const& designPicPath);
 
     /*!
      *  Get the selected design instantiation.

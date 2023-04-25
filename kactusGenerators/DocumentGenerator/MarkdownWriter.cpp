@@ -487,7 +487,14 @@ void MarkdownWriter::writeDocumentReference(QTextStream& stream, QString const& 
     QFileInfo vlnvXMLInfo(libraryHandler_->getPath(*vlnvReference.data()));
     QString relativeXmlPath = General::getRelativePath(getTargetPath(), vlnvXMLInfo.absoluteFilePath());
 
-    stream << "**IP-Xact file: [" << vlnvXMLInfo.fileName() << "](" << relativeXmlPath << ")  " << Qt::endl;
+    stream << "**IP-Xact file:** [" << vlnvXMLInfo.fileName() << "](" << relativeXmlPath << ")  " << Qt::endl;
+}
+
+void MarkdownWriter::writeDiagram(QTextStream& stream, QString const& title,
+    QString const& link,QString const& altText)
+{
+    stream << title << "  " << Qt::endl;
+    stream << "![" << altText << "](" << link << ")  " << Qt::endl << Qt::endl;
 }
 
 void MarkdownWriter::writeTableRow(QTextStream& stream, QStringList const& cells) const
