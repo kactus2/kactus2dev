@@ -19,22 +19,30 @@
 // Function: HierarchyGroup::HierarchyGroup()
 //-----------------------------------------------------------------------------
 HierarchyGroup::HierarchyGroup(QWidget *parent):
-QGroupBox(tr("Product Hierarchy"), parent),
-flatBox_(tr("Flat"), this),
-productBox_(tr("Product"), this),
-boardBox_(tr("Board"), this),
-chipBox_(tr("Chip"), this),
-socBox_(tr("SoC"), this),
-ipBox_(tr("IP"), this),
+	FilterGroup(tr("Product Hierarchy"), parent),
+flatBox_(QIcon(":icons/common/graphics/square.png"), QString(), this),
+productBox_(QIcon(":icons/common/graphics/box.png"), QString(), this),
+boardBox_(QIcon(":icons/common/graphics/circuit.png"), QString(), this),
+chipBox_(QIcon(":icons/common/graphics/chip.png"), QString(), this),
+socBox_(QIcon(":icons/common/graphics/soc.png"), QString(), this),
+ipBox_(QIcon(":icons/common/graphics/capacitor.png"), QString(), this),
 options_()
 {
+    setupButton(&flatBox_, tr("Flat"));
+    setupButton(&productBox_, tr("Product"));
+    setupButton(&boardBox_, tr("Board"));
+    setupButton(&chipBox_, tr("Chip"));
+    setupButton(&socBox_, tr("SoC"));
+	setupButton(&ipBox_, tr("IP"));
+
 	QGridLayout* layout = new QGridLayout(this);
-	layout->addWidget(&flatBox_, 0, 0, 1, 1);
-	layout->addWidget(&productBox_, 0, 1, 1, 1);
-	layout->addWidget(&boardBox_, 0, 2, 1, 1);
-	layout->addWidget(&chipBox_, 1, 0, 1, 1);
-	layout->addWidget(&socBox_, 1, 1, 1, 1);
-	layout->addWidget(&ipBox_, 1, 2, 1, 1);
+	layout->addWidget(&productBox_, 0, 0, 1, 1);
+	layout->addWidget(&boardBox_, 0, 1, 1, 1);
+	layout->addWidget(&chipBox_, 0, 2, 1, 1);
+	layout->addWidget(&socBox_, 1, 0, 1, 1);
+    layout->addWidget(&ipBox_, 1, 1, 1, 1);
+    layout->addWidget(&flatBox_, 1, 2, 1, 1);
+	layout->setColumnStretch(3, 1);
 	layout->setSpacing(0);
 	layout->setContentsMargins(4, 4, 4, 4);
 
@@ -51,12 +59,6 @@ options_()
 	connect(&chipBox_, SIGNAL(clicked(bool)), this, SLOT(onChipChange(bool)), Qt::UniqueConnection);
 	connect(&socBox_, SIGNAL(clicked(bool)), this, SLOT(onSocChange(bool)), Qt::UniqueConnection);
 	connect(&ipBox_, SIGNAL(clicked(bool)),	this, SLOT(onIpChange(bool)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyGroup::~HierarchyGroup()
-//-----------------------------------------------------------------------------
-HierarchyGroup::~HierarchyGroup() {
 }
 
 //-----------------------------------------------------------------------------

@@ -12,15 +12,16 @@
 #ifndef IMPLEMENTATIONGROUP_H
 #define IMPLEMENTATIONGROUP_H
 
+#include "FilterGroup.h"
+
 #include <KactusAPI/include/utils.h>
 
-#include <QGroupBox>
-#include <QCheckBox>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains check boxes to set the implementation options for VLNVDialer.
 //-----------------------------------------------------------------------------
-class ImplementationGroup : public QGroupBox
+class ImplementationGroup : public FilterGroup
 {
 	Q_OBJECT
 
@@ -36,7 +37,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~ImplementationGroup();
+	virtual ~ImplementationGroup() = default;
+
+    //! No copying. No assignment.
+    ImplementationGroup(const ImplementationGroup& other) = delete;
+    ImplementationGroup& operator=(const ImplementationGroup& other) = delete;
 
     /*!
      *  Sets new implementation options.
@@ -77,18 +82,17 @@ private slots:
 	void onSystemChanged(bool checked);
 
 private:
-	//! No copying. No assignment.
-	ImplementationGroup(const ImplementationGroup& other);
-	ImplementationGroup& operator=(const ImplementationGroup& other);
+
+    void setupLayout();
 
 	//! Check box to select hardware components in/out of search results.
-	QCheckBox hwBox_;
+	QPushButton hwBox_;
 
 	//! Check box to select software component in/out of search results.
-	QCheckBox swBox_;
+	QPushButton swBox_;
 
 	//! Check box to select system components in/out of search results.
-	QCheckBox systemBox_;
+	QPushButton systemBox_;
 
 	//! Contains the current search settings.
 	Utils::ImplementationOptions options_;

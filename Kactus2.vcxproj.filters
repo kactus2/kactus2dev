@@ -3175,6 +3175,9 @@
     <ClCompile Include="mainwindow\WorkspaceSettings.cpp">
       <Filter>Source Files\mainwindow</Filter>
     </ClCompile>
+    <ClCompile Include="library\VLNVDialer\FilterGroup.cpp">
+      <Filter>Source Files\library\VLNVDialer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -4341,9 +4344,6 @@
       <Filter>Header Files\library\VLNVDialer</Filter>
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\firmnessgroup.h">
-      <Filter>Header Files\library\VLNVDialer</Filter>
-    </QtMoc>
-    <QtMoc Include="library\VLNVDialer\hierarchygroup.h">
       <Filter>Header Files\library\VLNVDialer</Filter>
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\implementationgroup.h">
@@ -5659,6 +5659,12 @@
     </QtMoc>
     <QtMoc Include="mainwindow\WorkspaceSettings.h">
       <Filter>Header Files\mainwindow</Filter>
+    </QtMoc>
+    <QtMoc Include="library\VLNVDialer\FilterGroup.h">
+      <Filter>Header Files\library\VLNVDialer</Filter>
+    </QtMoc>
+    <QtMoc Include="library\VLNVDialer\hierarchygroup.h">
+      <Filter>Header Files\library\VLNVDialer</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

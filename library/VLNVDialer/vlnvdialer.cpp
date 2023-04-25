@@ -22,14 +22,16 @@
 // Function: VLNVDialer::VLNVDialer()
 //-----------------------------------------------------------------------------
 VLNVDialer::VLNVDialer(QWidget *parent):
-QWidget(parent),
+    QWidget(parent),
+    hideButton_(QIcon(":/icons/common/graphics/filter.png"), QString(), this),
 filters_(this),
 dialer_(this),
-hideButton_(QIcon(":/icons/common/graphics/filter.png"), QString(), this),
 tagGroup_(tr("Tags"), this),
 tagFilter_(new TagSelectorContainer(this))
 {
     hideButton_.setFlat(true);
+
+    tagGroup_.setFlat(true);
 
 	// check if the filters were visible or not previously
 	QSettings settings;

@@ -124,14 +124,14 @@ private:
 
     void setupLayout();
 
+    //! Button to hide/show filters.
+    QPushButton hideButton_;
+
 	//! Contains the items to set filters for search.
 	FilterWidget filters_;
 
 	//! Contains the items to set the rules for vlnv search
 	DialerWidget dialer_;
-
-	//! Button to hide/show filters.
-	QPushButton hideButton_;
 
 	//! Group box for tag filters.
     QGroupBox tagGroup_;

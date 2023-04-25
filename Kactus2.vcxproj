@@ -881,6 +881,7 @@ CreateHelp
     <ClCompile Include="library\ObjectSelectionListItem.cpp" />
     <ClCompile Include="library\TableViewDialog.cpp" />
     <ClCompile Include="library\VLNVDialer\dialerwidget.cpp" />
+    <ClCompile Include="library\VLNVDialer\FilterGroup.cpp" />
     <ClCompile Include="library\VLNVDialer\filterwidget.cpp" />
     <ClCompile Include="library\VLNVDialer\firmnessgroup.cpp" />
     <ClCompile Include="library\VLNVDialer\hierarchygroup.cpp" />
@@ -2171,8 +2172,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\firmnessgroup.h">
     </QtMoc>
-    <QtMoc Include="library\VLNVDialer\hierarchygroup.h">
-    </QtMoc>
+    <QtMoc Include="library\VLNVDialer\hierarchygroup.h" />
     <QtMoc Include="library\VLNVDialer\implementationgroup.h">
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\typegroup.h">
@@ -2181,6 +2181,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="mainwindow\DockWidgetHandler.h">
     </QtMoc>
+    <QtMoc Include="library\VLNVDialer\FilterGroup.h" />
     <ClInclude Include="mainwindow\CommandLineParser.h" />
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
     <ClInclude Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.h" />
