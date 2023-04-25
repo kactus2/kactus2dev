@@ -80,8 +80,17 @@ const QStringList DocumentationWriter::REGISTER_HEADERS = {
     QStringLiteral("Access")
 };
 
-DocumentationWriter::DocumentationWriter(ExpressionFormatter* formatter) :
-    expressionFormatter_(formatter)
+const QStringList DocumentationWriter::DESIGN_INSTANCE_HEADERS = {
+    QStringLiteral("Instance name"),
+    QStringLiteral("Component type"),
+    QStringLiteral("Configurable values"),
+    QStringLiteral("Active view"),
+    QStringLiteral("Description")
+};
+
+DocumentationWriter::DocumentationWriter(ExpressionFormatter* formatter, ExpressionFormatterFactory* expressionFormatterFactory) :
+    expressionFormatter_(formatter),
+    expressionFormatterFactory_(expressionFormatterFactory)
 {
 }
 
@@ -150,4 +159,11 @@ QString DocumentationWriter::getFieldResetInfo(QSharedPointer<Field> field) cons
     }
 
     return resetInfo;
+}
+
+QSharedPointer<ExpressionFormatter> DocumentationWriter::createDesignInstanceFormatter(
+    QSharedPointer<Design> design, QSharedPointer<Component> component)
+{
+    return QSharedPointer<ExpressionFormatter>(
+        expressionFormatterFactory_->createDesignInstanceFormatter(component, design));
 }

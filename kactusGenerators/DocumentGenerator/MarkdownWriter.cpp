@@ -21,12 +21,13 @@
 #include <QString>
 
 MarkdownWriter::MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter,
+    ExpressionFormatterFactory* expressionFormatterFactory,
     LibraryInterface* libraryHandler, int componentNumber) :
     component_(component),
     componentNumber_(componentNumber),
     expressionFormatter_(formatter),
     libraryHandler_(libraryHandler),
-    DocumentationWriter(formatter)
+    DocumentationWriter(formatter, expressionFormatterFactory)
 {
     vlnvString_ = component_->getVlnv().toString();
 }
@@ -497,6 +498,34 @@ void MarkdownWriter::writeDiagram(QTextStream& stream, QString const& title,
     stream << "![" << altText << "](" << link << ")  " << Qt::endl << Qt::endl;
 }
 
+void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> configuration)
+{
+    if (design->getComponentInstances()->isEmpty())
+    {
+        return;
+    }
+    
+    QString instanceTitle = QString("Component instances within design %1").arg(design->getVlnv().toString());
+
+    stream << instanceTitle << ":  " << Qt::endl << Qt::endl;
+
+    writeTableHeader(stream, DocumentationWriter::DESIGN_INSTANCE_HEADERS);
+
+    for (auto const& instance : *design->getComponentInstances())
+    {
+        QStringList rowCells(QStringList()
+            << instance->getInstanceName()
+            << "[" + instance->getComponentRef()->toString(" - ") + "](#" + instance->getComponentRef()->toString(":") + ")"
+            << getComponentInstanceConfigurableElements(instance, design)
+            << (configuration && configuration->getDesignRef() == design->getVlnv()
+                ? configuration->getActiveView(instance->getInstanceName())
+                : QStringLiteral(""))
+        );
+
+        writeTableRow(stream, rowCells);
+    }
+}
+
 void MarkdownWriter::writeTableRow(QTextStream& stream, QStringList const& cells) const
 {
     for (auto const& cell : cells)
@@ -776,4 +805,42 @@ void MarkdownWriter::writeConfigurableElementValues(QTextStream& stream,
         );
         writeTableRow(stream, rowCells);
     }
+}
+
+QString MarkdownWriter::getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance, QSharedPointer<Design> design)
+{
+    QString cell;
+    VLNV componentVLNV = *instance->getComponentRef();
+
+    QSharedPointer<Document> libComp = libraryHandler_->getModel(componentVLNV);
+    QSharedPointer<Component> component = libComp.staticCast<Component>();
+    
+    QSharedPointer<ExpressionFormatter> equationFormatter = createDesignInstanceFormatter(design, component);
+
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >  confElements =
+        instance->getConfigurableElementValues();
+
+    for (auto const& element : *confElements)
+    {
+        QString configurableElementID = element->getReferenceId();
+        QString configurableElementName = equationFormatter->formatReferringExpression(configurableElementID);
+
+        if (configurableElementID == configurableElementName)
+        {
+            cell.append(QStringLiteral("<span style=\"color: red\">Unknown</span>"));
+        }
+        else
+        {
+            cell.append(configurableElementName);
+        }
+
+        cell.append(" = " + equationFormatter->formatReferringExpression(element->getConfigurableValue()));
+        
+        if (element != confElements->last())
+        {
+            cell.append(QStringLiteral("<br>"));
+        }
+    }
+
+    return cell;
 }

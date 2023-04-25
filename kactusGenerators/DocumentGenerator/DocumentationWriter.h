@@ -12,6 +12,10 @@
 #ifndef DOCUMENTATIONWRITER_H
 #define DOCUMENTATIONWRITER_H
 
+#include <KactusAPI/include/ExpressionFormatterFactory.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <QTextStream>
 #include <QString>
 #include <QSharedPointer>
@@ -46,8 +50,10 @@ public:
     static const QStringList PORT_HEADERS;
 
     static const QStringList REGISTER_HEADERS;
+
+    static const QStringList DESIGN_INSTANCE_HEADERS;
     
-    DocumentationWriter(ExpressionFormatter* formatter);
+    DocumentationWriter(ExpressionFormatter* formatter, ExpressionFormatterFactory* expressionFormatterFactory);
     virtual ~DocumentationWriter() = default;
 
     virtual void writeHeader(QTextStream& stream) = 0;
@@ -110,6 +116,9 @@ public:
 
     virtual void writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText) = 0;
 
+    virtual void writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design,
+        QSharedPointer<DesignConfiguration> configuration) = 0;
+
     void setTargetPath(QString const& path);
 
     QString getTargetPath() const;
@@ -124,9 +133,16 @@ protected:
     // Get the information for the reset values of the selected field.
     QString getFieldResetInfo(QSharedPointer<Field> field) const;
 
+    // Create an expression formatter for a component instance contained within a design.
+    QSharedPointer<ExpressionFormatter> createDesignInstanceFormatter(QSharedPointer<Design> design,
+        QSharedPointer<Component> component);
+
 private:
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
+
+    //! The factory for creating expression formatters
+    ExpressionFormatterFactory* expressionFormatterFactory_;
 
     QString targetPath_;
 };

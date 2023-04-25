@@ -188,11 +188,11 @@ void DocumentGenerator::setFormat(DocumentFormat format)
 {
     if (format == DocumentFormat::HTML)
     {
-        writer_ = new HtmlWriter(component_, expressionFormatter_, libraryHandler_, componentNumber_);
+        writer_ = new HtmlWriter(component_, expressionFormatter_, expressionFormatterFactory_, libraryHandler_, componentNumber_);
     }
     else if (format == DocumentFormat::MD)
     {
-        writer_ = new MarkdownWriter(component_, expressionFormatter_, libraryHandler_, componentNumber_);
+        writer_ = new MarkdownWriter(component_, expressionFormatter_, expressionFormatterFactory_, libraryHandler_, componentNumber_);
     }
 }
 
@@ -728,7 +728,7 @@ void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> vi
     QString designDiagramAltText = QString("View: %1 preview picture").arg(view->name());
 
     writer_->writeDiagram(stream, designDiagramTitle, designPicPath, designDiagramAltText);
-    // writer_->writeDesignInstances()
+    writer_->writeDesignInstances(stream, design, configuration);
 }
 
 void DocumentGenerator::createDesignPicture(QStringList& pictureList, QString const& viewName, QString const& designPicPath)

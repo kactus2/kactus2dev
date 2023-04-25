@@ -18,6 +18,8 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
 
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <kactusGenerators/DocumentGenerator/DocumentationWriter.h>
 
 #include <QTextStream>
@@ -34,7 +36,8 @@ class MarkdownWriter : public DocumentationWriter
 {
 public:
     MarkdownWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter,
-        LibraryInterface* libraryHandler, int componentNumber);
+        ExpressionFormatterFactory* expressionFormatterFactory,
+        LibraryInterface* libraryHhandler, int componentNumber);
 
     ~MarkdownWriter() override;
 
@@ -99,6 +102,9 @@ public:
     void writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText)
         override;
 
+    void writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design,
+        QSharedPointer<DesignConfiguration> configuration) override;
+
 private:
 
 
@@ -138,6 +144,9 @@ private:
     void writeConfigurableElementValues(QTextStream& stream,
         QSharedPointer<ConfigurableVLNVReference> vlnvReference,
         ExpressionFormatter* instantiationFormatter);
+
+    QString getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<Design> design);
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
