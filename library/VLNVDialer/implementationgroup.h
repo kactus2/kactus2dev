@@ -57,6 +57,13 @@ public:
      */
     Utils::ImplementationOptions getImplementation() const;
 
+	/*!
+	 *  Select/clear all filters.
+	 *
+	 *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+	 */
+    void selectAll(bool select) override final;
+
 signals:
 
 	/*!
@@ -83,6 +90,7 @@ private slots:
 
 private:
 
+	//! Setup the widget layout.
     void setupLayout();
 
 	//! Check box to select hardware components in/out of search results.

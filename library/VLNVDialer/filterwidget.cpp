@@ -85,3 +85,13 @@ Utils::FilterOptions FilterWidget::getFilters() const
     return options;
 }
 
+//-----------------------------------------------------------------------------
+// Function: FilterWidget::selectAll()
+//-----------------------------------------------------------------------------
+void FilterWidget::selectAll(bool select)
+{
+    type_.selectAll(select);
+    implementation_.selectAll(select);
+    hierarchy_.selectAll(select);
+    firmness_.selectAll(select);
+}

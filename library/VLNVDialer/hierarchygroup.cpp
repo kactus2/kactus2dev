@@ -93,6 +93,22 @@ Utils::HierarchyOptions HierarchyGroup::getHierarchy() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: HierarchyGroup::selectAll()
+//-----------------------------------------------------------------------------
+void HierarchyGroup::selectAll(bool select)
+{
+    Utils::HierarchyOptions options;
+    options.flat_ = select;
+    options.product_ = select;
+    options.board_ = select;
+    options.chip_ = select;
+    options.soc_ = select;
+    options.ip_ = select;
+
+	setHierarchy(options);
+}
+
+//-----------------------------------------------------------------------------
 // Function: HierarchyGroup::onFlatChange()
 //-----------------------------------------------------------------------------
 void HierarchyGroup::onFlatChange(bool checked)

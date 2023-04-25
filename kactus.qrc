@@ -145,6 +145,8 @@
 		<file>common/graphics/fixed.png</file>
 		<file>common/graphics/mutable.png</file>
 		<file>common/graphics/template.png</file>
+		<file>common/graphics/check-all.png</file>
+		<file>common/graphics/uncheck-all.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

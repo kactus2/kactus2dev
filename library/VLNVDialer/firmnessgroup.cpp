@@ -72,6 +72,19 @@ Utils::FirmnessOptions FirmnessGroup::getFirmness() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: FirmnessGroup::selectAll()
+//-----------------------------------------------------------------------------
+void FirmnessGroup::selectAll(bool select)
+{
+    Utils::FirmnessOptions options;
+    options.templates_ = select;
+    options.mutable_ = select;
+    options.fixed_ = select;
+
+    setFirmness(options);
+}
+
+//-----------------------------------------------------------------------------
 // Function: FirmnessGroup::onTemplateChanged()
 //-----------------------------------------------------------------------------
 void FirmnessGroup::onTemplateChanged(bool checked)

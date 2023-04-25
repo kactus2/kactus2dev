@@ -78,6 +78,21 @@ Utils::TypeOptions TypeGroup::getTypes() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: TypeGroup::selectAll()
+//-----------------------------------------------------------------------------
+void TypeGroup::selectAll(bool select)
+{
+    Utils::TypeOptions options;
+    options.components_ = select;
+    options.buses_ = select;
+    options.catalogs_ = select;
+    options.apis_ = select;
+    options.advanced_ = select;
+
+    setTypes(options);
+}
+
+//-----------------------------------------------------------------------------
 // Function: TypeGroup::onComponentChange()
 //-----------------------------------------------------------------------------
 void TypeGroup::onComponentChange(bool checked)

@@ -40,6 +40,10 @@ public:
      */
 	virtual ~HierarchyGroup() = default;
 
+    //! No copying. No assignment.
+    HierarchyGroup(const HierarchyGroup& other) = delete;
+    HierarchyGroup& operator=(const HierarchyGroup& other) = delete;
+
     /*!
      *  Sets new hierarchy options.
      *
@@ -53,6 +57,13 @@ public:
      *      @return Selected hierarchy options.
      */
     Utils::HierarchyOptions getHierarchy() const;
+
+	/*!
+	 *  Select/clear all filters.
+	 *
+	 *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+	 */
+	void selectAll(bool select) override final;
 
 signals:
 
@@ -94,9 +105,6 @@ private slots:
 	void onIpChange(bool checked);
 
 private:
-	//! No copying. No assignment.
-	HierarchyGroup(const HierarchyGroup& other);
-	HierarchyGroup& operator=(const HierarchyGroup& other);
 
 	//! Check box to select global components in/out of search results.
 	QPushButton flatBox_;

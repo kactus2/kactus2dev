@@ -58,6 +58,9 @@ public:
      */
     Utils::TypeOptions getTypes() const;
 
+
+    void selectAll(bool select) override final;
+
 signals:
 
 	/*!

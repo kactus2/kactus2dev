@@ -24,12 +24,17 @@
 VLNVDialer::VLNVDialer(QWidget *parent):
     QWidget(parent),
     hideButton_(QIcon(":/icons/common/graphics/filter.png"), QString(), this),
-filters_(this),
-dialer_(this),
-tagGroup_(tr("Tags"), this),
-tagFilter_(new TagSelectorContainer(this))
+    selectAllButton_(QIcon(":/icons/common/graphics/check-all.png"), QString(), this),
+    filters_(this),
+    dialer_(this),
+    tagGroup_(tr("Tags"), this),
+    tagFilter_(new TagSelectorContainer(this))
 {
+    hideButton_.setToolTip(tr("Show/hide Filters"));
     hideButton_.setFlat(true);
+
+    selectAllButton_.setToolTip(tr("Select all"));
+    selectAllButton_.setFlat(true);
 
     tagGroup_.setFlat(true);
 
@@ -38,7 +43,8 @@ tagFilter_(new TagSelectorContainer(this))
 	hideFilters_ = !settings.value("FilterWidget/Hidden", false).toBool();
 	onHideShowClick();
 
-	connect(&hideButton_, SIGNAL(clicked(bool)), this, SLOT(onHideShowClick()), Qt::UniqueConnection);
+    connect(&hideButton_, SIGNAL(clicked(bool)), this, SLOT(onHideShowClick()), Qt::UniqueConnection);
+    connect(&selectAllButton_, SIGNAL(clicked(bool)), this, SLOT(onSelectAll()), Qt::UniqueConnection);
 
 	connect(&dialer_, SIGNAL(vendorChanged(const QString&)),
 		this, SIGNAL(vendorChanged(const QString&)), Qt::UniqueConnection);
@@ -128,6 +134,26 @@ void VLNVDialer::onHideShowClick()
 }
 
 //-----------------------------------------------------------------------------
+// Function: VLNVDialer::onSelectAll()
+//-----------------------------------------------------------------------------
+void VLNVDialer::onSelectAll()
+{
+    allSelected_ = !allSelected_;
+    if (allSelected_)
+    {
+        selectAllButton_.setToolTip("Clear all");
+        selectAllButton_.setIcon(QIcon(":/icons/common/graphics/uncheck-all.png"));
+    }
+    else
+    {
+        selectAllButton_.setToolTip("Select all");
+        selectAllButton_.setIcon(QIcon(":/icons/common/graphics/check-all.png"));
+    }
+
+    filters_.selectAll(allSelected_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: VLNVDialer::closeEvent()
 //-----------------------------------------------------------------------------
 void VLNVDialer::closeEvent(QCloseEvent *event)
@@ -150,10 +176,12 @@ void VLNVDialer::setupLayout()
     QGridLayout* layout = new QGridLayout(this);
     layout->addWidget(new QLabel(tr("Library Filters"), this), 0, 0, 1, 1, Qt::AlignLeft);
     layout->addWidget(&hideButton_, 0, 1, 1, 1, Qt::AlignRight);
-    layout->addWidget(&filters_, 1, 0, 1, 2);
-    layout->addWidget(&dialer_, 2, 0, 1, 2);
-    layout->addWidget(&tagGroup_, 3, 0, 1, 2);
+    layout->addWidget(&selectAllButton_, 0, 2, 1, 1, Qt::AlignRight);
+    layout->addWidget(&filters_, 1, 0, 1, 3);
+    layout->addWidget(&dialer_, 2, 0, 1, 3);
+    layout->addWidget(&tagGroup_, 3, 0, 1, 3);
 
+    layout->setColumnStretch(0, 1);
     layout->setSpacing(0);
     layout->setContentsMargins(4, 4, 4, 4);
 }

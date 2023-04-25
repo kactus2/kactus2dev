@@ -64,6 +64,19 @@ Utils::ImplementationOptions ImplementationGroup::getImplementation() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ImplementationGroup::selectAll()
+//-----------------------------------------------------------------------------
+void ImplementationGroup::selectAll(bool select)
+{
+    Utils::ImplementationOptions options;
+    options.hw_ = select;
+    options.sw_ = select;
+    options.system_ = select;
+    
+    setImplementation(options);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ImplementationGroup::onHWChanged()
 //-----------------------------------------------------------------------------
 void ImplementationGroup::onHWChanged(bool checked)

@@ -40,6 +40,13 @@ public:
      */
 	virtual ~FilterGroup() = default;
 
+	/*!
+	 *  Select/clear all filters.
+	 *
+	 *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+	 */
+	virtual void selectAll(bool select) = 0;
+
 protected:
 
 	//! Setups the filter button.

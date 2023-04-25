@@ -119,13 +119,23 @@ private slots:
 	//! Handler for hide/show button clicks.
 	void onHideShowClick();
 
+	//! Handler for select/clear button clicks.
+	void onSelectAll();
+
 private:
 
-
+	//! Setup the widget layout.
     void setupLayout();
 
+    //-----------------------------------------------------------------------------
+	// Data.
+	//-----------------------------------------------------------------------------
+		
     //! Button to hide/show filters.
     QPushButton hideButton_;
+
+    //! Button to hide/show filters.
+    QPushButton selectAllButton_;
 
 	//! Contains the items to set filters for search.
 	FilterWidget filters_;
@@ -139,8 +149,11 @@ private:
     //! Tag filter.
     TagContainer* tagFilter_;
 
-	//! Contains the value to know if filters are currently hidden or visible
+	//! Contains the value to know if filters are currently hidden or visible.
 	bool hideFilters_ = false;
+
+	//! Contains the value to know if all filters are selected or cleared.
+	bool allSelected_ = false;
 };
 
 #endif // VLNVDIALER_H

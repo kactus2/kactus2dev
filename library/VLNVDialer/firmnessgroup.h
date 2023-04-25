@@ -40,6 +40,10 @@ public:
      */
 	virtual ~FirmnessGroup() = default;
 
+    //! No copying. No assignment.
+    FirmnessGroup(const FirmnessGroup& other) = delete;
+    FirmnessGroup& operator=(const FirmnessGroup& other) = delete;
+
     /*!
      *  Sets new firmness options.
      *
@@ -53,6 +57,13 @@ public:
      *      @return Selected firmness options.
      */
     Utils::FirmnessOptions getFirmness() const;
+
+    /*!
+     *  Select/clear all filters.
+     *
+     *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+     */
+	void selectAll(bool select) override final;
 
 signals:
 
@@ -79,9 +90,6 @@ private slots:
 	void onConfigurationChanged(bool checked);
 
 private:
-	//! No copying. No assignment.
-	FirmnessGroup(const FirmnessGroup& other);
-	FirmnessGroup& operator=(const FirmnessGroup& other);
 
 	//! Check box to select templates in/out of search results.
 	QPushButton templateBox_;
