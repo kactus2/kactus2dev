@@ -237,11 +237,10 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
     targetPath_ = targetPath;
     writeHeader(stream);
 
-    /*stream << "\t\t<p>" << Qt::endl;
-    stream << "\t\t<strong>Table of contents</strong><br>" << Qt::endl;
-    stream << "\t\t</p>" << Qt::endl;*/
+    writer_->writeTableOfContentsHeader(stream);
 
     writeTableOfContents(stream);
+
     QStringList pictureList;
 
     // write the actual documentation for the top component

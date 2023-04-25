@@ -49,7 +49,14 @@ void MarkdownWriter::writeHeader(QTextStream& stream)
 
 void MarkdownWriter::writeComponentHeader(QTextStream& stream)
 {
-    stream << "# " << componentNumber_ << ". Component " << vlnvString_ << "  " << Qt::endl << Qt::endl;
+    // For empty line between table of contents and first component
+    if (componentNumber_ == 1)
+    {
+        stream << Qt::endl;
+    }
+    
+    stream << "# " << componentNumber_ << ". Component " << vlnvString_ 
+        << "<a id=\"" << vlnvString_ << "\">  " << Qt::endl << Qt::endl;
 }
 
 void MarkdownWriter::writeComponentInfo(QTextStream& stream)
@@ -80,6 +87,11 @@ void MarkdownWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNum
         KactusAttribute::implementationToString(component_->getImplementation()) << "  " << Qt::endl
         << "**Component firmness:** " <<
         KactusAttribute::firmnessToString(component_->getFirmness()) << "  " << Qt::endl << Qt::endl;
+}
+
+void MarkdownWriter::writeTableOfContentsHeader(QTextStream& stream)
+{
+    stream << "**Table of contents**  " << Qt::endl << Qt::endl;
 }
 
 void MarkdownWriter::writeTableOfContents(QTextStream& stream)
