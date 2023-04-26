@@ -17,8 +17,6 @@
 
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
-#include <kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h>
-#include <kactusGenerators/DocumentGenerator/DocumentGeneratorHTML.h>
 #include <kactusGenerators/DocumentGenerator/MarkdownWriter.h>
 #include <kactusGenerators/DocumentGenerator/HtmlWriter.h>
 
@@ -69,7 +67,6 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     DesignWidgetFactory* designWidgetFactory, ExpressionFormatterFactory* expressionFormatterFactory,
     DocumentFormat format,
     QWidget* parent) :
-    GeneralDocumentGenerator(handler, expressionFormatterFactory, parent),
     expressionFormatterFactory_(expressionFormatterFactory),
     childInstances_(),
     parentWidget_(parent),
@@ -79,19 +76,13 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     libraryHandler_(handler),
     designWidgetFactory_(designWidgetFactory),
     componentFinder_(nullptr),
-    currentFormat_(format),
-    viewDocumentationGenerator_(new ViewDocumentGenerator(handler, expressionFormatterFactory, designWidgetFactory))
+    currentFormat_(format)
 {
     Q_ASSERT(handler);
     Q_ASSERT(parent);
 
     // this function can be called for only the top document generator
     Q_ASSERT(parentWidget_);
-
-    connect(viewDocumentationGenerator_, SIGNAL(errorMessage(QString const&)),
-        this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
-    connect(viewDocumentationGenerator_, SIGNAL(noticeMessage(QString const&)),
-        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 
     // parse the model for the component
     component_ = libraryHandler_->getModel(vlnv).dynamicCast<Component>();
@@ -123,10 +114,9 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::DocumentGenerator()
 //-----------------------------------------------------------------------------
-DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects, DesignWidgetFactory* designWidgetFactory,
-    ExpressionFormatterFactory* expressionFormatterFactory, ViewDocumentGenerator* viewDocumentationGenerator,
+DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects,
+    DesignWidgetFactory* designWidgetFactory, ExpressionFormatterFactory* expressionFormatterFactory,
     DocumentGenerator* parent, int& currentComponentNumber, DocumentFormat format) :
-GeneralDocumentGenerator(handler, expressionFormatterFactory, parent),
 childInstances_(),
 libraryHandler_(handler),
 parentWidget_(NULL),
@@ -134,8 +124,7 @@ expressionFormatterFactory_(expressionFormatterFactory),
 expressionFormatter_(),
 componentNumber_(currentComponentNumber),
 currentFormat_(format),
-designWidgetFactory_(designWidgetFactory),
-viewDocumentationGenerator_(viewDocumentationGenerator)
+designWidgetFactory_(designWidgetFactory)
 {
     Q_ASSERT(libraryHandler_);
     Q_ASSERT(parent);
@@ -195,7 +184,7 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects, int& currentCompo
 
                 QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(libraryHandler_,
                     *instance->getComponentRef(), objects, designWidgetFactory_, expressionFormatterFactory_,
-                    viewDocumentationGenerator_, this, currentComponentNumber, currentFormat_));
+                    this, currentComponentNumber, currentFormat_));
                 childInstances_.append(docGenerator);
             }
         }
@@ -262,7 +251,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
         QString xmlPath = libraryHandler_->getPath(component_->getVlnv());
 
         // get the relative path to add to file set
-        QString relativePath = General::getRelativePath(xmlPath, getTargetPath());
+        QString relativePath = General::getRelativePath(xmlPath, targetPath_);
 
         QString fileSetName("Documentation");
         QSharedPointer<FileSet> documentationFileSet = component_->getFileSet(fileSetName);
@@ -379,8 +368,11 @@ void DocumentGenerator::writeParameters(QTextStream& stream, int& subHeaderNumbe
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumber)
 {
-    writer_->writeMemoryMaps(stream, subHeaderNumber);
-    ++subHeaderNumber;
+    if (!component_->getMemoryMaps()->isEmpty())
+    {
+        writer_->writeMemoryMaps(stream, subHeaderNumber);
+        ++subHeaderNumber;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -470,9 +462,9 @@ void DocumentGenerator::writeViews(QTextStream& stream, int& subHeaderNumber, QS
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
 {
-    stream << DocumentGeneratorHTML::valid3wStrict() << Qt::endl;
+    /*stream << DocumentGeneratorHTML::valid3wStrict() << Qt::endl;
     stream << "\t</body>" << Qt::endl;
-    stream << "</html>" << Qt::endl;
+    stream << "</html>" << Qt::endl;*/
 }
 
 //-----------------------------------------------------------------------------

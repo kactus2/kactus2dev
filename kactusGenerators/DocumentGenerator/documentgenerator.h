@@ -12,7 +12,6 @@
 #ifndef DOCUMENTGENERATOR_H
 #define DOCUMENTGENERATOR_H
 
-#include <kactusGenerators/DocumentGenerator/GeneralDocumentGenerator.h>
 #include <kactusGenerators/DocumentGenerator/DocumentationWriter.h>
 
 #include <KactusAPI/include/ExpressionFormatterFactory.h>
@@ -37,16 +36,17 @@ class AddressBlock;
 class Register;
 class Field;
 class View;
-class ViewDocumentGenerator;
 
 //-----------------------------------------------------------------------------
 //! Generates documentation for a component and its associated items.
 //-----------------------------------------------------------------------------
-class DocumentGenerator : public GeneralDocumentGenerator
+class DocumentGenerator : public QObject
 {
     Q_OBJECT
 
 public:
+
+
     enum DocumentFormat
     {
         HTML,
@@ -72,20 +72,17 @@ public:
      *      @param [in] vlnv                        VLNV of the component or design.
      *      @param [in] objects                     The vlnvs that have been gone through already.
      *      @param [in] expressionFormatterFactory  The factory for making expression formatters.
-     *      @param [in] viewDocumentationGenerator  Generates documentation for views and instantiations.
      *      @param [in] parent                      The parent generator.
      */
     DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects, DesignWidgetFactory* designWidgetFactory,
-        ExpressionFormatterFactory* expressionFormatterFactory, ViewDocumentGenerator* viewDocumentationGenerator,
-        DocumentGenerator* parent, int& currentComponentNumber, DocumentFormat format);
+        ExpressionFormatterFactory* expressionFormatterFactory, DocumentGenerator* parent,
+        int& currentComponentNumber, DocumentFormat format);
     
     /*!
      *  The destructor
      */
     virtual ~DocumentGenerator();
     
-    
-
     /*!
      *  Set the document format
      *
@@ -213,6 +210,22 @@ public:
      *      @param [in] stream  The text stream to write the documentation into.
      */
     void writeEndOfDocument(QTextStream& stream);
+
+signals:
+
+    /*!
+     *  Print an error message to the user.
+     *
+     *      @param [in] errorMessage    Selected error message.
+     */
+    void errorMessage(const QString& errorMessage);
+
+    /*!
+     *  Print a notification to the user.
+     *
+     *      @param [in] noticeMessage   Selected notification.
+     */
+    void noticeMessage(const QString& noticeMessage);
 
 private:
     //! No copying. No assignment
@@ -404,9 +417,6 @@ private:
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
-
-    //! Document generator for component views.
-    ViewDocumentGenerator* viewDocumentationGenerator_;
 
     //! Factory for constructing design widgets used to create a picture of the design diagram.
     DesignWidgetFactory* designWidgetFactory_;
