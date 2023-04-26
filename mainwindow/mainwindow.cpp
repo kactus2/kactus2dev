@@ -553,18 +553,11 @@ void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, 
 //-----------------------------------------------------------------------------
 void MainWindow::setupMenus()
 {
-    QDockWidget* menuDock = new QDockWidget(tr("Menu"), this);
-    menuDock->setObjectName(tr("Menu"));
-    menuDock->setTitleBarWidget(new QWidget(this));
-    menuDock->setAllowedAreas(Qt::TopDockWidgetArea);
-    menuDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-
-    ribbon_ = new Ribbon(menuDock);
-    menuDock->setWidget(ribbon_);
-    addDockWidget(Qt::TopDockWidgetArea, menuDock);
+    ribbon_ = new Ribbon(this);
+    addToolBar(ribbon_);
 
     // The "File" group.
-    RibbonGroup* fileGroup = ribbon_->addGroup(tr("File"));
+    RibbonGroup* fileGroup = new RibbonGroup(tr("File"), ribbon_);
     fileGroup->addAction(actNew_);
     fileGroup->addAction(actSave_);
     fileGroup->addAction(actSaveAs_);
@@ -572,58 +565,45 @@ void MainWindow::setupMenus()
     fileGroup->addAction(actSaveHierarchy_);
     fileGroup->addAction(actPrint_);
     fileGroup->addAction(actImageExport_);
-
-    fileGroup->widgetForAction(actNew_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actSave_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actSaveAs_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actSaveHierarchy_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actSaveAll_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actPrint_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actImageExport_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(fileGroup);
 
     // The "Library" group.
-    RibbonGroup* libGroup = ribbon_->addGroup(tr("Library"));
+    RibbonGroup* libGroup = new RibbonGroup(tr("Library"), ribbon_);
     libGroup->addAction(actLibraryLocations_);
     libGroup->addAction(actLibrarySearch_);
     libGroup->addAction(actCheckIntegrity_);
-
-    libGroup->widgetForAction(actLibraryLocations_)->installEventFilter(ribbon_);
-    libGroup->widgetForAction(actLibrarySearch_)->installEventFilter(ribbon_);
-    libGroup->widgetForAction(actCheckIntegrity_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(libGroup);
 
     // The "protection" group
-    protectGroup_ = ribbon_->addGroup(tr("Protection"));
+    protectGroup_ = new RibbonGroup(tr("Protection"), ribbon_);
     protectGroup_->addAction(actProtect_);
-    protectGroup_->setVisible(false);
 
-    protectGroup_->widgetForAction(actProtect_)->installEventFilter(ribbon_);
+    protectAction_ = ribbon_->addGroup(protectGroup_); 
+    protectAction_->setVisible(false);
 
     // The "Edit" group.
-    editGroup_ = ribbon_->addGroup(tr("Edit"));
+    editGroup_ = new RibbonGroup(tr("Edit"), ribbon_);
     editGroup_->addAction(actRefresh_);
     editGroup_->addAction(actUndo_);
     editGroup_->addAction(actRedo_);
-    editGroup_->setVisible(false);
-    editGroup_->setEnabled(false);
 
-    editGroup_->widgetForAction(actUndo_)->installEventFilter(ribbon_);
-    editGroup_->widgetForAction(actRedo_)->installEventFilter(ribbon_);
-    editGroup_->widgetForAction(actRefresh_)->installEventFilter(ribbon_);
+    editAction_ = ribbon_->addGroup(editGroup_);
+    editAction_->setVisible(false);
+    editAction_->setEnabled(false);
 
     // The "Generation" group.
-    generationGroup_ = ribbon_->addGroup(tr("Generation"));
+    generationGroup_ = new RibbonGroup(tr("Generation"), ribbon_);
     generationGroup_->addAction(actGenDocumentation_);
     generationGroup_->addAction(actRunImport_);
-    generationGroup_->setVisible(false);
-    generationGroup_->setEnabled(false);
 
-    generationGroup_->widgetForAction(actGenDocumentation_)->installEventFilter(ribbon_);
-    generationGroup_->widgetForAction(actRunImport_)->installEventFilter(ribbon_);
+    generationAction_ = ribbon_->addGroup(generationGroup_);
+    generationAction_->setVisible(false);
+    generationAction_->setEnabled(false);
 
     createGeneratorPluginActions();
 
     //! The "Diagram Tools" group.
-    diagramToolsGroup_ = ribbon_->addGroup(tr("Diagram Tools"));
+    diagramToolsGroup_ = new RibbonGroup(tr("Diagram Tools"), ribbon_);
     diagramToolsGroup_->addAction(actToolSelect_);
     diagramToolsGroup_->addAction(actAddColumn_);
     diagramToolsGroup_->addAction(actToolConnect_);
@@ -631,20 +611,12 @@ void MainWindow::setupMenus()
     diagramToolsGroup_->addAction(actToolDraft_);
     diagramToolsGroup_->addAction(actToolToggleOffPage_);
     diagramToolsGroup_->addAction(actToolLabel_);
-    diagramToolsGroup_->setVisible(false);
 
-    diagramToolsGroup_->widgetForAction(actAddColumn_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolSelect_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolConnect_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolInterface_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolDraft_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolToggleOffPage_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolLabel_)->installEventFilter(ribbon_);
+    diagramToolsAction_ = ribbon_->addGroup(diagramToolsGroup_);
+    diagramToolsAction_->setVisible(false);
 
     //! The "Filtering tools" group.
-    filteringGroup_ = ribbon_->addGroup(tr("Filtering Tools"));
-    filteringGroup_->setVisible(false);
-    filteringGroup_->setEnabled(true);
+    filteringGroup_ = new RibbonGroup(tr("Filtering Tools"), ribbon_);
     filteringGroup_->addAction(actionFilterSegments_);
     filteringGroup_->addAction(actionFilterAddressBlocks_);
     filteringGroup_->addAction(actionFilterRegisters_);
@@ -655,18 +627,12 @@ void MainWindow::setupMenus()
     filteringGroup_->addAction(actionCondenseFieldItems_);
     filteringGroup_->addAction(actionExtendFieldItems_);
 
-    filteringGroup_->widgetForAction(actionFilterSegments_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterAddressBlocks_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterRegisters_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterFields_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterUnconnectedMemoryItems_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterAddressSpaceChains_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionCondenseMemoryItems_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionCondenseFieldItems_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionExtendFieldItems_)->installEventFilter(ribbon_);
+    filteringAction_ = ribbon_->addGroup(filteringGroup_);
+    filteringAction_->setVisible(false);
+    filteringAction_->setEnabled(true);
 
     //! The "View" group.
-    RibbonGroup* viewGroup = ribbon_->addGroup(tr("View"));
+    RibbonGroup* viewGroup = new RibbonGroup(tr("View"), ribbon_);
     viewGroup->addAction(actVisibleDocks_);
     viewGroup->addAction(actZoomIn_);
     viewGroup->addAction(actZoomOut_);
@@ -674,45 +640,35 @@ void MainWindow::setupMenus()
     viewGroup->addAction(actFitInView_);
     viewGroup->addAction(actVisibilityControl_);
 
-    viewGroup->widgetForAction(actZoomIn_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actZoomOut_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actZoomOriginal_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actFitInView_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actVisibleDocks_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actVisibilityControl_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(viewGroup);
 
     //! The "Configuration tools" group.
-    configurationToolsGroup_ = ribbon_->addGroup(tr("Configuration Tools"));
+    configurationToolsGroup_ = new RibbonGroup(tr("Configuration Tools"), ribbon_);
     configurationToolsGroup_->addAction(actionConfigureViews_);
     configurationToolsGroup_->addAction(openMemoryDesignerAction_);
-    configurationToolsGroup_->setVisible(false);
-    configurationToolsGroup_->setEnabled(false);
 
-    configurationToolsGroup_->widgetForAction(actionConfigureViews_)->installEventFilter(ribbon_);
-    configurationToolsGroup_->widgetForAction(openMemoryDesignerAction_)->installEventFilter(ribbon_);
+    configurationToolsAction_ = ribbon_->addGroup(configurationToolsGroup_);
+    configurationToolsAction_->setVisible(false);
+    configurationToolsAction_->setEnabled(false);
 
     //! The "Workspace" group.
-    RibbonGroup* workspacesGroup = ribbon_->addGroup(tr("Workspace"));
+    RibbonGroup* workspacesGroup = new RibbonGroup(tr("Workspace"), ribbon_);
     workspacesGroup->addAction(actWorkspaces_);
     workspacesGroup->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-
-    workspacesGroup->widgetForAction(actWorkspaces_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(workspacesGroup);
 
     connect(&workspace_, SIGNAL(requestMenuUpdate()), this, SLOT(updateWorkspaceMenu()), Qt::UniqueConnection);
     connect(&workspace_, SIGNAL(workspaceChanged(QString const&)), 
         this, SLOT(onWorkspaceChanged(QString const&)), Qt::UniqueConnection);
 
     //! The "System" group.
-    RibbonGroup* sysGroup = ribbon_->addGroup(tr("System"));
+    RibbonGroup* sysGroup = new RibbonGroup(tr("System"), ribbon_);
     sysGroup->addAction(actSettings_);
     sysGroup->addAction(actHelp_);
     sysGroup->addAction(actAbout_);
     sysGroup->addAction(actExit_);
 
-    sysGroup->widgetForAction(actSettings_)->installEventFilter(ribbon_);
-    sysGroup->widgetForAction(actHelp_)->installEventFilter(ribbon_);
-    sysGroup->widgetForAction(actAbout_)->installEventFilter(ribbon_);
-    sysGroup->widgetForAction(actExit_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(sysGroup);
 
     // the menu to display the dock widgets
     dockHandler_->setupVisibilityActionMenu(windowsMenu_);
@@ -898,8 +854,8 @@ void MainWindow::updateMenuStrip()
     actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
     actImageExport_->setEnabled(doc != 0 && doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT);
 
-    generationGroup_->setEnabled(unlocked);
-    generationGroup_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
+    generationAction_->setEnabled(unlocked);
+    generationAction_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
 
     actGenDocumentation_->setEnabled((isHWDesign|| isHWComp) && unlocked);
     actGenDocumentation_->setVisible((isHWDesign|| isHWComp));
@@ -909,20 +865,20 @@ void MainWindow::updateMenuStrip()
 
     openMemoryDesignerAction_->setVisible(isHWDesign);
 
-    configurationToolsGroup_->setEnabled(unlocked);
-    configurationToolsGroup_->setVisible(doc != 0 && (isHWComp || isHWDesign));
+    configurationToolsAction_->setEnabled(unlocked);
+    configurationToolsAction_->setVisible(doc != 0 && (isHWComp || isHWDesign));
     actionConfigureViews_->setEnabled(unlocked);
     actionConfigureViews_->setVisible(isHWDesign || isHWComp);
 
-    editGroup_->setVisible(doc != 0);
-    editGroup_->setEnabled(doc != 0 && unlocked);
+    editAction_->setVisible(doc != 0);
+    editAction_->setEnabled(doc != 0 && unlocked);
     actUndo_->setVisible(doc != 0 && doc->getEditProvider() != 0);
     actRedo_->setVisible(doc != 0 && doc->getEditProvider() != 0);
     actUndo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canUndo());
     actRedo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canRedo());
 
-    diagramToolsGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT));
-    diagramToolsGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT) &&
+    diagramToolsAction_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT));
+    diagramToolsAction_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT) &&
         !doc->isProtected());
     actToolSelect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_SELECT));
     actToolConnect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_CONNECT));
@@ -933,7 +889,7 @@ void MainWindow::updateMenuStrip()
 
     bool oldProtectionState = actProtect_->isChecked();
 
-    protectGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
+    protectAction_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
     actProtect_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
     actProtect_->setChecked(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) &&
         doc->isProtected());
@@ -950,7 +906,7 @@ void MainWindow::updateMenuStrip()
 
     if (isMemoryDesign)
     {
-        generationGroup_->hide();
+        generationAction_->setVisible(false);
 
         actionFilterAddressSpaceChains_->setChecked(memoryDocument->addressSpaceChainsAreFiltered());
         actionCondenseMemoryItems_->setChecked(memoryDocument->memoryItemsAreCondensed());
@@ -961,7 +917,7 @@ void MainWindow::updateMenuStrip()
         actionFilterUnconnectedMemoryItems_->setChecked(memoryDocument->unconnectedMemoryItemsAreFiltered());
     }
 
-    filteringGroup_->setVisible(isMemoryDesign);
+    filteringAction_->setVisible(isMemoryDesign);
 }
 
 //-----------------------------------------------------------------------------
@@ -3415,8 +3371,6 @@ void MainWindow::createGeneratorPluginActions()
 
             generationGroup_->addAction(action);
             pluginActionGroup_->addAction(action);
-
-            generationGroup_->widgetForAction(action)->installEventFilter(ribbon_);
         }
     }
 
@@ -3560,7 +3514,7 @@ void MainWindow::setPluginVisibilities()
         }
     }
 
-    generationGroup_->setVisible(isGenerationGroupVisible && doc);
+    generationAction_->setVisible(isGenerationGroupVisible && doc);
 }
 
 //-----------------------------------------------------------------------------

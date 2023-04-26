@@ -691,6 +691,9 @@ private:
     //! The Edit group.
     RibbonGroup* editGroup_;
 
+    //! Action for controlling edit group visibility.
+    QAction* editAction_ = nullptr;
+
     //! Action to undo an operation.
     QAction* actUndo_;
 
@@ -709,6 +712,9 @@ private:
     //! The generation group.
     RibbonGroup* generationGroup_;
 
+    //! Action for controlling generation group visibility.
+    QAction* generationAction_ = nullptr;
+
     //! Action group for plugin generators.
     QActionGroup* pluginActionGroup_;
 
@@ -720,6 +726,9 @@ private:
 
     //! The Diagram Tools group.
     RibbonGroup* diagramToolsGroup_;
+
+    //! Action for controlling diagram tools visibility.
+    QAction* diagramToolsAction_ = nullptr;
 
     //! Action to add a new column to the current diagram.
     QAction* actAddColumn_;
@@ -769,6 +778,9 @@ private:
     //! The protection group.
     RibbonGroup* protectGroup_; 
 
+    //! Action for controlling protection visibility.
+    QAction* protectAction_ = nullptr;
+
     //! Action to refresh the current document.
     QAction* actRefresh_;
 
@@ -792,11 +804,17 @@ private:
     //! The group for configuration tools.
     RibbonGroup* configurationToolsGroup_;
 
+    //! Action for controlling configurationGroup visibility.
+    QAction* configurationToolsAction_ = nullptr;
+
     //! The action to configure the views.
     QAction* actionConfigureViews_;
 
     //! The group for filtering tools.
     RibbonGroup* filteringGroup_;
+
+    //! Action for controlling filtering visibility.
+    QAction* filteringAction_ = nullptr;
 
     //! The action to filter chained address space memory connections in a memory designer.
     QAction* actionFilterAddressSpaceChains_;
