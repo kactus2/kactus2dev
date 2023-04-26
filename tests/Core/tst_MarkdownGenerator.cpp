@@ -213,7 +213,7 @@ void tst_MarkdownGenerator::testInvalidVlnvInConstructor()
     VLNV invalidVlnv(VLNV::COMPONENT, "invalid", "library", "component", "0");
     
     DocumentGenerator generator(&library_, invalidVlnv, &designWidgetFactory_,
-        &expressionFormatterFactory_, DocumentGenerator::MD, generatorParentWidget_);
+        &expressionFormatterFactory_, 1, generatorParentWidget_);
     
     QSignalSpy spy(&generator, SIGNAL(errorMessage(QString const&)));
     
@@ -906,7 +906,7 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
         "\n"
         "#### 1.1.1.1 Component instantiation: testInstantiation  \n"
         "\n"
-        "**Language:** C  \n"
+        "**Language:** C **strict**  \n"
         "\n"
         "**Library:** testLibrary  \n"
         "\n"
@@ -977,7 +977,7 @@ void tst_MarkdownGenerator::testDesignIsWritten()
     generator->writeViews(stream, subHeaderNumber, files);
 
     targetFile.close();
-    targetFile.copy("OUTPUT.md");
+
     QString expectedOutput(
         "## 1.1 Views <a id=\"Test:TestLibrary:TestComponent:1.0.views\">  \n"
         "\n"
@@ -1004,7 +1004,7 @@ DocumentGenerator* tst_MarkdownGenerator::createTestGenerator()
     library_.addComponent(topComponent_);
 
     DocumentGenerator* generator(new DocumentGenerator(&library_, topComponentVlnv_, &designWidgetFactory_,
-        &expressionFormatterFactory_, DocumentGenerator::MD, generatorParentWidget_));
+        &expressionFormatterFactory_, 1, generatorParentWidget_));
 
     generator->setFormat(DocumentGenerator::DocumentFormat::MD);
     return generator;

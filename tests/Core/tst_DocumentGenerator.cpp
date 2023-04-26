@@ -256,7 +256,7 @@ void tst_DocumentGenerator::testInvalidVlnvInConstructor()
     VLNV invalidVlnv(VLNV::COMPONENT, "invalid", "library", "component", "0");
 
     DocumentGenerator generator (&library_, invalidVlnv, &designWidgetFactory_,
-        &expressionFormatterFactory_, DocumentGenerator::HTML, generatorParentWidget_);
+        &expressionFormatterFactory_, 1, generatorParentWidget_);
 
     QSignalSpy spy(&generator, SIGNAL(errorMessage(QString const&)));
 
@@ -1216,16 +1216,13 @@ void tst_DocumentGenerator::testDesignIsWritten()
     targetFile.close();
 
     QString expectedOutput(
-        "\t\t\t<h2><a id=\"Test:TestLibrary:TestComponent:1.0.views\">1.1 Views</a></h2>\n"
+        "\t\t<h2><a id=\"Test:TestLibrary:TestComponent:1.0.views\">1.1 Views</a></h2>\n"
         "\t\t\t<h3>1.1.1 View: HierarchicalView</h3>\n"
+        "\t\t\t<h4>1.1.1.1 Design instantiation: design_instantiation</h4>\n"
         "\t\t\t<p>\n"
+        "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Design: </strong>Test:TestLibrary:TestDesign:1.0<br>\n"
+        "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>IP-Xact file: </strong><a href=\"\">TestDesign.1.0.xml</a><br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t\t<h4>1.1.1.1 Design instantiation: design_instantiation</h4>\n"
-        "\t\t\t\t<p>\n"
-        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Design: </strong>Test:TestLibrary:TestDesign:1.0<br>\n"
-        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>IP-Xact file: </strong><a href=\"\">TestDesign.1.0.xml</a><br>\n"
-        "\t\t\t\t</p>\n"
-        "\t\t\t<br>\n"
         "\t\t\tDiagram of design Test:TestLibrary:TestDesign:1.0:<br>\n"
         "\t\t\t<img src=\"Test.TestLibrary.TestComponent.1.0.HierarchicalView.png\" alt=\"View: HierarchicalView preview picture\"><br>\n"
         "\t\t\t<br>\n"
@@ -1268,8 +1265,10 @@ DocumentGenerator* tst_DocumentGenerator::createTestGenerator()
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml", topComponent_);
     library_.addComponent(topComponent_);
 
+    int componentNumber = 1;
+
     DocumentGenerator* generator (new DocumentGenerator(&library_, topComponentVlnv_, &designWidgetFactory_, 
-        &expressionFormatterFactory_, DocumentGenerator::HTML, generatorParentWidget_));
+        &expressionFormatterFactory_, componentNumber, generatorParentWidget_));
 
     generator->setFormat(DocumentGenerator::HTML);
     return generator;
