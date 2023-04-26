@@ -78,10 +78,31 @@ void HtmlWriter::writeHeader(QTextStream& stream)
 
 void HtmlWriter::writeComponentHeader(QTextStream& stream)
 {
+    stream << indent(2) << "<h1><a id=\"" << vlnvString_ << "\">" << componentNumber_ << ". Component " <<
+        component_->getVlnv().toString(" - ") << "</a></h1>" << Qt::endl;
 }
 
 void HtmlWriter::writeComponentInfo(QTextStream& stream)
 {
+    stream << indent(2) << "<p>" << Qt::endl;
+
+    stream << indent(2) << "<img src=\"" << component_->getVlnv().toString(".") << ".png\" alt=\"" <<
+        component_->getVlnv().toString(" - ") << " preview picture\"><br>" << Qt::endl;
+
+    // if component has description, write it
+    if (!component_->getDescription().isEmpty())
+    {
+        stream << indent(2) << "<strong>Description:</strong> " << component_->getDescription() << "<br>" << Qt::endl;
+    }
+
+    // print relative path to the xml file
+    QFileInfo compXmlInfo(libraryHandler_->getPath(component_->getVlnv()));
+    QString relativeXmlPath = General::getRelativePath(getTargetPath(), compXmlInfo.absoluteFilePath());
+    stream << indent(2) << "<strong>IP-Xact file: </strong><a href=\"" <<
+        relativeXmlPath << "\">" << compXmlInfo.fileName() <<
+        "</a><br>" << Qt::endl;
+
+    stream << indent(2) << "</p>" << Qt::endl;
 }
 
 void HtmlWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
@@ -103,6 +124,9 @@ void HtmlWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
 
 void HtmlWriter::writeTableOfContentsHeader(QTextStream& stream)
 {
+    stream << indent(2) << "<p>" << Qt::endl;
+    stream << indent(2) << "<strong>Table of contents</strong><br>" << Qt::endl;
+    stream << indent(2) << "</p>" << Qt::endl;
 }
 
 void HtmlWriter::writeTableOfContents(QTextStream& stream)
