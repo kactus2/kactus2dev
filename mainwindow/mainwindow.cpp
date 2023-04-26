@@ -1252,7 +1252,7 @@ void MainWindow::generateDoc()
     QFileInfo xmlInfo(XMLPath);
 
     QString targetPath = QFileDialog::getSaveFileName(NULL, tr("Save the documentation to..."),
-        xmlInfo.absolutePath(), tr("web pages (*.html)"));
+        xmlInfo.absolutePath(), tr("markdown (*.md);;web pages (*.html)"));
 
     if (targetPath.isEmpty())
     {
@@ -1268,6 +1268,14 @@ void MainWindow::generateDoc()
         return;
     }
 
+    std::unordered_map<QString, DocumentGenerator::DocumentFormat> formats =
+    {
+        {QString("md"), DocumentGenerator::MD},
+        {QString("html"), DocumentGenerator::HTML}
+    };
+
+    DocumentGenerator::DocumentFormat docFormat = formats.at(targetPath.split(".").back());
+
     QTextStream stream(&targetFile);
 
     DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_,
@@ -1275,7 +1283,9 @@ void MainWindow::generateDoc()
 
     ExpressionFormatterFactoryImplementation expressionFormatterFactory;
 
-    DocumentGenerator generator(libraryHandler_, vlnv, &designWidgetFactory, &expressionFormatterFactory, this);
+    DocumentGenerator generator(libraryHandler_, vlnv, &designWidgetFactory, &expressionFormatterFactory, 1, this);
+    generator.setFormat(docFormat);
+
     connect(&generator, SIGNAL(errorMessage(const QString&)),
         dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(&generator, SIGNAL(noticeMessage(const QString&)),
