@@ -88,17 +88,20 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     // parse the model for the component
     component_ = libraryHandler_->getModel(vlnv).dynamicCast<Component>();
 
-    // htmlWriter = ...
-    // mdWriter = ...
-
-
     componentFinder_ = QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(component_));
     expressionFormatter_ = expressionFormatterFactory_->makeExpressionFormatter(component_);
 
     if (!component_)
     {
        emit errorMessage("VLNV was not found in the library.");
+       return;
     }
+
+    htmlWriter_ = new HtmlWriter(component_, expressionFormatter_, expressionFormatterFactory_,
+        libraryHandler_, componentNumber_);
+
+    mdWriter_ = new MarkdownWriter(component_, expressionFormatter_, expressionFormatterFactory_,
+        libraryHandler_, componentNumber_);
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +115,7 @@ DocumentGenerator::~DocumentGenerator()
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::parseChildItems()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::parseChildItems( QList<VLNV>& objects, int& currentComponentNumber)
+void DocumentGenerator::parseChildItems(QList<VLNV>& objects, int& currentComponentNumber)
 {
     // ask the component for it's hierarchical references
     QList<VLNV> refs = component_->getHierRefs();
@@ -156,12 +159,14 @@ void DocumentGenerator::setFormat(DocumentFormat format)
 {
     if (format == DocumentFormat::HTML)
     {
-        writer_ = new HtmlWriter(component_, expressionFormatter_, expressionFormatterFactory_, libraryHandler_, componentNumber_);
+        writer_ = htmlWriter_;
     }
     else if (format == DocumentFormat::MD)
     {
-        writer_ = new MarkdownWriter(component_, expressionFormatter_, expressionFormatterFactory_, libraryHandler_, componentNumber_);
+        writer_ = mdWriter_;
     }
+
+    currentFormat_ = format;
 }
 
 //-----------------------------------------------------------------------------
@@ -350,7 +355,7 @@ void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumbe
 // Function: documentgenerator::writeAddressBlock()
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > addressBlocks, QTextStream& stream,
-    int& subHeaderNumber, int& memoryMapNumber)
+    int subHeaderNumber, int memoryMapNumber)
 {
     writer_->writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
 }
@@ -359,7 +364,7 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
 // Function: documentgenerator::writeRegisters()
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > registers, QTextStream& stream,
-    int& subHeaderNumber, int& memoryMapNumber, int& addressBlockNumber)
+    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber)
 {
     writer_->writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
 }
@@ -444,14 +449,6 @@ void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
 ExpressionFormatterFactory* DocumentGenerator::getExpressionFormatterFactory() const
 {
     return expressionFormatterFactory_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: documentgenerator::writeSubHeader()
-//-----------------------------------------------------------------------------
-void DocumentGenerator::writeSubHeader(const unsigned int& subHeaderNumber, QTextStream& stream, const QString& text,
-    const QString& headerID)
-{
 }
 
 void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View> view, int const& subHeaderNumber, int const& viewNumber, QStringList& pictureList)
@@ -701,8 +698,6 @@ void DocumentGenerator::createDesignPicture(QStringList& pictureList, QString co
 
     // set the size of the picture
     QPixmap designPic(boundingRect.size().toSize());
-
-    //
 
     // create the picture for the component
     QPainter painter(&designPic);

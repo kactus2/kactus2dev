@@ -137,7 +137,7 @@ public:
      *      @param [in] memoryMapNumber     The number for the memory map, whose address blocks are written.
      */
     void writeAddressBlocks(QList <QSharedPointer <AddressBlock> > addressBlocks, QTextStream& stream,
-        int& subHeaderNumber, int& memoryMapNumber);
+        int subHeaderNumber, int memoryMapNumber);
 
     /*!
      *  Write the registers of the address block.
@@ -148,8 +148,8 @@ public:
      *      @param [in] memoryMapNumber     The number that defines the memory map.
      *      @param [in] addressBlockNumber  The number that defines the address block.
      */
-    void writeRegisters(QList <QSharedPointer <Register> > registers, QTextStream& stream, int& subHeaderNumber,
-        int& memoryMapNumber, int& addressBlockNumber);
+    void writeRegisters(QList <QSharedPointer <Register> > registers, QTextStream& stream, int subHeaderNumber,
+        int memoryMapNumber, int addressBlockNumber);
 
     /*!
      *  Write the fields of the register.
@@ -226,16 +226,6 @@ private:
      *      @return The factory used for creating expression formatters.
      */
     ExpressionFormatterFactory* getExpressionFormatterFactory() const;
-
-    /*!
-     *  Write the header to the given stream.
-     *
-     *      @param [in] headerNumber    The number of the sub-header.
-     *      @param [in] stream          The stream to write into.
-     *      @param [in] text            The textual part of the header.
-     *      @param [in] headerID        The id-tag for the header element.
-     */
-    void writeSubHeader(unsigned const int& headerNumber, QTextStream& stream, const QString& text, const QString& headerID);
 
     /*!
      *  Write the selected view.
@@ -402,11 +392,20 @@ private:
     //! Factory for constructing design widgets used to create a picture of the design diagram.
     DesignWidgetFactory* designWidgetFactory_;
 
+    //! The active writer
     DocumentationWriter* writer_;
 
+    //! Parameter finder for the documented component.
     QSharedPointer<ComponentParameterFinder> componentFinder_;
 
+    //! The current document format
     DocumentFormat currentFormat_;
+
+    //! Writer for markdown
+    DocumentationWriter* mdWriter_;
+
+    //! Writer for HTML
+    DocumentationWriter* htmlWriter_;
 };
 
 #endif // DOCUMENTGENERATOR_H
