@@ -295,20 +295,26 @@ void MainWindow::setupActions()
     connect(designTabs_, SIGNAL(documentModifiedChanged(bool)),
         actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
+
     actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), tr("Save As"), this);
     actSaveAs_->setShortcut(QKeySequence::SaveAs);
     actSaveAs_->setEnabled(false);
     connect(actSaveAs_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocumentAs()));
 
-    actSaveHierarchy_ = new QAction(QIcon(":/icons/common/graphics/file-save-hierarchical.png"),
-        tr("Save Hierarchy"), this);
-    actSaveHierarchy_->setEnabled(false);
-    connect(actSaveHierarchy_, SIGNAL(triggered()), this, SLOT(saveCurrentDocumentHierarchy()));
-
     actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
         tr("Save All (Ctrl+Shift+S)"), this);
     actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
     connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
+
+    actSaveHierarchy_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
+        tr("Save Hierarchy"), this);
+    actSaveHierarchy_->setEnabled(false);
+    connect(actSaveHierarchy_, SIGNAL(triggered()), this, SLOT(saveCurrentDocumentHierarchy()));
+
+    auto saveMenu = new QMenu(this);
+    saveMenu->addAction(actSaveAll_);
+    saveMenu->addAction(actSaveHierarchy_);
+    actSaveAs_->setMenu(saveMenu);
 
     actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print (Ctrl+P)"), this);
     actPrint_->setShortcut(QKeySequence::Print);
@@ -561,11 +567,13 @@ void MainWindow::setupMenus()
     fileGroup->addAction(actNew_);
     fileGroup->addAction(actSave_);
     fileGroup->addAction(actSaveAs_);
-    fileGroup->addAction(actSaveAll_);
-    fileGroup->addAction(actSaveHierarchy_);
     fileGroup->addAction(actPrint_);
     fileGroup->addAction(actImageExport_);
+    fileGroup->addAction(actRunImport_);
+
     ribbon_->addGroup(fileGroup);
+    actRunImport_->setVisible(false);
+    actRunImport_->setEnabled(false);
 
     // The "Library" group.
     RibbonGroup* libGroup = new RibbonGroup(tr("Library"), ribbon_);
@@ -594,7 +602,6 @@ void MainWindow::setupMenus()
     // The "Generation" group.
     generationGroup_ = new RibbonGroup(tr("Generation"), ribbon_);
     generationGroup_->addAction(actGenDocumentation_);
-    generationGroup_->addAction(actRunImport_);
 
     generationAction_ = ribbon_->addGroup(generationGroup_);
     generationAction_->setVisible(false);
@@ -605,12 +612,12 @@ void MainWindow::setupMenus()
     //! The "Diagram Tools" group.
     diagramToolsGroup_ = new RibbonGroup(tr("Diagram Tools"), ribbon_);
     diagramToolsGroup_->addAction(actToolSelect_);
-    diagramToolsGroup_->addAction(actAddColumn_);
     diagramToolsGroup_->addAction(actToolConnect_);
     diagramToolsGroup_->addAction(actToolInterface_);
     diagramToolsGroup_->addAction(actToolDraft_);
     diagramToolsGroup_->addAction(actToolToggleOffPage_);
     diagramToolsGroup_->addAction(actToolLabel_);
+    diagramToolsGroup_->addAction(actAddColumn_);
 
     diagramToolsAction_ = ribbon_->addGroup(diagramToolsGroup_);
     diagramToolsAction_->setVisible(false);
