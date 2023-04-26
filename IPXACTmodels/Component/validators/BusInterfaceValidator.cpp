@@ -769,9 +769,11 @@ void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors
             if (!master->getBaseAddress().isEmpty())
             {
                 bool changeOk = true;
-                int baseAddress = expressionParser_->parseExpression(master->getBaseAddress()).toInt(&changeOk);
+                bool expressionValid = false;
 
-                if (!changeOk || baseAddress < 0)
+                int baseAddress = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toInt(&changeOk);
+
+                if (!changeOk || !expressionValid || baseAddress < 0)
                 {
                     errors.append(QObject::tr("Invalid base address set for %1").arg(context));
                 }
