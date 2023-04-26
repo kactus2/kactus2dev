@@ -594,10 +594,41 @@ void HtmlWriter::writeDocumentReference(QTextStream& stream, QString const& docu
 
 void HtmlWriter::writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText)
 {
+    stream << indent(3) << title << "<br>" << Qt::endl;
+    stream << indent(3) << "<img src=\"" << link << "\" alt=\"" << altText << "\"><br>" << Qt::endl;
 }
 
 void HtmlWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> configuration)
 {
+    if (design->getComponentInstances()->isEmpty())
+    {
+        return;
+    }
+
+    QString instanceTitle = QString("Component instances within design %1").arg(design->getVlnv().toString());
+    stream << indent(3) << "<br>" << Qt::endl;
+    stream << indent(3) << instanceTitle << ":<br>" << Qt::endl;
+    
+    stream << indent(3) << HTML::TABLE << "\">" << Qt::endl;
+    
+    writeTableHeader(stream, DocumentationWriter::DESIGN_INSTANCE_HEADERS, 3);
+
+    for (auto const& instance : *design->getComponentInstances())
+    {
+        QStringList rowCells(QStringList()
+            << instance->getInstanceName()
+            << "<a href=\"" + instance->getComponentRef()->toString(":") + "\">"
+                + instance->getComponentRef()->toString(" - ") + "</a>"
+            << getComponentInstanceConfigurableElements(instance, design)
+            << (configuration && configuration->getDesignRef() == design->getVlnv()
+                ? configuration->getActiveView(instance->getInstanceName())
+                : QStringLiteral(""))
+        );
+
+        writeTableRow(stream, rowCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
 }
 
 QString HtmlWriter::indent(int n) const
@@ -853,6 +884,7 @@ void HtmlWriter::writeFileBuildCommands(QTextStream& stream, QSharedPointer<Comp
 
     stream << indent(3) << "<p>Default file build commands:</p>" << Qt::endl;
 
+    stream << indent(3) << HTML::TABLE << "\">" << Qt::endl;
     writeTableHeader(stream, DocumentationWriter::DEFAULT_FILE_BUILDER_HEADERS, 3);
 
     for (auto const& defaultBuilder : *instantiation->getDefaultFileBuilders())
@@ -881,6 +913,8 @@ void HtmlWriter::writeConfigurableElementValues(QTextStream& stream, QSharedPoin
     stream << indent(3) << "<p>Configurable element values:</p>" << Qt::endl;
 
     QStringList paramHeaders({ QStringLiteral("Name"), QStringLiteral("Value") });
+    
+    stream << indent(3) << HTML::TABLE << "\">" << Qt::endl;
     writeTableHeader(stream, paramHeaders, 3);
 
     for (auto const& element : *vlnvReference->getConfigurableElementValues())
@@ -893,6 +927,44 @@ void HtmlWriter::writeConfigurableElementValues(QTextStream& stream, QSharedPoin
     }
 
     stream << indent(3) << "</table>" << Qt::endl;
+}
+
+QString HtmlWriter::getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance, QSharedPointer<Design> design)
+{
+    QString cell;
+    VLNV componentVLNV = *instance->getComponentRef();
+
+    QSharedPointer<Document> libComp = libraryHandler_->getModel(componentVLNV);
+    QSharedPointer<Component> component = libComp.staticCast<Component>();
+
+    QSharedPointer<ExpressionFormatter> equationFormatter = createDesignInstanceFormatter(design, component);
+
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >  confElements =
+        instance->getConfigurableElementValues();
+
+    for (auto const& element : *confElements)
+    {
+        QString configurableElementID = element->getReferenceId();
+        QString configurableElementName = equationFormatter->formatReferringExpression(configurableElementID);
+
+        if (configurableElementID == configurableElementName)
+        {
+            cell.append(QStringLiteral("<font color=red>Unknown</font>"));
+        }
+        else
+        {
+            cell.append(configurableElementName);
+        }
+
+        cell.append(" = " + equationFormatter->formatReferringExpression(element->getConfigurableValue()));
+
+        if (element != confElements->last())
+        {
+            cell.append(QStringLiteral("<br>"));
+        }
+    }
+
+    return cell;
 }
 
 void HtmlWriter::writeParameterTable(QTextStream& stream, QString const& title,

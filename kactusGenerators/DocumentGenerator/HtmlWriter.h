@@ -149,6 +149,9 @@ private:
         QSharedPointer<ConfigurableVLNVReference> vlnvReference,
         ExpressionFormatter* instantiationFormatter);
 
+    QString getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<Design> design);
+
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
 
