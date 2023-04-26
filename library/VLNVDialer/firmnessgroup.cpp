@@ -13,7 +13,7 @@
 
 #include <KactusAPI/include/utils.h>
 
-#include <QGridLayout>
+#include <common/widgets/tagEditor/FlowLayout.h>
 
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::FirmnessGroup()
@@ -37,13 +37,10 @@ options_()
     connect(&mutableBox_, SIGNAL(clicked(bool)), this, SLOT(onMutableChanged(bool)), Qt::UniqueConnection);
     connect(&fixedBox_, SIGNAL(clicked(bool)), this, SLOT(onConfigurationChanged(bool)), Qt::UniqueConnection);
 
-    QGridLayout* layout = new QGridLayout(this);
-    layout->addWidget(&templateBox_, 0, 0, 1, 1);
-    layout->addWidget(&mutableBox_, 0, 1, 1, 1);
-    layout->addWidget(&fixedBox_, 0, 2, 1, 1);
-    layout->setSpacing(0);
-    layout->setColumnStretch(3, 1);
-    layout->setContentsMargins(4, 4, 4, 4);
+    auto layout = new FlowLayout(this, 2, 1, 1);
+    layout->addWidget(&templateBox_);
+    layout->addWidget(&mutableBox_);
+    layout->addWidget(&fixedBox_);
 }
 
 //-----------------------------------------------------------------------------

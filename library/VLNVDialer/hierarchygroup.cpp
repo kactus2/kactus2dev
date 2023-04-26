@@ -13,7 +13,7 @@
 
 #include <KactusAPI/include/utils.h>
 
-#include <QGridLayout>
+#include <common/widgets/tagEditor/FlowLayout.h>
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyGroup::HierarchyGroup()
@@ -35,16 +35,13 @@ options_()
     setupButton(&socBox_, tr("SoC"));
 	setupButton(&ipBox_, tr("IP"));
 
-	QGridLayout* layout = new QGridLayout(this);
-	layout->addWidget(&productBox_, 0, 0, 1, 1);
-	layout->addWidget(&boardBox_, 0, 1, 1, 1);
-	layout->addWidget(&chipBox_, 0, 2, 1, 1);
-	layout->addWidget(&socBox_, 1, 0, 1, 1);
-    layout->addWidget(&ipBox_, 1, 1, 1, 1);
-    layout->addWidget(&flatBox_, 1, 2, 1, 1);
-	layout->setColumnStretch(3, 1);
-	layout->setSpacing(0);
-	layout->setContentsMargins(4, 4, 4, 4);
+	auto layout = new FlowLayout(this, 2, 1, 1);
+	layout->addWidget(&productBox_);
+	layout->addWidget(&boardBox_);
+	layout->addWidget(&chipBox_);
+	layout->addWidget(&socBox_);
+    layout->addWidget(&ipBox_);
+    layout->addWidget(&flatBox_);
 
 	flatBox_.setChecked(true);
 	productBox_.setChecked(true);

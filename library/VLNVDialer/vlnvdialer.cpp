@@ -177,8 +177,8 @@ void VLNVDialer::setupLayout()
     layout->addWidget(new QLabel(tr("Library Filters"), this), 0, 0, 1, 1, Qt::AlignLeft);
     layout->addWidget(&hideButton_, 0, 1, 1, 1, Qt::AlignRight);
     layout->addWidget(&selectAllButton_, 0, 2, 1, 1, Qt::AlignRight);
-    layout->addWidget(&filters_, 1, 0, 1, 3);
-    layout->addWidget(&dialer_, 2, 0, 1, 3);
+    layout->addWidget(&dialer_, 1, 0, 1, 3);
+    layout->addWidget(&filters_, 2, 0, 1, 3);
     layout->addWidget(&tagGroup_, 3, 0, 1, 3);
 
     layout->setColumnStretch(0, 1);

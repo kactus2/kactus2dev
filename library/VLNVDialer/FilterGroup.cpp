@@ -29,7 +29,7 @@ void FilterGroup::setupButton(QPushButton* button, QString const& tooltip)
     button->setFlat(true);
     button->setCheckable(true);
 
-    const int ICON_SIZE = 32;
+    const int ICON_SIZE = 24;
     button->setMinimumHeight(ICON_SIZE);
     button->setIconSize(QSize(ICON_SIZE, ICON_SIZE));
 }

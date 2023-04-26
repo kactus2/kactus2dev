@@ -11,8 +11,9 @@
 
 #include "implementationgroup.h"
 
+#include <common/widgets/tagEditor/FlowLayout.h>
+
 #include <QIcon>
-#include <QGridLayout>
 
 //-----------------------------------------------------------------------------
 // Function: ImplementationGroup::ImplementationGroup()
@@ -27,7 +28,6 @@ ImplementationGroup::ImplementationGroup(QWidget* parent) :
     setupButton(&hwBox_, tr("HW"));
     setupButton(&swBox_, tr("SW"));
     setupButton(&systemBox_, tr("System"));
-    setupLayout();
 
     hwBox_.setChecked(true);
 	swBox_.setChecked(true);
@@ -36,6 +36,8 @@ ImplementationGroup::ImplementationGroup(QWidget* parent) :
 	connect(&hwBox_, SIGNAL(clicked(bool)),	this, SLOT(onHWChanged(bool)), Qt::UniqueConnection);
 	connect(&swBox_, SIGNAL(clicked(bool)),	this, SLOT(onSWChanged(bool)), Qt::UniqueConnection);
 	connect(&systemBox_, SIGNAL(clicked(bool)),	this, SLOT(onSystemChanged(bool)), Qt::UniqueConnection);
+
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,12 +110,12 @@ void ImplementationGroup::onSystemChanged(bool checked)
 //-----------------------------------------------------------------------------
 void ImplementationGroup::setupLayout()
 {
-    QGridLayout* layout = new QGridLayout(this);
-    layout->addWidget(&hwBox_, 0, 0, 1, 1);
-    layout->addWidget(&swBox_, 0, 1, 1, 1);
-    layout->addWidget(&systemBox_, 0, 2, 1, 1);
-    layout->setSpacing(0);
-    layout->setColumnStretch(3, 1);
-    layout->setContentsMargins(4, 4, 4, 4);
+    auto layout = new FlowLayout(this, 2, 1, 1);
+    layout->addWidget(&hwBox_);
+    layout->addWidget(&swBox_);
+    layout->addWidget(&systemBox_);
+    //layout->setSpacing(0);
+    //layout->setColumnStretch(3, 1);
+    //layout->setContentsMargins(4, 4, 4, 4);
 }
 

@@ -11,7 +11,8 @@
 
 #include "typegroup.h"
 
-#include <QGridLayout>
+#include <common/widgets/tagEditor/FlowLayout.h>
+
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
@@ -142,13 +143,10 @@ void TypeGroup::onAdvancedChange(bool checked)
 //-----------------------------------------------------------------------------
 void TypeGroup::setupLayout()
 {
-    QGridLayout* layout = new QGridLayout(this);
-    layout->addWidget(&busBox_, 0, 0, 1, 1);
-    layout->addWidget(&catalogBox_, 0, 1, 1, 1);
-    layout->addWidget(&componentBox_, 0, 2, 1, 1);
-    layout->addWidget(&apiComBox_, 1, 0, 1, 1);
-    layout->addWidget(&advancedBox_, 1, 1, 1, 1);
-    layout->setSpacing(0);
-    layout->setColumnStretch(5, 1);
-    layout->setContentsMargins(4, 4, 4, 4);
+    auto* layout = new FlowLayout(this, 2, 1, 1);
+    layout->addWidget(&busBox_);
+    layout->addWidget(&catalogBox_);
+    layout->addWidget(&componentBox_);
+    layout->addWidget(&apiComBox_);
+    layout->addWidget(&advancedBox_);
 }
