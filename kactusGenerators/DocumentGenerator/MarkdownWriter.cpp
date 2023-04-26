@@ -449,10 +449,6 @@ void MarkdownWriter::writeReferencedComponentInstantiation(QTextStream& stream, 
     ParameterList moduleParameters,
     ParameterList parameters)
 {
-    QString moduleParameterToolTip = QString("Module parameters of component instantiation ") +
-        instantiation->name();
-    QString parameterToolTip = QString("Parameters of component instantiation ") + instantiation->name();
-
     writeImplementationDetails(stream, instantiation);
     writeFileSetReferences(stream, instantiation);
     writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
@@ -705,39 +701,39 @@ void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> f
 
 void MarkdownWriter::writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
 {
-    QString language = instantiation->getLanguage();
-    QString library = instantiation->getLibraryName();
-    QString package = instantiation->getPackageName();
-    QString module = instantiation->getModuleName();
-    QString architecture = instantiation->getArchitectureName();
-    QString configuration = instantiation->getConfigurationName();
-
-    if (!language.isEmpty())
+    if (QString language = instantiation->getLanguage(); !language.isEmpty())
     {
-        stream << "**Language:** " << language << "  " << Qt::endl << Qt::endl;
+        stream << "**Language:** " << language;
+
+        if (instantiation->isLanguageStrict())
+        {
+            stream << " **strict**";
+        }
+
+        stream << "  " << Qt::endl << Qt::endl;
     }
     
-    if (!library.isEmpty())
+    if (QString library = instantiation->getLibraryName(); !library.isEmpty())
     {
         stream << "**Library:** " << library << "  " << Qt::endl << Qt::endl;
     }
 
-    if (!package.isEmpty())
+    if (QString package = instantiation->getPackageName(); !package.isEmpty())
     {
         stream << "**Package:** " << package << "  " << Qt::endl << Qt::endl;
     }
 
-    if (!module.isEmpty())
+    if (QString module = instantiation->getModuleName(); !module.isEmpty())
     {
         stream << "**Module name:** " << module << "  " << Qt::endl << Qt::endl;
     }
 
-    if (!architecture.isEmpty())
+    if (QString architecture = instantiation->getArchitectureName(); !architecture.isEmpty())
     {
         stream << "**Architecture:** " << architecture << "  " << Qt::endl << Qt::endl;
     }
 
-    if (!configuration.isEmpty())
+    if (QString configuration = instantiation->getConfigurationName(); !configuration.isEmpty())
     {
         stream << "**Configuration:** " << configuration << "  " << Qt::endl << Qt::endl;
     }

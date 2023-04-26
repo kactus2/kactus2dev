@@ -317,6 +317,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
     QStringList& filesToInclude)
 {
     writer_->setTargetPath(targetPath);
+    targetPath_ = targetPath;
 
     // write the component header, picture and info
     writer_->writeComponentHeader(stream);
@@ -708,8 +709,12 @@ void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> vi
 
     QString designDiagramTitle = QString("Diagram of design %1:").arg(design->getVlnv().toString());
     QString designDiagramAltText = QString("View: %1 preview picture").arg(view->name());
+    QString relativePicPath = component_->getVlnv().toString(".")
+        + QStringLiteral(".")
+        + view->name()
+        + QStringLiteral(".png");
 
-    writer_->writeDiagram(stream, designDiagramTitle, designPicPath, designDiagramAltText);
+    writer_->writeDiagram(stream, designDiagramTitle, relativePicPath, designDiagramAltText);
     writer_->writeDesignInstances(stream, design, configuration);
 }
 
@@ -734,6 +739,8 @@ void DocumentGenerator::createDesignPicture(QStringList& pictureList, QString co
 
     // set the size of the picture
     QPixmap designPic(boundingRect.size().toSize());
+
+    //
 
     // create the picture for the component
     QPainter painter(&designPic);
