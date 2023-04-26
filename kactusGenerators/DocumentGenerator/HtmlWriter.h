@@ -13,8 +13,11 @@
 #define HTMLWRITER_H
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 
 #include <kactusGenerators/DocumentGenerator/DocumentationWriter.h>
+
 
 #include <QTextStream>
 #include <QSharedPointer>
@@ -25,17 +28,27 @@ class AddressBlock;
 class MemoryMap;
 class Register;
 class Field;
+class ListParameterFinder;
+class ComponentInstantiation;
 
 class HtmlWriter : public DocumentationWriter
 {
 public:
-    HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter, LibraryInterface* libraryHhandler);
+    HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter,
+        ExpressionFormatterFactory* expressionFormatterFactory,
+        LibraryInterface* libraryHhandler, int componentNumber);
 
     ~HtmlWriter() override;
 
     void writeHeader(QTextStream& stream) override;
 
+    void writeComponentHeader(QTextStream& stream) override;
+
+    void writeComponentInfo(QTextStream& stream) override;
+
     void writeKactusAttributes(QTextStream& stream, int subHeaderNumber) override;
+
+    void writeTableOfContentsHeader(QTextStream& stream) override;
 
     void writeTableOfContents(QTextStream& stream) override;
 
@@ -59,17 +72,47 @@ public:
 
     void setComponentNumber(int componentNumber) override;
 
-private:
-    // Returns n tabs for indenting HTML
-    QString indent(int n) const;
+    // Writes a component subheader for linked subheaders
+    void writeSubHeader(QTextStream& stream, int subHeaderNumber,
+        QString const& headerText, QString const& headerId) const override;
 
     // Writes a subheader of specified level and numbering for non-linked subheaders
     void writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
-        QString const& title, int level) const;
+        QString const& title, int level) const override;
 
-    // Writes a component subheader for linked subheaders
-    void writeSubHeader(QTextStream& stream, int subHeaderNumber,
-        QString const& headerText, QString const& headerId) const;
+    void writeDescription(QTextStream& stream, QString const& description) override;
+    
+    void writeReferencedComponentInstantiation(
+        QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter,
+        QSharedPointer<QList<QSharedPointer<Parameter>>> moduleParameters,
+        QSharedPointer<QList<QSharedPointer<Parameter>>> parameters) override;
+
+    void writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
+        QSharedPointer<ListParameterFinder> configurationFinder,
+        QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
+
+    void writeReferencedDesignInstantiation(QTextStream& stream,
+        QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
+        ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
+        override;
+
+    void writeErrorMessage(QTextStream& stream, QString const& message) override;
+
+    void writeDocumentReference(QTextStream& stream, QString const& documentType,
+        QSharedPointer<ConfigurableVLNVReference> vlnvReference) override;
+
+    void writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText)
+        override;
+
+    void writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design,
+        QSharedPointer<DesignConfiguration> configuration) override;
+
+private:
+    // Returns n tabs for indenting HTML
+    QString indent(int n) const;
 
     // Writes a table row with chosen indentation. Indentation is the number of tabs for
     // the parent element.
@@ -90,6 +133,17 @@ private:
         int subHeaderNumber, int fileSetNumber);
 
     void writeSingleFile(QTextStream& stream, QSharedPointer<File> file);
+
+    void writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation);
+
+    void writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation);
+
+    void writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
+        ExpressionFormatter* instantiationFormatter);
+
+    void writeParameterTable(QTextStream& stream, QString const& title,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+        ExpressionFormatter* formatter);
 
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;

@@ -7,6 +7,7 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/LibraryInterface.h>
@@ -38,12 +39,13 @@ namespace HTML
 }
 
 HtmlWriter::HtmlWriter(QSharedPointer<Component> component, ExpressionFormatter* formatter,
-    LibraryInterface* libraryHandler) :
+    ExpressionFormatterFactory* expressionFormatterFactory,
+    LibraryInterface* libraryHandler, int componentNumber) :
     component_(component),
-    componentNumber_(0),
+    componentNumber_(componentNumber),
     expressionFormatter_(formatter),
     libraryHandler_(libraryHandler),
-    DocumentationWriter(formatter)
+    DocumentationWriter(formatter, expressionFormatterFactory)
 {
     vlnvString_ = component_->getVlnv().toString();
 }
@@ -70,6 +72,14 @@ void HtmlWriter::writeHeader(QTextStream& stream)
         settings.value("General/Username").toString() << "</h6>" << Qt::endl;
 }
 
+void HtmlWriter::writeComponentHeader(QTextStream& stream)
+{
+}
+
+void HtmlWriter::writeComponentInfo(QTextStream& stream)
+{
+}
+
 void HtmlWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
 {
     writeSubHeader(stream, subHeaderNumber, "Kactus2 attributes", "attributes");
@@ -85,6 +95,10 @@ void HtmlWriter::writeKactusAttributes(QTextStream& stream, int subHeaderNumber)
         KactusAttribute::firmnessToString(component_->getFirmness()) << "<br>" << Qt::endl;
 
     stream << "\t\t</p>" << Qt::endl;
+}
+
+void HtmlWriter::writeTableOfContentsHeader(QTextStream& stream)
+{
 }
 
 void HtmlWriter::writeTableOfContents(QTextStream& stream)
@@ -452,10 +466,11 @@ void HtmlWriter::setComponentNumber(int componentNumber)
     componentNumber_ = componentNumber;
 }
 
-QString HtmlWriter::indent(int n) const
+void HtmlWriter::writeSubHeader(QTextStream& stream, int subHeaderNumber,
+    QString const& headerText, QString const& headerId) const
 {
-    auto tab = QStringLiteral("\t");
-    return tab.repeated(n);
+    stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerId << "\">" <<
+        componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
 }
 
 void HtmlWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers, QString const& title, int level) const
@@ -480,12 +495,60 @@ void HtmlWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHeader
     stream << indent(3) << headerTag << headerTitle << headerClosingTag << Qt::endl;
 }
 
-void HtmlWriter::writeSubHeader(QTextStream& stream, int subHeaderNumber,
-    QString const& headerText, QString const& headerId) const
+void HtmlWriter::writeDescription(QTextStream& stream, QString const& description)
 {
-    stream << "\t\t<h2><a id=\"" << component_->getVlnv().toString() << "." << headerId << "\">" <<
-        componentNumber_ << "." << subHeaderNumber << " " << headerText << "</a></h2>" << Qt::endl;
+    stream << indent(3) << "<p>" << Qt::endl;
+    if (!description.isEmpty())
+    {
+        stream << indent(3) << HTML::INDENT << "<strong>Description: </strong>" <<
+            description << "<br>" << Qt::endl;
+    }
+    stream << indent(3) << "</p>" << Qt::endl;
 }
+
+void HtmlWriter::writeReferencedComponentInstantiation(QTextStream& stream,
+    QSharedPointer<ComponentInstantiation> instantiation,
+    QSharedPointer<ExpressionFormatter> instantiationFormatter,
+    QSharedPointer<QList<QSharedPointer<Parameter>>> moduleParameters,
+    QSharedPointer<QList<QSharedPointer<Parameter>>> parameters)
+{
+    writeImplementationDetails(stream, instantiation);
+    writeFileSetReferences(stream, instantiation);
+    writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
+    writeParameterTable(stream, QString("Module parameters:"), moduleParameters, instantiationFormatter.data());
+    writeParameterTable(stream, QString("Parameters:"), parameters, instantiationFormatter.data());
+}
+
+void HtmlWriter::writeReferencedDesignConfigurationInstantiation(QTextStream& stream, QSharedPointer<ListParameterFinder> configurationFinder, QSharedPointer<DesignConfigurationInstantiation> instantiation, QSharedPointer<ExpressionFormatter> instantiationFormatter)
+{
+}
+
+void HtmlWriter::writeReferencedDesignInstantiation(QTextStream& stream, QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign, ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
+{
+}
+
+void HtmlWriter::writeErrorMessage(QTextStream& stream, QString const& message)
+{
+}
+
+void HtmlWriter::writeDocumentReference(QTextStream& stream, QString const& documentType, QSharedPointer<ConfigurableVLNVReference> vlnvReference)
+{
+}
+
+void HtmlWriter::writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText)
+{
+}
+
+void HtmlWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> configuration)
+{
+}
+
+QString HtmlWriter::indent(int n) const
+{
+    auto tab = QStringLiteral("\t");
+    return tab.repeated(n);
+}
+
 
 void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& fields, int indentation)
 {
@@ -638,4 +701,149 @@ void HtmlWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file)
     );
 
     writeTableRow(stream, fileTableCells, 4);
+}
+
+void HtmlWriter::writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
+{
+    QString language = instantiation->getLanguage();
+    QString library = instantiation->getLibraryName();
+    QString package = instantiation->getPackageName();
+    QString module = instantiation->getModuleName();
+    QString architecture = instantiation->getArchitectureName();
+    QString configuration = instantiation->getConfigurationName();
+
+    if (language.isEmpty() && library.isEmpty() && package.isEmpty() && module.isEmpty() &&
+        architecture.isEmpty() && configuration.isEmpty())
+    {
+        return;
+    }
+
+    stream << indent(3) << "<p>" << Qt::endl;
+
+    if (!language.isEmpty())
+    {
+        stream << indent(4) << HTML::INDENT << "<strong>Language: </strong>" <<
+            language;
+
+        if (instantiation->isLanguageStrict())
+        {
+            stream << " <strong>strict</strong>";
+        }
+
+        stream << "<br>" << Qt::endl;
+    }
+    if (!library.isEmpty())
+    {
+        stream << indent(4) << HTML::INDENT << "<strong>Library: </strong>" <<
+            library << "<br>" << Qt::endl;
+    }
+    if (!package.isEmpty())
+    {
+        stream << indent(4) << HTML::INDENT << "<strong>Package: </strong>" <<
+            package << "<br>" << Qt::endl;
+    }
+    if (!module.isEmpty())
+    {
+        stream << indent(4) << HTML::INDENT << "<strong>Module name: </strong>" <<
+            module << "<br>" << Qt::endl;
+    }
+    if (!architecture.isEmpty())
+    {
+        stream << indent(4) << HTML::INDENT <<
+            "<strong>Architecture: </strong>" << architecture << "<br>" << Qt::endl;
+    }
+    if (!configuration.isEmpty())
+    {
+        stream << indent(4) << HTML::INDENT <<
+            "<strong>Configuration: </strong>" << configuration << "<br>" << Qt::endl;
+    }
+
+    stream << indent(3) << "</p>" << Qt::endl;
+}
+
+void HtmlWriter::writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
+{
+    QStringList fileSetRefs = *instantiation->getFileSetReferences().data();
+    
+    if (fileSetRefs.isEmpty())
+    {
+        return;
+    }
+    
+    stream << indent(3) << "<p>" << Qt::endl;
+    stream << indent(4) << "File sets contained in this component instantiation: </strong>" <<
+        Qt::endl;
+    stream << indent(3) << "</p>" << Qt::endl;
+
+    stream << indent(3) << "<ul>" << Qt::endl;
+
+    for(auto const& fileSetRef : fileSetRefs)
+    {
+        stream << indent(4) << "<li><a href=\"#" << component_->getVlnv().toString() <<
+            ".fileSet." << fileSetRef << "\">" << fileSetRef << "</a></li>" << Qt::endl;
+    }
+
+    stream << indent(3) << "</ul>" << Qt::endl;
+}
+
+void HtmlWriter::writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
+    ExpressionFormatter* instantiationFormatter)
+{
+    if (instantiation->getDefaultFileBuilders()->isEmpty())
+    {
+        return;
+    }
+
+    stream << indent(3) << "<p>Default file build commands:</p>" << Qt::endl;
+
+    writeTableHeader(stream, DocumentationWriter::DEFAULT_FILE_BUILDER_HEADERS, 3);
+
+    for (auto const& defaultBuilder : *instantiation->getDefaultFileBuilders())
+    {
+        QStringList builderCells(QStringList()
+            << defaultBuilder->getFileType()
+            << defaultBuilder->getCommand()
+            << defaultBuilder->getFlags()
+            << instantiationFormatter->formatReferringExpression(defaultBuilder->getReplaceDefaultFlags())
+        );
+
+        writeTableRow(stream, builderCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
+void HtmlWriter::writeParameterTable(QTextStream& stream, QString const& title,
+    ParameterList parameters,
+    ExpressionFormatter* formatter)
+{
+    if (!parameters || parameters->isEmpty())
+    {
+        return;
+    }
+
+    stream << indent(3) << "<p>" << title << "</p>" << Qt::endl;
+
+    stream << indent(3) << HTML::TABLE <<"\">" << Qt::endl;
+
+    writeTableHeader(stream, DocumentationWriter::PARAMETER_HEADERS, 4);
+
+    for (auto const& parameter : *parameters)
+    {
+        QStringList paramCells(QStringList()
+            << parameter->name()
+            << parameter->getType()
+            << formatter->formatReferringExpression(parameter->getValue())
+            << parameter->getValueResolve()
+            << formatter->formatReferringExpression(parameter->getVectorLeft())
+            << formatter->formatReferringExpression(parameter->getVectorRight())
+            << formatter->formatReferringExpression(parameter->getArrayLeft())
+            << formatter->formatReferringExpression(parameter->getArrayRight())
+            << parameter->description()
+        );
+
+        writeTableRow(stream, paramCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
 }
