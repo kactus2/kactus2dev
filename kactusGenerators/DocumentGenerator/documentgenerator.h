@@ -60,23 +60,11 @@ public:
      *      @param [in] vlnv                        VLNV of the component or design.
      *      @param [in] designWidgetFactory         Factory for making design widgets.
      *      @param [in] expressionFormatterFactory  Factory for making expression formatters.
+     *      @param [in] componentNumber             Component number for current generator
      *      @param [in] parent                      The parent widget of the generator.
      */
     DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, DesignWidgetFactory* designWidgetFactory,
-        ExpressionFormatterFactory* expressionFormatterFactory, DocumentFormat format, QWidget* parent);
-
-    /*!
-     *  The constructor for child generators.
-     *
-     *      @param [in] handler                     Library, where the components reside.
-     *      @param [in] vlnv                        VLNV of the component or design.
-     *      @param [in] objects                     The vlnvs that have been gone through already.
-     *      @param [in] expressionFormatterFactory  The factory for making expression formatters.
-     *      @param [in] parent                      The parent generator.
-     */
-    DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects, DesignWidgetFactory* designWidgetFactory,
-        ExpressionFormatterFactory* expressionFormatterFactory, DocumentGenerator* parent,
-        int& currentComponentNumber, DocumentFormat format);
+        ExpressionFormatterFactory* expressionFormatterFactory, int componentNumber, QWidget* parent);
     
     /*!
      *  The destructor
@@ -238,13 +226,6 @@ private:
      *      @return The factory used for creating expression formatters.
      */
     ExpressionFormatterFactory* getExpressionFormatterFactory() const;
-
-    /*!
-     *  Create an expression formatter using the parameters of the contained component.
-     *
-     *      @return The created expression formatter.
-     */
-    ExpressionFormatter* createExpressionFormatter() const;
 
     /*!
      *  Write the header to the given stream.

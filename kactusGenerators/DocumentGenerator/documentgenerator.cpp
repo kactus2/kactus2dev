@@ -65,18 +65,19 @@
 //-----------------------------------------------------------------------------
 DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv,
     DesignWidgetFactory* designWidgetFactory, ExpressionFormatterFactory* expressionFormatterFactory,
-    DocumentFormat format,
-    QWidget* parent) :
+    int componentNumber, QWidget* parent) :
+    libraryHandler_(handler),
+    component_(),
+    componentNumber_(componentNumber),
+    targetPath_(),
     expressionFormatterFactory_(expressionFormatterFactory),
     childInstances_(),
     parentWidget_(parent),
     expressionFormatter_(),
-    component_(),
-    componentNumber_(1),
-    libraryHandler_(handler),
     designWidgetFactory_(designWidgetFactory),
+    writer_(nullptr),
     componentFinder_(nullptr),
-    currentFormat_(format)
+    currentFormat_(DocumentFormat::MD)
 {
     Q_ASSERT(handler);
     Q_ASSERT(parent);
@@ -87,65 +88,17 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     // parse the model for the component
     component_ = libraryHandler_->getModel(vlnv).dynamicCast<Component>();
 
+    // htmlWriter = ...
+    // mdWriter = ...
+
+
     componentFinder_ = QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(component_));
+    expressionFormatter_ = expressionFormatterFactory_->makeExpressionFormatter(component_);
 
     if (!component_)
     {
-        emit errorMessage("VLNV was not found in the library.");
+       emit errorMessage("VLNV was not found in the library.");
     }
-    else
-    {
-        expressionFormatter_ = DocumentGenerator::createExpressionFormatter();
-
-        // set the document format and create document writer
-        setFormat(currentFormat_);
-
-        // list of objects that have already been processed to avoid duplicates
-        QList<VLNV> objects;
-        objects.append(vlnv);
-
-        // Component number
-        int currentComponentNumber = 1;
-
-        parseChildItems(objects, currentComponentNumber);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: documentgenerator::DocumentGenerator()
-//-----------------------------------------------------------------------------
-DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv, QList<VLNV>& objects,
-    DesignWidgetFactory* designWidgetFactory, ExpressionFormatterFactory* expressionFormatterFactory,
-    DocumentGenerator* parent, int& currentComponentNumber, DocumentFormat format) :
-childInstances_(),
-libraryHandler_(handler),
-parentWidget_(NULL),
-expressionFormatterFactory_(expressionFormatterFactory),
-expressionFormatter_(),
-componentNumber_(currentComponentNumber),
-currentFormat_(format),
-designWidgetFactory_(designWidgetFactory)
-{
-    Q_ASSERT(libraryHandler_);
-    Q_ASSERT(parent);
-    Q_ASSERT(libraryHandler_->contains(vlnv));
-    Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
-
-    connect(this, SIGNAL(errorMessage(const QString&)),
-        parent, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(this, SIGNAL(noticeMessage(const QString&)),
-        parent, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-
-    QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
-    component_ = libComp.staticCast<Component>();
-
-    componentFinder_ = QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(component_));
-
-    expressionFormatter_ = DocumentGenerator::createExpressionFormatter();
-
-    setFormat(currentFormat_);
-
-    parseChildItems(objects, currentComponentNumber);
 }
 
 //-----------------------------------------------------------------------------
@@ -163,7 +116,7 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects, int& currentCompo
 {
     // ask the component for it's hierarchical references
     QList<VLNV> refs = component_->getHierRefs();
-    foreach (VLNV ref, refs)
+    for (auto const& ref : refs)
     {
         QSharedPointer<Design> design = libraryHandler_->getDesign(ref);
         if (!design)
@@ -171,10 +124,9 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects, int& currentCompo
             continue;
         }
 
-        foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
+        for (auto const& instance : *design->getComponentInstances())
         {
             if (!objects.contains(*instance->getComponentRef()) &&
-                libraryHandler_->contains(*instance->getComponentRef()) &&
                 libraryHandler_->getDocumentType(*instance->getComponentRef()) == VLNV::COMPONENT)
             {
                 // create a new instance of document generator and add it to child list
@@ -183,8 +135,17 @@ void DocumentGenerator::parseChildItems( QList<VLNV>& objects, int& currentCompo
                 currentComponentNumber++;
 
                 QSharedPointer<DocumentGenerator> docGenerator(new DocumentGenerator(libraryHandler_,
-                    *instance->getComponentRef(), objects, designWidgetFactory_, expressionFormatterFactory_,
-                    this, currentComponentNumber, currentFormat_));
+                    *instance->getComponentRef(), designWidgetFactory_, expressionFormatterFactory_,
+                    currentComponentNumber, parentWidget_));
+
+                docGenerator->setFormat(currentFormat_);
+                docGenerator->parseChildItems(objects, currentComponentNumber);
+
+                connect(docGenerator.data(), SIGNAL(errorMessage(const QString&)),
+                    this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+                connect(docGenerator.data(), SIGNAL(noticeMessage(const QString&)),
+                    this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+    
                 childInstances_.append(docGenerator);
             }
         }
@@ -222,6 +183,15 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
 
     // this function can only be called for the top document generator
     Q_ASSERT(parentWidget_);
+
+    // list of objects that have already been processed to avoid duplicates
+    QList<VLNV> objects;
+    objects.append(component_->getVlnv());
+
+    // Component number
+    int currentComponentNumber = 1;
+
+    parseChildItems(objects, currentComponentNumber);
 
     targetPath_ = targetPath;
     writeHeader(stream);
@@ -304,7 +274,7 @@ void DocumentGenerator::writeTableOfContents(QTextStream& stream)
     writer_->writeTableOfContents(stream);
 
     // tell each child to write it's table of contents
-    foreach (QSharedPointer<DocumentGenerator> generator, childInstances_)
+    for (auto const &generator : childInstances_)
     {
         generator->writeTableOfContents(stream);
     }
@@ -474,14 +444,6 @@ void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
 ExpressionFormatterFactory* DocumentGenerator::getExpressionFormatterFactory() const
 {
     return expressionFormatterFactory_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: GeneralDocumentGenerator::createExpressionFormatter()
-//-----------------------------------------------------------------------------
-ExpressionFormatter* DocumentGenerator::createExpressionFormatter() const
-{
-    return expressionFormatterFactory_->makeExpressionFormatter(component_);
 }
 
 //-----------------------------------------------------------------------------
