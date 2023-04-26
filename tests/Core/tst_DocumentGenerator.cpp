@@ -256,7 +256,7 @@ void tst_DocumentGenerator::testInvalidVlnvInConstructor()
     VLNV invalidVlnv(VLNV::COMPONENT, "invalid", "library", "component", "0");
 
     DocumentGenerator generator (&library_, invalidVlnv, &designWidgetFactory_,
-        &expressionFormatterFactory_, generatorParentWidget_);
+        &expressionFormatterFactory_, DocumentGenerator::HTML, generatorParentWidget_);
 
     QSignalSpy spy(&generator, SIGNAL(errorMessage(QString const&)));
 
@@ -1114,50 +1114,47 @@ void tst_DocumentGenerator::testViewsWrittenForTopComponent()
     int subHeaderNumber = 1;
     QStringList pictureList;
 
-    QScopedPointer<ViewDocumentGenerator> generator(createViewGenerator());
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
-    generator->setComponent(topComponent_, subHeaderNumber, QString());
     generator->writeViews(stream, subHeaderNumber, pictureList);
 
     targetFile.close();
 
     QString expectedOutput(
-        "\t\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".views\">1.1 Views</a></h2>\n"
+        "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".views\">1.1 Views</a></h2>\n"
         "\t\t\t<h3>1.1.1 View: testView</h3>\n"
+        "\t\t\t<h4>1.1.1.1 Component instantiation: testInstantiation</h4>\n"
         "\t\t\t<p>\n"
+        "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Language: </strong>C <strong>strict</strong><br>\n" 
+        "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Library: </strong>testLibrary<br>\n" 
+        "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Package: </strong>testPackage<br>\n" 
+        "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Module name: </strong>testModuleName<br>\n" 
         "\t\t\t</p>\n"
-        "\t\t\t\t<h4>1.1.1.1 Component instantiation: testInstantiation</h4>\n"
-        "\t\t\t\t<p>\n"
-        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Language: </strong>C <strong>strict</strong><br>\n" 
-        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Library: </strong>testLibrary<br>\n" 
-        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Package: </strong>testPackage<br>\n" 
-        "\t\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Module name: </strong>testModuleName<br>\n" 
-        "\t\t\t\t</p>\n"
-        "\t\t\t\t<p>Parameters:</p>\n"
-        "\t\t\t\t<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\" title=\"Parameters of component instantiation testInstantiation\">\n"
-        "\t\t\t\t\t<tr>\n"
-        "\t\t\t\t\t\t<th>Name</th>\n"
-        "\t\t\t\t\t\t<th>Type</th>\n"
-        "\t\t\t\t\t\t<th>Value</th>\n"
-        "\t\t\t\t\t\t<th>Resolve</th>\n"
-        "\t\t\t\t\t\t<th>Bit vector left</th>\n"
-        "\t\t\t\t\t\t<th>Bit vector right</th>\n"
-        "\t\t\t\t\t\t<th>Array left</th>\n"
-        "\t\t\t\t\t\t<th>Array right</th>\n"
-        "\t\t\t\t\t\t<th>Description</th>\n"
-        "\t\t\t\t\t</tr>\n"
-        "\t\t\t\t\t<tr>\n"
-        "\t\t\t\t\t\t<td>firstParameter</td>\n"
-        "\t\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t\t<td>10</td>\n"
-        "\t\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t\t<td></td>\n"
-        "\t\t\t\t\t</tr>\n"
-        "\t\t\t\t</table>\n"
+        "\t\t\t<p>Parameters:</p>\n"
+        "\t\t\t<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\" title=\"\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Name</th>\n"
+        "\t\t\t\t\t<th>Type</th>\n"
+        "\t\t\t\t\t<th>Value</th>\n"
+        "\t\t\t\t\t<th>Resolve</th>\n"
+        "\t\t\t\t\t<th>Bit vector left</th>\n"
+        "\t\t\t\t\t<th>Bit vector right</th>\n"
+        "\t\t\t\t\t<th>Array left</th>\n"
+        "\t\t\t\t\t<th>Array right</th>\n"
+        "\t\t\t\t\t<th>Description</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>firstParameter</td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td>10</td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t\t<td></td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
         );
 
     checkOutputFile(expectedOutput);
@@ -1205,7 +1202,7 @@ void tst_DocumentGenerator::testDesignIsWritten()
 
     topComponent_->getDesignInstantiations()->append(designInstantiation);
 
-    QScopedPointer<ViewDocumentGenerator> generator(createViewGenerator());
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
@@ -1214,7 +1211,6 @@ void tst_DocumentGenerator::testDesignIsWritten()
     int subHeaderNumber = 1;
     QStringList files;
 
-    generator->setComponent(topComponent_, subHeaderNumber, QString());
     generator->writeViews(stream, subHeaderNumber, files);
 
     targetFile.close();
@@ -1273,7 +1269,7 @@ DocumentGenerator* tst_DocumentGenerator::createTestGenerator()
     library_.addComponent(topComponent_);
 
     DocumentGenerator* generator (new DocumentGenerator(&library_, topComponentVlnv_, &designWidgetFactory_, 
-        &expressionFormatterFactory_, generatorParentWidget_));
+        &expressionFormatterFactory_, DocumentGenerator::HTML, generatorParentWidget_));
 
     generator->setFormat(DocumentGenerator::HTML);
     return generator;
