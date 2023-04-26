@@ -145,6 +145,10 @@ private:
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         ExpressionFormatter* formatter);
 
+    void writeConfigurableElementValues(QTextStream& stream,
+        QSharedPointer<ConfigurableVLNVReference> vlnvReference,
+        ExpressionFormatter* instantiationFormatter);
+
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
 
