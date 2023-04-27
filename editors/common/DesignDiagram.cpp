@@ -24,7 +24,7 @@
 #include <editors/common/diagramgrid.h>
 #include <editors/common/StickyNote/StickyNote.h>
 #include <editors/common/StickyNote/StickyNoteAddCommand.h>
-#include <editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
+#include <editors/HWDesign/AdhocEditor/AdHocVisibilityEditor.h>
 #include <editors/common/Association/AssociationAddCommand.h>
 
 #include <KactusAPI/include/LibraryInterface.h>

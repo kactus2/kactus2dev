@@ -704,11 +704,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/HWDesign/columnview/HWColumn.h \
     ./editors/HWDesign/views/CellEditTableView.h \
     ./editors/HWDesign/AdhocEditor/AdhocEditor.h \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityColumns.h \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.h \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.h \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityPolicy.h \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityModel.h \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityEditor.h \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityDelegate.h \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityColumns.h \
     ./editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ./editors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
     ./editors/HWDesign/undoCommands/AdHocTiedValueCommand.h \
@@ -1438,10 +1438,10 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/HWDesign/columnview/HWColumn.cpp \
     ./editors/HWDesign/views/CellEditTableView.cpp \
     ./editors/HWDesign/AdhocEditor/AdhocEditor.cpp \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.cpp \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.cpp \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.cpp \
-    ./editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.cpp \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityPolicy.cpp \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityModel.cpp \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityEditor.cpp \
+    ./editors/HWDesign/AdhocEditor/AdHocVisibilityDelegate.cpp \
     ./editors/HWDesign/undoCommands/AdHocBoundsChangeCommand.cpp \
     ./editors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ./editors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \

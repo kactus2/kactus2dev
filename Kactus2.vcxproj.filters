@@ -839,12 +839,6 @@
     <Filter Include="Header Files\editors\HWDesign\AdhocEditor">
       <UniqueIdentifier>{d3111f77-c57b-4353-97b6-69e1f6b4bc59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\HWDesign\AdHocVisibilityEditor">
-      <UniqueIdentifier>{eac2124c-75a0-4ed3-937e-54089e51023a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\HWDesign\AdHocVisibilityEditor">
-      <UniqueIdentifier>{5ea5a8a0-b00a-407f-a595-725d40c0176a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\HWDesign\undoCommands">
       <UniqueIdentifier>{b8d889f3-d9d0-4a66-b871-e72c08000c41}</UniqueIdentifier>
     </Filter>
@@ -2473,18 +2467,6 @@
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocEditor.cpp">
       <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.cpp">
-      <Filter>Source Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.cpp">
-      <Filter>Source Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.cpp">
-      <Filter>Source Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.cpp">
-      <Filter>Source Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </ClCompile>
     <ClCompile Include="editors\HWDesign\columnview\ColumnEditDialog.cpp">
       <Filter>Source Files\editors\HWDesign\columnview</Filter>
     </ClCompile>
@@ -3179,6 +3161,18 @@
       <Filter>Source Files\library\VLNVDialer</Filter>
     </ClCompile>
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocPortEditor.cpp">
+      <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityDelegate.cpp">
+      <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityEditor.cpp">
+      <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityModel.cpp">
+      <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.cpp">
       <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4514,12 +4508,6 @@
     <QtMoc Include="editors\HWDesign\AdhocEditor\AdhocEditor.h">
       <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
     </QtMoc>
-    <QtMoc Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.h">
-      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.h">
-      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </QtMoc>
     <QtMoc Include="editors\HWDesign\columnview\ColumnEditDialog.h">
       <Filter>Header Files\editors\HWDesign\columnview</Filter>
     </QtMoc>
@@ -5338,15 +5326,6 @@
     <ClInclude Include="editors\common\TopComponentParameterFinder.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.h">
-      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.h">
-      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityColumns.h">
-      <Filter>Header Files\editors\HWDesign\AdHocVisibilityEditor</Filter>
-    </ClInclude>
     <ClInclude Include="editors\HWDesign\undoCommands\PortDeleteCommand.h">
       <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </ClInclude>
@@ -5635,6 +5614,15 @@
     <ClInclude Include="Plugins\common\CPUDetailRoutes.h">
       <Filter>Header Files\Plugins\common</Filter>
     </ClInclude>
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityColumns.h">
+      <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityModel.h">
+      <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.h">
+      <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5670,6 +5658,12 @@
       <Filter>Header Files\library\VLNVDialer</Filter>
     </QtMoc>
     <QtMoc Include="editors\HWDesign\AdhocEditor\AdhocPortEditor.h">
+      <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\HWDesign\AdhocEditor\AdHocVisibilityDelegate.h">
+      <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\HWDesign\AdhocEditor\AdHocVisibilityEditor.h">
       <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
     </QtMoc>
   </ItemGroup>

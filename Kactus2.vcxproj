@@ -744,12 +744,12 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\AdHocConnectionItem.cpp" />
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocEditor.cpp" />
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocPortEditor.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityDelegate.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityEditor.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityModel.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocEnabled.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocItem.cpp" />
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.cpp" />
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.cpp" />
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.cpp" />
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.cpp" />
     <ClCompile Include="editors\HWDesign\BusInterfaceDialog.cpp" />
     <ClCompile Include="editors\HWDesign\BusInterfaceEndPoint.cpp" />
     <ClCompile Include="editors\HWDesign\columnview\ColumnEditDialog.cpp" />
@@ -1936,16 +1936,14 @@ CreateHelp
     <QtMoc Include="editors\HWDesign\ActivePortItem.h">
     </QtMoc>
     <QtMoc Include="editors\HWDesign\AdhocEditor\AdhocPortEditor.h" />
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityColumns.h" />
+    <QtMoc Include="editors\HWDesign\AdhocEditor\AdHocVisibilityDelegate.h" />
+    <QtMoc Include="editors\HWDesign\AdhocEditor\AdHocVisibilityEditor.h" />
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityModel.h" />
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.h" />
     <ClInclude Include="editors\HWDesign\AdHocEnabled.h" />
     <QtMoc Include="editors\HWDesign\AdHocItem.h">
     </QtMoc>
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityColumns.h" />
-    <QtMoc Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.h">
-    </QtMoc>
-    <QtMoc Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.h">
-    </QtMoc>
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.h" />
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.h" />
     <QtMoc Include="editors\HWDesign\columnview\ColumnEditDialog.h">
     </QtMoc>
     <QtMoc Include="editors\HWDesign\columnview\HWColumn.h">

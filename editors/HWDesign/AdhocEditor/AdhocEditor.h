@@ -12,8 +12,8 @@
 #ifndef ADHOC_EDITOR_H
 #define ADHOC_EDITOR_H
 
-#include <editors/HWDesign/AdhocEditor/AdhocPortEditor.h>
-#include <editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
+#include "AdhocPortEditor.h"
+#include "AdHocVisibilityEditor.h"
 
 #include <KactusAPI/include/ParameterFinder.h>
 

@@ -249,8 +249,6 @@ void DockWidgetHandler::setupLibraryDock()
     connect(libraryWidget_, SIGNAL(statusMessage(QString const&)),
         this, SIGNAL(statusMessage(QString const&)));
 
-
-
     libraryDock_->setWidget(libraryWidget_);
 
     mainWindow_->addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);
