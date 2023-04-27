@@ -860,9 +860,10 @@ CreateHelp
     <ClCompile Include="Help\HelpSystem\ContextHelpBrowser.cpp" />
     <ClCompile Include="Help\HelpSystem\HelpSearchWidget.cpp" />
     <ClCompile Include="Help\HelpSystem\HelpWindow.cpp" />
+    <ClCompile Include="kactusGenerators\DocumentGenerator\DocumentationWriter.cpp" />
     <ClCompile Include="kactusGenerators\DocumentGenerator\documentgenerator.cpp" />
-    <ClCompile Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.cpp" />
-    <ClCompile Include="kactusGenerators\DocumentGenerator\ViewDocumentGenerator.cpp" />
+    <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp" />
+    <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchyfilter.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchyview.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchywidget.cpp" />
@@ -1922,8 +1923,6 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="library\HierarchyView\hierarchyfilter.h">
     </QtMoc>
-    <QtMoc Include="kactusGenerators\DocumentGenerator\ViewDocumentGenerator.h">
-    </QtMoc>
     <QtMoc Include="editors\HWDesign\AdhocEditor\AdhocEditor.h">
     </QtMoc>
     <QtMoc Include="editors\HWDesign\AdHocConnectionItem.h">
@@ -2140,11 +2139,12 @@ CreateHelp
     </QtMoc>
     <ClInclude Include="editors\SystemDesign\UndoCommands\SystemDeleteCommands.h" />
     <ClInclude Include="editors\SystemDesign\UndoCommands\SystemMoveCommands.h" />
+    <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentationWriter.h" />
     <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentGeneratorHTML.h" />
-    <QtMoc Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.h">
-    </QtMoc>
     <QtMoc Include="library\ItemExporter.h">
     </QtMoc>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h" />
+    <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h" />
     <ClInclude Include="library\LibraryInterface.h" />
     <QtMoc Include="library\LibraryTreeFilter.h">
     </QtMoc>
