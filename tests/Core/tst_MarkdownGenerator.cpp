@@ -1,7 +1,6 @@
 #include <QtTest>
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
-#include <kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 #include <tests/MockObjects/DesignWidgetFactoryMock.h>
@@ -146,10 +145,6 @@ private:
 
     //! Get the string used to describe valid w3c strict.
     QString getValidW3CStrictString();
-    //-----------------------------------------------------------------------------
-    // Function: createViewGenerator()
-    //-----------------------------------------------------------------------------
-    ViewDocumentGenerator* createViewGenerator();
 
     QSharedPointer<Component> topComponent_;
 
@@ -1184,11 +1179,6 @@ QString tst_MarkdownGenerator::getDoctypeString()
 QString tst_MarkdownGenerator::getValidW3CStrictString()
 {
     return QString();
-}
-
-ViewDocumentGenerator* tst_MarkdownGenerator::createViewGenerator()
-{
-    return nullptr;
 }
 
 QTEST_MAIN(tst_MarkdownGenerator)

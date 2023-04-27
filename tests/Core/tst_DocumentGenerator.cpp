@@ -12,7 +12,6 @@
 #include <QtTest>
 
 #include <kactusGenerators/DocumentGenerator/documentgenerator.h>
-#include <kactusGenerators/DocumentGenerator/ViewDocumentGenerator.h>
 #include <kactusGenerators/DocumentGenerator/HtmlWriter.h>
 
 #include <tests/MockObjects/LibraryMock.h>
@@ -173,10 +172,6 @@ private:
 
     //! Get the string used to describe valid w3c strict.
     QString getValidW3CStrictString();
-    //-----------------------------------------------------------------------------
-    // Function: createViewGenerator()
-    //-----------------------------------------------------------------------------
-    ViewDocumentGenerator* createViewGenerator();
 
     QSharedPointer<Component> topComponent_;
 
@@ -263,7 +258,8 @@ void tst_DocumentGenerator::testInvalidVlnvInConstructor()
     QFile targetFile(targetPath_);
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
-
+    
+    generator.setFormat(DocumentGenerator::HTML);
     generator.writeDocumentation(stream, targetPath_);
 
     targetFile.close();
@@ -1249,7 +1245,6 @@ void tst_DocumentGenerator::testEndOfDocumentWrittenForTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        getValidW3CStrictString() +
         "\t</body>\n"
         "</html>\n"
         );
@@ -1271,17 +1266,6 @@ DocumentGenerator* tst_DocumentGenerator::createTestGenerator()
         &expressionFormatterFactory_, componentNumber, generatorParentWidget_));
 
     generator->setFormat(DocumentGenerator::HTML);
-    return generator;
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_DocumentGenerator::createViewGenerator()
-//-----------------------------------------------------------------------------
-ViewDocumentGenerator* tst_DocumentGenerator::createViewGenerator()
-{
-    ViewDocumentGenerator* generator(new ViewDocumentGenerator(&library_, &expressionFormatterFactory_, 
-        &designWidgetFactory_));
-
     return generator;
 }
 
