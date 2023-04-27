@@ -51,15 +51,18 @@
 ConfigurationEditor::ConfigurationEditor(LibraryInterface* handler, QWidget *parent):
 QWidget(parent),
     library_(handler),
-    addNewButton_(new QPushButton("Add...", this)),
+    addNewButton_(new QPushButton(QIcon(":icons/common/graphics/add.png"), "Add...", this)),
     configurationSelector_(new QComboBox(this)),
     configurationDisplay_(new VLNVDisplayer(this, VLNV(), true)),    
     activeViewEditor_(new ActiveViewEditor(this)),
-    topComponent_(),
-    designWidget_(0)
+    topComponent_(nullptr),
+    designWidget_(nullptr)
 {
-    configurationDisplay_->setFlat(false);
+    configurationDisplay_->setFlat(true);
     configurationDisplay_->setTitle(tr("Design Configuration VLNV"));
+    configurationDisplay_->setToolTip(tr("Add new Design Configuration"));
+
+    activeViewEditor_->setFlat(true);
 
 	setuplayout();
 	setupConnections();
@@ -117,7 +120,7 @@ void ConfigurationEditor::clear()
     if (designWidget_)
     {
         designWidget_->disconnect(this);
-        designWidget_ = 0;
+        designWidget_ = nullptr;
     }
 
     configurationSelector_->clear();
@@ -294,7 +297,7 @@ QStringList ConfigurationEditor::findPossibleViews()
     VLNV currentDesign = designWidget_->getIdentifyingVLNV();
 
     QStringList possibleViews;
-    foreach (QString const& viewName, hierViewNames)
+    for (QString const& viewName : hierViewNames)
     {
         // the vlnv that the component references
         VLNV viewDesign;
