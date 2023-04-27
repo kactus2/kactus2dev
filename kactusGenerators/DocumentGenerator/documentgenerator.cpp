@@ -74,6 +74,8 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     expressionFormatter_(),
     designWidgetFactory_(designWidgetFactory),
     writer_(nullptr),
+    mdWriter_(nullptr),
+    htmlWriter_(nullptr),
     componentFinder_(nullptr),
     currentFormat_(DocumentFormat::MD)
 {
@@ -107,7 +109,8 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
 //-----------------------------------------------------------------------------
 DocumentGenerator::~DocumentGenerator()
 {
-
+    delete htmlWriter_;    
+    delete mdWriter_;
 }
 
 //-----------------------------------------------------------------------------
