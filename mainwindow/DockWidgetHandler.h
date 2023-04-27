@@ -27,8 +27,7 @@ class DesignParameterReferenceTree;
 class ListParameterFinder;
 class MultipleParameterFinder;
 class ComponentInstanceEditor;
-class AdHocVisibilityEditor;
-class AdHocEditor;
+class AdhocEditor;
 class ConfigurationEditor;
 class SystemDetailsEditor;
 class InterfaceEditor;
@@ -384,13 +383,6 @@ private slots:
     void onScriptConsoleVisibilityAction(bool show);
 
     /*!
-     *  Handles the action for the visibility of the ad hoc port visibility editor dock widget.
-     *
-     *      @param [in] show    Value for the visibility of the ad hoc port visibility editor dock widget.
-     */
-    void onAdHocVisibilityAction(bool show);
-
-    /*!
      *  Handles the action for the visibility of the ad hoc port editor dock widget.
      *
      *      @param [in] show    Value for the visibility of the ad hoc port editor dock widget.
@@ -431,11 +423,6 @@ private:
      *  Setup the component instance editor dock widget.
      */
     void setupInstanceEditor();
-
-    /*!
-     *  Setup the ad hoc port visibility editor dock widget.
-     */
-    void setupAdHocVisibilityEditor();
 
     /*!
      *  Setup the ad hoc port editor dock widget.
@@ -561,14 +548,8 @@ private:
     //! The dock widget that contains the instance editor.
     QDockWidget* instanceDock_;
 
-    //! The ad-hoc visibility editor.
-    AdHocVisibilityEditor* adHocVisibilityEditor_;
-
-    //! Ad hoc dock widget.
-    QDockWidget* adHocVisibilityDock_;
-
     //! Ad hoc editor.
-    AdHocEditor* adhocEditor_;
+    AdhocEditor* adhocEditor_;
 
     //! The ad hoc dock widget.
     QDockWidget* adhocDock_;

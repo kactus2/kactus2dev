@@ -56,7 +56,6 @@ public:
 		CONNECTIONWINDOW        = 0x010,
 		INTERFACEWINDOW         = 0x020,
 		INSTANCEWINDOW          = 0x040,
-        ADHOCVISIBILITY_WINDOW  = 0x080,
         SYSTEM_DETAILS_WINDOW   = 0x100,
         CONTEXT_HELP_WINDOW     = 0x200,
         ADDRESS_WINDOW          = 0x400,

@@ -743,6 +743,7 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\ActivePortItem.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocConnectionItem.cpp" />
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocEditor.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocPortEditor.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocEnabled.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocItem.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.cpp" />
@@ -1934,6 +1935,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\HWDesign\ActivePortItem.h">
     </QtMoc>
+    <QtMoc Include="editors\HWDesign\AdhocEditor\AdhocPortEditor.h" />
     <ClInclude Include="editors\HWDesign\AdHocEnabled.h" />
     <QtMoc Include="editors\HWDesign\AdHocItem.h">
     </QtMoc>
