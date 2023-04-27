@@ -46,7 +46,6 @@ class DocumentGenerator : public QObject
 
 public:
 
-
     enum DocumentFormat
     {
         HTML,
@@ -74,7 +73,7 @@ public:
     /*!
      *  Set the document format
      *
-     *      @param [in] 
+     *      @param [in] format          The document file format
      */
     void setFormat(DocumentFormat format);
 
@@ -87,14 +86,14 @@ public:
     void writeDocumentation(QTextStream& stream, QString targetPath);
 
     /*!
-     *  Write the html header.
+     *  Write the document header.
      *
-     *      @param [in] stream  The text stream to write the table of contents into.
+     *      @param [in] stream  The text stream to write the header into.
      */
     void writeHeader(QTextStream& stream);
 
     /*!
-     *  Write the table of contents for the component.
+     *  Write the table of contents for the component the generator is working on.
      *
      *      @param [in] componentNumber     The number for this component.
      *      @param [in] stream              The text stream to write the table of contents into.
@@ -110,10 +109,16 @@ public:
      */
     void writeDocumentation(QTextStream& stream, const QString& targetPath, QStringList& filesToInclude);
 
+    /*!
+     *  Write the kactus2 attributes of the component.
+     *
+     *      @param [in] stream              The text stream to write the documentation into.
+     *      @param [in] subHeaderNumber     The number that defines the sub-header.
+     */
     void writeKactusAttributes(QTextStream& stream, int& subHeaderNumber);
 
     /*!
-     *  Write the parameters and kactus2 parameters of the component.
+     *  Write the parameters of the component.
      *
      *      @param [in] stream              The text stream to write the documentation into.
      *      @param [in] subHeaderNumber     The number that defines the sub-header.
@@ -191,9 +196,9 @@ public:
      *      @param [in] pictureList         List of file names to add the pictures of the referenced designs to.
      */
     void writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList);
-
+    
     /*!
-     *  Write the end of the document.
+     *  Write the end of the document, if the format requires it.
      *
      *      @param [in] stream  The text stream to write the documentation into.
      */
@@ -219,13 +224,6 @@ private:
     //! No copying. No assignment
     DocumentGenerator(const DocumentGenerator& other);
     DocumentGenerator& operator=(const DocumentGenerator& other);
-
-    /*!
-     *  Get the expression formatter factory.
-     *
-     *      @return The factory used for creating expression formatters.
-     */
-    ExpressionFormatterFactory* getExpressionFormatterFactory() const;
 
     /*!
      *  Write the selected view.
@@ -297,6 +295,8 @@ private:
      *  Get the selected design instantiation.
      *
      *      @param [in] designReference     Name of the selected design instantiation.
+     *
+     *      @return The design instantiation 
      */
     QSharedPointer<DesignInstantiation> getDesignInstantiation(QString const& designReference) const;
 
@@ -323,26 +323,28 @@ private:
      *  Get the selected design configuration instantiation.
      *
      *      @param [in] instantiationReference  Name of the selected design configuration instantiation.
+     * 
+     *      @return The selected design configuration instantiation
      */
     QSharedPointer<DesignConfigurationInstantiation> getDesignConfigurationInstantiation(
         QString const& instantiationReference) const;
 
     /*!
-        *  Get the design configuration referenced by the selected view.
-        *
-        *      @param [in] view    The selected view.
-        *
-        *      @return The design configuration referenced by the selected view.
-        */
+     *  Get the design configuration referenced by the selected view.
+     *
+     *      @param [in] view    The selected view.
+     *
+     *      @return The design configuration referenced by the selected view.
+     */
     QSharedPointer<DesignConfiguration> getDesignConfiguration(QSharedPointer<View> view) const;
 
     /*!
-        *  Get the design referenced by the selected view.
-        *
-        *      @param [in] view    The selected view.
-        *
-        *      @return The design referenced by the selected view.
-        */
+     *  Get the design referenced by the selected view.
+     *
+     *      @param [in] view    The selected view.
+     *
+     *      @return The design referenced by the selected view.
+     */
     QSharedPointer<Design> getDesign(QSharedPointer<View> view, QSharedPointer<DesignConfiguration> configuration)
         const;
 

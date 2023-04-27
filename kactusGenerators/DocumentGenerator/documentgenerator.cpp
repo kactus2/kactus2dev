@@ -20,8 +20,6 @@
 #include <kactusGenerators/DocumentGenerator/MarkdownWriter.h>
 #include <kactusGenerators/DocumentGenerator/HtmlWriter.h>
 
-#include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <editors/common/DesignWidget.h>
 #include <editors/common/DesignWidgetFactory.h>
 #include <editors/common/DesignDiagram.h>
@@ -40,9 +38,9 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QString>
 #include <QFile>
@@ -210,7 +208,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
     // write the actual documentation for the top component
     writeDocumentation(stream, targetPath_, pictureList);
 
-    //writeEndOfDocument(stream);
+    writer_->writeEndOfDocument(stream);
 
     QApplication::restoreOverrideCursor();
 
@@ -248,7 +246,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
             "for this component and subcomponents"));
 
         // add all created pictures to the file set
-        foreach (QString pictureName, pictureList)
+        for (auto const& pictureName : pictureList)
         {
             QString relativePicPath = General::getRelativePath(xmlPath, pictureName);
 
@@ -413,6 +411,9 @@ void DocumentGenerator::writeFileSets(QTextStream& stream, int& subHeaderNumber)
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeViews()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList)
 {
     if (!component_->hasViews())
@@ -438,19 +439,12 @@ void DocumentGenerator::writeViews(QTextStream& stream, int& subHeaderNumber, QS
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
 {
-    /*stream << DocumentGeneratorHTML::valid3wStrict() << Qt::endl;
-    stream << "\t</body>" << Qt::endl;
-    stream << "</html>" << Qt::endl;*/
+    writer_->writeEndOfDocument(stream);
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneralDocumentGenerator::getExpressionFormatterFactory()
+// Function: documentgenerator::writeSingleView()
 //-----------------------------------------------------------------------------
-ExpressionFormatterFactory* DocumentGenerator::getExpressionFormatterFactory() const
-{
-    return expressionFormatterFactory_;
-}
-
 void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View> view, int const& subHeaderNumber, int const& viewNumber, QStringList& pictureList)
 {
     QList subHeaderNumbers({ componentNumber_, subHeaderNumber, viewNumber });
@@ -494,6 +488,9 @@ void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeReferencedComponentInstantiation()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeReferencedComponentInstantiation(QTextStream& stream, QString const& instantiationReference, int const& subHeaderNumber, int const& viewNumber, int const& instantiationNumber)
 {
     writer_->writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, viewNumber, instantiationNumber }),
@@ -539,6 +536,9 @@ void DocumentGenerator::writeReferencedComponentInstantiation(QTextStream& strea
        moduleParameters, parameters);
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeReferencedDesignConfigurationInstantiation()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
     QString const& configurationReference, int const& subHeaderNumber, int const& viewNumber,
     int const& instantiationNumber)
@@ -581,6 +581,9 @@ void DocumentGenerator::writeReferencedDesignConfigurationInstantiation(QTextStr
         instantiation, instantiationFormatter);
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeReferencedDesignInstantiation()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeReferencedDesignInstantiation(QTextStream& stream,
     QString const& designReference,int const& subHeaderNumber,
     int const& viewNumber, int const& instantiationNumber)
@@ -637,10 +640,13 @@ void DocumentGenerator::writeReferencedDesignInstantiation(QTextStream& stream,
         ExpressionFormatter designFormatter(designFinder);
 
         writer_->writeReferencedDesignInstantiation(stream, designVLNV, instantiatedDesign,
-            &designFormatter,instantiationFormatter);
+            &designFormatter, instantiationFormatter);
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::writeDesign()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> view, QStringList& pictureList)
 {
     QSharedPointer<DesignConfiguration> configuration = getDesignConfiguration(view);
@@ -677,6 +683,9 @@ void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> vi
     writer_->writeDesignInstances(stream, design, configuration);
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::createDesignPicture()
+//-----------------------------------------------------------------------------
 void DocumentGenerator::createDesignPicture(QStringList& pictureList, QString const& viewName, QString const& designPicPath)
 {
     DesignWidget* designWidget(designWidgetFactory_->makeHWDesignWidget());
@@ -713,6 +722,9 @@ void DocumentGenerator::createDesignPicture(QStringList& pictureList, QString co
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::getDesignInstantiation()
+//-----------------------------------------------------------------------------
 QSharedPointer<DesignInstantiation> DocumentGenerator::getDesignInstantiation(QString const& designReference) const
 {
     for(auto const& instantiation : *component_->getDesignInstantiations())
@@ -726,6 +738,9 @@ QSharedPointer<DesignInstantiation> DocumentGenerator::getDesignInstantiation(QS
     return QSharedPointer<DesignInstantiation>();
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::getComponentInstantiation()
+//-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstantiation> DocumentGenerator::getComponentInstantiation(QString const& instantiationReference) const
 {
     for (auto const& instantiation : *component_->getComponentInstantiations())
@@ -739,6 +754,9 @@ QSharedPointer<ComponentInstantiation> DocumentGenerator::getComponentInstantiat
     return QSharedPointer<ComponentInstantiation>(nullptr);
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::getModuleParametersAsParameters()
+//-----------------------------------------------------------------------------
 ParameterList DocumentGenerator::getModuleParametersAsParameters(
     QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters)
 {
@@ -753,6 +771,9 @@ ParameterList DocumentGenerator::getModuleParametersAsParameters(
     return newModuleParameters;
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::getDesignConfigurationInstantiation()
+//-----------------------------------------------------------------------------
 QSharedPointer<DesignConfigurationInstantiation> DocumentGenerator::getDesignConfigurationInstantiation(
     QString const& instantiationReference) const
 {
@@ -767,6 +788,9 @@ QSharedPointer<DesignConfigurationInstantiation> DocumentGenerator::getDesignCon
     return QSharedPointer<DesignConfigurationInstantiation>();
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::getDesignConfiguration()
+//-----------------------------------------------------------------------------
 QSharedPointer<DesignConfiguration> DocumentGenerator::getDesignConfiguration(QSharedPointer<View> view) const
 {
     QSharedPointer<DesignConfiguration> designConf(nullptr);
@@ -794,6 +818,9 @@ QSharedPointer<DesignConfiguration> DocumentGenerator::getDesignConfiguration(QS
     return designConf;
 }
 
+//-----------------------------------------------------------------------------
+// Function: documentgenerator::getDesign()
+//-----------------------------------------------------------------------------
 QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view, QSharedPointer<DesignConfiguration> configuration) const
 {
     QSharedPointer<ConfigurableVLNVReference> designVLNV(nullptr);

@@ -1,3 +1,14 @@
+// File: DocumentationWriter.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Anton Hagqvist
+// Date: 12.4.2023
+//
+// Description:
+// Base class for documentation writers
+//-----------------------------------------------------------------------------
+
+
 #include "DocumentationWriter.h"
 
 #include <IPXACTmodels/Component/AddressBlock.h>
@@ -88,6 +99,9 @@ const QStringList DocumentationWriter::DESIGN_INSTANCE_HEADERS = {
     QStringLiteral("Description")
 };
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::DocumentationWriter()
+//-----------------------------------------------------------------------------
 DocumentationWriter::DocumentationWriter(ExpressionFormatter* formatter, ExpressionFormatterFactory* expressionFormatterFactory) :
     expressionFormatter_(formatter),
     expressionFormatterFactory_(expressionFormatterFactory),
@@ -95,16 +109,25 @@ DocumentationWriter::DocumentationWriter(ExpressionFormatter* formatter, Express
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::setTargetPath()
+//-----------------------------------------------------------------------------
 void DocumentationWriter::setTargetPath(QString const& path)
 {
     targetPath_ = path;
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::getTargetPath()
+//-----------------------------------------------------------------------------
 QString DocumentationWriter::getTargetPath() const
 {
     return targetPath_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::getMemoryMapAddressBlocks()
+//-----------------------------------------------------------------------------
 QList<QSharedPointer<AddressBlock>> DocumentationWriter::getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const
 {
     QList<QSharedPointer <AddressBlock> > addressBlocks;
@@ -121,6 +144,9 @@ QList<QSharedPointer<AddressBlock>> DocumentationWriter::getMemoryMapAddressBloc
     return addressBlocks;
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::getAddressBlockRegisters()
+//-----------------------------------------------------------------------------
 QList<QSharedPointer<Register>> DocumentationWriter::getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const
 {
     QList <QSharedPointer <Register> > registers;
@@ -137,6 +163,9 @@ QList<QSharedPointer<Register>> DocumentationWriter::getAddressBlockRegisters(QS
     return registers;
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::getFieldResetInfo()
+//-----------------------------------------------------------------------------
 QString DocumentationWriter::getFieldResetInfo(QSharedPointer<Field> field) const
 {
     QString resetInfo = "";
@@ -162,6 +191,9 @@ QString DocumentationWriter::getFieldResetInfo(QSharedPointer<Field> field) cons
     return resetInfo;
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::createDesignInstanceFormatter()
+//-----------------------------------------------------------------------------
 QSharedPointer<ExpressionFormatter> DocumentationWriter::createDesignInstanceFormatter(
     QSharedPointer<Design> design, QSharedPointer<Component> component)
 {
