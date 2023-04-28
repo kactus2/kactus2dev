@@ -131,9 +131,6 @@ private:
     //! Get the string used to describe a space.
     QString getSpaceString();
 
-    //! Get the string used to describe an indent.
-    QString getIndentString();
-
     //! Get the string used to describe a table.
     QString getTableString();
 
@@ -414,7 +411,7 @@ void tst_MarkdownGenerator::testMemoryMapsWrittenWithTopComponent()
     QString expectedOutput(
         "## 1.1 Memory maps <a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">  \n"
         "\n"
-        "### 1.1.1 " + memoryMap->name() + "  \n"
+        "### 1.1.1 Memory map " + memoryMap->name() + "  \n"
         "\n"
         "**Description:** " + memoryMap->description() + "  \n"
         "\n"
@@ -449,9 +446,9 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
     generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
-    targetFile.copy("OUTPUT.md");
+
     QString expectedOutput(
-        "### 1.1.1.1 " + testAddressBlock->name() + "  \n"
+        "### 1.1.1.1 Address block " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -463,7 +460,7 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
         "|" + testAddressBlock->getWidth() +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
         "|" + testAddressBlock->getVolatile() + "|  \n"
-        "#### Address block " + testAddressBlock->name() + " contains the following registers:  \n"
+        "#### Address block '" + testAddressBlock->name() + "' contains the following registers:  \n"
         "\n"
         "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
         "|:----|:----|:----|:----|:----|:----|  \n"
@@ -508,7 +505,7 @@ void tst_MarkdownGenerator::testExpressionsInAddressBlocks()
     targetFile.close();
 
     QString expectedOutput(
-        "### 1.1.1.1 " + testAddressBlock->name() + "  \n"
+        "### 1.1.1.1 Address block " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -544,7 +541,7 @@ void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "### 1.1.1.1.1 " + testRegister->name() + "  \n"
+        "### 1.1.1.1.1 Register " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
@@ -584,7 +581,7 @@ void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
     targetFile.close();
 
     QString expectedOutput(
-        "#### Register " + fieldRegister->name() + " contains the following fields:  \n"
+        "#### Register '" + fieldRegister->name() + "' contains the following fields:  \n"
         "\n"
         "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|  \n"
         "|:----|:----|:----|:----|:----|:----|:----|  \n"
@@ -643,11 +640,11 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
     QString expectedOutput(
         "## 1.1 Memory maps <a id=\"" + vlnvString + ".memoryMaps\">  \n"
         "\n"
-        "### 1.1.1 " + testMemoryMap->name() + "  \n"
+        "### 1.1.1 Memory map " + testMemoryMap->name() + "  \n"
         "\n"
         "**Address unit bits (AUB):** " + testMemoryMap->getAddressUnitBits() + "  \n"
         "\n"
-        "### 1.1.1.1 " + testAddressBlock->name() + "  \n"
+        "### 1.1.1.1 Address block " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
         "\n"
@@ -659,7 +656,7 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + testAddressBlock->getWidth() +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
         "|" + testAddressBlock->getVolatile() + "|  \n"
-        "#### Address block " + testAddressBlock->name() + " contains the following registers:  \n"
+        "#### Address block '" + testAddressBlock->name() + "' contains the following registers:  \n"
         "\n"
         "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
         "|:----|:----|:----|:----|:----|:----|  \n"
@@ -669,7 +666,7 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + testRegister->getDimension() +
         "|" + testRegister->getVolatile() +
         "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
-        "### 1.1.1.1.1 " + testRegister->name() + "  \n"
+        "### 1.1.1.1.1 Register " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
         "\n"
@@ -680,7 +677,7 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + testRegister->getDimension() +
         "|" + testRegister->getVolatile() +
         "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
-        "#### Register " + testRegister->name() + " contains the following fields:  \n"
+        "#### Register '" + testRegister->name() + "' contains the following fields:  \n"
         "\n"
         "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|  \n"
         "|:----|:----|:----|:----|:----|:----|:----|  \n"
@@ -768,7 +765,7 @@ void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
     QString expectedOutput(
         "## 1.1 Bus interfaces <a id=\"" + topComponent_->getVlnv().toString() + ".interfaces\">  \n"
         "\n"
-        "### 1.1.1 " + busInterface->name() + "  \n"
+        "### 1.1.1 Bus interface " + busInterface->name() + "  \n"
         "\n"
         "**Interface mode:** " + General::interfaceMode2Str(busInterface->getInterfaceMode()) + "  \n"
         "**Ports used in this interface:** None  \n"
@@ -847,7 +844,7 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
     QString expectedOutput(
         "## 1.1 File sets <a id=\"" + topComponent_->getVlnv().toString() + ".fileSets\">  \n"
         "\n"
-        "### 1.1.1 " + testFileSet->name() + "  \n"
+        "### 1.1.1 File set " + testFileSet->name() + "  \n"
         "\n"
         "**Description:** " + testFileSet->description() + "  \n"
         "\n"

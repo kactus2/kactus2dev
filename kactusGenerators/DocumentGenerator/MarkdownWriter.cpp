@@ -237,7 +237,7 @@ void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
             memoryMapNumber
         });
 
-        writeSubHeader(stream, subHeaderNumbers, memoryMap->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Memory map ") + memoryMap->name(), 3);
 
         // Memory map description and address unit bits
         if (!memoryMap->description().isEmpty())
@@ -285,9 +285,7 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
             << addressBlock->getVolatile()
         );
         
-        QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
-
-        writeSubHeader(stream, subHeaderNumbers, addressBlock->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Address block ") + addressBlock->name(), 3);
         
         if (!addressBlock->description().isEmpty())
         {
@@ -297,9 +295,9 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
         writeTableHeader(stream, DocumentationWriter::ADDRESS_BLOCK_HEADERS);
         writeTableRow(stream, addressBlockTableCells);
         
-        if (!registers.isEmpty())
+        if (auto const& registers = getAddressBlockRegisters(addressBlock); !registers.isEmpty())
         {
-            QString registerTableText = QStringLiteral("Address block ") + addressBlock->name() + QStringLiteral(" contains the following registers:");
+            QString registerTableText = QStringLiteral("Address block '") + addressBlock->name() + QStringLiteral("' contains the following registers:");
             writeSubHeader(stream, QList<int>(), registerTableText, 4);
             writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
         }
@@ -359,7 +357,7 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
             registerNumber
         });
 
-        writeSubHeader(stream, subHeaderNumbers, currentRegister->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + currentRegister->name(), 3);
 
         if (!currentRegister->description().isEmpty())
         {
@@ -384,9 +382,9 @@ void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> c
         return;
     }
 
-    QString headerTitle = QStringLiteral("Register ")
+    QString headerTitle = QStringLiteral("Register '")
         + currentRegister->name()
-        + QStringLiteral(" contains the following fields:");
+        + QStringLiteral("' contains the following fields:");
 
     writeSubHeader(stream, QList <int>(), headerTitle, 4);
     writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS);
@@ -432,7 +430,7 @@ void MarkdownWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
     {        
         QList subHeaderNumbers({ componentNumber_, subHeaderNumber, interfaceNumber });
 
-        writeSubHeader(stream, subHeaderNumbers, interface->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Bus interface ") + interface->name(), 3);
 
         if (!interface->description().isEmpty())
         {
@@ -450,7 +448,7 @@ void MarkdownWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
         }
         else
         {
-            stream << Qt::endl << Qt::endl;
+            stream << " " << Qt::endl << Qt::endl;
             writePortTable(stream, ports);
         }
 
@@ -471,7 +469,8 @@ void MarkdownWriter::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 
     for (auto const& fileSet : fileSets)
     {
-        writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, fileSetNumber }), fileSet->name(), 3);
+        writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, fileSetNumber }),
+            QStringLiteral("File set ") + fileSet->name(), 3);
 
         // description
         if (!fileSet->description().isEmpty())

@@ -265,7 +265,7 @@ void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
             memoryMapNumber,
         });
 
-        writeSubHeader(stream, subHeaderNumbers, memoryMap->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Memory map ") + memoryMap->name(), 3);
 
         stream << indent(3) << "<p>" << Qt::endl;
 
@@ -309,7 +309,7 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
             addressBlockNumber
         });
         
-        writeSubHeader(stream, subHeaderNumbers, addressBlock->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Address block ") + addressBlock->name(), 3);
 
         if (!addressBlock->description().isEmpty())
         {
@@ -343,8 +343,8 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
 
         if (auto const& registers = getAddressBlockRegisters(addressBlock); !registers.isEmpty())
         {
-            QString registerTableText = QStringLiteral("Address block ") + addressBlock->name()
-                + QStringLiteral(" contains the following registers:");
+            QString registerTableText = QStringLiteral("Address block '") + addressBlock->name()
+                + QStringLiteral("' contains the following registers:");
             writeSubHeader(stream, QList<int>(), registerTableText, 4);
             writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
         }
@@ -407,7 +407,7 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
             registerNumber
         });
 
-        writeSubHeader(stream, subHeaderNumbers, currentRegister->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + currentRegister->name(), 3);
 
         if (!currentRegister->description().isEmpty())
         {
@@ -439,7 +439,7 @@ void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> curre
         return;
     }
 
-    stream << indent(3) << "<h4>Register " << currentRegister->name() << " contains the following fields:</h4>" <<
+    stream << indent(3) << "<h4>Register '" << currentRegister->name() << "' contains the following fields:</h4>" <<
         Qt::endl;
 
     QString tableTitle = "List of fields contained within register " + currentRegister->name() + ".";
@@ -495,7 +495,7 @@ void HtmlWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
             interfaceNumber,
         });
 
-        writeSubHeader(stream, subHeaderNumbers, interface->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Bus interface ") + interface->name(), 3);
 
         stream << indent(3) << "<p>" << Qt::endl;
 
@@ -540,7 +540,8 @@ void HtmlWriter::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 
     for (auto const& fileSet : fileSets)
     {
-        writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, fileSetNumber }), fileSet->name(), 3);
+        writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, fileSetNumber }),
+            QStringLiteral("File set ") + fileSet->name(), 3);
 
         stream << indent(3) << "<p>" << Qt::endl;
 
