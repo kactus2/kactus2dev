@@ -314,7 +314,7 @@ void DesignDiagram::onItemModified(QUndoCommand* undoCommand)
 QStringList DesignDiagram::getUsedInstanceNames() const
 {
     QStringList usedNames;
-    foreach (QSharedPointer<ComponentInstance> instance, *getDesign()->getComponentInstances())
+    for (QSharedPointer<ComponentInstance> instance : *getDesign()->getComponentInstances())
     {
         usedNames.append(instance->getInstanceName());
     }
@@ -328,7 +328,7 @@ QStringList DesignDiagram::getUsedInstanceNames() const
 void DesignDiagram::drawBackground(QPainter* painter, QRectF const& rect)
 {
     painter->setWorldMatrixEnabled(true);
-    painter->setPen(QPen(Qt::black, 0));
+    painter->setPen(QPen(Qt::gray, 0));
 
     qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
     qreal top = int(rect.top()) - (int(rect.top()) % GridSize );
@@ -349,7 +349,7 @@ ComponentItem* DesignDiagram::getTopmostComponent(QPointF const& pos)
 {
     QList<QGraphicsItem*> itemList = items(pos);
 
-    foreach (QGraphicsItem* item, itemList)
+    for (QGraphicsItem* item : itemList)
     {
         ComponentItem* compItem = dynamic_cast<ComponentItem*>(item);
 
@@ -443,7 +443,7 @@ void DesignDiagram::selectAll()
 {
     clearSelection();
 
-    foreach (GraphicsColumn* column, getLayout()->getColumns())
+    for (GraphicsColumn* column : getLayout()->getColumns())
     {
         column->setSelected(true);
     }
@@ -462,9 +462,9 @@ void DesignDiagram::onVerticalScroll(qreal y)
 //-----------------------------------------------------------------------------
 void DesignDiagram::setVisibilityControlState(QString const& name, bool state)
 {
-    if (name == tr("Sticky Notes"))
+    if (name == QLatin1String("Sticky Notes"))
     { 
-        foreach (QGraphicsItem* item, items())
+        for (QGraphicsItem* item: items())
         {       
             if (item->type() == StickyNote::Type || item->type() == Association::Type)
             {
@@ -484,7 +484,7 @@ QList<ComponentItem*> DesignDiagram::getInstances() const
 
     // ask for all graphics items.
     QList<QGraphicsItem*> graphItems = items();
-    foreach (QGraphicsItem* graphItem, graphItems)
+    for (QGraphicsItem* graphItem : graphItems)
     {
         // make dynamic type conversion
         ComponentItem* diagComp = dynamic_cast<ComponentItem*>(graphItem);
@@ -526,7 +526,7 @@ void DesignDiagram::ensureOneTypeSelected(QList<QGraphicsItem*> const& items)
         if (type == -1)
         {
             // If not, deselect those that are in the new selection but no in the old one.
-            foreach (QGraphicsItem* selectedItem, currentlySelectedItems)
+            for (QGraphicsItem* selectedItem : currentlySelectedItems)
             {
                 if (!items.contains(selectedItem))
                 {
@@ -624,7 +624,7 @@ void DesignDiagram::clearLayout()
 //-----------------------------------------------------------------------------
 void DesignDiagram::loadStickyNotes()
 {
-    foreach(QSharedPointer<VendorExtension> extension, *design_->getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *design_->getVendorExtensions())
     {
         if (extension->type() == "kactus2:note")
         {
@@ -661,7 +661,7 @@ void DesignDiagram::loadNoteAssociations(StickyNote* note)
 {
     QSharedPointer<Kactus2Group> associations = note->getAssociationExtensions();
 
-    foreach(QSharedPointer<VendorExtension> endpoint, associations->getByType("kactus2:position"))
+    for (QSharedPointer<VendorExtension> endpoint : associations->getByType("kactus2:position"))
     {
         QSharedPointer<Kactus2Position> extension = endpoint.dynamicCast<Kactus2Position>();
 
@@ -675,7 +675,7 @@ void DesignDiagram::loadNoteAssociations(StickyNote* note)
 //-----------------------------------------------------------------------------
 void DesignDiagram::setProtectionForStickyNotes()
 {
-    foreach(QGraphicsItem* item, items())
+    for (QGraphicsItem* item : items())
     {
         if (item->type() == StickyNote::Type)
         {
