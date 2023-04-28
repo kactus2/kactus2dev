@@ -341,8 +341,13 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
 
         stream << indent(3) << "</table>" << Qt::endl;
 
-        QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
-        writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+        if (auto const& registers = getAddressBlockRegisters(addressBlock); !registers.isEmpty())
+        {
+            QString registerTableText = QStringLiteral("Address block ") + addressBlock->name()
+                + QStringLiteral(" contains the following registers:");
+            writeSubHeader(stream, QList<int>(), registerTableText, 4);
+            writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+        }
 
         ++addressBlockNumber;
     }
@@ -361,6 +366,37 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
 
     int registerNumber = 1;
 
+    QList<QStringList> allRegistersInfo;
+
+    QStringList allRegistersTableHeader;
+    allRegistersTableHeader << QStringLiteral("Register name");
+    allRegistersTableHeader.append(DocumentationWriter::REGISTER_HEADERS);
+
+    // Write table with all registers
+    stream << indent(3) << HTML::TABLE << "" << "\">" << Qt::endl;
+    writeTableHeader(stream, allRegistersTableHeader, 4);
+
+    for (auto const& currentRegister : registers)
+    {
+        QStringList registerInfoTableCells(QStringList()
+            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
+            << currentRegister->getVolatile()
+            << AccessTypes::access2Str(currentRegister->getAccess())
+        );
+
+        QStringList registerCellsWithName;
+        registerCellsWithName << currentRegister->name();
+        registerCellsWithName.append(registerInfoTableCells);
+
+        allRegistersInfo.append(registerInfoTableCells);
+
+        writeTableRow(stream, registerCellsWithName, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+    
     for (auto const& currentRegister : registers)
     {
         QList subHeaderNumbers({
@@ -375,26 +411,15 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
 
         if (!currentRegister->description().isEmpty())
         {
-            stream << indent(3) << "<p>" << Qt::endl;
-            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
-                currentRegister->description() << "<br>" << Qt::endl;
-            stream << indent(3) << "</p>" << Qt::endl;
+            writeDescription(stream, currentRegister->description());
         }
 
         QString tableTitle = "List of values in " + currentRegister->name() + ".";
         stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
 
         writeTableHeader(stream, DocumentationWriter::REGISTER_HEADERS, 4);
-
-        QStringList registerInfoTableCells(QStringList()
-            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
-            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
-            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
-            << currentRegister->getVolatile()
-            << AccessTypes::access2Str(currentRegister->getAccess())
-        );
         
-        writeTableRow(stream, registerInfoTableCells, 4);
+        writeTableRow(stream, allRegistersInfo.at(registerNumber - 1), 4);
         
         stream << indent(3) << "</table>" << Qt::endl;
 
@@ -589,7 +614,7 @@ void HtmlWriter::writeDescription(QTextStream& stream, QString const& descriptio
     stream << indent(3) << "<p>" << Qt::endl;
     if (!description.isEmpty())
     {
-        stream << indent(3) << HTML::INDENT << "<strong>Description: </strong>" <<
+        stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
             description << "<br>" << Qt::endl;
     }
     stream << indent(3) << "</p>" << Qt::endl;
