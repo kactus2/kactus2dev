@@ -102,6 +102,8 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
 
     mdWriter_ = new MarkdownWriter(component_, expressionFormatter_, expressionFormatterFactory_,
         libraryHandler_, componentNumber_);
+
+    writer_ = mdWriter_;
 }
 
 //-----------------------------------------------------------------------------
@@ -109,8 +111,13 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
 //-----------------------------------------------------------------------------
 DocumentGenerator::~DocumentGenerator()
 {
-    delete htmlWriter_;    
+    delete htmlWriter_;
+    htmlWriter_ = nullptr;
+
     delete mdWriter_;
+    mdWriter_ = nullptr;
+
+    writer_ = nullptr;
 }
 
 //-----------------------------------------------------------------------------

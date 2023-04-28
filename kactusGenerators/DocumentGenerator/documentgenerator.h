@@ -397,17 +397,17 @@ private:
     //! The active writer
     DocumentationWriter* writer_;
 
-    //! Parameter finder for the documented component.
-    QSharedPointer<ComponentParameterFinder> componentFinder_;
-
-    //! The current document format
-    DocumentFormat currentFormat_;
-
     //! Writer for markdown
     DocumentationWriter* mdWriter_;
 
     //! Writer for HTML
     DocumentationWriter* htmlWriter_;
+
+    //! Parameter finder for the documented component.
+    QSharedPointer<ComponentParameterFinder> componentFinder_;
+
+    //! The current document format
+    DocumentFormat currentFormat_;
 };
 
 #endif // DOCUMENTGENERATOR_H
