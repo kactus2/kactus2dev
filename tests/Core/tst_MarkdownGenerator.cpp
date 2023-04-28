@@ -429,7 +429,9 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
 {
     QList <QSharedPointer <Register> > registers;
     QSharedPointer <Register> testRegister = createTestRegister("register", "4", "2", "2", "");
+    QSharedPointer <Register> testRegister2 = createTestRegister("register2", "8", "16", "2", "");
     registers.append(testRegister);
+    registers.append(testRegister2);
 
     QList <QSharedPointer <AddressBlock> > addressBlocks;
     QSharedPointer <AddressBlock> testAddressBlock = createTestAddressBlock("addressBlock", "example", "'h0", "4",
@@ -447,7 +449,7 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
     generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
-
+    targetFile.copy("OUTPUT.md");
     QString expectedOutput(
         "### 1.1.1.1 " + testAddressBlock->name() + "  \n"
         "\n"
@@ -461,6 +463,22 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
         "|" + testAddressBlock->getWidth() +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
         "|" + testAddressBlock->getVolatile() + "|  \n"
+        "#### Address block " + testAddressBlock->name() + " contains the following registers:  \n"
+        "\n"
+        "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n"
+        "|" + testRegister->name() +
+            "|" + testRegister->getAddressOffset() +
+            "|" + testRegister->getSize() +
+            "|" + testRegister->getDimension() +
+            "|" + testRegister->getVolatile() +
+            "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
+        "|" + testRegister2->name() +
+            "|" + testRegister2->getAddressOffset() +
+            "|" + testRegister2->getSize() +
+            "|" + testRegister2->getDimension() +
+            "|" + testRegister2->getVolatile() +
+            "|" + AccessTypes::access2Str(testRegister2->getAccess()) + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -641,6 +659,16 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "|" + testAddressBlock->getWidth() +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
         "|" + testAddressBlock->getVolatile() + "|  \n"
+        "#### Address block " + testAddressBlock->name() + " contains the following registers:  \n"
+        "\n"
+        "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n"
+        "|" + testRegister->name() +
+        "|" + testRegister->getAddressOffset() +
+        "|" + testRegister->getSize() +
+        "|" + testRegister->getDimension() +
+        "|" + testRegister->getVolatile() +
+        "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
         "### 1.1.1.1.1 " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
