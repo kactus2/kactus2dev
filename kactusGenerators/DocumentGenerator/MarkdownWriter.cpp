@@ -296,7 +296,13 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
 
         writeTableHeader(stream, DocumentationWriter::ADDRESS_BLOCK_HEADERS);
         writeTableRow(stream, addressBlockTableCells);
-        writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+        
+        if (!registers.isEmpty())
+        {
+            QString registerTableText = QStringLiteral("Address block ") + addressBlock->name() + QStringLiteral(" contains the following registers:");
+            writeSubHeader(stream, QList<int>(), registerTableText, 4);
+            writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+        }
 
         ++addressBlockNumber;
     }
@@ -314,6 +320,35 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
 
     int registerNumber = 1;
 
+    QList<QStringList> allRegistersInfo;
+
+    QStringList allRegistersTableHeader;
+    allRegistersTableHeader << QStringLiteral("Register name");
+    allRegistersTableHeader.append(DocumentationWriter::REGISTER_HEADERS);
+
+    // Write table with all registers
+    writeTableHeader(stream, allRegistersTableHeader);
+
+    for (auto const& currentRegister : registers)
+    {
+        QStringList registerInfoTableCells(QStringList()
+            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
+            << currentRegister->getVolatile()
+            << AccessTypes::access2Str(currentRegister->getAccess())
+        );
+        
+        QStringList registerCellsWithName;
+        registerCellsWithName << currentRegister->name();
+        registerCellsWithName.append(registerInfoTableCells);
+
+        allRegistersInfo.append(registerInfoTableCells);
+
+        writeTableRow(stream, registerCellsWithName);
+    }
+
+    // Write each register separately
     for (auto const& currentRegister : registers)
     {
         QList subHeaderNumbers({
@@ -324,14 +359,6 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
             registerNumber
         });
 
-        QStringList registerInfoTableCells(QStringList()
-            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
-            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
-            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
-            << currentRegister->getVolatile()
-            << AccessTypes::access2Str(currentRegister->getAccess())
-        );
-
         writeSubHeader(stream, subHeaderNumbers, currentRegister->name(), 3);
 
         if (!currentRegister->description().isEmpty())
@@ -340,9 +367,9 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
         }
 
         writeTableHeader(stream, DocumentationWriter::REGISTER_HEADERS);
-        writeTableRow(stream, registerInfoTableCells);
+        writeTableRow(stream, allRegistersInfo.at(registerNumber - 1));
+        
         writeFields(stream, currentRegister);
-
         ++registerNumber;
     }
 }
