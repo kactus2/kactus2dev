@@ -32,7 +32,7 @@ public:
     DrawingBoard(QWidget* parent = 0);
 
     //! The destructor.
-    ~DrawingBoard();
+    virtual ~DrawingBoard() = default;
        
     /*!
      *  Registers a tab document (connects common signals etc.).
