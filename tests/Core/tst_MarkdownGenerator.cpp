@@ -21,6 +21,7 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
 
 #include <IPXACTmodels/Design/Design.h>
 
@@ -55,6 +56,7 @@ private slots:
     void testAddressBlocksWrittenWithTopComponent();
     void testExpressionsInAddressBlocks();
     void testRegistersWrittenWithTopComponent();
+    void testAddressBlockRegisterFilesWrittenWithTopComponent();
     void testFieldsWrittenWithTopComponent();
     void testMemoryMapToFieldWrittenWithTopComponent();
 
@@ -124,6 +126,10 @@ private:
     QSharedPointer<AddressBlock> createTestAddressBlock(QString const& name, QString const& description,
         QString const& baseAddress, QString const& range, QString const& width,
         QList <QSharedPointer <Register> > registers);
+
+    QSharedPointer<AddressBlock> createAddressBlockWithRegisterBase(QString const& name, QString const& description,
+        QString const& baseAddress, QString const& range, QString const& width,
+        QList <QSharedPointer <RegisterBase> > registers);
 
     QSharedPointer<MemoryMap> createTestMemoryMap(QString const& name, QString const& description,
         int addressUnitbits, QList<QSharedPointer <AddressBlock> > addressBlocks);
@@ -552,6 +558,81 @@ void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
         "|" + testRegister->getDimension() +
         "|" + testRegister->getVolatile() +
         "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
+    );
+
+    checkOutputFile(expectedOutput);
+}
+
+void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent()
+{
+    QSharedPointer<RegisterFile> testRegisterFileParent(new RegisterFile("testRegisterFileParent", "8", "16"));
+    QSharedPointer<RegisterFile> testRegisterFileChild(new RegisterFile("testRegisterFileChild", "64", "512"));
+
+    QSharedPointer<Register> registerInParentRegisterFile = createTestRegister("testRegister", "4", "2", "0", "example description");
+    QSharedPointer<Register> registerInChildRegisterFile = createTestRegister("testRegister2", "8", "2", "0", "example description2");
+
+    QSharedPointer<QList <QSharedPointer<RegisterBase> > > childRegisterData(new QList<QSharedPointer<RegisterBase> >({ registerInChildRegisterFile }));
+    testRegisterFileChild->setRegisterData(childRegisterData);
+
+    QSharedPointer<QList <QSharedPointer<RegisterBase> > > parentRegisterData(new QList<QSharedPointer<RegisterBase> >({ testRegisterFileChild, registerInParentRegisterFile }));
+    testRegisterFileParent->setRegisterData(parentRegisterData);
+
+    auto testAddressBlock = createAddressBlockWithRegisterBase("testAddressBlock", "address block description", "'h0", "4", "32", *parentRegisterData);
+    
+    QList <QSharedPointer <AddressBlock> > addressBlocks;
+    addressBlocks.append(testAddressBlock);
+
+    QScopedPointer<DocumentGenerator> generator(createTestGenerator());
+
+    QFile targetFile(targetPath_);
+    targetFile.open(QFile::WriteOnly);
+    QTextStream stream(&targetFile);
+
+    int subHeaderNumber = 1;
+
+    generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
+
+    targetFile.close();
+
+    QString expectedOutput(
+        "### 1.1.1.1 Address block testAddressBlock  \n"
+        "\n"
+        "**Description:** " + testAddressBlock->description() + "  \n"
+        "\n"
+        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n" +
+        "|" + General::usage2Str(testAddressBlock->getUsage()) +
+        "|" + "'h0" +
+        "|" + "4" +
+        "|" + "32" +
+        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
+        "|" + testAddressBlock->getVolatile() + "|  \n"
+        "### 1.1.1.1.1 Register file testRegisterFileParent  \n"
+        "\n"
+        "### 1.1.1.1.1.1 Register file testRegisterFileChild  \n"
+        "\n"
+        "### 1.1.1.1.1.1.1 Register testRegister  \n"
+        "\n"
+        "**Description:** " + registerInChildRegisterFile->description() + "  \n"
+        "\n"
+        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|  \n"
+        "|" + registerInChildRegisterFile->getAddressOffset() +
+        "|" + registerInChildRegisterFile->getSize() +
+        "|" + registerInChildRegisterFile->getDimension() +
+        "|" + registerInChildRegisterFile->getVolatile() +
+        "|" + AccessTypes::access2Str(registerInChildRegisterFile->getAccess()) + "|  \n"
+        "### 1.1.1.1.1.2 Register testRegister2  \n"
+        "\n"
+        "**Description:** " + registerInChildRegisterFile->description() + "  \n"
+        "\n"
+        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|  \n"
+        "|" + registerInParentRegisterFile->getAddressOffset() +
+        "|" + registerInParentRegisterFile->getSize() +
+        "|" + registerInParentRegisterFile->getDimension() +
+        "|" + registerInParentRegisterFile->getVolatile() +
+        "|" + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -1147,6 +1228,28 @@ QSharedPointer<Register> tst_MarkdownGenerator::createTestRegister(QString const
 }
 
 QSharedPointer<AddressBlock> tst_MarkdownGenerator::createTestAddressBlock(QString const& name, QString const& description, QString const& baseAddress, QString const& range, QString const& width, QList<QSharedPointer<Register>> registers)
+{
+    QSharedPointer <AddressBlock> testAddressBlock(new AddressBlock);
+    testAddressBlock->setName(name);
+    testAddressBlock->setUsage(General::REGISTER);
+    testAddressBlock->setDescription(description);
+    testAddressBlock->setBaseAddress(baseAddress);
+    testAddressBlock->setRange(range);
+    testAddressBlock->setWidth(width);
+    testAddressBlock->setAccess(AccessTypes::READ_WRITE);
+    testAddressBlock->setVolatile(true);
+
+    for (QSharedPointer<RegisterBase> testRegister : registers)
+    {
+        testAddressBlock->getRegisterData()->append(testRegister);
+    }
+
+    return testAddressBlock;
+}
+
+QSharedPointer<AddressBlock> tst_MarkdownGenerator::createAddressBlockWithRegisterBase(QString const& name,
+    QString const& description, QString const& baseAddress, QString const& range,
+    QString const& width, QList<QSharedPointer<RegisterBase>> registers)
 {
     QSharedPointer <AddressBlock> testAddressBlock(new AddressBlock);
     testAddressBlock->setName(name);
