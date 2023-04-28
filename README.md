@@ -307,7 +307,8 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## Contributors
 Antti Kamppi, Joni-Matti Määttä, Lauri Matilainen, Timo D. Hämäläinen,
-Mikko Teuho, Juho Järvinen, Esko Pekkarinen, Janne Virtanen
+Mikko Teuho, Juho Järvinen, Esko Pekkarinen, Janne Virtanen,
+Anton Hagqvist
 
 Kactus2 uses [Icons8](https://icons8.com/) provided by Icons8 LLC.
 
