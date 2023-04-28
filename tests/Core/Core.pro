@@ -31,4 +31,5 @@ SUBDIRS += tst_CommandLineParser.pro \
 		   tst_HierarchicalSaveBuildStrategy.pro \
 		   tst_DocumentTreeBuilder.pro \
 		   tst_DocumentGenerator.pro \
+                   tst_MarkdownGenerator.pro \
 		   tst_MasterSlavePathSearch.pro
