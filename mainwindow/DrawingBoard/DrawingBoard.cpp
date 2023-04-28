@@ -33,14 +33,6 @@ DrawingBoard::DrawingBoard(QWidget* parent) : QTabWidget(parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DrawingBoard::~DrawingBoard()
-//-----------------------------------------------------------------------------
-DrawingBoard::~DrawingBoard()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: DrawingBoard::addAndOpenDocument()
 //-----------------------------------------------------------------------------
 void DrawingBoard::addAndOpenDocument(TabDocument* doc)

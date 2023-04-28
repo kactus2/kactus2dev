@@ -37,23 +37,24 @@ public:
     /*!
      *  Destructor.
      */
-    ~RibbonGroup();
+    virtual ~RibbonGroup() = default;
+
+    // Disable copying.
+    RibbonGroup(RibbonGroup const& rhs) = delete;
+    RibbonGroup& operator=(RibbonGroup const& rhs) = delete;
 
 protected:
     //! Draws the group.
     virtual void paintEvent(QPaintEvent* event);
 
 private:
-    // Disable copying.
-    RibbonGroup(RibbonGroup const& rhs);
-    RibbonGroup& operator=(RibbonGroup const& rhs);
 
     enum
     {
-        TITLE_MARGIN = 20,
+        TITLE_MARGIN = 10,
         TITLE_HEIGHT = 21,
         MIN_LARGE_BUTTON_WIDTH = 56,
-        HMARGIN = 2
+        HMARGIN = 1
     };
 
     //-----------------------------------------------------------------------------

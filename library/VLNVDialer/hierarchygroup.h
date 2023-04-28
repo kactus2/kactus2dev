@@ -12,15 +12,17 @@
 #ifndef HIERARCHYGROUP_H
 #define HIERARCHYGROUP_H
 
+#include "FilterGroup.h"
+
 #include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
-#include <QCheckBox>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains the check boxes to set the hierarchy options for VLNVDialer.
 //-----------------------------------------------------------------------------
-class HierarchyGroup : public QGroupBox
+class HierarchyGroup : public FilterGroup
 {
 	Q_OBJECT
 
@@ -36,7 +38,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~HierarchyGroup();
+	virtual ~HierarchyGroup() = default;
+
+    //! No copying. No assignment.
+    HierarchyGroup(const HierarchyGroup& other) = delete;
+    HierarchyGroup& operator=(const HierarchyGroup& other) = delete;
 
     /*!
      *  Sets new hierarchy options.
@@ -51,6 +57,13 @@ public:
      *      @return Selected hierarchy options.
      */
     Utils::HierarchyOptions getHierarchy() const;
+
+	/*!
+	 *  Select/clear all filters.
+	 *
+	 *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+	 */
+	void selectAll(bool select) override final;
 
 signals:
 
@@ -92,27 +105,24 @@ private slots:
 	void onIpChange(bool checked);
 
 private:
-	//! No copying. No assignment.
-	HierarchyGroup(const HierarchyGroup& other);
-	HierarchyGroup& operator=(const HierarchyGroup& other);
 
 	//! Check box to select global components in/out of search results.
-	QCheckBox flatBox_;
+	QPushButton flatBox_;
 
 	//! Check box to select product components in/out of search results.
-	QCheckBox productBox_;
+	QPushButton productBox_;
 
 	//! Check box to select board components in/out of search results.
-	QCheckBox boardBox_;
+	QPushButton boardBox_;
 
 	//! Check box to select chip components in/out of search results.
-	QCheckBox chipBox_;
+	QPushButton chipBox_;
 
 	//! Check box to select SoC components in/out of search results.
-	QCheckBox socBox_;
+	QPushButton socBox_;
 
 	//! Check box to select IP components in/out of search results.
-	QCheckBox ipBox_;
+	QPushButton ipBox_;
 
 	//! Contains the current search settings for hierarchy
 	Utils::HierarchyOptions options_;

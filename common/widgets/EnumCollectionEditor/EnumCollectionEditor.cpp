@@ -19,7 +19,8 @@
 EnumCollectionEditor::EnumCollectionEditor(QWidget* parent):
 QWidget(parent),
 layout_(new QVBoxLayout(this)),
-items_()
+items_(),
+exclusiveItems_()
 {
     layout_->setContentsMargins(0, 0, 0, 0);
 
@@ -36,23 +37,83 @@ EnumCollectionEditor::~EnumCollectionEditor()
 //-----------------------------------------------------------------------------
 // Function: EnumCollectionEditor::addItem()
 //-----------------------------------------------------------------------------
-void EnumCollectionEditor::addItem(QString const& text, bool selected)
+void EnumCollectionEditor::addItem(QString const& text, bool isExclusivePort, bool selected)
+{
+    QCheckBox* checkBox = createCheckBox(text, selected);
+
+    if (isExclusivePort)
+    {
+        exclusiveItems_.append(checkBox);
+        connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(onExclusiveItemClicked(bool)), Qt::UniqueConnection);
+    }
+    else
+    {
+        connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumCollectionEditor::createCheckBox()
+//-----------------------------------------------------------------------------
+QCheckBox* EnumCollectionEditor::createCheckBox(QString const& text, bool isSelected)
 {
     QCheckBox* checkBox = new QCheckBox(text, this);
-    checkBox->setChecked(selected);
+    checkBox->setChecked(isSelected);
 
     items_.append(checkBox);
     layout_->addWidget(checkBox);
 
     setMinimumHeight(sizeHint().height());
 
-    connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
+    return checkBox;
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumCollectionEditor::onExclusiveItemClicked()
+//-----------------------------------------------------------------------------
+void EnumCollectionEditor::onExclusiveItemClicked(bool newState)
+{
+    if (newState == true)
+    {
+        QCheckBox* senderBox;
+        QObject* senderObject = sender();
+        if (senderObject)
+        {
+            senderBox = dynamic_cast<QCheckBox*>(senderObject);
+        }
+
+        for (auto item : items_)
+        {
+            if (item != senderBox)
+            {
+                item->setChecked(false);
+            }
+        }
+    }
+
+    handleCheckAllStateChangeFromItemClick(newState);
 }
 
 //-----------------------------------------------------------------------------
 // Function: EnumCollectionEditor::onItemClicked()
 //-----------------------------------------------------------------------------
 void EnumCollectionEditor::onItemClicked(bool newState)
+{
+    for (auto item : exclusiveItems_)
+    {
+        if (item->isChecked())
+        {
+            item->setChecked(false);
+        }
+    }
+
+    handleCheckAllStateChangeFromItemClick(newState);
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumCollectionEditor::handleCheckAllStateChangeFromItemClick()
+//-----------------------------------------------------------------------------
+void EnumCollectionEditor::handleCheckAllStateChangeFromItemClick(bool newState)
 {
     Qt::CheckState checkAllState = Qt::Checked;
     if (newState == false)

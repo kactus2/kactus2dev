@@ -29,7 +29,7 @@ title_(title)
     const int BOTTOM_MARGIN = 10;
 	const int TOP_MARGIN = 10;
 
-	setIconSize(QSize (32, 32));
+	setIconSize(QSize(32, 32));
     setContentsMargins(0, TOP_MARGIN, 0, BOTTOM_MARGIN);
 	layout()->setContentsMargins(0, TOP_MARGIN, 0, BOTTOM_MARGIN);
 
@@ -39,13 +39,6 @@ title_(title)
 
 	QFontMetrics metrics(font());
 	setMinimumWidth(metrics.horizontalAdvance(title_) +  TITLE_MARGIN);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RibbonGroup::~RibbonGroup()
-//-----------------------------------------------------------------------------
-RibbonGroup::~RibbonGroup()
-{
 }
 
 //-----------------------------------------------------------------------------

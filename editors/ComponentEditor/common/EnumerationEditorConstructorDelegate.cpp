@@ -17,9 +17,18 @@
 // Function: EnumerationEditorConstructorDelegate::EnumerationEditorConstructorDelegate()
 //-----------------------------------------------------------------------------
 EnumerationEditorConstructorDelegate::EnumerationEditorConstructorDelegate(QObject* parent):
-QStyledItemDelegate(parent)
+QStyledItemDelegate(parent),
+hideCheckAll_(false)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumerationEditorConstructorDelegate::setHideCheckAll()
+//-----------------------------------------------------------------------------
+void EnumerationEditorConstructorDelegate::setHideCheckAll(bool newValue)
+{
+    hideCheckAll_ = newValue;
 }
 
 //-----------------------------------------------------------------------------
@@ -29,7 +38,7 @@ QWidget* EnumerationEditorConstructorDelegate::createEditor(QWidget* parent, QSt
 {
     if (isEnumerationEditorColumn(index))
     {
-        EnumerationEditor* enumerationEditor = new EnumerationEditor(parent);
+        EnumerationEditor* enumerationEditor = new EnumerationEditor(hideCheckAll_, parent);
 
         connect(enumerationEditor, SIGNAL(cancelEditing()), this, SLOT(onEditorCancel()), Qt::UniqueConnection);
         connect(enumerationEditor, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
@@ -55,7 +64,9 @@ void EnumerationEditorConstructorDelegate::setEditorData(QWidget* editor, QModel
             QStringList sortedAvailableItems = getAvailableItems();
             sortedAvailableItems.sort(Qt::CaseInsensitive);
 
-            enumerationEditor->setupItems(sortedAvailableItems, getCurrentSelection(index));
+            QStringList exclusiveItems = getExclusiveItems();
+
+            enumerationEditor->setupItems(sortedAvailableItems, exclusiveItems, getCurrentSelection(index));
         }
     }
 
@@ -63,6 +74,14 @@ void EnumerationEditorConstructorDelegate::setEditorData(QWidget* editor, QModel
     {
         QStyledItemDelegate::setEditorData(editor, index);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumerationEditorConstructorDelegate::getExclusionItems()
+//-----------------------------------------------------------------------------
+QStringList EnumerationEditorConstructorDelegate::getExclusiveItems() const
+{
+    return QStringList();
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +146,7 @@ void EnumerationEditorConstructorDelegate::updateEditorGeometry(QWidget* editor,
 //-----------------------------------------------------------------------------
 // Function: EnumerationEditorConstructorDelegate::repositionAndResizeEditor()
 //-----------------------------------------------------------------------------
-void EnumerationEditorConstructorDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& index) const
+void EnumerationEditorConstructorDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& /*index*/) const
 {
     int enumerationCount = getAvailableItems().count();
     int editorMinimumSize = 25 * (enumerationCount + 2);

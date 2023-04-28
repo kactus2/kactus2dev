@@ -228,7 +228,13 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == LogicalPortColumns::QUALIFIER)
         {
-            return QString::fromStdString(portInterface_->getQualifierString(index.row()));
+            QStringList qualifierList;
+            for (auto qualifier : portInterface_->getQualifierStringList(index.row()))
+            {
+                qualifierList.append(QString::fromStdString(qualifier));
+            }
+
+            return qualifierList.join(" ");
         }
         else if (index.column() == LogicalPortColumns::WIDTH)
         {
@@ -345,10 +351,10 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
+    QString newData = value.toString();
     QString oldData = data(index, Qt::DisplayRole).toString();
 
-    if (!index.isValid() || index.row() < 0 || index.row() >= portInterface_->itemCount() ||
-        !(flags(index) & Qt::ItemIsEditable) || role != Qt::EditRole || oldData.compare(value.toString()) == 0)
+    if (!index.isValid() || index.row() < 0 || index.row() >= portInterface_->itemCount() || !(flags(index) & Qt::ItemIsEditable) || role != Qt::EditRole)
     {
         return false;
     }
@@ -362,7 +368,15 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
-        portInterface_->setQualifier(index.row(), value.toString().toStdString());
+        QStringList listOfQualifiers = value.toStringList();
+
+        std::vector<std::string> qualifierList;
+        for (auto qualifier : value.toStringList())
+        {
+            qualifierList.push_back(qualifier.toStdString());
+        }
+
+        portInterface_->setQualifierList(index.row(), qualifierList);
     }
     else if (index.column() == LogicalPortColumns::WIDTH)
     {

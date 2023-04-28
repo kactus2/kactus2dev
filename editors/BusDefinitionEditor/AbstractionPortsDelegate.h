@@ -12,6 +12,8 @@
 #ifndef ABSTRACTIONPORTSDELEGATE_H
 #define ABSTRACTIONPORTSDELEGATE_H
 
+#include <editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h>
+
 #include <QStyledItemDelegate>
 
 class BusDefinition;
@@ -20,7 +22,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! Master delegate for abstraction definition wire and transactional ports.
 //-----------------------------------------------------------------------------
-class AbstractionPortsDelegate : public QStyledItemDelegate
+class AbstractionPortsDelegate : public EnumerationEditorConstructorDelegate
 {
 	Q_OBJECT
 
@@ -113,6 +115,40 @@ private:
 	//! No copying. No assignment.
     AbstractionPortsDelegate(const AbstractionPortsDelegate& other);
     AbstractionPortsDelegate& operator=(const AbstractionPortsDelegate& other);
+
+    /*!
+     *  Check if the column is used for enumerations.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return True, if the column is used for editing enumerations, false otherwise.
+     */
+    virtual bool isEnumerationEditorColumn(QModelIndex const& index) const override final;
+
+    /*!
+     *  The list of currently selected enumerations in the selected item.
+     *
+     *      @param [in] index   Index of the selected item.
+     *
+     *      @return List of currently selected enumerations.
+     */
+    virtual QStringList getCurrentSelection(QModelIndex const& index) const override final;
+
+    /*!
+     *  Get the list of the available enumerations.
+     *
+     *      @return List of the available enumerations.
+     */
+    virtual QStringList getAvailableItems() const override final;
+
+    /*!
+     *  Set the selected enumerations to the selected item.
+     *
+     *      @param [in] index           Model index identifying the item that's data is to be saved.
+     *      @param [in] model           Model that contains the data structure where data is to be saved to.
+     *      @param [in] selectedItems   List of the selected enumerations.
+     */
+    virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -53,7 +53,7 @@ public:
 	InterfaceEditor(QWidget *parent, LibraryInterface* handler);
 	
 	//! The destructor.
-	virtual ~InterfaceEditor();
+	virtual ~InterfaceEditor() = default;
 
 	/*!
      *  Set the interface for the editor.

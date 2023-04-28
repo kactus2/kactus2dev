@@ -73,8 +73,8 @@ descriptionLabel_(tr("Description:"), this),
 descriptionEdit_(this),
 portsLabel_(tr("Connected physical ports:"), this),
 portWidget_(this),
-connection_(NULL),
-diagram_(0),
+connection_(nullptr),
+diagram_(nullptr),
 library_(library),
 adHocBoundsTable_(this),
 adHocBoundsModel_(this),
@@ -86,11 +86,12 @@ connectionTypeTable_(new QStackedWidget())
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
 	type_.setTitle(tr("Bus type VLNV"));
-	type_.setFlat(false);
+	type_.setFlat(true);
 	absType_.setTitle(tr("Abstraction type VLNV"));
-	absType_.setFlat(false);
+	absType_.setFlat(true);
 
 	nameGroup_.setTitle(tr("Connection name"));
+    nameGroup_.setFlat(true);
 
     nameEdit_.setValidator(new NameValidator(&nameEdit_));
 
@@ -129,13 +130,6 @@ connectionTypeTable_(new QStackedWidget())
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectionEditor::~ConnectionEditor()
-//-----------------------------------------------------------------------------
-ConnectionEditor::~ConnectionEditor()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ConnectionEditor::clear()
 //-----------------------------------------------------------------------------
 void ConnectionEditor::clear()
@@ -144,7 +138,7 @@ void ConnectionEditor::clear()
     {
 		disconnect(connection_, SIGNAL(destroyed(GraphicsConnection*)),	this, SLOT(clear()));
 		disconnect(connection_, SIGNAL(contentChanged()), this, SLOT(refresh()));
-		connection_ = 0;
+		connection_ = nullptr;
 	}
 
 	disconnect(&nameEdit_, SIGNAL(editingFinished()), this, SLOT(onNameOrDescriptionChanged()));
@@ -394,15 +388,15 @@ void ConnectionEditor::setPortMaps()
     General::InterfaceMode mode2 = busIf2->getInterfaceMode();
 
 	// find the physical ports mapped to given logical port
-	foreach (QString const& logicalPort, getAllLogicalPorts(portMaps1, portMaps2))
+	for (QString const& logicalPort : getAllLogicalPorts(portMaps1, portMaps2))
     {
 		bool validAbstraction = absDef && absDef->hasPort(logicalPort, mode1) && absDef->hasPort(logicalPort, mode2);
 
-		foreach (QSharedPointer<PortMap> map1, portMaps1)
+		for (QSharedPointer<PortMap> map1 : portMaps1)
         {
 			if (map1->getLogicalPort()->name_.compare(logicalPort) == 0)
             {
-				foreach (QSharedPointer<PortMap> map2, portMaps2)
+				for (QSharedPointer<PortMap> map2 : portMaps2)
                 {
 					if (map2->getLogicalPort()->name_.compare(logicalPort) == 0)
                     {
@@ -431,7 +425,6 @@ QList<QSharedPointer<PortMap> > ConnectionEditor::getPortMapsForEndPoint(Connect
     QString activeView;
     if (endPoint->encompassingComp() && endPoint->encompassingComp()->getComponentInstance())
     {
-//         activeView = getActiveViewForEndPoint(endPoint->encompassingComp()->getComponentInstance());
         activeView = getActiveViewForEndPoint(endPoint);
     }
 
@@ -443,7 +436,7 @@ QList<QSharedPointer<PortMap> > ConnectionEditor::getPortMapsForEndPoint(Connect
 //-----------------------------------------------------------------------------
 QString ConnectionEditor::getActiveViewForEndPoint(ConnectionEndpoint* endPoint) const
 {
-    QString activeView("");
+    QString activeView;
 
     if (diagram_)
     {
@@ -500,11 +493,11 @@ QStringList ConnectionEditor::getAllLogicalPorts(QList<QSharedPointer<PortMap> >
 {
     QStringList logicalNames;
 
-    foreach (QSharedPointer<PortMap> map, portMaps1)
+    for (QSharedPointer<PortMap> map : portMaps1)
     {
         logicalNames.append(map->getLogicalPort()->name_);
     }
-    foreach (QSharedPointer<PortMap> map, portMaps2)
+    for (QSharedPointer<PortMap> map : portMaps2)
     {
         logicalNames.append(map->getLogicalPort()->name_);
     }
@@ -662,9 +655,11 @@ QPair<int, int> ConnectionEditor::calculateMappedLogicalPortBounds(QSharedPointe
 //-----------------------------------------------------------------------------
 void ConnectionEditor::setupLayout()
 {
-    QFormLayout* nameLayout = new QFormLayout(&nameGroup_);
-    nameLayout->addRow(&nameLabel_, &nameEdit_);
-    nameLayout->addRow(&descriptionLabel_, &descriptionEdit_);
+    auto nameLayout = new QGridLayout(&nameGroup_);
+    nameLayout->addWidget(&nameLabel_, 0, 0);
+    nameLayout->addWidget(&nameEdit_, 0, 1);
+    nameLayout->addWidget(&descriptionLabel_, 1, 0);
+    nameLayout->addWidget(&descriptionEdit_, 1, 1);
 
     QGridLayout* layout = new QGridLayout(this);
     layout->addWidget(&instanceLabel_, 0, 0, 1, 1);
@@ -677,4 +672,5 @@ void ConnectionEditor::setupLayout()
     layout->addWidget(connectionTypeTable_, 5, 0, 1, 2);
 
     layout->setColumnStretch(1, 1);
+    layout->setRowStretch(5, 1);
 }

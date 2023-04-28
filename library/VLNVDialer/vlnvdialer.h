@@ -20,6 +20,7 @@
 #include <KactusAPI/include/utils.h>
 
 #include <QWidget>
+#include <QGroupBox>
 #include <QPushButton>
 #include <QString>
 
@@ -44,6 +45,12 @@ public:
 	
 	//! The destructor
 	virtual ~VLNVDialer() = default;
+
+    //! No copying
+    VLNVDialer(VLNVDialer const& other) = delete;
+
+    //! No assignment
+    VLNVDialer& operator=(VLNVDialer const& other) = delete;
 
 	/*! Set the root item used to create the suggestions for dialer.
 	 *
@@ -112,12 +119,23 @@ private slots:
 	//! Handler for hide/show button clicks.
 	void onHideShowClick();
 
-private:
-	//! No copying
-	VLNVDialer(VLNVDialer const& other);
+	//! Handler for select/clear button clicks.
+	void onSelectAll();
 
-	//! No assignment
-	VLNVDialer& operator=(VLNVDialer const& other);
+private:
+
+	//! Setup the widget layout.
+    void setupLayout();
+
+    //-----------------------------------------------------------------------------
+	// Data.
+	//-----------------------------------------------------------------------------
+		
+    //! Button to hide/show filters.
+    QPushButton hideButton_;
+
+    //! Button to hide/show filters.
+    QPushButton selectAllButton_;
 
 	//! Contains the items to set filters for search.
 	FilterWidget filters_;
@@ -125,14 +143,17 @@ private:
 	//! Contains the items to set the rules for vlnv search
 	DialerWidget dialer_;
 
-	//! Button to hide/show filters.
-	QPushButton hideButton_;
+	//! Group box for tag filters.
+    QGroupBox tagGroup_;
 
     //! Tag filter.
     TagContainer* tagFilter_;
 
-	//! Contains the value to know if filters are currently hidden or visible
-	bool hidden_;
+	//! Contains the value to know if filters are currently hidden or visible.
+	bool hideFilters_ = false;
+
+	//! Contains the value to know if all filters are selected or cleared.
+	bool allSelected_ = false;
 };
 
 #endif // VLNVDIALER_H

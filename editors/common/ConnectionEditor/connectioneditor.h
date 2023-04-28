@@ -57,7 +57,7 @@ public:
 	ConnectionEditor(LibraryInterface* library, QWidget* parent);
 	
 	//! The destructor
-	virtual ~ConnectionEditor();
+	virtual ~ConnectionEditor() = default;
 
 public slots:
 

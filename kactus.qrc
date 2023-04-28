@@ -12,7 +12,6 @@
         <file>common/graphics/file-new.png</file>
         <file>common/graphics/file-save.png</file>
         <file>common/graphics/file-save-as.png</file>
-        <file>common/graphics/file-save-hierarchical.png</file>
         <file>common/graphics/file-save_all.png</file>
         <file>common/graphics/file-print.png</file>
         <file>common/graphics/tool-interconnection.png</file>
@@ -134,6 +133,19 @@
         <file>common/graphics/script-run-all.png</file>
         <file>common/graphics/script-run-file.png</file>
         <file>common/graphics/script-new.png</file>
+		<file>common/graphics/filter.png</file>
+		<file>common/graphics/box.png</file>
+		<file>common/graphics/circuit.png</file>
+		<file>common/graphics/chip.png</file>
+		<file>common/graphics/soc.png</file>
+		<file>common/graphics/square.png</file>
+		<file>common/graphics/capacitor.png</file>
+		<file>common/graphics/transistor.png</file>
+		<file>common/graphics/fixed.png</file>
+		<file>common/graphics/mutable.png</file>
+		<file>common/graphics/template.png</file>
+		<file>common/graphics/check-all.png</file>
+		<file>common/graphics/uncheck-all.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

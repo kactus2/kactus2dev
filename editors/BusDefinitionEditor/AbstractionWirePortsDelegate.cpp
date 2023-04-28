@@ -70,8 +70,7 @@ QWidget* AbstractionWirePortsDelegate::createEditor(QWidget* parent, QStyleOptio
 QStringList AbstractionWirePortsDelegate::getQualifierList() const
 {
     QStringList qualifierList = AbstractionPortsDelegate::getQualifierList();
-    qualifierList.append("clock");
-    qualifierList.append("reset");
+    qualifierList.append(getExclusiveItems());
 
     return qualifierList;
 }
@@ -92,4 +91,13 @@ bool AbstractionWirePortsDelegate::editorIsComboBox(int indexColumn) const
 {
     return AbstractionPortsDelegate::editorIsComboBox(indexColumn) ||
         indexColumn == LogicalPortColumns::DIRECTION || indexColumn == LogicalPortColumns::DRIVER;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionWirePortsDelegate::getExclusiveItems()
+//-----------------------------------------------------------------------------
+QStringList AbstractionWirePortsDelegate::getExclusiveItems() const
+{
+    QStringList list = { "clock", "reset", };
+    return list;
 }

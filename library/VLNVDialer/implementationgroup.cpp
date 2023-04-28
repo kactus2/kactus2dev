@@ -11,24 +11,23 @@
 
 #include "implementationgroup.h"
 
-#include <QGridLayout>
+#include <common/widgets/tagEditor/FlowLayout.h>
+
+#include <QIcon>
 
 //-----------------------------------------------------------------------------
 // Function: ImplementationGroup::ImplementationGroup()
 //-----------------------------------------------------------------------------
-ImplementationGroup::ImplementationGroup(QWidget *parent): 
-QGroupBox(tr("Implementation"), parent),
-hwBox_(tr("HW"), this),
-swBox_(tr("SW"), this),
-systemBox_(tr("System"), this),
-options_()
+ImplementationGroup::ImplementationGroup(QWidget* parent) :
+    FilterGroup(tr("Implementation"), parent),
+    hwBox_(QIcon(":icons/common/graphics/transistor.png"), QString(), this),
+    swBox_(QIcon(":icons/common/graphics/sw-component48x48.png"), QString(), this),
+    systemBox_(QIcon(":icons/common/graphics/system-component.png"), QString(), this),
+    options_()
 {
-    QGridLayout* layout = new QGridLayout(this);
-    layout->addWidget(&hwBox_, 0, 0, 1, 1);
-    layout->addWidget(&swBox_, 0, 1, 1, 1);
-    layout->addWidget(&systemBox_, 0, 2, 1, 1);
-    layout->setSpacing(0);
-    layout->setContentsMargins(4, 4, 4, 4);
+    setupButton(&hwBox_, tr("HW"));
+    setupButton(&swBox_, tr("SW"));
+    setupButton(&systemBox_, tr("System"));
 
     hwBox_.setChecked(true);
 	swBox_.setChecked(true);
@@ -37,13 +36,8 @@ options_()
 	connect(&hwBox_, SIGNAL(clicked(bool)),	this, SLOT(onHWChanged(bool)), Qt::UniqueConnection);
 	connect(&swBox_, SIGNAL(clicked(bool)),	this, SLOT(onSWChanged(bool)), Qt::UniqueConnection);
 	connect(&systemBox_, SIGNAL(clicked(bool)),	this, SLOT(onSystemChanged(bool)), Qt::UniqueConnection);
-}
 
-//-----------------------------------------------------------------------------
-// Function: ImplementationGroup::~ImplementationGroup()
-//-----------------------------------------------------------------------------
-ImplementationGroup::~ImplementationGroup()
-{
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -72,6 +66,19 @@ Utils::ImplementationOptions ImplementationGroup::getImplementation() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ImplementationGroup::selectAll()
+//-----------------------------------------------------------------------------
+void ImplementationGroup::selectAll(bool select)
+{
+    Utils::ImplementationOptions options;
+    options.hw_ = select;
+    options.sw_ = select;
+    options.system_ = select;
+    
+    setImplementation(options);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ImplementationGroup::onHWChanged()
 //-----------------------------------------------------------------------------
 void ImplementationGroup::onHWChanged(bool checked)
@@ -97,3 +104,18 @@ void ImplementationGroup::onSystemChanged(bool checked)
 	options_.system_ = checked;
 	emit optionsChanged(options_);
 }
+
+//-----------------------------------------------------------------------------
+// Function: TypeGroup::setupLayout()
+//-----------------------------------------------------------------------------
+void ImplementationGroup::setupLayout()
+{
+    auto layout = new FlowLayout(this, 2, 1, 1);
+    layout->addWidget(&hwBox_);
+    layout->addWidget(&swBox_);
+    layout->addWidget(&systemBox_);
+    //layout->setSpacing(0);
+    //layout->setColumnStretch(3, 1);
+    //layout->setContentsMargins(4, 4, 4, 4);
+}
+

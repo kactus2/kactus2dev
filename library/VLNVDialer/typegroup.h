@@ -12,15 +12,17 @@
 #ifndef TYPEGROUP_H
 #define TYPEGROUP_H
 
+#include "FilterGroup.h"
+
 #include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
-#include <QCheckBox>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains the check boxes to set the type options for VLNVDialer.
 //-----------------------------------------------------------------------------
-class TypeGroup : public QGroupBox
+class TypeGroup : public FilterGroup
 {
 	Q_OBJECT
 
@@ -36,7 +38,11 @@ public:
 	/*!
      *  The destructor
      */
-	virtual ~TypeGroup();
+	virtual ~TypeGroup() = default;
+
+    //! No copying. No assignment.
+    TypeGroup(const TypeGroup& other) = delete;
+    TypeGroup& operator=(const TypeGroup& other) = delete;
 
     /*!
      *  Sets new type options.
@@ -51,6 +57,9 @@ public:
      *      @return Selected type options.
      */
     Utils::TypeOptions getTypes() const;
+
+
+    void selectAll(bool select) override final;
 
 signals:
 
@@ -87,24 +96,24 @@ private slots:
     void onAdvancedChange(bool checked);
 
 private:
-	//! No copying. No assignment.
-	TypeGroup(const TypeGroup& other);
-	TypeGroup& operator=(const TypeGroup& other);
+
+    //! Setup the widget layout.
+    void setupLayout();
 
 	//! Check box to select components in/out of search results.
-	QCheckBox componentBox_;
+	QPushButton componentBox_;
 
 	//! Check box to select buses/APIs in/out of search results.
-	QCheckBox busBox_;
+    QPushButton busBox_;
 
     //! Check box to select buses/APIs in/out of search results.
-    QCheckBox catalogBox_;
+    QPushButton catalogBox_;
 
     //! Check box to select buses/APIs in/out of search results.
-    QCheckBox apiComBox_;
+    QPushButton apiComBox_;
 
 	//! Check box to select other IP-Xact types in/out of search results.
-	QCheckBox advancedBox_;
+    QPushButton advancedBox_;
 
 	//! Contains the current search settings for type.
 	Utils::TypeOptions options_;

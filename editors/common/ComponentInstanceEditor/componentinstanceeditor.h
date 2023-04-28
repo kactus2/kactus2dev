@@ -52,7 +52,7 @@ public:
 	ComponentInstanceEditor(QWidget *parent);
 	
 	//! The destructor.
-	virtual ~ComponentInstanceEditor();
+	virtual ~ComponentInstanceEditor() = default;
 
 	/*!
      *  Set the component to be edited.

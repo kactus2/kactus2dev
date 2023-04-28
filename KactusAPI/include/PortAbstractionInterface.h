@@ -238,6 +238,15 @@ public:
     std::string getQualifierString(int const& portIndex) const;
 
     /*!
+     *  Get the list of qualifiers of the selected signal.
+     *
+     *      @param [in] portIndex   Index of the selected signal.
+     *
+     *      @return List of qualifiers of the selected signal.
+     */
+    std::vector<std::string> getQualifierStringList(int const& portIndex) const;
+
+    /*!
      *  Set the qualifier for the selected signal.
      *
      *      @param [in] portIndex       Index of the selected signal.
@@ -246,6 +255,16 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool setQualifier(int const& portIndex, std::string const& newQualifier);
+
+    /*!
+     *  Set a new list of qualifiers for the selected signal.
+     *
+     *      @param [in] portIndex           Index of the selected signal.
+     *      @param [in] newQualifierList    The new list of qualifiers.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setQualifierList(int const& portIndex, std::vector<std::string> const& newQualifierList);
 
     /*!
      *  Get the direction of the selected signal in string form.

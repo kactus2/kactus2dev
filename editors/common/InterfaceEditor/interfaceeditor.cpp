@@ -97,14 +97,6 @@ editProvider_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: interfaceeditor::~InterfaceEditor()
-//-----------------------------------------------------------------------------
-InterfaceEditor::~InterfaceEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: interfaceeditor::setInterface()
 //-----------------------------------------------------------------------------
 void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign,
@@ -393,7 +385,7 @@ QList<QSharedPointer<ActiveInterface> > InterfaceEditor::getActiveInterfaces() c
 
     QList<QSharedPointer<ActiveInterface> > endPointInterfaces;
 
-    foreach (QSharedPointer<Interconnection> connection, *containingDesign_->getInterconnections())
+    for (QSharedPointer<Interconnection> connection : *containingDesign_->getInterconnections())
     {
         QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
 
@@ -402,7 +394,7 @@ QList<QSharedPointer<ActiveInterface> > InterfaceEditor::getActiveInterfaces() c
             endPointInterfaces.append(startInterface);
         }
 
-        foreach (QSharedPointer<ActiveInterface> currentInterface, *connection->getActiveInterfaces())
+        for (QSharedPointer<ActiveInterface> currentInterface : *connection->getActiveInterfaces())
         {
             if (activeInterfaceReferencesBusInterface(currentInterface))
             {
@@ -432,11 +424,11 @@ QList<QSharedPointer<HierInterface> > InterfaceEditor::getDesignInterfaces() con
 
     if (interface_->isHierarchical())
     {
-        foreach (QSharedPointer<Interconnection> connection, *containingDesign_->getInterconnections())
+        for (QSharedPointer<Interconnection> connection : *containingDesign_->getInterconnections())
         {
             QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
 
-            foreach (QSharedPointer<HierInterface> currentHierInterface, *connection->getHierInterfaces())
+            for (QSharedPointer<HierInterface> currentHierInterface : *connection->getHierInterfaces())
             {
                 if (currentHierInterface->getBusReference().compare(interface_->name()) == 0)
                 {
@@ -447,7 +439,7 @@ QList<QSharedPointer<HierInterface> > InterfaceEditor::getDesignInterfaces() con
     }
     else
     {
-        foreach (QSharedPointer<ActiveInterface> activeInteface, getActiveInterfaces())
+        for (QSharedPointer<ActiveInterface> activeInteface : getActiveInterfaces())
         {
             interfaces.append(activeInteface);
         }
@@ -549,10 +541,10 @@ void InterfaceEditor::setupBusEditor()
     busNameEditor_.setValidator(new NameValidator(&busNameEditor_));
 
     busType_.setTitle(tr("Bus type VLNV"));
-    busType_.setFlat(false);
+    busType_.setFlat(true);
 
     absType_.setTitle(tr("Abstraction type VLNV"));
-    absType_.setFlat(false);
+    absType_.setFlat(true);
 
     // set the possible modes to the mode editor
     for (int i = 0; i <= General::INTERFACE_MODE_COUNT; i++)
@@ -579,12 +571,16 @@ void InterfaceEditor::setupBusEditor()
     connect(portMapsModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     QGroupBox* nameAndModeGroup = new QGroupBox(tr("Bus interface name"), this);
+    nameAndModeGroup->setFlat(true);
+
     QFormLayout* nameLayout = new QFormLayout(nameAndModeGroup);
     nameLayout->addRow(tr("Name:"), &busNameEditor_);
     nameLayout->addRow(tr("Interface mode:"), &modeSelector_);
     nameLayout->addRow(tr("Description:"), &busDescriptionEditor_);
 
     QGroupBox* portMapGroup = new QGroupBox(tr("Port maps"), this);
+    portMapGroup->setFlat(true);
+
     QVBoxLayout* portMapLayout = new QVBoxLayout(portMapGroup);
     portMapLayout->addWidget(&portMapsView_);
 
@@ -604,7 +600,7 @@ void InterfaceEditor::setupBusEditor()
 void InterfaceEditor::setupComEditor()
 {
     comType_.setTitle(tr("COM type VLNV"));
-    comType_.setFlat(false);
+    comType_.setFlat(true);
 
     comNameEditor_.setValidator(new NameValidator(&comNameEditor_));
 
@@ -613,6 +609,8 @@ void InterfaceEditor::setupComEditor()
     comDirectionCombo_.addItem("inout");
 
     QGroupBox* nameAndTypeGroup = new QGroupBox(tr("COM interface name"), this);
+    nameAndTypeGroup->setFlat(true);
+
     QFormLayout* nameLayout = new QFormLayout(nameAndTypeGroup);
     nameLayout->addRow(tr("Name:"), &comNameEditor_);
     nameLayout->addRow(tr("Transfer type:"), &transferTypeCombo_);
@@ -634,7 +632,7 @@ void InterfaceEditor::setupComEditor()
 void InterfaceEditor::setupApiEditor()
 {
     apiType_.setTitle(tr("API type VLNV"));
-    apiType_.setFlat(false);
+    apiType_.setFlat(true);
 
     apiNameEditor_.setValidator(new NameValidator(&apiNameEditor_));
 
@@ -642,6 +640,8 @@ void InterfaceEditor::setupApiEditor()
     dependencyDirCombo_.addItem("provider");
 
     QGroupBox* nameAndDirectionGroup = new QGroupBox(tr("API interface name"), this);
+    nameAndDirectionGroup->setFlat(true);
+
     QFormLayout* nameLayout = new QFormLayout(nameAndDirectionGroup);
     nameLayout->addRow(tr("Name:"), &apiNameEditor_);
     nameLayout->addRow(tr("Dependency direction:"), &dependencyDirCombo_);

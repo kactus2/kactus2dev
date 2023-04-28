@@ -32,16 +32,16 @@ public:
     DeleteWorkspaceDialog(QWidget* parent = 0);
 
     /*!
+     *  Destructor.
+     */
+    ~DeleteWorkspaceDialog() = default;
+
+    /*!
      *  Adds a workspace name to the dialog.
      *
      *      @param [in] name The name of the existing workspace.
      */
     void addWorkspaceName(QString const& name);
-
-    /*!
-     *  Destructor.
-     */
-    ~DeleteWorkspaceDialog();
 
     /*!
      *  Returns the name of the workspace to delete.

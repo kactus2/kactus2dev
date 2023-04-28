@@ -34,7 +34,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewWorkspaceDialog();
+    ~NewWorkspaceDialog() = default;
 
     /*!
      *  Returns the contents of the name field.

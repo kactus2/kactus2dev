@@ -28,7 +28,7 @@
 #include <editors/HWDesign/AdHocItem.h>
 #include <editors/HWDesign/ActiveBusInterfaceItem.h>
 #include <editors/HWDesign/ActivePortItem.h>
-#include <editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
+#include <editors/HWDesign/AdhocEditor/AdHocVisibilityEditor.h>
 #include <editors/HWDesign/undoCommands/ComponentItemMoveCommand.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>

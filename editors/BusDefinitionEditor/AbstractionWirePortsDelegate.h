@@ -79,6 +79,14 @@ protected:
      */
     virtual bool editorIsComboBox(int indexColumn) const;
 	
+private:
+
+    /*!
+     *  Get the list of exclusive enumerations.
+     *
+     *      @return List of exclusive enumerations.
+     */
+    virtual QStringList getExclusiveItems() const override final;
 };
 
 #endif // ABSTRACTIONWIREPORTSDELEGATE_H

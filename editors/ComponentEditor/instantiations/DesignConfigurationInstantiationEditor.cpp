@@ -23,14 +23,13 @@
 #include <editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <mainwindow/mainwindow.h>
-
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QApplication>
+#include <QMainWindow>
 #include <QScrollArea>
 #include <QHBoxLayout>
 
@@ -50,21 +49,21 @@ parameters_(instantiation->getParameters(), component->getChoices(), parameterFi
 elementEditor_(0),
 designConfigurationParameterFinder_(new ListParameterFinder())
 {
-    // find the main window for VLNV editor.
-    QWidget* parentW = nullptr;
-    foreach (QWidget* widget, QApplication::topLevelWidgets())
+    // find the main window for VLNV editor
+    QWidget* parentWindow = nullptr;
+    foreach(QWidget * widget, QApplication::topLevelWidgets())
     {
-        MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
+        QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
         if (mainWnd)
         {
-            parentW = mainWnd;
+            parentWindow = mainWnd;
             break;
         }
     }
 
     createConfigurableElementEditor(parameterFinder);
 
-    designConfigurationEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
+    designConfigurationEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentWindow, this);
     designConfigurationEditor_->setTitle(tr("Design configuration reference"));
     designConfigurationEditor_->setMandatory(true);
     designConfigurationEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
