@@ -127,7 +127,7 @@ private:
         QString const& baseAddress, QString const& range, QString const& width,
         QList <QSharedPointer <Register> > registers);
 
-    QSharedPointer<AddressBlock> createAddressBlockWithRegisterBase(QString const& name, QString const& description,
+    QSharedPointer<AddressBlock> createAddressBlockWithRegisterData(QString const& name, QString const& description,
         QString const& baseAddress, QString const& range, QString const& width,
         QList <QSharedPointer <RegisterBase> > registers);
 
@@ -542,7 +542,7 @@ void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
 
     int subHeaderNumber = 1;
 
-    generator->writeRegisters(registers, stream, subHeaderNumber, subHeaderNumber, subHeaderNumber);
+    generator->writeRegisters(registers, stream, subHeaderNumber, subHeaderNumber, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
 
@@ -577,8 +577,9 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
     QSharedPointer<QList <QSharedPointer<RegisterBase> > > parentRegisterData(new QList<QSharedPointer<RegisterBase> >({ testRegisterFileChild, registerInParentRegisterFile }));
     testRegisterFileParent->setRegisterData(parentRegisterData);
 
-    auto testAddressBlock = createAddressBlockWithRegisterBase("testAddressBlock", "address block description", "'h0", "4", "32", *parentRegisterData);
-    
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > >addressBlockRegisterData(new QList < QSharedPointer<RegisterBase> >({ testRegisterFileParent }));
+    auto testAddressBlock = createAddressBlockWithRegisterData("testAddressBlock", "address block description", "'h0", "4", "32", *addressBlockRegisterData);
+
     QList <QSharedPointer <AddressBlock> > addressBlocks;
     addressBlocks.append(testAddressBlock);
 
@@ -607,11 +608,24 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "|" + "32" +
         "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
         "|" + testAddressBlock->getVolatile() + "|  \n"
+        "#### Address block 'testAddressBlock' contains the following register files:  \n"
+        "\n"
         "### 1.1.1.1.1 Register file testRegisterFileParent  \n"
         "\n"
-        "### 1.1.1.1.1.1 Register file testRegisterFileChild  \n"
+        "### 1.1.1.1.1.1 Register testRegister  \n"
         "\n"
-        "### 1.1.1.1.1.1.1 Register testRegister  \n"
+        "**Description:** " + registerInParentRegisterFile->description() + "  \n"
+        "\n"
+        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|  \n"
+        "|" + registerInParentRegisterFile->getAddressOffset() +
+        "|" + registerInParentRegisterFile->getSize() +
+        "|" + registerInParentRegisterFile->getDimension() +
+        "|" + registerInParentRegisterFile->getVolatile() +
+        "|" + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "|  \n"
+        "### 1.1.1.1.1.2 Register file testRegisterFileChild  \n"
+        "\n"
+        "### 1.1.1.1.1.2.1 Register testRegister2  \n"
         "\n"
         "**Description:** " + registerInChildRegisterFile->description() + "  \n"
         "\n"
@@ -622,17 +636,6 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "|" + registerInChildRegisterFile->getDimension() +
         "|" + registerInChildRegisterFile->getVolatile() +
         "|" + AccessTypes::access2Str(registerInChildRegisterFile->getAccess()) + "|  \n"
-        "### 1.1.1.1.1.2 Register testRegister2  \n"
-        "\n"
-        "**Description:** " + registerInChildRegisterFile->description() + "  \n"
-        "\n"
-        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
-        "|:----|:----|:----|:----|:----|  \n"
-        "|" + registerInParentRegisterFile->getAddressOffset() +
-        "|" + registerInParentRegisterFile->getSize() +
-        "|" + registerInParentRegisterFile->getDimension() +
-        "|" + registerInParentRegisterFile->getVolatile() +
-        "|" + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -1247,7 +1250,7 @@ QSharedPointer<AddressBlock> tst_MarkdownGenerator::createTestAddressBlock(QStri
     return testAddressBlock;
 }
 
-QSharedPointer<AddressBlock> tst_MarkdownGenerator::createAddressBlockWithRegisterBase(QString const& name,
+QSharedPointer<AddressBlock> tst_MarkdownGenerator::createAddressBlockWithRegisterData(QString const& name,
     QString const& description, QString const& baseAddress, QString const& range,
     QString const& width, QList<QSharedPointer<RegisterBase>> registers)
 {
