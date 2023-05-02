@@ -546,14 +546,12 @@ void tst_MarkdownGenerator::testRegistersWrittenWithTopComponent()
         "### 1.1.1.1.1 Register " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
+        "**Offset [AUB]:** " + testRegister->getAddressOffset() + "  \n"
+        "**Size [bits]:** " + testRegister->getSize() + "  \n"
+        "**Dimension:** " + testRegister->getDimension() + "  \n"
+        "**Volatile:** " + testRegister->getVolatile() + "  \n"
+        "**Access:** " + AccessTypes::access2Str(testRegister->getAccess()) + "  \n"
         "\n"
-        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
-        "|:----|:----|:----|:----|:----|  \n"
-        "|" + testRegister->getAddressOffset() +
-        "|" + testRegister->getSize() +
-        "|" + testRegister->getDimension() +
-        "|" + testRegister->getVolatile() +
-        "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -590,6 +588,7 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
     generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
+    targetFile.copy("OUTPUT.md");
 
     QString expectedOutput(
         "### 1.1.1.1 Address block testAddressBlock  \n"
@@ -609,29 +608,30 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "### 1.1.1.1.1.1 Register testRegister  \n"
         "\n"
         "**Description:** " + registerInParentRegisterFile->description() + "  \n"
+        "**Offset [AUB]:** " + registerInParentRegisterFile->getAddressOffset() + "  \n"
+        "**Size [bits]:** " + registerInParentRegisterFile->getSize() + "  \n"
+        "**Dimension:** " + registerInParentRegisterFile->getDimension() + "  \n"
+        "**Volatile:** " + registerInParentRegisterFile->getVolatile() + "  \n"
+        "**Access:** " + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "  \n"
         "\n"
-        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
-        "|:----|:----|:----|:----|:----|  \n"
-        "|" + registerInParentRegisterFile->getAddressOffset() +
-        "|" + registerInParentRegisterFile->getSize() +
-        "|" + registerInParentRegisterFile->getDimension() +
-        "|" + registerInParentRegisterFile->getVolatile() +
-        "|" + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "|  \n"
         "### 1.1.1.1.1.2 Register file testRegisterFileChild  \n"
         "\n"
         "### 1.1.1.1.1.2.1 Register testRegister2  \n"
         "\n"
         "**Description:** " + registerInChildRegisterFile->description() + "  \n"
+        "**Offset [AUB]:** " + registerInChildRegisterFile->getAddressOffset() + "  \n"
+        "**Size [bits]:** " + registerInChildRegisterFile->getSize() + "  \n"
+        "**Dimension:** " + registerInChildRegisterFile->getDimension() + "  \n"
+        "**Volatile:** " + registerInChildRegisterFile->getVolatile() + "  \n"
+        "**Access:** " + AccessTypes::access2Str(registerInChildRegisterFile->getAccess()) + "  \n"
         "\n"
-        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
-        "|:----|:----|:----|:----|:----|  \n"
-        "|" + registerInChildRegisterFile->getAddressOffset() +
-        "|" + registerInChildRegisterFile->getSize() +
-        "|" + registerInChildRegisterFile->getDimension() +
-        "|" + registerInChildRegisterFile->getVolatile() +
-        "|" + AccessTypes::access2Str(registerInChildRegisterFile->getAccess()) + "|  \n"
     );
+    QFile testFile("TESTOUTPUT.md");
+    testFile.open(QFile::WriteOnly);
+    QTextStream stream2(&testFile);
 
+    stream2 << expectedOutput;
+    testFile.close();
     checkOutputFile(expectedOutput);
 }
 
@@ -745,14 +745,12 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "### 1.1.1.1.1 Register " + testRegister->name() + "  \n"
         "\n"
         "**Description:** " + testRegister->description() + "  \n"
+        "**Offset [AUB]:** " + testRegister->getAddressOffset() + "  \n"
+        "**Size [bits]:** " + testRegister->getSize() + "  \n"
+        "**Dimension:** " + testRegister->getDimension() + "  \n"
+        "**Volatile:** " + testRegister->getVolatile() + "  \n"
+        "**Access:** " + AccessTypes::access2Str(testRegister->getAccess()) + "  \n"
         "\n"
-        "|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
-        "|:----|:----|:----|:----|:----|  \n"
-        "|" + testRegister->getAddressOffset() +
-        "|" + testRegister->getSize() +
-        "|" + testRegister->getDimension() +
-        "|" + testRegister->getVolatile() +
-        "|" + AccessTypes::access2Str(testRegister->getAccess()) + "|  \n"
         "#### Register '" + testRegister->name() + "' contains the following fields:  \n"
         "\n"
         "|Field name|Offset [bits]|Width [bits]|Volatile|Access|Resets|Description|  \n"

@@ -738,13 +738,22 @@ void MarkdownWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Reg
 
     writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + reg->name(), 3);
 
-    if (!reg->description().isEmpty())
+    if (auto const& description = reg->description(); !description.isEmpty())
     {
-        writeDescription(stream, reg->description());
+        stream << "**Description:** " << description << "  " << Qt::endl;
     }
 
-    writeTableHeader(stream, DocumentationWriter::REGISTER_HEADERS);
-    writeTableRow(stream, registerInfoTableCells);
+    stream << "**Offset [AUB]:** " << expressionFormatter_->formatReferringExpression(reg->getAddressOffset())
+        << "  " << Qt::endl;
+
+    stream << "**Size [bits]:** " << expressionFormatter_->formatReferringExpression(reg->getSize())
+        << "  " << Qt::endl;
+
+    stream << "**Dimension:** " << expressionFormatter_->formatReferringExpression(reg->getDimension())
+        << "  " << Qt::endl;
+
+    stream << "**Volatile:** " << reg->getVolatile() << "  " << Qt::endl;
+    stream << "**Access:** " << AccessTypes::access2Str(reg->getAccess()) << "  " << Qt::endl << Qt::endl;
 
     writeFields(stream, reg);
     ++registerDataNumber;
