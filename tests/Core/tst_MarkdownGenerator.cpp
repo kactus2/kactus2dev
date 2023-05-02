@@ -457,15 +457,13 @@ void tst_MarkdownGenerator::testAddressBlocksWrittenWithTopComponent()
         "### 1.1.1.1 Address block " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
+        "**Usage:** " + General::usage2Str(testAddressBlock->getUsage()) + "  \n"
+        "**Base address [AUB]:** " + testAddressBlock->getBaseAddress() + "  \n"
+        "**Range [AUB]:** " + testAddressBlock->getRange() + "  \n"
+        "**Width [AUB]:** " + testAddressBlock->getWidth() + "  \n"
+        "**Access:** " + AccessTypes::access2Str(testAddressBlock->getAccess()) + "  \n"
+        "**Volatile:** " + testAddressBlock->getVolatile() + "  \n"
         "\n"
-        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|  \n"
-        "|:----|:----|:----|:----|:----|:----|  \n" +
-        "|" + General::usage2Str(testAddressBlock->getUsage()) +
-        "|" + testAddressBlock->getBaseAddress() +
-        "|" + testAddressBlock->getRange() +
-        "|" + testAddressBlock->getWidth() +
-        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
-        "|" + testAddressBlock->getVolatile() + "|  \n"
         "#### Address block '" + testAddressBlock->name() + "' contains the following registers:  \n"
         "\n"
         "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
@@ -514,15 +512,13 @@ void tst_MarkdownGenerator::testExpressionsInAddressBlocks()
         "### 1.1.1.1 Address block " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
+        "**Usage:** " + General::usage2Str(testAddressBlock->getUsage()) + "  \n"
+        "**Base address [AUB]:** 'h0  \n"
+        "**Range [AUB]:** target  \n"
+        "**Width [AUB]:** target + 2  \n"
+        "**Access:** " + AccessTypes::access2Str(testAddressBlock->getAccess()) + "  \n"
+        "**Volatile:** " + testAddressBlock->getVolatile() + "  \n"
         "\n"
-        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|  \n"
-        "|:----|:----|:----|:----|:----|:----|  \n" +
-        "|" + General::usage2Str(testAddressBlock->getUsage()) +
-        "|" + "'h0" +
-        "|" + "target" +
-        "|" + "target + 2" +
-        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
-        "|" + testAddressBlock->getVolatile() + "|  \n"
     );
 
     checkOutputFile(expectedOutput);
@@ -599,15 +595,13 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "### 1.1.1.1 Address block testAddressBlock  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
+        "**Usage:** " + General::usage2Str(testAddressBlock->getUsage()) + "  \n"
+        "**Base address [AUB]:** 'h0  \n"
+        "**Range [AUB]:** 4  \n"
+        "**Width [AUB]:** 32  \n"
+        "**Access:** " + AccessTypes::access2Str(testAddressBlock->getAccess()) + "  \n"
+        "**Volatile:** " + testAddressBlock->getVolatile() + "  \n"
         "\n"
-        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|  \n"
-        "|:----|:----|:----|:----|:----|:----|  \n" +
-        "|" + General::usage2Str(testAddressBlock->getUsage()) +
-        "|" + "'h0" +
-        "|" + "4" +
-        "|" + "32" +
-        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
-        "|" + testAddressBlock->getVolatile() + "|  \n"
         "#### Address block 'testAddressBlock' contains the following register files:  \n"
         "\n"
         "### 1.1.1.1.1 Register file testRegisterFileParent  \n"
@@ -731,15 +725,13 @@ void tst_MarkdownGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "### 1.1.1.1 Address block " + testAddressBlock->name() + "  \n"
         "\n"
         "**Description:** " + testAddressBlock->description() + "  \n"
+        "**Usage:** " + General::usage2Str(testAddressBlock->getUsage()) + "  \n"
+        "**Base address [AUB]:** " + testAddressBlock->getBaseAddress() + "  \n"
+        "**Range [AUB]:** " + testAddressBlock->getRange() + "  \n"
+        "**Width [AUB]:** " + testAddressBlock->getWidth() + "  \n"
+        "**Access:** " + AccessTypes::access2Str(testAddressBlock->getAccess()) + "  \n"
+        "**Volatile:** " + testAddressBlock->getVolatile() + "  \n"
         "\n"
-        "|Usage|Base address [AUB]|Range [AUB]|Width [AUB]|Access|Volatile|  \n"
-        "|:----|:----|:----|:----|:----|:----|  \n"
-        "|" + General::usage2Str(testAddressBlock->getUsage()) +
-        "|" + testAddressBlock->getBaseAddress() +
-        "|" + testAddressBlock->getRange() +
-        "|" + testAddressBlock->getWidth() +
-        "|" + AccessTypes::access2Str(testAddressBlock->getAccess()) +
-        "|" + testAddressBlock->getVolatile() + "|  \n"
         "#### Address block '" + testAddressBlock->name() + "' contains the following registers:  \n"
         "\n"
         "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"

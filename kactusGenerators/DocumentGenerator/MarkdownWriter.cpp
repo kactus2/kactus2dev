@@ -276,25 +276,10 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
             memoryMapNumber,
             addressBlockNumber
         });
-        
-        QStringList addressBlockTableCells(QStringList()
-            << General::usage2Str(addressBlock->getUsage())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
-            << AccessTypes::access2Str(addressBlock->getAccess())
-            << addressBlock->getVolatile()
-        );
-        
+          
         writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Address block ") + addressBlock->name(), 3);
-        
-        if (!addressBlock->description().isEmpty())
-        {
-            writeDescription(stream, addressBlock->description());
-        }
 
-        writeTableHeader(stream, DocumentationWriter::ADDRESS_BLOCK_HEADERS);
-        writeTableRow(stream, addressBlockTableCells);
+        writeAddressBlockInfo(stream, addressBlock);
         
         // Running number to number address block registers and register files
         int registerDataNumber = 1;
@@ -715,6 +700,27 @@ void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<De
 //-----------------------------------------------------------------------------
 void MarkdownWriter::writeEndOfDocument(QTextStream& stream)
 {
+}
+
+void MarkdownWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock)
+{
+    if (auto const description = addressBlock->description(); !description.isEmpty())
+    {
+        stream << "**Description:** " << description << "  " << Qt::endl;
+    }
+
+    stream << "**Usage:** " << General::usage2Str(addressBlock->getUsage()) << "  " << Qt::endl;
+    stream << "**Base address [AUB]:** "
+        << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress()) << "  " << Qt::endl;
+    
+    stream << "**Range [AUB]:** " << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
+        << "  " << Qt::endl;
+
+    stream << "**Width [AUB]:** " << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
+        << "  " << Qt::endl;
+
+    stream << "**Access:** " << AccessTypes::access2Str(addressBlock->getAccess()) << "  " << Qt::endl;
+    stream << "**Volatile:** " << addressBlock->getVolatile() << "  " << Qt::endl << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

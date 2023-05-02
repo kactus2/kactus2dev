@@ -294,6 +294,8 @@ public:
 
 private:
 
+    void writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock);
+
     /*!
      *  Writes info about a single register
      *
