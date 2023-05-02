@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -311,42 +312,31 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
         
         writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Address block ") + addressBlock->name(), 3);
 
-        if (!addressBlock->description().isEmpty())
+        writeAddressBlockInfo(stream, addressBlock);
+
+        // Running number to number address block registers and register files
+        int registerDataNumber = 1;
+
+        // Write address block registers
+        if (auto const addressBlockRegisters = getRegisters(addressBlock->getRegisterData());
+            !addressBlockRegisters.isEmpty())
         {
-            stream << indent(3) << "<p>" << Qt::endl;
-            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
-                addressBlock->description() << "<br>" << Qt::endl;
-            stream << indent(3) << "</p>" << Qt::endl;
+            QString registerTableText = QStringLiteral("Address block '") + addressBlock->name() +
+                QStringLiteral("' contains the following registers:");
+
+            writeSubHeader(stream, QList<int>(), registerTableText, 4);
+
+            writeRegisters(stream, addressBlockRegisters, subHeaderNumber, memoryMapNumber, addressBlockNumber, registerDataNumber);
         }
 
-        QStringList addressBlockTableCells(QStringList()
-            << General::usage2Str(addressBlock->getUsage())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
-            << AccessTypes::access2Str(addressBlock->getAccess())
-            << addressBlock->getVolatile()
-        );
-
-        QString title = "List of values in " + addressBlock->name() + ".";
-
-        // Table with title
-        stream << indent (3) << HTML::TABLE << title << "\">" << Qt::endl;
-        
-        // Address block table headers
-        writeTableHeader(stream, DocumentationWriter::ADDRESS_BLOCK_HEADERS, 4);
-
-        // Address block table body
-        writeTableRow(stream, addressBlockTableCells, 4);
-
-        stream << indent(3) << "</table>" << Qt::endl;
-
-        if (auto const& registers = getAddressBlockRegisters(addressBlock); !registers.isEmpty())
+        // Write address block register files
+        if (auto const addressBlockRegisterFiles = getRegisterFiles(addressBlock->getRegisterData());
+            !addressBlockRegisterFiles.isEmpty())
         {
-            QString registerTableText = QStringLiteral("Address block '") + addressBlock->name()
-                + QStringLiteral("' contains the following registers:");
-            writeSubHeader(stream, QList<int>(), registerTableText, 4);
-            writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+            QString registerFilesSubText = QStringLiteral("Address block '") + addressBlock->name() + QStringLiteral("' contains the following register files:");
+            writeSubHeader(stream, QList<int>(), registerFilesSubText, 4);
+
+            writeRegisterFiles(stream, addressBlockRegisterFiles, subHeaderNumbers, registerDataNumber);
         }
 
         ++addressBlockNumber;
@@ -357,16 +347,12 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
 // Function: HtmlWriter::writeRegisters()
 //-----------------------------------------------------------------------------
 void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Register>> registers,
-    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber)
+    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int& registerDataNumber)
 {
     if (registers.isEmpty())
     {
         return;
     }
-
-    int registerNumber = 1;
-
-    QList<QStringList> allRegistersInfo;
 
     QStringList allRegistersTableHeader;
     allRegistersTableHeader << QStringLiteral("Register name");
@@ -378,7 +364,8 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
 
     for (auto const& currentRegister : registers)
     {
-        QStringList registerInfoTableCells(QStringList()
+        QStringList registerInfoTableRowCells(QStringList()
+            << currentRegister->name()
             << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
             << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
             << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
@@ -386,13 +373,7 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
             << AccessTypes::access2Str(currentRegister->getAccess())
         );
 
-        QStringList registerCellsWithName;
-        registerCellsWithName << currentRegister->name();
-        registerCellsWithName.append(registerInfoTableCells);
-
-        allRegistersInfo.append(registerInfoTableCells);
-
-        writeTableRow(stream, registerCellsWithName, 4);
+        writeTableRow(stream, registerInfoTableRowCells, 4);
     }
 
     stream << indent(3) << "</table>" << Qt::endl;
@@ -404,28 +385,49 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
             subHeaderNumber,
             memoryMapNumber,
             addressBlockNumber,
-            registerNumber
+            registerDataNumber
         });
 
-        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + currentRegister->name(), 3);
+        writeSingleRegister(stream, currentRegister, subHeaderNumbers, registerDataNumber);
+    }
+}
 
-        if (!currentRegister->description().isEmpty())
+void HtmlWriter::writeRegisterFiles(QTextStream& stream,
+    QList<QSharedPointer<RegisterFile> > registerFiles,
+    QList<int> subHeaderNumbers, int& registerDataNumber)
+{
+    for (auto const& registerFile : registerFiles)
+    {
+        QList registerFileSubHeaderNumbers(subHeaderNumbers);
+        registerFileSubHeaderNumbers.append(registerDataNumber);
+
+        writeSubHeader(stream, registerFileSubHeaderNumbers,
+            QStringLiteral("Register file ") + registerFile->name(), 3);
+
+        auto registerData = registerFile->getRegisterData();
+
+        int subRegisterDataNumber = 1;
+
+        // Write register file registers.
+        for (auto const& reg : getRegisters(registerData))
         {
-            writeDescription(stream, currentRegister->description());
+            // Sub-registers need their own subheader number, as the hierarchy ends here.
+            QList newSubHeaderNumbers(registerFileSubHeaderNumbers);
+            newSubHeaderNumbers.append(subRegisterDataNumber);
+            writeSingleRegister(stream, reg, newSubHeaderNumbers, registerDataNumber);
+            subRegisterDataNumber++;
         }
 
-        QString tableTitle = "List of values in " + currentRegister->name() + ".";
-        stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+        // Write the register files of the current register file recursively.
+        for (auto const& regFile : getRegisterFiles(registerData))
+        {
+            // Note: subRegisterDataNumber is passed to the recursive function call.
+            // The value of registerDataNumber stays constant for the same parent register file.
+            writeRegisterFiles(stream, QList({ regFile }), registerFileSubHeaderNumbers, subRegisterDataNumber);
+            subRegisterDataNumber++;
+        }
 
-        writeTableHeader(stream, DocumentationWriter::REGISTER_HEADERS, 4);
-        
-        writeTableRow(stream, allRegistersInfo.at(registerNumber - 1), 4);
-        
-        stream << indent(3) << "</table>" << Qt::endl;
-
-        writeFields(stream, currentRegister);
-
-        ++registerNumber;
+        registerDataNumber++;
     }
 }
 
@@ -783,6 +785,64 @@ QString HtmlWriter::indent(int n) const
 {
     auto tab = QStringLiteral("\t");
     return tab.repeated(n);
+}
+
+void HtmlWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock)
+{
+    stream << indent(3) << "<p>" << Qt::endl;
+    
+    if (auto const& description = addressBlock->description(); !description.isEmpty())
+    {
+        stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " << addressBlock->description()
+            << "<br>" << Qt::endl;
+    }
+
+    stream << indent(3) << HTML::INDENT << "<strong>Usage:</strong> " << General::usage2Str(addressBlock->getUsage())
+        << "<br>" << Qt::endl;
+
+    stream << indent(3) << HTML::INDENT << "<strong>Base address [AUB]:</strong> " <<
+        expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress()) << "<br>" << Qt::endl;
+    
+    stream << indent(3) << HTML::INDENT << "<strong>Range [AUB]:</strong> " <<
+        expressionFormatter_->formatReferringExpression(addressBlock->getRange()) << "<br>" << Qt::endl;
+    
+    stream << indent(3) << HTML::INDENT << "<strong>Width [AUB]:</strong> " <<
+        expressionFormatter_->formatReferringExpression(addressBlock->getWidth()) << "<br>" << Qt::endl;
+    
+    stream << indent(3) << HTML::INDENT << "<strong>Access:</strong> "
+        << AccessTypes::access2Str(addressBlock->getAccess()) << "<br>" << Qt::endl;
+    
+    stream << indent(3) << HTML::INDENT << "<strong>Volatile:</strong> " << addressBlock->getVolatile() << "<br>" << Qt::endl;
+    
+    stream << indent(3) << "</p>" << Qt::endl;
+}
+
+void HtmlWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber)
+{
+    writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + reg->name(), 3);
+
+    stream << indent(3) << "<p>" << Qt::endl;
+
+    if (auto const& description = reg->description(); !description.isEmpty())
+    {
+        stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " << description << "<br>" << Qt::endl;
+    }
+    stream << indent(3) << HTML::INDENT << "<strong>Offset [AUB]:</strong> " << expressionFormatter_->formatReferringExpression(reg->getAddressOffset())
+        << "<br>" << Qt::endl;
+
+    stream << indent(3) << HTML::INDENT << "<strong>Size [bits]:</strong> " << expressionFormatter_->formatReferringExpression(reg->getSize())
+        << "<br>" << Qt::endl;
+
+    stream << indent(3) << HTML::INDENT << "<strong>Dimension:</strong> " << expressionFormatter_->formatReferringExpression(reg->getDimension())
+        << "<br>" << Qt::endl;
+
+    stream << indent(3) << HTML::INDENT << "<strong>Volatile:</strong> " << reg->getVolatile() << "<br>" << Qt::endl;
+    stream << indent(3) << HTML::INDENT << "<strong>Access:</strong> " << AccessTypes::access2Str(reg->getAccess()) << "<br>" << Qt::endl;
+
+    stream << indent(3) << "</p>" << Qt::endl;
+
+    writeFields(stream, reg);
+    ++registerDataNumber;
 }
 
 //-----------------------------------------------------------------------------

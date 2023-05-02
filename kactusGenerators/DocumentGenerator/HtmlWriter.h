@@ -118,7 +118,11 @@ public:
      *      @param [in] addressBlockNumber  The current address block number.
      */
     void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
-        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) override;
+        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int& registerDataNumber) override;
+
+    void writeRegisterFiles(QTextStream& stream,
+        QList<QSharedPointer<RegisterFile> > registerFiles,
+        QList<int> subHeaderNumbers, int& registerDataNumber) override;
 
     /*!
      *  Write the given register fields
@@ -287,6 +291,18 @@ private:
      *      @returns n tabs.
      */
     QString indent(int n) const;
+
+    void writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock);
+
+    /*!
+     *  Writes info about a single register
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] reg                 The register to be written.
+     *      @param [in] subHeaderNumbers    The subheader numbers to write in the subheader.
+     *      @param [in] registerDataNumber  The current address block register data number.
+     */
+    void writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber);
 
     /*!
      *  Writes a row with specified cells to a HTML table with chosen indentation.
