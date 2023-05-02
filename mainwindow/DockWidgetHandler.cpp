@@ -122,6 +122,22 @@ void DockWidgetHandler::setupDockWidgets()
     setupConnectionEditor();
     setupConsole();
     setupVendorExtensionEditor();
+
+    docks_ = {
+    libraryDock_,
+    previewDock_,
+    consoleDock_,
+    contextHelpDock_,
+    designParameterDock_,
+    instanceDock_,
+    adhocDock_,
+    configurationDock_,
+    systemDetailsDock_,
+    interfaceDock_,
+    connectionDock_,
+    scriptConsoleDock_,
+    extensionDock_
+    };
 }
 
 //-----------------------------------------------------------------------------
@@ -334,22 +350,6 @@ void DockWidgetHandler::setupDesignParametersEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupToolbar(QToolBar* leftToolbar, QToolBar* rightToolbar)
 {
-    auto docks = {
-        libraryDock_,
-        previewDock_,
-        consoleDock_,
-        contextHelpDock_,
-        designParameterDock_,
-        instanceDock_,
-        adhocDock_,
-        configurationDock_,
-        systemDetailsDock_,
-        interfaceDock_,
-        connectionDock_,
-        scriptConsoleDock_,
-        extensionDock_
-    };
-
     auto leftActions = new QActionGroup(this);
     leftActions->setExclusive(true);
     leftActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
@@ -358,7 +358,7 @@ void DockWidgetHandler::setupToolbar(QToolBar* leftToolbar, QToolBar* rightToolb
     rightActions->setExclusive(true);
     rightActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 
-    for (auto const& dock : docks)
+    for (auto const& dock : docks_)
     {
         auto action = dock->toggleViewAction();
         action->setIcon(dock->windowIcon());
@@ -804,35 +804,32 @@ void DockWidgetHandler::selectGraphicsConnection(QWidget* currentTabWidget, Grap
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::updateWindows()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::updateWindows(int const& tabCount, QWidget* currentTabWidget)
+void DockWidgetHandler::updateWindows(QWidget* currentTabWidget)
 {
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::LIBRARYWINDOW, libraryDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::OUTPUTWINDOW, consoleDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::CONTEXT_HELP_WINDOW, contextHelpDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::PREVIEWWINDOW, previewDock_);
-    updateWindowAndControlVisibility(
-        tabCount, currentTabWidget, TabDocument::DESIGNPARAMETERSWINDOW, designParameterDock_);
-    updateWindowAndControlVisibility(
-        tabCount, currentTabWidget, TabDocument::CONFIGURATIONWINDOW, configurationDock_);
-    updateWindowAndControlVisibility(
-        tabCount, currentTabWidget, TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::CONNECTIONWINDOW, connectionDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::INTERFACEWINDOW, interfaceDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::INSTANCEWINDOW, instanceDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::ADHOC_WINDOW, adhocDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::VENDOREXTENSIONWINDOW, extensionDock_);
-    updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::SCRIPTWINDOW, scriptConsoleDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::LIBRARYWINDOW, libraryDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::OUTPUTWINDOW, consoleDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::CONTEXT_HELP_WINDOW, contextHelpDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::PREVIEWWINDOW, previewDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::DESIGNPARAMETERSWINDOW, designParameterDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::CONFIGURATIONWINDOW, configurationDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::CONNECTIONWINDOW, connectionDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::INTERFACEWINDOW, interfaceDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::INSTANCEWINDOW, instanceDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::ADHOC_WINDOW, adhocDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::VENDOREXTENSIONWINDOW, extensionDock_);
+    updateWindowAndControlVisibility(currentTabWidget, TabDocument::SCRIPTWINDOW, scriptConsoleDock_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::updateWindowAndControlVisibility()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::updateWindowAndControlVisibility(int const& tabCount, QWidget* currentTabWidget,
+void DockWidgetHandler::updateWindowAndControlVisibility(QWidget* currentTabWidget,
     TabDocument::SupportedWindows windowType, QDockWidget* dock)
 {
     QAction* showAction = dock->toggleViewAction();
 
-    bool shouldShow = isSupportedWindowType(tabCount, currentTabWidget, windowType);
+    bool shouldShow = isSupportedWindowType(currentTabWidget, windowType);
 
     showAction->setVisible(shouldShow);
     dock->setVisible(shouldShow && visibilities_.value(windowType));
@@ -841,22 +838,22 @@ void DockWidgetHandler::updateWindowAndControlVisibility(int const& tabCount, QW
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::isSupportedWindowType()
 //-----------------------------------------------------------------------------
-bool DockWidgetHandler::isSupportedWindowType(int const& tabCount, QWidget* currentTabWidget,
-    TabDocument::SupportedWindows windowType)
+bool DockWidgetHandler::isSupportedWindowType(QWidget* currentTabWidget,
+    TabDocument::SupportedWindows windowType) const
 {
-    return currentlySupportedWindows(tabCount, currentTabWidget) & windowType;
+    return currentlySupportedWindows(currentTabWidget) & windowType;
 }
 
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::currentlySupportedWindows()
 //-----------------------------------------------------------------------------
-unsigned int DockWidgetHandler::currentlySupportedWindows(int const& tabCount, QWidget* currentTabWidget)
+unsigned int DockWidgetHandler::currentlySupportedWindows(QWidget* currentTabWidget) const
 {
     unsigned int windows = defaultWindows();
 
-    if (tabCount > 0)
+    TabDocument* doc = dynamic_cast<TabDocument*>(currentTabWidget);
+    if (doc != nullptr)
     {
-        TabDocument* doc = static_cast<TabDocument*>(currentTabWidget);
         windows = doc->getSupportedWindows();
     }
 
@@ -866,7 +863,7 @@ unsigned int DockWidgetHandler::currentlySupportedWindows(int const& tabCount, Q
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::defaultWindows()
 //-----------------------------------------------------------------------------
-unsigned int DockWidgetHandler::defaultWindows()
+unsigned int DockWidgetHandler::defaultWindows() const
 {
     return TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW |
         TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW |
@@ -1157,10 +1154,10 @@ void DockWidgetHandler::onScriptConsoleVisibilityAction(bool show)
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::setWindowVisibilityForSupportedWindow()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::setWindowVisibilityForSupportedWindow(int const& tabCount, QWidget* currentTabWidget,
+void DockWidgetHandler::setWindowVisibilityForSupportedWindow(QWidget* currentTabWidget,
     TabDocument::SupportedWindows type, bool show)
 {
-    if (isSupportedWindowType(tabCount, currentTabWidget, type))
+    if (isSupportedWindowType(currentTabWidget, type))
     {
         setWindowVisibility(type, show);
     }

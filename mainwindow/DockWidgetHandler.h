@@ -140,17 +140,16 @@ public:
      *      @param [in] tabCount            Number of items in the tab queue.
      *      @param [in] currentTabWidget    The currently active tab widget.
      */
-    void updateWindows(int const& tabCount, QWidget* currentTabWidget);
+    void updateWindows(QWidget* currentTabWidget);
 
     /*!
      *  Update the visibility of the selected dock widget.
      *
-     *      @param [in] tabCount            Number of items in the tab queue.
      *      @param [in] currentTabWidget    The currently active tab widget.
      *      @param [in] windowType          Type selected dock widget.
      *      @param [in] dock                The selected dock widget.
      */
-    void updateWindowAndControlVisibility(int const& tabCount, QWidget* currentTabWidget,
+    void updateWindowAndControlVisibility(QWidget* currentTabWidget,
         TabDocument::SupportedWindows windowType, QDockWidget* dock);
 
     /*!
@@ -173,12 +172,11 @@ public:
     /*!
      *  Set visibility for the supported window types.
      *
-     *      @param [in] tabCount            Number of items in the tab queue.
      *      @param [in] currentTabWidget    The currently active tab widget.
      *      @param [in] type                Type of the selected dock widget.
      *      @param [in] show                The new visibility value.
      */
-    void setWindowVisibilityForSupportedWindow(int const& tabCount, QWidget* currentTabWidget,
+    void setWindowVisibilityForSupportedWindow(QWidget* currentTabWidget,
         TabDocument::SupportedWindows type, bool show);
 
     /*!
@@ -467,25 +465,24 @@ private:
      *
      *      @return True, if the window type is supported by the active document, false otherwise.
      */
-    bool isSupportedWindowType(int const& tabCount, QWidget* currentTabWidget,
-        TabDocument::SupportedWindows windowType);
+    bool isSupportedWindowType(QWidget* currentTabWidget,
+        TabDocument::SupportedWindows windowType) const;
 
     /*!
      *  Get the supported windows for the currently active tab widget.
      *
-     *      @param [in] tabCount            Number of items in the tab queue.
      *      @param [in] currentTabWidget    The currently active tab widget.
      *
      *      @return The currently supported dock widgets.
      */
-    unsigned int currentlySupportedWindows(int const& tabCount, QWidget* currentTabWidget);
+    unsigned int currentlySupportedWindows(QWidget* currentTabWidget) const;
 
     /*!
      *  Get the dock widgets that are visible regardless of the currently active tad document.
      *
      *      @return The default dock widgets.
      */
-    unsigned int defaultWindows();
+    unsigned int defaultWindows() const;
 
     /*!
      *  Set the visibility for the selected dock widget.
@@ -592,6 +589,8 @@ private:
 
     //! The help window.
     HelpWindow* helpWnd_;
+
+    QList<QDockWidget*> docks_;
 
     //! Contains the visibility for the windows.
     //! Used to maintain the visibility information when windows are hidden by change of the active document.

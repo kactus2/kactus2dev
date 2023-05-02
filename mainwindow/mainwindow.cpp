@@ -215,8 +215,26 @@ messageChannel_(messageChannel)
     // Restore program settings.
     restoreSettings();
 
+
+    auto leftToolbar = new QToolBar(this);
+    leftToolbar->setOrientation(Qt::Vertical);
+    leftToolbar->setMovable(false);
+    leftToolbar->setIconSize(QSize(32, 32));
+
+    addToolBar(Qt::LeftToolBarArea, leftToolbar);
+
+    auto rightToolbar = new QToolBar(this);
+    rightToolbar->setOrientation(Qt::Vertical);
+    rightToolbar->setMovable(false);
+    rightToolbar->setIconSize(QSize(32, 32));
+
+    addToolBar(Qt::RightToolBarArea, rightToolbar);
+
+    dockHandler_->setupToolbar(leftToolbar, rightToolbar);
+
     // don't display empty editors
     updateWindows();
+
 
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
@@ -545,13 +563,13 @@ void MainWindow::setupActions()
 void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show)
 {
     int tabCount = designTabs_->count();
-    QWidget* currentWidget = 0;
+    QWidget* currentWidget = nullptr;
     if (tabCount > 0)
     {
         currentWidget = designTabs_->currentWidget();
     }
 
-    dockHandler_->setWindowVisibilityForSupportedWindow(tabCount, currentWidget, type, show);
+    dockHandler_->setWindowVisibilityForSupportedWindow(currentWidget, type, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -681,21 +699,6 @@ void MainWindow::setupMenus()
     // the menu to display the dock widgets
     dockHandler_->setupVisibilityActionMenu(windowsMenu_);
 
-    auto leftToolbar = new QToolBar(this);
-    leftToolbar->setOrientation(Qt::Vertical);
-    leftToolbar->setMovable(false);
-    leftToolbar->setIconSize(QSize(32, 32));
-
-    addToolBar(Qt::LeftToolBarArea, leftToolbar);
-
-    auto rightToolbar = new QToolBar(this);
-    rightToolbar->setOrientation(Qt::Vertical);
-    rightToolbar->setMovable(false);
-    rightToolbar->setIconSize(QSize(32, 32));
-
-    addToolBar(Qt::RightToolBarArea, rightToolbar);
-
-    dockHandler_->setupToolbar(leftToolbar, rightToolbar);
 }
 
 //-----------------------------------------------------------------------------
@@ -2791,7 +2794,7 @@ bool MainWindow::isOpen(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 void MainWindow::updateWindows()
 {
-    dockHandler_->updateWindows(designTabs_->count(), designTabs_->currentWidget());
+    dockHandler_->updateWindows(designTabs_->currentWidget());
 }
 
 //-----------------------------------------------------------------------------
