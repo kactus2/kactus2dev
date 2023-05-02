@@ -47,6 +47,8 @@
 #include <editors/SystemDesign/SystemDesignWidget.h>
 #include <editors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 
+#include <QActionGroup>
+#include <QList>
 #include <QString>
 #include <QHelpEngine>
 #include <QApplication>
@@ -129,6 +131,7 @@ void DockWidgetHandler::setupMessageConsole()
 {
     consoleDock_ = new QDockWidget(tr("Output"), mainWindow_);
     consoleDock_->setObjectName(tr("Output"));
+    consoleDock_->setWindowIcon(QIcon(":icons/common/graphics/log.png"));
     consoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     consoleDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | 
         QDockWidget::DockWidgetFloatable);
@@ -163,6 +166,7 @@ void DockWidgetHandler::setupContextHelp()
     // Create the dock widget for the context help.
     contextHelpDock_ = new QDockWidget(tr("Context Help"), mainWindow_);
     contextHelpDock_->setObjectName(tr("Context Help"));
+    contextHelpDock_->setWindowIcon(QIcon(":icons/common/graphics/system-help.png"));
     contextHelpDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     contextHelpDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -209,6 +213,7 @@ void DockWidgetHandler::setupLibraryDock()
     // set up the dock widget for the library
     libraryDock_ = new QDockWidget(tr("IP-XACT Library"), mainWindow_);
     libraryDock_->setObjectName(tr("Library"));
+    libraryDock_->setWindowIcon(QIcon(":icons/common/graphics/library.png"));
     libraryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     libraryDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -261,6 +266,7 @@ void DockWidgetHandler::setupComponentPreview()
 {
     previewDock_ = new QDockWidget(tr("Component Preview"), mainWindow_);
     previewDock_->setObjectName(tr("ComponentPreview"));
+    previewDock_->setWindowIcon(QIcon(":icons/common/graphics/preview.png"));
     previewDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     previewDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -324,6 +330,57 @@ void DockWidgetHandler::setupDesignParametersEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::setupToolbar()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::setupToolbar(QToolBar* leftToolbar, QToolBar* rightToolbar)
+{
+    auto docks = {
+        libraryDock_,
+        previewDock_,
+        consoleDock_,
+        contextHelpDock_,
+        designParameterDock_,
+        instanceDock_,
+        adhocDock_,
+        configurationDock_,
+        systemDetailsDock_,
+        interfaceDock_,
+        connectionDock_,
+        scriptConsoleDock_,
+        extensionDock_
+    };
+
+    auto leftActions = new QActionGroup(this);
+    leftActions->setExclusive(true);
+    leftActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
+
+    auto rightActions = new QActionGroup(this);
+    rightActions->setExclusive(true);
+    rightActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
+
+    for (auto const& dock : docks)
+    {
+        auto action = dock->toggleViewAction();
+        action->setIcon(dock->windowIcon());
+        action->setCheckable(true);
+
+        if (mainWindow_->dockWidgetArea(dock) == Qt::LeftDockWidgetArea)
+        {
+            leftActions->addAction(action);
+            leftToolbar->addAction(action);
+        }
+
+        else if (mainWindow_->dockWidgetArea(dock) == Qt::RightDockWidgetArea)
+        {
+            rightActions->addAction(action);
+            rightToolbar->addAction(action);
+        }
+
+        connect(action, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)), Qt::UniqueConnection);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::applySettings()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::applySettings()
@@ -338,6 +395,7 @@ void DockWidgetHandler::setupInstanceEditor()
 {
     instanceDock_ = new QDockWidget(tr("Component Instance Details"), mainWindow_);
     instanceDock_->setObjectName(tr("Instance Editor"));
+    instanceDock_->setWindowIcon(QIcon(":icons/common/graphics/hw-component-edit.png"));
     instanceDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     instanceDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -360,6 +418,7 @@ void DockWidgetHandler::setupAdHocEditor()
 {
     adhocDock_ = new QDockWidget(tr("Ad-hoc Port Editor"), mainWindow_);
     adhocDock_->setObjectName(tr("Ad-hoc Port Editor"));
+    adhocDock_->setWindowIcon(QIcon(":icons/common/graphics/adhoc.png"));
     adhocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     adhocDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -385,6 +444,7 @@ void DockWidgetHandler::setupConfigurationEditor()
 {
     configurationDock_ = new QDockWidget(tr("Design Configuration Details"), mainWindow_);
     configurationDock_->setObjectName(tr("Configuration editor"));
+    configurationDock_->setWindowIcon(QIcon(":icons/common/graphics/settings-general.png"));
     configurationDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     configurationDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -403,6 +463,7 @@ void DockWidgetHandler::setupSystemDetailsEditor()
 {
     systemDetailsDock_ = new QDockWidget(tr("HW Mapping Details"), mainWindow_);
     systemDetailsDock_->setObjectName(tr("HW Mapping Details Editor"));
+    systemDetailsDock_->setWindowIcon(QIcon(":icons/common/graphics/mapping.png"));
     systemDetailsDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     systemDetailsDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -421,6 +482,7 @@ void DockWidgetHandler::setupInterfaceEditor()
 {
     interfaceDock_ = new QDockWidget(tr("Interface Editor"), mainWindow_);
     interfaceDock_->setObjectName(tr("Interface Editor"));
+    interfaceDock_->setWindowIcon(QIcon(":icons/common/graphics/tool-interface.png"));
     interfaceDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     interfaceDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -439,6 +501,7 @@ void DockWidgetHandler::setupConnectionEditor()
 {
     connectionDock_ = new QDockWidget(tr("Connection Editor"), mainWindow_);
     connectionDock_->setObjectName(tr("Connection Editor"));
+    connectionDock_->setWindowIcon(QIcon(":icons/common/graphics/tool-interconnection.png"));
     connectionDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     connectionDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -455,6 +518,7 @@ void DockWidgetHandler::setupConsole()
 {
     scriptConsoleDock_ = new QDockWidget(tr("Script"), mainWindow_);
     scriptConsoleDock_->setObjectName(tr("Python console"));
+    scriptConsoleDock_->setWindowIcon(QIcon(":icons/common/graphics/code-file.png"));
     scriptConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | 
         Qt::BottomDockWidgetArea);
     scriptConsoleDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
@@ -473,6 +537,7 @@ void DockWidgetHandler::setupVendorExtensionEditor()
 {
     extensionDock_ = new QDockWidget(tr("Vendor Extensions (experimental)"), mainWindow_);
     extensionDock_->setObjectName(tr("Vendor Extension Editor"));
+    extensionDock_->setWindowIcon(QIcon(":icons/common/graphics/puzzle.png"));
     extensionDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
     extensionDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
@@ -489,55 +554,55 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
 {
     const bool designParametersVisible = settings.value("DesignParameterVisibility", true).toBool();
     visibilities_.insert(TabDocument::DESIGNPARAMETERSWINDOW, designParametersVisible);
-    designParameterDock_->toggleViewAction()->setChecked(designParametersVisible);
+    designParameterDock_->toggleViewAction()->setVisible(designParametersVisible);
 
     const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
     visibilities_.insert(TabDocument::CONFIGURATIONWINDOW, configurationVisible);
-    configurationDock_->toggleViewAction()->setChecked(configurationVisible);
+    configurationDock_->toggleViewAction()->setVisible(configurationVisible);
 
     const bool systemDetailsVisible = settings.value("SystemDetailsVisibility", true).toBool();
     visibilities_.insert(TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsVisible);
-    systemDetailsDock_->toggleViewAction()->setChecked(systemDetailsVisible);
+    systemDetailsDock_->toggleViewAction()->setVisible(systemDetailsVisible);
 
     const bool connectionVisible = settings.value("ConnectionVisibility", true).toBool();
     visibilities_.insert(TabDocument::CONNECTIONWINDOW, connectionVisible);
-    connectionDock_->toggleViewAction()->setChecked(connectionVisible);
+    connectionDock_->toggleViewAction()->setVisible(connectionVisible);
 
     const bool instanceVisible = settings.value("InstanceVisibility", true).toBool();
     visibilities_.insert(TabDocument::INSTANCEWINDOW, instanceVisible);
-    instanceDock_->toggleViewAction()->setChecked(instanceVisible);
+    instanceDock_->toggleViewAction()->setVisible(instanceVisible);
 
     const bool adHocEditorVisible = settings.value("AdHocEditorVisibility", true).toBool();
     visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocEditorVisible);
-    adhocDock_->toggleViewAction()->setChecked(adHocEditorVisible);
+    adhocDock_->toggleViewAction()->setVisible(adHocEditorVisible);
 
     const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
     visibilities_.insert(TabDocument::INTERFACEWINDOW, interfaceVisible);
-    interfaceDock_->toggleViewAction()->setChecked(interfaceVisible);
+    interfaceDock_->toggleViewAction()->setVisible(interfaceVisible);
 
     const bool libraryVisible = settings.value("LibraryVisibility", true).toBool();
     visibilities_.insert(TabDocument::LIBRARYWINDOW, libraryVisible);
-    libraryDock_->toggleViewAction()->setChecked(libraryVisible);
+    libraryDock_->toggleViewAction()->setVisible(libraryVisible);
 
     const bool outputVisible = settings.value("OutputVisibility", true).toBool();
     visibilities_.insert(TabDocument::OUTPUTWINDOW, outputVisible);
-    consoleDock_->toggleViewAction()->setChecked(outputVisible);
+    consoleDock_->toggleViewAction()->setVisible(outputVisible);
 
     const bool contextHelpVisible = settings.value("ContextHelpVisibility", false).toBool();
     visibilities_.insert(TabDocument::CONTEXT_HELP_WINDOW, contextHelpVisible);
-    contextHelpDock_->toggleViewAction()->setChecked(contextHelpVisible);
+    contextHelpDock_->toggleViewAction()->setVisible(contextHelpVisible);
 
     const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
     visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
-    previewDock_->toggleViewAction()->setChecked(previewVisible);
+    previewDock_->toggleViewAction()->setVisible(previewVisible);
 
     const bool extensionsVisible = settings.value("VendorExtensionVisibility", false).toBool();
     visibilities_.insert(TabDocument::VENDOREXTENSIONWINDOW, extensionsVisible);
-    extensionDock_->toggleViewAction()->setChecked(extensionsVisible);
+    extensionDock_->toggleViewAction()->setVisible(extensionsVisible);
 
     const bool consoleVisible = settings.value("ScriptVisibility", true).toBool();
     visibilities_.insert(TabDocument::SCRIPTWINDOW, consoleVisible);
-    scriptConsoleDock_->toggleViewAction()->setChecked(consoleVisible);
+    scriptConsoleDock_->toggleViewAction()->setVisible(consoleVisible);
 }
 
 //-----------------------------------------------------------------------------
@@ -906,7 +971,7 @@ void DockWidgetHandler::setupDesignParameterFinder(QSharedPointer<Design> newDes
     {
         QList<QSharedPointer<const Component> > componentsWithFinders;
 
-        foreach (QSharedPointer<ComponentInstance> instance, *newDesign->getComponentInstances())
+        for (QSharedPointer<ComponentInstance> instance : *newDesign->getComponentInstances())
         {
             QSharedPointer<const Document> referencedDocument =
                 libraryHandler_->getModelReadOnly(*instance->getComponentRef().data());

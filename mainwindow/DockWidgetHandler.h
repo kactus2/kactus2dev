@@ -245,6 +245,8 @@ public:
      */
     void setupDesignParameterFinder(QSharedPointer<Design> newDesign);
 
+    void setupToolbar(QToolBar* leftToolbar, QToolBar* rightToolbar);
+
     //! Apply the current application settings to widgets.
     void applySettings();
 

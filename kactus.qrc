@@ -66,6 +66,7 @@
         <file>common/graphics/dockSelect.png</file>
         <file>common/graphics/workspace.png</file>
         <file>common/graphics/visibility.png</file>
+        <file>common/graphics/library.png</file>
         <file>common/graphics/library-refresh.png</file>
         <file>common/graphics/library-config.png</file>
         <file>common/graphics/naming-policy.png</file>
@@ -146,6 +147,13 @@
 		<file>common/graphics/template.png</file>
 		<file>common/graphics/check-all.png</file>
 		<file>common/graphics/uncheck-all.png</file>
+		<file>common/graphics/code-file.png</file>
+		<file>common/graphics/puzzle.png</file>
+		<file>common/graphics/hw-component-edit.png</file>
+		<file>common/graphics/preview.png</file>
+		<file>common/graphics/adhoc.png</file>
+		<file>common/graphics/mapping.png</file>
+		<file>common/graphics/log.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

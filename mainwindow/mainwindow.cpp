@@ -560,7 +560,7 @@ void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, 
 void MainWindow::setupMenus()
 {
     ribbon_ = new Ribbon(this);
-    addToolBar(ribbon_);
+    addToolBar(Qt::TopToolBarArea, ribbon_);
 
     // The "File" group.
     RibbonGroup* fileGroup = new RibbonGroup(tr("File"), ribbon_);
@@ -677,8 +677,25 @@ void MainWindow::setupMenus()
 
     ribbon_->addGroup(sysGroup);
 
+
     // the menu to display the dock widgets
     dockHandler_->setupVisibilityActionMenu(windowsMenu_);
+
+    auto leftToolbar = new QToolBar(this);
+    leftToolbar->setOrientation(Qt::Vertical);
+    leftToolbar->setMovable(false);
+    leftToolbar->setIconSize(QSize(32, 32));
+
+    addToolBar(Qt::LeftToolBarArea, leftToolbar);
+
+    auto rightToolbar = new QToolBar(this);
+    rightToolbar->setOrientation(Qt::Vertical);
+    rightToolbar->setMovable(false);
+    rightToolbar->setIconSize(QSize(32, 32));
+
+    addToolBar(Qt::RightToolBarArea, rightToolbar);
+
+    dockHandler_->setupToolbar(leftToolbar, rightToolbar);
 }
 
 //-----------------------------------------------------------------------------
@@ -854,7 +871,7 @@ void MainWindow::updateMenuStrip()
 
     MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(doc);
     bool isMemoryDesign = memoryDocument != 0;
-
+    
     actSave_->setEnabled(doc != 0 && doc->isModified());
     actSaveAs_->setEnabled(doc != 0);
     actSaveHierarchy_->setEnabled(componentEditor || dynamic_cast<DesignWidget*>(doc));
