@@ -428,7 +428,7 @@ private:
      *
      *      @param [in] delimiter   The word delimiter ending the term edit.
      */
-    virtual void finishEditingCurrentTerm(QString delimiter);
+    virtual void finishEditingCurrentTerm(QString const& delimiter);
     
     /*!
      *  Checks if the given key event represents shortcut for showing all available completions.

@@ -231,6 +231,13 @@ bool ExpressionEditor::hasSelection()
 //-----------------------------------------------------------------------------
 void ExpressionEditor::handleParentKeyPressEvent(QKeyEvent* keyEvent)
 {
+    if (keyEvent->text().isEmpty() == false)
+    {
+        auto cursor = textCursor();
+        cursor.setCharFormat(colorFormat("black"));
+        setTextCursor(cursor);
+    }
+
     QTextEdit::keyPressEvent(keyEvent);
 }
 
@@ -259,9 +266,6 @@ void ExpressionEditor::setCompletedParameterName(QString const& parameterName)
     cursor.setPosition(startOfCurrentWord());
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
     cursor.insertText(parameterName, colorFormat("darkGreen"));
-
-    cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::MoveAnchor);    
-    setTextCursor(cursor);
 }
 
 //-----------------------------------------------------------------------------

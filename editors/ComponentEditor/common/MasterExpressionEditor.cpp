@@ -511,7 +511,7 @@ void MasterExpressionEditor::replaceReferencesInExpressionWithNames(int firstWor
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::finishEditingCurrentTerm()
 //-----------------------------------------------------------------------------
-void MasterExpressionEditor::finishEditingCurrentTerm(QString delimiter)
+void MasterExpressionEditor::finishEditingCurrentTerm(QString const& delimiter)
 {
     QString term = nthWordIn(currentWordIndex(), expression_);
     QString termAndDelimiter = term;
