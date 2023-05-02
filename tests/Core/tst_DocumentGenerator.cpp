@@ -154,9 +154,9 @@ private:
         QString const& baseAddress, QString const& range, QString const& width,
         QList <QSharedPointer <Register> > registers);
     
-    QSharedPointer<AddressBlock> createAddressBlockWithRegisterBase(QString const& name, QString const& description,
+    QSharedPointer<AddressBlock> createAddressBlockWithRegisterData(QString const& name, QString const& description,
         QString const& baseAddress, QString const& range, QString const& width,
-        QList <QSharedPointer <RegisterBase> > registers);
+        QList <QSharedPointer <RegisterBase> > registerData);
 
     QSharedPointer<MemoryMap> createTestMemoryMap(QString const& name, QString const& description, 
         int addressUnitbits, QList<QSharedPointer <AddressBlock> > addressBlocks);
@@ -556,27 +556,15 @@ void tst_DocumentGenerator::testAddressBlocksWrittenWithTopComponent()
     QString expectedOutput(
         "\t\t\t<h3>1.1.1.1 Address block " + testAddressBlock->name() + "</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
-        "<br>\n"
+        "\t\t\t" + getIndentString() +
+        "<strong>Description:</strong> " + testAddressBlock->description() + "<br>\n"
+        "<strong>Usage:</strong>" + General::usage2Str(testAddressBlock->getUsage()) + "<br>\n"
+        "<strong>Base address [AUB]:</strong>" + testAddressBlock->getBaseAddress() + "<br>\n"
+        "<strong>Range [AUB]:</strong>" + testAddressBlock->getRange() + "<br>\n"
+        "<strong>Width [AUB]:</strong>" + testAddressBlock->getWidth() + "<br>\n"
+        "<strong>Access:</strong>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "<br>\n"
+        "<strong>Access:</strong>" + testAddressBlock->getVolatile() + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->name() + ".\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Usage</th>\n"
-        "\t\t\t\t\t<th>Base address [AUB]</th>\n"
-        "\t\t\t\t\t<th>Range [AUB]</th>\n"
-        "\t\t\t\t\t<th>Width [AUB]</th>\n"
-        "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t\t<th>Volatile</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getBaseAddress() + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getRange() + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getWidth() + "</td>\n"
-        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getVolatile() + "</td>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n"
         "\t\t\t<h4>Address block '" + testAddressBlock->name() + "' contains the following registers:</h4>\n"
         "\t\t\t" + getTableString() + "\">\n"
         "\t\t\t\t<tr>\n"
@@ -638,27 +626,15 @@ void tst_DocumentGenerator::testExpressionsInAddressBlocks()
     QString expectedOutput(
         "\t\t\t<h3>1.1.1.1 Address block " + testAddressBlock->name() + "</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
-        "<br>\n"
+        "\t\t\t" + getIndentString() +
+        "<strong>Description:</strong> " + testAddressBlock->description() + "<br>\n"
+        "<strong>Usage:</strong>" + General::usage2Str(testAddressBlock->getUsage()) + "<br>\n"
+        "<strong>Base address [AUB]:</strong>'h0<br>\n"
+        "<strong>Range [AUB]:</strong>target<br>\n"
+        "<strong>Width [AUB]:</strong>target + 2<br>\n"
+        "<strong>Access:</strong>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "<br>\n"
+        "<strong>Access:</strong>" + testAddressBlock->getVolatile() + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->name() + ".\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Usage</th>\n"
-        "\t\t\t\t\t<th>Base address [AUB]</th>\n"
-        "\t\t\t\t\t<th>Range [AUB]</th>\n"
-        "\t\t\t\t\t<th>Width [AUB]</th>\n"
-        "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t\t<th>Volatile</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
-        "\t\t\t\t\t<td>" + "'h0" + "</td>\n"
-        "\t\t\t\t\t<td>" + "target" + "</td>\n"
-        "\t\t\t\t\t<td>" + "target + 2" + "</td>\n"
-        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getVolatile() + "</td>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n"
         );
 
     checkOutputFile(expectedOutput);
@@ -681,31 +657,21 @@ void tst_DocumentGenerator::testRegistersWrittenWithTopComponent()
 
     int subHeaderNumber = 1;
 
-    generator->writeRegisters(registers, stream, subHeaderNumber, subHeaderNumber, subHeaderNumber);
+    generator->writeRegisters(registers, stream, subHeaderNumber, subHeaderNumber, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
 
     QString expectedOutput(
         "\t\t\t<h3>1.1.1.1.1 Register " + testRegister->name() + "</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->description() + "<br>\n"
+        "\t\t\t" + getIndentString() + 
+        "<strong>Description:</strong> " + testRegister->description() + "<br>\n"
+        "<strong>Offset [AUB]:</strong> " + testRegister->getAddressOffset() + "<br>\n"
+        "<strong>Size [bits]:</strong> " + testRegister->getSize() + "<br>\n"
+        "<strong>Dimension:</strong> " + testRegister->getDimension() + "<br>\n"
+        "<strong>Volatile:</strong> " + testRegister->getVolatile() + "<br>\n"
+        "<strong>Access:</strong> " + AccessTypes::access2Str(testRegister->getAccess()) + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testRegister->name() + ".\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Offset [AUB]</th>\n"
-        "\t\t\t\t\t<th>Size [bits]</th>\n"
-        "\t\t\t\t\t<th>Dimension</th>\n"
-        "\t\t\t\t\t<th>Volatile</th>\n"
-        "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + testRegister->getAddressOffset() + "</td>\n"
-        "\t\t\t\t\t<td>" + testRegister->getSize() + "</td>\n"
-        "\t\t\t\t\t<td>" + testRegister->getDimension() + "</td>\n"
-        "\t\t\t\t\t<td>" + testRegister->getVolatile() + "</td>\n"
-        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testRegister->getAccess()) + "</td>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n"
         );
 
     checkOutputFile(expectedOutput);
@@ -725,7 +691,8 @@ void tst_DocumentGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
     QSharedPointer<QList <QSharedPointer<RegisterBase> > > parentRegisterData(new QList<QSharedPointer<RegisterBase> >({ testRegisterFileChild, registerInParentRegisterFile }));
     testRegisterFileParent->setRegisterData(parentRegisterData);
 
-    auto testAddressBlock = createAddressBlockWithRegisterBase("testAddressBlock", "address block description", "'h0", "4", "32", *parentRegisterData);
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > >addressBlockRegisterData(new QList < QSharedPointer<RegisterBase> >({ testRegisterFileParent }));
+    auto testAddressBlock = createAddressBlockWithRegisterData("testAddressBlock", "address block description", "'h0", "4", "32", *addressBlockRegisterData);
 
     QList <QSharedPointer <AddressBlock> > addressBlocks;
     addressBlocks.append(testAddressBlock);
@@ -745,71 +712,39 @@ void tst_DocumentGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
     QString expectedOutput(
         "\t\t\t<h3>1.1.1.1 Address block testAddressBlock</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
-        "<br>\n"
+        "\t\t\t" + getIndentString() +
+        "<strong>Description:</strong> " + testAddressBlock->description() + "<br>\n"
+        "<strong>Usage:</strong>" + General::usage2Str(testAddressBlock->getUsage()) + "<br>\n"
+        "<strong>Base address [AUB]:</strong>'h0<br>\n"
+        "<strong>Range [AUB]:</strong>4<br>\n"
+        "<strong>Width [AUB]:</strong>32<br>\n"
+        "<strong>Access:</strong>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "<br>\n"
+        "<strong>Access:</strong>" + testAddressBlock->getVolatile() + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->name() + ".\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Usage</th>\n"
-        "\t\t\t\t\t<th>Base address [AUB]</th>\n"
-        "\t\t\t\t\t<th>Range [AUB]</th>\n"
-        "\t\t\t\t\t<th>Width [AUB]</th>\n"
-        "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t\t<th>Volatile</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
-        "\t\t\t\t\t<td>" + "'h0" + "</td>\n"
-        "\t\t\t\t\t<td>" + "target" + "</td>\n"
-        "\t\t\t\t\t<td>" + "target + 2" + "</td>\n"
-        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getVolatile() + "</td>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n"
+        "\t\t\t<h4>Address block 'testAddressBlock' contains the following register files:</h4>\n"
         "\t\t\t<h3>1.1.1.1.1 Register file testRegisterFileParent</h3>\n"
-        "\t\t\t<h3>1.1.1.1.1.1 Register file testRegisterFileChild</h3>\n"
-        "\t\t\t<h3>1.1.1.1.1.1.1 Register testRegister</h3>\n"
+        "\t\t\t<h3>1.1.1.1.1.1 Register testRegister</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + registerInChildRegisterFile->description() +
-        "<br>\n"
-        "\t\t\t</p>"
-        "\t\t\t" + getTableString() + "List of values in " + registerInChildRegisterFile->name() + ".\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Offset [AUB]</th>\n"
-        "\t\t\t\t\t<th>Size [bits]</th>\n"
-        "\t\t\t\t\t<th>Dimension</th>\n"
-        "\t\t\t\t\t<th>Volatile</th>\n"
-        "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + registerInChildRegisterFile->getAddressOffset() + "</td>\n"
-        "\t\t\t\t\t<td>" + registerInChildRegisterFile->getSize() + "</td>\n"
-        "\t\t\t\t\t<td>" + registerInChildRegisterFile->getDimension() + "</td>\n"
-        "\t\t\t\t\t<td>" + registerInChildRegisterFile->getVolatile() + "</td>\n"
-        "\t\t\t\t\t<td>" + AccessTypes::access2Str(registerInChildRegisterFile->getAccess()) + "</td>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n"
-        "\t\t\t<h3>1.1.1.1.1.2 Register testRegister2</h3>\n"
+        "\t\t\t" + getIndentString() +
+        "<strong>Description:</strong> " + registerInParentRegisterFile->description() + "<br>\n"
+        "<strong>Offset [AUB]:</strong> " + registerInParentRegisterFile->getAddressOffset() + "<br>\n"
+        "<strong>Size [bits]:</strong> " + registerInParentRegisterFile->getSize() + "<br>\n"
+        "<strong>Dimension:</strong> " + registerInParentRegisterFile->getDimension() + "<br>\n"
+        "<strong>Volatile:</strong> " + registerInParentRegisterFile->getVolatile() + "<br>\n"
+        "<strong>Access:</strong> " + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t<h3>1.1.1.1.1.2 Register file testRegisterFileChild</h3>\n"
+        "\t\t\t<h3>1.1.1.1.1.2.1 Register testRegister2</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + registerInParentRegisterFile->description() +
-        "<br>\n"
-        "\t\t\t</p>"
-        "\t\t\t" + getTableString() + "List of values in " + registerInParentRegisterFile->name() + ".\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Offset [AUB]</th>\n"
-        "\t\t\t\t\t<th>Size [bits]</th>\n"
-        "\t\t\t\t\t<th>Dimension</th>\n"
-        "\t\t\t\t\t<th>Volatile</th>\n"
-        "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + registerInParentRegisterFile->getAddressOffset() + "</td>\n"
-        "\t\t\t\t\t<td>" + registerInParentRegisterFile->getSize() + "</td>\n"
-        "\t\t\t\t\t<td>" + registerInParentRegisterFile->getDimension() + "</td>\n"
-        "\t\t\t\t\t<td>" + registerInParentRegisterFile->getVolatile() + "</td>\n"
-        "\t\t\t\t\t<td>" + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "</td>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() +
+        "<strong>Description:</strong> " + registerInChildRegisterFile->description() + "<br>\n"
+        "<strong>Offset [AUB]:</strong> " + registerInChildRegisterFile->getAddressOffset() + "<br>\n"
+        "<strong>Size [bits]:</strong> " + registerInChildRegisterFile->getSize() + "<br>\n"
+        "<strong>Dimension:</strong> " + registerInChildRegisterFile->getDimension() + "<br>\n"
+        "<strong>Volatile:</strong> " + registerInChildRegisterFile->getVolatile() + "<br>\n"
+        "<strong>Access:</strong> " + AccessTypes::access2Str(registerInChildRegisterFile->getAccess()) + "<br>\n"
+        "\t\t\t</p>\n"
     );
 
     checkOutputFile(expectedOutput);
@@ -914,32 +849,15 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">1.1 Memory maps</a></h2>\n"
         "\t\t\t<h3>1.1.1 Memory map " + testMemoryMap->name() + "</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " +
-        testMemoryMap->getAddressUnitBits() + "<br>\n"
+        "\t\t\t" + getIndentString() +
+        "<strong>Description:</strong> " + testAddressBlock->description() + "<br>\n"
+        "<strong>Usage:</strong>" + General::usage2Str(testAddressBlock->getUsage()) + "<br>\n"
+        "<strong>Base address [AUB]:</strong>" + testAddressBlock->getBaseAddress() + "<br>\n"
+        "<strong>Range [AUB]:</strong>" + testAddressBlock->getRange() + "<br>\n"
+        "<strong>Width [AUB]:</strong>" + testAddressBlock->getWidth() + "<br>\n"
+        "<strong>Access:</strong>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "<br>\n"
+        "<strong>Access:</strong>" + testAddressBlock->getVolatile() + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t<h3>1.1.1.1 Address block " + testAddressBlock->name() + "</h3>\n"
-        "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testAddressBlock->description() +
-        "<br>\n"
-        "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testAddressBlock->name() + ".\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Usage</th>\n"
-        "\t\t\t\t\t<th>Base address [AUB]</th>\n"
-        "\t\t\t\t\t<th>Range [AUB]</th>\n"
-        "\t\t\t\t\t<th>Width [AUB]</th>\n"
-        "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t\t<th>Volatile</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + General::usage2Str(testAddressBlock->getUsage()) + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getBaseAddress() + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getRange() + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getWidth() + "</td>\n"
-        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testAddressBlock->getAccess()) + "</td>\n"
-        "\t\t\t\t\t<td>" + testAddressBlock->getVolatile() + "</td>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n"
         "\t\t\t<h4>Address block '" + testAddressBlock->name() + "' contains the following registers:</h4>\n"
         "\t\t\t" + getTableString() +"\">\n"
         "\t\t\t\t<tr>\n"
@@ -961,24 +879,14 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t\t</table>\n"
         "\t\t\t<h3>1.1.1.1.1 Register " + testRegister->name() + "</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegister->description() + "<br>\n"
+        "\t\t\t" + getIndentString() +
+        "<strong>Description:</strong> " + testRegister->description() + "<br>\n"
+        "<strong>Offset [AUB]:</strong> " + testRegister->getAddressOffset() + "<br>\n"
+        "<strong>Size [bits]:</strong> " + testRegister->getSize() + "<br>\n"
+        "<strong>Dimension:</strong> " + testRegister->getDimension() + "<br>\n"
+        "<strong>Volatile:</strong> " + testRegister->getVolatile() + "<br>\n"
+        "<strong>Access:</strong> " + AccessTypes::access2Str(testRegister->getAccess()) + "<br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t" + getTableString() + "List of values in " + testRegister->name() + ".\">\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<th>Offset [AUB]</th>\n"
-        "\t\t\t\t\t<th>Size [bits]</th>\n"
-        "\t\t\t\t\t<th>Dimension</th>\n"
-        "\t\t\t\t\t<th>Volatile</th>\n"
-        "\t\t\t\t\t<th>Access</th>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + testRegister->getAddressOffset() + "</td>\n"
-        "\t\t\t\t\t<td>" + testRegister->getSize() + "</td>\n"
-        "\t\t\t\t\t<td>" + testRegister->getDimension() + "</td>\n"
-        "\t\t\t\t\t<td>" + testRegister->getVolatile() + "</td>\n"
-        "\t\t\t\t\t<td>" + AccessTypes::access2Str(testRegister->getAccess()) + "</td>\n"
-        "\t\t\t\t</tr>\n"
-        "\t\t\t</table>\n"
         "\t\t\t<h4>Register '" + testRegister->name() + "' contains the following fields:</h4>\n"
         "\t\t\t" + getTableString() + "List of fields contained within register " + testRegister->name() +
         ".\">\n"
@@ -1595,9 +1503,9 @@ QSharedPointer <AddressBlock> tst_DocumentGenerator::createTestAddressBlock(QStr
     return testAddressBlock;
 }
 
-QSharedPointer<AddressBlock> tst_DocumentGenerator::createAddressBlockWithRegisterBase(QString const& name,
+QSharedPointer<AddressBlock> tst_DocumentGenerator::createAddressBlockWithRegisterData(QString const& name,
     QString const& description, QString const& baseAddress, QString const& range,
-    QString const& width, QList<QSharedPointer<RegisterBase>> registers)
+    QString const& width, QList<QSharedPointer<RegisterBase>> registerData)
 {
     QSharedPointer <AddressBlock> testAddressBlock(new AddressBlock);
     testAddressBlock->setName(name);
@@ -1609,9 +1517,9 @@ QSharedPointer<AddressBlock> tst_DocumentGenerator::createAddressBlockWithRegist
     testAddressBlock->setAccess(AccessTypes::READ_WRITE);
     testAddressBlock->setVolatile(true);
 
-    for (QSharedPointer<RegisterBase> testRegister : registers)
+    for (QSharedPointer<RegisterBase> testRegisterData : registerData)
     {
-        testAddressBlock->getRegisterData()->append(testRegister);
+        testAddressBlock->getRegisterData()->append(testRegisterData);
     }
 
     return testAddressBlock;
