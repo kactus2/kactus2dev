@@ -372,9 +372,10 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
 // Function: documentgenerator::writeRegisters()
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > registers, QTextStream& stream,
-    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber)
+    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int registerDataNumber)
 {
-    writer_->writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+    writer_->writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber,
+        addressBlockNumber, registerDataNumber);
 }
 
 //-----------------------------------------------------------------------------
@@ -871,16 +872,14 @@ QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view, Q
 //-----------------------------------------------------------------------------
 void DocumentGenerator::createComponentPicture(QStringList& pictureList)
 {
-    QSharedPointer<Component> component = component_;
-
     ComponentPreviewBox compBox(libraryHandler_);
     compBox.hide();
-    compBox.setComponent(component);
+    compBox.setComponent(component_);
 
     QFileInfo docInfo(targetPath_);
     QString compPicPath = docInfo.absolutePath();
     compPicPath += "/";
-    compPicPath += component->getVlnv().toString(".");
+    compPicPath += component_->getVlnv().toString(".");
     compPicPath += ".png";
 
     QFile compPicFile(compPicPath);

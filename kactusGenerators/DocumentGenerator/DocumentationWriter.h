@@ -31,6 +31,8 @@ class ComponentInstantiation;
 class ListParameterFinder;
 class DesignConfigurationInstantiation;
 class ConfigurableVLNVReference;
+class RegisterFile;
+class RegisterBase;
 
 using ParameterList = QSharedPointer<QList<QSharedPointer<Parameter> > >;
 
@@ -127,6 +129,18 @@ public:
      */
     virtual void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
         int subHeaderNumber, int memoryMapNumber) = 0;
+    
+    /*!
+     *  Write the given register files
+     *
+     *      @param [in] stream               The text stream to write into.
+     *      @param [in] registerFiles        The registers to be written.
+     *      @param [in] subHeaderNumbers     The current subheader number.
+     *      @param [out] registerDataNumber  The current address block number.
+     */
+    virtual void writeRegisterFiles(QTextStream& stream,
+        QList<QSharedPointer<RegisterFile> > registerFiles,
+        QList<int> subHeaderNumbers, int& registerDataNumber) = 0;
 
     /*!
      *  Write the given registers.
@@ -138,7 +152,7 @@ public:
      *      @param [in] addressBlockNumber  The current address block number.
      */
     virtual void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
-        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) = 0;
+        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int& registerDataNumber) = 0;
 
     /*!
      *  Write the given register fields.
@@ -321,13 +335,24 @@ protected:
     QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
 
     /*!
-     *  Finds the registers of an address block.
+     *  Finds the registers from some register data.
      *
-     *      @param [in] addressBlock    The address block.
+     *      @param [in] registerData    The register data.
      *
-     *      @returns The registers of the address block.
+     *      @returns The registers of the register data.
      */
-    QList<QSharedPointer <Register> > getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const;
+    QList<QSharedPointer <Register> > getRegisters(
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData) const;
+
+    /*!
+     *  Finds the register files from some register data.
+     *
+     *      @param [in] registerData    The register data.
+     *
+     *      @returns The register files of the register data.
+     */
+    QList<QSharedPointer <RegisterFile> > getRegisterFiles(
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData) const;
 
     /*!
      *  Finds the field reset info of a register field.

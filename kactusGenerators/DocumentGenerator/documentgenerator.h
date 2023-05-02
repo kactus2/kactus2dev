@@ -154,7 +154,7 @@ public:
      *      @param [in] addressBlockNumber  The number that defines the address block.
      */
     void writeRegisters(QList <QSharedPointer <Register> > registers, QTextStream& stream, int subHeaderNumber,
-        int memoryMapNumber, int addressBlockNumber);
+        int memoryMapNumber, int addressBlockNumber, int registerDataNumber);
 
     /*!
      *  Write the fields of the register.

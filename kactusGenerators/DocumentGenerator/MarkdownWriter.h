@@ -110,7 +110,19 @@ public:
      */
     void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
         int subHeaderNumber,int memoryMapNumber) override;
-    
+
+    /*!
+     *  Write the given register files
+     *
+     *      @param [in] stream               The text stream to write into.
+     *      @param [in] registerFiles        The registers to be written.
+     *      @param [in] subHeaderNumbers     The current subheader number.
+     *      @param [out] registerDataNumber  The current address block number.
+     */
+    void writeRegisterFiles(QTextStream& stream,
+        QList<QSharedPointer<RegisterFile> > registerFiles,
+        QList<int> subHeaderNumbers, int& registerDataNumber) override;
+
     /*!
      *  Write the given registers
      *
@@ -121,7 +133,7 @@ public:
      *      @param [in] addressBlockNumber  The current address block number.
      */
     void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
-        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) override;
+        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int& registerDataNumber) override;
 
     /*!
      *  Write the given register fields
@@ -281,7 +293,17 @@ public:
     void writeEndOfDocument(QTextStream& stream) override;
 
 private:
-    
+
+    /*!
+     *  Writes info about a single register
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] reg                 The register to be written.
+     *      @param [in] subHeaderNumbers    The subheader numbers to write in the subheader.
+     *      @param [in] registerDataNumber  The current address block register data number.
+     */
+    void writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber);
+
     /*!
      *  Writes a table row with specified cells to a MD table.
      *

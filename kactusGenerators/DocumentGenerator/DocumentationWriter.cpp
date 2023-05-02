@@ -13,6 +13,7 @@
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/Field.h>
 
@@ -147,10 +148,11 @@ QList<QSharedPointer<AddressBlock>> DocumentationWriter::getMemoryMapAddressBloc
 //-----------------------------------------------------------------------------
 // Function: DocumentationWriter::getAddressBlockRegisters()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<Register>> DocumentationWriter::getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const
+QList<QSharedPointer<Register> > DocumentationWriter::getRegisters(
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData) const
 {
     QList <QSharedPointer <Register> > registers;
-    for (auto const& registerModelItem : *addressBlock->getRegisterData())
+    for (auto const& registerModelItem : *registerData)
     {
         QSharedPointer <Register> registerItem = registerModelItem.dynamicCast<Register>();
 
@@ -161,6 +163,22 @@ QList<QSharedPointer<Register>> DocumentationWriter::getAddressBlockRegisters(QS
     }
 
     return registers;
+}
+
+QList<QSharedPointer<RegisterFile> > DocumentationWriter::getRegisterFiles(
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData) const
+{
+    QList<QSharedPointer<RegisterFile > > registerFiles;
+
+    for (auto const& registerDataItem : *registerData)
+    {
+        if (auto registerFileItem = registerDataItem.dynamicCast<RegisterFile>(); registerFileItem)
+        {
+            registerFiles.append(registerFileItem);
+        }
+    }
+    
+    return registerFiles;
 }
 
 //-----------------------------------------------------------------------------
