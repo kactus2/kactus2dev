@@ -368,7 +368,7 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
 
     for (auto const& currentRegister : registers)
     {
-        QStringList registerInfoTableCells(QStringList()
+        QStringList registersTableRowCells(QStringList()
             << currentRegister->name()
             << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
             << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
@@ -377,7 +377,7 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
             << AccessTypes::access2Str(currentRegister->getAccess())
         );
 
-        writeTableRow(stream, registerInfoTableCells);
+        writeTableRow(stream, registersTableRowCells);
     }
 
     // Write each register separately
@@ -728,14 +728,6 @@ void MarkdownWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<A
 //-----------------------------------------------------------------------------
 void MarkdownWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber)
 {   
-    QStringList registerInfoTableCells(QStringList()
-        << expressionFormatter_->formatReferringExpression(reg->getAddressOffset())
-        << expressionFormatter_->formatReferringExpression(reg->getSize())
-        << expressionFormatter_->formatReferringExpression(reg->getDimension())
-        << reg->getVolatile()
-        << AccessTypes::access2Str(reg->getAccess())
-    );
-
     writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + reg->name(), 3);
 
     if (auto const& description = reg->description(); !description.isEmpty())

@@ -129,7 +129,7 @@ private:
 
     QSharedPointer<AddressBlock> createAddressBlockWithRegisterData(QString const& name, QString const& description,
         QString const& baseAddress, QString const& range, QString const& width,
-        QList <QSharedPointer <RegisterBase> > registers);
+        QList <QSharedPointer <RegisterBase> > registerData);
 
     QSharedPointer<MemoryMap> createTestMemoryMap(QString const& name, QString const& description,
         int addressUnitbits, QList<QSharedPointer <AddressBlock> > addressBlocks);
@@ -588,7 +588,6 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
     generator->writeAddressBlocks(addressBlocks, stream, subHeaderNumber, subHeaderNumber);
 
     targetFile.close();
-    targetFile.copy("OUTPUT.md");
 
     QString expectedOutput(
         "### 1.1.1.1 Address block testAddressBlock  \n"
