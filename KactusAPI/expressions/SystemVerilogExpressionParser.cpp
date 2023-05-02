@@ -331,10 +331,8 @@ QString SystemVerilogExpressionParser::solveRPN(QVector<QString> const& rpn, boo
             {
                 isWellFormed = false;
             }
-            else
-            {
-                result.append(constant);
-            }
+
+            result.append(constant);
         }
 
         if (isWellFormed == false)

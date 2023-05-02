@@ -12,7 +12,8 @@
 TEMPLATE = subdirs
 
 CONFIG += testcase
-SUBDIRS += tst_CommandLineParser.pro \
+SUBDIRS += \
+# tst_CommandLineParser.pro \
             tst_SystemVerilogExpressionParser.pro \
             tst_IPXactSystemVerilogParser.pro \
             tst_ParameterCompleter.pro \

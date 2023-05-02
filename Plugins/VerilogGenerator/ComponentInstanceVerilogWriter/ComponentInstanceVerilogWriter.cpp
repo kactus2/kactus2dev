@@ -88,7 +88,7 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
 {
     QList<QSharedPointer<Parameter> > parameterToWrite;
 
-    foreach(QSharedPointer<Parameter> parameter, *instance_->getParameters())
+    for (QSharedPointer<Parameter> parameter : *instance_->getParameters())
     {
         // If the parameters are not user resolved nor generated, then there cannot be any override by the design.
         if (parameter->getValueResolve() == "user" || parameter->getValueResolve() == "generated")
@@ -106,18 +106,16 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
 
 	QStringList assignments;
 
-	foreach(QSharedPointer<Parameter> parameter, parameterToWrite)
+	for (QSharedPointer<Parameter> parameter : parameterToWrite)
 	{
         // If the parameters are not user resolved nor generated, then there cannot be any override by the design.
-        if (parameter->getValueResolve() != "user" && parameter->getValueResolve() != "generated")
+        if (parameter->getValueResolve() == "user" || parameter->getValueResolve() == "generated")
         {
-            continue;
+            QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
+            assignment.replace("<parameter>", parameter->name().leftJustified(20));
+            assignment.replace("<value>", parameter->getValue());
+            assignments.append(assignment);
         }
-
-		QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
-		assignment.replace("<parameter>", parameter->name().leftJustified(20));
-		assignment.replace("<value>", parameter->getValue());
-		assignments.append(assignment);
 	}
 
     instanceParameters.replace("<namesAndValues>", assignments.join(",\n"));

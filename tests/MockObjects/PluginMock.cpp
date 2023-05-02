@@ -11,7 +11,7 @@
 
 #include "PluginMock.h"
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 //-----------------------------------------------------------------------------
 // Function: PluginMock::PluginMock()
@@ -62,17 +62,17 @@ QString PluginMock::getVendor() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PluginMock::getLicence()
+// Function: PluginMock::getLicense()
 //-----------------------------------------------------------------------------
-QString PluginMock::getLicence() const
+QString PluginMock::getLicense() const
 {
     return QStringLiteral("LGLP2");
 }
 
 //-----------------------------------------------------------------------------
-// Function: PluginMock::getLicenceHolder()
+// Function: PluginMock::getLicenseHolder()
 //-----------------------------------------------------------------------------
-QString PluginMock::getLicenceHolder() const
+QString PluginMock::getLicenseHolder() const
 {
     return QStringLiteral("Public");
 }
@@ -116,4 +116,19 @@ QString PluginMock::getCommand() const
 void PluginMock::process(QStringList const& arguments, IPluginUtility* utility)
 {
     utility->printInfo(arguments.join(QLatin1Char(' ')));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginMock::getOutputFormat()
+//-----------------------------------------------------------------------------
+QString PluginMock::getOutputFormat() const
+{
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginMock::runGenerator()
+//-----------------------------------------------------------------------------
+void PluginMock::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, QString const& viewName, QString const& outputDirectory)
+{
 }

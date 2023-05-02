@@ -18,8 +18,8 @@ CONFIG += c++11 testcase console
 
 # Remove the following, if IP-XACT models library is not needed.
 linux-g++ | linux-g++-64 | linux-g++-32 {
- LIBS += -L../../../executable \
-     -lIPXACTmodels
+ LIBS += -L../../../x64/executable \
+     -lIPXACTmodels 
 }
 win64 | win32 {
  LIBS += -L../../../x64/executable \

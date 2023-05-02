@@ -16,10 +16,10 @@
 #include <QLineEdit>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -433,14 +433,14 @@ void tst_ExpressionEditor::testCompletionChangesWithCursor()
     QTextCursor cursor = editor->textCursor();
     cursor.setPosition(4);
 
-    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, editor->cursorRect(cursor).center());
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, Qt::NoModifier, editor->cursorRect(cursor).center());
 
     QVERIFY2(editor->completer()->popup()->isVisible(), "Completer popup should be visible after clicking a word.");
     QCOMPARE(editor->completer()->currentCompletion(), QString("testParameter"));
 
     cursor.setPosition(testParameter->name().length() + 1);
 
-    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, editor->cursorRect(cursor).center());
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, Qt::NoModifier, editor->cursorRect(cursor).center());
 
     QVERIFY2(!editor->completer()->popup()->isVisible(), "Completer popup should not be visible after clicking a constant.");
 
@@ -523,19 +523,19 @@ void tst_ExpressionEditor::testCompleteChangesInAllValuesWithMouseNavigation()
 
     cursor.setPosition(0);
     QPoint clickPoint = editor->cursorRect(cursor).center();
-    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, clickPoint);
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, Qt::NoModifier, clickPoint);
     QTest::keyClick(editor, Qt::Key_Delete);
     QTest::keyClicks(editor, "20");
 
     cursor.setPosition(5);
     clickPoint = editor->cursorRect(cursor).center();
-    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, clickPoint);
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, Qt::NoModifier, clickPoint);
     QTest::keyClick(editor, Qt::Key_Delete);
     QTest::keyClicks(editor, "20");
 
     cursor.setPosition(3);
     clickPoint = editor->cursorRect(cursor).center();
-    QTest::mouseClick(editor->viewport(), Qt::LeftButton, 0, clickPoint);
+    QTest::mouseClick(editor->viewport(), Qt::LeftButton, Qt::NoModifier, clickPoint);
     QTest::keyClick(editor, Qt::Key_Delete);
     QTest::keyClicks(editor, "20");
 

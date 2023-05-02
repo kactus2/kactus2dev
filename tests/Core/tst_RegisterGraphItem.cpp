@@ -16,8 +16,8 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h>
 #include <editors/ComponentEditor/visualization/memorygapitem.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-#include <editors/ComponentEditor/common/NullParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/NullParser.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Field.h>

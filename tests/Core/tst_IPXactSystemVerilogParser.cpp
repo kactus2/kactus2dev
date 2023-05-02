@@ -12,10 +12,10 @@
 #include <QtTest>
 #include <QSharedPointer>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCache.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ParameterCache.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/BusInterface.h>

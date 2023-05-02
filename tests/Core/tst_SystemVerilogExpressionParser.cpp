@@ -582,7 +582,7 @@ void tst_SystemVerilogExpressionParser::testClog2Function_data()
     QTest::addColumn<QString>("expectedResult");
 
     QTest::newRow("$clog(0) equals 0") << "$clog2(0)" << "0";
-    QTest::newRow("$clog(1) equals 1") << "$clog2(1)" << "1";
+    QTest::newRow("$clog(1) equals 0") << "$clog2(1)" << "0";
     QTest::newRow("$clog(2) equals 1") << "$clog2(2)" << "1";
     QTest::newRow("$clog(3) equals 2") << "$clog2(3)" << "2";
     QTest::newRow("$clog(127) equals 7") << "$clog2(127)" << "7";
