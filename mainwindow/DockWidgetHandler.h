@@ -90,6 +90,13 @@ public:
     void loadVisiblities(QSettings& settings);
 
     /*!
+     *  Save settings for dock widget visibilities.
+     *
+     *      @param [in] settings    The settings.
+     */
+    void saveVisibilitySettings(QSettings& settings) const;
+
+    /*!
      *  Set filter settings for the library.
      *
      *      @param [in] settings    Settings containing the library filters.
@@ -97,11 +104,18 @@ public:
     void loadFilterSettings(QSettings& settings);
 
     /*!
+     *  Save settings for dock widget filters.
+     *
+     *      @param [in] settings    The settings.
+     */
+    void saveFilterSettings(QSettings& settings) const;
+
+    /*!
      *  Setup the visibility actions for the visibility menu.
      *
      *      @param [in] visibilityMenu  The visibility menu.
      */
-    void setupVisibilityActionMenu(QMenu& visibilityMenu) const;
+    void setupVisibilityActionMenu(QMenu& visibilityMenu);
 
     /*!
      *  Clear the item selection in design.
@@ -221,20 +235,6 @@ public:
      *      @return The current library filters.
      */
     Utils::FilterOptions getLibraryFilters() const;
-
-    /*!
-     *  Save settings for dock widget filters.
-     *
-     *      @param [in] settings    The settings.
-     */
-    void saveFilterSettings(QSettings& settings) const;
-
-    /*!
-     *  Save settings for dock widget visibilities.
-     *
-     *      @param [in] settings    The settings.
-     */
-    void saveVisibilitySettings(QSettings& settings) const;
 
     /*!
      *  Setup the design parameter finder.
@@ -590,7 +590,9 @@ private:
     //! The help window.
     HelpWindow* helpWnd_;
 
-    QList<QDockWidget*> docks_;
+    QMap<TabDocument::SupportedWindows, QDockWidget*> docks_;
+
+    QMap<TabDocument::SupportedWindows, QAction*> visibilityControls_;
 
     //! Contains the visibility for the windows.
     //! Used to maintain the visibility information when windows are hidden by change of the active document.

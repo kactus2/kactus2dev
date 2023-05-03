@@ -217,6 +217,7 @@ messageChannel_(messageChannel)
 
 
     auto leftToolbar = new QToolBar(this);
+    leftToolbar->setObjectName("leftToolBar");
     leftToolbar->setOrientation(Qt::Vertical);
     leftToolbar->setMovable(false);
     leftToolbar->setIconSize(QSize(32, 32));
@@ -224,6 +225,7 @@ messageChannel_(messageChannel)
     addToolBar(Qt::LeftToolBarArea, leftToolbar);
 
     auto rightToolbar = new QToolBar(this);
+    rightToolbar->setObjectName("rightToolbar");
     rightToolbar->setOrientation(Qt::Vertical);
     rightToolbar->setMovable(false);
     rightToolbar->setIconSize(QSize(32, 32));

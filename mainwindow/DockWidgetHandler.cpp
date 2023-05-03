@@ -56,7 +56,7 @@
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::DockWidgetHandler()
 //-----------------------------------------------------------------------------
-DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, QMainWindow* parent):
+DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, QMainWindow* parent) :
     libraryHandler_(library),
     libraryDock_(0),
     libraryWidget_(0),
@@ -84,24 +84,18 @@ DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* m
     interfaceDock_(0),
     connectionEditor_(0),
     connectionDock_(0),
-    scriptConsoleDock_(0), 
+    scriptConsoleDock_(0),
     scriptConsole_(0),
     extensionDock_(0),
     extensionEditor_(0),
     helpWnd_(0),
+    docks_(),
+    visibilityControls_(),
     visibilities_(),
     mainWindow_(parent),
     messageChannel_(messageChannel)
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::getLibraryHandler()
-//-----------------------------------------------------------------------------
-LibraryHandler* DockWidgetHandler::getLibraryHandler() const
-{
-    return libraryHandler_;
 }
 
 //-----------------------------------------------------------------------------
@@ -122,22 +116,182 @@ void DockWidgetHandler::setupDockWidgets()
     setupConnectionEditor();
     setupConsole();
     setupVendorExtensionEditor();
-
+       
     docks_ = {
-    libraryDock_,
-    previewDock_,
-    consoleDock_,
-    contextHelpDock_,
-    designParameterDock_,
-    instanceDock_,
-    adhocDock_,
-    configurationDock_,
-    systemDetailsDock_,
-    interfaceDock_,
-    connectionDock_,
-    scriptConsoleDock_,
-    extensionDock_
+        { TabDocument::CONFIGURATIONWINDOW, configurationDock_ },
+        { TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsDock_ },
+        { TabDocument::CONNECTIONWINDOW, connectionDock_ },
+        { TabDocument::INSTANCEWINDOW, instanceDock_ },
+        { TabDocument::ADHOC_WINDOW, adhocDock_ },
+        { TabDocument::ADDRESS_WINDOW, configurationDock_ },
+        { TabDocument::INTERFACEWINDOW, interfaceDock_ },
+        { TabDocument::LIBRARYWINDOW, libraryDock_ },
+        { TabDocument::OUTPUTWINDOW, consoleDock_ },
+        { TabDocument::CONTEXT_HELP_WINDOW, contextHelpDock_ },
+        { TabDocument::PREVIEWWINDOW, previewDock_ },
+        { TabDocument::DESIGNPARAMETERSWINDOW, designParameterDock_ },
+        { TabDocument::VENDOREXTENSIONWINDOW, extensionDock_ },
+        { TabDocument::SCRIPTWINDOW, scriptConsoleDock_ }
     };
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::getLibraryHandler()
+//-----------------------------------------------------------------------------
+LibraryHandler* DockWidgetHandler::getLibraryHandler() const
+{
+    return libraryHandler_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::loadVisiblities()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::loadVisiblities(QSettings& settings)
+{
+    const bool designParametersVisible = settings.value("DesignParameterVisibility", true).toBool();
+    visibilities_.insert(TabDocument::DESIGNPARAMETERSWINDOW, designParametersVisible);
+    visibilityControls_[TabDocument::DESIGNPARAMETERSWINDOW]->setChecked(designParametersVisible);
+
+    const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
+    visibilities_.insert(TabDocument::CONFIGURATIONWINDOW, configurationVisible);
+    visibilityControls_[TabDocument::CONFIGURATIONWINDOW]->setChecked(configurationVisible);
+
+    const bool systemDetailsVisible = settings.value("SystemDetailsVisibility", true).toBool();
+    visibilities_.insert(TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsVisible);
+    visibilityControls_[TabDocument::SYSTEM_DETAILS_WINDOW]->setChecked(systemDetailsVisible);
+
+    const bool connectionVisible = settings.value("ConnectionVisibility", true).toBool();
+    visibilities_.insert(TabDocument::CONNECTIONWINDOW, connectionVisible);
+    visibilityControls_[TabDocument::CONNECTIONWINDOW]->setChecked(connectionVisible);
+
+    const bool instanceVisible = settings.value("InstanceVisibility", true).toBool();
+    visibilities_.insert(TabDocument::INSTANCEWINDOW, instanceVisible);
+    visibilityControls_[TabDocument::INSTANCEWINDOW]->setChecked(instanceVisible);
+
+    const bool adHocEditorVisible = settings.value("AdHocEditorVisibility", true).toBool();
+    visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocEditorVisible);
+    visibilityControls_[TabDocument::ADHOC_WINDOW]->setChecked(adHocEditorVisible);
+
+    const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
+    visibilities_.insert(TabDocument::INTERFACEWINDOW, interfaceVisible);
+    visibilityControls_[TabDocument::INTERFACEWINDOW]->setChecked(interfaceVisible);
+
+    const bool libraryVisible = settings.value("LibraryVisibility", true).toBool();
+    visibilities_.insert(TabDocument::LIBRARYWINDOW, libraryVisible);
+    visibilityControls_[TabDocument::LIBRARYWINDOW]->setChecked(libraryVisible);
+
+    const bool outputVisible = settings.value("OutputVisibility", true).toBool();
+    visibilities_.insert(TabDocument::OUTPUTWINDOW, outputVisible);
+    visibilityControls_[TabDocument::OUTPUTWINDOW]->setChecked(outputVisible);
+
+    const bool contextHelpVisible = settings.value("ContextHelpVisibility", false).toBool();
+    visibilities_.insert(TabDocument::CONTEXT_HELP_WINDOW, contextHelpVisible);
+    visibilityControls_[TabDocument::CONTEXT_HELP_WINDOW]->setChecked(contextHelpVisible);
+
+    const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
+    visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
+    visibilityControls_[TabDocument::PREVIEWWINDOW]->setChecked(previewVisible);
+
+    const bool extensionsVisible = settings.value("VendorExtensionVisibility", false).toBool();
+    visibilities_.insert(TabDocument::VENDOREXTENSIONWINDOW, extensionsVisible);
+    visibilityControls_[TabDocument::VENDOREXTENSIONWINDOW]->setChecked(extensionsVisible);
+
+    const bool consoleVisible = settings.value("ScriptVisibility", true).toBool();
+    visibilities_.insert(TabDocument::SCRIPTWINDOW, consoleVisible);
+    visibilityControls_[TabDocument::SCRIPTWINDOW]->setChecked(consoleVisible);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::saveVisibilitySettings()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::saveVisibilitySettings(QSettings& settings) const
+{
+    settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
+    settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
+    settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
+    settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
+    settings.setValue("AdHocEditorVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
+    settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
+    settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
+    settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
+    settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
+    settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
+    settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
+    settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
+    settings.setValue("VendorExtensionVisibility", visibilities_.value(TabDocument::VENDOREXTENSIONWINDOW));
+    settings.setValue("ScriptVisibility", visibilities_.value(TabDocument::SCRIPTWINDOW));
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::loadFilterSettings()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::loadFilterSettings(QSettings& settings)
+{
+    Utils::FilterOptions filters;
+    settings.beginGroup("LibraryFilters");
+    settings.beginGroup("Type");
+    filters.type.components_ = settings.value("ShowComponents", true).toBool();
+    filters.type.buses_ = settings.value("ShowBuses", true).toBool();
+    filters.type.catalogs_ = settings.value("ShowCatalogs", true).toBool();
+    filters.type.apis_ = settings.value("ShowApis", true).toBool();
+    filters.type.advanced_ = settings.value("ShowAdvanced", false).toBool();
+    settings.endGroup();
+    settings.beginGroup("Implementation");
+    filters.implementation.hw_ = settings.value("ShowHW", true).toBool();
+    filters.implementation.sw_ = settings.value("ShowSW", true).toBool();
+    filters.implementation.system_ = settings.value("ShowSystem", true).toBool();
+    settings.endGroup();
+    settings.beginGroup("Hierarchy");
+    filters.hierarchy.flat_ = settings.value("ShowGlobal", true).toBool();
+    filters.hierarchy.product_ = settings.value("ShowProduct", true).toBool();
+    filters.hierarchy.board_ = settings.value("ShowBoard", true).toBool();
+    filters.hierarchy.chip_ = settings.value("ShowChip", true).toBool();
+    filters.hierarchy.soc_ = settings.value("ShowSoC", true).toBool();
+    filters.hierarchy.ip_ = settings.value("ShowIP", true).toBool();
+    settings.endGroup();
+    settings.beginGroup("Firmness");
+    filters.firmness.templates_ = settings.value("ShowTemplates", true).toBool();
+    filters.firmness.mutable_ = settings.value("ShowMutable", true).toBool();
+    filters.firmness.fixed_ = settings.value("ShowFixed", true).toBool();
+    settings.endGroup();
+
+    libraryWidget_->setFilters(filters);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::saveFilterSettings()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::saveFilterSettings(QSettings& settings) const
+{
+    Utils::FilterOptions filters = libraryWidget_->getFilters();
+    // Save filters.
+    settings.beginGroup("LibraryFilters");
+    settings.beginGroup("Type");
+    settings.setValue("ShowComponents", filters.type.components_);
+    settings.setValue("ShowBuses", filters.type.buses_);
+    settings.setValue("ShowCatalogs", filters.type.catalogs_);
+    settings.setValue("ShowApis", filters.type.apis_);
+    settings.setValue("ShowAdvanced", filters.type.advanced_);
+    settings.endGroup();
+    settings.beginGroup("Implementation");
+    settings.setValue("ShowHW", filters.implementation.hw_);
+    settings.setValue("ShowSW", filters.implementation.sw_);
+    settings.setValue("ShowSystem", filters.implementation.system_);
+    settings.endGroup();
+    settings.beginGroup("Hierarchy");
+    settings.setValue("ShowGlobal", filters.hierarchy.flat_);
+    settings.setValue("ShowProduct", filters.hierarchy.product_);
+    settings.setValue("ShowBoard", filters.hierarchy.board_);
+    settings.setValue("ShowChip", filters.hierarchy.chip_);
+    settings.setValue("ShowSoC", filters.hierarchy.soc_);
+    settings.setValue("ShowIP", filters.hierarchy.ip_);
+    settings.endGroup();
+    settings.beginGroup("Firmness");
+    settings.setValue("ShowTemplates", filters.firmness.templates_);
+    settings.setValue("ShowMutable", filters.firmness.mutable_);
+    settings.setValue("ShowFixed", filters.firmness.fixed_);
+    settings.endGroup(); // Firmness
+    settings.endGroup(); // LibraryFilters
 }
 
 //-----------------------------------------------------------------------------
@@ -346,49 +500,6 @@ void DockWidgetHandler::setupDesignParametersEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setupToolbar()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::setupToolbar(QToolBar* leftToolbar, QToolBar* rightToolbar)
-{
-    auto leftActions = new QActionGroup(this);
-    leftActions->setExclusive(true);
-    leftActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
-
-    auto rightActions = new QActionGroup(this);
-    rightActions->setExclusive(true);
-    rightActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
-
-    for (auto const& dock : docks_)
-    {
-        auto action = dock->toggleViewAction();
-        action->setIcon(dock->windowIcon());
-        action->setCheckable(true);
-
-        if (mainWindow_->dockWidgetArea(dock) == Qt::LeftDockWidgetArea)
-        {
-            leftActions->addAction(action);
-            leftToolbar->addAction(action);
-        }
-
-        else if (mainWindow_->dockWidgetArea(dock) == Qt::RightDockWidgetArea)
-        {
-            rightActions->addAction(action);
-            rightToolbar->addAction(action);
-        }
-
-        connect(action, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)), Qt::UniqueConnection);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::applySettings()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::applySettings()
-{
-    scriptConsole_->applySettings();
-}
-
-//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::setupInstanceEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupInstanceEditor()
@@ -548,117 +659,66 @@ void DockWidgetHandler::setupVendorExtensionEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::loadVisiblities()
+// Function: DockWidgetHandler::setupToolbar()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::loadVisiblities(QSettings& settings)
+void DockWidgetHandler::setupToolbar(QToolBar* leftToolbar, QToolBar* rightToolbar)
 {
-    const bool designParametersVisible = settings.value("DesignParameterVisibility", true).toBool();
-    visibilities_.insert(TabDocument::DESIGNPARAMETERSWINDOW, designParametersVisible);
-    designParameterDock_->toggleViewAction()->setVisible(designParametersVisible);
+    auto leftActions = new QActionGroup(this);
+    leftActions->setExclusive(true);
+    leftActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 
-    const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
-    visibilities_.insert(TabDocument::CONFIGURATIONWINDOW, configurationVisible);
-    configurationDock_->toggleViewAction()->setVisible(configurationVisible);
+    auto rightActions = new QActionGroup(this);
+    rightActions->setExclusive(true);
+    rightActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 
-    const bool systemDetailsVisible = settings.value("SystemDetailsVisibility", true).toBool();
-    visibilities_.insert(TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsVisible);
-    systemDetailsDock_->toggleViewAction()->setVisible(systemDetailsVisible);
+    for (auto const& dock : docks_)
+    {
+        auto action = dock->toggleViewAction();
+        action->setIcon(dock->windowIcon());
+        action->setCheckable(true);
 
-    const bool connectionVisible = settings.value("ConnectionVisibility", true).toBool();
-    visibilities_.insert(TabDocument::CONNECTIONWINDOW, connectionVisible);
-    connectionDock_->toggleViewAction()->setVisible(connectionVisible);
+        if (mainWindow_->dockWidgetArea(dock) == Qt::LeftDockWidgetArea)
+        {
+            leftActions->addAction(action);
+            leftToolbar->addAction(action);
+        }
 
-    const bool instanceVisible = settings.value("InstanceVisibility", true).toBool();
-    visibilities_.insert(TabDocument::INSTANCEWINDOW, instanceVisible);
-    instanceDock_->toggleViewAction()->setVisible(instanceVisible);
+        else if (mainWindow_->dockWidgetArea(dock) == Qt::RightDockWidgetArea)
+        {
+            rightActions->addAction(action);
+            rightToolbar->addAction(action);
+        }
 
-    const bool adHocEditorVisible = settings.value("AdHocEditorVisibility", true).toBool();
-    visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocEditorVisible);
-    adhocDock_->toggleViewAction()->setVisible(adHocEditorVisible);
-
-    const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
-    visibilities_.insert(TabDocument::INTERFACEWINDOW, interfaceVisible);
-    interfaceDock_->toggleViewAction()->setVisible(interfaceVisible);
-
-    const bool libraryVisible = settings.value("LibraryVisibility", true).toBool();
-    visibilities_.insert(TabDocument::LIBRARYWINDOW, libraryVisible);
-    libraryDock_->toggleViewAction()->setVisible(libraryVisible);
-
-    const bool outputVisible = settings.value("OutputVisibility", true).toBool();
-    visibilities_.insert(TabDocument::OUTPUTWINDOW, outputVisible);
-    consoleDock_->toggleViewAction()->setVisible(outputVisible);
-
-    const bool contextHelpVisible = settings.value("ContextHelpVisibility", false).toBool();
-    visibilities_.insert(TabDocument::CONTEXT_HELP_WINDOW, contextHelpVisible);
-    contextHelpDock_->toggleViewAction()->setVisible(contextHelpVisible);
-
-    const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
-    visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
-    previewDock_->toggleViewAction()->setVisible(previewVisible);
-
-    const bool extensionsVisible = settings.value("VendorExtensionVisibility", false).toBool();
-    visibilities_.insert(TabDocument::VENDOREXTENSIONWINDOW, extensionsVisible);
-    extensionDock_->toggleViewAction()->setVisible(extensionsVisible);
-
-    const bool consoleVisible = settings.value("ScriptVisibility", true).toBool();
-    visibilities_.insert(TabDocument::SCRIPTWINDOW, consoleVisible);
-    scriptConsoleDock_->toggleViewAction()->setVisible(consoleVisible);
+        connect(action, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)), Qt::UniqueConnection);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::loadFilterSettings()
+// Function: DockWidgetHandler::applySettings()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::loadFilterSettings(QSettings& settings)
+void DockWidgetHandler::applySettings()
 {
-    Utils::FilterOptions filters;
-    settings.beginGroup("LibraryFilters");
-    settings.beginGroup("Type");
-    filters.type.components_ = settings.value("ShowComponents", true).toBool();
-    filters.type.buses_ = settings.value("ShowBuses", true).toBool();
-    filters.type.catalogs_ = settings.value("ShowCatalogs", true).toBool();
-    filters.type.apis_ = settings.value("ShowApis", true).toBool();
-    filters.type.advanced_ = settings.value("ShowAdvanced", false).toBool();
-    settings.endGroup();
-    settings.beginGroup("Implementation");
-    filters.implementation.hw_ = settings.value("ShowHW", true).toBool();
-    filters.implementation.sw_ = settings.value("ShowSW", true).toBool();
-    filters.implementation.system_ = settings.value("ShowSystem", true).toBool();
-    settings.endGroup();
-    settings.beginGroup("Hierarchy");
-    filters.hierarchy.flat_ = settings.value("ShowGlobal", true).toBool();
-    filters.hierarchy.product_ = settings.value("ShowProduct", true).toBool();
-    filters.hierarchy.board_ = settings.value("ShowBoard", true).toBool();
-    filters.hierarchy.chip_ = settings.value("ShowChip", true).toBool();
-    filters.hierarchy.soc_ = settings.value("ShowSoC", true).toBool();
-    filters.hierarchy.ip_ = settings.value("ShowIP", true).toBool();
-    settings.endGroup();
-    settings.beginGroup("Firmness");
-    filters.firmness.templates_ = settings.value("ShowTemplates", true).toBool();
-    filters.firmness.mutable_ =settings.value("ShowMutable", true).toBool();
-    filters.firmness.fixed_ =settings.value("ShowFixed", true).toBool();
-    settings.endGroup();
-
-    libraryWidget_->setFilters(filters);
+    scriptConsole_->applySettings();
 }
 
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::addVisibilityActions()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu) const
+void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu) 
 {
-    visibilityMenu.addAction(adhocDock_->toggleViewAction());
-    visibilityMenu.addAction(connectionDock_->toggleViewAction());
-    visibilityMenu.addAction(contextHelpDock_->toggleViewAction());
-    visibilityMenu.addAction(designParameterDock_->toggleViewAction());
-    visibilityMenu.addAction(instanceDock_->toggleViewAction());
-    visibilityMenu.addAction(previewDock_->toggleViewAction());
-    visibilityMenu.addAction(configurationDock_->toggleViewAction());
-    visibilityMenu.addAction(systemDetailsDock_->toggleViewAction());
-    visibilityMenu.addAction(libraryDock_->toggleViewAction());
-    visibilityMenu.addAction(interfaceDock_->toggleViewAction());
-    visibilityMenu.addAction(consoleDock_->toggleViewAction());
-    visibilityMenu.addAction(scriptConsoleDock_->toggleViewAction());
-    visibilityMenu.addAction(extensionDock_->toggleViewAction());
+    for (auto const& dock : docks_)
+    {
+        auto action = new QAction(mainWindow_);
+        action->setText(dock->windowTitle());
+        action->setCheckable(true);
+
+        connect(action, SIGNAL(toggled(bool)), dock->toggleViewAction(), SLOT(setVisible(bool)), Qt::UniqueConnection);
+        connect(action, SIGNAL(toggled(bool)), dock->toggleViewAction(), SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+        visibilityMenu.addAction(action);
+
+        visibilityControls_.insert(docks_.key(dock), action);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -806,19 +866,10 @@ void DockWidgetHandler::selectGraphicsConnection(QWidget* currentTabWidget, Grap
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::updateWindows(QWidget* currentTabWidget)
 {
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::LIBRARYWINDOW, libraryDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::OUTPUTWINDOW, consoleDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::CONTEXT_HELP_WINDOW, contextHelpDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::PREVIEWWINDOW, previewDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::DESIGNPARAMETERSWINDOW, designParameterDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::CONFIGURATIONWINDOW, configurationDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::CONNECTIONWINDOW, connectionDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::INTERFACEWINDOW, interfaceDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::INSTANCEWINDOW, instanceDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::ADHOC_WINDOW, adhocDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::VENDOREXTENSIONWINDOW, extensionDock_);
-    updateWindowAndControlVisibility(currentTabWidget, TabDocument::SCRIPTWINDOW, scriptConsoleDock_);
+    for (auto const& dock : docks_)
+    {
+        updateWindowAndControlVisibility(currentTabWidget, docks_.key(dock), dock);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1260,61 +1311,4 @@ void DockWidgetHandler::setLibraryFilters(Utils::FilterOptions options)
 Utils::FilterOptions DockWidgetHandler::getLibraryFilters() const
 {
     return libraryWidget_->getFilters();
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::saveVisibilitySettings()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::saveVisibilitySettings(QSettings& settings) const
-{
-    settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
-    settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
-    settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
-    settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
-    settings.setValue("AdHocEditorVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
-    settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
-    settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
-    settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
-    settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
-    settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
-    settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
-    settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
-    settings.setValue("VendorExtensionVisibility", visibilities_.value(TabDocument::VENDOREXTENSIONWINDOW));
-    settings.setValue("ScriptVisibility", visibilities_.value(TabDocument::SCRIPTWINDOW));
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::saveFilterSettings()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::saveFilterSettings(QSettings& settings) const
-{
-    Utils::FilterOptions filters = libraryWidget_->getFilters();
-    // Save filters.
-    settings.beginGroup("LibraryFilters");
-    settings.beginGroup("Type");
-    settings.setValue("ShowComponents", filters.type.components_);
-    settings.setValue("ShowBuses", filters.type.buses_);
-    settings.setValue("ShowCatalogs", filters.type.catalogs_);
-    settings.setValue("ShowApis", filters.type.apis_);
-    settings.setValue("ShowAdvanced", filters.type.advanced_);
-    settings.endGroup();
-    settings.beginGroup("Implementation");
-    settings.setValue("ShowHW", filters.implementation.hw_);
-    settings.setValue("ShowSW", filters.implementation.sw_);
-    settings.setValue("ShowSystem", filters.implementation.system_);
-    settings.endGroup();
-    settings.beginGroup("Hierarchy");
-    settings.setValue("ShowGlobal", filters.hierarchy.flat_);
-    settings.setValue("ShowProduct", filters.hierarchy.product_);
-    settings.setValue("ShowBoard", filters.hierarchy.board_);
-    settings.setValue("ShowChip", filters.hierarchy.chip_);
-    settings.setValue("ShowSoC", filters.hierarchy.soc_);
-    settings.setValue("ShowIP", filters.hierarchy.ip_);
-    settings.endGroup();
-    settings.beginGroup("Firmness");
-    settings.setValue("ShowTemplates", filters.firmness.templates_);
-    settings.setValue("ShowMutable", filters.firmness.mutable_);
-    settings.setValue("ShowFixed", filters.firmness.fixed_);
-    settings.endGroup(); // Firmness
-    settings.endGroup(); // LibraryFilters
 }
