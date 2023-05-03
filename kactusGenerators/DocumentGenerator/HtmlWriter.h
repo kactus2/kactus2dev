@@ -130,7 +130,7 @@ public:
      *      @param [in] stream              The text stream to write into.
      *      @param [in] register            The register whose fields are to be written.
      */
-    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) override;
+    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister, QList<int> registerSubHeaderNumbers) override;
 
     /*!
      *  Write the ports of the component
@@ -192,6 +192,15 @@ public:
      *      @param [in] description         The description to write.
      */
     void writeDescription(QTextStream& stream, QString const& description) override;
+
+    /*!
+     *  Write a paragraph in which specific information is listed.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] names               The info item names.
+     *      @param [in] values              The info item values.
+     */
+    void writeInfoParagraph(QTextStream& stream, QStringList const& names, QStringList const& values);
     
     /*!
      *  Write the referenced component instantiation.
@@ -325,6 +334,30 @@ private:
      *      @param [in] registerFile        The register file to be written.
      */
     void writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile);
+
+    /*!
+     *  Writes a table of register fields.
+     *
+     *      @param [in] stream       The text stream to write into.
+     *      @param [in] reg          The register whose fields are written.
+     */
+    void writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg);
+
+    /*!
+     *  Writes a single field
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] field               The field to be written.
+     */
+    void writeSingleField(QTextStream& stream, QSharedPointer<Field> field);
+
+    /*!
+     *  Writes the enumerations of a field.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] field               The field which enumerations are written.
+     */
+    void writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field);
 
     /*!
      *  Writes a row with specified cells to a HTML table with chosen indentation.

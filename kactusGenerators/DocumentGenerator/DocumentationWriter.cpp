@@ -188,20 +188,20 @@ QString DocumentationWriter::getFieldResetInfo(QSharedPointer<Field> field, QStr
 {
     QString resetInfo = "";
 
-    for (auto const& singleRest : *field->getResets())
+    for (auto const& singleReset : *field->getResets())
     {
-        if (singleRest != field->getResets()->first())
+        if (singleReset != field->getResets()->first())
         {
             resetInfo.append(separator);
         }
 
-        QString resetTypeReference = singleRest->getResetTypeReference();
+        QString resetTypeReference = singleReset->getResetTypeReference();
         if (resetTypeReference.isEmpty())
         {
             resetTypeReference = QLatin1String("HARD");
         }
 
-        QString resetValue = expressionFormatter_->formatReferringExpression(singleRest->getResetValue());
+        QString resetValue = expressionFormatter_->formatReferringExpression(singleReset->getResetValue());
 
         resetInfo.append(resetTypeReference + " : " + resetValue);
     }

@@ -20,6 +20,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
@@ -424,37 +425,28 @@ void HtmlWriter::writeRegisterFiles(QTextStream& stream,
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeFields()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> currentRegister)
+void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> currentRegister, QList<int> registerSubHeaderNumbers)
 {
     if (currentRegister->getFields()->isEmpty())
     {
         return;
     }
 
-    stream << indent(3) << "<h4>Register '" << currentRegister->name() << "' contains the following fields:</h4>" <<
-        Qt::endl;
+    // Write all register fields in one table.
+    writeFieldTable(stream, currentRegister);
 
-    QString tableTitle = "List of fields contained within register " + currentRegister->name() + ".";
-    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
-
-    writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS, 4);
+    int fieldNumber = 1;
 
     for (auto const& field : *currentRegister->getFields())
     {
-        QStringList fieldTableCells(QStringList()
-            << "<a id=\"" + vlnvString_ + ".field." + field->name() + "\">" + field->name() + "</a>"
-            << expressionFormatter_->formatReferringExpression(field->getBitOffset())
-            << expressionFormatter_->formatReferringExpression(field->getBitWidth())
-            << field->getVolatile().toString()
-            << AccessTypes::access2Str(field->getAccess())
-            << getFieldResetInfo(field)
-            << field->description()
-        );
+        QList fieldSubHeaderNumbers = registerSubHeaderNumbers;
+        fieldSubHeaderNumbers << fieldNumber;
 
-        writeTableRow(stream, fieldTableCells, 4);
+        writeSubHeader(stream, fieldSubHeaderNumbers, QStringLiteral("Field ") + field->name(), 3);
+        writeSingleField(stream, field);
+
+        ++fieldNumber;
     }
-
-    stream << indent(3) << "</table>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -610,6 +602,19 @@ void HtmlWriter::writeDescription(QTextStream& stream, QString const& descriptio
         stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
             description << "<br>" << Qt::endl;
     }
+    stream << indent(3) << "</p>" << Qt::endl;
+}
+
+void HtmlWriter::writeInfoParagraph(QTextStream& stream, QStringList const& names, QStringList const& values)
+{
+    stream << indent(3) << "<p>" << Qt::endl;
+
+    for (auto i = 0; i < names.length(); ++i)
+    {
+        stream << indent(3) << HTML::INDENT << "<strong>" << names.at(i) << ":</strong> "
+            << values.at(i) << "<br>" << Qt::endl;
+    }
+
     stream << indent(3) << "</p>" << Qt::endl;
 }
 
@@ -831,7 +836,7 @@ void HtmlWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Registe
 
     stream << indent(3) << "</p>" << Qt::endl;
 
-    writeFields(stream, reg);
+    writeFields(stream, reg, subHeaderNumbers);
     ++registerDataNumber;
 }
 
@@ -879,6 +884,75 @@ void HtmlWriter::writeRegisterFileInfo(QTextStream& stream, QSharedPointer<Regis
         << "<br>" << Qt::endl;
 
     stream << indent(3) << "</p>" << Qt::endl;
+}
+
+void HtmlWriter::writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg)
+{
+    stream << indent(3) << "<h4>Register '" << reg->name() << "' contains the following fields:</h4>" <<
+        Qt::endl;
+
+    QString tableTitle = "List of fields contained within register " + reg->name() + ".";
+    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+
+    writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS, 4);
+
+    for (auto const& field : *reg->getFields())
+    {
+        QStringList fieldTableCells(QStringList()
+            << "<a id=\"" + vlnvString_ + ".field." + field->name() + "\">" + field->name() + "</a>"
+            << expressionFormatter_->formatReferringExpression(field->getBitOffset())
+            << expressionFormatter_->formatReferringExpression(field->getBitWidth())
+            << field->getVolatile().toString()
+            << AccessTypes::access2Str(field->getAccess())
+            << getFieldResetInfo(field)
+            << field->description()
+        );
+
+        writeTableRow(stream, fieldTableCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
+void HtmlWriter::writeSingleField(QTextStream& stream, QSharedPointer<Field> field)
+{
+    QStringList fieldInfoTextValues(QStringList()
+        << expressionFormatter_->formatReferringExpression(field->getBitOffset())
+        << expressionFormatter_->formatReferringExpression(field->getBitWidth())
+        << field->getVolatile().toString()
+        << AccessTypes::access2Str(field->getAccess())
+        << getFieldResetInfo(field, ", ")
+        << field->description()
+    );
+
+    QStringList fieldInfoTextNames = DocumentationWriter::FIELD_HEADERS;
+    fieldInfoTextNames.pop_front();
+
+    writeInfoParagraph(stream, fieldInfoTextNames, fieldInfoTextValues);
+
+    writeFieldEnumerations(stream, field);
+}
+
+void HtmlWriter::writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field)
+{
+    auto const enumerations = field->getEnumeratedValues();
+
+    if (enumerations->isEmpty())
+    {
+        return;
+    }
+
+    writeSubHeader(stream, {}, "Enumerations:", 4);
+
+    stream << indent(3) << HTML::TABLE << "" << "\">" << Qt::endl;
+
+    writeTableHeader(stream, { "Name", "Value" }, 4);
+
+    for (auto const& enumeration : *enumerations)
+    {
+        writeTableRow(stream, { enumeration->name(), enumeration->getValue() }, 4);
+    }
+    stream << indent(3) << "</table>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

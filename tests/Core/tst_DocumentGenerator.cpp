@@ -34,6 +34,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
+#include <IPXACTmodels/Component/EnumeratedValue.h>
 
 #include <IPXACTmodels/Design/Design.h>
 
@@ -727,7 +728,7 @@ void tst_DocumentGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\t\t\t" + getIndentString() + "<strong>Range [AUB]:</strong> " + testRegisterFileParent->getRange() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Dimension:</strong> <br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t<h4>Registers in register file testRegisterFileParent:</h4>\n"
+        "\t\t\t<h4>Register file testRegisterFileParent contains the following registers:</h4>\n"
         "\t\t\t" + getTableString() + "\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Register name</th>\n"
@@ -761,7 +762,7 @@ void tst_DocumentGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\t\t\t" + getIndentString() + "<strong>Range [AUB]:</strong> " + testRegisterFileChild->getRange() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Dimension:</strong> <br>\n"
         "\t\t\t</p>\n"
-        "\t\t\t<h4>Registers in register file testRegisterFileChild:</h4>\n"
+        "\t\t\t<h4>Register file testRegisterFileChild contains the following registers:</h4>\n"
         "\t\t\t" + getTableString() + "\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Register name</th>\n"
@@ -806,6 +807,11 @@ void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
 
     testField->getResets()->append(resetValue);
 
+    QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumerations(new QList<QSharedPointer <EnumeratedValue > >());
+    QSharedPointer<EnumeratedValue> testEnumeratedValue(new EnumeratedValue("testEnumeration", "1"));
+    enumerations->append(testEnumeratedValue);
+
+    testField->setEnumeratedValues(enumerations);
 
     QSharedPointer<Register> fieldRegister =createTestRegister("FieldRegister", "10", "10", "10", "");
     fieldRegister->getFields()->append(testField);
@@ -816,7 +822,7 @@ void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
-    generator->writeFields(fieldRegister, stream);
+    generator->writeFields(fieldRegister, stream, { 1, 1, 1, 1, 1 });
 
     targetFile.close();
 
@@ -842,6 +848,26 @@ void tst_DocumentGenerator::testFieldsWrittenWithTopComponent()
         "\t\t\t\t\t<td>" + AccessTypes::access2Str(testField->getAccess()) + "</td>\n"
         "\t\t\t\t\t<td>HARD : testReset</td>\n"        
         "\t\t\t\t\t<td>" + testField->description() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        "\t\t\t<h3>1.1.1.1.1.1 Field " + testField->name() + "</h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Offset [bits]:</strong> " + testField->getBitOffset() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Width [bits]:</strong> " + testField->getBitWidth() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Volatile:</strong> " + testField->getVolatile().toString() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Access:</strong> " + AccessTypes::access2Str(testField->getAccess()) + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Resets:</strong> HARD : testReset<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testField->description() + "<br>\n"
+        "\t\t\t</p>\n"
+        "\t\t\t<h4>Enumerations:</h4>\n"
+        "\t\t\t" + getTableString() + "\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Name</th>\n"
+        "\t\t\t\t\t<th>Value</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>testEnumeration</td>\n"
+        "\t\t\t\t\t<td>1</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
         );

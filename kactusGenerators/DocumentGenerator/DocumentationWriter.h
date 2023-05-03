@@ -160,7 +160,7 @@ public:
      *      @param [in] stream              The text stream to write into.
      *      @param [in] register            The register whose fields are to be written.
      */
-    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister, QList<int> subHeaderNumbers) = 0;
+    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister, QList<int> registerSubHeaderNumbers) = 0;
 
     /*!
      *  Write the ports of the component.
