@@ -381,9 +381,9 @@ void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > register
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeFields()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QTextStream& stream)
+void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QTextStream& stream, QList<int> subHeaderNumbers)
 {
-    writer_->writeFields(stream, currentRegister);
+    writer_->writeFields(stream, currentRegister, subHeaderNumbers);
 }
 
 //-----------------------------------------------------------------------------

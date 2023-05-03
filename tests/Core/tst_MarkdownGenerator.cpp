@@ -22,6 +22,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
+#include <IPXACTmodels/Component/EnumeratedValue.h>
 
 #include <IPXACTmodels/Design/Design.h>
 
@@ -611,7 +612,7 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "**Range [AUB]:** 16  \n"
         "**Dimension:**   \n"
         "\n"
-        "#### Registers in register file testRegisterFileParent:  \n"
+        "#### Register file testRegisterFileParent contains the following registers:  \n"
         "\n"
         "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
         "|:----|:----|:----|:----|:----|:----|  \n"
@@ -636,7 +637,7 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "**Range [AUB]:** 512  \n"
         "**Dimension:**   \n"
         "\n"
-        "#### Registers in register file testRegisterFileChild:  \n"
+        "#### Register file testRegisterFileChild contains the following registers:  \n"
         "\n"
         "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
         "|:----|:----|:----|:----|:----|:----|  \n"
@@ -669,6 +670,11 @@ void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
 
     testField->getResets()->append(resetValue);
 
+    QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumerations(new QList<QSharedPointer <EnumeratedValue > >());
+    QSharedPointer<EnumeratedValue> testEnumeratedValue(new EnumeratedValue("testEnumeration", "1"));
+    enumerations->append(testEnumeratedValue);
+    
+    testField->setEnumeratedValues(enumerations);
 
     QSharedPointer<Register> fieldRegister = createTestRegister("FieldRegister", "10", "10", "10", "");
     fieldRegister->getFields()->append(testField);
@@ -679,7 +685,7 @@ void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
-    generator->writeFields(fieldRegister, stream);
+    generator->writeFields(fieldRegister, stream, {1, 1, 1, 1, 1});
 
     targetFile.close();
 
@@ -696,6 +702,20 @@ void tst_MarkdownGenerator::testFieldsWrittenWithTopComponent()
         "|" + AccessTypes::access2Str(testField->getAccess()) +
         "|" + "HARD : testReset" +
         "|" + testField->description() + "|  \n"
+        "### 1.1.1.1.1.1 Field " + testField->name() + "  \n"
+        "\n"
+        "**Offset [bits]:** " + testField->getBitOffset() + "  \n"
+        "**Width [bits]:** " + testField->getBitWidth() + "  \n"
+        "**Volatile:** " + testField->getVolatile().toString() + "  \n"
+        "**Access:** " + AccessTypes::access2Str(testField->getAccess()) + "  \n"
+        "**Resets:** HARD : testReset  \n"
+        "**Description:** " + testField->description() + "  \n"
+        "\n"
+        "#### Enumerations:  \n"
+        "\n"
+        "|Name|Value|  \n"
+        "|:----|:----|  \n"
+        "|testEnumeration|1|  \n"
     );
 
     checkOutputFile(expectedOutput);

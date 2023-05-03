@@ -184,7 +184,7 @@ QList<QSharedPointer<RegisterFile> > DocumentationWriter::getRegisterFiles(
 //-----------------------------------------------------------------------------
 // Function: DocumentationWriter::getFieldResetInfo()
 //-----------------------------------------------------------------------------
-QString DocumentationWriter::getFieldResetInfo(QSharedPointer<Field> field) const
+QString DocumentationWriter::getFieldResetInfo(QSharedPointer<Field> field, QString const& separator) const
 {
     QString resetInfo = "";
 
@@ -192,7 +192,7 @@ QString DocumentationWriter::getFieldResetInfo(QSharedPointer<Field> field) cons
     {
         if (singleRest != field->getResets()->first())
         {
-            resetInfo.append("<br>");
+            resetInfo.append(separator);
         }
 
         QString resetTypeReference = singleRest->getResetTypeReference();

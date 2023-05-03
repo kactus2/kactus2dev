@@ -19,6 +19,7 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Design/Design.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
@@ -391,33 +392,28 @@ void MarkdownWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Re
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeFields()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> currentRegister)
+void MarkdownWriter::writeFields(QTextStream& stream, QSharedPointer<Register> currentRegister,
+    QList<int> registerSubHeaderNumbers)
 {
     if (currentRegister->getFields()->isEmpty())
     {
         return;
     }
 
-    QString headerTitle = QStringLiteral("Register '")
-        + currentRegister->name()
-        + QStringLiteral("' contains the following fields:");
+    // Write all register fields in one table.
+    writeFieldTable(stream, currentRegister);
 
-    writeSubHeader(stream, QList <int>(), headerTitle, 4);
-    writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS);
+    int fieldNumber = 1;
 
     for (auto const& field : *currentRegister->getFields())
     {
-        QStringList fieldTableCells(QStringList()
-            << field->name() + " <a id=\"" + vlnvString_ + ".field." + field->name() + "\">"
-            << expressionFormatter_->formatReferringExpression(field->getBitOffset())
-            << expressionFormatter_->formatReferringExpression(field->getBitWidth())
-            << field->getVolatile().toString()
-            << AccessTypes::access2Str(field->getAccess())
-            << getFieldResetInfo(field)
-            << field->description()
-        );
+        QList fieldSubHeaderNumbers = registerSubHeaderNumbers;
+        fieldSubHeaderNumbers << fieldNumber;
 
-        writeTableRow(stream, fieldTableCells);
+        writeSubHeader(stream, fieldSubHeaderNumbers, QStringLiteral("Field ") + field->name(), 3);
+        writeSingleField(stream, field);
+
+        ++fieldNumber;
     }
 }
 
@@ -719,7 +715,8 @@ void MarkdownWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<A
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeSingleRegister()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber)
+void MarkdownWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg,
+    QList<int> subHeaderNumbers, int& registerDataNumber)
 {   
     writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + reg->name(), 3);
 
@@ -740,7 +737,7 @@ void MarkdownWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Reg
     stream << "**Volatile:** " << reg->getVolatile() << "  " << Qt::endl;
     stream << "**Access:** " << AccessTypes::access2Str(reg->getAccess()) << "  " << Qt::endl << Qt::endl;
 
-    writeFields(stream, reg);
+    writeFields(stream, reg, subHeaderNumbers);
     ++registerDataNumber;
 }
 
@@ -781,6 +778,69 @@ void MarkdownWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointe
         );
 
         writeTableRow(stream, registersTableRowCells);
+    }
+}
+
+void MarkdownWriter::writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg)
+{
+    QString headerTitle = QStringLiteral("Register '")
+        + reg->name()
+        + QStringLiteral("' contains the following fields:");
+
+    writeSubHeader(stream, QList <int>(), headerTitle, 4);
+    writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS);
+
+    for (auto const& field : *reg->getFields())
+    {
+        QStringList fieldTableCells(QStringList()
+            << field->name() + " <a id=\"" + vlnvString_ + ".field." + field->name() + "\">"
+            << expressionFormatter_->formatReferringExpression(field->getBitOffset())
+            << expressionFormatter_->formatReferringExpression(field->getBitWidth())
+            << field->getVolatile().toString()
+            << AccessTypes::access2Str(field->getAccess())
+            << getFieldResetInfo(field)
+            << field->description()
+        );
+
+        writeTableRow(stream, fieldTableCells);
+    }
+}
+
+void MarkdownWriter::writeSingleField(QTextStream& stream, QSharedPointer<Field> field)
+{
+    stream << "**Offset [bits]:** " << expressionFormatter_->formatReferringExpression(field->getBitOffset())
+        << "  " << Qt::endl;
+
+    stream << "**Width [bits]:** " << expressionFormatter_->formatReferringExpression(field->getBitWidth())
+        << "  " << Qt::endl;
+    
+    stream << "**Volatile:** " << field->getVolatile().toString() << "  " << Qt::endl;
+
+    stream << "**Access:** " << AccessTypes::access2Str(field->getAccess()) << "  " << Qt::endl;
+
+    stream << "**Resets:** " << getFieldResetInfo(field, ", ") << "  " << Qt::endl;
+
+    stream << "**Description:** " << field->description() << "  " << Qt::endl << Qt::endl;
+
+    writeFieldEnumerations(stream, field);
+}
+
+void MarkdownWriter::writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field)
+{
+    auto const enumerations = field->getEnumeratedValues();
+
+    if (enumerations->isEmpty())
+    {
+        return;
+    }
+
+    writeSubHeader(stream, {}, "Enumerations:", 4);
+
+    writeTableHeader(stream, { "Name", "Value" });
+    
+    for (auto const& enumeration : *enumerations)
+    {
+        writeTableRow(stream, { enumeration->name(), enumeration->getValue() });
     }
 }
 

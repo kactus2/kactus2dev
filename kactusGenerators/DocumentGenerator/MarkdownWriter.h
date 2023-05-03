@@ -138,10 +138,12 @@ public:
     /*!
      *  Write the given register fields
      *
-     *      @param [in] stream              The text stream to write into.
-     *      @param [in] register            The register whose fields are to be written.
+     *      @param [in] stream                     The text stream to write into.
+     *      @param [in] register                   The register whose fields are to be written.
+     *      @param [in] registerSubHeaderNumbers   The parent register's subheader numbering.
      */
-    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) override;
+    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister,
+        QList<int> registerSubHeaderNumbers) override;
 
     /*!
      *  Write the ports of the component
@@ -327,6 +329,30 @@ private:
      *      @param [in] registers           The registers to be written.
      */
     void writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register> >registers);
+
+    /*!
+     *  Writes a table of register fields.
+     *
+     *      @param [in] stream       The text stream to write into.
+     *      @param [in] reg          The register whose fields are written.
+     */
+    void writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg);
+
+    /*!
+     *  Writes a single field
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] field               The field to be written.
+     */
+    void writeSingleField(QTextStream& stream, QSharedPointer<Field> field);
+
+    /*!
+     *  Writes the enumerations of a field.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] field               The field which enumerations are written.
+     */
+    void writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field);
 
     /*!
      *  Writes a table row with specified cells to a MD table.

@@ -162,7 +162,7 @@ public:
      *      @param [in] currentRegister     The register, whose fields are to be written.
      *      @param [in] stream              The text stream to write the documentation into.
      */
-    void writeFields(QSharedPointer <Register> currentRegister, QTextStream& stream);
+    void writeFields(QSharedPointer <Register> currentRegister, QTextStream& stream, QList<int> subHeaderNumbers);
 
     /*!
      *  Write the ports of the component.

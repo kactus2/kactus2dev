@@ -160,7 +160,7 @@ public:
      *      @param [in] stream              The text stream to write into.
      *      @param [in] register            The register whose fields are to be written.
      */
-    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) = 0;
+    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister, QList<int> subHeaderNumbers) = 0;
 
     /*!
      *  Write the ports of the component.
@@ -361,7 +361,7 @@ protected:
      *
      *      @returns The field reset info of the field.
      */
-    QString getFieldResetInfo(QSharedPointer<Field> field) const;
+    QString getFieldResetInfo(QSharedPointer<Field> field, QString const& separator = "<br>") const;
 
     /*!
      *  Creates an expression formatter for a component contained within a design.
