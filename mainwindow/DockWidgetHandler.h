@@ -63,7 +63,8 @@ public:
      *      @param [in] library The used IP-XACT library.
      *      @param [in] parent  The main window.
      */
-    DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, QMainWindow* parent);
+    DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, 
+        QToolBar* leftToolbar, QToolBar* rightToolbar, QMainWindow* parent);
 
     /*!
      *  The destructor.
@@ -74,6 +75,13 @@ public:
      *  Setup the dock widgets.
      */
     void setupDockWidgets();
+
+    /*!
+     *  Setup the visibility actions for the visibility menu.
+     *
+     *      @param [in] visibilityMenu  The visibility menu.
+     */
+    void setupVisibilityActionMenu(QMenu& visibilityMenu);
 
     /*!
      *  Get the library handler created by the library widget.
@@ -110,12 +118,8 @@ public:
      */
     void saveFilterSettings(QSettings& settings) const;
 
-    /*!
-     *  Setup the visibility actions for the visibility menu.
-     *
-     *      @param [in] visibilityMenu  The visibility menu.
-     */
-    void setupVisibilityActionMenu(QMenu& visibilityMenu);
+    //! Apply the current application settings to widgets.
+    void applySettings();
 
     /*!
      *  Clear the item selection in design.
@@ -243,10 +247,7 @@ public:
      */
     void setupDesignParameterFinder(QSharedPointer<Design> newDesign);
 
-    void setupToolbar(QToolBar* leftToolbar, QToolBar* rightToolbar);
 
-    //! Apply the current application settings to widgets.
-    void applySettings();
 
 public slots:
 
@@ -389,6 +390,9 @@ private slots:
      */
     void onAdHocEditorAction(bool show);
 
+    void onDockLocationChanged(Qt::DockWidgetArea);
+
+
 private:
     //! No copying. No Assignment.
     DockWidgetHandler(const DockWidgetHandler &other);
@@ -492,6 +496,9 @@ private:
      */
     void setWindowVisibility(TabDocument::SupportedWindows windowType, bool show);
 
+
+    void placeActionInToolbar(QAction* action, Qt::DockWidgetArea area);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -594,9 +601,18 @@ private:
 
     QMap<TabDocument::SupportedWindows, QAction*> visibilityControls_;
 
+
     //! Contains the visibility for the windows.
     //! Used to maintain the visibility information when windows are hidden by change of the active document.
     QMap<TabDocument::SupportedWindows, bool> visibilities_;
+
+    QToolBar* leftToolbar_;
+
+    QToolBar* rightToolbar_;
+
+    QActionGroup* leftActions_;
+
+    QActionGroup* rightActions_;
 
     //! The main window that should contain all of the dock widgets constructed in here.
     QMainWindow* mainWindow_;

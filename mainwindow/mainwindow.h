@@ -575,6 +575,8 @@ private:
 	 */
 	void setupMenus();
 
+    void setupToolbars();
+
     /*!
      *  Adds generator plugin actions to the generation group.
      */
@@ -656,6 +658,10 @@ private:
     
 	//! Contains the open documents as each in it's own tab.
 	DrawingBoard* designTabs_;
+
+    QToolBar* leftToolbar_;
+
+    QToolBar* rightToolbar_;
 
     //! The dock widget handler.
     DockWidgetHandler* dockHandler_;

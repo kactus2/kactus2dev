@@ -121,7 +121,9 @@ MainWindow::MainWindow(LibraryHandler* library, MessageMediator* messageChannel,
 QMainWindow(parent),
 libraryHandler_(library),
 designTabs_(0),
-dockHandler_(new DockWidgetHandler(library, messageChannel, this)),
+leftToolbar_(new QToolBar(this)),
+rightToolbar_(new QToolBar(this)),
+dockHandler_(new DockWidgetHandler(library, messageChannel, leftToolbar_, rightToolbar_, this)),
 ribbon_(0), 
 statusBar_(new QStatusBar(this)),
 actNew_(0),
@@ -201,6 +203,8 @@ messageChannel_(messageChannel)
         "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     setStyleSheet(defaultStyleSheet);
 
+    setupToolbars();
+
     // Setup windows.
     setupDrawBoard();
     dockHandler_->setupDockWidgets();
@@ -215,28 +219,8 @@ messageChannel_(messageChannel)
     // Restore program settings.
     restoreSettings();
 
-
-    auto leftToolbar = new QToolBar(this);
-    leftToolbar->setObjectName("leftToolBar");
-    leftToolbar->setOrientation(Qt::Vertical);
-    leftToolbar->setMovable(false);
-    leftToolbar->setIconSize(QSize(32, 32));
-
-    addToolBar(Qt::LeftToolBarArea, leftToolbar);
-
-    auto rightToolbar = new QToolBar(this);
-    rightToolbar->setObjectName("rightToolbar");
-    rightToolbar->setOrientation(Qt::Vertical);
-    rightToolbar->setMovable(false);
-    rightToolbar->setIconSize(QSize(32, 32));
-
-    addToolBar(Qt::RightToolBarArea, rightToolbar);
-
-    dockHandler_->setupToolbar(leftToolbar, rightToolbar);
-
     // don't display empty editors
     updateWindows();
-
 
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
@@ -701,6 +685,26 @@ void MainWindow::setupMenus()
     // the menu to display the dock widgets
     dockHandler_->setupVisibilityActionMenu(windowsMenu_);
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setupToolbars()
+//-----------------------------------------------------------------------------
+void MainWindow::setupToolbars()
+{
+    leftToolbar_->setObjectName("leftToolBar");
+    leftToolbar_->setOrientation(Qt::Vertical);
+    leftToolbar_->setMovable(false);
+    leftToolbar_->setIconSize(QSize(32, 32));
+
+    addToolBar(Qt::LeftToolBarArea, leftToolbar_);
+
+    rightToolbar_->setObjectName("rightToolbar");
+    rightToolbar_->setOrientation(Qt::Vertical);
+    rightToolbar_->setMovable(false);
+    rightToolbar_->setIconSize(QSize(32, 32));
+
+    addToolBar(Qt::RightToolBarArea, rightToolbar_);
 }
 
 //-----------------------------------------------------------------------------

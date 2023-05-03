@@ -53,11 +53,36 @@
 #include <QHelpEngine>
 #include <QApplication>
 
+namespace 
+{
+    const QMap<TabDocument::SupportedWindows, QString> DOCK_SETTINGS =
+    {
+        { TabDocument::CONFIGURATIONWINDOW, "ConfigurationVisibility" },
+        { TabDocument::SYSTEM_DETAILS_WINDOW, "SystemDetailsVisibility" },
+        { TabDocument::CONNECTIONWINDOW, "ConnectionVisibility" },
+        { TabDocument::INSTANCEWINDOW, "InstanceVisibility" },
+        { TabDocument::ADHOC_WINDOW, "AdHocEditorVisibility" },
+        { TabDocument::INTERFACEWINDOW, "InterfaceVisibility" },
+        { TabDocument::LIBRARYWINDOW, "LibraryVisibility" },
+        { TabDocument::OUTPUTWINDOW, "OutputVisibility" },
+        { TabDocument::CONTEXT_HELP_WINDOW, "ContextHelpVisibility" },
+        { TabDocument::PREVIEWWINDOW, "PreviewVisibility" },
+        { TabDocument::DESIGNPARAMETERSWINDOW, "DesignParameterVisibility" },
+        { TabDocument::VENDOREXTENSIONWINDOW, "VendorExtensionVisibility" },
+        { TabDocument::SCRIPTWINDOW, "ScriptVisibility" }
+    };
+};
+
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::DockWidgetHandler()
 //-----------------------------------------------------------------------------
-DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, QMainWindow* parent) :
-    libraryHandler_(library),
+DockWidgetHandler::DockWidgetHandler(
+    LibraryHandler* library,
+    MessageMediator* messageChannel, 
+    QToolBar* leftToolbar,
+    QToolBar* rightToolbar,
+    QMainWindow* parent) :
+libraryHandler_(library),
     libraryDock_(0),
     libraryWidget_(0),
     previewBox_(0),
@@ -92,10 +117,18 @@ DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* m
     docks_(),
     visibilityControls_(),
     visibilities_(),
+    leftToolbar_(leftToolbar),
+    rightToolbar_(rightToolbar),
+    leftActions_(new QActionGroup(this)),
+    rightActions_(new QActionGroup(this)),
     mainWindow_(parent),
     messageChannel_(messageChannel)
 {
+    leftActions_->setExclusive(true);
+    leftActions_->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 
+    rightActions_->setExclusive(true);
+    rightActions_->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 }
 
 //-----------------------------------------------------------------------------
@@ -116,14 +149,13 @@ void DockWidgetHandler::setupDockWidgets()
     setupConnectionEditor();
     setupConsole();
     setupVendorExtensionEditor();
-       
+
     docks_ = {
         { TabDocument::CONFIGURATIONWINDOW, configurationDock_ },
         { TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsDock_ },
         { TabDocument::CONNECTIONWINDOW, connectionDock_ },
         { TabDocument::INSTANCEWINDOW, instanceDock_ },
         { TabDocument::ADHOC_WINDOW, adhocDock_ },
-        { TabDocument::ADDRESS_WINDOW, configurationDock_ },
         { TabDocument::INTERFACEWINDOW, interfaceDock_ },
         { TabDocument::LIBRARYWINDOW, libraryDock_ },
         { TabDocument::OUTPUTWINDOW, consoleDock_ },
@@ -133,6 +165,37 @@ void DockWidgetHandler::setupDockWidgets()
         { TabDocument::VENDOREXTENSIONWINDOW, extensionDock_ },
         { TabDocument::SCRIPTWINDOW, scriptConsoleDock_ }
     };
+
+    for (auto const& dock : docks_)
+    {
+        auto action = dock->toggleViewAction();
+        action->setIcon(dock->windowIcon());
+        action->setCheckable(true);
+
+        connect(action, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)), Qt::UniqueConnection);
+        connect(dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
+            this, SLOT(onDockLocationChanged(Qt::DockWidgetArea)), Qt::UniqueConnection);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::addVisibilityActions()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu)
+{
+    for (auto const& dock : docks_)
+    {
+        auto action = new QAction(mainWindow_);
+        action->setText(dock->windowTitle());
+        action->setCheckable(true);
+
+        connect(action, SIGNAL(toggled(bool)), dock->toggleViewAction(), SLOT(setVisible(bool)), Qt::UniqueConnection);
+        connect(action, SIGNAL(toggled(bool)), dock->toggleViewAction(), SLOT(setChecked(bool)), Qt::UniqueConnection);
+
+        visibilityMenu.addAction(action);
+
+        visibilityControls_.insert(docks_.key(dock), action);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -148,57 +211,14 @@ LibraryHandler* DockWidgetHandler::getLibraryHandler() const
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::loadVisiblities(QSettings& settings)
 {
-    const bool designParametersVisible = settings.value("DesignParameterVisibility", true).toBool();
-    visibilities_.insert(TabDocument::DESIGNPARAMETERSWINDOW, designParametersVisible);
-    visibilityControls_[TabDocument::DESIGNPARAMETERSWINDOW]->setChecked(designParametersVisible);
+    for (auto const& window : DOCK_SETTINGS)
+    {
+        const bool visible = settings.value(window, true).toBool();
+        auto type = DOCK_SETTINGS.key(window);
 
-    const bool configurationVisible = settings.value("ConfigurationVisibility", true).toBool();
-    visibilities_.insert(TabDocument::CONFIGURATIONWINDOW, configurationVisible);
-    visibilityControls_[TabDocument::CONFIGURATIONWINDOW]->setChecked(configurationVisible);
-
-    const bool systemDetailsVisible = settings.value("SystemDetailsVisibility", true).toBool();
-    visibilities_.insert(TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsVisible);
-    visibilityControls_[TabDocument::SYSTEM_DETAILS_WINDOW]->setChecked(systemDetailsVisible);
-
-    const bool connectionVisible = settings.value("ConnectionVisibility", true).toBool();
-    visibilities_.insert(TabDocument::CONNECTIONWINDOW, connectionVisible);
-    visibilityControls_[TabDocument::CONNECTIONWINDOW]->setChecked(connectionVisible);
-
-    const bool instanceVisible = settings.value("InstanceVisibility", true).toBool();
-    visibilities_.insert(TabDocument::INSTANCEWINDOW, instanceVisible);
-    visibilityControls_[TabDocument::INSTANCEWINDOW]->setChecked(instanceVisible);
-
-    const bool adHocEditorVisible = settings.value("AdHocEditorVisibility", true).toBool();
-    visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocEditorVisible);
-    visibilityControls_[TabDocument::ADHOC_WINDOW]->setChecked(adHocEditorVisible);
-
-    const bool interfaceVisible = settings.value("InterfaceVisibility", true).toBool();
-    visibilities_.insert(TabDocument::INTERFACEWINDOW, interfaceVisible);
-    visibilityControls_[TabDocument::INTERFACEWINDOW]->setChecked(interfaceVisible);
-
-    const bool libraryVisible = settings.value("LibraryVisibility", true).toBool();
-    visibilities_.insert(TabDocument::LIBRARYWINDOW, libraryVisible);
-    visibilityControls_[TabDocument::LIBRARYWINDOW]->setChecked(libraryVisible);
-
-    const bool outputVisible = settings.value("OutputVisibility", true).toBool();
-    visibilities_.insert(TabDocument::OUTPUTWINDOW, outputVisible);
-    visibilityControls_[TabDocument::OUTPUTWINDOW]->setChecked(outputVisible);
-
-    const bool contextHelpVisible = settings.value("ContextHelpVisibility", false).toBool();
-    visibilities_.insert(TabDocument::CONTEXT_HELP_WINDOW, contextHelpVisible);
-    visibilityControls_[TabDocument::CONTEXT_HELP_WINDOW]->setChecked(contextHelpVisible);
-
-    const bool previewVisible = settings.value("PreviewVisibility", true).toBool();
-    visibilities_.insert(TabDocument::PREVIEWWINDOW, previewVisible);
-    visibilityControls_[TabDocument::PREVIEWWINDOW]->setChecked(previewVisible);
-
-    const bool extensionsVisible = settings.value("VendorExtensionVisibility", false).toBool();
-    visibilities_.insert(TabDocument::VENDOREXTENSIONWINDOW, extensionsVisible);
-    visibilityControls_[TabDocument::VENDOREXTENSIONWINDOW]->setChecked(extensionsVisible);
-
-    const bool consoleVisible = settings.value("ScriptVisibility", true).toBool();
-    visibilities_.insert(TabDocument::SCRIPTWINDOW, consoleVisible);
-    visibilityControls_[TabDocument::SCRIPTWINDOW]->setChecked(consoleVisible);
+        visibilities_.insert(type, visible);
+        visibilityControls_[type]->setChecked(visible);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -206,20 +226,10 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::saveVisibilitySettings(QSettings& settings) const
 {
-    settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
-    settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
-    settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
-    settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
-    settings.setValue("AdHocEditorVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
-    settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
-    settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
-    settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
-    settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
-    settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
-    settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
-    settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
-    settings.setValue("VendorExtensionVisibility", visibilities_.value(TabDocument::VENDOREXTENSIONWINDOW));
-    settings.setValue("ScriptVisibility", visibilities_.value(TabDocument::SCRIPTWINDOW));
+    for (auto const& window : DOCK_SETTINGS)
+    {
+        settings.setValue(window, visibilities_.value(DOCK_SETTINGS.key(window)));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -292,6 +302,19 @@ void DockWidgetHandler::saveFilterSettings(QSettings& settings) const
     settings.setValue("ShowFixed", filters.firmness.fixed_);
     settings.endGroup(); // Firmness
     settings.endGroup(); // LibraryFilters
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::applySettings()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::applySettings()
+{
+    scriptConsole_->applySettings();
+
+    for (auto dock : docks_)
+    {
+        placeActionInToolbar(dock->toggleViewAction(), mainWindow_->dockWidgetArea(dock));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -388,9 +411,11 @@ void DockWidgetHandler::setupLibraryDock()
     libraryDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
 
-
     // create a container widget for dialer and library display
     libraryWidget_ = new LibraryWidget(libraryHandler_, messageChannel_, mainWindow_);
+
+    libraryDock_->setWidget(libraryWidget_);
+    mainWindow_->addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);
 
     connect(this, SIGNAL(generateIntegrityReport()), libraryWidget_,
         SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
@@ -423,10 +448,6 @@ void DockWidgetHandler::setupLibraryDock()
 
     connect(libraryWidget_, SIGNAL(statusMessage(QString const&)),
         this, SIGNAL(statusMessage(QString const&)));
-
-    libraryDock_->setWidget(libraryWidget_);
-
-    mainWindow_->addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);
 }
 
 //-----------------------------------------------------------------------------
@@ -658,68 +679,6 @@ void DockWidgetHandler::setupVendorExtensionEditor()
     mainWindow_->addDockWidget(Qt::RightDockWidgetArea, extensionDock_);
 }
 
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setupToolbar()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::setupToolbar(QToolBar* leftToolbar, QToolBar* rightToolbar)
-{
-    auto leftActions = new QActionGroup(this);
-    leftActions->setExclusive(true);
-    leftActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
-
-    auto rightActions = new QActionGroup(this);
-    rightActions->setExclusive(true);
-    rightActions->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
-
-    for (auto const& dock : docks_)
-    {
-        auto action = dock->toggleViewAction();
-        action->setIcon(dock->windowIcon());
-        action->setCheckable(true);
-
-        if (mainWindow_->dockWidgetArea(dock) == Qt::LeftDockWidgetArea)
-        {
-            leftActions->addAction(action);
-            leftToolbar->addAction(action);
-        }
-
-        else if (mainWindow_->dockWidgetArea(dock) == Qt::RightDockWidgetArea)
-        {
-            rightActions->addAction(action);
-            rightToolbar->addAction(action);
-        }
-
-        connect(action, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)), Qt::UniqueConnection);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::applySettings()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::applySettings()
-{
-    scriptConsole_->applySettings();
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::addVisibilityActions()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu) 
-{
-    for (auto const& dock : docks_)
-    {
-        auto action = new QAction(mainWindow_);
-        action->setText(dock->windowTitle());
-        action->setCheckable(true);
-
-        connect(action, SIGNAL(toggled(bool)), dock->toggleViewAction(), SLOT(setVisible(bool)), Qt::UniqueConnection);
-        connect(action, SIGNAL(toggled(bool)), dock->toggleViewAction(), SLOT(setChecked(bool)), Qt::UniqueConnection);
-
-        visibilityMenu.addAction(action);
-
-        visibilityControls_.insert(docks_.key(dock), action);
-    }
-}
 
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::clearItemSelection()
@@ -1203,6 +1162,17 @@ void DockWidgetHandler::onScriptConsoleVisibilityAction(bool show)
 }
 
 //-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::onDockLocationChanged()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::onDockLocationChanged(Qt::DockWidgetArea area)
+{
+    auto const& dock = qobject_cast<QDockWidget*>(sender());
+    auto action = dock->toggleViewAction();
+
+    placeActionInToolbar(action, area);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::setWindowVisibilityForSupportedWindow()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setWindowVisibilityForSupportedWindow(QWidget* currentTabWidget,
@@ -1220,6 +1190,29 @@ void DockWidgetHandler::setWindowVisibilityForSupportedWindow(QWidget* currentTa
 void DockWidgetHandler::setWindowVisibility(TabDocument::SupportedWindows windowType, bool show)
 {
     visibilities_.insert(windowType, show);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::placeActionInToolbar()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::placeActionInToolbar(QAction* action, Qt::DockWidgetArea area)
+{
+    leftActions_->removeAction(action);
+    leftToolbar_->removeAction(action);
+
+    rightActions_->removeAction(action);
+    rightToolbar_->removeAction(action);
+
+    if (area == Qt::LeftDockWidgetArea)
+    {
+        leftActions_->addAction(action);
+        leftToolbar_->addAction(action);
+    }
+    else if (area == Qt::RightDockWidgetArea)
+    {
+        rightActions_->addAction(action);
+        rightToolbar_->addAction(action);
+    }
 }
 
 //-----------------------------------------------------------------------------
