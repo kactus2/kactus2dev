@@ -393,8 +393,8 @@ void HtmlWriter::writeRegisterFiles(QTextStream& stream,
 
         if (!registersInFile.isEmpty())
         {
-            writeSubHeader(stream, {}, QStringLiteral("Registers in register file ")
-                + registerFile->name() + QStringLiteral(":"), 4);
+            writeSubHeader(stream, {}, QStringLiteral("Register file ")
+                + registerFile->name() + QStringLiteral(" contains the following registers:"), 4);
             writeRegisterTable(stream, registersInFile);
         }
 
