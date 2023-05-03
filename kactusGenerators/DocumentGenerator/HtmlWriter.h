@@ -319,6 +319,14 @@ private:
     void writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register> >registers);
 
     /*!
+     *  Writes info about a single register
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] registerFile        The register file to be written.
+     */
+    void writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile);
+
+    /*!
      *  Writes a row with specified cells to a HTML table with chosen indentation.
      *  Indentation is the number of tabs for the parent element.
      *

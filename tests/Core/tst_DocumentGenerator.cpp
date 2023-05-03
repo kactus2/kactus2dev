@@ -679,6 +679,8 @@ void tst_DocumentGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
     QSharedPointer<RegisterFile> testRegisterFileParent(new RegisterFile("testRegisterFileParent", "8", "16"));
     QSharedPointer<RegisterFile> testRegisterFileChild(new RegisterFile("testRegisterFileChild", "64", "512"));
 
+    testRegisterFileParent->setDescription("this is a description");
+
     QSharedPointer<Register> registerInParentRegisterFile = createTestRegister("testRegister", "4", "2", "0", "example description");
     QSharedPointer<Register> registerInChildRegisterFile = createTestRegister("testRegister2", "8", "2", "0", "example description2");
 
@@ -719,6 +721,12 @@ void tst_DocumentGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\t\t\t</p>\n"
         "\t\t\t<h4>Address block 'testAddressBlock' contains the following register files:</h4>\n"
         "\t\t\t<h3>1.1.1.1.1 Register file testRegisterFileParent</h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> this is a description<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Offset [AUB]:</strong> " + testRegisterFileParent->getAddressOffset() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Range [AUB]:</strong> " + testRegisterFileParent->getRange() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Dimension:</strong> <br>\n"
+        "\t\t\t</p>\n"
         "\t\t\t<h4>Registers in register file testRegisterFileParent:</h4>\n"
         "\t\t\t" + getTableString() + "\">\n"
         "\t\t\t\t<tr>\n"
@@ -748,6 +756,11 @@ void tst_DocumentGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\t\t\t" + getIndentString() + "<strong>Access:</strong> " + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "<br>\n"
         "\t\t\t</p>\n"
         "\t\t\t<h3>1.1.1.1.1.2 Register file testRegisterFileChild</h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Offset [AUB]:</strong> " + testRegisterFileChild->getAddressOffset() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Range [AUB]:</strong> " + testRegisterFileChild->getRange() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Dimension:</strong> <br>\n"
+        "\t\t\t</p>\n"
         "\t\t\t<h4>Registers in register file testRegisterFileChild:</h4>\n"
         "\t\t\t" + getTableString() + "\">\n"
         "\t\t\t\t<tr>\n"

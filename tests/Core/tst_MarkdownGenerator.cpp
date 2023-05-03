@@ -562,6 +562,8 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
     QSharedPointer<RegisterFile> testRegisterFileParent(new RegisterFile("testRegisterFileParent", "8", "16"));
     QSharedPointer<RegisterFile> testRegisterFileChild(new RegisterFile("testRegisterFileChild", "64", "512"));
 
+    testRegisterFileParent->setDescription("Register file description");
+
     QSharedPointer<Register> registerInParentRegisterFile = createTestRegister("testRegister", "4", "2", "0", "example description");
     QSharedPointer<Register> registerInChildRegisterFile = createTestRegister("testRegister2", "8", "2", "0", "example description2");
 
@@ -604,6 +606,11 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\n"
         "### 1.1.1.1.1 Register file testRegisterFileParent  \n"
         "\n"
+        "**Description:** Register file description  \n"
+        "**Offset [AUB]:** 8  \n"
+        "**Range [AUB]:** 16  \n"
+        "**Dimension:**   \n"
+        "\n"
         "#### Registers in register file testRegisterFileParent:  \n"
         "\n"
         "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
@@ -624,6 +631,10 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "**Access:** " + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "  \n"
         "\n"
         "### 1.1.1.1.1.2 Register file testRegisterFileChild  \n"
+        "\n"
+        "**Offset [AUB]:** 64  \n"
+        "**Range [AUB]:** 512  \n"
+        "**Dimension:**   \n"
         "\n"
         "#### Registers in register file testRegisterFileChild:  \n"
         "\n"

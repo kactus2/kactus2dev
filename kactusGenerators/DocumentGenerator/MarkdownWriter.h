@@ -313,6 +313,14 @@ private:
     void writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber);
 
     /*!
+     *  Writes info about a single register
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] registerFile        The register file to be written.
+     */
+    void writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile);
+
+    /*!
      *  Writes a table of registers.
      *
      *      @param [in] stream              The text stream to write into.

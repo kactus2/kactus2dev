@@ -384,6 +384,8 @@ void HtmlWriter::writeRegisterFiles(QTextStream& stream,
         writeSubHeader(stream, registerFileSubHeaderNumbers,
             QStringLiteral("Register file ") + registerFile->name(), 3);
 
+        writeRegisterFileInfo(stream, registerFile);
+
         auto const registerData = registerFile->getRegisterData();
         auto const registersInFile = getRegisters(registerData);
 
@@ -857,6 +859,26 @@ void HtmlWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Re
     }
 
     stream << indent(3) << "</table>" << Qt::endl;
+}
+
+void HtmlWriter::writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile)
+{
+    stream << indent(3) << "<p>" << Qt::endl;
+
+    if (auto const& description = registerFile->description(); !description.isEmpty())
+    {
+        stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " << description << "<br>" << Qt::endl;
+    }
+    stream << indent(3) << HTML::INDENT << "<strong>Offset [AUB]:</strong> " << expressionFormatter_->formatReferringExpression(registerFile->getAddressOffset())
+        << "<br>" << Qt::endl;
+
+    stream << indent(3) << HTML::INDENT << "<strong>Range [AUB]:</strong> " << expressionFormatter_->formatReferringExpression(registerFile->getRange())
+        << "<br>" << Qt::endl;
+
+    stream << indent(3) << HTML::INDENT << "<strong>Dimension:</strong> " << expressionFormatter_->formatReferringExpression(registerFile->getDimension())
+        << "<br>" << Qt::endl;
+
+    stream << indent(3) << "</p>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

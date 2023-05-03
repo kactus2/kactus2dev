@@ -320,6 +320,8 @@ void MarkdownWriter::writeRegisterFiles(QTextStream& stream, QList<QSharedPointe
 
         writeSubHeader(stream, registerFileSubHeaderNumbers,
             QStringLiteral("Register file ") + registerFile->name(), 3);
+
+        writeRegisterFileInfo(stream, registerFile);
         
         auto const registerData = registerFile->getRegisterData();
 
@@ -740,6 +742,23 @@ void MarkdownWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Reg
 
     writeFields(stream, reg);
     ++registerDataNumber;
+}
+
+void MarkdownWriter::writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile)
+{
+    if (auto const description = registerFile->description(); !description.isEmpty())
+    {
+        stream << "**Description:** " << description << "  " << Qt::endl;
+    }
+
+    stream << "**Offset [AUB]:** " << expressionFormatter_->formatReferringExpression(registerFile->getAddressOffset())
+        << "  " << Qt::endl;
+    
+    stream << "**Range [AUB]:** " << expressionFormatter_->formatReferringExpression(registerFile->getRange())
+        << "  " << Qt::endl;
+    
+    stream << "**Dimension:** " << expressionFormatter_->formatReferringExpression(registerFile->getDimension())
+        << "  " << Qt::endl << Qt::endl;
 }
 
 void MarkdownWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register>> registers)
