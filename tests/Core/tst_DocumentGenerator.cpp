@@ -758,6 +758,7 @@ void tst_DocumentGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\t\t\t</p>\n"
         "\t\t\t<h3>1.1.1.1.1.2 Register file testRegisterFileChild</h3>\n"
         "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + testRegisterFileChild->description() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Offset [AUB]:</strong> " + testRegisterFileChild->getAddressOffset() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Range [AUB]:</strong> " + testRegisterFileChild->getRange() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Dimension:</strong> <br>\n"
@@ -919,6 +920,8 @@ void tst_DocumentGenerator::testMemoryMapToFieldWrittenWithTopComponent()
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".memoryMaps\">1.1 Memory maps</a></h2>\n"
         "\t\t\t<h3>1.1.1 Memory map " + testMemoryMap->name() + "</h3>\n"
         "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " +
+        testMemoryMap->description() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Address unit bits (AUB):</strong> " +
         testMemoryMap->getAddressUnitBits() + "<br>\n"
         "\t\t\t</p>\n"

@@ -92,6 +92,13 @@ const QStringList DocumentationWriter::REGISTER_HEADERS = {
     QStringLiteral("Access")
 };
 
+const QStringList DocumentationWriter::REGISTER_FILE_HEADERS = {
+    QStringLiteral("Description"),
+    QStringLiteral("Offset [AUB]"),
+    QStringLiteral("Range [AUB]"),
+    QStringLiteral("Dimension"),
+};
+
 const QStringList DocumentationWriter::DESIGN_INSTANCE_HEADERS = {
     QStringLiteral("Instance name"),
     QStringLiteral("Component type"),

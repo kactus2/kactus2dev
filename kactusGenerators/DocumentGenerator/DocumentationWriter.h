@@ -55,6 +55,8 @@ public:
 
     static const QStringList REGISTER_HEADERS;
 
+    static const QStringList REGISTER_FILE_HEADERS;
+
     static const QStringList DESIGN_INSTANCE_HEADERS;
     
     DocumentationWriter(ExpressionFormatter* formatter, ExpressionFormatterFactory* expressionFormatterFactory);

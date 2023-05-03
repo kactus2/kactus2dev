@@ -269,18 +269,12 @@ void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
 
         writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Memory map ") + memoryMap->name(), 3);
 
-        stream << indent(3) << "<p>" << Qt::endl;
-
-        if (!memoryMap->description().isEmpty())
-        {
-            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
-                memoryMap->description() << "<br>" << Qt::endl;
-        }
-        
-        stream << indent(3) << HTML::INDENT << "<strong>Address unit bits (AUB):</strong> " <<
-            memoryMap->getAddressUnitBits() << "<br>" << Qt::endl;
-
-        stream << indent(3) << "</p>" << Qt::endl;
+        // Write memory map info.
+        writeInfoParagraph(
+            stream,
+            { QStringLiteral("Description"), QStringLiteral("Address unit bits (AUB)") },
+            { memoryMap->description(), memoryMap->getAddressUnitBits() }
+        );
 
         QList <QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
         writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
@@ -685,7 +679,6 @@ void HtmlWriter::writeErrorMessage(QTextStream& stream, QString const& message)
     stream << indent(3) << "<p>" << Qt::endl;
     stream << indent(3) << "<strong><font color=red>" << message << "</font></strong><br>" << Qt::endl;
     stream << indent(3) << "</p>" << Qt::endl;
-
 }
 
 //-----------------------------------------------------------------------------
@@ -784,57 +777,43 @@ QString HtmlWriter::indent(int n) const
 
 void HtmlWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock)
 {
-    stream << indent(3) << "<p>" << Qt::endl;
-    
-    if (auto const& description = addressBlock->description(); !description.isEmpty())
-    {
-        stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " << addressBlock->description()
-            << "<br>" << Qt::endl;
-    }
+    QStringList addressBlockInfoValues(QStringList()
+        << addressBlock->description()
+        << General::usage2Str(addressBlock->getUsage())
+        << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
+        << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
+        << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
+        << AccessTypes::access2Str(addressBlock->getAccess())
+        << addressBlock->getVolatile()
+    );
 
-    stream << indent(3) << HTML::INDENT << "<strong>Usage:</strong> " << General::usage2Str(addressBlock->getUsage())
-        << "<br>" << Qt::endl;
+    QStringList addressBlockInfoNames(QStringList()
+        << QStringLiteral("Description")
+        << DocumentationWriter::ADDRESS_BLOCK_HEADERS
+    );
 
-    stream << indent(3) << HTML::INDENT << "<strong>Base address [AUB]:</strong> " <<
-        expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress()) << "<br>" << Qt::endl;
-    
-    stream << indent(3) << HTML::INDENT << "<strong>Range [AUB]:</strong> " <<
-        expressionFormatter_->formatReferringExpression(addressBlock->getRange()) << "<br>" << Qt::endl;
-    
-    stream << indent(3) << HTML::INDENT << "<strong>Width [AUB]:</strong> " <<
-        expressionFormatter_->formatReferringExpression(addressBlock->getWidth()) << "<br>" << Qt::endl;
-    
-    stream << indent(3) << HTML::INDENT << "<strong>Access:</strong> "
-        << AccessTypes::access2Str(addressBlock->getAccess()) << "<br>" << Qt::endl;
-    
-    stream << indent(3) << HTML::INDENT << "<strong>Volatile:</strong> " << addressBlock->getVolatile() << "<br>" << Qt::endl;
-    
-    stream << indent(3) << "</p>" << Qt::endl;
+    writeInfoParagraph(stream, addressBlockInfoNames, addressBlockInfoValues);
 }
 
 void HtmlWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber)
 {
     writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + reg->name(), 3);
 
-    stream << indent(3) << "<p>" << Qt::endl;
+    QStringList registerInfoValues(QStringList()
+        << reg->description()
+        << expressionFormatter_->formatReferringExpression(reg->getAddressOffset())
+        << expressionFormatter_->formatReferringExpression(reg->getSize())
+        << expressionFormatter_->formatReferringExpression(reg->getDimension())
+        << reg->getVolatile()
+        << AccessTypes::access2Str(reg->getAccess())
+    );
 
-    if (auto const& description = reg->description(); !description.isEmpty())
-    {
-        stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " << description << "<br>" << Qt::endl;
-    }
-    stream << indent(3) << HTML::INDENT << "<strong>Offset [AUB]:</strong> " << expressionFormatter_->formatReferringExpression(reg->getAddressOffset())
-        << "<br>" << Qt::endl;
+    QStringList registerInfoNames(QStringList()
+        << QStringLiteral("Description")
+        << DocumentationWriter::REGISTER_HEADERS
+    );
 
-    stream << indent(3) << HTML::INDENT << "<strong>Size [bits]:</strong> " << expressionFormatter_->formatReferringExpression(reg->getSize())
-        << "<br>" << Qt::endl;
-
-    stream << indent(3) << HTML::INDENT << "<strong>Dimension:</strong> " << expressionFormatter_->formatReferringExpression(reg->getDimension())
-        << "<br>" << Qt::endl;
-
-    stream << indent(3) << HTML::INDENT << "<strong>Volatile:</strong> " << reg->getVolatile() << "<br>" << Qt::endl;
-    stream << indent(3) << HTML::INDENT << "<strong>Access:</strong> " << AccessTypes::access2Str(reg->getAccess()) << "<br>" << Qt::endl;
-
-    stream << indent(3) << "</p>" << Qt::endl;
+    writeInfoParagraph(stream, registerInfoNames, registerInfoValues);
 
     writeFields(stream, reg, subHeaderNumbers);
     ++registerDataNumber;
@@ -868,22 +847,14 @@ void HtmlWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Re
 
 void HtmlWriter::writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile)
 {
-    stream << indent(3) << "<p>" << Qt::endl;
+    QStringList registerInfoValues(QStringList()
+        << registerFile->description()
+        << expressionFormatter_->formatReferringExpression(registerFile->getAddressOffset())
+        << expressionFormatter_->formatReferringExpression(registerFile->getRange())
+        << expressionFormatter_->formatReferringExpression(registerFile->getDimension())
+    );
 
-    if (auto const& description = registerFile->description(); !description.isEmpty())
-    {
-        stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " << description << "<br>" << Qt::endl;
-    }
-    stream << indent(3) << HTML::INDENT << "<strong>Offset [AUB]:</strong> " << expressionFormatter_->formatReferringExpression(registerFile->getAddressOffset())
-        << "<br>" << Qt::endl;
-
-    stream << indent(3) << HTML::INDENT << "<strong>Range [AUB]:</strong> " << expressionFormatter_->formatReferringExpression(registerFile->getRange())
-        << "<br>" << Qt::endl;
-
-    stream << indent(3) << HTML::INDENT << "<strong>Dimension:</strong> " << expressionFormatter_->formatReferringExpression(registerFile->getDimension())
-        << "<br>" << Qt::endl;
-
-    stream << indent(3) << "</p>" << Qt::endl;
+    writeInfoParagraph(stream, DocumentationWriter::REGISTER_FILE_HEADERS, registerInfoValues);
 }
 
 void HtmlWriter::writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg)
