@@ -346,7 +346,7 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeRegisters()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Register>> registers,
+void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Register> > registers,
     int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int& registerDataNumber)
 {
     if (registers.isEmpty())
@@ -354,30 +354,10 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
         return;
     }
 
-    QStringList allRegistersTableHeader;
-    allRegistersTableHeader << QStringLiteral("Register name");
-    allRegistersTableHeader.append(DocumentationWriter::REGISTER_HEADERS);
-
-    // Write table with all registers
-    stream << indent(3) << HTML::TABLE << "" << "\">" << Qt::endl;
-    writeTableHeader(stream, allRegistersTableHeader, 4);
-
-    for (auto const& currentRegister : registers)
-    {
-        QStringList registerInfoTableRowCells(QStringList()
-            << currentRegister->name()
-            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
-            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
-            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
-            << currentRegister->getVolatile()
-            << AccessTypes::access2Str(currentRegister->getAccess())
-        );
-
-        writeTableRow(stream, registerInfoTableRowCells, 4);
-    }
-
-    stream << indent(3) << "</table>" << Qt::endl;
+    // Write table with all address block registers.
+    writeRegisterTable(stream, registers);
     
+    // Write each register separately.
     for (auto const& currentRegister : registers)
     {
         QList subHeaderNumbers({
@@ -404,12 +384,20 @@ void HtmlWriter::writeRegisterFiles(QTextStream& stream,
         writeSubHeader(stream, registerFileSubHeaderNumbers,
             QStringLiteral("Register file ") + registerFile->name(), 3);
 
-        auto registerData = registerFile->getRegisterData();
+        auto const registerData = registerFile->getRegisterData();
+        auto const registersInFile = getRegisters(registerData);
 
         int subRegisterDataNumber = 1;
 
+        if (!registersInFile.isEmpty())
+        {
+            writeSubHeader(stream, {}, QStringLiteral("Registers in register file ")
+                + registerFile->name() + QStringLiteral(":"), 4);
+            writeRegisterTable(stream, registersInFile);
+        }
+
         // Write register file registers.
-        for (auto const& reg : getRegisters(registerData))
+        for (auto const& reg : registersInFile)
         {
             // Sub-registers need their own subheader number, as the hierarchy ends here.
             QList newSubHeaderNumbers(registerFileSubHeaderNumbers);
@@ -843,6 +831,32 @@ void HtmlWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Registe
 
     writeFields(stream, reg);
     ++registerDataNumber;
+}
+
+void HtmlWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register>> registers)
+{
+    QStringList allRegistersTableHeader;
+    allRegistersTableHeader << QStringLiteral("Register name");
+    allRegistersTableHeader.append(DocumentationWriter::REGISTER_HEADERS);
+
+    stream << indent(3) << HTML::TABLE << "" << "\">" << Qt::endl;
+    writeTableHeader(stream, allRegistersTableHeader, 4);
+
+    for (auto const& currentRegister : registers)
+    {
+        QStringList registerInfoTableRowCells(QStringList()
+            << currentRegister->name()
+            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
+            << currentRegister->getVolatile()
+            << AccessTypes::access2Str(currentRegister->getAccess())
+        );
+
+        writeTableRow(stream, registerInfoTableRowCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

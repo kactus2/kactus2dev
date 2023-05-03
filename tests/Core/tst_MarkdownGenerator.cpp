@@ -604,6 +604,16 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\n"
         "### 1.1.1.1.1 Register file testRegisterFileParent  \n"
         "\n"
+        "#### Registers in register file testRegisterFileParent:  \n"
+        "\n"
+        "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n"
+        "|" + registerInParentRegisterFile->name() +
+        "|" + registerInParentRegisterFile->getAddressOffset() +
+        "|" + registerInParentRegisterFile->getSize() +
+        "|" + registerInParentRegisterFile->getDimension() +
+        "|" + registerInParentRegisterFile->getVolatile() +
+        "|" + AccessTypes::access2Str(registerInParentRegisterFile->getAccess()) + "|  \n"
         "### 1.1.1.1.1.1 Register testRegister  \n"
         "\n"
         "**Description:** " + registerInParentRegisterFile->description() + "  \n"
@@ -615,6 +625,16 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\n"
         "### 1.1.1.1.1.2 Register file testRegisterFileChild  \n"
         "\n"
+        "#### Registers in register file testRegisterFileChild:  \n"
+        "\n"
+        "|Register name|Offset [AUB]|Size [bits]|Dimension|Volatile|Access|  \n"
+        "|:----|:----|:----|:----|:----|:----|  \n"
+        "|" + registerInChildRegisterFile->name() +
+        "|" + registerInChildRegisterFile->getAddressOffset() +
+        "|" + registerInChildRegisterFile->getSize() +
+        "|" + registerInChildRegisterFile->getDimension() +
+        "|" + registerInChildRegisterFile->getVolatile() +
+        "|" + AccessTypes::access2Str(registerInChildRegisterFile->getAccess()) + "|  \n"
         "### 1.1.1.1.1.2.1 Register testRegister2  \n"
         "\n"
         "**Description:** " + registerInChildRegisterFile->description() + "  \n"
@@ -625,12 +645,7 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "**Access:** " + AccessTypes::access2Str(registerInChildRegisterFile->getAccess()) + "  \n"
         "\n"
     );
-    QFile testFile("TESTOUTPUT.md");
-    testFile.open(QFile::WriteOnly);
-    QTextStream stream2(&testFile);
 
-    stream2 << expectedOutput;
-    testFile.close();
     checkOutputFile(expectedOutput);
 }
 

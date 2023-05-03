@@ -292,6 +292,12 @@ private:
      */
     QString indent(int n) const;
 
+    /*!
+     *  Writes info about an address block.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] addressBlock        The address block to write about.
+     */
     void writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock);
 
     /*!
@@ -303,6 +309,14 @@ private:
      *      @param [in] registerDataNumber  The current address block register data number.
      */
     void writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber);
+    
+    /*!
+     *  Writes a table of registers.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] registers           The registers to be written.
+     */
+    void writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register> >registers);
 
     /*!
      *  Writes a row with specified cells to a HTML table with chosen indentation.
