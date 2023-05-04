@@ -541,6 +541,7 @@ void MainWindow::setupActions()
     connectVisibilityControls();
 
     setupMenus();
+
 }
 
 //-----------------------------------------------------------------------------

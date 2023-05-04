@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, int maxZoomLevel) : 
     QWidget(parent),
-    supportedWindows_(OUTPUTWINDOW | PREVIEWWINDOW | LIBRARYWINDOW | CONTEXT_HELP_WINDOW | SCRIPTWINDOW),
+    supportedWindows_(OUTPUTWINDOW | LIBRARYWINDOW | CONTEXT_HELP_WINDOW | SCRIPTWINDOW),
     flags_(flags),
     modified_(false),
     locked_(false),

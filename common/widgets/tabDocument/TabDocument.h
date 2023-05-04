@@ -50,7 +50,6 @@ public:
 
 	enum SupportedWindows {
 		OUTPUTWINDOW            = 0x001,
-		PREVIEWWINDOW           = 0x002,
 		LIBRARYWINDOW           = 0x004,
 		CONFIGURATIONWINDOW     = 0x008,
 		CONNECTIONWINDOW        = 0x010,
@@ -58,7 +57,6 @@ public:
 		INSTANCEWINDOW          = 0x040,
         SYSTEM_DETAILS_WINDOW   = 0x100,
         CONTEXT_HELP_WINDOW     = 0x200,
-        ADDRESS_WINDOW          = 0x400,
         ADHOC_WINDOW            = 0x800,
         DESIGNPARAMETERSWINDOW  = 0x1000,
         VENDOREXTENSIONWINDOW   = 0x2000,

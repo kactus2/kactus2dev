@@ -21,7 +21,6 @@
 
 #include <common/ui/GraphicalMessageMediator.h>
 
-#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
@@ -66,7 +65,6 @@ namespace
         { TabDocument::LIBRARYWINDOW, "LibraryVisibility" },
         { TabDocument::OUTPUTWINDOW, "OutputVisibility" },
         { TabDocument::CONTEXT_HELP_WINDOW, "ContextHelpVisibility" },
-        { TabDocument::PREVIEWWINDOW, "PreviewVisibility" },
         { TabDocument::DESIGNPARAMETERSWINDOW, "DesignParameterVisibility" },
         { TabDocument::VENDOREXTENSIONWINDOW, "VendorExtensionVisibility" },
         { TabDocument::SCRIPTWINDOW, "ScriptVisibility" }
@@ -85,8 +83,6 @@ DockWidgetHandler::DockWidgetHandler(
 libraryHandler_(library),
     libraryDock_(0),
     libraryWidget_(0),
-    previewBox_(0),
-    previewDock_(0),
     console_(0),
     consoleDock_(0),
     contextHelpBrowser_(0),
@@ -139,7 +135,6 @@ void DockWidgetHandler::setupDockWidgets()
     setupMessageConsole();
     setupContextHelp();
     setupLibraryDock();
-    setupComponentPreview();
     setupDesignParametersEditor();
     setupInstanceEditor();
     setupAdHocEditor();
@@ -160,7 +155,6 @@ void DockWidgetHandler::setupDockWidgets()
         { TabDocument::LIBRARYWINDOW, libraryDock_ },
         { TabDocument::OUTPUTWINDOW, consoleDock_ },
         { TabDocument::CONTEXT_HELP_WINDOW, contextHelpDock_ },
-        { TabDocument::PREVIEWWINDOW, previewDock_ },
         { TabDocument::DESIGNPARAMETERSWINDOW, designParameterDock_ },
         { TabDocument::VENDOREXTENSIONWINDOW, extensionDock_ },
         { TabDocument::SCRIPTWINDOW, scriptConsoleDock_ }
@@ -168,13 +162,19 @@ void DockWidgetHandler::setupDockWidgets()
 
     for (auto const& dock : docks_)
     {
-        auto action = dock->toggleViewAction();
-        action->setIcon(dock->windowIcon());
-        action->setCheckable(true);
+        auto viewAction = dock->toggleViewAction();
+        viewAction->setIcon(dock->windowIcon());
+        viewAction->setCheckable(true);
 
-        connect(action, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)), Qt::UniqueConnection);
+        connect(viewAction, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)), Qt::UniqueConnection);
         connect(dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
             this, SLOT(onDockLocationChanged(Qt::DockWidgetArea)), Qt::UniqueConnection);
+
+        auto visibilityAction = new QAction(mainWindow_);
+        visibilityAction->setText(dock->windowTitle());
+        visibilityAction->setCheckable(true);
+
+        visibilityControls_.insert(docks_.key(dock), visibilityAction);
     }
 }
 
@@ -183,15 +183,9 @@ void DockWidgetHandler::setupDockWidgets()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu)
 {
-    for (auto const& dock : docks_)
+    for (auto const& control : visibilityControls_)
     {
-        auto action = new QAction(mainWindow_);
-        action->setText(dock->windowTitle());
-        action->setCheckable(true);
-
-        visibilityMenu.addAction(action);
-
-        visibilityControls_.insert(docks_.key(dock), action);
+        visibilityMenu.addAction(control);
     }
 }
 
@@ -440,27 +434,6 @@ void DockWidgetHandler::setupLibraryDock()
 
     connect(libraryWidget_, SIGNAL(statusMessage(QString const&)),
         this, SIGNAL(statusMessage(QString const&)));
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setupComponentPreview()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::setupComponentPreview()
-{
-    previewDock_ = new QDockWidget(tr("Component Preview"), mainWindow_);
-    previewDock_->setObjectName(tr("ComponentPreview"));
-    previewDock_->setWindowIcon(QIcon(":icons/common/graphics/preview.png"));
-    previewDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-    previewDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
-        QDockWidget::DockWidgetFloatable);
-
-    previewBox_ = new ComponentPreviewBox(libraryHandler_, previewDock_);
-    previewDock_->setWidget(previewBox_);
-
-    mainWindow_->addDockWidget(Qt::LeftDockWidgetArea, previewDock_);
-
-    connect(libraryHandler_, SIGNAL(itemSelected(const VLNV&)),
-        previewBox_, SLOT(setComponent(const VLNV&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -736,11 +709,6 @@ void DockWidgetHandler::selectComponent(QWidget* currentTabWidget, ComponentItem
 
     VLNV componentVLNV = component->componentModel()->getVlnv();
     libraryWidget_->selectComponent(componentVLNV);
-    
-    if (componentVLNV.isValid())
-    {
-        previewBox_->setComponent(componentVLNV);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -869,8 +837,7 @@ unsigned int DockWidgetHandler::currentlySupportedWindows(QWidget* currentTabWid
 unsigned int DockWidgetHandler::defaultWindows() const
 {
     return TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW |
-        TabDocument::PREVIEWWINDOW | TabDocument::CONTEXT_HELP_WINDOW |
-        TabDocument::SCRIPTWINDOW;
+        TabDocument::CONTEXT_HELP_WINDOW | TabDocument::SCRIPTWINDOW;
 }
 
 //-----------------------------------------------------------------------------
@@ -1001,8 +968,6 @@ void DockWidgetHandler::connectVisibilityControls()
         this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
     connect(visibilityControls_[TabDocument::CONTEXT_HELP_WINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
-    connect(visibilityControls_[TabDocument::PREVIEWWINDOW], SIGNAL(toggled(bool)),
-        this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
     connect(visibilityControls_[TabDocument::LIBRARYWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
     connect(visibilityControls_[TabDocument::CONFIGURATIONWINDOW], SIGNAL(toggled(bool)),
@@ -1032,7 +997,6 @@ void DockWidgetHandler::disconnectVisibilityControls()
 {
     disconnect(visibilityControls_[TabDocument::OUTPUTWINDOW], SIGNAL(toggled(bool)), this, SLOT(onOutputAction(bool)));
     disconnect(visibilityControls_[TabDocument::CONTEXT_HELP_WINDOW], SIGNAL(toggled(bool)), this, SLOT(onContextHelpAction(bool)));
-    disconnect(visibilityControls_[TabDocument::PREVIEWWINDOW], SIGNAL(toggled(bool)), this, SLOT(onPreviewAction(bool)));
     disconnect(visibilityControls_[TabDocument::LIBRARYWINDOW], SIGNAL(toggled(bool)), this, SLOT(onLibraryAction(bool)));
     disconnect(visibilityControls_[TabDocument::CONFIGURATIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onConfigurationAction(bool)));
@@ -1064,14 +1028,6 @@ void DockWidgetHandler::onOutputAction( bool show )
 void DockWidgetHandler::onContextHelpAction( bool show )
 {
     emit adjustVisibilityInWindow(TabDocument::CONTEXT_HELP_WINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::onPreviewAction()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::onPreviewAction( bool show )
-{
-    emit adjustVisibilityInWindow(TabDocument::PREVIEWWINDOW, show);
 }
 
 //-----------------------------------------------------------------------------

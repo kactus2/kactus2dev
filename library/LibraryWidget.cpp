@@ -42,7 +42,10 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     itemExporter_(library_, this, this),
     hierarchyWidget_(new HierarchyWidget(library_, library_->getHierarchyModel(), this)),
     treeWidget_(new LibraryTreeWidget(library_, library_->getTreeModel(), this)),
-    integrityWidget_(nullptr)
+    previewWidget_(new ComponentPreviewBox(library, this)),
+    previewHideButton_(new QPushButton(QString(), this)),
+    integrityWidget_(nullptr),
+    showPreview_(false)
 {
     GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel);
     if (guiChannel)
@@ -56,6 +59,10 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
 
+    previewHideButton_->setFlat(true);
+    previewHideButton_->setToolTip(tr("Show preview"));
+
+    onPreviewShowHideClick();
 
     connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
@@ -136,6 +143,12 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
      connect(&itemExporter_, SIGNAL(errorMessage(const QString&)),
          this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
 
+     connect(library_, SIGNAL(itemSelected(const VLNV&)),
+         previewWidget_, SLOT(setComponent(const VLNV&)), Qt::UniqueConnection);
+
+     connect(previewHideButton_, SIGNAL(clicked(bool)), 
+         this, SLOT(onPreviewShowHideClick()), Qt::UniqueConnection);
+
     setupLayout();
 } 
 
@@ -170,6 +183,7 @@ void LibraryWidget::selectComponent(VLNV const& componentVLNV) const
 {
     treeWidget_->selectItem(componentVLNV);
     hierarchyWidget_->selectItems(componentVLNV);
+    previewWidget_->setComponent(componentVLNV);
 }
 
 //-----------------------------------------------------------------------------
@@ -327,7 +341,7 @@ void LibraryWidget::onGenerateIntegrityReport()
 
          LibraryErrorModel* model = new LibraryErrorModel(integrityWidget_);
 
-         for (auto vlnv : library_->getAllVLNVs())
+         for (auto const& vlnv : library_->getAllVLNVs())
          {
              if (library_->isValid(vlnv) == false)
              {
@@ -398,6 +412,26 @@ void LibraryWidget::onRemoveVLNV(const QList<VLNV> vlnvs)
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryWidget::onPreviewHideShowClick()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onPreviewShowHideClick()
+{
+    showPreview_ = !showPreview_;
+    previewWidget_->setVisible(showPreview_);
+
+    if (showPreview_)
+    {
+        previewHideButton_->setToolTip(tr("Hide preview"));
+        previewHideButton_->setIcon(QIcon(":icons/common/graphics/hide.png"));
+    }
+    else
+    {
+        previewHideButton_->setToolTip(tr("Show preview"));
+        previewHideButton_->setIcon(QIcon(":icons/common/graphics/preview.png"));
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryWidget::connectVLNVFilter()
 //-----------------------------------------------------------------------------
 void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
@@ -434,9 +468,21 @@ void LibraryWidget::setupLayout()
     navigationTabs->addTab(treeWidget_, tr("VLNV Tree"));
     navigationTabs->addTab(hierarchyWidget_, tr("Hierarchy"));
 
-    QVBoxLayout* containerLayout = new QVBoxLayout(this);
+    QWidget* previewGroup = new QWidget(this);
+
+    auto previewLayout = new QGridLayout(previewGroup);
+
+    QLabel* previewLabel = new QLabel(tr("Component Preview"), this);
+
+    previewLayout->addWidget(previewLabel, 0, 0, 1, 1);
+    previewLayout->addWidget(previewHideButton_, 0, 1, 1, 1, Qt::AlignRight);
+    previewLayout->addWidget(previewWidget_, 1, 0, 1, 2);
+    previewLayout->setContentsMargins(4, 0, 4, 0);
+
+    auto containerLayout = new QVBoxLayout(this);
     containerLayout->addWidget(navigationTabs, 1);
-    containerLayout->addWidget(dialer_, 0);
+    containerLayout->addWidget(dialer_);
+    containerLayout->addWidget(previewGroup);
     containerLayout->setSpacing(0);
     containerLayout->setContentsMargins(0, 0, 0, 0);
 }

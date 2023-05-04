@@ -22,6 +22,8 @@
 #include <IPXACTmodels/common/TagData.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
+
 #include "TableViewDialog.h"
 
 #include "ItemExporter.h"
@@ -152,6 +154,9 @@ public slots:
 
     void onRemoveVLNV(const QList<VLNV>);
 
+    //! Hides/shows the component preview.
+    void onPreviewShowHideClick();
+
 private:
     //! No copying
     LibraryWidget(const LibraryWidget& other);
@@ -186,9 +191,16 @@ private:
     //! The widget containing the library items in a tree-like view.
     LibraryTreeWidget* treeWidget_;
 
+    //! The widget that contains the component preview.
+    ComponentPreviewBox* previewWidget_;
+
+    //! Button for hiding/showing component preview.
+    QPushButton* previewHideButton_;
+
     //! Widget for showing integrity report on-demand.
     TableViewDialog* integrityWidget_;
 
+    bool showPreview_;
 
 };
 

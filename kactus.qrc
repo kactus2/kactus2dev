@@ -151,6 +151,7 @@
 		<file>common/graphics/puzzle.png</file>
 		<file>common/graphics/hw-component-edit.png</file>
 		<file>common/graphics/preview.png</file>
+        <file>common/graphics/hide.png</file>
 		<file>common/graphics/adhoc.png</file>
 		<file>common/graphics/mapping.png</file>
 		<file>common/graphics/log.png</file>

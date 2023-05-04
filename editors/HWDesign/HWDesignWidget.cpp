@@ -81,7 +81,7 @@ expressionParser_()
 {
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW | CONNECTIONWINDOW | INTERFACEWINDOW |
-        INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW | DESIGNPARAMETERSWINDOW);
+        INSTANCEWINDOW | ADHOC_WINDOW | DESIGNPARAMETERSWINDOW);
 
     setDiagram(new HWDesignDiagram(
         lh, getEditProvider(), designAndIsntancesParameterFinder, designParameterFinder, this));

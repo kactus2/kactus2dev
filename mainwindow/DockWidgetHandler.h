@@ -18,7 +18,6 @@
 
 class LibraryHandler;
 class LibraryWidget;
-class ComponentPreviewBox;
 class MessageConsole;
 class ContextHelpBrowser;
 class DesignParameterReferenceCounter;
@@ -319,13 +318,6 @@ private slots:
     void onContextHelpAction(bool show);
 
     /*!
-     *  Handles the action for the visibility of the component preview dock widget.
-     *
-     *      @param [in] show    Value for the visibility of the component preview dock widget.
-     */
-    void onPreviewAction(bool show);
-
-    /*!
      *  Handles the action for the visibility of the library dock widget.
      *
      *      @param [in] show    Value for the visibility of the library dock widget.
@@ -419,11 +411,6 @@ private:
      *  Setup the library dock widget.
      */
     void setupLibraryDock();
-
-    /*!
-     *  Setup the component preview dock widget.
-     */
-    void setupComponentPreview();
 
     /*!
      *  Setup the design parameters editor dock widget.
@@ -526,12 +513,6 @@ private:
 
     //! The widget containing library navigation.
     LibraryWidget* libraryWidget_;
-
-    //! The widget to display a preview of component.
-    ComponentPreviewBox* previewBox_;
-
-    //! The dock widget that contains the preview box.
-    QDockWidget* previewDock_;
 
     //! The widget to print errors and notifications to user.
     MessageConsole* console_;
