@@ -269,7 +269,7 @@ private:
      *      @param [in] stream              The text stream to write into.
      *      @param [in] registers           The registers to be written.
      */
-    void writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register> >registers);
+    void writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register> >registers) const;
 
     /*!
      *  Writes a table of register fields.
@@ -277,7 +277,7 @@ private:
      *      @param [in] stream       The text stream to write into.
      *      @param [in] reg          The register whose fields are written.
      */
-    void writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg);
+    void writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg) const;
 
     /*!
      *  Writes the enumerations of a field.
@@ -352,7 +352,7 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] file            File to be written.
      */
-    void writeSingleFile(QTextStream& stream, QSharedPointer<File> file);
+    void writeSingleFile(QTextStream& stream, QSharedPointer<File> file) const;
 
     /*!
      *  Writes the implementation details of a component instantiation.

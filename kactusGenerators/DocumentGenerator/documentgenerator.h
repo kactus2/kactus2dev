@@ -317,7 +317,7 @@ private:
      *      @return The module parameters as a list of parameters
      */
     QSharedPointer<QList<QSharedPointer<Parameter> > > getModuleParametersAsParameters(
-        QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
+        QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters) const;
 
     /*!
      *  Get the selected design configuration instantiation.

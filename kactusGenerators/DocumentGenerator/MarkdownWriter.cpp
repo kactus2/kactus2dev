@@ -646,7 +646,7 @@ void MarkdownWriter::writeEndOfDocument(QTextStream& stream)
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeRegisterTable()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register>> registers)
+void MarkdownWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register>> registers) const
 {
     QStringList allRegistersTableHeader;
     allRegistersTableHeader << QStringLiteral("Register name");
@@ -672,7 +672,7 @@ void MarkdownWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeFieldTable()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg)
+void MarkdownWriter::writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg) const
 {
     QString headerTitle = QStringLiteral("Register '")
         + reg->name()
@@ -861,7 +861,7 @@ void MarkdownWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fil
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeSingleFile()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file)
+void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file) const
 {
     QString relativeFilePath = file->name();
     QString absFilePath = General::getAbsolutePath(libraryHandler_->getPath(component_->getVlnv()), relativeFilePath);

@@ -769,7 +769,7 @@ QSharedPointer<ComponentInstantiation> DocumentGenerator::getComponentInstantiat
 // Function: documentgenerator::getModuleParametersAsParameters()
 //-----------------------------------------------------------------------------
 ParameterList DocumentGenerator::getModuleParametersAsParameters(
-    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters)
+    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters) const
 {
     ParameterList newModuleParameters(
         new QList<QSharedPointer<Parameter> >());
@@ -832,7 +832,8 @@ QSharedPointer<DesignConfiguration> DocumentGenerator::getDesignConfiguration(QS
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::getDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view, QSharedPointer<DesignConfiguration> configuration) const
+QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view,
+    QSharedPointer<DesignConfiguration> configuration) const
 {
     QSharedPointer<ConfigurableVLNVReference> designVLNV(nullptr);
     if (!view->getDesignInstantiationRef().isEmpty())

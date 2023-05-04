@@ -291,7 +291,7 @@ private:
      *      @param [in] cells           Table row cells.
      *      @param [in] indentation     The table element indentation.
      */
-    void writeTableRow(QTextStream& stream, QStringList const& cells, int indentation);
+    void writeTableRow(QTextStream& stream, QStringList const& cells, int indentation) const;
 
     /*!
      *  Writes the table header row with chosen indentation. 
@@ -301,7 +301,7 @@ private:
      *      @param [in] headerCells     The table headers.
      *      @param [in] indentation     The table element indentation.
      */
-    void writeTableHeader(QTextStream& stream, QStringList const& headerCells, int indentation);
+    void writeTableHeader(QTextStream& stream, QStringList const& headerCells, int indentation) const;
 
     /*!
      *  Writes a port table for specified ports.
@@ -309,7 +309,8 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] ports           The ports to be written.
      */
-    void writePortTable(QTextStream& stream, QString const& tableTitle, QList<QSharedPointer<Port> > ports);
+    void writePortTable(QTextStream& stream, QString const& tableTitle,
+        QList<QSharedPointer<Port> > ports) const;
     
     /*!
      *  Writes group identifiers for a file set.
@@ -325,7 +326,7 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] fileSet         File set to write file builders for.
      */
-    void writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet);
+    void writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet) const;
 
     /*!
      *  Writes the files of a file set.
@@ -344,7 +345,7 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] file            File to be written.
      */
-    void writeSingleFile(QTextStream& stream, QSharedPointer<File> file);
+    void writeSingleFile(QTextStream& stream, QSharedPointer<File> file) const;
 
     /*!
      *  Writes the implementation details of a component instantiation.

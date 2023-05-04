@@ -810,7 +810,7 @@ void HtmlWriter::writeFieldEnumerations(QTextStream& stream, QSharedPointer<Fiel
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeTableRow()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& cells, int indentation)
+void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& cells, int indentation) const
 {
     stream << indent(indentation) << "<tr>" << Qt::endl;
     
@@ -825,7 +825,7 @@ void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& cells, in
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeTableHeader()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& headerCells, int indentation)
+void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& headerCells, int indentation) const
 {
     stream << indent(indentation) << "<tr>" << Qt::endl;
 
@@ -840,7 +840,8 @@ void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& header
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writePortTable()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writePortTable(QTextStream& stream, QString const& tableTitle, QList<QSharedPointer<Port>> ports)
+void HtmlWriter::writePortTable(QTextStream& stream, QString const& tableTitle,
+    QList<QSharedPointer<Port>> ports) const
 {
     stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
 
@@ -882,7 +883,7 @@ void HtmlWriter::writeFileSetGroupdIdentifiers(QTextStream& stream, QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeDefaultFileBuilders()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet)
+void HtmlWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet) const
 {
     const auto defaultFileBuilders = fileSet->getDefaultFileBuilders();
 
@@ -954,7 +955,7 @@ void HtmlWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeSingleFile()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file)
+void HtmlWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file) const
 {
     QString relativeFilePath = file->name();
     QString absFilePath = General::getAbsolutePath(libraryHandler_->getPath(component_->getVlnv()), relativeFilePath);
