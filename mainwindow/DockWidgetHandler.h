@@ -60,8 +60,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library The used IP-XACT library.
-     *      @param [in] parent  The main window.
+     *      @param [in] library         The used IP-XACT library.
+     *      @param [in] messageChannel  The message channel for notifications and errors.
+     *      @param [in] leftToolbar     The left side toolbar in mainwindow.
+     *      @param [in] rightToolbar    The right side toolbar in mainwindow.
+     *      @param [in] parent          The main window.
      */
     DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, 
         QToolBar* leftToolbar, QToolBar* rightToolbar, QMainWindow* parent);
@@ -70,6 +73,10 @@ public:
      *  The destructor.
      */
     virtual ~DockWidgetHandler() = default;
+
+    //! No copying. No Assignment.
+    DockWidgetHandler(const DockWidgetHandler& other) = delete;
+    DockWidgetHandler& operator=(const DockWidgetHandler& other) = delete;
 
     /*!
      *  Setup the dock widgets.
@@ -247,8 +254,6 @@ public:
      */
     void setupDesignParameterFinder(QSharedPointer<Design> newDesign);
 
-
-
 public slots:
 
     /*!
@@ -390,13 +395,15 @@ private slots:
      */
     void onAdHocEditorAction(bool show);
 
-    void onDockLocationChanged(Qt::DockWidgetArea);
+    /*!
+     *  Handles the change for the dock position.
+     *
+     *      @param [in] area    The area where the dock has been positioned.
+     */
+    void onDockLocationChanged(Qt::DockWidgetArea area);
 
 
 private:
-    //! No copying. No Assignment.
-    DockWidgetHandler(const DockWidgetHandler &other);
-    DockWidgetHandler &operator=(const DockWidgetHandler &other);
 
     /*!
      *  Setup the message console and the containing output dock widget.
@@ -497,7 +504,15 @@ private:
     void setWindowVisibility(TabDocument::SupportedWindows windowType, bool show);
 
 
-    void placeActionInToolbar(QAction* action, Qt::DockWidgetArea area);
+    /*!
+     * Places the visibility control action in the correct toolbar.
+     *
+     *     @param [in] action   The action to place in the toolbar.
+     *     @param [in] area     The area where the related dock widget is located.
+     *
+     *     @return 
+     */
+     void placeActionInToolbar(QAction* action, Qt::DockWidgetArea area);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -597,21 +612,26 @@ private:
     //! The help window.
     HelpWindow* helpWnd_;
 
+    //! All the dock widgets.
     QMap<TabDocument::SupportedWindows, QDockWidget*> docks_;
 
+    //! Visibility control actions for the dock widgets.
     QMap<TabDocument::SupportedWindows, QAction*> visibilityControls_;
-
 
     //! Contains the visibility for the windows.
     //! Used to maintain the visibility information when windows are hidden by change of the active document.
     QMap<TabDocument::SupportedWindows, bool> visibilities_;
 
+    //! The left side toolbar.
     QToolBar* leftToolbar_;
 
+    //! The right side toolbar.
     QToolBar* rightToolbar_;
 
+    //! Action group for left side toolbar.
     QActionGroup* leftActions_;
 
+    //! Action group for right side toolbar.
     QActionGroup* rightActions_;
 
     //! The main window that should contain all of the dock widgets constructed in here.

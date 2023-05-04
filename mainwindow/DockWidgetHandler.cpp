@@ -189,9 +189,6 @@ void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu)
         action->setText(dock->windowTitle());
         action->setCheckable(true);
 
-        connect(action, SIGNAL(toggled(bool)), dock->toggleViewAction(), SLOT(setVisible(bool)), Qt::UniqueConnection);
-        connect(action, SIGNAL(toggled(bool)), dock->toggleViewAction(), SLOT(setChecked(bool)), Qt::UniqueConnection);
-
         visibilityMenu.addAction(action);
 
         visibilityControls_.insert(docks_.key(dock), action);
@@ -211,13 +208,13 @@ LibraryHandler* DockWidgetHandler::getLibraryHandler() const
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::loadVisiblities(QSettings& settings)
 {
-    for (auto const& window : DOCK_SETTINGS)
+    for (auto i = DOCK_SETTINGS.cbegin(); i != DOCK_SETTINGS.cend(); ++i)
     {
-        const bool visible = settings.value(window, true).toBool();
-        auto type = DOCK_SETTINGS.key(window);
+        const bool VISIBLE = settings.value(i.value(), true).toBool();
+        const auto TYPE = i.key();
 
-        visibilities_.insert(type, visible);
-        visibilityControls_[type]->setChecked(visible);
+        visibilities_.insert(TYPE, VISIBLE);
+        visibilityControls_[TYPE]->setChecked(VISIBLE);
     }
 }
 
@@ -226,9 +223,9 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::saveVisibilitySettings(QSettings& settings) const
 {
-    for (auto const& window : DOCK_SETTINGS)
+    for (auto i = DOCK_SETTINGS.cbegin(); i != DOCK_SETTINGS.cend(); ++i)
     {
-        settings.setValue(window, visibilities_.value(DOCK_SETTINGS.key(window)));
+        settings.setValue(i.value(), visibilities_.value(i.key()));
     }
 }
 
@@ -310,11 +307,6 @@ void DockWidgetHandler::saveFilterSettings(QSettings& settings) const
 void DockWidgetHandler::applySettings()
 {
     scriptConsole_->applySettings();
-
-    for (auto dock : docks_)
-    {
-        placeActionInToolbar(dock->toggleViewAction(), mainWindow_->dockWidgetArea(dock));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -333,7 +325,7 @@ void DockWidgetHandler::setupMessageConsole()
     consoleDock_->setWidget(console_);
     mainWindow_->addDockWidget(Qt::BottomDockWidgetArea, consoleDock_);
 
-    GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel_);
+    auto guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel_);
     if (guiChannel)
     {
         connect(guiChannel, SIGNAL(noticeMessage(QString const&)),
@@ -825,9 +817,9 @@ void DockWidgetHandler::selectGraphicsConnection(QWidget* currentTabWidget, Grap
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::updateWindows(QWidget* currentTabWidget)
 {
-    for (auto const& dock : docks_)
+    for (auto i = docks_.cbegin(); i != docks_.cend(); ++i)
     {
-        updateWindowAndControlVisibility(currentTabWidget, docks_.key(dock), dock);
+        updateWindowAndControlVisibility(currentTabWidget, i.key(), i.value());
     }
 }
 
@@ -841,7 +833,8 @@ void DockWidgetHandler::updateWindowAndControlVisibility(QWidget* currentTabWidg
 
     bool shouldShow = isSupportedWindowType(currentTabWidget, windowType);
 
-    showAction->setVisible(shouldShow);
+    visibilityControls_[windowType]->setVisible(shouldShow);
+    showAction->setVisible(shouldShow && visibilities_.value(windowType));
     dock->setVisible(shouldShow && visibilities_.value(windowType));
 }
 
@@ -1004,31 +997,31 @@ void DockWidgetHandler::setupDesignParameterFinder(QSharedPointer<Design> newDes
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::connectVisibilityControls()
 {
-    connect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::OUTPUTWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onOutputAction(bool)), Qt::UniqueConnection);
-    connect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::CONTEXT_HELP_WINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onContextHelpAction(bool)), Qt::UniqueConnection);
-    connect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::PREVIEWWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onPreviewAction(bool)), Qt::UniqueConnection);
-    connect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::LIBRARYWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onLibraryAction(bool)), Qt::UniqueConnection);
-    connect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::CONFIGURATIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onConfigurationAction(bool)), Qt::UniqueConnection);
-    connect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::SYSTEM_DETAILS_WINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onSystemDetailsAction(bool)), Qt::UniqueConnection);
-    connect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::CONNECTIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onConnectionAction(bool)), Qt::UniqueConnection);
-    connect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::INTERFACEWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onInterfaceAction(bool)), Qt::UniqueConnection);
-    connect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::INSTANCEWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
-    connect(designParameterDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::DESIGNPARAMETERSWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onDesignParametersAction(bool)), Qt::UniqueConnection);
-    connect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::ADHOC_WINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onAdHocEditorAction(bool)), Qt::UniqueConnection);
-    connect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::VENDOREXTENSIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)), Qt::UniqueConnection);
-    connect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    connect(visibilityControls_[TabDocument::SCRIPTWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onScriptConsoleVisibilityAction(bool)), Qt::UniqueConnection);
 }
 
@@ -1037,23 +1030,23 @@ void DockWidgetHandler::connectVisibilityControls()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::disconnectVisibilityControls()
 {
-    disconnect(consoleDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onOutputAction(bool)));
-    disconnect(contextHelpDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onContextHelpAction(bool)));
-    disconnect(previewDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onPreviewAction(bool)));
-    disconnect(libraryDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onLibraryAction(bool)));
-    disconnect(configurationDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    disconnect(visibilityControls_[TabDocument::OUTPUTWINDOW], SIGNAL(toggled(bool)), this, SLOT(onOutputAction(bool)));
+    disconnect(visibilityControls_[TabDocument::CONTEXT_HELP_WINDOW], SIGNAL(toggled(bool)), this, SLOT(onContextHelpAction(bool)));
+    disconnect(visibilityControls_[TabDocument::PREVIEWWINDOW], SIGNAL(toggled(bool)), this, SLOT(onPreviewAction(bool)));
+    disconnect(visibilityControls_[TabDocument::LIBRARYWINDOW], SIGNAL(toggled(bool)), this, SLOT(onLibraryAction(bool)));
+    disconnect(visibilityControls_[TabDocument::CONFIGURATIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onConfigurationAction(bool)));
-    disconnect(systemDetailsDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    disconnect(visibilityControls_[TabDocument::SYSTEM_DETAILS_WINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onSystemDetailsAction(bool)));
-    disconnect(connectionDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onConnectionAction(bool)));
-    disconnect(interfaceDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onInterfaceAction(bool)));
-    disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onInstanceAction(bool)));
-    disconnect(designParameterDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    disconnect(visibilityControls_[TabDocument::CONNECTIONWINDOW], SIGNAL(toggled(bool)), this, SLOT(onConnectionAction(bool)));
+    disconnect(visibilityControls_[TabDocument::INTERFACEWINDOW], SIGNAL(toggled(bool)), this, SLOT(onInterfaceAction(bool)));
+    disconnect(visibilityControls_[TabDocument::INSTANCEWINDOW], SIGNAL(toggled(bool)), this, SLOT(onInstanceAction(bool)));
+    disconnect(visibilityControls_[TabDocument::DESIGNPARAMETERSWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onDesignParametersAction(bool)));
-    disconnect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
-    disconnect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+    disconnect(visibilityControls_[TabDocument::ADHOC_WINDOW], SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
+    disconnect(visibilityControls_[TabDocument::VENDOREXTENSIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)));
-    disconnect(scriptConsoleDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+    disconnect(visibilityControls_[TabDocument::SCRIPTWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onScriptConsoleVisibilityAction(bool)));
 }
 
@@ -1190,6 +1183,9 @@ void DockWidgetHandler::setWindowVisibilityForSupportedWindow(QWidget* currentTa
 void DockWidgetHandler::setWindowVisibility(TabDocument::SupportedWindows windowType, bool show)
 {
     visibilities_.insert(windowType, show);
+
+    docks_[windowType]->toggleViewAction()->setVisible(show);
+    docks_[windowType]->setVisible(show);
 }
 
 //-----------------------------------------------------------------------------
