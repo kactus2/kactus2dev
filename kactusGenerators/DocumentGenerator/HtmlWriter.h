@@ -200,49 +200,7 @@ public:
      *      @param [in] names               The info item names.
      *      @param [in] values              The info item values.
      */
-    void writeInfoParagraph(QTextStream& stream, QStringList const& names, QStringList const& values);
-    
-    /*!
-     *  Write the referenced component instantiation.
-     *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] instantiation           The component instantiation.
-     *      @param [in] instantiationFormatter  The component instantiation formatter.
-     *      @param [in] moduleParameters        The instantiation module parameters.
-     *      @param [in] parameters              The instantiation parameters.
-     */
-    void writeReferencedComponentInstantiation(
-        QTextStream& stream,
-        QSharedPointer<ComponentInstantiation> instantiation,
-        QSharedPointer<ExpressionFormatter> instantiationFormatter,
-        QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
-        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) override;
-
-    /*!
-     *  Write the referenced design configuration instantiation.
-     *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] configurationFinder     The parameter finder for the instantiation.
-     *      @param [in] instantiationFormatter  The instantiation formatter.
-     */
-    void writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
-        QSharedPointer<ListParameterFinder> configurationFinder,
-        QSharedPointer<DesignConfigurationInstantiation> instantiation,
-        QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
-
-    /*!
-     *  Write the referenced design instantiation.
-     *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] designVLNV              The VLNV of the design instantiation.
-     *      @param [in] instantiatedDesign      The instantiated design.
-     *      @param [in] designFormatter         Expression formatter for the design.
-     *      @param [in] instantiationFormatter  Expression formatter for the instantiation.
-     */
-    void writeReferencedDesignInstantiation(QTextStream& stream,
-        QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
-        ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
-        override;
+    void writeInfoParagraph(QTextStream& stream, QStringList const& names, QStringList const& values) override;
 
     /*!
      *  Write an error text to the document.
@@ -300,24 +258,6 @@ private:
      *      @returns n tabs.
      */
     QString indent(int n) const;
-
-    /*!
-     *  Writes info about an address block.
-     *
-     *      @param [in] stream              The text stream to write into.
-     *      @param [in] addressBlock        The address block to write about.
-     */
-    void writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock);
-
-    /*!
-     *  Writes info about a single register
-     *
-     *      @param [in] stream              The text stream to write into.
-     *      @param [in] reg                 The register to be written.
-     *      @param [in] subHeaderNumbers    The subheader numbers to write in the subheader.
-     *      @param [in] registerDataNumber  The current address block register data number.
-     */
-    void writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber);
     
     /*!
      *  Writes a table of registers.
@@ -328,14 +268,6 @@ private:
     void writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register> >registers);
 
     /*!
-     *  Writes info about a single register
-     *
-     *      @param [in] stream              The text stream to write into.
-     *      @param [in] registerFile        The register file to be written.
-     */
-    void writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile);
-
-    /*!
      *  Writes a table of register fields.
      *
      *      @param [in] stream       The text stream to write into.
@@ -344,20 +276,12 @@ private:
     void writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg);
 
     /*!
-     *  Writes a single field
-     *
-     *      @param [in] stream              The text stream to write into.
-     *      @param [in] field               The field to be written.
-     */
-    void writeSingleField(QTextStream& stream, QSharedPointer<Field> field);
-
-    /*!
      *  Writes the enumerations of a field.
      *
      *      @param [in] stream              The text stream to write into.
      *      @param [in] field               The field which enumerations are written.
      */
-    void writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field);
+    void writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field) override;
 
     /*!
      *  Writes a row with specified cells to a HTML table with chosen indentation.
@@ -428,7 +352,7 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] instantiation   The component instantiation.
      */
-    void writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation);
+    void writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation) override;
 
     /*!
      *  Writes the file set references contained within a component instantiation.
@@ -436,7 +360,7 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] instantiation   The component instantiation.
      */
-    void writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation);
+    void writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation) override;
 
     /*!
      *  Writes the file build commands of a component instantiation.
@@ -446,7 +370,7 @@ private:
      *      @param [in] formatter       The expression formatter for the component instantiation.
      */
     void writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
-        ExpressionFormatter* instantiationFormatter);
+        ExpressionFormatter* instantiationFormatter) override;
 
     /*!
      *  Writes given parameters to a table.
@@ -458,7 +382,7 @@ private:
      */
     void writeParameterTable(QTextStream& stream, QString const& title,
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
-        ExpressionFormatter* formatter);
+        ExpressionFormatter* formatter) override;
 
     /*!
      *  Writes the configurable element values of a VLNV.
@@ -470,7 +394,7 @@ private:
      */
     void writeConfigurableElementValues(QTextStream& stream,
         QSharedPointer<ConfigurableVLNVReference> vlnvReference,
-        ExpressionFormatter* instantiationFormatter);
+        ExpressionFormatter* instantiationFormatter) override;
 
     /*!
      *  Gets the configurable element values of a component instance as a line-broken string.

@@ -633,6 +633,7 @@ void tst_MarkdownGenerator::testAddressBlockRegisterFilesWrittenWithTopComponent
         "\n"
         "### 1.1.1.1.1.2 Register file testRegisterFileChild  \n"
         "\n"
+        "**Description:**   \n"
         "**Offset [AUB]:** 64  \n"
         "**Range [AUB]:** 512  \n"
         "**Dimension:**   \n"

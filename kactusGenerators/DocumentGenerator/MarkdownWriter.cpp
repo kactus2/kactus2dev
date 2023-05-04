@@ -311,6 +311,9 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: MarkdownWriter::writeRegisterFiles()
+//-----------------------------------------------------------------------------
 void MarkdownWriter::writeRegisterFiles(QTextStream& stream, QList<QSharedPointer<RegisterFile > > registerFiles,
     QList<int> subHeaderNumbers, int& registerDataNumber)
 {
@@ -546,75 +549,24 @@ void MarkdownWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHe
 }
 
 //-----------------------------------------------------------------------------
+// Function: MarkdownWriter::writeInfoParagraph()
+//-----------------------------------------------------------------------------
+void MarkdownWriter::writeInfoParagraph(QTextStream& stream, QStringList const& names, QStringList const& values)
+{
+    for (auto i = 0; i < names.length(); ++i)
+    {
+        stream << "**" << names.at(i) << ":** " << values.at(i) << "  " << Qt::endl;
+    }
+
+    stream << Qt::endl;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeErrorMessage()
 //-----------------------------------------------------------------------------
 void MarkdownWriter::writeErrorMessage(QTextStream& stream, QString const& message)
 {
     stream << "<span style=\"color:red\">" << message << "</span>  " << Qt::endl;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MarkdownWriter::writeReferencedComponentInstantiation()
-//-----------------------------------------------------------------------------
-void MarkdownWriter::writeReferencedComponentInstantiation(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
-    QSharedPointer<ExpressionFormatter> instantiationFormatter,
-    ParameterList moduleParameters,
-    ParameterList parameters)
-{
-    writeImplementationDetails(stream, instantiation);
-    writeFileSetReferences(stream, instantiation);
-    writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
-    writeParameterTable(stream, QString("Module parameters:"),
-        moduleParameters, instantiationFormatter.data());
-    writeParameterTable(stream, QString("Parameters:"), parameters,
-        instantiationFormatter.data());
-}
-
-//-----------------------------------------------------------------------------
-// Function: MarkdownWriter::writeReferencedDesignConfigurationInstantiation()
-//-----------------------------------------------------------------------------
-void MarkdownWriter::writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
-    QSharedPointer<ListParameterFinder> configurationFinder,
-    QSharedPointer<DesignConfigurationInstantiation> instantiation,
-    QSharedPointer<ExpressionFormatter> instantiationFormatter)
-{
-    if (auto const& configurationVLNV = instantiation->getDesignConfigurationReference(); configurationVLNV)
-    {
-        QSharedPointer<Document> configurationDocument = libraryHandler_->getModel(*configurationVLNV);
-        if (configurationDocument)
-        {
-            QSharedPointer<DesignConfiguration> configuration =
-                configurationDocument.dynamicCast<DesignConfiguration>();
-            if (configuration)
-            {
-                configurationFinder->setParameterList(configuration->getParameters());
-
-                QString header = QString("Parameters of the referenced design configuration %1:").
-                    arg(configurationVLNV->toString());
-                QSharedPointer<ExpressionFormatter> configurationFormatter(new ExpressionFormatter(configurationFinder));
-
-                writeParameterTable(stream, header, configuration->getParameters(), configurationFormatter.data());
-                writeConfigurableElementValues(stream,
-                    instantiation->getDesignConfigurationReference(), instantiationFormatter.data());
-            }
-        }
-    }
-
-    writeParameterTable(stream, QString("Design configuration instantiation parameters:"),
-        instantiation->getParameters(), instantiationFormatter.data());
-}
-
-//-----------------------------------------------------------------------------
-// Function: MarkdownWriter::writeReferencedDesignInstantiation()
-//-----------------------------------------------------------------------------
-void MarkdownWriter::writeReferencedDesignInstantiation(QTextStream& stream, QSharedPointer<ConfigurableVLNVReference> designVLNV,
-    QSharedPointer<Design> instantiatedDesign, ExpressionFormatter* designFormatter,
-    QSharedPointer<ExpressionFormatter> instantiationFormatter)
-{
-    QString header = QString("Parameters of the referenced design %1:").arg(designVLNV->toString());
-    writeParameterTable(stream, header, instantiatedDesign->getParameters(), designFormatter);
-
-    writeConfigurableElementValues(stream, designVLNV, instantiationFormatter.data());
 }
 
 //-----------------------------------------------------------------------------
@@ -691,73 +643,9 @@ void MarkdownWriter::writeEndOfDocument(QTextStream& stream)
 {
 }
 
-void MarkdownWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock)
-{
-    if (auto const description = addressBlock->description(); !description.isEmpty())
-    {
-        stream << "**Description:** " << description << "  " << Qt::endl;
-    }
-
-    stream << "**Usage:** " << General::usage2Str(addressBlock->getUsage()) << "  " << Qt::endl;
-    stream << "**Base address [AUB]:** "
-        << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress()) << "  " << Qt::endl;
-    
-    stream << "**Range [AUB]:** " << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
-        << "  " << Qt::endl;
-
-    stream << "**Width [AUB]:** " << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
-        << "  " << Qt::endl;
-
-    stream << "**Access:** " << AccessTypes::access2Str(addressBlock->getAccess()) << "  " << Qt::endl;
-    stream << "**Volatile:** " << addressBlock->getVolatile() << "  " << Qt::endl << Qt::endl;
-}
-
 //-----------------------------------------------------------------------------
-// Function: MarkdownWriter::writeSingleRegister()
+// Function: MarkdownWriter::writeRegisterTable()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg,
-    QList<int> subHeaderNumbers, int& registerDataNumber)
-{   
-    writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + reg->name(), 3);
-
-    if (auto const& description = reg->description(); !description.isEmpty())
-    {
-        stream << "**Description:** " << description << "  " << Qt::endl;
-    }
-
-    stream << "**Offset [AUB]:** " << expressionFormatter_->formatReferringExpression(reg->getAddressOffset())
-        << "  " << Qt::endl;
-
-    stream << "**Size [bits]:** " << expressionFormatter_->formatReferringExpression(reg->getSize())
-        << "  " << Qt::endl;
-
-    stream << "**Dimension:** " << expressionFormatter_->formatReferringExpression(reg->getDimension())
-        << "  " << Qt::endl;
-
-    stream << "**Volatile:** " << reg->getVolatile() << "  " << Qt::endl;
-    stream << "**Access:** " << AccessTypes::access2Str(reg->getAccess()) << "  " << Qt::endl << Qt::endl;
-
-    writeFields(stream, reg, subHeaderNumbers);
-    ++registerDataNumber;
-}
-
-void MarkdownWriter::writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile)
-{
-    if (auto const description = registerFile->description(); !description.isEmpty())
-    {
-        stream << "**Description:** " << description << "  " << Qt::endl;
-    }
-
-    stream << "**Offset [AUB]:** " << expressionFormatter_->formatReferringExpression(registerFile->getAddressOffset())
-        << "  " << Qt::endl;
-    
-    stream << "**Range [AUB]:** " << expressionFormatter_->formatReferringExpression(registerFile->getRange())
-        << "  " << Qt::endl;
-    
-    stream << "**Dimension:** " << expressionFormatter_->formatReferringExpression(registerFile->getDimension())
-        << "  " << Qt::endl << Qt::endl;
-}
-
 void MarkdownWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register>> registers)
 {
     QStringList allRegistersTableHeader;
@@ -781,6 +669,9 @@ void MarkdownWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointe
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: MarkdownWriter::writeFieldTable()
+//-----------------------------------------------------------------------------
 void MarkdownWriter::writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg)
 {
     QString headerTitle = QStringLiteral("Register '")
@@ -806,25 +697,9 @@ void MarkdownWriter::writeFieldTable(QTextStream& stream, QSharedPointer<Registe
     }
 }
 
-void MarkdownWriter::writeSingleField(QTextStream& stream, QSharedPointer<Field> field)
-{
-    stream << "**Offset [bits]:** " << expressionFormatter_->formatReferringExpression(field->getBitOffset())
-        << "  " << Qt::endl;
-
-    stream << "**Width [bits]:** " << expressionFormatter_->formatReferringExpression(field->getBitWidth())
-        << "  " << Qt::endl;
-    
-    stream << "**Volatile:** " << field->getVolatile().toString() << "  " << Qt::endl;
-
-    stream << "**Access:** " << AccessTypes::access2Str(field->getAccess()) << "  " << Qt::endl;
-
-    stream << "**Resets:** " << getFieldResetInfo(field, ", ") << "  " << Qt::endl;
-
-    stream << "**Description:** " << field->description() << "  " << Qt::endl << Qt::endl;
-
-    writeFieldEnumerations(stream, field);
-}
-
+//-----------------------------------------------------------------------------
+// Function: MarkdownWriter::writeFieldEnumerations()
+//-----------------------------------------------------------------------------
 void MarkdownWriter::writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field)
 {
     auto const enumerations = field->getEnumeratedValues();

@@ -18,6 +18,8 @@
 #include <IPXACTmodels/Component/Field.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <QList>
 #include <QString>
@@ -224,4 +226,131 @@ QSharedPointer<ExpressionFormatter> DocumentationWriter::createDesignInstanceFor
 {
     return QSharedPointer<ExpressionFormatter>(
         expressionFormatterFactory_->createDesignInstanceFormatter(component, design));
+}
+
+void DocumentationWriter::writeReferencedComponentInstantiation(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation, QSharedPointer<ExpressionFormatter> instantiationFormatter, ParameterList moduleParameters, ParameterList parameters)
+{
+    writeImplementationDetails(stream, instantiation);
+    writeFileSetReferences(stream, instantiation);
+    writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
+    writeParameterTable(stream, QString("Module parameters:"),
+        moduleParameters, instantiationFormatter.data());
+    writeParameterTable(stream, QString("Parameters:"), parameters,
+        instantiationFormatter.data());
+}
+
+void DocumentationWriter::writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
+    QSharedPointer<ListParameterFinder> configurationFinder,
+    QSharedPointer<DesignConfigurationInstantiation> instantiation,
+    QSharedPointer<ExpressionFormatter> instantiationFormatter, LibraryInterface* libraryHandler)
+{
+    if (auto const& configurationVLNV = instantiation->getDesignConfigurationReference(); configurationVLNV)
+    {
+        QSharedPointer<Document> configurationDocument = libraryHandler->getModel(*configurationVLNV);
+        if (configurationDocument)
+        {
+            QSharedPointer<DesignConfiguration> configuration =
+                configurationDocument.dynamicCast<DesignConfiguration>();
+
+            if (configuration)
+            {
+                configurationFinder->setParameterList(configuration->getParameters());
+
+                QString header = QString("Parameters of the referenced design configuration %1:").
+                    arg(configurationVLNV->toString());
+                QSharedPointer<ExpressionFormatter> configurationFormatter(new ExpressionFormatter(configurationFinder));
+
+                writeParameterTable(stream, header, configuration->getParameters(), configurationFormatter.data());
+                writeConfigurableElementValues(stream,
+                    instantiation->getDesignConfigurationReference(), instantiationFormatter.data());
+            }
+        }
+    }
+
+    writeParameterTable(stream, QString("Design configuration instantiation parameters:"),
+        instantiation->getParameters(), instantiationFormatter.data());
+}
+
+void DocumentationWriter::writeReferencedDesignInstantiation(QTextStream& stream,
+    QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
+    ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
+{
+    QString header = QString("Parameters of the referenced design %1:").arg(designVLNV->toString());
+    writeParameterTable(stream, header, instantiatedDesign->getParameters(), designFormatter);
+
+    writeConfigurableElementValues(stream, designVLNV, instantiationFormatter.data());
+}
+
+void DocumentationWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock)
+{
+    QStringList addressBlockInfoValues(QStringList()
+        << addressBlock->description()
+        << General::usage2Str(addressBlock->getUsage())
+        << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
+        << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
+        << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
+        << AccessTypes::access2Str(addressBlock->getAccess())
+        << addressBlock->getVolatile()
+    );
+
+    QStringList addressBlockInfoNames(QStringList()
+        << "Description" << ADDRESS_BLOCK_HEADERS
+    );
+
+    writeInfoParagraph(stream, addressBlockInfoNames, addressBlockInfoValues);
+}
+
+void DocumentationWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber)
+{
+    writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + reg->name(), 3);
+
+    QStringList registerInfoValues(QStringList()
+        << reg->description()
+        << expressionFormatter_->formatReferringExpression(reg->getAddressOffset())
+        << expressionFormatter_->formatReferringExpression(reg->getSize())
+        << expressionFormatter_->formatReferringExpression(reg->getDimension())
+        << reg->getVolatile()
+        << AccessTypes::access2Str(reg->getAccess())
+    );
+
+    QStringList registerInfoNames(QStringList()
+        << QStringLiteral("Description")
+        << REGISTER_HEADERS
+    );
+
+    writeInfoParagraph(stream, registerInfoNames, registerInfoValues);
+
+    writeFields(stream, reg, subHeaderNumbers);
+    ++registerDataNumber;
+}
+
+void DocumentationWriter::writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile)
+{
+    QStringList registerInfoValues(QStringList()
+        << registerFile->description()
+        << expressionFormatter_->formatReferringExpression(registerFile->getAddressOffset())
+        << expressionFormatter_->formatReferringExpression(registerFile->getRange())
+        << expressionFormatter_->formatReferringExpression(registerFile->getDimension())
+    );
+
+    writeInfoParagraph(stream, REGISTER_FILE_HEADERS, registerInfoValues);
+}
+
+void DocumentationWriter::writeSingleField(QTextStream& stream, QSharedPointer<Field> field)
+{
+    QStringList fieldInfoTextValues(QStringList()
+        << expressionFormatter_->formatReferringExpression(field->getBitOffset())
+        << expressionFormatter_->formatReferringExpression(field->getBitWidth())
+        << field->getVolatile().toString()
+        << AccessTypes::access2Str(field->getAccess())
+        << getFieldResetInfo(field, ", ")
+        << field->description()
+    );
+
+    QStringList fieldInfoTextNames = FIELD_HEADERS;
+    fieldInfoTextNames.pop_front();
+
+    writeInfoParagraph(stream, fieldInfoTextNames, fieldInfoTextValues);
+
+    writeFieldEnumerations(stream, field);
 }

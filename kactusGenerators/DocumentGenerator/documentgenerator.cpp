@@ -589,7 +589,7 @@ void DocumentGenerator::writeReferencedDesignConfigurationInstantiation(QTextStr
         instantiation->getDesignConfigurationReference());
 
     writer_->writeReferencedDesignConfigurationInstantiation(stream, configurationFinder,
-        instantiation, instantiationFormatter);
+        instantiation, instantiationFormatter, libraryHandler_);
 }
 
 //-----------------------------------------------------------------------------
