@@ -1061,8 +1061,45 @@ void tst_DocumentGenerator::testBusInterfacesWrittenWithoutPorts()
     QSharedPointer <BusInterface> busInterface (new BusInterface);
     busInterface->setName("interface");
     busInterface->setInterfaceMode(General::MASTER);
+    
+    QSharedPointer <BusInterface> busInterfaceWithSystemMode (new BusInterface);
+    busInterfaceWithSystemMode->setName("interface2");
+    busInterfaceWithSystemMode->setInterfaceMode(General::SYSTEM);
+    busInterfaceWithSystemMode->setSystem("systemGroup");
+    
+    VLNV firstVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "FirstComponent", "1.0");
+    QSharedPointer<ConfigurableVLNVReference> absDefVlnv(new ConfigurableVLNVReference(firstVlnv));
+
+    QSharedPointer<AbstractionType> absDef(new AbstractionType);
+    absDef->setAbstractionRef(absDefVlnv);
+
+    VLNV secondVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "SecondComponent", "1.0");
+    QSharedPointer<ConfigurableVLNVReference> absDefVlnv2(new ConfigurableVLNVReference(secondVlnv));
+
+    QSharedPointer<AbstractionType> absDef2(new AbstractionType);
+    absDef2->setAbstractionRef(absDefVlnv2);
+
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionDefs(new QList<QSharedPointer<AbstractionType> >);
+    abstractionDefs->append(absDef);
+    abstractionDefs->append(absDef2);
+
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionDefs2(new QList<QSharedPointer<AbstractionType> >);
+    abstractionDefs2->append(absDef2);
+
+    busInterface->setAbstractionTypes(abstractionDefs);
+    busInterfaceWithSystemMode->setAbstractionTypes(abstractionDefs2);
+
+    VLNV firstBusDefVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "FirstBusDef", "1.0");
+    ConfigurableVLNVReference busDef1(firstBusDefVlnv);
+    
+    VLNV secondBusDefVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "SecondBusDef", "1.0");
+    ConfigurableVLNVReference busDef2(secondBusDefVlnv);
+
+    busInterface->setBusType(busDef1);
+    busInterfaceWithSystemMode->setBusType(busDef2);
 
     topComponent_->getBusInterfaces()->append(busInterface);
+    topComponent_->getBusInterfaces()->append(busInterfaceWithSystemMode);
 
     QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
@@ -1082,6 +1119,15 @@ void tst_DocumentGenerator::testBusInterfacesWrittenWithoutPorts()
         "\t\t\t<p>\n"
         "\t\t\t" + getIndentString() + "<strong>Interface mode:</strong> " +
         General::interfaceMode2Str(busInterface->getInterfaceMode()) + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Bus definition:</strong> Test:TestLibrary:FirstBusDef:1.0<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Abstraction definitions:</strong> Test:TestLibrary:FirstComponent:1.0, Test:TestLibrary:SecondComponent:1.0<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong> None\n"
+        "\t\t\t<h3>1.1.2 Bus interface " + busInterfaceWithSystemMode->name() + "</h3>\n"
+        "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Interface mode: system</strong><br>\n"
+        "\t\t\t" + getIndentString() + "<strong>System group: systemGroup</strong><br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Bus definition:</strong> Test:TestLibrary:SecondBusDef:1.0<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Abstraction definitions:</strong> Test:TestLibrary:SecondComponent:1.0<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong> None\n"
         );
 

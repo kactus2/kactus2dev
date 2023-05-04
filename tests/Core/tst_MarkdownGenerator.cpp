@@ -868,7 +868,44 @@ void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
     busInterface->setName("interface");
     busInterface->setInterfaceMode(General::MASTER);
 
+    QSharedPointer <BusInterface> busInterfaceWithSystemMode(new BusInterface);
+    busInterfaceWithSystemMode->setName("interface2");
+    busInterfaceWithSystemMode->setInterfaceMode(General::SYSTEM);
+    busInterfaceWithSystemMode->setSystem("systemGroup");
+
+    VLNV firstVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "FirstComponent", "1.0");
+    QSharedPointer<ConfigurableVLNVReference> absDefVlnv(new ConfigurableVLNVReference(firstVlnv));
+
+    QSharedPointer<AbstractionType> absDef(new AbstractionType);
+    absDef->setAbstractionRef(absDefVlnv);
+
+    VLNV secondVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "SecondComponent", "1.0");
+    QSharedPointer<ConfigurableVLNVReference> absDefVlnv2(new ConfigurableVLNVReference(secondVlnv));
+
+    QSharedPointer<AbstractionType> absDef2(new AbstractionType);
+    absDef2->setAbstractionRef(absDefVlnv2);
+
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionDefs(new QList<QSharedPointer<AbstractionType> >);
+    abstractionDefs->append(absDef);
+    abstractionDefs->append(absDef2);
+
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionDefs2(new QList<QSharedPointer<AbstractionType> >);
+    abstractionDefs2->append(absDef2);
+
+    busInterface->setAbstractionTypes(abstractionDefs);
+    busInterfaceWithSystemMode->setAbstractionTypes(abstractionDefs2);
+
+    VLNV firstBusDefVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "FirstBusDef", "1.0");
+    ConfigurableVLNVReference busDef1(firstBusDefVlnv);
+
+    VLNV secondBusDefVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "SecondBusDef", "1.0");
+    ConfigurableVLNVReference busDef2(secondBusDefVlnv);
+
+    busInterface->setBusType(busDef1);
+    busInterfaceWithSystemMode->setBusType(busDef2);
+
     topComponent_->getBusInterfaces()->append(busInterface);
+    topComponent_->getBusInterfaces()->append(busInterfaceWithSystemMode);
 
     QScopedPointer<DocumentGenerator> generator(createTestGenerator());
 
@@ -888,8 +925,17 @@ void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
         "### 1.1.1 Bus interface " + busInterface->name() + "  \n"
         "\n"
         "**Interface mode:** " + General::interfaceMode2Str(busInterface->getInterfaceMode()) + "  \n"
+        "**Bus definition:** Test:TestLibrary:FirstBusDef:1.0  \n"
+        "**Abstraction definitions:** Test:TestLibrary:FirstComponent:1.0, Test:TestLibrary:SecondComponent:1.0  \n"
         "**Ports used in this interface:** None  \n"
         "\n"
+        "### 1.1.2 Bus interface " + busInterfaceWithSystemMode->name() + "  \n"
+        "\n"
+        "**Interface mode:** system  \n"
+        "**System group:** systemGroup  \n"
+        "**Bus definition:** Test:TestLibrary:SecondBusDef:1.0  \n"
+        "**Abstraction definitions:** Test:TestLibrary:SecondComponent:1.0  \n"
+        "**Ports used in this interface:** None  \n"
     );
 
     checkOutputFile(expectedOutput);
