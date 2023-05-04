@@ -51,6 +51,8 @@ public:
 
     static const QStringList PARAMETER_HEADERS;
 
+    static const QStringList MODULE_PARAMETER_HEADERS;
+
     static const QStringList PORT_HEADERS;
 
     static const QStringList REGISTER_HEADERS;
@@ -162,7 +164,8 @@ public:
      *      @param [in] stream              The text stream to write into.
      *      @param [in] register            The register whose fields are to be written.
      */
-    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister, QList<int> registerSubHeaderNumbers) = 0;
+    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister,
+        QList<int> registerSubHeaderNumbers) = 0;
 
     /*!
      *  Write the ports of the component.
@@ -251,7 +254,8 @@ public:
      *      @param [in] link                    Diagram picture link or path.
      *      @param [in] altText                 Diagram alt text.
      */
-    virtual void writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText) = 0;
+    virtual void writeDiagram(QTextStream& stream, QString const& title,
+        QString const& link, QString const& altText) = 0;
 
     /*!
      *  Write the component instances contained within the selected design.
@@ -309,8 +313,10 @@ public:
      *      @param [in] instantiationFormatter  Expression formatter for the instantiation.
      */
     void writeReferencedDesignInstantiation(QTextStream& stream,
-        QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
-        ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter);
+        QSharedPointer<ConfigurableVLNVReference> designVLNV,
+        QSharedPointer<Design> instantiatedDesign,
+        QSharedPointer<ExpressionFormatter> designFormatter,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter);
 
     /*!
      *  Sets the target path for the document.
@@ -334,7 +340,8 @@ protected:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] instantiation   The component instantiation.
      */
-    virtual void writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation) = 0;
+    virtual void writeImplementationDetails(QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation) = 0;
 
     /*!
      *  Writes the file set references contained within a component instantiation.
@@ -342,7 +349,8 @@ protected:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] instantiation   The component instantiation.
         */
-    virtual void writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation) = 0;
+    virtual void writeFileSetReferences(QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation) = 0;
 
     /*!
         *  Writes the file build commands of a component instantiation.
@@ -352,7 +360,7 @@ protected:
         *      @param [in] formatter       The expression formatter for the component instantiation.
         */
     virtual void writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
-        ExpressionFormatter* formatter) = 0;
+        QSharedPointer<ExpressionFormatter> formatter) = 0;
 
     /*!
      *  Writes given parameters to a table.
@@ -364,7 +372,19 @@ protected:
      */
     virtual void writeParameterTable(QTextStream& stream, QString const& tableHeading,
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
-        ExpressionFormatter* formatter) = 0;
+        QSharedPointer<ExpressionFormatter> formatter) = 0;
+    
+    /*!
+     *  Writes given module parameters to a table.
+     *
+     *      @param [in] stream              Text stream to write to.
+     *      @param [in] tableHeading        The heading above the table.
+     *      @param [in] moduleParameters    The module parameters to be written.
+     *      @param [in] formatter           The expression formatter for the parameters.
+     */
+    virtual void writeModuleParameterTable(QTextStream& stream, QString const& tableHeading,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
+        QSharedPointer<ExpressionFormatter> formatter) = 0;
 
     /*!
      *  Writes the configurable element values of a VLNV.
@@ -376,7 +396,7 @@ protected:
      */
     virtual void writeConfigurableElementValues(QTextStream& stream,
         QSharedPointer<ConfigurableVLNVReference> vlnvReference,
-        ExpressionFormatter* instantiationFormatter) = 0;
+        QSharedPointer<ExpressionFormatter> formatter) = 0;
 
     /*!
      *  Write a paragraph in which specific information is listed.

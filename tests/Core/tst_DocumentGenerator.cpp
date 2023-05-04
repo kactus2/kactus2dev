@@ -1231,9 +1231,18 @@ void tst_DocumentGenerator::testViewsWrittenForTopComponent()
     QSharedPointer<Parameter> targetParameter = createTestParameter("firstParameter", "10",
         "", "ID_TARGET", "", "");
 
+    QSharedPointer<ModuleParameter> testModuleParameter(new ModuleParameter);
+    testModuleParameter->setName("testModuleParameter");
+    testModuleParameter->setValue("1");
+    testModuleParameter->setDescription("module param description");
+    testModuleParameter->setDataType("testDataType");
+    testModuleParameter->setType("int");
+    testModuleParameter->setUsageType("typed");
+
     QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation());
     componentInstantiation->setName("testInstantiation");
     componentInstantiation->getParameters()->append(targetParameter);
+    componentInstantiation->getModuleParameters()->append(testModuleParameter);
     componentInstantiation->setLanguage("C");
     componentInstantiation->setLanguageStrictness(true);
     componentInstantiation->setLibraryName("testLibrary");
@@ -1268,7 +1277,36 @@ void tst_DocumentGenerator::testViewsWrittenForTopComponent()
         "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Package: </strong>testPackage<br>\n" 
         "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>Module name: </strong>testModuleName<br>\n" 
         "\t\t\t</p>\n"
-        "\t\t\t<p>Parameters:</p>\n"
+        "\t\t\t<p><strong>Module parameters:</strong></p>\n"
+        "\t\t\t<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\" title=\"\">\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<th>Name</th>\n"
+        "\t\t\t\t\t<th>Type</th>\n"
+        "\t\t\t\t\t<th>Value</th>\n"
+        "\t\t\t\t\t<th>Data type</th>\n"
+        "\t\t\t\t\t<th>Usage type</th>\n"
+        "\t\t\t\t\t<th>Resolve</th>\n"
+        "\t\t\t\t\t<th>Bit vector left</th>\n"
+        "\t\t\t\t\t<th>Bit vector right</th>\n"
+        "\t\t\t\t\t<th>Array left</th>\n"
+        "\t\t\t\t\t<th>Array right</th>\n"
+        "\t\t\t\t\t<th>Description</th>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t\t<tr>\n"
+        "\t\t\t\t\t<td>testModuleParameter</td>\n"
+        "\t\t\t\t\t<td>int</td>\n"
+        "\t\t\t\t\t<td>1</td>\n"
+        "\t\t\t\t\t<td>testDataType</td>\n"
+        "\t\t\t\t\t<td>typed</td>\n"
+        "\t\t\t\t\t<td>" + testModuleParameter->getValueResolve() + "</td>\n"
+        "\t\t\t\t\t<td>" + testModuleParameter->getVectorLeft() + "</td>\n"
+        "\t\t\t\t\t<td>" + testModuleParameter->getVectorRight() + "</td>\n"
+        "\t\t\t\t\t<td>" + testModuleParameter->getArrayLeft() + "</td>\n"
+        "\t\t\t\t\t<td>" + testModuleParameter->getArrayRight() + "</td>\n"
+        "\t\t\t\t\t<td>" + testModuleParameter->description() + "</td>\n"
+        "\t\t\t\t</tr>\n"
+        "\t\t\t</table>\n"
+        "\t\t\t<p><strong>Parameters:</strong></p>\n"
         "\t\t\t<table frame=\"box\" rules=\"all\" border=\"1\" cellPadding=\"3\" title=\"\">\n"
         "\t\t\t\t<tr>\n"
         "\t\t\t\t\t<th>Name</th>\n"

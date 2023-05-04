@@ -73,6 +73,20 @@ const QStringList DocumentationWriter::PARAMETER_HEADERS = {
     QStringLiteral("Description")
 };
 
+const QStringList DocumentationWriter::MODULE_PARAMETER_HEADERS = {
+    QStringLiteral("Name"),
+    QStringLiteral("Type"),
+    QStringLiteral("Value"),
+    QStringLiteral("Data type"),
+    QStringLiteral("Usage type"),
+    QStringLiteral("Resolve"),
+    QStringLiteral("Bit vector left"),
+    QStringLiteral("Bit vector right"),
+    QStringLiteral("Array left"),
+    QStringLiteral("Array right"),
+    QStringLiteral("Description")
+};
+
 const QStringList DocumentationWriter::PORT_HEADERS = {
     QStringLiteral("Name"),
     QStringLiteral("Direction"),
@@ -228,15 +242,18 @@ QSharedPointer<ExpressionFormatter> DocumentationWriter::createDesignInstanceFor
         expressionFormatterFactory_->createDesignInstanceFormatter(component, design));
 }
 
-void DocumentationWriter::writeReferencedComponentInstantiation(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation, QSharedPointer<ExpressionFormatter> instantiationFormatter, ParameterList moduleParameters, ParameterList parameters)
+void DocumentationWriter::writeReferencedComponentInstantiation(QTextStream& stream,
+    QSharedPointer<ComponentInstantiation> instantiation,
+    QSharedPointer<ExpressionFormatter> instantiationFormatter,
+    ParameterList moduleParameters, ParameterList parameters)
 {
     writeImplementationDetails(stream, instantiation);
     writeFileSetReferences(stream, instantiation);
-    writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
-    writeParameterTable(stream, QString("Module parameters:"),
-        moduleParameters, instantiationFormatter.data());
+    writeFileBuildCommands(stream, instantiation, instantiationFormatter);
+    writeModuleParameterTable(stream, QString("Module parameters:"),
+        moduleParameters, instantiationFormatter);
     writeParameterTable(stream, QString("Parameters:"), parameters,
-        instantiationFormatter.data());
+        instantiationFormatter);
 }
 
 void DocumentationWriter::writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
@@ -260,25 +277,25 @@ void DocumentationWriter::writeReferencedDesignConfigurationInstantiation(QTextS
                     arg(configurationVLNV->toString());
                 QSharedPointer<ExpressionFormatter> configurationFormatter(new ExpressionFormatter(configurationFinder));
 
-                writeParameterTable(stream, header, configuration->getParameters(), configurationFormatter.data());
+                writeParameterTable(stream, header, configuration->getParameters(), configurationFormatter);
                 writeConfigurableElementValues(stream,
-                    instantiation->getDesignConfigurationReference(), instantiationFormatter.data());
+                    instantiation->getDesignConfigurationReference(), instantiationFormatter);
             }
         }
     }
 
     writeParameterTable(stream, QString("Design configuration instantiation parameters:"),
-        instantiation->getParameters(), instantiationFormatter.data());
+        instantiation->getParameters(), instantiationFormatter);
 }
 
 void DocumentationWriter::writeReferencedDesignInstantiation(QTextStream& stream,
     QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
-    ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
+    QSharedPointer<ExpressionFormatter> designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
 {
     QString header = QString("Parameters of the referenced design %1:").arg(designVLNV->toString());
     writeParameterTable(stream, header, instantiatedDesign->getParameters(), designFormatter);
 
-    writeConfigurableElementValues(stream, designVLNV, instantiationFormatter.data());
+    writeConfigurableElementValues(stream, designVLNV, instantiationFormatter);
 }
 
 void DocumentationWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock)

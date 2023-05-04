@@ -247,7 +247,8 @@ void MarkdownWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
             writeDescription(stream, memoryMap->description());
         }
         
-        stream << "**Address unit bits (AUB):** " << memoryMap->getAddressUnitBits() << "  " << Qt::endl << Qt::endl;
+        stream << "**Address unit bits (AUB):** " << memoryMap->getAddressUnitBits()
+            << "  " << Qt::endl << Qt::endl;
 
         QList<QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
         writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
@@ -294,14 +295,16 @@ void MarkdownWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointe
             
             writeSubHeader(stream, QList<int>(), registerTableText, 4);
             
-            writeRegisters(stream, addressBlockRegisters, subHeaderNumber, memoryMapNumber, addressBlockNumber, registerDataNumber);
+            writeRegisters(stream, addressBlockRegisters, subHeaderNumber,
+                memoryMapNumber, addressBlockNumber, registerDataNumber);
         }
 
         // Write address block register files
         if (auto const addressBlockRegisterFiles = getRegisterFiles(addressBlock->getRegisterData());
             !addressBlockRegisterFiles.isEmpty())
         {
-            QString registerFilesSubText = QStringLiteral("Address block '") + addressBlock->name() + QStringLiteral("' contains the following register files:");
+            QString registerFilesSubText = QStringLiteral("Address block '") + addressBlock->name()
+                + QStringLiteral("' contains the following register files:");
             writeSubHeader(stream, QList<int>(), registerFilesSubText, 4);
 
             writeRegisterFiles(stream, addressBlockRegisterFiles, subHeaderNumbers, registerDataNumber);
@@ -466,7 +469,7 @@ void MarkdownWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
             stream << " " << Qt::endl << Qt::endl;
             writePortTable(stream, ports);
         }
-
+        
         ++interfaceNumber;
     }
 }
@@ -608,7 +611,8 @@ void MarkdownWriter::writeDiagram(QTextStream& stream, QString const& title,
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeDesignInstances()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> configuration)
+void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> configuration)
 {
     if (design->getComponentInstances()->isEmpty())
     {
@@ -625,7 +629,8 @@ void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<De
     {
         QStringList rowCells(QStringList()
             << instance->getInstanceName()
-            << "[" + instance->getComponentRef()->toString(" - ") + "](#" + instance->getComponentRef()->toString(":") + ")"
+            << "[" + instance->getComponentRef()->toString(" - ") + "](#" 
+                + instance->getComponentRef()->toString(":") + ")"
             << getComponentInstanceConfigurableElements(instance, design)
             << (configuration && configuration->getDesignRef() == design->getVlnv()
                 ? configuration->getActiveView(instance->getInstanceName())
@@ -864,7 +869,8 @@ void MarkdownWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fil
 void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file) const
 {
     QString relativeFilePath = file->name();
-    QString absFilePath = General::getAbsolutePath(libraryHandler_->getPath(component_->getVlnv()), relativeFilePath);
+    QString absFilePath = General::getAbsolutePath(libraryHandler_->getPath(component_->getVlnv()),
+        relativeFilePath);
 
     QFileInfo fileInfo(absFilePath);
 
@@ -891,7 +897,8 @@ void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> f
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeImplementationDetails()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
+void MarkdownWriter::writeImplementationDetails(QTextStream& stream,
+    QSharedPointer<ComponentInstantiation> instantiation)
 {
     if (QString language = instantiation->getLanguage(); !language.isEmpty())
     {
@@ -934,7 +941,8 @@ void MarkdownWriter::writeImplementationDetails(QTextStream& stream, QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeFileSetReferences()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
+void MarkdownWriter::writeFileSetReferences(QTextStream& stream,
+    QSharedPointer<ComponentInstantiation> instantiation)
 {
     QStringList fileSetRefs = *instantiation->getFileSetReferences();
 
@@ -958,7 +966,7 @@ void MarkdownWriter::writeFileSetReferences(QTextStream& stream, QSharedPointer<
 // Function: MarkdownWriter::writeFileBuildCommands()
 //-----------------------------------------------------------------------------
 void MarkdownWriter::writeFileBuildCommands(QTextStream& stream,
-    QSharedPointer<ComponentInstantiation> instantiation, ExpressionFormatter* formatter)
+    QSharedPointer<ComponentInstantiation> instantiation, QSharedPointer<ExpressionFormatter> formatter)
 {
     if (instantiation->getDefaultFileBuilders()->isEmpty())
     {
@@ -986,14 +994,14 @@ void MarkdownWriter::writeFileBuildCommands(QTextStream& stream,
 // Function: MarkdownWriter::writeParameterTable()
 //-----------------------------------------------------------------------------
 void MarkdownWriter::writeParameterTable(QTextStream& stream, QString const& tableHeading,
-    ParameterList parameters, ExpressionFormatter* formatter)
+    ParameterList parameters, QSharedPointer<ExpressionFormatter> formatter)
 {
     if (!parameters || parameters->isEmpty())
     {
         return;
     }
 
-    stream << tableHeading << "  " << Qt::endl << Qt::endl;
+    stream << "**" << tableHeading << "**  " << Qt::endl << Qt::endl;
 
     writeTableHeader(stream, DocumentationWriter::PARAMETER_HEADERS);
 
@@ -1017,11 +1025,49 @@ void MarkdownWriter::writeParameterTable(QTextStream& stream, QString const& tab
     stream << Qt::endl;
 }
 
+void MarkdownWriter::writeModuleParameterTable(QTextStream& stream, QString const& tableHeading,
+    QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
+    QSharedPointer<ExpressionFormatter> formatter)
+{
+    if (!moduleParameters || moduleParameters->isEmpty())
+    {
+        return;
+    }
+    
+    stream << "**" << tableHeading << "**  " << Qt::endl << Qt::endl;
+
+    writeTableHeader(stream, DocumentationWriter::MODULE_PARAMETER_HEADERS);
+
+    for (auto const& parameter : *moduleParameters)
+    {
+        QSharedPointer<ModuleParameter> moduleParameter = parameter.dynamicCast<ModuleParameter>();
+
+        QStringList paramCells(QStringList()
+            << moduleParameter->name()
+            << moduleParameter->getType()
+            << formatter->formatReferringExpression(moduleParameter->getValue())
+            << moduleParameter->getDataType()
+            << moduleParameter->getUsageType()
+            << moduleParameter->getValueResolve()
+            << formatter->formatReferringExpression(moduleParameter->getVectorLeft())
+            << formatter->formatReferringExpression(moduleParameter->getVectorRight())
+            << formatter->formatReferringExpression(moduleParameter->getArrayLeft())
+            << formatter->formatReferringExpression(moduleParameter->getArrayRight())
+            << moduleParameter->description()
+        );
+
+        writeTableRow(stream, paramCells);
+    }
+
+    stream << Qt::endl;
+}
+
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeConfigurableElementValues()
 //-----------------------------------------------------------------------------
 void MarkdownWriter::writeConfigurableElementValues(QTextStream& stream,
-    QSharedPointer<ConfigurableVLNVReference> vlnvReference, ExpressionFormatter* instantiationFormatter)
+    QSharedPointer<ConfigurableVLNVReference> vlnvReference,
+    QSharedPointer<ExpressionFormatter> instantiationFormatter)
 {
     if (!vlnvReference || !vlnvReference->getConfigurableElementValues() ||
         vlnvReference->getConfigurableElementValues()->isEmpty())
@@ -1049,7 +1095,8 @@ void MarkdownWriter::writeConfigurableElementValues(QTextStream& stream,
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::getComponentInstanceConfigurableElements()
 //-----------------------------------------------------------------------------
-QString MarkdownWriter::getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance, QSharedPointer<Design> design)
+QString MarkdownWriter::getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance,
+    QSharedPointer<Design> design)
 {
     QString cell;
     VLNV componentVLNV = *instance->getComponentRef();

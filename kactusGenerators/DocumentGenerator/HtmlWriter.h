@@ -130,7 +130,8 @@ public:
      *      @param [in] stream              The text stream to write into.
      *      @param [in] register            The register whose fields are to be written.
      */
-    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister, QList<int> registerSubHeaderNumbers) override;
+    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister,
+        QList<int> registerSubHeaderNumbers) override;
 
     /*!
      *  Write the ports of the component
@@ -295,7 +296,7 @@ private:
 
     /*!
      *  Writes the table header row with chosen indentation. 
-     *  Indentation is the number of tabs for the parent element.
+     *  Indentation should be one more than table element indentation.
      *
      *      @param [in] stream          Text stream to write to.
      *      @param [in] headerCells     The table headers.
@@ -353,7 +354,8 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] instantiation   The component instantiation.
      */
-    void writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation) override;
+    void writeImplementationDetails(QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation) override;
 
     /*!
      *  Writes the file set references contained within a component instantiation.
@@ -361,7 +363,8 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] instantiation   The component instantiation.
      */
-    void writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation) override;
+    void writeFileSetReferences(QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation) override;
 
     /*!
      *  Writes the file build commands of a component instantiation.
@@ -371,19 +374,31 @@ private:
      *      @param [in] formatter       The expression formatter for the component instantiation.
      */
     void writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
-        ExpressionFormatter* instantiationFormatter) override;
+        QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
 
     /*!
      *  Writes given parameters to a table.
      *
      *      @param [in] stream          Text stream to write to.
-     *      @param [in] tableHeading    The heading above the table.
+     *      @param [in] tableHeading    The heading above the table
      *      @param [in] parameters      The parameters to be written.
      *      @param [in] formatter       The expression formatter for the parameters.
      */
-    void writeParameterTable(QTextStream& stream, QString const& title,
+    void writeParameterTable(QTextStream& stream, QString const& tableHeading,
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
-        ExpressionFormatter* formatter) override;
+        QSharedPointer<ExpressionFormatter> formatter) override;
+
+    /*!
+     *  Writes given module parameters to a table.
+     *
+     *      @param [in] stream              Text stream to write to.
+     *      @param [in] tableHeading        The heading above the table.
+     *      @param [in] moduleParameters    The module parameters to be written.
+     *      @param [in] formatter           The expression formatter for the parameters.
+     */
+    void writeModuleParameterTable(QTextStream& stream, QString const& tableHeading,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
+        QSharedPointer<ExpressionFormatter> formatter) override;
 
     /*!
      *  Writes the configurable element values of a VLNV.
@@ -395,7 +410,7 @@ private:
      */
     void writeConfigurableElementValues(QTextStream& stream,
         QSharedPointer<ConfigurableVLNVReference> vlnvReference,
-        ExpressionFormatter* instantiationFormatter) override;
+        QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
 
     /*!
      *  Gets the configurable element values of a component instance as a line-broken string.

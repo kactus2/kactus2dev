@@ -1013,6 +1013,14 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
     QSharedPointer<Parameter> targetParameter = createTestParameter("firstParameter", "10",
         "", "ID_TARGET", "", "");
 
+    QSharedPointer<ModuleParameter> testModuleParameter(new ModuleParameter);
+    testModuleParameter->setName("testModuleParameter");
+    testModuleParameter->setValue("1");
+    testModuleParameter->setDescription("module param description");
+    testModuleParameter->setDataType("testDataType");
+    testModuleParameter->setType("int");
+    testModuleParameter->setUsageType("typed");
+
     QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation());
     componentInstantiation->setName("testInstantiation");
     componentInstantiation->setLanguage("C");
@@ -1022,6 +1030,7 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
     componentInstantiation->setModuleName("testModuleName");
 
     componentInstantiation->getParameters()->append(targetParameter);
+    componentInstantiation->getModuleParameters()->append(testModuleParameter);
 
     topComponent_->getComponentInstantiations()->append(componentInstantiation);
     flatView->setComponentInstantiationRef("testInstantiation");
@@ -1054,7 +1063,13 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
         "\n"
         "**Module name:** testModuleName  \n"
         "\n"
-        "Parameters:  \n"
+        "**Module parameters:**  \n"
+        "\n"
+        "|Name|Type|Value|Data type|Usage type|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|  \n"
+        "|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|:----|  \n"
+        "|testModuleParameter|int|1|testDataType|typed||||||module param description|  \n"
+        "\n"
+        "**Parameters:**  \n"
         "\n"
         "|Name|Type|Value|Resolve|Bit vector left|Bit vector right|Array left|Array right|Description|  \n"
         "|:----|:----|:----|:----|:----|:----|:----|:----|:----|  \n"
