@@ -31,6 +31,8 @@ class ComponentInstantiation;
 class ListParameterFinder;
 class DesignConfigurationInstantiation;
 class ConfigurableVLNVReference;
+class RegisterFile;
+class RegisterBase;
 
 using ParameterList = QSharedPointer<QList<QSharedPointer<Parameter> > >;
 
@@ -49,9 +51,13 @@ public:
 
     static const QStringList PARAMETER_HEADERS;
 
+    static const QStringList MODULE_PARAMETER_HEADERS;
+
     static const QStringList PORT_HEADERS;
 
     static const QStringList REGISTER_HEADERS;
+
+    static const QStringList REGISTER_FILE_HEADERS;
 
     static const QStringList DESIGN_INSTANCE_HEADERS;
     
@@ -127,6 +133,18 @@ public:
      */
     virtual void writeAddressBlocks(QTextStream& stream, QList<QSharedPointer <AddressBlock> > addressBlocks,
         int subHeaderNumber, int memoryMapNumber) = 0;
+    
+    /*!
+     *  Write the given register files
+     *
+     *      @param [in] stream               The text stream to write into.
+     *      @param [in] registerFiles        The registers to be written.
+     *      @param [in] subHeaderNumbers     The current subheader number.
+     *      @param [out] registerDataNumber  The current address block number.
+     */
+    virtual void writeRegisterFiles(QTextStream& stream,
+        QList<QSharedPointer<RegisterFile> > registerFiles,
+        QList<int> subHeaderNumbers, int& registerDataNumber) = 0;
 
     /*!
      *  Write the given registers.
@@ -138,7 +156,7 @@ public:
      *      @param [in] addressBlockNumber  The current address block number.
      */
     virtual void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
-        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) = 0;
+        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int& registerDataNumber) = 0;
 
     /*!
      *  Write the given register fields.
@@ -146,7 +164,8 @@ public:
      *      @param [in] stream              The text stream to write into.
      *      @param [in] register            The register whose fields are to be written.
      */
-    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) = 0;
+    virtual void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister,
+        QList<int> registerSubHeaderNumbers) = 0;
 
     /*!
      *  Write the ports of the component.
@@ -228,47 +247,6 @@ public:
         QSharedPointer<ConfigurableVLNVReference> vlnvReference) = 0;
 
     /*!
-     *  Write the referenced component instantiation.
-     *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] instantiation           The component instantiation.
-     *      @param [in] instantiationFormatter  The component instantiation formatter.
-     *      @param [in] moduleParameters        The instantiation module parameters.
-     *      @param [in] parameters              The instantiation parameters.
-     */
-    virtual void writeReferencedComponentInstantiation(
-        QTextStream& stream,
-        QSharedPointer<ComponentInstantiation> instantiation,
-        QSharedPointer<ExpressionFormatter> instantiationFormatter,
-        ParameterList moduleParameters,
-        ParameterList parameters) = 0;
-
-    /*!
-     *  Write the referenced design configuration instantiation.
-     *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] configurationFinder     The parameter finder for the instantiation.
-     *      @param [in] instantiationFormatter  The instantiation formatter.
-     */
-    virtual void writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
-        QSharedPointer<ListParameterFinder> configurationFinder,
-        QSharedPointer<DesignConfigurationInstantiation> instantiation,
-        QSharedPointer<ExpressionFormatter> instantiationFormatter) = 0;
-
-    /*!
-     *  Write the referenced design instantiation.
-     *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] designVLNV              The VLNV of the design instantiation.
-     *      @param [in] instantiatedDesign      The instantiated design.
-     *      @param [in] designFormatter         Expression formatter for the design.
-     *      @param [in] instantiationFormatter  Expression formatter for the instantiation.
-     */
-    virtual void writeReferencedDesignInstantiation(QTextStream& stream,
-        QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
-        ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter) = 0;
-
-    /*!
      *  Write the design diagram.
      *
      *      @param [in] stream                  Text stream to write the diagram to.
@@ -276,7 +254,8 @@ public:
      *      @param [in] link                    Diagram picture link or path.
      *      @param [in] altText                 Diagram alt text.
      */
-    virtual void writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText) = 0;
+    virtual void writeDiagram(QTextStream& stream, QString const& title,
+        QString const& link, QString const& altText) = 0;
 
     /*!
      *  Write the component instances contained within the selected design.
@@ -296,6 +275,50 @@ public:
     virtual void writeEndOfDocument(QTextStream& stream) = 0;
 
     /*!
+     *  Write the referenced component instantiation.
+     *
+     *      @param [in] stream                  Text stream to write the component instantiation.
+     *      @param [in] instantiation           The component instantiation.
+     *      @param [in] instantiationFormatter  The component instantiation formatter.
+     *      @param [in] moduleParameters        The instantiation module parameters.
+     *      @param [in] parameters              The instantiation parameters.
+     */
+    void writeReferencedComponentInstantiation(
+        QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter,
+        ParameterList moduleParameters,
+        ParameterList parameters);
+
+    /*!
+     *  Write the referenced design configuration instantiation.
+     *
+     *      @param [in] stream                  Text stream to write the component instantiation.
+     *      @param [in] configurationFinder     The parameter finder for the instantiation.
+     *      @param [in] instantiationFormatter  The instantiation formatter.
+     */
+    void writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
+        QSharedPointer<ListParameterFinder> configurationFinder,
+        QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter,
+        LibraryInterface* libraryHandler);
+
+    /*!
+     *  Write the referenced design instantiation.
+     *
+     *      @param [in] stream                  Text stream to write the component instantiation.
+     *      @param [in] designVLNV              The VLNV of the design instantiation.
+     *      @param [in] instantiatedDesign      The instantiated design.
+     *      @param [in] designFormatter         Expression formatter for the design.
+     *      @param [in] instantiationFormatter  Expression formatter for the instantiation.
+     */
+    void writeReferencedDesignInstantiation(QTextStream& stream,
+        QSharedPointer<ConfigurableVLNVReference> designVLNV,
+        QSharedPointer<Design> instantiatedDesign,
+        QSharedPointer<ExpressionFormatter> designFormatter,
+        QSharedPointer<ExpressionFormatter> instantiationFormatter);
+
+    /*!
      *  Sets the target path for the document.
      *
      *      @param [in] path    The new target path.
@@ -308,8 +331,103 @@ public:
      *      @returns The target path.
      */
     QString getTargetPath() const;
+    
+    /*!
+     *  Sets the images path.
+     *
+     *      @param [in] path    The new images path.
+     */
+    void setImagesPath(QString const& path);
+
+    /*!
+     *  Get the path of the images folder.
+     *
+     *      @returns The image folder path.
+     */
+    QString getImagesPath() const;
 
 protected:
+
+    /*!
+     *  Writes the implementation details of a component instantiation.
+     *
+     *      @param [in] stream          Text stream to write to.
+     *      @param [in] instantiation   The component instantiation.
+     */
+    virtual void writeImplementationDetails(QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation) = 0;
+
+    /*!
+     *  Writes the file set references contained within a component instantiation.
+     *
+     *      @param [in] stream          Text stream to write to.
+     *      @param [in] instantiation   The component instantiation.
+        */
+    virtual void writeFileSetReferences(QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation) = 0;
+
+    /*!
+        *  Writes the file build commands of a component instantiation.
+        *
+        *      @param [in] stream          Text stream to write to.
+        *      @param [in] instantiation   The component instantiation.
+        *      @param [in] formatter       The expression formatter for the component instantiation.
+        */
+    virtual void writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
+        QSharedPointer<ExpressionFormatter> formatter) = 0;
+
+    /*!
+     *  Writes given parameters to a table.
+     *
+     *      @param [in] stream          Text stream to write to.
+     *      @param [in] tableHeading    The heading above the table.
+     *      @param [in] parameters      The parameters to be written.
+     *      @param [in] formatter       The expression formatter for the parameters.
+     */
+    virtual void writeParameterTable(QTextStream& stream, QString const& tableHeading,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+        QSharedPointer<ExpressionFormatter> formatter) = 0;
+    
+    /*!
+     *  Writes given module parameters to a table.
+     *
+     *      @param [in] stream              Text stream to write to.
+     *      @param [in] tableHeading        The heading above the table.
+     *      @param [in] moduleParameters    The module parameters to be written.
+     *      @param [in] formatter           The expression formatter for the parameters.
+     */
+    virtual void writeModuleParameterTable(QTextStream& stream, QString const& tableHeading,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
+        QSharedPointer<ExpressionFormatter> formatter) = 0;
+
+    /*!
+     *  Writes the configurable element values of a VLNV.
+     *
+     *      @param [in] stream                  Text stream to write the document.
+     *      @param [in] vlnvReference           Configurable VLNV containing the selected configurable element
+     *                                          values.
+     *      @param [in] instantiationFormatter  Expression formatter for the configurable element values.
+     */
+    virtual void writeConfigurableElementValues(QTextStream& stream,
+        QSharedPointer<ConfigurableVLNVReference> vlnvReference,
+        QSharedPointer<ExpressionFormatter> formatter) = 0;
+
+    /*!
+     *  Write a paragraph in which specific information is listed.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] names               The info item names.
+     *      @param [in] values              The info item values.
+     */
+    virtual void writeInfoParagraph(QTextStream& stream, QStringList const& names, QStringList const& values) = 0;
+
+    /*!
+     *  Writes the enumerations of a field.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] field               The field which enumerations are written.
+     */
+    virtual void writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field) = 0;
 
     /*!
      *  Finds the address blocks of a memory map.
@@ -321,13 +439,24 @@ protected:
     QList<QSharedPointer <AddressBlock> > getMemoryMapAddressBlocks(QSharedPointer<MemoryMap> memoryMap) const;
 
     /*!
-     *  Finds the registers of an address block.
+     *  Finds the registers from some register data.
      *
-     *      @param [in] addressBlock    The address block.
+     *      @param [in] registerData    The register data.
      *
-     *      @returns The registers of the address block.
+     *      @returns The registers of the register data.
      */
-    QList<QSharedPointer <Register> > getAddressBlockRegisters(QSharedPointer<AddressBlock> addressBlock) const;
+    QList<QSharedPointer <Register> > getRegisters(
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData) const;
+
+    /*!
+     *  Finds the register files from some register data.
+     *
+     *      @param [in] registerData    The register data.
+     *
+     *      @returns The register files of the register data.
+     */
+    QList<QSharedPointer <RegisterFile> > getRegisterFiles(
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData) const;
 
     /*!
      *  Finds the field reset info of a register field.
@@ -336,7 +465,7 @@ protected:
      *
      *      @returns The field reset info of the field.
      */
-    QString getFieldResetInfo(QSharedPointer<Field> field) const;
+    QString getFieldResetInfo(QSharedPointer<Field> field, QString const& separator = "<br>") const;
 
     /*!
      *  Creates an expression formatter for a component contained within a design.
@@ -349,6 +478,50 @@ protected:
     QSharedPointer<ExpressionFormatter> createDesignInstanceFormatter(QSharedPointer<Design> design,
         QSharedPointer<Component> component);
 
+    /*!
+     *  Writes info about an address block.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] addressBlock        The address block to write about.
+     */
+    void writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock);
+
+    /*!
+     *  Writes info about a single register.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] reg                 The register to be written.
+     *      @param [in] subHeaderNumbers    The subheader numbers to write in the subheader.
+     *      @param [in] registerDataNumber  The current address block register data number.
+     */
+    void writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers,
+        int& registerDataNumber);
+
+    /*!
+     *  Writes info about a register file.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] registerFile        The register file to be written.
+     */
+    void writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile);
+
+    /*!
+     *  Writes a single field.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] field               The field to be written.
+     */
+    void writeSingleField(QTextStream& stream, QSharedPointer<Field> field);
+
+    /*!
+     *  Writes information about a bus interface.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] interface           The interface to be written.
+     *      @param [in] hasPorts            Flag that indicates if interface has ports.
+     */
+    void writeInterfaceInfo(QTextStream& stream, QSharedPointer<BusInterface> interface, bool hasPorts);
+
 private:
     //! The expression formatter, used to change parameter IDs into names.
     ExpressionFormatter* expressionFormatter_;
@@ -358,6 +531,9 @@ private:
 
     //! The path the document is written to.
     QString targetPath_;
+
+    //! The image save path
+    QString imagesPath_;
 };
 
 #endif // DOCUMENTATIONWRITER_H

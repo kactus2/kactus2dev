@@ -118,7 +118,11 @@ public:
      *      @param [in] addressBlockNumber  The current address block number.
      */
     void writeRegisters(QTextStream& stream, QList<QSharedPointer <Register> > registers,
-        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber) override;
+        int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int& registerDataNumber) override;
+
+    void writeRegisterFiles(QTextStream& stream,
+        QList<QSharedPointer<RegisterFile> > registerFiles,
+        QList<int> subHeaderNumbers, int& registerDataNumber) override;
 
     /*!
      *  Write the given register fields
@@ -126,7 +130,8 @@ public:
      *      @param [in] stream              The text stream to write into.
      *      @param [in] register            The register whose fields are to be written.
      */
-    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister) override;
+    void writeFields(QTextStream& stream, QSharedPointer <Register> currentRegister,
+        QList<int> registerSubHeaderNumbers) override;
 
     /*!
      *  Write the ports of the component
@@ -188,48 +193,15 @@ public:
      *      @param [in] description         The description to write.
      */
     void writeDescription(QTextStream& stream, QString const& description) override;
-    
-    /*!
-     *  Write the referenced component instantiation.
-     *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] instantiation           The component instantiation.
-     *      @param [in] instantiationFormatter  The component instantiation formatter.
-     *      @param [in] moduleParameters        The instantiation module parameters.
-     *      @param [in] parameters              The instantiation parameters.
-     */
-    void writeReferencedComponentInstantiation(
-        QTextStream& stream,
-        QSharedPointer<ComponentInstantiation> instantiation,
-        QSharedPointer<ExpressionFormatter> instantiationFormatter,
-        QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
-        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) override;
 
     /*!
-     *  Write the referenced design configuration instantiation.
+     *  Write a paragraph in which specific information is listed.
      *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] configurationFinder     The parameter finder for the instantiation.
-     *      @param [in] instantiationFormatter  The instantiation formatter.
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] names               The info item names.
+     *      @param [in] values              The info item values.
      */
-    void writeReferencedDesignConfigurationInstantiation(QTextStream& stream,
-        QSharedPointer<ListParameterFinder> configurationFinder,
-        QSharedPointer<DesignConfigurationInstantiation> instantiation,
-        QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
-
-    /*!
-     *  Write the referenced design instantiation.
-     *
-     *      @param [in] stream                  Text stream to write the component instantiation.
-     *      @param [in] designVLNV              The VLNV of the design instantiation.
-     *      @param [in] instantiatedDesign      The instantiated design.
-     *      @param [in] designFormatter         Expression formatter for the design.
-     *      @param [in] instantiationFormatter  Expression formatter for the instantiation.
-     */
-    void writeReferencedDesignInstantiation(QTextStream& stream,
-        QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
-        ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
-        override;
+    void writeInfoParagraph(QTextStream& stream, QStringList const& names, QStringList const& values) override;
 
     /*!
      *  Write an error text to the document.
@@ -287,6 +259,30 @@ private:
      *      @returns n tabs.
      */
     QString indent(int n) const;
+    
+    /*!
+     *  Writes a table of registers.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] registers           The registers to be written.
+     */
+    void writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register> >registers);
+
+    /*!
+     *  Writes a table of register fields.
+     *
+     *      @param [in] stream       The text stream to write into.
+     *      @param [in] reg          The register whose fields are written.
+     */
+    void writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg);
+
+    /*!
+     *  Writes the enumerations of a field.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] field               The field which enumerations are written.
+     */
+    void writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field) override;
 
     /*!
      *  Writes a row with specified cells to a HTML table with chosen indentation.
@@ -296,17 +292,17 @@ private:
      *      @param [in] cells           Table row cells.
      *      @param [in] indentation     The table element indentation.
      */
-    void writeTableRow(QTextStream& stream, QStringList const& cells, int indentation);
+    void writeTableRow(QTextStream& stream, QStringList const& cells, int indentation) const;
 
     /*!
      *  Writes the table header row with chosen indentation. 
-     *  Indentation is the number of tabs for the parent element.
+     *  Indentation should be one more than table element indentation.
      *
      *      @param [in] stream          Text stream to write to.
      *      @param [in] headerCells     The table headers.
      *      @param [in] indentation     The table element indentation.
      */
-    void writeTableHeader(QTextStream& stream, QStringList const& headerCells, int indentation);
+    void writeTableHeader(QTextStream& stream, QStringList const& headerCells, int indentation) const;
 
     /*!
      *  Writes a port table for specified ports.
@@ -314,7 +310,8 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] ports           The ports to be written.
      */
-    void writePortTable(QTextStream& stream, QString const& tableTitle, QList<QSharedPointer<Port> > ports);
+    void writePortTable(QTextStream& stream, QString const& tableTitle,
+        QList<QSharedPointer<Port> > ports) const;
     
     /*!
      *  Writes group identifiers for a file set.
@@ -330,7 +327,7 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] fileSet         File set to write file builders for.
      */
-    void writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet);
+    void writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet) const;
 
     /*!
      *  Writes the files of a file set.
@@ -349,7 +346,7 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] file            File to be written.
      */
-    void writeSingleFile(QTextStream& stream, QSharedPointer<File> file);
+    void writeSingleFile(QTextStream& stream, QSharedPointer<File> file) const;
 
     /*!
      *  Writes the implementation details of a component instantiation.
@@ -357,7 +354,8 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] instantiation   The component instantiation.
      */
-    void writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation);
+    void writeImplementationDetails(QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation) override;
 
     /*!
      *  Writes the file set references contained within a component instantiation.
@@ -365,7 +363,8 @@ private:
      *      @param [in] stream          Text stream to write to.
      *      @param [in] instantiation   The component instantiation.
      */
-    void writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation);
+    void writeFileSetReferences(QTextStream& stream,
+        QSharedPointer<ComponentInstantiation> instantiation) override;
 
     /*!
      *  Writes the file build commands of a component instantiation.
@@ -375,19 +374,31 @@ private:
      *      @param [in] formatter       The expression formatter for the component instantiation.
      */
     void writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
-        ExpressionFormatter* instantiationFormatter);
+        QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
 
     /*!
      *  Writes given parameters to a table.
      *
      *      @param [in] stream          Text stream to write to.
-     *      @param [in] tableHeading    The heading above the table.
+     *      @param [in] tableHeading    The heading above the table
      *      @param [in] parameters      The parameters to be written.
      *      @param [in] formatter       The expression formatter for the parameters.
      */
-    void writeParameterTable(QTextStream& stream, QString const& title,
+    void writeParameterTable(QTextStream& stream, QString const& tableHeading,
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
-        ExpressionFormatter* formatter);
+        QSharedPointer<ExpressionFormatter> formatter) override;
+
+    /*!
+     *  Writes given module parameters to a table.
+     *
+     *      @param [in] stream              Text stream to write to.
+     *      @param [in] tableHeading        The heading above the table.
+     *      @param [in] moduleParameters    The module parameters to be written.
+     *      @param [in] formatter           The expression formatter for the parameters.
+     */
+    void writeModuleParameterTable(QTextStream& stream, QString const& tableHeading,
+        QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
+        QSharedPointer<ExpressionFormatter> formatter) override;
 
     /*!
      *  Writes the configurable element values of a VLNV.
@@ -399,7 +410,7 @@ private:
      */
     void writeConfigurableElementValues(QTextStream& stream,
         QSharedPointer<ConfigurableVLNVReference> vlnvReference,
-        ExpressionFormatter* instantiationFormatter);
+        QSharedPointer<ExpressionFormatter> instantiationFormatter) override;
 
     /*!
      *  Gets the configurable element values of a component instance as a line-broken string.

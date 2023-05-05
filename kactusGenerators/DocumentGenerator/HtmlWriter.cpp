@@ -15,10 +15,12 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
@@ -102,13 +104,15 @@ void HtmlWriter::writeComponentInfo(QTextStream& stream)
 {
     stream << indent(2) << "<p>" << Qt::endl;
 
-    stream << indent(2) << "<img src=\"" << component_->getVlnv().toString(".") << ".png\" alt=\"" <<
-        component_->getVlnv().toString(" - ") << " preview picture\"><br>" << Qt::endl;
+    stream << indent(2) << "<img src=\"" << getImagesPath().split("/").back() << "/"
+        << component_->getVlnv().toString(".") << ".png\" alt=\""
+        << component_->getVlnv().toString(" - ") << " preview picture\"><br>" << Qt::endl;
 
     // if component has description, write it
     if (!component_->getDescription().isEmpty())
     {
-        stream << indent(2) << "<strong>Description:</strong> " << component_->getDescription() << "<br>" << Qt::endl;
+        stream << indent(2) << "<strong>Description:</strong> " << component_->getDescription()
+            << "<br>" << Qt::endl;
     }
 
     // print relative path to the xml file
@@ -158,15 +162,16 @@ void HtmlWriter::writeTableOfContents(QTextStream& stream)
 {
     QString vlnvHeader = "\t\t" + HTML::INDENT + "<a href=\"#" + component_->getVlnv().toString();
 
-    stream << indent(2) << "<a href=\"#" << component_->getVlnv().toString() << "\">" << componentNumber_ << ". Component" <<
-        HTML::SPACE << component_->getVlnv().toString(" - ") << "</a><br>" << Qt::endl;
+    stream << indent(2) << "<a href=\"#" << component_->getVlnv().toString() << "\">"
+        << componentNumber_ << ". Component" << HTML::SPACE << component_->getVlnv().toString(" - ")
+        << "</a><br>" << Qt::endl;
 
     // subHeader is running number that counts the number of sub headers for component
     int subHeader = 1;
 
     // component always has kactus parameters
-    stream << vlnvHeader << ".kts_params\">" << componentNumber_ << "." << subHeader << ". Kactus2 attributes</a><br>" <<
-        Qt::endl;
+    stream << vlnvHeader << ".kts_params\">" << componentNumber_ << "." << subHeader
+        << ". Kactus2 attributes</a><br>" << Qt::endl;
     ++subHeader;
 
     if (component_->hasParameters())
@@ -178,33 +183,37 @@ void HtmlWriter::writeTableOfContents(QTextStream& stream)
 
     if (!component_->getMemoryMaps()->isEmpty())
     {
-        stream << vlnvHeader << ".memoryMaps\">" << componentNumber_ << "." << subHeader << ". Memory maps</a><br>" <<
-            Qt::endl;
+        stream << vlnvHeader << ".memoryMaps\">" << componentNumber_ << "." << subHeader
+            << ". Memory maps</a><br>" << Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasPorts())
     {
-        stream << vlnvHeader << ".ports\">" << componentNumber_ << "." << subHeader << ". Ports</a><br>" << Qt::endl;
+        stream << vlnvHeader << ".ports\">" << componentNumber_ << "." << subHeader
+            << ". Ports</a><br>" << Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasInterfaces())
     {
-        stream << vlnvHeader << ".interfaces\">" << componentNumber_ << "." << subHeader << ". Bus interfaces</a><br>" <<
+        stream << vlnvHeader << ".interfaces\">" << componentNumber_ << "." << subHeader
+            << ". Bus interfaces</a><br>" <<
             Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasFileSets())
     {
-        stream << vlnvHeader << ".fileSets\">" << componentNumber_ << "." << subHeader << ". File sets</a><br>" << Qt::endl;
+        stream << vlnvHeader << ".fileSets\">" << componentNumber_ << "." << subHeader
+            << ". File sets</a><br>" << Qt::endl;
         ++subHeader;
     }
 
     if (component_->hasViews())
     {
-        stream << vlnvHeader << ".views\">" << componentNumber_ << "." << subHeader << ". Views</a><br>" << Qt::endl;
+        stream << vlnvHeader << ".views\">" << componentNumber_ << "." << subHeader
+            << ". Views</a><br>" << Qt::endl;
     }
 }
 
@@ -265,20 +274,14 @@ void HtmlWriter::writeMemoryMaps(QTextStream& stream, int subHeaderNumber)
             memoryMapNumber,
         });
 
-        writeSubHeader(stream, subHeaderNumbers, memoryMap->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Memory map ") + memoryMap->name(), 3);
 
-        stream << indent(3) << "<p>" << Qt::endl;
-
-        if (!memoryMap->description().isEmpty())
-        {
-            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
-                memoryMap->description() << "<br>" << Qt::endl;
-        }
-        
-        stream << indent(3) << HTML::INDENT << "<strong>Address unit bits (AUB):</strong> " <<
-            memoryMap->getAddressUnitBits() << "<br>" << Qt::endl;
-
-        stream << indent(3) << "</p>" << Qt::endl;
+        // Write memory map info.
+        writeInfoParagraph(
+            stream,
+            { QStringLiteral("Description"), QStringLiteral("Address unit bits (AUB)") },
+            { memoryMap->description(), memoryMap->getAddressUnitBits() }
+        );
 
         QList <QSharedPointer <AddressBlock> > addressBlocks = getMemoryMapAddressBlocks(memoryMap);
         writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
@@ -309,40 +312,36 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
             addressBlockNumber
         });
         
-        writeSubHeader(stream, subHeaderNumbers, addressBlock->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Address block ") + addressBlock->name(), 3);
 
-        if (!addressBlock->description().isEmpty())
+        writeAddressBlockInfo(stream, addressBlock);
+
+        // Running number to number address block registers and register files
+        int registerDataNumber = 1;
+
+        // Write address block registers
+        if (auto const addressBlockRegisters = getRegisters(addressBlock->getRegisterData());
+            !addressBlockRegisters.isEmpty())
         {
-            stream << indent(3) << "<p>" << Qt::endl;
-            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
-                addressBlock->description() << "<br>" << Qt::endl;
-            stream << indent(3) << "</p>" << Qt::endl;
+            QString registerTableText = QStringLiteral("Address block '") + addressBlock->name() +
+                QStringLiteral("' contains the following registers:");
+
+            writeSubHeader(stream, QList<int>(), registerTableText, 4);
+
+            writeRegisters(stream, addressBlockRegisters, subHeaderNumber,
+                memoryMapNumber, addressBlockNumber, registerDataNumber);
         }
 
-        QStringList addressBlockTableCells(QStringList()
-            << General::usage2Str(addressBlock->getUsage())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getBaseAddress())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getRange())
-            << expressionFormatter_->formatReferringExpression(addressBlock->getWidth())
-            << AccessTypes::access2Str(addressBlock->getAccess())
-            << addressBlock->getVolatile()
-        );
+        // Write address block register files
+        if (auto const addressBlockRegisterFiles = getRegisterFiles(addressBlock->getRegisterData());
+            !addressBlockRegisterFiles.isEmpty())
+        {
+            QString registerFilesSubText = QStringLiteral("Address block '") + addressBlock->name()
+                + QStringLiteral("' contains the following register files:");
+            writeSubHeader(stream, QList<int>(), registerFilesSubText, 4);
 
-        QString title = "List of values in " + addressBlock->name() + ".";
-
-        // Table with title
-        stream << indent (3) << HTML::TABLE << title << "\">" << Qt::endl;
-        
-        // Address block table headers
-        writeTableHeader(stream, DocumentationWriter::ADDRESS_BLOCK_HEADERS, 4);
-
-        // Address block table body
-        writeTableRow(stream, addressBlockTableCells, 4);
-
-        stream << indent(3) << "</table>" << Qt::endl;
-
-        QList <QSharedPointer <Register> > registers = getAddressBlockRegisters(addressBlock);
-        writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+            writeRegisterFiles(stream, addressBlockRegisterFiles, subHeaderNumbers, registerDataNumber);
+        }
 
         ++addressBlockNumber;
     }
@@ -351,16 +350,18 @@ void HtmlWriter::writeAddressBlocks(QTextStream& stream, QList<QSharedPointer<Ad
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeRegisters()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Register>> registers,
-    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber)
+void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Register> > registers,
+    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int& registerDataNumber)
 {
     if (registers.isEmpty())
     {
         return;
     }
 
-    int registerNumber = 1;
-
+    // Write table with all address block registers.
+    writeRegisterTable(stream, registers);
+    
+    // Write each register separately.
     for (auto const& currentRegister : registers)
     {
         QList subHeaderNumbers({
@@ -368,76 +369,91 @@ void HtmlWriter::writeRegisters(QTextStream& stream, QList<QSharedPointer<Regist
             subHeaderNumber,
             memoryMapNumber,
             addressBlockNumber,
-            registerNumber
+            registerDataNumber
         });
 
-        writeSubHeader(stream, subHeaderNumbers, currentRegister->name(), 3);
+        writeSingleRegister(stream, currentRegister, subHeaderNumbers, registerDataNumber);
+    }
+}
 
-        if (!currentRegister->description().isEmpty())
+//-----------------------------------------------------------------------------
+// Function: HtmlWriter::writeRegisterFiles()
+//-----------------------------------------------------------------------------
+void HtmlWriter::writeRegisterFiles(QTextStream& stream,
+    QList<QSharedPointer<RegisterFile> > registerFiles,
+    QList<int> subHeaderNumbers, int& registerDataNumber)
+{
+    for (auto const& registerFile : registerFiles)
+    {
+        QList registerFileSubHeaderNumbers(subHeaderNumbers);
+        registerFileSubHeaderNumbers.append(registerDataNumber);
+
+        writeSubHeader(stream, registerFileSubHeaderNumbers,
+            QStringLiteral("Register file ") + registerFile->name(), 3);
+
+        writeRegisterFileInfo(stream, registerFile);
+
+        auto const registerData = registerFile->getRegisterData();
+        auto const registersInFile = getRegisters(registerData);
+
+        int subRegisterDataNumber = 1;
+
+        if (!registersInFile.isEmpty())
         {
-            stream << indent(3) << "<p>" << Qt::endl;
-            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
-                currentRegister->description() << "<br>" << Qt::endl;
-            stream << indent(3) << "</p>" << Qt::endl;
+            writeSubHeader(stream, {}, QStringLiteral("Register file ")
+                + registerFile->name() + QStringLiteral(" contains the following registers:"), 4);
+            writeRegisterTable(stream, registersInFile);
         }
 
-        QString tableTitle = "List of values in " + currentRegister->name() + ".";
-        stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+        // Write register file registers.
+        for (auto const& reg : registersInFile)
+        {
+            // Sub-registers need their own subheader number, as the hierarchy ends here.
+            QList newSubHeaderNumbers(registerFileSubHeaderNumbers);
+            newSubHeaderNumbers.append(subRegisterDataNumber);
+            writeSingleRegister(stream, reg, newSubHeaderNumbers, registerDataNumber);
+            subRegisterDataNumber++;
+        }
 
-        writeTableHeader(stream, DocumentationWriter::REGISTER_HEADERS, 4);
+        // Write the register files of the current register file recursively.
+        for (auto const& regFile : getRegisterFiles(registerData))
+        {
+            // Note: subRegisterDataNumber is passed to the recursive function call.
+            // The value of registerDataNumber stays constant for the same parent register file.
+            writeRegisterFiles(stream, QList({ regFile }), registerFileSubHeaderNumbers, subRegisterDataNumber);
+            subRegisterDataNumber++;
+        }
 
-        QStringList registerInfoTableCells(QStringList()
-            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
-            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
-            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
-            << currentRegister->getVolatile()
-            << AccessTypes::access2Str(currentRegister->getAccess())
-        );
-        
-        writeTableRow(stream, registerInfoTableCells, 4);
-        
-        stream << indent(3) << "</table>" << Qt::endl;
-
-        writeFields(stream, currentRegister);
-
-        ++registerNumber;
+        registerDataNumber++;
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeFields()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> currentRegister)
+void HtmlWriter::writeFields(QTextStream& stream, QSharedPointer<Register> currentRegister,
+    QList<int> registerSubHeaderNumbers)
 {
     if (currentRegister->getFields()->isEmpty())
     {
         return;
     }
 
-    stream << indent(3) << "<h4>Register " << currentRegister->name() << " contains the following fields:</h4>" <<
-        Qt::endl;
+    // Write all register fields in one table.
+    writeFieldTable(stream, currentRegister);
 
-    QString tableTitle = "List of fields contained within register " + currentRegister->name() + ".";
-    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
-
-    writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS, 4);
+    int fieldNumber = 1;
 
     for (auto const& field : *currentRegister->getFields())
     {
-        QStringList fieldTableCells(QStringList()
-            << "<a id=\"" + vlnvString_ + ".field." + field->name() + "\">" + field->name() + "</a>"
-            << expressionFormatter_->formatReferringExpression(field->getBitOffset())
-            << expressionFormatter_->formatReferringExpression(field->getBitWidth())
-            << field->getVolatile().toString()
-            << AccessTypes::access2Str(field->getAccess())
-            << getFieldResetInfo(field)
-            << field->description()
-        );
+        QList fieldSubHeaderNumbers = registerSubHeaderNumbers;
+        fieldSubHeaderNumbers << fieldNumber;
 
-        writeTableRow(stream, fieldTableCells, 4);
+        writeSubHeader(stream, fieldSubHeaderNumbers, QStringLiteral("Field ") + field->name(), 3);
+        writeSingleField(stream, field);
+
+        ++fieldNumber;
     }
-
-    stream << indent(3) << "</table>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -470,32 +486,15 @@ void HtmlWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
             interfaceNumber,
         });
 
-        writeSubHeader(stream, subHeaderNumbers, interface->name(), 3);
+        writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Bus interface ") + interface->name(), 3);
 
-        stream << indent(3) << "<p>" << Qt::endl;
+        auto const ports = component_->getPortsMappedInInterface(interface->name());
+        
+        writeInterfaceInfo(stream, interface, !ports.isEmpty());
 
-        if (!interface->description().isEmpty())
+        if (!ports.isEmpty())
         {
-            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
-                interface->description() << "<br>" << Qt::endl;
-        }
-
-        stream << indent(3) << HTML::INDENT << "<strong>Interface mode:</strong> " <<
-            General::interfaceMode2Str(interface->getInterfaceMode()) << "<br>" << Qt::endl;
-
-        stream << indent(3) << HTML::INDENT <<
-            "<strong>Ports used in this interface:</strong>";
-
-        if (auto const& ports = component_->getPortsMappedInInterface(interface->name()); ports.isEmpty())
-        {
-            stream << " None" << Qt::endl;
-        }
-        else
-        {
-            stream << Qt::endl << indent(3) << "</p>" << Qt::endl;
-
-            QString tableTitle("List of ports contained in interface " + (interface->name()) + ".");
-            writePortTable(stream, tableTitle, ports);
+            writePortTable(stream, "", ports);
         }
 
         ++interfaceNumber;
@@ -515,7 +514,8 @@ void HtmlWriter::writeFileSets(QTextStream& stream, int& subHeaderNumber)
 
     for (auto const& fileSet : fileSets)
     {
-        writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, fileSetNumber }), fileSet->name(), 3);
+        writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, fileSetNumber }),
+            QStringLiteral("File set ") + fileSet->name(), 3);
 
         stream << indent(3) << "<p>" << Qt::endl;
 
@@ -559,7 +559,8 @@ void HtmlWriter::writeSubHeader(QTextStream& stream, int subHeaderNumber,
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeSubHeader()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers, QString const& title, int level) const
+void HtmlWriter::writeSubHeader(QTextStream& stream, QList<int> const& subHeaderNumbers,
+    QString const& title, int level) const
 {
     // Writes the header level
     QString headerTag = QStringLiteral("<h") + QString::number(level) + QStringLiteral(">");
@@ -589,69 +590,26 @@ void HtmlWriter::writeDescription(QTextStream& stream, QString const& descriptio
     stream << indent(3) << "<p>" << Qt::endl;
     if (!description.isEmpty())
     {
-        stream << indent(3) << HTML::INDENT << "<strong>Description: </strong>" <<
+        stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
             description << "<br>" << Qt::endl;
     }
     stream << indent(3) << "</p>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
-// Function: HtmlWriter::writeReferencedComponentInstantiation()
+// Function: HtmlWriter::writeInfoParagraph()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeReferencedComponentInstantiation(QTextStream& stream,
-    QSharedPointer<ComponentInstantiation> instantiation,
-    QSharedPointer<ExpressionFormatter> instantiationFormatter,
-    QSharedPointer<QList<QSharedPointer<Parameter>>> moduleParameters,
-    QSharedPointer<QList<QSharedPointer<Parameter>>> parameters)
+void HtmlWriter::writeInfoParagraph(QTextStream& stream, QStringList const& names, QStringList const& values)
 {
-    writeImplementationDetails(stream, instantiation);
-    writeFileSetReferences(stream, instantiation);
-    writeFileBuildCommands(stream, instantiation, instantiationFormatter.data());
-    writeParameterTable(stream, QString("Module parameters:"), moduleParameters, instantiationFormatter.data());
-    writeParameterTable(stream, QString("Parameters:"), parameters, instantiationFormatter.data());
-}
+    stream << indent(3) << "<p>" << Qt::endl;
 
-//-----------------------------------------------------------------------------
-// Function: HtmlWriter::writeReferencedDesignConfigurationInstantiation()
-//-----------------------------------------------------------------------------
-void HtmlWriter::writeReferencedDesignConfigurationInstantiation(QTextStream& stream, QSharedPointer<ListParameterFinder> configurationFinder, QSharedPointer<DesignConfigurationInstantiation> instantiation, QSharedPointer<ExpressionFormatter> instantiationFormatter)
-{
-    if (auto const& configurationVLNV = instantiation->getDesignConfigurationReference(); configurationVLNV)
+    for (auto i = 0; i < names.length(); ++i)
     {
-        QSharedPointer<Document> configurationDocument = libraryHandler_->getModel(*configurationVLNV);
-        if (configurationDocument)
-        {
-            QSharedPointer<DesignConfiguration> configuration =
-                configurationDocument.dynamicCast<DesignConfiguration>();
-
-            if (configuration)
-            {
-                configurationFinder->setParameterList(configuration->getParameters());
-
-                QString header = QString("Parameters of the referenced design configuration %1:").
-                    arg(configurationVLNV->toString());
-                QSharedPointer<ExpressionFormatter> configurationFormatter(new ExpressionFormatter(configurationFinder));
-
-                writeParameterTable(stream, header, configuration->getParameters(), configurationFormatter.data());
-                writeConfigurableElementValues(stream,
-                    instantiation->getDesignConfigurationReference(), instantiationFormatter.data());
-            }
-        }
+        stream << indent(3) << HTML::INDENT << "<strong>" << names.at(i) << ":</strong> "
+            << values.at(i) << "<br>" << Qt::endl;
     }
 
-    writeParameterTable(stream, QString("Design configuration instantiation parameters:"),
-        instantiation->getParameters(), instantiationFormatter.data());
-}
-
-//-----------------------------------------------------------------------------
-// Function: HtmlWriter::writeReferencedDesignInstantiation()
-//-----------------------------------------------------------------------------
-void HtmlWriter::writeReferencedDesignInstantiation(QTextStream& stream, QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign, ExpressionFormatter* designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
-{
-    QString header = QString("Parameters of the referenced design %1:").arg(designVLNV->toString());
-    writeParameterTable(stream, header, instantiatedDesign->getParameters(), designFormatter);
-
-    writeConfigurableElementValues(stream, designVLNV, instantiationFormatter.data());
+    stream << indent(3) << "</p>" << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -662,13 +620,13 @@ void HtmlWriter::writeErrorMessage(QTextStream& stream, QString const& message)
     stream << indent(3) << "<p>" << Qt::endl;
     stream << indent(3) << "<strong><font color=red>" << message << "</font></strong><br>" << Qt::endl;
     stream << indent(3) << "</p>" << Qt::endl;
-
 }
 
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeDocumentReference()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeDocumentReference(QTextStream& stream, QString const& documentType, QSharedPointer<ConfigurableVLNVReference> vlnvReference)
+void HtmlWriter::writeDocumentReference(QTextStream& stream, QString const& documentType,
+    QSharedPointer<ConfigurableVLNVReference> vlnvReference)
 {
     if (!vlnvReference)
     {
@@ -699,7 +657,8 @@ void HtmlWriter::writeDocumentReference(QTextStream& stream, QString const& docu
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeDiagram()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeDiagram(QTextStream& stream, QString const& title, QString const& link, QString const& altText)
+void HtmlWriter::writeDiagram(QTextStream& stream, QString const& title,
+    QString const& link, QString const& altText)
 {
     stream << indent(3) << title << "<br>" << Qt::endl;
     stream << indent(3) << "<img src=\"" << link << "\" alt=\"" << altText << "\"><br>" << Qt::endl;
@@ -708,7 +667,8 @@ void HtmlWriter::writeDiagram(QTextStream& stream, QString const& title, QString
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeDesignInstances()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> configuration)
+void HtmlWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> configuration)
 {
     if (design->getComponentInstances()->isEmpty())
     {
@@ -760,9 +720,94 @@ QString HtmlWriter::indent(int n) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: HtmlWriter::writeRegisterTable()
+//-----------------------------------------------------------------------------
+void HtmlWriter::writeRegisterTable(QTextStream& stream, QList<QSharedPointer<Register>> registers)
+{
+    QStringList allRegistersTableHeader;
+    allRegistersTableHeader << QStringLiteral("Register name");
+    allRegistersTableHeader.append(DocumentationWriter::REGISTER_HEADERS);
+
+    stream << indent(3) << HTML::TABLE << "" << "\">" << Qt::endl;
+    writeTableHeader(stream, allRegistersTableHeader, 4);
+
+    for (auto const& currentRegister : registers)
+    {
+        QStringList registerInfoTableRowCells(QStringList()
+            << currentRegister->name()
+            << expressionFormatter_->formatReferringExpression(currentRegister->getAddressOffset())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getSize())
+            << expressionFormatter_->formatReferringExpression(currentRegister->getDimension())
+            << currentRegister->getVolatile()
+            << AccessTypes::access2Str(currentRegister->getAccess())
+        );
+
+        writeTableRow(stream, registerInfoTableRowCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HtmlWriter::writeFieldTable()
+//-----------------------------------------------------------------------------
+void HtmlWriter::writeFieldTable(QTextStream& stream, QSharedPointer<Register> reg)
+{
+    stream << indent(3) << "<h4>Register '" << reg->name() << "' contains the following fields:</h4>" <<
+        Qt::endl;
+
+    QString tableTitle = "List of fields contained within register " + reg->name() + ".";
+    stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
+
+    writeTableHeader(stream, DocumentationWriter::FIELD_HEADERS, 4);
+
+    for (auto const& field : *reg->getFields())
+    {
+        QStringList fieldTableCells(QStringList()
+            << "<a id=\"" + vlnvString_ + ".field." + field->name() + "\">" + field->name() + "</a>"
+            << expressionFormatter_->formatReferringExpression(field->getBitOffset())
+            << expressionFormatter_->formatReferringExpression(field->getBitWidth())
+            << field->getVolatile().toString()
+            << AccessTypes::access2Str(field->getAccess())
+            << getFieldResetInfo(field)
+            << field->description()
+        );
+
+        writeTableRow(stream, fieldTableCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HtmlWriter::writeFieldEnumerations()
+//-----------------------------------------------------------------------------
+void HtmlWriter::writeFieldEnumerations(QTextStream& stream, QSharedPointer<Field> field)
+{
+    auto const enumerations = field->getEnumeratedValues();
+
+    if (enumerations->isEmpty())
+    {
+        return;
+    }
+
+    writeSubHeader(stream, {}, "Enumerations:", 4);
+
+    stream << indent(3) << HTML::TABLE << "" << "\">" << Qt::endl;
+
+    writeTableHeader(stream, { "Name", "Value" }, 4);
+
+    for (auto const& enumeration : *enumerations)
+    {
+        writeTableRow(stream, { enumeration->name(), enumeration->getValue() }, 4);
+    }
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeTableRow()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& cells, int indentation)
+void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& cells, int indentation) const
 {
     stream << indent(indentation) << "<tr>" << Qt::endl;
     
@@ -777,7 +822,7 @@ void HtmlWriter::writeTableRow(QTextStream& stream, QStringList const& cells, in
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeTableHeader()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& headerCells, int indentation)
+void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& headerCells, int indentation) const
 {
     stream << indent(indentation) << "<tr>" << Qt::endl;
 
@@ -792,8 +837,9 @@ void HtmlWriter::writeTableHeader(QTextStream& stream, QStringList const& header
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writePortTable()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writePortTable(QTextStream& stream, QString const& tableTitle, QList<QSharedPointer<Port>> ports)
-{   
+void HtmlWriter::writePortTable(QTextStream& stream, QString const& tableTitle,
+    QList<QSharedPointer<Port>> ports) const
+{
     stream << indent(3) << HTML::TABLE << tableTitle << "\">" << Qt::endl;
 
     writeTableHeader(stream, DocumentationWriter::PORT_HEADERS, 4);
@@ -834,7 +880,7 @@ void HtmlWriter::writeFileSetGroupdIdentifiers(QTextStream& stream, QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeDefaultFileBuilders()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet)
+void HtmlWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<FileSet> fileSet) const
 {
     const auto defaultFileBuilders = fileSet->getDefaultFileBuilders();
 
@@ -870,7 +916,8 @@ void HtmlWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<Fi
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeFiles()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet, int subHeaderNumber, int fileSetNumber)
+void HtmlWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet,
+    int subHeaderNumber, int fileSetNumber)
 {
     QList<QSharedPointer<File> > files = *fileSet->getFiles();
 
@@ -906,10 +953,11 @@ void HtmlWriter::writeFiles(QTextStream& stream, QSharedPointer<FileSet> fileSet
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeSingleFile()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file)
+void HtmlWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file) const
 {
     QString relativeFilePath = file->name();
-    QString absFilePath = General::getAbsolutePath(libraryHandler_->getPath(component_->getVlnv()), relativeFilePath);
+    QString absFilePath = General::getAbsolutePath(libraryHandler_->getPath(component_->getVlnv()),
+        relativeFilePath);
 
     QFileInfo fileInfo(absFilePath);
 
@@ -936,7 +984,8 @@ void HtmlWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file)
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeImplementationDetails()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeImplementationDetails(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
+void HtmlWriter::writeImplementationDetails(QTextStream& stream,
+    QSharedPointer<ComponentInstantiation> instantiation)
 {
     QString language = instantiation->getLanguage();
     QString library = instantiation->getLibraryName();
@@ -1026,7 +1075,7 @@ void HtmlWriter::writeFileSetReferences(QTextStream& stream, QSharedPointer<Comp
 // Function: HtmlWriter::writeFileBuildCommands()
 //-----------------------------------------------------------------------------
 void HtmlWriter::writeFileBuildCommands(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation,
-    ExpressionFormatter* instantiationFormatter)
+    QSharedPointer<ExpressionFormatter> instantiationFormatter)
 {
     if (instantiation->getDefaultFileBuilders()->isEmpty())
     {
@@ -1056,7 +1105,9 @@ void HtmlWriter::writeFileBuildCommands(QTextStream& stream, QSharedPointer<Comp
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeConfigurableElementValues()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeConfigurableElementValues(QTextStream& stream, QSharedPointer<ConfigurableVLNVReference> vlnvReference, ExpressionFormatter* instantiationFormatter)
+void HtmlWriter::writeConfigurableElementValues(QTextStream& stream,
+    QSharedPointer<ConfigurableVLNVReference> vlnvReference,
+    QSharedPointer<ExpressionFormatter> instantiationFormatter)
 {
     if (!vlnvReference || !vlnvReference->getConfigurableElementValues() ||
         vlnvReference->getConfigurableElementValues()->isEmpty())
@@ -1083,10 +1134,49 @@ void HtmlWriter::writeConfigurableElementValues(QTextStream& stream, QSharedPoin
     stream << indent(3) << "</table>" << Qt::endl;
 }
 
+void HtmlWriter::writeModuleParameterTable(QTextStream& stream, QString const& tableHeading,
+    QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters,
+    QSharedPointer<ExpressionFormatter> formatter)
+{
+    if (!moduleParameters || moduleParameters->isEmpty())
+    {
+        return;
+    }
+
+    stream << indent(3) << "<p><strong>" << tableHeading << "</strong></p>" << Qt::endl;
+
+    stream << indent(3) << HTML::TABLE << "\">" << Qt::endl;
+    writeTableHeader(stream, DocumentationWriter::MODULE_PARAMETER_HEADERS, 4);
+
+    for (auto const& parameter : *moduleParameters)
+    {
+        QSharedPointer<ModuleParameter> moduleParameter = parameter.dynamicCast<ModuleParameter>();
+
+        QStringList paramCells(QStringList()
+            << moduleParameter->name()
+            << moduleParameter->getType()
+            << formatter->formatReferringExpression(moduleParameter->getValue())
+            << moduleParameter->getDataType()
+            << moduleParameter->getUsageType()
+            << moduleParameter->getValueResolve()
+            << formatter->formatReferringExpression(moduleParameter->getVectorLeft())
+            << formatter->formatReferringExpression(moduleParameter->getVectorRight())
+            << formatter->formatReferringExpression(moduleParameter->getArrayLeft())
+            << formatter->formatReferringExpression(moduleParameter->getArrayRight())
+            << moduleParameter->description()
+        );
+
+        writeTableRow(stream, paramCells, 4);
+    }
+
+    stream << indent(3) << "</table>" << Qt::endl;
+}
+
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::getComponentInstanceConfigurableElements()
 //-----------------------------------------------------------------------------
-QString HtmlWriter::getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance, QSharedPointer<Design> design)
+QString HtmlWriter::getComponentInstanceConfigurableElements(QSharedPointer<ComponentInstance> instance,
+    QSharedPointer<Design> design)
 {
     QString cell;
     VLNV componentVLNV = *instance->getComponentRef();
@@ -1127,16 +1217,15 @@ QString HtmlWriter::getComponentInstanceConfigurableElements(QSharedPointer<Comp
 //-----------------------------------------------------------------------------
 // Function: HtmlWriter::writeParameterTable()
 //-----------------------------------------------------------------------------
-void HtmlWriter::writeParameterTable(QTextStream& stream, QString const& title,
-    ParameterList parameters,
-    ExpressionFormatter* formatter)
+void HtmlWriter::writeParameterTable(QTextStream& stream, QString const& tableHeading,
+    ParameterList parameters, QSharedPointer<ExpressionFormatter> formatter)
 {
     if (!parameters || parameters->isEmpty())
     {
         return;
     }
 
-    stream << indent(3) << "<p>" << title << "</p>" << Qt::endl;
+    stream << indent(3) << "<p><strong>" << tableHeading << "</strong></p>" << Qt::endl;
 
     stream << indent(3) << HTML::TABLE <<"\">" << Qt::endl;
 

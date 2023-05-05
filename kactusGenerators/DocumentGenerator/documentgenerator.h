@@ -154,7 +154,7 @@ public:
      *      @param [in] addressBlockNumber  The number that defines the address block.
      */
     void writeRegisters(QList <QSharedPointer <Register> > registers, QTextStream& stream, int subHeaderNumber,
-        int memoryMapNumber, int addressBlockNumber);
+        int memoryMapNumber, int addressBlockNumber, int registerDataNumber);
 
     /*!
      *  Write the fields of the register.
@@ -162,7 +162,7 @@ public:
      *      @param [in] currentRegister     The register, whose fields are to be written.
      *      @param [in] stream              The text stream to write the documentation into.
      */
-    void writeFields(QSharedPointer <Register> currentRegister, QTextStream& stream);
+    void writeFields(QSharedPointer <Register> currentRegister, QTextStream& stream, QList<int> subHeaderNumbers);
 
     /*!
      *  Write the ports of the component.
@@ -203,6 +203,13 @@ public:
      *      @param [in] stream  The text stream to write the documentation into.
      */
     void writeEndOfDocument(QTextStream& stream);
+
+    /*!
+     *  Sets the images folder path.
+     *
+     *      @param [in] path    The new images path.
+     */
+    void setImagesPath(QString const& path);
 
 signals:
 
@@ -317,7 +324,7 @@ private:
      *      @return The module parameters as a list of parameters
      */
     QSharedPointer<QList<QSharedPointer<Parameter> > > getModuleParametersAsParameters(
-        QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
+        QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters) const;
 
     /*!
      *  Get the selected design configuration instantiation.
@@ -408,6 +415,9 @@ private:
 
     //! The current document format
     DocumentFormat currentFormat_;
+
+    //! The image save path
+    QString imagesPath_;
 };
 
 #endif // DOCUMENTGENERATOR_H

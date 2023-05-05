@@ -43,6 +43,7 @@
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QString>
+#include <QDir>
 #include <QFile>
 #include <QDateTime>
 #include <QSettings>
@@ -77,13 +78,11 @@ DocumentGenerator::DocumentGenerator(LibraryInterface* handler, const VLNV& vlnv
     mdWriter_(nullptr),
     htmlWriter_(nullptr),
     componentFinder_(nullptr),
-    currentFormat_(DocumentFormat::MD)
+    currentFormat_(DocumentFormat::MD),
+    imagesPath_()
 {
     Q_ASSERT(handler);
     Q_ASSERT(parent);
-
-    // this function can be called for only the top document generator
-    Q_ASSERT(parentWidget_);
 
     // parse the model for the component
     component_ = libraryHandler_->getModel(vlnv).dynamicCast<Component>();
@@ -207,6 +206,16 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
     parseChildItems(objects, currentComponentNumber);
 
     targetPath_ = targetPath;
+
+    QFileInfo docInfo(targetPath_);
+
+    imagesPath_ = docInfo.absolutePath() + "/images";
+    
+    if (QDir imageDir(imagesPath_); !imageDir.exists())
+    {
+        imageDir.mkdir(imagesPath_);
+    }
+
     writeHeader(stream);
 
     writer_->writeTableOfContentsHeader(stream);
@@ -248,22 +257,43 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
 
         QSettings settings;
 
+        QString docFileType = "";
+        if (currentFormat_ == DocumentFormat::HTML)
+        {
+            docFileType = "html";
+        }
+        else if (currentFormat_ == DocumentFormat::MD)
+        {
+            docFileType = "markdown";
+        }
+
         // create a new file and add it to file set
         QSharedPointer<File> docFile = documentationFileSet->addFile(relativePath, settings);
         Q_ASSERT(docFile);
         docFile->setIncludeFile(false);
-        docFile->setDescription(tr("Html file that contains the documentation "
+        docFile->setDescription(tr("File that contains the documentation "
             "for this component and subcomponents"));
+
+        if (!docFile->getFileTypes()->contains(docFileType))
+        {
+            docFile->getFileTypes()->append(docFileType);
+        }
 
         // add all created pictures to the file set
         for (auto const& pictureName : pictureList)
         {
             QString relativePicPath = General::getRelativePath(xmlPath, pictureName);
+            QString picFileType = "pngImage";
 
             QSharedPointer<File> picFile = documentationFileSet->addFile(relativePicPath, settings);
             Q_ASSERT(picFile);
             picFile->setIncludeFile(false);
-            picFile->setDescription(tr("Preview picture needed by the html document."));
+            picFile->setDescription(tr("Preview picture needed by the documentation."));
+
+            if (!picFile->getFileTypes()->contains(picFileType))
+            {
+                picFile->getFileTypes()->append(picFileType);
+            }
         }
 
         libraryHandler_->writeModelToFile(component_);
@@ -300,6 +330,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
     QStringList& filesToInclude)
 {
     writer_->setTargetPath(targetPath);
+    writer_->setImagesPath(imagesPath_);
     targetPath_ = targetPath;
 
     // write the component header, picture and info
@@ -322,6 +353,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
     // tell each child to write it's documentation
     for (auto const& generator : childInstances_)
     {
+        generator->setImagesPath(imagesPath_);
         generator->writeDocumentation(stream, targetPath, filesToInclude);
     }
 }
@@ -362,8 +394,8 @@ void DocumentGenerator::writeMemoryMaps(QTextStream& stream, int& subHeaderNumbe
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeAddressBlock()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > addressBlocks, QTextStream& stream,
-    int subHeaderNumber, int memoryMapNumber)
+void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > addressBlocks,
+    QTextStream& stream, int subHeaderNumber, int memoryMapNumber)
 {
     writer_->writeAddressBlocks(stream, addressBlocks, subHeaderNumber, memoryMapNumber);
 }
@@ -372,17 +404,19 @@ void DocumentGenerator::writeAddressBlocks(QList<QSharedPointer<AddressBlock> > 
 // Function: documentgenerator::writeRegisters()
 //-----------------------------------------------------------------------------
 void DocumentGenerator::writeRegisters(QList<QSharedPointer<Register> > registers, QTextStream& stream,
-    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber)
+    int subHeaderNumber, int memoryMapNumber, int addressBlockNumber, int registerDataNumber)
 {
-    writer_->writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber, addressBlockNumber);
+    writer_->writeRegisters(stream, registers, subHeaderNumber, memoryMapNumber,
+        addressBlockNumber, registerDataNumber);
 }
 
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeFields()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister, QTextStream& stream)
+void DocumentGenerator::writeFields(QSharedPointer<Register> currentRegister,
+    QTextStream& stream, QList<int> subHeaderNumbers)
 {
-    writer_->writeFields(stream, currentRegister);
+    writer_->writeFields(stream, currentRegister, subHeaderNumbers);
 }
 
 //-----------------------------------------------------------------------------
@@ -453,9 +487,18 @@ void DocumentGenerator::writeEndOfDocument(QTextStream& stream)
 }
 
 //-----------------------------------------------------------------------------
+// Function: documentgenerator::setImagesPath()
+//-----------------------------------------------------------------------------
+void DocumentGenerator::setImagesPath(QString const& path)
+{
+    imagesPath_ = path;
+}
+
+//-----------------------------------------------------------------------------
 // Function: documentgenerator::writeSingleView()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View> view, int const& subHeaderNumber, int const& viewNumber, QStringList& pictureList)
+void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View> view,
+    int const& subHeaderNumber, int const& viewNumber, QStringList& pictureList)
 {
     QList subHeaderNumbers({ componentNumber_, subHeaderNumber, viewNumber });
     writer_->writeSubHeader(stream, subHeaderNumbers, "View: " + view->name(), 3);
@@ -501,7 +544,9 @@ void DocumentGenerator::writeSingleView(QTextStream& stream, QSharedPointer<View
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeReferencedComponentInstantiation()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::writeReferencedComponentInstantiation(QTextStream& stream, QString const& instantiationReference, int const& subHeaderNumber, int const& viewNumber, int const& instantiationNumber)
+void DocumentGenerator::writeReferencedComponentInstantiation(QTextStream& stream,
+    QString const& instantiationReference, int const& subHeaderNumber,
+    int const& viewNumber, int const& instantiationNumber)
 {
     writer_->writeSubHeader(stream, QList({ componentNumber_, subHeaderNumber, viewNumber, instantiationNumber }),
         "Component instantiation: " + instantiationReference, 4);
@@ -526,8 +571,7 @@ void DocumentGenerator::writeReferencedComponentInstantiation(QTextStream& strea
     parameterFinder->setParameterList(parameters);
 
     QSharedPointer<ListParameterFinder> moduleParameterFinder(new ListParameterFinder());
-    ParameterList moduleParameters =
-        getModuleParametersAsParameters(instantiation->getModuleParameters());
+    auto moduleParameters = getModuleParametersAsParameters(instantiation->getModuleParameters());
     moduleParameterFinder->setParameterList(moduleParameters);
 
     QSharedPointer<MultipleParameterFinder> instantiationParameterFinder(new MultipleParameterFinder());
@@ -588,7 +632,7 @@ void DocumentGenerator::writeReferencedDesignConfigurationInstantiation(QTextStr
         instantiation->getDesignConfigurationReference());
 
     writer_->writeReferencedDesignConfigurationInstantiation(stream, configurationFinder,
-        instantiation, instantiationFormatter);
+        instantiation, instantiationFormatter, libraryHandler_);
 }
 
 //-----------------------------------------------------------------------------
@@ -647,10 +691,10 @@ void DocumentGenerator::writeReferencedDesignInstantiation(QTextStream& stream,
         designFinder->setParameterList(instantiatedDesign->getParameters());
 
         QString header = QString("Parameters of the referenced design %1:").arg(designVLNV->toString());
-        ExpressionFormatter designFormatter(designFinder);
+        QSharedPointer<ExpressionFormatter> designFormatter(new ExpressionFormatter(designFinder));
 
         writer_->writeReferencedDesignInstantiation(stream, designVLNV, instantiatedDesign,
-            &designFormatter, instantiationFormatter);
+            designFormatter, instantiationFormatter);
     }
 }
 
@@ -670,11 +714,8 @@ void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> vi
         return;
     }
 
-    QFileInfo documentInfo(targetPath_);
-    QString documentPath = documentInfo.absolutePath();
-
-    QString designPicPath = documentPath
-        + (documentPath.isEmpty() ? QStringLiteral("") : QStringLiteral("/"))
+    QString designPicPath = imagesPath_
+        + (imagesPath_.isEmpty() ? QStringLiteral("") : QStringLiteral("/"))
         + component_->getVlnv().toString(".")
         + QStringLiteral(".")
         + view->name()
@@ -684,7 +725,9 @@ void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> vi
 
     QString designDiagramTitle = QString("Diagram of design %1:").arg(design->getVlnv().toString());
     QString designDiagramAltText = QString("View: %1 preview picture").arg(view->name());
-    QString relativePicPath = component_->getVlnv().toString(".")
+    QString relativePicPath = imagesPath_.split("/").back()
+        + "/"
+        + component_->getVlnv().toString(".")
         + QStringLiteral(".")
         + view->name()
         + QStringLiteral(".png");
@@ -696,7 +739,8 @@ void DocumentGenerator::writeDesign(QTextStream& stream, QSharedPointer<View> vi
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::createDesignPicture()
 //-----------------------------------------------------------------------------
-void DocumentGenerator::createDesignPicture(QStringList& pictureList, QString const& viewName, QString const& designPicPath)
+void DocumentGenerator::createDesignPicture(QStringList& pictureList,
+    QString const& viewName, QString const& designPicPath)
 {
     DesignWidget* designWidget(designWidgetFactory_->makeHWDesignWidget());
 
@@ -735,7 +779,8 @@ void DocumentGenerator::createDesignPicture(QStringList& pictureList, QString co
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::getDesignInstantiation()
 //-----------------------------------------------------------------------------
-QSharedPointer<DesignInstantiation> DocumentGenerator::getDesignInstantiation(QString const& designReference) const
+QSharedPointer<DesignInstantiation> DocumentGenerator::getDesignInstantiation(
+    QString const& designReference) const
 {
     for(auto const& instantiation : *component_->getDesignInstantiations())
     {
@@ -751,7 +796,8 @@ QSharedPointer<DesignInstantiation> DocumentGenerator::getDesignInstantiation(QS
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::getComponentInstantiation()
 //-----------------------------------------------------------------------------
-QSharedPointer<ComponentInstantiation> DocumentGenerator::getComponentInstantiation(QString const& instantiationReference) const
+QSharedPointer<ComponentInstantiation> DocumentGenerator::getComponentInstantiation(
+    QString const& instantiationReference) const
 {
     for (auto const& instantiation : *component_->getComponentInstantiations())
     {
@@ -768,7 +814,7 @@ QSharedPointer<ComponentInstantiation> DocumentGenerator::getComponentInstantiat
 // Function: documentgenerator::getModuleParametersAsParameters()
 //-----------------------------------------------------------------------------
 ParameterList DocumentGenerator::getModuleParametersAsParameters(
-    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters)
+    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters) const
 {
     ParameterList newModuleParameters(
         new QList<QSharedPointer<Parameter> >());
@@ -831,7 +877,8 @@ QSharedPointer<DesignConfiguration> DocumentGenerator::getDesignConfiguration(QS
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::getDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view, QSharedPointer<DesignConfiguration> configuration) const
+QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view,
+    QSharedPointer<DesignConfiguration> configuration) const
 {
     QSharedPointer<ConfigurableVLNVReference> designVLNV(nullptr);
     if (!view->getDesignInstantiationRef().isEmpty())
@@ -871,17 +918,14 @@ QSharedPointer<Design> DocumentGenerator::getDesign(QSharedPointer<View> view, Q
 //-----------------------------------------------------------------------------
 void DocumentGenerator::createComponentPicture(QStringList& pictureList)
 {
-    QSharedPointer<Component> component = component_;
-
     ComponentPreviewBox compBox(libraryHandler_);
     compBox.hide();
-    compBox.setComponent(component);
+    compBox.setComponent(component_);
 
-    QFileInfo docInfo(targetPath_);
-    QString compPicPath = docInfo.absolutePath();
-    compPicPath += "/";
-    compPicPath += component->getVlnv().toString(".");
-    compPicPath += ".png";
+    QString compPicPath = imagesPath_
+        + "/"
+        + component_->getVlnv().toString(".")
+        + ".png";
 
     QFile compPicFile(compPicPath);
 
