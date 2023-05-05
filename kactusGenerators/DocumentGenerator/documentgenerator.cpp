@@ -257,22 +257,43 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
 
         QSettings settings;
 
+        QString docFileType = "";
+        if (currentFormat_ == DocumentFormat::HTML)
+        {
+            docFileType = "html";
+        }
+        else if (currentFormat_ == DocumentFormat::MD)
+        {
+            docFileType = "markdown";
+        }
+
         // create a new file and add it to file set
         QSharedPointer<File> docFile = documentationFileSet->addFile(relativePath, settings);
         Q_ASSERT(docFile);
         docFile->setIncludeFile(false);
-        docFile->setDescription(tr("Html file that contains the documentation "
+        docFile->setDescription(tr("File that contains the documentation "
             "for this component and subcomponents"));
+
+        if (!docFile->getFileTypes()->contains(docFileType))
+        {
+            docFile->getFileTypes()->append(docFileType);
+        }
 
         // add all created pictures to the file set
         for (auto const& pictureName : pictureList)
         {
             QString relativePicPath = General::getRelativePath(xmlPath, pictureName);
+            QString picFileType = "pngImage";
 
             QSharedPointer<File> picFile = documentationFileSet->addFile(relativePicPath, settings);
             Q_ASSERT(picFile);
             picFile->setIncludeFile(false);
-            picFile->setDescription(tr("Preview picture needed by the html document."));
+            picFile->setDescription(tr("Preview picture needed by the documentation."));
+
+            if (!picFile->getFileTypes()->contains(picFileType))
+            {
+                picFile->getFileTypes()->append(picFileType);
+            }
         }
 
         libraryHandler_->writeModelToFile(component_);
