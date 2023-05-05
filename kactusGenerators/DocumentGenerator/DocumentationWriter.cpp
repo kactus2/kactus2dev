@@ -16,6 +16,7 @@
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/LibraryInterface.h>
@@ -288,6 +289,9 @@ void DocumentationWriter::writeReferencedDesignConfigurationInstantiation(QTextS
         instantiation->getParameters(), instantiationFormatter);
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::writeReferencedDesignInstantiation()
+//-----------------------------------------------------------------------------
 void DocumentationWriter::writeReferencedDesignInstantiation(QTextStream& stream,
     QSharedPointer<ConfigurableVLNVReference> designVLNV, QSharedPointer<Design> instantiatedDesign,
     QSharedPointer<ExpressionFormatter> designFormatter, QSharedPointer<ExpressionFormatter> instantiationFormatter)
@@ -298,6 +302,9 @@ void DocumentationWriter::writeReferencedDesignInstantiation(QTextStream& stream
     writeConfigurableElementValues(stream, designVLNV, instantiationFormatter);
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::writeAddressBlockInfo()
+//-----------------------------------------------------------------------------
 void DocumentationWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock)
 {
     QStringList addressBlockInfoValues(QStringList()
@@ -317,6 +324,9 @@ void DocumentationWriter::writeAddressBlockInfo(QTextStream& stream, QSharedPoin
     writeInfoParagraph(stream, addressBlockInfoNames, addressBlockInfoValues);
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::writeSingleRegister()
+//-----------------------------------------------------------------------------
 void DocumentationWriter::writeSingleRegister(QTextStream& stream, QSharedPointer<Register> reg, QList<int> subHeaderNumbers, int& registerDataNumber)
 {
     writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Register ") + reg->name(), 3);
@@ -341,6 +351,9 @@ void DocumentationWriter::writeSingleRegister(QTextStream& stream, QSharedPointe
     ++registerDataNumber;
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::writeRegisterFileInfo()
+//-----------------------------------------------------------------------------
 void DocumentationWriter::writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile)
 {
     QStringList registerInfoValues(QStringList()
@@ -353,6 +366,9 @@ void DocumentationWriter::writeRegisterFileInfo(QTextStream& stream, QSharedPoin
     writeInfoParagraph(stream, REGISTER_FILE_HEADERS, registerInfoValues);
 }
 
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::writeSingleField()
+//-----------------------------------------------------------------------------
 void DocumentationWriter::writeSingleField(QTextStream& stream, QSharedPointer<Field> field)
 {
     QStringList fieldInfoTextValues(QStringList()
@@ -370,4 +386,47 @@ void DocumentationWriter::writeSingleField(QTextStream& stream, QSharedPointer<F
     writeInfoParagraph(stream, fieldInfoTextNames, fieldInfoTextValues);
 
     writeFieldEnumerations(stream, field);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::writeInterfaceInfo()
+//-----------------------------------------------------------------------------
+void DocumentationWriter::writeInterfaceInfo(QTextStream& stream, QSharedPointer<BusInterface> interface,
+    bool hasPorts)
+{
+    auto const interfaceMode = General::interfaceMode2Str(interface->getInterfaceMode());
+    QStringList absDefinitionVlnvs;
+
+    for (auto const& absDef : *interface->getAbstractionTypes())
+    {
+        absDefinitionVlnvs << absDef->getAbstractionRef()->toString();
+    }
+
+    QStringList interfaceInfoNames(QStringList()
+        << QStringLiteral("Description")
+        << QStringLiteral("Interface mode")
+    );
+
+    QStringList interfaceInfoValues(QStringList()
+        << interface->description()
+        << interfaceMode
+    );
+
+    if (interfaceMode == QStringLiteral("system"))
+    {
+        interfaceInfoNames << QStringLiteral("System group");
+        interfaceInfoValues << interface->getSystem();
+    }
+
+    interfaceInfoNames
+        << QStringLiteral("Bus definition")
+        << QStringLiteral("Abstraction definitions")
+        << QStringLiteral("Ports used in this interface");
+
+    interfaceInfoValues
+        << interface->getBusType().toString()
+        << absDefinitionVlnvs.join(", ")
+        << (hasPorts ? QStringLiteral("") : QStringLiteral("None"));
+
+    writeInfoParagraph(stream, interfaceInfoNames, interfaceInfoValues);
 }

@@ -1117,18 +1117,22 @@ void tst_DocumentGenerator::testBusInterfacesWrittenWithoutPorts()
         "\t\t<h2><a id=\"" + topComponent_->getVlnv().toString() + ".interfaces\">1.1 Bus interfaces</a></h2>\n"
         "\t\t\t<h3>1.1.1 Bus interface " + busInterface->name() + "</h3>\n"
         "\t\t\t<p>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + busInterface->description() + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Interface mode:</strong> " +
         General::interfaceMode2Str(busInterface->getInterfaceMode()) + "<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Bus definition:</strong> Test:TestLibrary:FirstBusDef:1.0<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Abstraction definitions:</strong> Test:TestLibrary:FirstComponent:1.0, Test:TestLibrary:SecondComponent:1.0<br>\n"
-        "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong> None\n"
+        "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong> None<br>\n"
+        "\t\t\t</p>\n"
         "\t\t\t<h3>1.1.2 Bus interface " + busInterfaceWithSystemMode->name() + "</h3>\n"
         "\t\t\t<p>\n"
-        "\t\t\t" + getIndentString() + "<strong>Interface mode: system</strong><br>\n"
-        "\t\t\t" + getIndentString() + "<strong>System group: systemGroup</strong><br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Description:</strong> " + busInterfaceWithSystemMode->description() + "<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>Interface mode:</strong> system<br>\n"
+        "\t\t\t" + getIndentString() + "<strong>System group:</strong> systemGroup<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Bus definition:</strong> Test:TestLibrary:SecondBusDef:1.0<br>\n"
         "\t\t\t" + getIndentString() + "<strong>Abstraction definitions:</strong> Test:TestLibrary:SecondComponent:1.0<br>\n"
-        "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong> None\n"
+        "\t\t\t" + getIndentString() + "<strong>Ports used in this interface:</strong> None<br>\n"
+        "\t\t\t</p>\n"
         );
 
     checkOutputFile(expectedOutput);

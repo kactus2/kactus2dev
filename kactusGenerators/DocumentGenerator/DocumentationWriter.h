@@ -473,7 +473,7 @@ protected:
     void writeAddressBlockInfo(QTextStream& stream, QSharedPointer<AddressBlock> addressBlock);
 
     /*!
-     *  Writes info about a single register
+     *  Writes info about a single register.
      *
      *      @param [in] stream              The text stream to write into.
      *      @param [in] reg                 The register to be written.
@@ -484,7 +484,7 @@ protected:
         int& registerDataNumber);
 
     /*!
-     *  Writes info about a single register
+     *  Writes info about a register file.
      *
      *      @param [in] stream              The text stream to write into.
      *      @param [in] registerFile        The register file to be written.
@@ -492,12 +492,21 @@ protected:
     void writeRegisterFileInfo(QTextStream& stream, QSharedPointer<RegisterFile> registerFile);
 
     /*!
-     *  Writes a single field
+     *  Writes a single field.
      *
      *      @param [in] stream              The text stream to write into.
      *      @param [in] field               The field to be written.
      */
     void writeSingleField(QTextStream& stream, QSharedPointer<Field> field);
+
+    /*!
+     *  Writes information about a bus interface.
+     *
+     *      @param [in] stream              The text stream to write into.
+     *      @param [in] interface           The interface to be written.
+     *      @param [in] hasPorts            Flag that indicates if interface has ports.
+     */
+    void writeInterfaceInfo(QTextStream& stream, QSharedPointer<BusInterface> interface, bool hasPorts);
 
 private:
     //! The expression formatter, used to change parameter IDs into names.

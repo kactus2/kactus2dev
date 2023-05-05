@@ -487,30 +487,13 @@ void HtmlWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
 
         writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Bus interface ") + interface->name(), 3);
 
-        stream << indent(3) << "<p>" << Qt::endl;
+        auto const ports = component_->getPortsMappedInInterface(interface->name());
+        
+        writeInterfaceInfo(stream, interface, !ports.isEmpty());
 
-        if (!interface->description().isEmpty())
+        if (!ports.isEmpty())
         {
-            stream << indent(3) << HTML::INDENT << "<strong>Description:</strong> " <<
-                interface->description() << "<br>" << Qt::endl;
-        }
-
-        stream << indent(3) << HTML::INDENT << "<strong>Interface mode:</strong> " <<
-            General::interfaceMode2Str(interface->getInterfaceMode()) << "<br>" << Qt::endl;
-
-        stream << indent(3) << HTML::INDENT <<
-            "<strong>Ports used in this interface:</strong>";
-
-        if (auto const& ports = component_->getPortsMappedInInterface(interface->name()); ports.isEmpty())
-        {
-            stream << " None" << Qt::endl;
-        }
-        else
-        {
-            stream << Qt::endl << indent(3) << "</p>" << Qt::endl;
-
-            QString tableTitle("List of ports contained in interface " + (interface->name()) + ".");
-            writePortTable(stream, tableTitle, ports);
+            writePortTable(stream, "", ports);
         }
 
         ++interfaceNumber;

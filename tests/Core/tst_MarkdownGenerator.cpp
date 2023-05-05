@@ -924,6 +924,7 @@ void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
         "\n"
         "### 1.1.1 Bus interface " + busInterface->name() + "  \n"
         "\n"
+        "**Description:**   \n"
         "**Interface mode:** " + General::interfaceMode2Str(busInterface->getInterfaceMode()) + "  \n"
         "**Bus definition:** Test:TestLibrary:FirstBusDef:1.0  \n"
         "**Abstraction definitions:** Test:TestLibrary:FirstComponent:1.0, Test:TestLibrary:SecondComponent:1.0  \n"
@@ -931,13 +932,21 @@ void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
         "\n"
         "### 1.1.2 Bus interface " + busInterfaceWithSystemMode->name() + "  \n"
         "\n"
+        "**Description:**   \n"
         "**Interface mode:** system  \n"
         "**System group:** systemGroup  \n"
         "**Bus definition:** Test:TestLibrary:SecondBusDef:1.0  \n"
         "**Abstraction definitions:** Test:TestLibrary:SecondComponent:1.0  \n"
         "**Ports used in this interface:** None  \n"
     );
+    targetFile.copy("OUTPUTTED.md");
 
+    QFile testFile("TESTOUTPUT.md");
+    testFile.open(QFile::WriteOnly);
+    QTextStream stream2(&testFile);
+
+    stream2 << expectedOutput;
+    testFile.close();
     checkOutputFile(expectedOutput);
 }
 

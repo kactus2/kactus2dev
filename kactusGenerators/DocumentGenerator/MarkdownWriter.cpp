@@ -449,24 +449,13 @@ void MarkdownWriter::writeInterfaces(QTextStream& stream, int& subHeaderNumber)
         QList subHeaderNumbers({ componentNumber_, subHeaderNumber, interfaceNumber });
 
         writeSubHeader(stream, subHeaderNumbers, QStringLiteral("Bus interface ") + interface->name(), 3);
+        
+        auto const ports = component_->getPortsMappedInInterface(interface->name());
+        
+        writeInterfaceInfo(stream, interface, !ports.isEmpty());
 
-        if (!interface->description().isEmpty())
+        if (!ports.isEmpty())
         {
-            writeDescription(stream, interface->description());
-        }
-
-        stream << "**Interface mode:** " << General::interfaceMode2Str(interface->getInterfaceMode())
-            << "  " << Qt::endl;
-
-        stream << "**Ports used in this interface:** ";
-
-        if (auto const& ports = component_->getPortsMappedInInterface(interface->name()); ports.isEmpty())
-        {
-            stream << "None  " << Qt::endl << Qt::endl;
-        }
-        else
-        {
-            stream << " " << Qt::endl << Qt::endl;
             writePortTable(stream, ports);
         }
         
