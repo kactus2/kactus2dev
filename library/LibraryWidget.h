@@ -204,7 +204,7 @@ private:
     //! Widget for showing integrity report on-demand.
     TableViewDialog* integrityWidget_;
 
-    bool showPreview_;
+    bool hidePreview_;
 
 };
 

@@ -45,7 +45,7 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     previewWidget_(new ComponentPreviewBox(library, this)),
     previewHideButton_(new QPushButton(QString(), this)),
     integrityWidget_(nullptr),
-    showPreview_(false)
+    hidePreview_(false)
 {
     GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel);
     if (guiChannel)
@@ -58,6 +58,10 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
 
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
+
+
+    QSettings settings;
+    hidePreview_ = !settings.value("PreviewWidget/Hidden", true).toBool();
 
     previewHideButton_->setFlat(true);
     previewHideButton_->setToolTip(tr("Show preview"));
@@ -416,19 +420,22 @@ void LibraryWidget::onRemoveVLNV(const QList<VLNV> vlnvs)
 //-----------------------------------------------------------------------------
 void LibraryWidget::onPreviewShowHideClick()
 {
-    showPreview_ = !showPreview_;
-    previewWidget_->setVisible(showPreview_);
+    hidePreview_ = !hidePreview_;
+    previewWidget_->setHidden(hidePreview_);
 
-    if (showPreview_)
-    {
-        previewHideButton_->setToolTip(tr("Hide preview"));
-        previewHideButton_->setIcon(QIcon(":icons/common/graphics/hide.png"));
-    }
-    else
+    if (hidePreview_)
     {
         previewHideButton_->setToolTip(tr("Show preview"));
         previewHideButton_->setIcon(QIcon(":icons/common/graphics/preview.png"));
     }
+    else
+    {
+        previewHideButton_->setToolTip(tr("Hide preview"));
+        previewHideButton_->setIcon(QIcon(":icons/common/graphics/hide.png"));
+    }
+
+    QSettings settings;
+    settings.setValue("PreviewWidget/Hidden", hidePreview_);
 }
 
 //-----------------------------------------------------------------------------
