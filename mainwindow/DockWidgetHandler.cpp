@@ -1147,6 +1147,12 @@ void DockWidgetHandler::setWindowVisibility(TabDocument::SupportedWindows window
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::placeActionInToolbar(QAction* action, Qt::DockWidgetArea area)
 {
+    if ((area == Qt::LeftDockWidgetArea && leftActions_->actions().contains(action)) ||
+        (area == Qt::RightDockWidgetArea && rightActions_->actions().contains(action)))
+    {
+        return;
+    }
+
     leftActions_->removeAction(action);
     leftToolbar_->removeAction(action);
 
