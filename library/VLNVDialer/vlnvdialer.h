@@ -115,11 +115,6 @@ public slots:
 	//! Refresh the list of vendors on the library
 	void refreshLibrary();
 
-protected:
-
-    //! Handler for close event.
-    virtual void closeEvent(QCloseEvent *event) override final;
-
 private slots:
 
     /*!

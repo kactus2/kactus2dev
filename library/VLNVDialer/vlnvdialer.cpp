@@ -188,6 +188,8 @@ void VLNVDialer::onHideShowClick()
         hideButton_.setToolTip(tr("Hide filters"));
     }
 
+    QSettings settings;
+    settings.setValue("FilterWidget/Hidden", hideFilters_);
 }
 
 //-----------------------------------------------------------------------------
@@ -208,16 +210,6 @@ void VLNVDialer::onSelectAll()
     }
 
     filters_.selectAll(allSelected_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VLNVDialer::closeEvent()
-//-----------------------------------------------------------------------------
-void VLNVDialer::closeEvent(QCloseEvent *event)
-{
-    QSettings settings;
-    settings.setValue("FilterWidget/Hidden", hideFilters_);
-    QWidget::closeEvent(event);
 }
 
 //-----------------------------------------------------------------------------
