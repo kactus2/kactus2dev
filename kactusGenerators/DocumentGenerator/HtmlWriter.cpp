@@ -104,8 +104,9 @@ void HtmlWriter::writeComponentInfo(QTextStream& stream)
 {
     stream << indent(2) << "<p>" << Qt::endl;
 
-    stream << indent(2) << "<img src=\"" << component_->getVlnv().toString(".") << ".png\" alt=\"" <<
-        component_->getVlnv().toString(" - ") << " preview picture\"><br>" << Qt::endl;
+    stream << indent(2) << "<img src=\"" << getImagesPath().split("/").back() << "/"
+        << component_->getVlnv().toString(".") << ".png\" alt=\""
+        << component_->getVlnv().toString(" - ") << " preview picture\"><br>" << Qt::endl;
 
     // if component has description, write it
     if (!component_->getDescription().isEmpty())

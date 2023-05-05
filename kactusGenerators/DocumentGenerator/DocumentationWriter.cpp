@@ -130,7 +130,8 @@ const QStringList DocumentationWriter::DESIGN_INSTANCE_HEADERS = {
 DocumentationWriter::DocumentationWriter(ExpressionFormatter* formatter, ExpressionFormatterFactory* expressionFormatterFactory) :
     expressionFormatter_(formatter),
     expressionFormatterFactory_(expressionFormatterFactory),
-    targetPath_()
+    targetPath_(),
+    imagesPath_()
 {
 }
 
@@ -148,6 +149,22 @@ void DocumentationWriter::setTargetPath(QString const& path)
 QString DocumentationWriter::getTargetPath() const
 {
     return targetPath_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::setImagesPath()
+//-----------------------------------------------------------------------------
+void DocumentationWriter::setImagesPath(QString const& path)
+{
+    imagesPath_ = path;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentationWriter::getImagesPath()
+//-----------------------------------------------------------------------------
+QString DocumentationWriter::getImagesPath() const
+{
+    return imagesPath_;
 }
 
 //-----------------------------------------------------------------------------

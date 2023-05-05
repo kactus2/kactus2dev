@@ -204,6 +204,13 @@ public:
      */
     void writeEndOfDocument(QTextStream& stream);
 
+    /*!
+     *  Sets the images folder path.
+     *
+     *      @param [in] path    The new images path.
+     */
+    void setImagesPath(QString const& path);
+
 signals:
 
     /*!
@@ -408,6 +415,9 @@ private:
 
     //! The current document format
     DocumentFormat currentFormat_;
+
+    //! The image save path
+    QString imagesPath_;
 };
 
 #endif // DOCUMENTGENERATOR_H

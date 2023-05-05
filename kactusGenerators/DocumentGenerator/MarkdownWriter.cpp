@@ -90,6 +90,7 @@ void MarkdownWriter::writeComponentHeader(QTextStream& stream)
 void MarkdownWriter::writeComponentInfo(QTextStream& stream)
 {
     stream << "![Component " << component_->getVlnv().toString(".") << "]("
+        << getImagesPath().split("/").back() << "/"
         << component_->getVlnv().toString(".") << ".png)" << Qt::endl << Qt::endl;
 
     if (auto const& description = component_->getDescription(); !description.isEmpty())

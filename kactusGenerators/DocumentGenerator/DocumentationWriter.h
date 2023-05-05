@@ -331,6 +331,20 @@ public:
      *      @returns The target path.
      */
     QString getTargetPath() const;
+    
+    /*!
+     *  Sets the images path.
+     *
+     *      @param [in] path    The new images path.
+     */
+    void setImagesPath(QString const& path);
+
+    /*!
+     *  Get the path of the images folder.
+     *
+     *      @returns The image folder path.
+     */
+    QString getImagesPath() const;
 
 protected:
 
@@ -517,6 +531,9 @@ private:
 
     //! The path the document is written to.
     QString targetPath_;
+
+    //! The image save path
+    QString imagesPath_;
 };
 
 #endif // DOCUMENTATIONWRITER_H
