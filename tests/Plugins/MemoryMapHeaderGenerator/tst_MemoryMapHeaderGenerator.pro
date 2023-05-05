@@ -23,11 +23,13 @@ MAKE_TESTARGS.name = TESTARGS
 MAKE_TESTARGS.value = "-platform offscreen"
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../x64/executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../x64/executable/ -lKactusAPI
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
+    LIBS += -L$$PWD/../../../x64/executable/ -lIPXACTmodelsd
+    LIBS += -L$$PWD/../../../x64/executable/ -lKactusAPId
     DESTDIR = ./debug
 }
 else:unix {
@@ -39,6 +41,7 @@ INCLUDEPATH += $$PWD/../../../
 INCLUDEPATH += $$PWD/../../../executable
 INCLUDEPATH += $$PWD/../../../executable/Plugins
 INCLUDEPATH += $$PWD/../../../executable/Plugins/MemoryMapHeaderGenerator
+INCLUDEPATH += $$PWD/../../../KactusAPI/include
 INCLUDEPATH += $$DESTDIR
 
 DEPENDPATH += $$PWD/../../../
