@@ -233,20 +233,6 @@ public:
     void refreshDesignDocument(QWidget* currentTabWidget);
 
     /*!
-     *  Set filters for the library widget.
-     *
-     *      @param [in] options     The selected library filters.
-     */
-    void setLibraryFilters(Utils::FilterOptions options);
-
-    /*!
-     *  Get the current library filters.
-     *
-     *      @return The current library filters.
-     */
-    Utils::FilterOptions getLibraryFilters() const;
-
-    /*!
      *  Setup the design parameter finder.
      *
      *      @param [in] newDesign   The design of the currently active design tab document.

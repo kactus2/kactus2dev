@@ -23,6 +23,7 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QString>
+#include <QSettings>
 
 class LibraryItem;
 class TagContainer;
@@ -59,9 +60,19 @@ public:
 	*/
 	void setRootItem(LibraryItem const* rootItem);
 
-    void setFilters(Utils::FilterOptions options);
+	/*!
+	 *  Set filter settings for the library.
+	 *
+	 *      @param [in] settings    Settings containing the library filters.
+	 */
+	void loadFilterSettings(QSettings& settings);
 
-    Utils::FilterOptions getFilters() const;
+	/*!
+	 *  Save settings for dock widget filters.
+	 *
+	 *      @param [in] settings    The settings.
+	 */
+	void saveFilterSettings(QSettings& settings) const;
 
 signals:
 

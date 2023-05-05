@@ -226,35 +226,7 @@ void DockWidgetHandler::saveVisibilitySettings(QSettings& settings) const
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::loadFilterSettings(QSettings& settings)
 {
-    Utils::FilterOptions filters;
-    settings.beginGroup("LibraryFilters");
-    settings.beginGroup("Type");
-    filters.type.components_ = settings.value("ShowComponents", true).toBool();
-    filters.type.buses_ = settings.value("ShowBuses", true).toBool();
-    filters.type.catalogs_ = settings.value("ShowCatalogs", true).toBool();
-    filters.type.apis_ = settings.value("ShowApis", true).toBool();
-    filters.type.advanced_ = settings.value("ShowAdvanced", false).toBool();
-    settings.endGroup();
-    settings.beginGroup("Implementation");
-    filters.implementation.hw_ = settings.value("ShowHW", true).toBool();
-    filters.implementation.sw_ = settings.value("ShowSW", true).toBool();
-    filters.implementation.system_ = settings.value("ShowSystem", true).toBool();
-    settings.endGroup();
-    settings.beginGroup("Hierarchy");
-    filters.hierarchy.flat_ = settings.value("ShowGlobal", true).toBool();
-    filters.hierarchy.product_ = settings.value("ShowProduct", true).toBool();
-    filters.hierarchy.board_ = settings.value("ShowBoard", true).toBool();
-    filters.hierarchy.chip_ = settings.value("ShowChip", true).toBool();
-    filters.hierarchy.soc_ = settings.value("ShowSoC", true).toBool();
-    filters.hierarchy.ip_ = settings.value("ShowIP", true).toBool();
-    settings.endGroup();
-    settings.beginGroup("Firmness");
-    filters.firmness.templates_ = settings.value("ShowTemplates", true).toBool();
-    filters.firmness.mutable_ = settings.value("ShowMutable", true).toBool();
-    filters.firmness.fixed_ = settings.value("ShowFixed", true).toBool();
-    settings.endGroup();
-
-    libraryWidget_->setFilters(filters);
+    libraryWidget_->loadFilterSettings(settings);
 }
 
 //-----------------------------------------------------------------------------
@@ -262,35 +234,7 @@ void DockWidgetHandler::loadFilterSettings(QSettings& settings)
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::saveFilterSettings(QSettings& settings) const
 {
-    Utils::FilterOptions filters = libraryWidget_->getFilters();
-    // Save filters.
-    settings.beginGroup("LibraryFilters");
-    settings.beginGroup("Type");
-    settings.setValue("ShowComponents", filters.type.components_);
-    settings.setValue("ShowBuses", filters.type.buses_);
-    settings.setValue("ShowCatalogs", filters.type.catalogs_);
-    settings.setValue("ShowApis", filters.type.apis_);
-    settings.setValue("ShowAdvanced", filters.type.advanced_);
-    settings.endGroup();
-    settings.beginGroup("Implementation");
-    settings.setValue("ShowHW", filters.implementation.hw_);
-    settings.setValue("ShowSW", filters.implementation.sw_);
-    settings.setValue("ShowSystem", filters.implementation.system_);
-    settings.endGroup();
-    settings.beginGroup("Hierarchy");
-    settings.setValue("ShowGlobal", filters.hierarchy.flat_);
-    settings.setValue("ShowProduct", filters.hierarchy.product_);
-    settings.setValue("ShowBoard", filters.hierarchy.board_);
-    settings.setValue("ShowChip", filters.hierarchy.chip_);
-    settings.setValue("ShowSoC", filters.hierarchy.soc_);
-    settings.setValue("ShowIP", filters.hierarchy.ip_);
-    settings.endGroup();
-    settings.beginGroup("Firmness");
-    settings.setValue("ShowTemplates", filters.firmness.templates_);
-    settings.setValue("ShowMutable", filters.firmness.mutable_);
-    settings.setValue("ShowFixed", filters.firmness.fixed_);
-    settings.endGroup(); // Firmness
-    settings.endGroup(); // LibraryFilters
+    libraryWidget_->saveFilterSettings(settings);
 }
 
 //-----------------------------------------------------------------------------
@@ -1254,20 +1198,4 @@ void DockWidgetHandler::refreshDesignDocument(QWidget* currentTabWidget)
 void DockWidgetHandler::showHelp()
 {
     helpWnd_->show();
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setLibraryFilters()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::setLibraryFilters(Utils::FilterOptions options)
-{
-    libraryWidget_->setFilters(options);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::getLibraryFilters()
-//-----------------------------------------------------------------------------
-Utils::FilterOptions DockWidgetHandler::getLibraryFilters() const
-{
-    return libraryWidget_->getFilters();
 }

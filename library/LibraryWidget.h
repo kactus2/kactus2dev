@@ -28,6 +28,8 @@
 
 #include "ItemExporter.h"
 
+#include <QSettings>
+
 class LibraryHandler;
 
 class VLNVDialer;
@@ -59,18 +61,20 @@ public:
      *      @return     The library access handle.
     */
     LibraryHandler* getLibraryHandler() const;
-
-    /*! Set filters for the library navigation.
+    
+    /*!
+     *  Set filter settings for the library.
      *
-     *      @param [in] filters    The filters to set.
-    */
-    void setFilters(Utils::FilterOptions filters);
+     *      @param [in] settings    Settings containing the library filters.
+     */
+    void loadFilterSettings(QSettings& settings);
 
-    /*! Get the current filters for the library navigation.
+    /*!
+     *  Save settings for dock widget filters.
      *
-     *      @return     The current library filters.
-    */
-    Utils::FilterOptions getFilters() const;
+     *      @param [in] settings    The settings.
+     */
+    void saveFilterSettings(QSettings& settings) const;
 
     /*!
      *  Selects the given VLNV in all library views.

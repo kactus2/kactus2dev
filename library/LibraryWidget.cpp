@@ -161,19 +161,19 @@ LibraryHandler* LibraryWidget::getLibraryHandler() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryWidget::setFilters()
+// Function: LibraryWidget::loadFilterSettings()
 //-----------------------------------------------------------------------------
-void LibraryWidget::setFilters(Utils::FilterOptions filters)
+void LibraryWidget::loadFilterSettings(QSettings& settings)
 {
-    dialer_->setFilters(filters);
+    dialer_->loadFilterSettings(settings);
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryWidget::getFilters()
+// Function: LibraryWidget::saveFilterSettings()
 //-----------------------------------------------------------------------------
-Utils::FilterOptions LibraryWidget::getFilters() const
+void LibraryWidget::saveFilterSettings(QSettings& settings) const
 {
-    return dialer_->getFilters();
+    dialer_->saveFilterSettings(settings);
 }
 
 //-----------------------------------------------------------------------------
