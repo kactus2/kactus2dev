@@ -939,14 +939,7 @@ void tst_MarkdownGenerator::testBusInterfacesWrittenWithoutPorts()
         "**Abstraction definitions:** Test:TestLibrary:SecondComponent:1.0  \n"
         "**Ports used in this interface:** None  \n"
     );
-    targetFile.copy("OUTPUTTED.md");
 
-    QFile testFile("TESTOUTPUT.md");
-    testFile.open(QFile::WriteOnly);
-    QTextStream stream2(&testFile);
-
-    stream2 << expectedOutput;
-    testFile.close();
     checkOutputFile(expectedOutput);
 }
 
