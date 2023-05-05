@@ -168,7 +168,7 @@ void DockWidgetHandler::setupDockWidgets()
         connect(dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
             this, SLOT(onDockLocationChanged(Qt::DockWidgetArea)), Qt::UniqueConnection);
 
-        auto visibilityAction = new QAction(mainWindow_);
+        auto visibilityAction = new QAction(this);
         visibilityAction->setText(dock->windowTitle());
         visibilityAction->setCheckable(true);
 
@@ -607,7 +607,7 @@ void DockWidgetHandler::setupConnectionEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setWindowVisibility()
+// Function: DockWidgetHandler::setupConsole()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupConsole()
 {
@@ -797,11 +797,13 @@ void DockWidgetHandler::updateWindowAndControlVisibility(QWidget* currentTabWidg
 {
     QAction* showAction = dock->toggleViewAction();
 
-    bool shouldShow = isSupportedWindowType(currentTabWidget, windowType);
+    bool allowedToShow = isSupportedWindowType(currentTabWidget, windowType);
+    bool wantedToShow = visibilities_.value(windowType);
+    bool selected = showAction->isChecked();
 
-    visibilityControls_[windowType]->setVisible(shouldShow);
-    showAction->setVisible(shouldShow && visibilities_.value(windowType));
-    dock->setVisible(showAction->isChecked() && shouldShow && visibilities_.value(windowType));
+    visibilityControls_[windowType]->setVisible(allowedToShow);
+    showAction->setVisible(allowedToShow && wantedToShow);
+    showAction->setChecked(selected && allowedToShow && wantedToShow);
 }
 
 //-----------------------------------------------------------------------------
@@ -993,19 +995,26 @@ void DockWidgetHandler::connectVisibilityControls()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::disconnectVisibilityControls()
 {
-    disconnect(visibilityControls_[TabDocument::OUTPUTWINDOW], SIGNAL(toggled(bool)), this, SLOT(onOutputAction(bool)));
-    disconnect(visibilityControls_[TabDocument::CONTEXT_HELP_WINDOW], SIGNAL(toggled(bool)), this, SLOT(onContextHelpAction(bool)));
-    disconnect(visibilityControls_[TabDocument::LIBRARYWINDOW], SIGNAL(toggled(bool)), this, SLOT(onLibraryAction(bool)));
+    disconnect(visibilityControls_[TabDocument::OUTPUTWINDOW], SIGNAL(toggled(bool)),
+        this, SLOT(onOutputAction(bool)));
+    disconnect(visibilityControls_[TabDocument::CONTEXT_HELP_WINDOW], SIGNAL(toggled(bool)),
+        this, SLOT(onContextHelpAction(bool)));
+    disconnect(visibilityControls_[TabDocument::LIBRARYWINDOW], SIGNAL(toggled(bool)),
+        this, SLOT(onLibraryAction(bool)));
     disconnect(visibilityControls_[TabDocument::CONFIGURATIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onConfigurationAction(bool)));
     disconnect(visibilityControls_[TabDocument::SYSTEM_DETAILS_WINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onSystemDetailsAction(bool)));
-    disconnect(visibilityControls_[TabDocument::CONNECTIONWINDOW], SIGNAL(toggled(bool)), this, SLOT(onConnectionAction(bool)));
-    disconnect(visibilityControls_[TabDocument::INTERFACEWINDOW], SIGNAL(toggled(bool)), this, SLOT(onInterfaceAction(bool)));
-    disconnect(visibilityControls_[TabDocument::INSTANCEWINDOW], SIGNAL(toggled(bool)), this, SLOT(onInstanceAction(bool)));
+    disconnect(visibilityControls_[TabDocument::CONNECTIONWINDOW], SIGNAL(toggled(bool)),
+        this, SLOT(onConnectionAction(bool)));
+    disconnect(visibilityControls_[TabDocument::INTERFACEWINDOW], SIGNAL(toggled(bool)),
+        this, SLOT(onInterfaceAction(bool)));
+    disconnect(visibilityControls_[TabDocument::INSTANCEWINDOW], SIGNAL(toggled(bool)),
+        this, SLOT(onInstanceAction(bool)));
     disconnect(visibilityControls_[TabDocument::DESIGNPARAMETERSWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onDesignParametersAction(bool)));
-    disconnect(visibilityControls_[TabDocument::ADHOC_WINDOW], SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
+    disconnect(visibilityControls_[TabDocument::ADHOC_WINDOW], SIGNAL(toggled(bool)),
+        this, SLOT(onAdHocEditorAction(bool)));
     disconnect(visibilityControls_[TabDocument::VENDOREXTENSIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)));
     disconnect(visibilityControls_[TabDocument::SCRIPTWINDOW], SIGNAL(toggled(bool)),
@@ -1138,6 +1147,7 @@ void DockWidgetHandler::setWindowVisibility(TabDocument::SupportedWindows window
 {
     visibilities_.insert(windowType, show);
 
+    visibilityControls_[windowType]->setChecked(show);
     docks_[windowType]->toggleViewAction()->setVisible(show);
     docks_[windowType]->setVisible(show);
 }
