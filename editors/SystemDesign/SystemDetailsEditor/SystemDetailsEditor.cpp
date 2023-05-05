@@ -110,7 +110,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
             this, SLOT(onViewRefChanged(const QString&)), Qt::UniqueConnection);
 
     // display this widget
-    parentWidget()->raise();
+    //parentWidget()->raise();
 }
 
 //-----------------------------------------------------------------------------

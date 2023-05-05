@@ -120,11 +120,8 @@ libraryHandler_(library),
     mainWindow_(parent),
     messageChannel_(messageChannel)
 {
-    leftActions_->setExclusive(true);
-    leftActions_->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
-
-    rightActions_->setExclusive(true);
-    rightActions_->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
+     leftActions_->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
+     rightActions_->setExclusionPolicy(QActionGroup::ExclusionPolicy::ExclusiveOptional);
 }
 
 //-----------------------------------------------------------------------------
@@ -145,7 +142,8 @@ void DockWidgetHandler::setupDockWidgets()
     setupConsole();
     setupVendorExtensionEditor();
 
-    docks_ = {
+    docks_ =
+    {
         { TabDocument::CONFIGURATIONWINDOW, configurationDock_ },
         { TabDocument::SYSTEM_DETAILS_WINDOW, systemDetailsDock_ },
         { TabDocument::CONNECTIONWINDOW, connectionDock_ },
@@ -200,7 +198,7 @@ LibraryHandler* DockWidgetHandler::getLibraryHandler() const
 //-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::loadVisiblities()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::loadVisiblities(QSettings& settings)
+void DockWidgetHandler::loadVisiblities(QSettings const& settings)
 {
     for (auto i = DOCK_SETTINGS.cbegin(); i != DOCK_SETTINGS.cend(); ++i)
     {
@@ -393,7 +391,7 @@ void DockWidgetHandler::setupLibraryDock()
     libraryDock_ = new QDockWidget(tr("IP-XACT Library"), mainWindow_);
     libraryDock_->setObjectName(tr("Library"));
     libraryDock_->setWindowIcon(QIcon(":icons/common/graphics/library.png"));
-    libraryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    libraryDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     libraryDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
 
@@ -803,7 +801,7 @@ void DockWidgetHandler::updateWindowAndControlVisibility(QWidget* currentTabWidg
 
     visibilityControls_[windowType]->setVisible(shouldShow);
     showAction->setVisible(shouldShow && visibilities_.value(windowType));
-    dock->setVisible(shouldShow && visibilities_.value(windowType));
+    dock->setVisible(showAction->isChecked() && shouldShow && visibilities_.value(windowType));
 }
 
 //-----------------------------------------------------------------------------

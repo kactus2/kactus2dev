@@ -106,7 +106,7 @@ void VendorExtensionsEditor::clear()
 
     extensionsModel_->clear();
 
-    parentWidget()->setMaximumHeight(20);    
+   // parentWidget()->setMaximumHeight(20);    
 }
 
 //-----------------------------------------------------------------------------
@@ -115,14 +115,14 @@ void VendorExtensionsEditor::clear()
 void VendorExtensionsEditor::changeVendorExtensions(QString const& containingID,
     QSharedPointer<Extendable> extensionItem)
 {
-    parentWidget()->raise();
+    //parentWidget()->raise();
 
     summaryLabel_->setText(containingID);
     summaryLabel_->setAlignment(Qt::AlignCenter);
 
     extensionsModel_->setVendorExtensions(extensionItem->getVendorExtensions());
 
-    parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
+    //parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 
     for (int i = 0; i < VendorExtensionColumns::COLUMN_COUNT; ++i)
     {

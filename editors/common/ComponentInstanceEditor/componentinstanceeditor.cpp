@@ -116,7 +116,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 {
 	Q_ASSERT(componentItem);
 
-	parentWidget()->raise();
+	//parentWidget()->raise();
 
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_)

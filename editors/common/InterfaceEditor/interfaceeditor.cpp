@@ -105,7 +105,7 @@ void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer
 {
 	Q_ASSERT(interface);
 
-	parentWidget()->raise();
+	//parentWidget()->raise();
 
 	// disconnect the previous interface
 	if (interface_)

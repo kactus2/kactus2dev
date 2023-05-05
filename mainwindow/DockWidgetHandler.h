@@ -101,7 +101,7 @@ public:
      *
      *      @param [in] settings    Settings containing the visibilities for the dockable items.
      */
-    void loadVisiblities(QSettings& settings);
+    void loadVisiblities(QSettings const& settings);
 
     /*!
      *  Save settings for dock widget visibilities.
