@@ -38,7 +38,7 @@ void RenodeGenerator::generate(QSharedPointer<Component> topComponent, QString c
     QStringList cpuNames;
     for (auto cpuMasterRoute : cpuRoutes)
     {
-        if (cpuMasterRoute->getRoutes()->empty() == false)
+        if (cpuMasterRoute->getRoutes().empty() == false)
         {
             if (createCpuFile || createMemoryFile || createPeripheralFile)
             {
@@ -62,13 +62,13 @@ QStringList RenodeGenerator::getGeneratedFiles() const
 void RenodeGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
     QSharedPointer<RenodeCPUDetailRoutes> cpuRoute, QStringList& fileNames, bool createCpuFile, bool createMemoryFile, bool createPeripheralFile)
 {
-    QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->getCPUInterface();
+    QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->getRoutes().first()->cpuInterface_;
     QSharedPointer<const ConnectivityComponent> routeComponent = cpuInterface->getInstance();
     QSharedPointer<const Component> interfaceComponent =
         ConnectivityGraphUtilities::getInterfacedComponent(library_, routeComponent);
     if (interfaceComponent)
     {
-        QSharedPointer<Cpu> interfaceCPU = ConnectivityGraphUtilities::getInterfacedCPU(interfaceComponent, cpuInterface);
+        QSharedPointer<Cpu> interfaceCPU = cpuRoute->getCpu();
 
         QString fileName = topComponent->getVlnv().getName() + "_" + interfaceCPU->name();
         if (fileNames.contains(interfaceCPU->name()))

@@ -27,6 +27,7 @@ class Component;
 class RenodeCPUDetailRoutes;
 class RenodePeripheralsEditor;
 class RenodeMemoriesEditor;
+class IPluginUtility;
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -44,10 +45,11 @@ public:
     /*!
      *  The constructor.
      *
+     *      @param [in] utility                 Utility for plugins.
      *      @param [in] configurationObject     JSON object containing the editor configuration.
      *      @param [in] parent                  Pointer to the owner of this widget.
      */
-    RenodeCpuEditor(QJsonObject const& configurationObject, QWidget *parent = 0);
+    RenodeCpuEditor(IPluginUtility* utility, QJsonObject const& configurationObject, QWidget *parent = 0);
 
     /*!
      *  The destructor.
@@ -107,6 +109,11 @@ private slots:
 private:
 
     /*!
+     *  Check the starting routes for errors.
+     */
+    void checkStartingInterfacesForErrores();
+
+    /*!
      *  Setup the items for the CPU class selector.
      */
     void setupCpuClassEditor();
@@ -114,6 +121,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The plugin utility interface.
+    IPluginUtility* utility_;
 
     //! The selected CPU (work in progress, should be multiple cpus).
     QSharedPointer<RenodeCPUDetailRoutes> renodeCPU_;

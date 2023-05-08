@@ -27,14 +27,19 @@ HEADERS += ./SVDGenerator.h \
     ../../editors/MemoryDesigner/MemoryItem.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
     ./CPUDialog/SVDCPUColumns.h \
+    ./CPUDialog/SVDCPUDetailRoutes.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
     ./CPUDialog/SVDCPUEditor.h \
     ./CPUDialog/SVDCPUModel.h \
     ./CPUDialog/SVDCPUDelegate.h \
     ../common/ConnectivityGraphUtilities.h \
-    ./CPUDialog/SVDCPUDetailRoutes.h \
-    ../common/CPUDetailRoutes.h
+    ../common/CPUDetailRoutes.h \
+    ./SVDConfigurationManager.h \
+    ./CPUDialog/SVDUtilities.h \
+    ../common/PluginConfigurationManager.h \
+    ../common/ConfigurationManager.h \
+    ../common/ConnectivityGraphStructs.h
 SOURCES += ./SVDGenerator.cpp \
     ./SVDGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
@@ -57,9 +62,12 @@ SOURCES += ./SVDGenerator.cpp \
     ../common/CPUDialog/CPUEditor.cpp \
     ../common/CPUDialog/CPUSelectionDialog.cpp \
     ./CPUDialog/SVDCPUDelegate.cpp \
+    ./CPUDialog/SVDCPUDetailRoutes.cpp \
     ./CPUDialog/SVDCPUEditor.cpp \
     ./CPUDialog/SVDCPUModel.cpp \
     ../common/ConnectivityGraphUtilities.cpp \
-    ./CPUDialog/SVDCPUDetailRoutes.cpp \
-    ../common/CPUDetailRoutes.cpp
+    ../common/CPUDetailRoutes.cpp \
+    ./SVDConfigurationManager.cpp \
+    ../common/PluginConfigurationManager.cpp \
+    ../common/ConfigurationManager.cpp
 RESOURCES += SVDGenerator.qrc

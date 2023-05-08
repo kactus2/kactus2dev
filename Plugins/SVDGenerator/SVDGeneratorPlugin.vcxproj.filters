@@ -160,6 +160,15 @@
     <ClCompile Include="..\common\CPUDetailRoutes.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="SVDConfigurationManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\PluginConfigurationManager.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\ConfigurationManager.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="SVDGeneratorPlugin.h">
@@ -254,6 +263,18 @@
       <Filter>Header Files\CPUDialog</Filter>
     </ClInclude>
     <ClInclude Include="..\common\CPUDetailRoutes.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="SVDConfigurationManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\SVDUtilities.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\PluginConfigurationManager.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ConfigurationManager.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>

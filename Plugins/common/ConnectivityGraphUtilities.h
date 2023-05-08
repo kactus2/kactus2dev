@@ -24,6 +24,9 @@
 
 #include <QCheckBox>
 
+class Cpu;
+class IPluginUtility;
+
 //-----------------------------------------------------------------------------
 //! Utility functions for connectivity graphs.
 //-----------------------------------------------------------------------------
@@ -43,14 +46,14 @@ namespace ConnectivityGraphUtilities
         QSharedPointer<const ConnectivityComponent> masterComponent);
 
     /*!
-     *  Get the CPU connected to the selected interface.
+     *  Get the list of CPUs connected to the selected interface.
      *
      *      @param [in] containingComponent     Component containing the interface.
      *      @param [in] routeInterface          The selected interface.
      *
-     *      @return CPU connected to the selected interface.
+     *      @return List of CPUs connected to the selected interface.
      */
-    QSharedPointer<Cpu> getInterfacedCPU(QSharedPointer<const Component> containingComponent,
+    QVector<QSharedPointer<Cpu> > getInterfacedCPUs(QSharedPointer<const Component> containingComponent,
         QSharedPointer<const ConnectivityInterface> routeInterface);
 
     /*!
@@ -75,14 +78,34 @@ namespace ConnectivityGraphUtilities
     bool interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes> > cpuList);
 
     /*!
-     *  Get the CPU container of the selected interface.
+     *  Get the route container for the selected interface.
+     *
+     *      @param [in] masterInterface     The selected interface.
+     *      @param [in] cpuRoutes           List of the available route containers.
+     *
+     *      @return The route container for the selected interface.
+     */
+    QSharedPointer<CpuRouteStructs::CpuRoute> getRouteForInterface(QSharedPointer<const ConnectivityInterface> masterInterface, QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > cpuRoutes);
+
+    /*!
+     *  Get the CPU containers of the selected interface.
      *
      *      @param [in] master      The selected interface.
      *      @param [in] cpuList     List of available CPUs.
      *
-     *      @return CPU check box container matching the selected interface.
+     *      @return CPU containers matching the selected interface.
      */
-    QSharedPointer<CPUDetailRoutes> getMatchingCpuContainer(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes> > cpuList);
+    QVector<QSharedPointer<CPUDetailRoutes> > getMatchingCpuContainers(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes> > cpuList);
+
+    /*!
+     *  Get the CPU route container for the selected CPU.
+     *
+     *      @param [in] comparisonCpu   The selected CPU.
+     *      @param [in] existingRoutes  List of available CPU route containers.
+     *
+     *      @return The CPU route container containing the selected CPU.
+     */
+    QSharedPointer<CPUDetailRoutes> getCpuDetailRoute(QSharedPointer<Cpu> comparisonCpu, QVector<QSharedPointer<CPUDetailRoutes> > existingRoutes);
 };
 
 #endif //CONNECTIVITYGRAPHUTILITIES_H

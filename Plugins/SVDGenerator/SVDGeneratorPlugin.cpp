@@ -26,6 +26,8 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUEditor.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+#include <Plugins/SVDGenerator/SVDConfigurationManager.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
 
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 #include <editors/MemoryDesigner/MasterSlavePathSearch.h>
@@ -155,10 +157,19 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
         viewNames.append(view->name());
     }
 
-    SVDCPUEditor* cpuEditor(new SVDCPUEditor());
+    SVDConfigurationManager* configManager(new SVDConfigurationManager(utility));
+    QJsonObject configurationObject = configManager->getConfigurationObject(component);
+
+    QString configurationFolderPath = configurationObject.value(SVDConstants::FOLDERPATH).toString("");
+    QString configurationView = configurationObject.value(SVDConstants::VIEW).toString("");
+    QString configurationFileSet = configurationObject.value(SVDConstants::FILESET).toString("");
+    bool saveToFileSetFlag = configurationObject.value(SVDConstants::SAVETOFILESET).toBool(true);
+
+    SVDCPUEditor* cpuEditor(new SVDCPUEditor(configurationObject));
 
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames,
-        component->getFileSetNames(), cpuEditor, "SVD", 0, utility->getParentWidget());
+        component->getFileSetNames(), cpuEditor, "SVD", 0, utility->getParentWidget(),
+        configurationFolderPath, saveToFileSetFlag, configurationFileSet, configurationView);
     if (selectionDialog.exec() == QDialog::Accepted)
     {
         QVector<QSharedPointer<CPUDetailRoutes> > cpuRoutes = selectionDialog.getSelectedCPUs();
@@ -176,10 +187,16 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
 
             if (!svdCPURoutes.isEmpty())
             {
+                QString selectedView = selectionDialog.getView();
+                bool saveToFileSet = selectionDialog.saveToFileSet();
+                QString selectedFileSet = selectionDialog.getTargetFileSet();
                 QString xmlFilePath = selectionDialog.getTargetFolder();
 
-                SVDGenerator generator(utility->getLibraryInterface());
+                SVDGenerator generator(utility);
                 generator.generate(component, xmlFilePath, svdCPURoutes);
+
+                configManager->createConfigureFile(svdCPURoutes, component,
+                    selectedView, saveToFileSet, selectedFileSet, xmlFilePath);
 
                 if (selectionDialog.saveToFileSet())
                 {
@@ -246,7 +263,7 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
         utility->printInfo(tr("Generation Failed. No CPUs found."));
     }
 
-    SVDGenerator generator(utilityLibrary);
+    SVDGenerator generator(utility);
     generator.generate(component, outputDirectory, svdCPUs);
 
     utility->printInfo(tr("Generation complete."));

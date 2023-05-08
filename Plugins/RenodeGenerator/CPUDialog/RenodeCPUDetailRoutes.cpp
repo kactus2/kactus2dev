@@ -14,8 +14,8 @@
 //-----------------------------------------------------------------------------
 // Function: RenodeCPUDetailRoutes::RenodeCPUDetailRoutes()
 //-----------------------------------------------------------------------------
-RenodeCPUDetailRoutes::RenodeCPUDetailRoutes():
-CPUDetailRoutes(),
+RenodeCPUDetailRoutes::RenodeCPUDetailRoutes(QSharedPointer<Cpu> renodeCpu):
+CPUDetailRoutes(renodeCpu),
 peripherals_(),
 memories_(),
 className_(),

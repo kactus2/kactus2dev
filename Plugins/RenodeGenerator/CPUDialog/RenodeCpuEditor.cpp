@@ -16,6 +16,11 @@
 #include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 
+#include <editors/MemoryDesigner/ConnectivityInterface.h>
+#include <editors/MemoryDesigner/MemoryItem.h>
+
+#include <KactusAPI/include/IPluginUtility.h>
+
 #include <QVBoxLayout>
 #include <QDir>
 #include <QFormLayout>
@@ -24,8 +29,9 @@
 //-----------------------------------------------------------------------------
 // Function: RenodeCpuEditor::RenodeCpuEditor()
 //-----------------------------------------------------------------------------
-RenodeCpuEditor::RenodeCpuEditor(QJsonObject const& configurationObject, QWidget *parent):
+RenodeCpuEditor::RenodeCpuEditor(IPluginUtility* utility, QJsonObject const& configurationObject, QWidget *parent /* = 0 */):
 CPUEditor(parent),
+utility_(utility),
 renodeCPU_(),
 peripheralEditor_(new RenodePeripheralsEditor(this)),
 memoryEditor_(new RenodeMemoriesEditor(this)),
@@ -40,7 +46,7 @@ configurationObject_(configurationObject)
 
     QFormLayout* cpuLayout(new QFormLayout());
     cpuLayout->addRow("Class", cpuClassCombo_);
-    cpuLayout->addRow("Type", cpuTypeEditor_);
+    cpuLayout->addRow("Architecture", cpuTypeEditor_);
     cpuLayout->addRow("Time provider", cpuTimeProviderEditor_);
 
     QLabel* cpuDetailsLabel = new QLabel("CPU details");
@@ -133,6 +139,8 @@ void RenodeCpuEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<
     {
         renodeCPU_ = cpuDetails.first();
 
+        checkStartingInterfacesForErrores();
+
         cpuClassCombo_->setCurrentText(renodeCPU_->getClassName());
         cpuTypeEditor_->setText(renodeCPU_->getCpuType());
         cpuTimeProviderEditor_->setText(renodeCPU_->getTimeProvider());
@@ -144,6 +152,51 @@ void RenodeCpuEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<
     connect(cpuClassCombo_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onHandleClassChange(QString const&)), Qt::UniqueConnection);
     connect(cpuTypeEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onHandleTypeChange(QString const&)), Qt::UniqueConnection);
     connect(cpuTimeProviderEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onHandleTimeProviderChange(QString const&)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCpuEditor::checkStartingInterfacesForErrores()
+//-----------------------------------------------------------------------------
+void RenodeCpuEditor::checkStartingInterfacesForErrores()
+{
+    if (renodeCPU_->getRoutes().isEmpty())
+    {
+        return;
+    }
+
+    QSharedPointer<const ConnectivityInterface> firstInterface = renodeCPU_->getRoutes().first()->cpuInterface_;
+
+    QString firstAUB = firstInterface->getConnectedMemory()->getAUB();
+    QString firstWidth = firstInterface->getConnectedMemory()->getWidth();
+    QString firstSize = firstInterface->getConnectedMemory()->getSize();
+    QString firstBase = firstInterface->getBaseAddress();
+
+    for (int i = 1; i < renodeCPU_->getRoutes().size(); ++i)
+    {
+        QSharedPointer<const ConnectivityInterface> currentInterface = renodeCPU_->getRoutes().at(i)->cpuInterface_;
+
+        QString currentAUB = currentInterface->getConnectedMemory()->getAUB();
+        if (currentAUB != firstAUB)
+        {
+            utility_->printError("Mis-matching address unit bits found in " + renodeCPU_->getCPUName() + " interface " + currentInterface->getName());
+        }
+        QString currentWidth = currentInterface->getConnectedMemory()->getWidth();
+        if (currentWidth != firstWidth)
+        {
+            utility_->printError("Mis-matching width found in " + renodeCPU_->getCPUName() + " interface " + currentInterface->getName());
+        }
+        QString currentSize = currentInterface->getConnectedMemory()->getSize();
+        if (currentSize != firstSize)
+        {
+            utility_->printError("Mis-matching size found in " + renodeCPU_->getCPUName() + " interface " + currentInterface->getName());
+        }
+        QString currentBase = currentInterface->getBaseAddress();
+        if (currentBase != firstBase)
+        {
+            utility_->printError("Mis-matching base address found in " + renodeCPU_->getCPUName()  + " interface " + currentInterface->getName());
+        }
+
+    }
 }
 
 //-----------------------------------------------------------------------------

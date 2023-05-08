@@ -11,11 +11,15 @@
 
 #include "SVDCPUDetailRoutes.h"
 
+#include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
+
+#include <QJsonObject>
+
 //-----------------------------------------------------------------------------
 // Function: SVDCPUDetailRoutes::SVDCPUDetailRoutes()
 //-----------------------------------------------------------------------------
-SVDCPUDetailRoutes::SVDCPUDetailRoutes():
-CPUDetailRoutes(),
+SVDCPUDetailRoutes::SVDCPUDetailRoutes(QSharedPointer<Cpu> cpu):
+CPUDetailRoutes(cpu),
 revision_(QString("")),
 endian_(QString("")),
 mpuPresent_(false),
@@ -39,6 +43,20 @@ nvicPrioBits_(QString()),
 vendorSystickConfig_(false)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDCPUDetailRoutes::setupConfiguration()
+//-----------------------------------------------------------------------------
+void SVDCPUDetailRoutes::setupConfiguration(QJsonObject const& configurationObject)
+{
+    setCreateFileFlag(configurationObject.value(SVDConstants::CREATESVDFLAG).toBool(false));
+    setEndian(configurationObject.value(SVDConstants::CPUENDIAN).toString(QString("")));
+    setFPUPresence(configurationObject.value(SVDConstants::CPUFPUPRESENT).toBool(false));
+    setMPUPresence(configurationObject.value(SVDConstants::CPUMPUPRESENT).toBool(false));
+    setNVICPrioBits(configurationObject.value(SVDConstants::CPPUNVICPRIOBITS).toString(QString("")));
+    setRevision(configurationObject.value(SVDConstants::CPUREVISION).toString(QString("")));
+    setVendorSystickConfig(configurationObject.value(SVDConstants::CPUVENDORSYSTICKCONFIG).toBool(false));
 }
 
 //-----------------------------------------------------------------------------

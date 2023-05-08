@@ -24,6 +24,7 @@
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCPUDetailRoutes.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeFileSelectionGroup.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
+#include <Plugins/RenodeGenerator/RenodeConfigurationManager.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -145,7 +146,8 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
         viewNames.append(view->name());
     }
 
-    QJsonObject configurationObject = getConfigurationObject(component, utility);
+    RenodeConfigurationManager* configManager(new RenodeConfigurationManager(utility));
+    QJsonObject configurationObject = configManager->getConfigurationObject(component);
 
     QString configurationFolderPath = configurationObject.value(RenodeConstants::FOLDERPATH).toString("");
     QString configurationView = configurationObject.value(RenodeConstants::VIEW).toString("");
@@ -153,7 +155,7 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     bool saveToFileSetFlag = configurationObject.value(RenodeConstants::SAVETOFILESET).toBool(true);
 
     RenodeFileSelectionGroup* fileSelectionGroup(new RenodeFileSelectionGroup(configurationObject));
-    RenodeCpuEditor* cpuEditor(new RenodeCpuEditor(configurationObject));
+    RenodeCpuEditor* cpuEditor(new RenodeCpuEditor(utility, configurationObject));
 
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames, component->getFileSetNames(),
         cpuEditor, "Renode platform", fileSelectionGroup, utility->getParentWidget(), configurationFolderPath,
@@ -187,8 +189,8 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
                 RenodeGenerator generator(utility->getLibraryInterface());
                 generator.generate(component, xmlFilePath, renodeCPURoutes, writeCpuFlag, writeMemoryFlag, writePeripheralFlag);
 
-                createConfigureFile(renodeCPURoutes, selectedView, saveToFileSet, selectedFileSet, xmlFilePath, writeCpuFlag, writeMemoryFlag, writePeripheralFlag,
-                    utility->getLibraryInterface(), component);
+                configManager->createConfigureFile(renodeCPURoutes, selectedView, saveToFileSet, selectedFileSet, xmlFilePath,
+                    writeCpuFlag, writeMemoryFlag, writePeripheralFlag, component);
 
                 if (selectionDialog.saveToFileSet())
                 {
@@ -213,208 +215,6 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     {
         utility->printInfo(tr("Generation aborted."));
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodeGeneratorPlugin::getConfigurationObject()
-//-----------------------------------------------------------------------------
-QJsonObject RenodeGeneratorPlugin::getConfigurationObject(QSharedPointer<Component> component, IPluginUtility* utility)
-{
-    QJsonDocument configurationDocument = getConfigurationDocument(component, utility);
-    QJsonArray configurationArray = configurationDocument.array();
-
-    if (!configurationArray.isEmpty())
-    {
-        QJsonValue mainConfigurationValue = configurationArray.first();
-        if (mainConfigurationValue.type() == QJsonValue::Object)
-        {
-            return mainConfigurationValue.toObject();
-        }
-    }
-
-    return QJsonObject();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodeGeneratorPlugin::getConfigurationDocument()
-//-----------------------------------------------------------------------------
-QJsonDocument RenodeGeneratorPlugin::getConfigurationDocument(QSharedPointer<Component> component, IPluginUtility* utility)
-{
-    QSharedPointer<FileSet> configurationFileSet = getConfigurationFileSet(component);
-    if (configurationFileSet)
-    {
-        QSharedPointer<File> configurationFileItem = getConfigurationFile(configurationFileSet);
-        if (configurationFileItem)
-        {
-            QString componentPath = utility->getLibraryInterface()->getDirectoryPath(component->getVlnv()) + "/";
-            QString configurationFilePath = General::getAbsolutePath(componentPath, configurationFileItem->name());
-
-            QFile configurationFile(configurationFilePath);
-
-            if (!configurationFile.open(QFile::ReadOnly))
-            {
-                utility->printError("Could not open configuration file " + configurationFilePath);
-            }
-            else
-            {
-                QJsonDocument configurationDocument = QJsonDocument::fromJson(configurationFile.readAll());
-                return configurationDocument;
-            }
-        }
-    }
-
-    return QJsonDocument();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodeGeneratorPlugin::createConfigureFile()
-//-----------------------------------------------------------------------------
-void RenodeGeneratorPlugin::createConfigureFile(QVector<QSharedPointer<RenodeCPUDetailRoutes>> renodeData,
-    QString const& selectedView, bool saveToFileSet, QString const& selectedFileSet, QString const& folderPath,
-    bool writeCPU, bool writeMemory, bool writePeripherals, LibraryInterface* library, QSharedPointer<Component> topComponent)
-{
-    QSharedPointer<FileSet> configurationFileSet = getConfigurationFileSet(topComponent);
-    if (!configurationFileSet)
-    {
-        configurationFileSet = QSharedPointer<FileSet>(new FileSet(RenodeConstants::CONFIGURATIONFILESETNAME));
-        topComponent->getFileSets()->append(configurationFileSet);
-    }
-    QSharedPointer<File> configurationFileItem = getConfigurationFile(configurationFileSet);
-    if (!configurationFileItem)
-    {
-        QString configurationFileName = topComponent->getVlnv().getName() + "." + topComponent->getVlnv().getVersion() + "_" +
-            RenodeConstants::CONFIGURATIONFILEEXTENSION + "." + RenodeConstants::JSONFILETYPE;
-
-        configurationFileItem = QSharedPointer<File>(new File(configurationFileName));
-        configurationFileItem->getFileTypes()->append(RenodeConstants::JSONFILETYPE);
-
-        configurationFileSet->getFiles()->append(configurationFileItem);
-    }
-
-    QString componentPath = library->getDirectoryPath(topComponent->getVlnv()) + "/";
-
-    QString configurationFilePath = General::getAbsolutePath(componentPath, configurationFileItem->name());
-
-    QFile configurationFile(configurationFilePath);
-    if (!configurationFile.open(QIODevice::WriteOnly))
-    {
-        return;
-    }
-
-    QJsonDocument document = createJsonDocument(renodeData, selectedView, saveToFileSet, selectedFileSet, folderPath, writeCPU, writeMemory, writePeripherals);
-    configurationFile.write(document.toJson());
-
-    library->writeModelToFile(topComponent);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodeGeneratorPlugin::getConfigurationFileSet()
-//-----------------------------------------------------------------------------
-QSharedPointer<FileSet> RenodeGeneratorPlugin::getConfigurationFileSet(QSharedPointer<Component> topComponent)
-{
-    for (auto fileSet : *topComponent->getFileSets())
-    {
-        if (fileSet->name() == RenodeConstants::CONFIGURATIONFILESETNAME)
-        {
-            return fileSet;
-        }
-    }
-
-    return QSharedPointer<FileSet>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodeGeneratorPlugin::getConfigurationFile()
-//-----------------------------------------------------------------------------
-QSharedPointer<File> RenodeGeneratorPlugin::getConfigurationFile(QSharedPointer<FileSet> configurationFileSet)
-{
-    if (configurationFileSet)
-    {
-        for (auto containedFile : *configurationFileSet->getFiles())
-        {
-            if (containedFile->name().contains(RenodeConstants::CONFIGURATIONFILEEXTENSION))
-            {
-                return containedFile;
-            }
-        }
-    }
-
-    return QSharedPointer<File>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodeGeneratorPlugin::createJsonDocument()
-//-----------------------------------------------------------------------------
-QJsonDocument RenodeGeneratorPlugin::createJsonDocument(QVector<QSharedPointer<RenodeCPUDetailRoutes>> renodeData,
-    QString const& selectedView, bool saveToFileSetFlag, QString const& selectedFileSet, QString const& folderPath,
-    bool writeCPU, bool writeMemory, bool writePeripherals)
-{
-    QJsonArray configurationArray;
-
-    for (auto renodeCPU : renodeData)
-    {
-        QJsonObject singleConfigurationObject;
-
-        QJsonObject cpuObject;
-        cpuObject.insert(RenodeConstants::CPUCLASS, renodeCPU->getClassName());
-        cpuObject.insert(RenodeConstants::CPUTYPE, renodeCPU->getCpuType());
-        cpuObject.insert(RenodeConstants::CPUTIME, renodeCPU->getTimeProvider());
-
-        singleConfigurationObject.insert(RenodeConstants::CPU, cpuObject);
-
-        if (!renodeCPU->getMemories().isEmpty())
-        {
-            QJsonArray memoryArray;
-
-            for (auto memory : renodeCPU->getMemories())
-            {
-                QJsonObject memoryObject;
-                memoryObject.insert(RenodeConstants::MEMORYNAME, memory->memoryName_);
-                memoryObject.insert(RenodeConstants::MEMORYCLASS, memory->className_);
-
-                memoryArray.push_back(memoryObject);
-            }
-
-            singleConfigurationObject.insert(RenodeConstants::MEMORY, memoryArray);
-        }
-
-        if (!renodeCPU->getPeripherals().isEmpty())
-        {
-            QJsonArray peripheralArray;
-
-            for (auto peripheral : renodeCPU->getPeripherals())
-            {
-                QJsonObject peripheralObject;
-
-                peripheralObject.insert(RenodeConstants::PERIPHERALNAME, peripheral->peripheralName_);
-                peripheralObject.insert(RenodeConstants::PERIPHERALCLASS, peripheral->className_);
-                peripheralObject.insert(RenodeConstants::PERIPHERALINITABLE, peripheral->initable_);
-                peripheralObject.insert(RenodeConstants::PERIPHERALPATH, peripheral->filePath_);
-
-                peripheralArray.push_back(peripheralObject);
-            }
-
-            singleConfigurationObject.insert(RenodeConstants::PERIPHERALS, peripheralArray);
-        }
-
-        singleConfigurationObject.insert(RenodeConstants::VIEW, selectedView);
-        singleConfigurationObject.insert(RenodeConstants::FOLDERPATH, folderPath);
-
-        singleConfigurationObject.insert(RenodeConstants::SAVETOFILESET, saveToFileSetFlag);
-        singleConfigurationObject.insert(RenodeConstants::FILESET, selectedFileSet);
-
-        QJsonObject writeFlagsObject;
-        writeFlagsObject.insert(RenodeConstants::CPU, writeCPU);
-        writeFlagsObject.insert(RenodeConstants::MEMORY, writeMemory);
-        writeFlagsObject.insert(RenodeConstants::PERIPHERALS, writePeripherals);
-
-        singleConfigurationObject.insert(RenodeConstants::WRITEFILES, writeFlagsObject);
-
-        configurationArray.push_back(singleConfigurationObject);
-    }
-
-    QJsonDocument document(configurationArray);
-    return document;
 }
 
 //-----------------------------------------------------------------------------

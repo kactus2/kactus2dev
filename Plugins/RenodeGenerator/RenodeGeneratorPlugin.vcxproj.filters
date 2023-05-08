@@ -175,6 +175,15 @@
     <ClCompile Include="CPUDialog\RenodeFileSelectionGroup.cpp">
       <Filter>Source Files\CPUDialog</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\ConfigurationManager.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\PluginConfigurationManager.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="RenodeConfigurationManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
@@ -282,6 +291,15 @@
     </ClInclude>
     <ClInclude Include="CPUDialog\RenodeStructs.h">
       <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ConfigurationManager.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\PluginConfigurationManager.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="RenodeConfigurationManager.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
