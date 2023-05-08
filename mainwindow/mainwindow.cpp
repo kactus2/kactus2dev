@@ -693,10 +693,13 @@ void MainWindow::setupMenus()
 //-----------------------------------------------------------------------------
 void MainWindow::setupToolbars()
 {
+    QString toolbarStyle = "background-color: #DAE1E9";
+
     leftToolbar_->setObjectName("leftToolBar");
     leftToolbar_->setOrientation(Qt::Vertical);
     leftToolbar_->setMovable(false);
     leftToolbar_->setIconSize(QSize(32, 32));
+    leftToolbar_->setStyleSheet(toolbarStyle);
 
     addToolBar(Qt::LeftToolBarArea, leftToolbar_);
 
@@ -704,6 +707,7 @@ void MainWindow::setupToolbars()
     rightToolbar_->setOrientation(Qt::Vertical);
     rightToolbar_->setMovable(false);
     rightToolbar_->setIconSize(QSize(32, 32));
+    rightToolbar_->setStyleSheet(toolbarStyle);
 
     addToolBar(Qt::RightToolBarArea, rightToolbar_);
 }
