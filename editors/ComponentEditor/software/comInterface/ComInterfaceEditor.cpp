@@ -13,8 +13,6 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <mainwindow/mainwindow.h>
-
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
@@ -24,6 +22,7 @@
 #include <QFormLayout>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QMainWindow>
 #include <QLabel>
 #include <QScrollArea>
 
@@ -45,24 +44,25 @@ directionCombo_(this),
 propertyValueEditor_(this),
 comImplementation_(0)
 {
-	// find the main window for VLNV editor
-	QWidget* parentW = NULL;
-	foreach (QWidget* widget, QApplication::topLevelWidgets())
- {
-		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
-		if (mainWnd) {
-			parentW = mainWnd;
-			break;
-		}
-	}
+    // find the main window for VLNV editor
+    QWidget* parentWindow = nullptr;
+    foreach(QWidget * widget, QApplication::topLevelWidgets())
+    {
+        QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
+        if (mainWnd)
+        {
+            parentWindow = mainWnd;
+            break;
+        }
+    }
 
-	comTypeEditor_ = new VLNVEditor(VLNV::COMDEFINITION, libHandler, parentW, this);
+	comTypeEditor_ = new VLNVEditor(VLNV::COMDEFINITION, libHandler, parentWindow, this);
 
 	// Set VLNV editor settings.
 	comTypeEditor_->setTitle(tr("COM definition"));
 	comTypeEditor_->setMandatory(false);
 
-	comImplementation_ = new VLNVEditor(VLNV::COMPONENT, libHandler, parentW, this);
+	comImplementation_ = new VLNVEditor(VLNV::COMPONENT, libHandler, parentWindow, this);
 	comImplementation_->setTitle(tr("COM interface implementation reference"));
 	comImplementation_->setMandatory(false);
 	comImplementation_->addContentType(VLNV::DESIGN);

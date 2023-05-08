@@ -12,7 +12,7 @@
 #include <QtTest>
 
 #include <Plugins/MemoryMapHeaderGenerator/memorymapheadergenerator.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
@@ -234,12 +234,14 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapHeaderGeneration()
 
     QCOMPARE(generatorSpy.count(), 4);
 
+    auto locale = QLocale::system();
+
     QString initialMessage = generatorSpy.first().at(0).toString();
     QCOMPARE(initialMessage, QString("Running %1 %2.").arg(headerGenerator_->getName(),
         headerGenerator_->getVersion()));
     QString generatorStartMessage = generatorSpy.at(1).first().toString();
-    QCOMPARE(generatorStartMessage, QString("Generation started %1").arg(QDateTime::currentDateTime().
-        toString(Qt::LocalDate)));
+    QCOMPARE(generatorStartMessage, QString("Generation started %1 %2").arg(locale.toString(QDate::currentDate(), locale.dateFormat(QLocale::ShortFormat)))
+        .arg(locale.toString(QTime::currentTime(), locale.timeFormat(QLocale::ShortFormat))));
     QString writingFinishedMessage = generatorSpy.at(2).first().toString();
     QCOMPARE(writingFinishedMessage, QString("Finished writing file generatorOutput.h."));
     QString generatorFinishedMessage = generatorSpy.at(3).first().toString();
@@ -683,12 +685,14 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderGeneration()
 
     QCOMPARE(generatorSpy.count(), 4);
 
+    auto locale = QLocale::system();
+
     QString initialMessage = generatorSpy.first().at(0).toString();
     QCOMPARE(initialMessage, QString("Running %1 %2.").arg(headerGenerator_->getName(),
         headerGenerator_->getVersion()));
     QString generatorStartMessage = generatorSpy.at(1).first().toString();
-    QCOMPARE(generatorStartMessage, QString("Generation started %1").arg(QDateTime::currentDateTime().
-        toString(Qt::LocalDate)));
+    QCOMPARE(generatorStartMessage, QString("Generation started %1 %2").arg(locale.toString(QDate::currentDate(), locale.dateFormat(QLocale::ShortFormat)))
+        .arg(locale.toString(QTime::currentTime(), locale.timeFormat(QLocale::ShortFormat))));
     QString writingFinishedMessage = generatorSpy.at(2).first().toString();
     QCOMPARE(writingFinishedMessage, QString("Finished writing file generatorOutput.h."));
     QString generatorFinishedMessage = generatorSpy.at(3).first().toString();

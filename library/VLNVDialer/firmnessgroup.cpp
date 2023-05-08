@@ -13,24 +13,21 @@
 
 #include <KactusAPI/include/utils.h>
 
-#include <QGridLayout>
+#include <common/widgets/tagEditor/FlowLayout.h>
 
 //-----------------------------------------------------------------------------
 // Function: FirmnessGroup::FirmnessGroup()
 //-----------------------------------------------------------------------------
 FirmnessGroup::FirmnessGroup(QWidget *parent):
-QGroupBox(tr("Firmness"), parent),
-templateBox_(tr("Template"), this),
-mutableBox_(tr("Mutable"), this),
-fixedBox_(tr("Fixed"), this),
+FilterGroup(tr("Firmness"), parent),
+templateBox_(QIcon(":/icons/common/graphics/template.png"), QString(), this),
+mutableBox_(QIcon(":/icons/common/graphics/mutable.png"), QString(), this),
+fixedBox_(QIcon(":/icons/common/graphics/fixed.png"), QString(), this),
 options_()
 {
-	QGridLayout* layout = new QGridLayout(this);
-	layout->addWidget(&templateBox_, 0, 0, 1, 1);
-	layout->addWidget(&mutableBox_, 0, 1, 1, 1);
-	layout->addWidget(&fixedBox_, 0, 2, 1, 1);
-	layout->setSpacing(0);
-	layout->setContentsMargins(4, 4, 4, 4);
+    setupButton(&templateBox_, tr("Template"));
+    setupButton(&mutableBox_, tr("Mutable"));
+    setupButton(&fixedBox_, tr("Fixed"));
 
 	templateBox_.setChecked(true);
 	mutableBox_.setChecked(true);
@@ -39,13 +36,11 @@ options_()
     connect(&templateBox_, SIGNAL(clicked(bool)), this, SLOT(onTemplateChanged(bool)), Qt::UniqueConnection);
     connect(&mutableBox_, SIGNAL(clicked(bool)), this, SLOT(onMutableChanged(bool)), Qt::UniqueConnection);
     connect(&fixedBox_, SIGNAL(clicked(bool)), this, SLOT(onConfigurationChanged(bool)), Qt::UniqueConnection);
-}
 
-//-----------------------------------------------------------------------------
-// Function: FirmnessGroup::~FirmnessGroup()
-//-----------------------------------------------------------------------------
-FirmnessGroup::~FirmnessGroup()
-{
+    auto layout = new FlowLayout(this, 2, 1, 1);
+    layout->addWidget(&templateBox_);
+    layout->addWidget(&mutableBox_);
+    layout->addWidget(&fixedBox_);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,6 +66,19 @@ Utils::FirmnessOptions FirmnessGroup::getFirmness() const
     options.mutable_ = mutableBox_.isChecked();
     options.fixed_ = fixedBox_.isChecked();
     return options;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FirmnessGroup::selectAll()
+//-----------------------------------------------------------------------------
+void FirmnessGroup::selectAll(bool select)
+{
+    Utils::FirmnessOptions options;
+    options.templates_ = select;
+    options.mutable_ = select;
+    options.fixed_ = select;
+
+    setFirmness(options);
 }
 
 //-----------------------------------------------------------------------------

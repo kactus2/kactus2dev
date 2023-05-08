@@ -76,6 +76,12 @@ QWidget(parent),
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
+    vlnvDisplayer_->setFlat(true);
+    nameGroup_->setFlat(true);
+    swGroup_->setFlat(true);
+    configurableElements_->setFlat(true);
+    propertyValueEditor_->setFlat(true);
+
 	vlnvDisplayer_->hide();
 	nameGroup_->hide();
     swGroup_->hide();
@@ -83,7 +89,6 @@ QWidget(parent),
     propertyValueEditor_->hide();
 
 	vlnvDisplayer_->setTitle(tr("Component VLNV"));
-	vlnvDisplayer_->setFlat(false);
 
     setupLayout();
 
@@ -100,14 +105,6 @@ QWidget(parent),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceEditor::~ComponentInstanceEditor()
-//-----------------------------------------------------------------------------
-ComponentInstanceEditor::~ComponentInstanceEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -419,6 +416,8 @@ void ComponentInstanceEditor::setupLayout()
     swGroupLayout->addWidget(fileSetRefCombo_, 1);
 
     QGroupBox* configurationBox = new QGroupBox(tr("Configuration"), this);
+    configurationBox->setFlat(true);
+
     QFormLayout* configurationLayout = new QFormLayout(configurationBox);
     configurationLayout->addRow(tr("Active view:"), activeViewLabel_);
 

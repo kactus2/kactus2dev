@@ -73,7 +73,7 @@ namespace KactusColors
     //! Other colors used in design.
     QColor const DIAGRAM_SELECTION = Qt::blue; // Selections in design diagrams.
     QColor const DIAGRAM_ALLOWED_INTERFACE = Qt::magenta; // Highlights allowed interface for a connection.
-    QColor const DIAGRAM_COLUMN_HEADER = QColor(210, 210, 210); // Background color for column headers.
+    QColor const DIAGRAM_COLUMN_HEADER = QColor(160, 193, 226); // Background color for column headers.
     QColor const STICKY_NOTE_BACKGROUND = QColor(QStringLiteral("lemonChiffon")); // Sticky note background
 
     //! Colors used for memory/address sections in the memory designer.

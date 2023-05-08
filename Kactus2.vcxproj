@@ -136,7 +136,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
       <TargetMachine>MachineX64</TargetMachine>
@@ -743,12 +743,13 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\ActivePortItem.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocConnectionItem.cpp" />
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocEditor.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdhocPortEditor.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityDelegate.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityEditor.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityModel.cpp" />
+    <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocEnabled.cpp" />
     <ClCompile Include="editors\HWDesign\AdHocItem.cpp" />
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.cpp" />
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.cpp" />
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.cpp" />
-    <ClCompile Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.cpp" />
     <ClCompile Include="editors\HWDesign\BusInterfaceDialog.cpp" />
     <ClCompile Include="editors\HWDesign\BusInterfaceEndPoint.cpp" />
     <ClCompile Include="editors\HWDesign\columnview\ColumnEditDialog.cpp" />
@@ -860,9 +861,10 @@ CreateHelp
     <ClCompile Include="Help\HelpSystem\ContextHelpBrowser.cpp" />
     <ClCompile Include="Help\HelpSystem\HelpSearchWidget.cpp" />
     <ClCompile Include="Help\HelpSystem\HelpWindow.cpp" />
+    <ClCompile Include="kactusGenerators\DocumentGenerator\DocumentationWriter.cpp" />
     <ClCompile Include="kactusGenerators\DocumentGenerator\documentgenerator.cpp" />
-    <ClCompile Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.cpp" />
-    <ClCompile Include="kactusGenerators\DocumentGenerator\ViewDocumentGenerator.cpp" />
+    <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp" />
+    <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchyfilter.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchyview.cpp" />
     <ClCompile Include="library\HierarchyView\hierarchywidget.cpp" />
@@ -881,6 +883,7 @@ CreateHelp
     <ClCompile Include="library\ObjectSelectionListItem.cpp" />
     <ClCompile Include="library\TableViewDialog.cpp" />
     <ClCompile Include="library\VLNVDialer\dialerwidget.cpp" />
+    <ClCompile Include="library\VLNVDialer\FilterGroup.cpp" />
     <ClCompile Include="library\VLNVDialer\filterwidget.cpp" />
     <ClCompile Include="library\VLNVDialer\firmnessgroup.cpp" />
     <ClCompile Include="library\VLNVDialer\hierarchygroup.cpp" />
@@ -913,6 +916,7 @@ CreateHelp
     <ClCompile Include="mainwindow\SaveHierarchy\SaveHierarchyDelegate.cpp" />
     <ClCompile Include="mainwindow\SaveHierarchy\SaveHierarchyDialog.cpp" />
     <ClCompile Include="mainwindow\SplashScreen.cpp" />
+    <ClCompile Include="mainwindow\WorkspaceSettings.cpp" />
     <ClCompile Include="Plugins\common\ConnectivityGraphUtilities.cpp" />
     <ClCompile Include="Plugins\common\CPUDetailRoutes.cpp" />
     <ClCompile Include="Plugins\common\LanguageHighlighter.cpp" />
@@ -1922,8 +1926,6 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="library\HierarchyView\hierarchyfilter.h">
     </QtMoc>
-    <QtMoc Include="kactusGenerators\DocumentGenerator\ViewDocumentGenerator.h">
-    </QtMoc>
     <QtMoc Include="editors\HWDesign\AdhocEditor\AdhocEditor.h">
     </QtMoc>
     <QtMoc Include="editors\HWDesign\AdHocConnectionItem.h">
@@ -1932,16 +1934,15 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\HWDesign\ActivePortItem.h">
     </QtMoc>
+    <QtMoc Include="editors\HWDesign\AdhocEditor\AdhocPortEditor.h" />
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityColumns.h" />
+    <QtMoc Include="editors\HWDesign\AdhocEditor\AdHocVisibilityDelegate.h" />
+    <QtMoc Include="editors\HWDesign\AdhocEditor\AdHocVisibilityEditor.h" />
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityModel.h" />
+    <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.h" />
     <ClInclude Include="editors\HWDesign\AdHocEnabled.h" />
     <QtMoc Include="editors\HWDesign\AdHocItem.h">
     </QtMoc>
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityColumns.h" />
-    <QtMoc Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.h">
-    </QtMoc>
-    <QtMoc Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.h">
-    </QtMoc>
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.h" />
-    <ClInclude Include="editors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.h" />
     <QtMoc Include="editors\HWDesign\columnview\ColumnEditDialog.h">
     </QtMoc>
     <QtMoc Include="editors\HWDesign\columnview\HWColumn.h">
@@ -2140,11 +2141,11 @@ CreateHelp
     </QtMoc>
     <ClInclude Include="editors\SystemDesign\UndoCommands\SystemDeleteCommands.h" />
     <ClInclude Include="editors\SystemDesign\UndoCommands\SystemMoveCommands.h" />
-    <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentGeneratorHTML.h" />
-    <QtMoc Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.h">
-    </QtMoc>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentationWriter.h" />
     <QtMoc Include="library\ItemExporter.h">
     </QtMoc>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h" />
+    <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h" />
     <ClInclude Include="library\LibraryInterface.h" />
     <QtMoc Include="library\LibraryTreeFilter.h">
     </QtMoc>
@@ -2170,8 +2171,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\firmnessgroup.h">
     </QtMoc>
-    <QtMoc Include="library\VLNVDialer\hierarchygroup.h">
-    </QtMoc>
+    <QtMoc Include="library\VLNVDialer\hierarchygroup.h" />
     <QtMoc Include="library\VLNVDialer\implementationgroup.h">
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\typegroup.h">
@@ -2180,6 +2180,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="mainwindow\DockWidgetHandler.h">
     </QtMoc>
+    <QtMoc Include="library\VLNVDialer\FilterGroup.h" />
     <ClInclude Include="mainwindow\CommandLineParser.h" />
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
     <ClInclude Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.h" />
@@ -2192,6 +2193,7 @@ CreateHelp
     <ClInclude Include="mainwindow\SaveHierarchy\SaveHierarchyDelegate.h" />
     <QtMoc Include="Plugins\common\LanguageHighlighter.h">
     </QtMoc>
+    <QtMoc Include="mainwindow\WorkspaceSettings.h" />
     <ClInclude Include="Plugins\common\ConnectivityGraphUtilities.h" />
     <ClInclude Include="Plugins\common\CPUDetailRoutes.h" />
     <ClInclude Include="Plugins\common\SourceHighlightStyle.h" />

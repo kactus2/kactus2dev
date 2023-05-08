@@ -17,9 +17,9 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/Parameter.h>

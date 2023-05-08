@@ -288,7 +288,7 @@ void MemoryDesignerDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 void MemoryDesignerDiagram::drawBackground(QPainter *painter, const QRectF &rect)
 {
     painter->setWorldMatrixEnabled(true);
-    painter->setPen(QPen(Qt::black, 0));
+    painter->setPen(QPen(Qt::gray, 0));
 
     qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
     qreal top = int(rect.top()) - (int(rect.top()) % GridSize );

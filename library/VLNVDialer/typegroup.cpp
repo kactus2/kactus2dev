@@ -11,28 +11,27 @@
 
 #include "typegroup.h"
 
-#include <QGridLayout>
+#include <common/widgets/tagEditor/FlowLayout.h>
+
+#include <QIcon>
 
 //-----------------------------------------------------------------------------
 // Function: TypeGroup::TypeGroup()
 //-----------------------------------------------------------------------------
 TypeGroup::TypeGroup(QWidget *parent):
-QGroupBox(tr("Item Type"), parent),
-componentBox_(tr("Component"), this),
-busBox_(tr("Bus"), this),
-catalogBox_(tr("Catalog"), this),
-apiComBox_(tr("API/COM"), this),
-advancedBox_(tr("Advanced"), this),
+FilterGroup(tr("Type"), parent),
+componentBox_(QIcon(":icons/common/graphics/hw-component.png"), QString(), this),
+busBox_(QIcon(":icons/common/graphics/bus-def.png"), QString(), this),
+catalogBox_(QIcon(":icons/common/graphics/catalog.png"), QString(), this),
+apiComBox_(QIcon(":icons/common/graphics/new-com_definition.png"), QString(), this),
+advancedBox_(QIcon(":icons/common/graphics/hw-design.png"), QString(), this),
 options_()
 {
-	QGridLayout* layout = new QGridLayout(this);
-	layout->addWidget(&busBox_, 0, 0, 1, 1);
-    layout->addWidget(&catalogBox_, 0, 1, 1, 1);
-    layout->addWidget(&componentBox_, 0, 2, 1, 1);
-    layout->addWidget(&apiComBox_, 1, 0, 1, 1);
-    layout->addWidget(&advancedBox_, 1, 1, 1, 1);
-	layout->setSpacing(0);
-	layout->setContentsMargins(4, 4, 4, 4);
+    setupButton(&componentBox_, tr("Component"));
+    setupButton(&busBox_, tr("Bus"));
+    setupButton(&catalogBox_, tr("Catalog"));
+    setupButton(&apiComBox_, tr("API/COM definition"));
+    setupButton(&advancedBox_, tr("Advanced"));
 
 	componentBox_.setChecked(true);
 	busBox_.setChecked(true);
@@ -45,13 +44,8 @@ options_()
     connect(&catalogBox_, SIGNAL(clicked(bool)), this, SLOT(onCatalogChange(bool)), Qt::UniqueConnection);
 	connect(&apiComBox_, SIGNAL(clicked(bool)), this, SLOT(onApiComChange(bool)), Qt::UniqueConnection);
     connect(&advancedBox_, SIGNAL(clicked(bool)), this, SLOT(onAdvancedChange(bool)), Qt::UniqueConnection);    
-}
 
-//-----------------------------------------------------------------------------
-// Function: TypeGroup::~TypeGroup()
-//-----------------------------------------------------------------------------
-TypeGroup::~TypeGroup()
-{
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,6 +76,21 @@ Utils::TypeOptions TypeGroup::getTypes() const
     options.advanced_ = advancedBox_.isChecked();
 
     return options;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TypeGroup::selectAll()
+//-----------------------------------------------------------------------------
+void TypeGroup::selectAll(bool select)
+{
+    Utils::TypeOptions options;
+    options.components_ = select;
+    options.buses_ = select;
+    options.catalogs_ = select;
+    options.apis_ = select;
+    options.advanced_ = select;
+
+    setTypes(options);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,4 +136,17 @@ void TypeGroup::onAdvancedChange(bool checked)
 {
 	options_.advanced_ = checked;
 	emit optionsChanged(options_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: TypeGroup::setupLayout()
+//-----------------------------------------------------------------------------
+void TypeGroup::setupLayout()
+{
+    auto* layout = new FlowLayout(this, 2, 1, 1);
+    layout->addWidget(&busBox_);
+    layout->addWidget(&catalogBox_);
+    layout->addWidget(&componentBox_);
+    layout->addWidget(&apiComBox_);
+    layout->addWidget(&advancedBox_);
 }

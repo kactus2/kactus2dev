@@ -27,8 +27,7 @@ class DesignParameterReferenceTree;
 class ListParameterFinder;
 class MultipleParameterFinder;
 class ComponentInstanceEditor;
-class AdHocVisibilityEditor;
-class AdHocEditor;
+class AdhocEditor;
 class ConfigurationEditor;
 class SystemDetailsEditor;
 class InterfaceEditor;
@@ -95,7 +94,7 @@ public:
      *
      *      @param [in] settings    Settings containing the library filters.
      */
-    void setFilterSettings(QSettings& settings);
+    void loadFilterSettings(QSettings& settings);
 
     /*!
      *  Setup the visibility actions for the visibility menu.
@@ -226,11 +225,18 @@ public:
     Utils::FilterOptions getLibraryFilters() const;
 
     /*!
-     *  Create settings for dock widget visibility and filters.
+     *  Save settings for dock widget filters.
      *
      *      @param [in] settings    The settings.
      */
-    void createVisibilityAndFilterSettings(QSettings& settings) const;
+    void saveFilterSettings(QSettings& settings) const;
+
+    /*!
+     *  Save settings for dock widget visibilities.
+     *
+     *      @param [in] settings    The settings.
+     */
+    void saveVisibilitySettings(QSettings& settings) const;
 
     /*!
      *  Setup the design parameter finder.
@@ -264,6 +270,8 @@ signals:
      *      @param [in] message     The notice message.
      */
     void noticeMessage(QString const& message);
+
+    void statusMessage(QString const& message);
 
     /*!
      *  Transfers URL context help requirement between the main window and the message console.
@@ -375,13 +383,6 @@ private slots:
     void onScriptConsoleVisibilityAction(bool show);
 
     /*!
-     *  Handles the action for the visibility of the ad hoc port visibility editor dock widget.
-     *
-     *      @param [in] show    Value for the visibility of the ad hoc port visibility editor dock widget.
-     */
-    void onAdHocVisibilityAction(bool show);
-
-    /*!
      *  Handles the action for the visibility of the ad hoc port editor dock widget.
      *
      *      @param [in] show    Value for the visibility of the ad hoc port editor dock widget.
@@ -422,11 +423,6 @@ private:
      *  Setup the component instance editor dock widget.
      */
     void setupInstanceEditor();
-
-    /*!
-     *  Setup the ad hoc port visibility editor dock widget.
-     */
-    void setupAdHocVisibilityEditor();
 
     /*!
      *  Setup the ad hoc port editor dock widget.
@@ -552,14 +548,8 @@ private:
     //! The dock widget that contains the instance editor.
     QDockWidget* instanceDock_;
 
-    //! The ad-hoc visibility editor.
-    AdHocVisibilityEditor* adHocVisibilityEditor_;
-
-    //! Ad hoc dock widget.
-    QDockWidget* adHocVisibilityDock_;
-
     //! Ad hoc editor.
-    AdHocEditor* adhocEditor_;
+    AdhocEditor* adhocEditor_;
 
     //! The ad hoc dock widget.
     QDockWidget* adhocDock_;

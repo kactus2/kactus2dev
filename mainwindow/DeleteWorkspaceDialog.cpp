@@ -59,13 +59,6 @@ DeleteWorkspaceDialog::DeleteWorkspaceDialog(QWidget* parent) : QDialog(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~DeleteWorkspaceDialog()
-//-----------------------------------------------------------------------------
-DeleteWorkspaceDialog::~DeleteWorkspaceDialog()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: name()
 //----------------------------------------------------------------------------- 
 QString DeleteWorkspaceDialog::name() const

@@ -12,15 +12,17 @@
 #ifndef FIRMNESSGROUP_H
 #define FIRMNESSGROUP_H
 
+#include "FilterGroup.h"
+
 #include <KactusAPI/include/utils.h>
 
 #include <QGroupBox>
-#include <QCheckBox>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 //! Contains the check boxes to set the re-usability options for VLNVDialer.
 //-----------------------------------------------------------------------------
-class FirmnessGroup : public QGroupBox
+class FirmnessGroup : public FilterGroup
 {
 	Q_OBJECT
 
@@ -36,7 +38,11 @@ public:
 	/*!
      *  The destructor
      */
-	virtual ~FirmnessGroup();
+	virtual ~FirmnessGroup() = default;
+
+    //! No copying. No assignment.
+    FirmnessGroup(const FirmnessGroup& other) = delete;
+    FirmnessGroup& operator=(const FirmnessGroup& other) = delete;
 
     /*!
      *  Sets new firmness options.
@@ -51,6 +57,13 @@ public:
      *      @return Selected firmness options.
      */
     Utils::FirmnessOptions getFirmness() const;
+
+    /*!
+     *  Select/clear all filters.
+     *
+     *      @param [in] select     If true, all filters are set, otherwise all filters are cleared.
+     */
+	void selectAll(bool select) override final;
 
 signals:
 
@@ -77,18 +90,15 @@ private slots:
 	void onConfigurationChanged(bool checked);
 
 private:
-	//! No copying. No assignment.
-	FirmnessGroup(const FirmnessGroup& other);
-	FirmnessGroup& operator=(const FirmnessGroup& other);
 
 	//! Check box to select templates in/out of search results.
-	QCheckBox templateBox_;
+	QPushButton templateBox_;
 
 	//! Check box to select mutable in/out of search results.
-	QCheckBox mutableBox_;
+	QPushButton mutableBox_;
 
 	//! Check box to select fixed in/out of search results.
-	QCheckBox fixedBox_;
+	QPushButton fixedBox_;
 
 	//! Contains the current re-usability settings.
 	Utils::FirmnessOptions options_;

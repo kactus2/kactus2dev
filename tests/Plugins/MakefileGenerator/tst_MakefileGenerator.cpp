@@ -20,10 +20,10 @@
 #include <Plugins/MakefileGenerator/MakefileParser.h>
 #include <Plugins/MakefileGenerator/MakefileGenerator.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
 #include <common/NameGenerationPolicy.h>
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 class tst_MakefileGenerator : public QObject
 {
@@ -1469,14 +1469,14 @@ void tst_MakefileGenerator::sameFileDiffCompiler()
 	QCOMPARE( conflicts.first().size(), 2 );
 	QCOMPARE( conflicts.last().size(), 2 );
 	QSharedPointer<MakeObjectData> eka = *(conflicts.first().begin());
-	QSharedPointer<MakeObjectData> toka = *(conflicts.first().end() - 1);
+	QSharedPointer<MakeObjectData> toka = *(conflicts.first().begin()++);
 	QCOMPARE( eka->path, toka->path );
 	QCOMPARE( eka->fileName, toka->fileName );
 
 	QCOMPARE( eka->fileName, QString("array.c") );
 
 	eka = *(conflicts.last().begin());
-	toka = *(conflicts.last().end() - 1);
+	toka = *(conflicts.last().begin()++);
 	QCOMPARE( eka->path, toka->path );
 	QCOMPARE( eka->fileName, toka->fileName );
 
@@ -1529,14 +1529,14 @@ void tst_MakefileGenerator::sameFileDiffFlags()
 	QCOMPARE( conflicts.first().size(), 2 );
 	QCOMPARE( conflicts.last().size(), 2 );
 	QSharedPointer<MakeObjectData> eka = *(conflicts.first().begin());
-	QSharedPointer<MakeObjectData> toka = *(conflicts.first().end() - 1);
+	QSharedPointer<MakeObjectData> toka = *(conflicts.first().begin()++);
 	QCOMPARE( eka->path, toka->path );
 	QCOMPARE( eka->fileName, toka->fileName );
 
 	QCOMPARE( eka->fileName, QString("array.c") );
 
 	eka = *(conflicts.last().begin());
-	toka = *(conflicts.last().end() - 1);
+	toka = *(conflicts.last().begin()++);
 	QCOMPARE( eka->path, toka->path );
 	QCOMPARE( eka->fileName, toka->fileName );
 
@@ -1924,7 +1924,7 @@ void tst_MakefileGenerator::verifyOutputContains(QString instanceName, QString c
     QString outputString = outputFile.readAll();
     outputFile.close();
 
-    outputString = outputString.replace( QRegExp("[ ]+"), " " );
+    outputString = outputString.replace( QRegularExpression("[ ]+"), " " );
 
     if (!outputString.contains(expectedOutput))
     {

@@ -15,9 +15,6 @@
 
 #include "VersionHelper.h"
 
-#include "NewWorkspaceDialog.h"
-#include "DeleteWorkspaceDialog.h"
-
 #include <mainwindow/DockWidgetHandler.h>
 #include <mainwindow/Ribbon/Ribbon.h>
 #include <mainwindow/Ribbon/RibbonGroup.h>
@@ -115,6 +112,7 @@
 #include <QDesktopServices>
 #include <QPainter>
 #include <QDateTime>
+#include <QStatusBar>
 
 //-----------------------------------------------------------------------------
 // Function: MainWindow::MainWindow()
@@ -124,7 +122,8 @@ QMainWindow(parent),
 libraryHandler_(library),
 designTabs_(0),
 dockHandler_(new DockWidgetHandler(library, messageChannel, this)),
-ribbon_(0),
+ribbon_(0), 
+statusBar_(new QStatusBar(this)),
 actNew_(0),
 actSave_(0),
 actSaveAs_(0),
@@ -179,7 +178,7 @@ actionFilterUnconnectedMemoryItems_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
-curWorkspaceName_("Default"),
+workspace_(this, dockHandler_),
 messageChannel_(messageChannel)
 {    
     setWindowTitle(QCoreApplication::applicationName());
@@ -198,6 +197,7 @@ messageChannel_(messageChannel)
         "QGroupBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}"
         "QTableView::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}"
         "QTableView::indicator:unchecked {image: none;}"
+        "QDockWidget::title {background-color: #89B6E2; font-size: 18pt; padding-left: 2px; padding-top: 2px;}"
         "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     setStyleSheet(defaultStyleSheet);
 
@@ -206,6 +206,8 @@ messageChannel_(messageChannel)
     dockHandler_->setupDockWidgets();
     connectDockHandler();
     setupAndConnectLibraryHandler();
+
+    setStatusBar(statusBar_);
 
     // some actions need the editors so set them up before the actions
     setupActions();
@@ -243,34 +245,9 @@ void MainWindow::onLibrarySearch()
 //-----------------------------------------------------------------------------
 void MainWindow::restoreSettings()
 {
-    QSettings settings;
-
-    // Load the active workspace.
-    curWorkspaceName_ = settings.value("Workspaces/CurrentWorkspace", QString("Default")).toString();
-    loadWorkspace(curWorkspaceName_);
-
-    // Create default workspaces if the workspaces registry group is not found.
-    settings.beginGroup("Workspaces");
-
-    if (settings.childGroups().empty())
-    {
-        settings.endGroup();
-
-        Utils::FilterOptions defaultOptions;
-        defaultOptions.type.advanced_ = false;
-
-        dockHandler_->setLibraryFilters(defaultOptions);
-
-        createNewWorkspace("Default");
-        createNewWorkspace("Design");
-    }
-    else
-    {
-        settings.endGroup();
-    }
-
-    // Update the workspace menu.
+    workspace_.restoreSettings();
     updateWorkspaceMenu();
+    actWorkspaces_->setText(workspace_.getCurrentWorkspace());
 
     dockHandler_->applySettings();
 }
@@ -280,93 +257,7 @@ void MainWindow::restoreSettings()
 //-----------------------------------------------------------------------------
 void MainWindow::saveSettings()
 {
-    QSettings settings;
-
-    // Save the active workspace.
-    settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
-    saveWorkspace(curWorkspaceName_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::copyComponentEditorSettings()
-//-----------------------------------------------------------------------------
-void MainWindow::copyComponentEditorSettings(QString workspaceName)
-{
-    QSettings settings;
-
-    QString activeWorkspacePath = "Workspaces/" + curWorkspaceName_ + "/ComponentEditorFilters/";
-    QString newWorkspacePath = "Workspaces/" + workspaceName + "/ComponentEditorFilters/";
-
-    for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
-    {
-        KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
-        QString hwHierarchyName(KactusAttribute::hierarchyToString(val));
-
-        hwHierarchyName = "HW/" + hwHierarchyName;
-
-        for (QString const& name : ComponentEditor::getHwItemNames())
-        {
-            settings.setValue(newWorkspacePath + hwHierarchyName + "/" + name,
-                settings.value(activeWorkspacePath + hwHierarchyName + "/" + name).toBool());
-        }
-    }
-
-    activeWorkspacePath = activeWorkspacePath + "SW/";
-    newWorkspacePath = newWorkspacePath + "SW/";
-
-    for (QString const& itemName : ComponentEditor::getSwItemNames())
-    {
-        settings.setValue(newWorkspacePath + itemName, settings.value(activeWorkspacePath + itemName).toBool());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mainwindow::createNewWorkspace()
-//-----------------------------------------------------------------------------
-void MainWindow::createNewWorkspace(QString workspaceName)
-{
-    QString workspacePath = "Workspaces/" + workspaceName;
-
-    QSettings settings;
-
-    // Save the geometry and state of windows.
-    settings.beginGroup(workspacePath);
-
-    settings.setValue("WindowState", saveState());
-    settings.setValue("Geometry", saveGeometry());
-    settings.setValue("WindowPosition", pos());
-
-    dockHandler_->createVisibilityAndFilterSettings(settings);
-
-    // Create the component editor filters.
-    settings.beginGroup("ComponentEditorFilters");
-    settings.beginGroup("HW");
-
-    for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
-    {
-        KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
-        QString hwHierarchyName(KactusAttribute::hierarchyToString(val));
-        settings.beginGroup(hwHierarchyName);
-
-        for (QString const& itemName : ComponentEditor::getHwItemNames())
-        {
-            settings.setValue(itemName, true);
-        }
-
-        settings.endGroup(); // hwHierarchyName
-    }
-
-    settings.endGroup(); // HW
-    settings.beginGroup("SW");
-
-    for (QString const& itemName : ComponentEditor::getSwItemNames())
-    {
-        settings.setValue(itemName, true);
-    }
-
-    settings.endGroup(); // SW
-    settings.endGroup(); // ComponentEditorFilters
-    settings.endGroup(); // Workspace/workspaceName
+    workspace_.saveSettings();
 }
 
 //-----------------------------------------------------------------------------
@@ -374,44 +265,7 @@ void MainWindow::createNewWorkspace(QString workspaceName)
 //-----------------------------------------------------------------------------
 void MainWindow::updateWorkspaceMenu()
 {
-    // Create the workspace menu based on the settings.
-    workspaceMenu_.clear();
-
-    QSettings settings;
-    settings.beginGroup("Workspaces");
-
-    QStringList workspaceIDs = settings.childGroups();
-    QActionGroup* workspaceGroup = new QActionGroup(this);
-    workspaceGroup->setExclusive(true);
-
-    for (QString const& workspaceID : workspaceIDs)
-    {
-        QString workspaceName = workspaceID;
-
-        QAction* action = new QAction(workspaceName, this);
-        action->setCheckable(true);
-        action->setChecked(curWorkspaceName_ == workspaceName);
-
-        workspaceGroup->addAction(action);
-        workspaceMenu_.addAction(action);
-    }
-
-    settings.endGroup();
-
-    connect(workspaceGroup, SIGNAL(triggered(QAction *)), this, SLOT(onWorkspaceChanged(QAction *)));
-
-    // Add actions for creating and deleting new workspaces.
-    QAction* addAction = new QAction(tr("New Workspace..."), this);
-    connect(addAction, SIGNAL(triggered()), this, SLOT(onNewWorkspace()), Qt::UniqueConnection);
-
-    QAction* deleteAction = new QAction(tr("Delete Workspace..."), this);
-    connect(deleteAction, SIGNAL(triggered()), this, SLOT(onDeleteWorkspace()), Qt::UniqueConnection);
-
-    workspaceMenu_.addSeparator();
-    workspaceMenu_.addAction(addAction);
-    workspaceMenu_.addAction(deleteAction);
-
-    actWorkspaces_->setText(curWorkspaceName_);
+    workspace_.updateWorkspaceMenu(&workspaceMenu_);
 }
 
 //-----------------------------------------------------------------------------
@@ -419,58 +273,9 @@ void MainWindow::updateWorkspaceMenu()
 //-----------------------------------------------------------------------------
 void MainWindow::loadWorkspace(QString const& workspaceName)
 {
-    QSettings settings;
-
-    // Create the registry key name.
-    QString keyName = "Workspaces/" + workspaceName;
-    settings.beginGroup(keyName);
-
-    // Set the window to normal state (this fixed a weird error with window state).
-    setWindowState(Qt::WindowNoState);
-
-    if (settings.contains("WindowPosition"))
-    {
-        move(settings.value("WindowPosition").toPoint());
-    }
-
-    if (settings.contains("Geometry"))
-    {
-        restoreGeometry(settings.value("Geometry").toByteArray());
-    }
-
-    if (settings.contains("WindowState"))
-    {
-        restoreState(settings.value("WindowState").toByteArray());
-    }
-
-    dockHandler_->loadVisiblities(settings);
+    workspace_.loadWorkspace(workspaceName);
 
     updateWindows();
-
-    dockHandler_->setFilterSettings(settings);
-}
-
-//-----------------------------------------------------------------------------
-// Function: saveWorkspace()
-//-----------------------------------------------------------------------------
-void MainWindow::saveWorkspace(QString const& workspaceName)
-{
-    // Instance to save the settings.
-    QSettings settings;
-
-    // Create the registry group name.
-    QString keyName = "Workspaces/" + workspaceName;
-
-    // Save the geometry and state of windows.
-    settings.beginGroup(keyName);
-
-    settings.setValue("WindowState", saveState());
-    settings.setValue("Geometry", saveGeometry());
-    settings.setValue("WindowPosition", pos());
-
-    dockHandler_->createVisibilityAndFilterSettings(settings);
-
-    settings.endGroup(); // Workspaces/keyName
 }
 
 //-----------------------------------------------------------------------------
@@ -490,20 +295,26 @@ void MainWindow::setupActions()
     connect(designTabs_, SIGNAL(documentModifiedChanged(bool)),
         actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
+
     actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), tr("Save As"), this);
     actSaveAs_->setShortcut(QKeySequence::SaveAs);
     actSaveAs_->setEnabled(false);
     connect(actSaveAs_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocumentAs()));
 
-    actSaveHierarchy_ = new QAction(QIcon(":/icons/common/graphics/file-save-hierarchical.png"),
-        tr("Save Hierarchy"), this);
-    actSaveHierarchy_->setEnabled(false);
-    connect(actSaveHierarchy_, SIGNAL(triggered()), this, SLOT(saveCurrentDocumentHierarchy()));
-
     actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
         tr("Save All (Ctrl+Shift+S)"), this);
     actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
     connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
+
+    actSaveHierarchy_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
+        tr("Save Hierarchy"), this);
+    actSaveHierarchy_->setEnabled(false);
+    connect(actSaveHierarchy_, SIGNAL(triggered()), this, SLOT(saveCurrentDocumentHierarchy()));
+
+    auto saveMenu = new QMenu(this);
+    saveMenu->addAction(actSaveAll_);
+    saveMenu->addAction(actSaveHierarchy_);
+    actSaveAs_->setMenu(saveMenu);
 
     actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print (Ctrl+P)"), this);
     actPrint_->setShortcut(QKeySequence::Print);
@@ -748,98 +559,71 @@ void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, 
 //-----------------------------------------------------------------------------
 void MainWindow::setupMenus()
 {
-    QDockWidget* menuDock = new QDockWidget(tr("Menu"), this);
-    menuDock->setObjectName(tr("Menu"));
-    menuDock->setTitleBarWidget(new QWidget(this));
-    menuDock->setAllowedAreas(Qt::TopDockWidgetArea);
-    menuDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
-
-    ribbon_ = new Ribbon(menuDock);
-    menuDock->setWidget(ribbon_);
-    addDockWidget(Qt::TopDockWidgetArea, menuDock);
+    ribbon_ = new Ribbon(this);
+    addToolBar(ribbon_);
 
     // The "File" group.
-    RibbonGroup* fileGroup = ribbon_->addGroup(tr("File"));
+    RibbonGroup* fileGroup = new RibbonGroup(tr("File"), ribbon_);
     fileGroup->addAction(actNew_);
     fileGroup->addAction(actSave_);
     fileGroup->addAction(actSaveAs_);
-    fileGroup->addAction(actSaveAll_);
-    fileGroup->addAction(actSaveHierarchy_);
     fileGroup->addAction(actPrint_);
     fileGroup->addAction(actImageExport_);
+    fileGroup->addAction(actRunImport_);
 
-    fileGroup->widgetForAction(actNew_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actSave_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actSaveAs_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actSaveHierarchy_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actSaveAll_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actPrint_)->installEventFilter(ribbon_);
-    fileGroup->widgetForAction(actImageExport_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(fileGroup);
+    actRunImport_->setVisible(false);
+    actRunImport_->setEnabled(false);
 
     // The "Library" group.
-    RibbonGroup* libGroup = ribbon_->addGroup(tr("Library"));
+    RibbonGroup* libGroup = new RibbonGroup(tr("Library"), ribbon_);
     libGroup->addAction(actLibraryLocations_);
     libGroup->addAction(actLibrarySearch_);
     libGroup->addAction(actCheckIntegrity_);
-
-    libGroup->widgetForAction(actLibraryLocations_)->installEventFilter(ribbon_);
-    libGroup->widgetForAction(actLibrarySearch_)->installEventFilter(ribbon_);
-    libGroup->widgetForAction(actCheckIntegrity_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(libGroup);
 
     // The "protection" group
-    protectGroup_ = ribbon_->addGroup(tr("Protection"));
+    protectGroup_ = new RibbonGroup(tr("Protection"), ribbon_);
     protectGroup_->addAction(actProtect_);
-    protectGroup_->setVisible(false);
 
-    protectGroup_->widgetForAction(actProtect_)->installEventFilter(ribbon_);
+    protectAction_ = ribbon_->addGroup(protectGroup_); 
+    protectAction_->setVisible(false);
 
     // The "Edit" group.
-    editGroup_ = ribbon_->addGroup(tr("Edit"));
+    editGroup_ = new RibbonGroup(tr("Edit"), ribbon_);
     editGroup_->addAction(actRefresh_);
     editGroup_->addAction(actUndo_);
     editGroup_->addAction(actRedo_);
-    editGroup_->setVisible(false);
-    editGroup_->setEnabled(false);
 
-    editGroup_->widgetForAction(actUndo_)->installEventFilter(ribbon_);
-    editGroup_->widgetForAction(actRedo_)->installEventFilter(ribbon_);
-    editGroup_->widgetForAction(actRefresh_)->installEventFilter(ribbon_);
+    editAction_ = ribbon_->addGroup(editGroup_);
+    editAction_->setVisible(false);
+    editAction_->setEnabled(false);
 
     // The "Generation" group.
-    generationGroup_ = ribbon_->addGroup(tr("Generation"));
+    generationGroup_ = new RibbonGroup(tr("Generation"), ribbon_);
     generationGroup_->addAction(actGenDocumentation_);
-    generationGroup_->addAction(actRunImport_);
-    generationGroup_->setVisible(false);
-    generationGroup_->setEnabled(false);
 
-    generationGroup_->widgetForAction(actGenDocumentation_)->installEventFilter(ribbon_);
-    generationGroup_->widgetForAction(actRunImport_)->installEventFilter(ribbon_);
+    generationAction_ = ribbon_->addGroup(generationGroup_);
+    generationAction_->setVisible(false);
+    generationAction_->setEnabled(false);
 
     createGeneratorPluginActions();
 
     //! The "Diagram Tools" group.
-    diagramToolsGroup_ = ribbon_->addGroup(tr("Diagram Tools"));
+    diagramToolsGroup_ = new RibbonGroup(tr("Diagram Tools"), ribbon_);
     diagramToolsGroup_->addAction(actToolSelect_);
-    diagramToolsGroup_->addAction(actAddColumn_);
     diagramToolsGroup_->addAction(actToolConnect_);
     diagramToolsGroup_->addAction(actToolInterface_);
     diagramToolsGroup_->addAction(actToolDraft_);
     diagramToolsGroup_->addAction(actToolToggleOffPage_);
     diagramToolsGroup_->addAction(actToolLabel_);
-    diagramToolsGroup_->setVisible(false);
+    diagramToolsGroup_->addAction(actAddColumn_);
 
-    diagramToolsGroup_->widgetForAction(actAddColumn_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolSelect_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolConnect_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolInterface_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolDraft_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolToggleOffPage_)->installEventFilter(ribbon_);
-    diagramToolsGroup_->widgetForAction(actToolLabel_)->installEventFilter(ribbon_);
+    diagramToolsAction_ = ribbon_->addGroup(diagramToolsGroup_);
+    diagramToolsAction_->setVisible(false);
 
     //! The "Filtering tools" group.
-    filteringGroup_ = ribbon_->addGroup(tr("Filtering Tools"));
-    filteringGroup_->setVisible(false);
-    filteringGroup_->setEnabled(true);
+    filteringGroup_ = new RibbonGroup(tr("Filtering Tools"), ribbon_);
     filteringGroup_->addAction(actionFilterSegments_);
     filteringGroup_->addAction(actionFilterAddressBlocks_);
     filteringGroup_->addAction(actionFilterRegisters_);
@@ -850,18 +634,12 @@ void MainWindow::setupMenus()
     filteringGroup_->addAction(actionCondenseFieldItems_);
     filteringGroup_->addAction(actionExtendFieldItems_);
 
-    filteringGroup_->widgetForAction(actionFilterSegments_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterAddressBlocks_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterRegisters_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterFields_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterUnconnectedMemoryItems_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterAddressSpaceChains_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionCondenseMemoryItems_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionCondenseFieldItems_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionExtendFieldItems_)->installEventFilter(ribbon_);
+    filteringAction_ = ribbon_->addGroup(filteringGroup_);
+    filteringAction_->setVisible(false);
+    filteringAction_->setEnabled(true);
 
     //! The "View" group.
-    RibbonGroup* viewGroup = ribbon_->addGroup(tr("View"));
+    RibbonGroup* viewGroup = new RibbonGroup(tr("View"), ribbon_);
     viewGroup->addAction(actVisibleDocks_);
     viewGroup->addAction(actZoomIn_);
     viewGroup->addAction(actZoomOut_);
@@ -869,41 +647,35 @@ void MainWindow::setupMenus()
     viewGroup->addAction(actFitInView_);
     viewGroup->addAction(actVisibilityControl_);
 
-    viewGroup->widgetForAction(actZoomIn_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actZoomOut_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actZoomOriginal_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actFitInView_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actVisibleDocks_)->installEventFilter(ribbon_);
-    viewGroup->widgetForAction(actVisibilityControl_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(viewGroup);
 
     //! The "Configuration tools" group.
-    configurationToolsGroup_ = ribbon_->addGroup(tr("Configuration Tools"));
+    configurationToolsGroup_ = new RibbonGroup(tr("Configuration Tools"), ribbon_);
     configurationToolsGroup_->addAction(actionConfigureViews_);
     configurationToolsGroup_->addAction(openMemoryDesignerAction_);
-    configurationToolsGroup_->setVisible(false);
-    configurationToolsGroup_->setEnabled(false);
 
-    configurationToolsGroup_->widgetForAction(actionConfigureViews_)->installEventFilter(ribbon_);
-    configurationToolsGroup_->widgetForAction(openMemoryDesignerAction_)->installEventFilter(ribbon_);
+    configurationToolsAction_ = ribbon_->addGroup(configurationToolsGroup_);
+    configurationToolsAction_->setVisible(false);
+    configurationToolsAction_->setEnabled(false);
 
     //! The "Workspace" group.
-    RibbonGroup* workspacesGroup = ribbon_->addGroup(tr("Workspace"));
+    RibbonGroup* workspacesGroup = new RibbonGroup(tr("Workspace"), ribbon_);
     workspacesGroup->addAction(actWorkspaces_);
     workspacesGroup->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    ribbon_->addGroup(workspacesGroup);
 
-    workspacesGroup->widgetForAction(actWorkspaces_)->installEventFilter(ribbon_);
+    connect(&workspace_, SIGNAL(requestMenuUpdate()), this, SLOT(updateWorkspaceMenu()), Qt::UniqueConnection);
+    connect(&workspace_, SIGNAL(workspaceChanged(QString const&)), 
+        this, SLOT(onWorkspaceChanged(QString const&)), Qt::UniqueConnection);
 
     //! The "System" group.
-    RibbonGroup* sysGroup = ribbon_->addGroup(tr("System"));
+    RibbonGroup* sysGroup = new RibbonGroup(tr("System"), ribbon_);
     sysGroup->addAction(actSettings_);
     sysGroup->addAction(actHelp_);
     sysGroup->addAction(actAbout_);
     sysGroup->addAction(actExit_);
 
-    sysGroup->widgetForAction(actSettings_)->installEventFilter(ribbon_);
-    sysGroup->widgetForAction(actHelp_)->installEventFilter(ribbon_);
-    sysGroup->widgetForAction(actAbout_)->installEventFilter(ribbon_);
-    sysGroup->widgetForAction(actExit_)->installEventFilter(ribbon_);
+    ribbon_->addGroup(sysGroup);
 
     // the menu to display the dock widgets
     dockHandler_->setupVisibilityActionMenu(windowsMenu_);
@@ -949,6 +721,9 @@ void MainWindow::connectDockHandler()
         dockHandler_, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
     connect(dockHandler_, SIGNAL(designChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
+
+    connect(dockHandler_, SIGNAL(statusMessage(QString const&)),
+        statusBar_, SLOT(showMessage(QString const&)));
 }
 
 //-----------------------------------------------------------------------------
@@ -956,13 +731,10 @@ void MainWindow::connectDockHandler()
 //-----------------------------------------------------------------------------
 void MainWindow::setupAndConnectLibraryHandler()
 {
-
     connect(libraryHandler_, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SLOT(openDesign(const VLNV&, const QString&)));
     connect(libraryHandler_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(openMemoryDesign(const VLNV&, const QString&)));
-
-
 
     connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -979,7 +751,8 @@ void MainWindow::setupAndConnectLibraryHandler()
     connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
         this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 
-
+    connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
+        this, SLOT(openApiDefinition(const VLNV&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1088,8 +861,8 @@ void MainWindow::updateMenuStrip()
     actPrint_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT));
     actImageExport_->setEnabled(doc != 0 && doc->getFlags() & TabDocument::DOC_PRINT_SUPPORT);
 
-    generationGroup_->setEnabled(unlocked);
-    generationGroup_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
+    generationAction_->setEnabled(unlocked);
+    generationAction_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
 
     actGenDocumentation_->setEnabled((isHWDesign|| isHWComp) && unlocked);
     actGenDocumentation_->setVisible((isHWDesign|| isHWComp));
@@ -1099,20 +872,20 @@ void MainWindow::updateMenuStrip()
 
     openMemoryDesignerAction_->setVisible(isHWDesign);
 
-    configurationToolsGroup_->setEnabled(unlocked);
-    configurationToolsGroup_->setVisible(doc != 0 && (isHWComp || isHWDesign));
+    configurationToolsAction_->setEnabled(unlocked);
+    configurationToolsAction_->setVisible(doc != 0 && (isHWComp || isHWDesign));
     actionConfigureViews_->setEnabled(unlocked);
     actionConfigureViews_->setVisible(isHWDesign || isHWComp);
 
-    editGroup_->setVisible(doc != 0);
-    editGroup_->setEnabled(doc != 0 && unlocked);
+    editAction_->setVisible(doc != 0);
+    editAction_->setEnabled(doc != 0 && unlocked);
     actUndo_->setVisible(doc != 0 && doc->getEditProvider() != 0);
     actRedo_->setVisible(doc != 0 && doc->getEditProvider() != 0);
     actUndo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canUndo());
     actRedo_->setEnabled(doc != 0 && doc->getEditProvider() != 0 && doc->getEditProvider()->canRedo());
 
-    diagramToolsGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT));
-    diagramToolsGroup_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT) &&
+    diagramToolsAction_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT));
+    diagramToolsAction_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_DRAW_MODE_SUPPORT) &&
         !doc->isProtected());
     actToolSelect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_SELECT));
     actToolConnect_->setEnabled(doc != 0 && (doc->getSupportedDrawModes() & MODE_CONNECT));
@@ -1123,7 +896,7 @@ void MainWindow::updateMenuStrip()
 
     bool oldProtectionState = actProtect_->isChecked();
 
-    protectGroup_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
+    protectAction_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
     actProtect_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
     actProtect_->setChecked(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) &&
         doc->isProtected());
@@ -1140,7 +913,7 @@ void MainWindow::updateMenuStrip()
 
     if (isMemoryDesign)
     {
-        generationGroup_->hide();
+        generationAction_->setVisible(false);
 
         actionFilterAddressSpaceChains_->setChecked(memoryDocument->addressSpaceChainsAreFiltered());
         actionCondenseMemoryItems_->setChecked(memoryDocument->memoryItemsAreCondensed());
@@ -1151,7 +924,7 @@ void MainWindow::updateMenuStrip()
         actionFilterUnconnectedMemoryItems_->setChecked(memoryDocument->unconnectedMemoryItemsAreFiltered());
     }
 
-    filteringGroup_->setVisible(isMemoryDesign);
+    filteringAction_->setVisible(isMemoryDesign);
 }
 
 //-----------------------------------------------------------------------------
@@ -1252,7 +1025,7 @@ void MainWindow::generateDoc()
     QFileInfo xmlInfo(XMLPath);
 
     QString targetPath = QFileDialog::getSaveFileName(NULL, tr("Save the documentation to..."),
-        xmlInfo.absolutePath(), tr("web pages (*.html)"));
+        xmlInfo.absolutePath(), tr("markdown (*.md);;web pages (*.html)"));
 
     if (targetPath.isEmpty())
     {
@@ -1268,6 +1041,14 @@ void MainWindow::generateDoc()
         return;
     }
 
+    std::unordered_map<QString, DocumentGenerator::DocumentFormat> formats =
+    {
+        {QString("md"), DocumentGenerator::MD},
+        {QString("html"), DocumentGenerator::HTML}
+    };
+
+    DocumentGenerator::DocumentFormat docFormat = formats.at(targetPath.split(".").back());
+
     QTextStream stream(&targetFile);
 
     DesignWidgetFactoryImplementation designWidgetFactory(libraryHandler_,
@@ -1275,7 +1056,9 @@ void MainWindow::generateDoc()
 
     ExpressionFormatterFactoryImplementation expressionFormatterFactory;
 
-    DocumentGenerator generator(libraryHandler_, vlnv, &designWidgetFactory, &expressionFormatterFactory, this);
+    DocumentGenerator generator(libraryHandler_, vlnv, &designWidgetFactory, &expressionFormatterFactory, 1, this);
+    generator.setFormat(docFormat);
+
     connect(&generator, SIGNAL(errorMessage(const QString&)),
         dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(&generator, SIGNAL(noticeMessage(const QString&)),
@@ -3009,7 +2792,7 @@ void MainWindow::updateVisibilityControlMenu(TabDocument* document)
     {
         iter.next();
 
-        QAction* action = new QAction(tr(qPrintable(iter.key())), this);
+        QAction* action = new QAction(iter.key(), this);
         action->setCheckable(true);
         action->setChecked(iter.value());
 
@@ -3415,76 +3198,11 @@ void MainWindow::openWorkspaceMenu()
 //-----------------------------------------------------------------------------
 // Function: MainWindow::onWorkspaceChanged()
 //-----------------------------------------------------------------------------
-void MainWindow::onWorkspaceChanged(QAction* action)
+void MainWindow::onWorkspaceChanged(QString const& workspace)
 {
-    saveWorkspace(curWorkspaceName_);
-
-    curWorkspaceName_ = action->text();
-
-    QSettings settings;
-    settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
-
-    loadWorkspace(curWorkspaceName_);
-
-    actWorkspaces_->setText(curWorkspaceName_);
+    actWorkspaces_->setText(workspace);
 
     designTabs_->applySettings();
-}
-
-//-----------------------------------------------------------------------------
-// Function: onNewWorkspace()
-//-----------------------------------------------------------------------------
-void MainWindow::onNewWorkspace()
-{
-    NewWorkspaceDialog saveDialog(this);
-
-    if (saveDialog.exec() == QDialog::Accepted)
-    {
-        saveWorkspace(curWorkspaceName_);
-
-        createNewWorkspace(saveDialog.name());
-        copyComponentEditorSettings(saveDialog.name());
-
-        saveWorkspace(saveDialog.name());
-        curWorkspaceName_ = saveDialog.name();
-
-        QSettings settings;
-        settings.setValue("Workspaces/CurrentWorkspace", curWorkspaceName_);
-
-        updateWorkspaceMenu();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onDeleteWorkspace()
-//-----------------------------------------------------------------------------
-void MainWindow::onDeleteWorkspace()
-{
-    DeleteWorkspaceDialog saveDialog(this);
-
-    // Fill in the dialog with existing workspace names.
-    QSettings settings;
-    settings.beginGroup("Workspaces");
-
-    QStringList workspaces = settings.childGroups();
-
-    for (QString const& workspace : workspaces)
-    {
-        if (workspace != "Default" && workspace != curWorkspaceName_)
-        {
-            saveDialog.addWorkspaceName(workspace);
-        }
-    }
-
-    settings.endGroup();
-
-    // Execute the dialog.
-    if (saveDialog.exec() == QDialog::Accepted)
-    {
-        // Remove the workspace from the settings and update the workspace menu.
-        settings.remove("Workspaces/" + saveDialog.name());
-        updateWorkspaceMenu();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -3670,8 +3388,6 @@ void MainWindow::createGeneratorPluginActions()
 
             generationGroup_->addAction(action);
             pluginActionGroup_->addAction(action);
-
-            generationGroup_->widgetForAction(action)->installEventFilter(ribbon_);
         }
     }
 
@@ -3815,7 +3531,7 @@ void MainWindow::setPluginVisibilities()
         }
     }
 
-    generationGroup_->setVisible(isGenerationGroupVisible && doc);
+    generationAction_->setVisible(isGenerationGroupVisible && doc);
 }
 
 //-----------------------------------------------------------------------------

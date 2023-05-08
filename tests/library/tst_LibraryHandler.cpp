@@ -13,7 +13,7 @@
 #include <QDebug>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
-#include <library/LibraryHandler.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 void noMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg) {}
 
@@ -55,6 +55,7 @@ tst_LibraryHandler::tst_LibraryHandler()
 void tst_LibraryHandler::initTestcase()
 {
     qInstallMessageHandler(noMessageOutput);
+    LibraryHandler::initialize(&messageChannel_, this);
 }
 
 void tst_LibraryHandler::setupTestLibrary()
@@ -70,7 +71,7 @@ void tst_LibraryHandler::setupTestLibrary()
 
 LibraryHandler* tst_LibraryHandler::createLibraryHandler()
 {
-    return new LibraryHandler(0, &messageChannel_, this);
+    return LibraryHandler::getInstance();
 }
 
 void tst_LibraryHandler::testLibraryDoesNotContainItem()

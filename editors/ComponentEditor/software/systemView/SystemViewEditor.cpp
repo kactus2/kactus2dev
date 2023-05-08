@@ -13,13 +13,12 @@
 
 #include <common/widgets/viewSelector/viewselector.h>
 
-#include <mainwindow/mainwindow.h>
-
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 #include <QApplication>
 #include <QGroupBox>
 #include <QLabel>
+#include <QMainWindow>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QScrollArea>
@@ -37,17 +36,18 @@ ItemEditor(component, libHandler, parent),
     fileSetRefEditor_(NULL)
 {
     // find the main window for VLNV editor
-    QWidget* parentW = NULL;
-    foreach (QWidget* widget, QApplication::topLevelWidgets())
+    QWidget* parentWindow = nullptr;
+    foreach(QWidget * widget, QApplication::topLevelWidgets())
     {
-		MainWindow* mainWnd = dynamic_cast<MainWindow*>(widget);
-		if (mainWnd) {
-			parentW = mainWnd;
-			break;
-		}
-	}
+        QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
+        if (mainWnd)
+        {
+            parentWindow = mainWnd;
+            break;
+        }
+    }
 
-	hierRefEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentW, this);
+	hierRefEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentWindow, this);
 	hierRefEditor_->setTitle(tr("Hierarchy reference"));
 
     fileSetRefEditor_ = new FileSetRefEditor(fileSetInterface, tr("File set references"), this);

@@ -44,7 +44,6 @@
 #include <editors/HWDesign/HWDesignWidget.h>
 #include <editors/HWDesign/HWDesignDiagram.h>
 #include <editors/HWDesign/AdhocEditor/AdhocEditor.h>
-#include <editors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
 #include <editors/SystemDesign/SystemDesignWidget.h>
 #include <editors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 
@@ -73,8 +72,6 @@ DockWidgetHandler::DockWidgetHandler(LibraryHandler* library, MessageMediator* m
     designAndInstancesParameterFinder_(new MultipleParameterFinder()),
     instanceEditor_(0),
     instanceDock_(0),
-    adHocVisibilityEditor_(0),
-    adHocVisibilityDock_(0),
     adhocEditor_(0),
     adhocDock_(0),
     configurationEditor_(0),
@@ -116,7 +113,6 @@ void DockWidgetHandler::setupDockWidgets()
     setupComponentPreview();
     setupDesignParametersEditor();
     setupInstanceEditor();
-    setupAdHocVisibilityEditor();
     setupAdHocEditor();
     setupConfigurationEditor();
     setupSystemDetailsEditor();
@@ -249,6 +245,10 @@ void DockWidgetHandler::setupLibraryDock()
     connect(libraryWidget_, SIGNAL(createSystemDesign(const VLNV&)),
         mainWindow_, SLOT(createSystemDesign(const VLNV&)), Qt::UniqueConnection);
 
+
+    connect(libraryWidget_, SIGNAL(statusMessage(QString const&)),
+        this, SIGNAL(statusMessage(QString const&)));
+
     libraryDock_->setWidget(libraryWidget_);
 
     mainWindow_->addDockWidget(Qt::LeftDockWidgetArea, libraryDock_);
@@ -354,33 +354,17 @@ void DockWidgetHandler::setupInstanceEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setupAdHocVisibilityEditor()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::setupAdHocVisibilityEditor()
-{
-    adHocVisibilityDock_ = new QDockWidget(tr("Ad hoc Visibility"), mainWindow_);
-    adHocVisibilityDock_->setObjectName(tr("Ad-hoc Visibility"));
-    adHocVisibilityDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    adHocVisibilityDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
-        QDockWidget::DockWidgetFloatable);
-
-    adHocVisibilityEditor_ = new AdHocVisibilityEditor(adHocVisibilityDock_);
-    adHocVisibilityDock_->setWidget(adHocVisibilityEditor_);
-    mainWindow_->addDockWidget(Qt::RightDockWidgetArea, adHocVisibilityDock_);
-}
-
-//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::setupAdHocEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupAdHocEditor()
 {
-    adhocDock_ = new QDockWidget(tr("Ad hoc Port Details"), mainWindow_);
-    adhocDock_->setObjectName(tr("Ad hoc Port Details"));
+    adhocDock_ = new QDockWidget(tr("Ad-hoc Port Editor"), mainWindow_);
+    adhocDock_->setObjectName(tr("Ad-hoc Port Editor"));
     adhocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     adhocDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);
 
-    adhocEditor_ = new AdHocEditor(designParameterFinder_, adhocDock_);
+    adhocEditor_ = new AdhocEditor(designParameterFinder_, adhocDock_);
     adhocDock_->setWidget(adhocEditor_);
     mainWindow_->addDockWidget(Qt::RightDockWidgetArea, adhocDock_);
 
@@ -523,10 +507,6 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
     visibilities_.insert(TabDocument::INSTANCEWINDOW, instanceVisible);
     instanceDock_->toggleViewAction()->setChecked(instanceVisible);
 
-    const bool adHocVisibilityVisible = settings.value("AdHocVisibility", true).toBool();
-    visibilities_.insert(TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityVisible);
-    adHocVisibilityDock_->toggleViewAction()->setChecked(adHocVisibilityVisible);
-
     const bool adHocEditorVisible = settings.value("AdHocEditorVisibility", true).toBool();
     visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocEditorVisible);
     adhocDock_->toggleViewAction()->setChecked(adHocEditorVisible);
@@ -561,9 +541,9 @@ void DockWidgetHandler::loadVisiblities(QSettings& settings)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setFilterSettings()
+// Function: DockWidgetHandler::loadFilterSettings()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::setFilterSettings(QSettings& settings)
+void DockWidgetHandler::loadFilterSettings(QSettings& settings)
 {
     Utils::FilterOptions filters;
     settings.beginGroup("LibraryFilters");
@@ -601,7 +581,6 @@ void DockWidgetHandler::setFilterSettings(QSettings& settings)
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupVisibilityActionMenu(QMenu& visibilityMenu) const
 {
-    visibilityMenu.addAction(adHocVisibilityDock_->toggleViewAction());
     visibilityMenu.addAction(adhocDock_->toggleViewAction());
     visibilityMenu.addAction(connectionDock_->toggleViewAction());
     visibilityMenu.addAction(contextHelpDock_->toggleViewAction());
@@ -626,18 +605,18 @@ void DockWidgetHandler::clearItemSelection(HWDesignWidget* designWidget)
     {
         QSharedPointer<Design> containedDesign = designWidget->getDiagram()->getDesign();
 
-        adHocVisibilityEditor_->setDataSource(designWidget->getDiagram(), containedDesign,
+        adhocEditor_->setVisibilityData(designWidget->getDiagram(), containedDesign,
             designWidget->getEditProvider(), designWidget->isProtected());
     }
     else
     {
-        adHocVisibilityEditor_->clear();
+        adhocEditor_->clearVisibilityData();
     }
 
     instanceEditor_->clear();
     interfaceEditor_->clear();
     connectionEditor_->clear();
-    adhocEditor_->clear();
+    adhocEditor_->clearPortData();
 }
 
 //-----------------------------------------------------------------------------
@@ -647,7 +626,7 @@ void DockWidgetHandler::selectComponent(QWidget* currentTabWidget, ComponentItem
 {
     connectionEditor_->clear();
     interfaceEditor_->clear();
-    adhocEditor_->clear();
+    adhocEditor_->clearPortData();
 
     DesignWidget* designWidget(0);
 
@@ -671,12 +650,12 @@ void DockWidgetHandler::selectComponent(QWidget* currentTabWidget, ComponentItem
     HWComponentItem* hwComponent = dynamic_cast<HWComponentItem*>(component);
     if (hwComponent != 0)
     {
-        adHocVisibilityEditor_->setDataSource(hwComponent, containingDesign, designWidget->getEditProvider(),
+        adhocEditor_->setVisibilityData(hwComponent, containingDesign, designWidget->getEditProvider(),
             designWidget->isProtected());
     }
     else
     {
-        adHocVisibilityEditor_->clear();
+        adhocEditor_->clearVisibilityData();
     }
 
     VLNV componentVLNV = component->componentModel()->getVlnv();
@@ -693,7 +672,7 @@ void DockWidgetHandler::selectComponent(QWidget* currentTabWidget, ComponentItem
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::selectConnectionInterface(QWidget* currentTabWidget, ConnectionEndpoint* interface)
 {
-    adHocVisibilityEditor_->clear();
+    adhocEditor_->clearVisibilityData();
     connectionEditor_->clear();
     instanceEditor_->clear();
 
@@ -707,7 +686,7 @@ void DockWidgetHandler::selectConnectionInterface(QWidget* currentTabWidget, Con
                 designWidget->getEditProvider(), designWidget->isProtected());
         }
 
-        adhocEditor_->clear();
+        adhocEditor_->clearPortData();
     }
     else
     {
@@ -720,13 +699,22 @@ void DockWidgetHandler::selectConnectionInterface(QWidget* currentTabWidget, Con
                 HWDesignDiagram* hwDiagram = dynamic_cast<HWDesignDiagram*>(hwDesignWidget->getDiagram());
                 if (hwDiagram)
                 {
-                    adhocEditor_->setAdhocPort(adhocEndPoint, hwDiagram, hwDesignWidget->getEditProvider());
+                    adhocEditor_->setPortData(adhocEndPoint, hwDiagram, hwDesignWidget->getEditProvider());
+
+                    auto dataSource = dynamic_cast<AdHocEnabled*>(adhocEndPoint->encompassingComp());
+                    if (dataSource == nullptr)
+                    {
+                        dataSource = hwDiagram;
+                    }
+
+                    adhocEditor_->setVisibilityData(dataSource, hwDiagram->getDesign(), hwDesignWidget->getEditProvider(),
+                        hwDesignWidget->isProtected());
                 }
             }
         }
         else
         {
-            adhocEditor_->clear();
+            adhocEditor_->clearPortData();
         }
 
         interfaceEditor_->clear();
@@ -741,8 +729,8 @@ void DockWidgetHandler::selectGraphicsConnection(QWidget* currentTabWidget, Grap
     DesignWidget* designWidget = dynamic_cast<DesignWidget*>(currentTabWidget);
 
     Q_ASSERT(connection);
-    adHocVisibilityEditor_->clear();
-    adhocEditor_->clear();
+    adhocEditor_->clearVisibilityData();
+    adhocEditor_->clearPortData();
     instanceEditor_->clear();
     interfaceEditor_->clear();
     connectionEditor_->setConnection(connection, designWidget->getDiagram());
@@ -766,8 +754,6 @@ void DockWidgetHandler::updateWindows(int const& tabCount, QWidget* currentTabWi
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::CONNECTIONWINDOW, connectionDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::INTERFACEWINDOW, interfaceDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::INSTANCEWINDOW, instanceDock_);
-    updateWindowAndControlVisibility(
-        tabCount, currentTabWidget, TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::ADHOC_WINDOW, adhocDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::VENDOREXTENSIONWINDOW, extensionDock_);
     updateWindowAndControlVisibility(tabCount, currentTabWidget, TabDocument::SCRIPTWINDOW, scriptConsoleDock_);
@@ -899,8 +885,8 @@ void DockWidgetHandler::documentChanged(TabDocument* doc)
         configurationEditor_->clear();
         systemDetailsEditor_->clear();
         instanceEditor_->clear();
-        adHocVisibilityEditor_->clear();
-        adhocEditor_->clear();
+        adhocEditor_->clearVisibilityData();
+        adhocEditor_->clearPortData();
         interfaceEditor_->clear();
         connectionEditor_->clear();
     }
@@ -966,8 +952,6 @@ void DockWidgetHandler::connectVisibilityControls()
         this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
     connect(designParameterDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onDesignParametersAction(bool)), Qt::UniqueConnection);
-    connect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onAdHocVisibilityAction(bool)), Qt::UniqueConnection);
     connect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onAdHocEditorAction(bool)), Qt::UniqueConnection);
     connect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)),
@@ -994,8 +978,6 @@ void DockWidgetHandler::disconnectVisibilityControls()
     disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onInstanceAction(bool)));
     disconnect(designParameterDock_->toggleViewAction(), SIGNAL(toggled(bool)),
         this, SLOT(onDesignParametersAction(bool)));
-    disconnect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)),
-        this, SLOT(onAdHocVisibilityAction(bool)));
     disconnect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
     disconnect(extensionDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
         this, SLOT(onVendorExtensionVisibilityAction(bool)));
@@ -1073,14 +1055,6 @@ void DockWidgetHandler::onVendorExtensionVisibilityAction(bool show)
 void DockWidgetHandler::onInterfaceAction( bool show )
 {
     emit adjustVisibilityInWindow(TabDocument::INTERFACEWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::onAdHocAction()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::onAdHocVisibilityAction( bool show )
-{
-    emit adjustVisibilityInWindow(TabDocument::ADHOCVISIBILITY_WINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -1227,17 +1201,14 @@ Utils::FilterOptions DockWidgetHandler::getLibraryFilters() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::createSettingsForNewWorkspace()
+// Function: DockWidgetHandler::saveVisibilitySettings()
 //-----------------------------------------------------------------------------
-void DockWidgetHandler::createVisibilityAndFilterSettings(QSettings& settings) const
+void DockWidgetHandler::saveVisibilitySettings(QSettings& settings) const
 {
-    Utils::FilterOptions filters = libraryWidget_->getFilters();
-
     settings.setValue("ConfigurationVisibility", visibilities_.value(TabDocument::CONFIGURATIONWINDOW));
     settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
     settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
     settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
-    settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOCVISIBILITY_WINDOW));
     settings.setValue("AdHocEditorVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
     settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
     settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
@@ -1248,7 +1219,14 @@ void DockWidgetHandler::createVisibilityAndFilterSettings(QSettings& settings) c
     settings.setValue("DesignParameterVisibility", visibilities_.value(TabDocument::DESIGNPARAMETERSWINDOW));
     settings.setValue("VendorExtensionVisibility", visibilities_.value(TabDocument::VENDOREXTENSIONWINDOW));
     settings.setValue("ScriptVisibility", visibilities_.value(TabDocument::SCRIPTWINDOW));
+}
 
+//-----------------------------------------------------------------------------
+// Function: DockWidgetHandler::saveFilterSettings()
+//-----------------------------------------------------------------------------
+void DockWidgetHandler::saveFilterSettings(QSettings& settings) const
+{
+    Utils::FilterOptions filters = libraryWidget_->getFilters();
     // Save filters.
     settings.beginGroup("LibraryFilters");
     settings.beginGroup("Type");

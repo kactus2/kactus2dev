@@ -67,7 +67,7 @@ void ParameterReferenceTree::openReferenceTree(QString const& parameterID)
 void ParameterReferenceTree::createParameterReferences(
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, QTreeWidgetItem* parentItem)
 {
-    foreach (QSharedPointer<Parameter> parameter, *parameters)
+    for (QSharedPointer<Parameter> parameter : *parameters)
     {
         if (getReferenceCounter()->countReferencesInSingleParameter(targetID_, parameter) > 0)
         {
@@ -86,7 +86,7 @@ void ParameterReferenceTree::createReferencesForConfigurableElementValues(
     QTreeWidgetItem* elementsItem = createMiddleItem("Configurable Element Values", parent);
     colourItemGrey(elementsItem);
 
-    foreach (QSharedPointer<ConfigurableElementValue> element, *elements)
+    for (QSharedPointer<ConfigurableElementValue> element : *elements)
     {
         if (getReferenceCounter()->countReferencesInSingleConfigurableElementValue(targetID_, element) > 0)
         {
@@ -166,6 +166,6 @@ void ParameterReferenceTree::colourItemGrey(QTreeWidgetItem* item)
 {
     for (int columnIndex = 0; columnIndex < COLUMN_COUNT; ++columnIndex)
     {
-        item->setForeground(columnIndex, KactusColors::STRONG_FIELD);
+        item->setBackground(columnIndex, KactusColors::STRONG_FIELD);
     }
 }

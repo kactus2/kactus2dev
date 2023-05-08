@@ -12,10 +12,10 @@
 #ifndef PLUGINMOCK_H
 #define PLUGINMOCK_H
 
-#include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/CommandLineSupport.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/CLIGenerator.h>
 
-class PluginMock : public IPlugin, public CommandLineSupport
+class PluginMock : public IPlugin, public CLIGenerator
 {
 public:
 
@@ -33,9 +33,9 @@ public:
 
     virtual QString getVendor() const;
 
-    virtual QString getLicence() const;
+    virtual QString getLicense() const;
 
-    virtual QString getLicenceHolder() const;
+    virtual QString getLicenseHolder() const;
 
     virtual QWidget* getSettingsWidget();
 
@@ -46,6 +46,10 @@ public:
     virtual QString getCommand() const;
 
     virtual void process(QStringList const& arguments, IPluginUtility* utility);
+
+    QString getOutputFormat() const override;
+
+    void runGenerator(IPluginUtility* utility, QSharedPointer<Component> component, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, QString const& viewName, QString const& outputDirectory) override;
 
 private:
 

@@ -22,6 +22,8 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include "WorkspaceSettings.h"
+
 #include <QMainWindow>
 #include <QActionGroup>
 #include <QMenu>
@@ -418,17 +420,7 @@ private slots:
     /*!
      *  Handles the situation when a workspace has been changed.
      */
-    void onWorkspaceChanged(QAction* action);
-
-    /*!
-     *  Creates a new workspace, requesting a name for the workspace from the user using a dialog.
-     */
-    void onNewWorkspace();
-
-    /*!
-     *  Deletes a workspace, asking the user which workspace to delete using a dialog.
-     */
-    void onDeleteWorkspace();
+    void onWorkspaceChanged(QString const& workspace);
 
     /*!
      *  Handles the toggling of visibility controls.
@@ -526,6 +518,11 @@ private slots:
      */
     void onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show);
 
+    /*!
+     *  Updates the workspace menu.
+     */
+    void updateWorkspaceMenu();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -558,38 +555,12 @@ private:
 	 */
 	void saveSettings();
 
-	/*!
-	 *  Copy the component editor settings from the current workspace.
-	 *
-	 *      @param [in] workspaceName   The name of the new workspace.
-	 */
-	void copyComponentEditorSettings(QString workspaceName);
-
-	/*!
-	 *  Creates a new workspace.
-	 *
-	 *      @param [in] workspaceName   The name of the new workspace.
-	 */
-	void createNewWorkspace(QString workspaceName);
-
-    /*!
-     *  Updates the workspace menu.
-     */
-    void updateWorkspaceMenu();
-
     /*!
      *  Restores the settings for the given workspace.
      *
      *      @param [in] workspaceName The name of the workspace.
      */
     void loadWorkspace(QString const& workspaceName);
-
-    /*!
-     *  Saves the settings for the given workspace.
-     *
-     *      @param [in] workspaceName The name of the workspace.
-     */
-    void saveWorkspace(QString const& workspaceName);
 
 	/*!
      *  Set up the actions in the tool bars
@@ -694,6 +665,9 @@ private:
 
     Ribbon* ribbon_;
 
+
+    QStatusBar* statusBar_;
+
 	//! Create a new document in the IP-Xact library
 	QAction* actNew_;
 
@@ -717,6 +691,9 @@ private:
     //! The Edit group.
     RibbonGroup* editGroup_;
 
+    //! Action for controlling edit group visibility.
+    QAction* editAction_ = nullptr;
+
     //! Action to undo an operation.
     QAction* actUndo_;
 
@@ -735,6 +712,9 @@ private:
     //! The generation group.
     RibbonGroup* generationGroup_;
 
+    //! Action for controlling generation group visibility.
+    QAction* generationAction_ = nullptr;
+
     //! Action group for plugin generators.
     QActionGroup* pluginActionGroup_;
 
@@ -746,6 +726,9 @@ private:
 
     //! The Diagram Tools group.
     RibbonGroup* diagramToolsGroup_;
+
+    //! Action for controlling diagram tools visibility.
+    QAction* diagramToolsAction_ = nullptr;
 
     //! Action to add a new column to the current diagram.
     QAction* actAddColumn_;
@@ -795,6 +778,9 @@ private:
     //! The protection group.
     RibbonGroup* protectGroup_; 
 
+    //! Action for controlling protection visibility.
+    QAction* protectAction_ = nullptr;
+
     //! Action to refresh the current document.
     QAction* actRefresh_;
 
@@ -818,11 +804,17 @@ private:
     //! The group for configuration tools.
     RibbonGroup* configurationToolsGroup_;
 
+    //! Action for controlling configurationGroup visibility.
+    QAction* configurationToolsAction_ = nullptr;
+
     //! The action to configure the views.
     QAction* actionConfigureViews_;
 
     //! The group for filtering tools.
     RibbonGroup* filteringGroup_;
+
+    //! Action for controlling filtering visibility.
+    QAction* filteringAction_ = nullptr;
 
     //! The action to filter chained address space memory connections in a memory designer.
     QAction* actionFilterAddressSpaceChains_;
@@ -860,9 +852,9 @@ private:
     //! Menu which contains the actions for managing workspaces.
     QMenu workspaceMenu_;
 
-    //! The name of the currently active workspace.
-    QString curWorkspaceName_;
-    
+    //! Settings for workspaces.
+    WorkspaceSettings workspace_;
+
     MessageMediator* messageChannel_;
 };
 
