@@ -518,7 +518,7 @@ void MainWindow::setupActions()
     connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
 
     // Initialize the action to open Kactus2 settings.
-    actSettings_ = new QAction(QIcon(":/icons/common/graphics/system-settings.png"), tr("Settings"), this);
+    actSettings_ = new QAction(QIcon(":/icons/common/graphics/settings-general.png"), tr("Settings"), this);
     connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
 
     // Initialize the action to open the about box.
