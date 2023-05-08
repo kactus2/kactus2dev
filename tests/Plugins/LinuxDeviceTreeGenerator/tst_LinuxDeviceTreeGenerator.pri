@@ -7,41 +7,29 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
-    ../../../editors/MemoryDesigner/ConnectivityComponent.h \
+HEADERS += ../../../editors/MemoryDesigner/ConnectivityComponent.h \
     ../../../editors/MemoryDesigner/ConnectivityConnection.h \
     ../../../editors/MemoryDesigner/ConnectivityGraph.h \
     ../../../editors/MemoryDesigner/ConnectivityGraphFactory.h \
     ../../../editors/MemoryDesigner/ConnectivityInterface.h \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h \
     ../../../Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator_global.h \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../../editors/MemoryDesigner/MasterSlavePathSearch.h \
-    ../../../editors/MemoryDesigner/MemoryItem.h \
-    ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../../editors/common/ComponentInstanceParameterFinder.h \
-    ../../MockObjects/LibraryMock.h \
-    ../../../editors/ComponentEditor/common/ParameterCache.h \
     ../../../editors/MemoryDesigner/MemoryConnectionAddressCalculator.h \
-    ../../../editors/MemoryDesigner/MemoryDesignerConstants.h
-SOURCES += ../../../editors/common/ComponentInstanceParameterFinder.cpp \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
-    ../../../editors/MemoryDesigner/ConnectivityComponent.cpp \
+    ../../../editors/MemoryDesigner/MemoryDesignerConstants.h \
+    ../../../editors/MemoryDesigner/MemoryItem.h \
+    ../../MockObjects/LibraryMock.h \
+    ../../../Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUDetails.h
+SOURCES += ../../../editors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../../editors/MemoryDesigner/ConnectivityConnection.cpp \
     ../../../editors/MemoryDesigner/ConnectivityGraph.cpp \
     ../../../editors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ../../../editors/MemoryDesigner/ConnectivityInterface.cpp \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.cpp \
-    ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../editors/MemoryDesigner/MasterSlavePathSearch.cpp \
-    ../../../editors/MemoryDesigner/MemoryItem.cpp \
-    ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
-    ../../../editors/ComponentEditor/common/ParameterCache.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./tst_LinuxDeviceTreeGenerator.cpp \
     ../../../editors/MemoryDesigner/MemoryConnectionAddressCalculator.cpp \
-    ../../../editors/MemoryDesigner/MemoryDesignerConstants.cpp
+    ../../../editors/MemoryDesigner/MemoryDesignerConstants.cpp \
+    ../../../editors/MemoryDesigner/MemoryItem.cpp \
+    ./tst_LinuxDeviceTreeGenerator.cpp \
+    ../../../Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUDetails.cpp
