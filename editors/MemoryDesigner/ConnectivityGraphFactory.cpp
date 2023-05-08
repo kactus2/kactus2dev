@@ -288,11 +288,14 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
             expressionParser_->parseExpression(block->getIsPresent()).toInt() == 1)
         {
             QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
-            QSharedPointer<MemoryItem> blockItem = createMemoryBlock(addressBlock, mapIdentifier, addressableUnitBits);
-            blockItem->setUsage(addressBlock->getUsage());
-            mapUsage = addressBlock->getUsage();
+            if (addressBlock)
+            {
+                QSharedPointer<MemoryItem> blockItem = createMemoryBlock(addressBlock, mapIdentifier, addressableUnitBits);
+                blockItem->setUsage(addressBlock->getUsage());
+                mapUsage = addressBlock->getUsage();
 
-            mapItem->addChild(blockItem);
+                mapItem->addChild(blockItem);
+            }
         }
     }
 

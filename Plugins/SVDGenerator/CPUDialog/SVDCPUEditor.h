@@ -15,6 +15,7 @@
 #include <QWidget>
 #include <QObject>
 #include <QTableView>
+#include <QJsonObject>
 
 #include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/common/CPUDialog/CPUEditor.h>
@@ -35,9 +36,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Pointer to the owner of this widget.
+     *      @param [in] configurationObject     Object containing the SVD configurations.
+     *      @param [in] parent                  Pointer to the owner of this widget.
      */
-    SVDCPUEditor(QWidget *parent = 0);
+    SVDCPUEditor(QJsonObject const& configurationObject, QWidget *parent = 0);
 
     /*!
      *  The destructor.
@@ -86,6 +88,9 @@ private:
 
     //! The containing model.
     SVDCPUModel* model_;
+
+    //! The configuration container.
+    QJsonObject configurationObject_;
 };
 
 #endif // SVDCPUEDITOR_H

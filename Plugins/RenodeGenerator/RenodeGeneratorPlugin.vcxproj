@@ -141,6 +141,7 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp" />
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
+    <ClCompile Include="..\common\ConfigurationManager.cpp" />
     <ClCompile Include="..\common\ConnectivityGraphUtilities.cpp" />
     <ClCompile Include="..\common\CPUDetailRoutes.cpp" />
     <ClCompile Include="..\common\CPUDialog\CPUEditor.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp" />
+    <ClCompile Include="..\common\PluginConfigurationManager.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp" />
@@ -161,6 +163,7 @@
     <ClCompile Include="CPUDialog\RenodePeripheralsEditor.cpp" />
     <ClCompile Include="CPUDialog\RenodePeripheralsModel.cpp" />
     <ClCompile Include="CPUDialog\RenodeUtilities.cpp" />
+    <ClCompile Include="RenodeConfigurationManager.cpp" />
     <ClCompile Include="RenodeGenerator.cpp" />
     <ClCompile Include="RenodeGeneratorPlugin.cpp" />
   </ItemGroup>
@@ -181,9 +184,11 @@
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.h" />
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h" />
     <ClInclude Include="..\..\IPXACTmodels\utilities\ComponentSearch.h" />
+    <ClInclude Include="..\common\ConfigurationManager.h" />
     <ClInclude Include="..\common\ConnectivityGraphUtilities.h" />
     <QtMoc Include="CPUDialog\RenodePeripheralsModel.h" />
     <ClInclude Include="..\common\CPUDetailRoutes.h" />
+    <ClInclude Include="..\common\PluginConfigurationManager.h" />
     <ClInclude Include="CPUDialog\RenodeCPUDetailRoutes.h" />
     <QtMoc Include="CPUDialog\RenodePeripheralsEditor.h" />
     <QtMoc Include="CPUDialog\RenodePeripheralsDelegate.h" />
@@ -193,6 +198,7 @@
     <QtMoc Include="CPUDialog\RenodeFileSelectionGroup.h" />
     <ClInclude Include="CPUDialog\RenodeStructs.h" />
     <ClInclude Include="CPUDialog\RenodeUtilities.h" />
+    <ClInclude Include="RenodeConfigurationManager.h" />
     <ClInclude Include="RenodeGenerator.h" />
     <QtMoc Include="RenodeGeneratorPlugin.h" />
     <QtMoc Include="..\common\CPUDialog\CPUEditor.h" />

@@ -15,7 +15,9 @@
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUModel.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUDelegate.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
 
+#include <QJsonArray>
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -23,10 +25,11 @@
 //-----------------------------------------------------------------------------
 // Function: SVDCPUEditor::SVDCPUEditor()
 //-----------------------------------------------------------------------------
-SVDCPUEditor::SVDCPUEditor(QWidget *parent):
+SVDCPUEditor::SVDCPUEditor(QJsonObject const& configurationObject, QWidget *parent):
 CPUEditor(parent),
 view_(new QTableView(this)),
-model_(new SVDCPUModel(this))
+model_(new SVDCPUModel(this)),
+configurationObject_(configurationObject)
 {
     SVDCPUDelegate* cpuDelegate(new SVDCPUDelegate(parent));
 
@@ -62,10 +65,33 @@ void SVDCPUEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<Com
 //-----------------------------------------------------------------------------
 QVector<QSharedPointer<SVDCPUDetailRoutes> > SVDCPUEditor::getSVDCPURoutes(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView)
 {
+    QJsonValue cpusValue = configurationObject_.value(SVDConstants::CONFIGURATIONCPUS);
+    QJsonArray cpuArray;
+    if (cpusValue.isArray())
+    {
+        cpuArray = cpusValue.toArray();
+    }
+
     QVector<QSharedPointer<SVDCPUDetailRoutes> > cpuDetails;
     for (auto defaultCPU : ConnectivityGraphUtilities::getDefaultCPUs(library, component, activeView))
     {
         QSharedPointer<SVDCPUDetailRoutes> svdCPU(new SVDCPUDetailRoutes(*defaultCPU.data()));
+
+        for (auto cpuConfiguration : cpuArray)
+        {
+            if (cpuConfiguration.isObject())
+            {
+                QJsonObject cpuObject = cpuConfiguration.toObject();
+
+                QString configurationName = cpuObject.value(SVDConstants::NAME).toString();
+
+                if (configurationName == svdCPU->getCPUName())
+                {
+                    svdCPU->setupConfiguration(cpuObject);
+                }
+            }
+        }
+
         cpuDetails.append(svdCPU);
     }
 

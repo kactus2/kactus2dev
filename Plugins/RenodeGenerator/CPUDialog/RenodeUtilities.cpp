@@ -323,86 +323,98 @@ QVector<QSharedPointer<RenodeCPUDetailRoutes> > RenodeUtilities::getRenodeCpuRou
     QVector<QSharedPointer<RenodeCPUDetailRoutes> > cpuDetails;
     for (auto defaultCPU : ConnectivityGraphUtilities::getDefaultCPUs(library, component, viewName))
     {
-        QSharedPointer<const ConnectivityInterface> cpuInterface = defaultCPU->getCPUInterface();
         QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > peripherals;
         QVector<QSharedPointer<RenodeStructs::cpuMemories> > memories;
         QStringList peripheralNames;
         QStringList memoryNames;
 
-        for (auto masterSlaveRoute : *defaultCPU->getRoutes())
+        for (auto cpuInterfaceContainer : defaultCPU->getRoutes())
         {
-            for (auto routeInterface : masterSlaveRoute)
+            QSharedPointer<const ConnectivityInterface> cpuInterface = cpuInterfaceContainer->cpuInterface_;
+            for (auto masterSlaveRoute : cpuInterfaceContainer->routes_)
             {
-                QSharedPointer<const ConnectivityComponent> interfacedComponent = routeInterface->getInstance();
-                QSharedPointer<MemoryItem> interfaceMemory = routeInterface->getConnectedMemory();
-
-                if (interfaceMemory && interfaceMemory->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
+                for (auto routeInterface : masterSlaveRoute)
                 {
-                    QSharedPointer<const Component> component = ConnectivityGraphUtilities::getInterfacedComponent(library, interfacedComponent);
+                    QSharedPointer<const ConnectivityComponent> interfacedComponent = routeInterface->getInstance();
+                    QSharedPointer<MemoryItem> interfaceMemory = routeInterface->getConnectedMemory();
 
-                    MemoryConnectionAddressCalculator::ConnectionPathVariables pathAddresses =
-                        MemoryConnectionAddressCalculator::calculatePathAddresses(cpuInterface, routeInterface, masterSlaveRoute);
-
-                    quint64 memoryBaseAddress = pathAddresses.remappedAddress_;
-
-                    QVector<QPair<General::Usage, QVector<QSharedPointer<MemoryItem> > > > subItemBlocks;
-
-                    QPair<General::Usage, QVector<QSharedPointer<MemoryItem> > > currentItemBlock;
-
-                    QMultiMap<quint64, QSharedPointer<MemoryItem> > orderedChildItems = getOrderedChildItems(interfaceMemory);
-                    currentItemBlock.first = getFirstBlockUsage(orderedChildItems);
-
-                    QMultiMapIterator<quint64, QSharedPointer<MemoryItem> > blockIterator(orderedChildItems);
-                    while (blockIterator.hasNext())
+                    if (interfaceMemory && interfaceMemory->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
                     {
-                        blockIterator.next();
-                        QSharedPointer<MemoryItem> blockItem = blockIterator.value();
+                        QSharedPointer<const Component> component = ConnectivityGraphUtilities::getInterfacedComponent(library, interfacedComponent);
 
-                        if (blockItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
+                        MemoryConnectionAddressCalculator::ConnectionPathVariables pathAddresses =
+                            MemoryConnectionAddressCalculator::calculatePathAddresses(cpuInterface, routeInterface, masterSlaveRoute);
+
+                        quint64 memoryBaseAddress = pathAddresses.remappedAddress_;
+
+                        QVector<QPair<General::Usage, QVector<QSharedPointer<MemoryItem> > > > subItemBlocks;
+
+                        QPair<General::Usage, QVector<QSharedPointer<MemoryItem> > > currentItemBlock;
+
+                        QMultiMap<quint64, QSharedPointer<MemoryItem> > orderedChildItems = getOrderedChildItems(interfaceMemory);
+                        currentItemBlock.first = getFirstBlockUsage(orderedChildItems);
+
+                        QMultiMapIterator<quint64, QSharedPointer<MemoryItem> > blockIterator(orderedChildItems);
+                        while (blockIterator.hasNext())
                         {
-                            if (usageIsMatching(currentItemBlock.first, blockItem->getUsage()))
+                            blockIterator.next();
+                            QSharedPointer<MemoryItem> blockItem = blockIterator.value();
+
+                            if (blockItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
                             {
-                                currentItemBlock.second.append(blockItem);
+                                if (usageIsMatching(currentItemBlock.first, blockItem->getUsage()))
+                                {
+                                    currentItemBlock.second.append(blockItem);
+                                }
+                                else
+                                {
+                                    createItemBlock(currentItemBlock.first, currentItemBlock.second,
+                                        peripherals, memories, interfaceMemory, memoryBaseAddress, peripheralNames, memoryNames);
+
+                                    currentItemBlock.first = blockItem->getUsage();
+                                    currentItemBlock.second.clear();
+                                    currentItemBlock.second.append(blockItem);
+                                }
                             }
                             else
                             {
                                 createItemBlock(currentItemBlock.first, currentItemBlock.second,
                                     peripherals, memories, interfaceMemory, memoryBaseAddress, peripheralNames, memoryNames);
 
-                                currentItemBlock.first = blockItem->getUsage();
+                                currentItemBlock.first = General::USAGE_COUNT;
                                 currentItemBlock.second.clear();
-                                currentItemBlock.second.append(blockItem);
                             }
                         }
-                        else
-                        {
-                            createItemBlock(currentItemBlock.first, currentItemBlock.second,
-                                peripherals, memories, interfaceMemory, memoryBaseAddress, peripheralNames, memoryNames);
 
-                            currentItemBlock.first = General::USAGE_COUNT;
-                            currentItemBlock.second.clear();
-                        }
+                        createItemBlock(currentItemBlock.first, currentItemBlock.second, peripherals, memories, interfaceMemory,
+                            memoryBaseAddress, peripheralNames, memoryNames);
                     }
-
-                    createItemBlock(currentItemBlock.first, currentItemBlock.second, peripherals, memories, interfaceMemory,
-                        memoryBaseAddress, peripheralNames, memoryNames);
                 }
             }
         }
 
+
         QSharedPointer<RenodeCPUDetailRoutes> renodeCPU(new RenodeCPUDetailRoutes(*defaultCPU.data()));
 
-        QJsonValue cpuValue = configurationObject.value(RenodeConstants::CPU);
-        if (cpuValue.isObject())
+        QJsonValue multiCpuValue = configurationObject.value(RenodeConstants::CPUS);
+        if (multiCpuValue.isArray())
         {
-            QJsonObject cpuObject = cpuValue.toObject();
-            renodeCPU->setClassName(cpuObject.value(RenodeConstants::CPUCLASS).toString(renodeCPU->getClassName()));
-            renodeCPU->setTimeProvider(cpuObject.value(RenodeConstants::CPUTIME).toString(renodeCPU->getTimeProvider()));
-            renodeCPU->setCpuType(cpuObject.value(RenodeConstants::CPUTYPE).toString(renodeCPU->getCpuType()));
-        }
+            QJsonArray cpuArray = multiCpuValue.toArray();
+            if (!cpuArray.isEmpty())
+            {
+                QJsonValue cpuValue = cpuArray.first();
+                if (cpuValue.isObject())
+                {
+                    QJsonObject cpuObject = cpuValue.toObject();
+                    renodeCPU->setClassName(cpuObject.value(RenodeConstants::CPUCLASS).toString(renodeCPU->getClassName()));
+                    renodeCPU->setTimeProvider(cpuObject.value(RenodeConstants::CPUTIME).toString(renodeCPU->getTimeProvider()));
+                    renodeCPU->setCpuType(cpuObject.value(RenodeConstants::CPUTYPE).toString(renodeCPU->getCpuType()));
 
-        setupPeripheralConfiguration(configurationObject, peripherals);
-        setupMemoryConfiguration(configurationObject, memories);
+                    setupPeripheralConfiguration(cpuObject, peripherals);
+                    setupMemoryConfiguration(cpuObject, memories);
+                }
+            }
+        }
 
         renodeCPU->setPeripherals(peripherals);
         renodeCPU->setMemories(memories);

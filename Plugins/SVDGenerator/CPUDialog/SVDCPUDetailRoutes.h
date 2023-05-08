@@ -14,6 +14,10 @@
 
 #include <Plugins/common/CPUDetailRoutes.h>
 
+#include <QJsonObject>
+
+class Cpu;
+
 //-----------------------------------------------------------------------------
 //! Container for routes connected to a master interface for SVD generator.
 //-----------------------------------------------------------------------------
@@ -24,8 +28,10 @@ public:
 
     /*!
      *  The constructor.
+     * 
+     *      @param [in] cpu     The CPU.
      */
-    SVDCPUDetailRoutes();
+    SVDCPUDetailRoutes(QSharedPointer<Cpu> cpu);
 
     /*!
      *  The destructor.
@@ -38,6 +44,13 @@ public:
      *      @return SVD CPU route.
      */
     SVDCPUDetailRoutes(CPUDetailRoutes const& other);
+
+    /*!
+     *  Setup the data.
+     *
+     *      @param [in] configurationObject     Object containing the data.
+     */
+    void setupConfiguration(QJsonObject const& configurationObject);
 
     /*!
      *  Get the revision.

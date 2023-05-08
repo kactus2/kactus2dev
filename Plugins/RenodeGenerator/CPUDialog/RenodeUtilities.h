@@ -66,8 +66,14 @@ namespace RenodeConstants
     //! File name for peripherals.
     const QString RENODEPERIPHERALFILENAME = "peripherals";
 
+    //! Identifier for multiple CPUs.
+    const QString CPUS = "CPUs";
+
     //! Identifier for CPU configuration.
-    const QString CPU = "CPU";
+    const QString SINGLECPU = "CPU";
+
+    //! Identifier for CPU name.
+    const QString CPUNAME = "name";
 
     //! Identifier for CPU class configuration.
     const QString CPUCLASS = "class";
@@ -119,9 +125,6 @@ namespace RenodeConstants
 
     //! Identifier for renode configuration file.
     const QString CONFIGURATIONFILEEXTENSION = "renodeConfiguration";
-
-    //! Identifier for configuration file set name.
-    const QString CONFIGURATIONFILESETNAME = "configurations";
 };
 
 #endif //RENODEUTILITIES_H

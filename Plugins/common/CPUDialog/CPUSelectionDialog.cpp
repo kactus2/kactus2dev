@@ -68,6 +68,8 @@ extraEditor_(extraEditor)
 
     setupLayout();
 
+    setupCPUSelection();
+
     connect(viewSelection_, SIGNAL(currentIndexChanged(int)), this, SLOT(onViewChanged()), Qt::UniqueConnection);
 
     connect(folderLine_, SIGNAL(textChanged(QString const&)), cpuDetailEditor_, SIGNAL(changeInSelectedPath(QString const&)), Qt::UniqueConnection);
@@ -96,8 +98,6 @@ void CPUSelectionDialog::setupConfiguration(QString const& configurationFolder, 
     {
         viewSelection_->setCurrentText(configurationView);
     }
-
-    onViewChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -164,8 +164,6 @@ void CPUSelectionDialog::setupLayout()
     QVBoxLayout* masterLayout(new QVBoxLayout(this));
     masterLayout->addLayout(topLayout);
     masterLayout->addWidget(dialogButtons);
-
-    setupCPUSelection();
 }
 
 //-----------------------------------------------------------------------------

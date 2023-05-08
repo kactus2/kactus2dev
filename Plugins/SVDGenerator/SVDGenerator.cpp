@@ -14,6 +14,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 #include <editors/MemoryDesigner/ConnectivityConnection.h>
 #include <editors/MemoryDesigner/ConnectivityGraph.h>
@@ -24,6 +25,9 @@
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <editors/MemoryDesigner/MemoryConnectionAddressCalculator.h>
 
+#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
@@ -32,12 +36,8 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
-
 #include <IPXACTmodels/Design/Design.h>
-
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-
-#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
 
 #include <QXmlStreamWriter>
 #include <QRegularExpression>
@@ -45,9 +45,10 @@
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::SVDGenerator()
 //-----------------------------------------------------------------------------
-SVDGenerator::SVDGenerator(LibraryInterface* library):
-library_(library),
-graphFactory_(library)
+SVDGenerator::SVDGenerator(IPluginUtility* utility):
+library_(utility->getLibraryInterface()),
+graphFactory_(utility->getLibraryInterface()),
+utility_(utility)
 {
 
 }
@@ -57,12 +58,12 @@ graphFactory_(library)
 //-----------------------------------------------------------------------------
 void SVDGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath, QVector<QSharedPointer<SVDCPUDetailRoutes>> const& cpuRoutes)
 {
-    QStringList cpuNames;
+    QStringList fileNames;
     for (auto cpuMasterRoute : cpuRoutes)
     {
-        if (cpuMasterRoute->getRoutes()->empty() == false)
+        if (cpuMasterRoute->getRoutes().empty() == false)
         {
-            writeFile(topComponent, componentPath, cpuMasterRoute, cpuNames);
+            writeFile(topComponent, componentPath, cpuMasterRoute, fileNames);
         }
     }
 }
@@ -78,28 +79,34 @@ QStringList SVDGenerator::getGeneratedFiles() const
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeFile()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath, QSharedPointer<SVDCPUDetailRoutes> cpuRoute, QStringList& fileNames)
+void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
+    QSharedPointer<SVDCPUDetailRoutes> cpuDetails, QStringList& fileNames)
 {
-    QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->getCPUInterface();
-    QSharedPointer<const ConnectivityComponent> routeComponent = cpuInterface->getInstance();
+    QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > cpuRoutes = cpuDetails->getRoutes();
+    if (cpuRoutes.isEmpty())
+    {
+        return;
+    }
+
+    QSharedPointer<CpuRouteStructs::CpuRoute> firstCpuRouteDetails = cpuRoutes.first();
+
+    QSharedPointer<const ConnectivityComponent> routeComponent = firstCpuRouteDetails->cpuInterface_->getInstance();
     QSharedPointer<const Component> interfaceComponent =
         ConnectivityGraphUtilities::getInterfacedComponent(library_, routeComponent);
     if (interfaceComponent)
     {
-        QSharedPointer<Cpu> interfaceCPU =
-            ConnectivityGraphUtilities::getInterfacedCPU(interfaceComponent, cpuInterface);
-
+        QSharedPointer<Cpu> interfaceCPU = cpuDetails->getCpu();
         QString fileName = topComponent->getVlnv().getName() + "_" + interfaceCPU->name();
         if (fileNames.contains(interfaceCPU->name()))
         {
             fileName = fileName + "_" + QString::number(getFileNumberExtension(fileNames, fileName));
         }
-
+        
         QString svdFilePath = componentPath + "/" + fileName;
         fileNames.append(fileName);
-
-        svdFilePath += ".svd";
-
+        
+        svdFilePath += "." + SVDConstants::SVDFILETYPE;
+        
         QFile outputFile(svdFilePath);
         if (!outputFile.open(QIODevice::WriteOnly))
         {
@@ -113,13 +120,55 @@ void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString con
         xmlWriter.writeStartDocument();
 
         writeDevice(xmlWriter, topComponent);
-        writeCPU(xmlWriter, interfaceCPU, cpuRoute);
-        writeAddressSpaceData(xmlWriter, cpuInterface);
-        writePeripherals(xmlWriter, cpuRoute);
+        writeCPU(xmlWriter, interfaceCPU, cpuDetails);
+
+        writeAddressSpaceData(xmlWriter, firstCpuRouteDetails->cpuInterface_);
+
+        checkForErrorsInAddressSpaceData(fileName, firstCpuRouteDetails->cpuInterface_, cpuRoutes);
+
+        writePeripherals(xmlWriter, cpuRoutes);
 
         xmlWriter.writeEndElement();    //! device
 
         generatedFiles_.append(svdFilePath);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SVDGenerator::checkForErrorsInAddressSpaceData()
+//-----------------------------------------------------------------------------
+void SVDGenerator::checkForErrorsInAddressSpaceData(QString const& fileName, QSharedPointer<const ConnectivityInterface> comparisonInterface,
+    QVector<QSharedPointer<CpuRouteStructs::CpuRoute>> cpuRoutes)
+{
+    QString comparisonAUB = comparisonInterface->getConnectedMemory()->getAUB();
+    QString comparisonWidth = comparisonInterface->getConnectedMemory()->getWidth();
+    QString comparisonSize = comparisonInterface->getConnectedMemory()->getSize();
+    QString comparisonBase = comparisonInterface->getBaseAddress();
+
+    for (auto currentRoute : cpuRoutes)
+    {
+        QSharedPointer<const ConnectivityInterface> currentInterface = currentRoute->cpuInterface_;
+
+        QString currentAUB = currentInterface->getConnectedMemory()->getAUB();
+        if (currentAUB != comparisonAUB)
+        {
+            utility_->printError("Mis-matching address unit bits found in " + fileName + " interface " + currentInterface->getName());
+        }
+        QString currentWidth = currentInterface->getConnectedMemory()->getWidth();
+        if (currentWidth != comparisonWidth)
+        {
+            utility_->printError("Mis-matching width found in " + fileName + " interface " + currentInterface->getName());
+        }
+        QString currentSize = currentInterface->getConnectedMemory()->getSize();
+        if (currentSize != comparisonSize)
+        {
+            utility_->printError("Mis-matching size found in " + fileName + " interface " + currentInterface->getName());
+        }
+        QString currentBase = currentInterface->getBaseAddress();
+        if (currentBase != comparisonBase)
+        {
+            utility_->printError("Mis-matching base address found in " + fileName + " interface " + currentInterface->getName());
+        }
     }
 }
 
@@ -152,10 +201,10 @@ void SVDGenerator::writeDevice(QXmlStreamWriter& writer, QSharedPointer<Componen
     writer.writeAttribute(QLatin1String("xs:noNamespaceSchemaLocation"), QLatin1String("CMSIS-SVD.xsd"));
 
     VLNV topVLNV = topComponent->getVlnv();
-    writer.writeTextElement(QLatin1String("vendor"), topVLNV.getVendor());
-    writer.writeTextElement(QLatin1String("name"), formatName(topVLNV.getName()));
-    writer.writeTextElement(QLatin1String("version"), topVLNV.getVersion());
-    writer.writeTextElement("description", topComponent->getDescription());
+    writer.writeTextElement(SVDConstants::VENDOR, topVLNV.getVendor());
+    writer.writeTextElement(SVDConstants::NAME, formatName(topVLNV.getName()));
+    writer.writeTextElement(SVDConstants::VERSION, topVLNV.getVersion());
+    writer.writeTextElement(SVDConstants::DESCRIPTION, topComponent->getDescription());
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +223,7 @@ QString SVDGenerator::formatName(QString const& name) const
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU, QSharedPointer<SVDCPUDetailRoutes> cpuContainer)
 {
-    writer.writeStartElement("cpu");
+    writer.writeStartElement(SVDConstants::CPUELEMENT);
 
     QString cpuName = formatName(currentCPU->name());
     QStringList knownNames({ "CM0", "CM0PLUS", "CM0+", "CM1", "SC000",
@@ -184,17 +233,16 @@ void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> curren
 
     if (knownNames.contains(cpuName) == false)
     {
-        cpuName = "other";
+        cpuName = SVDConstants::OTHERTYPE;
     }
 
-    writer.writeTextElement("name", cpuName);
-
-    writer.writeTextElement("revision", cpuContainer->getRevision());
-    writer.writeTextElement("endian", cpuContainer->getEndian());
-    writeBoolean(writer, "mpuPresent", cpuContainer->isMPUPresent());
-    writeBoolean(writer, "fpuPresent", cpuContainer->isFPUPresent());
-    writer.writeTextElement("nvicPrioBits", cpuContainer->getNVICPrioBits());
-    writeBoolean(writer, "vendorSystickConfig", cpuContainer->isVendorSystickConfig());
+    writer.writeTextElement(SVDConstants::NAME, cpuName);
+    writer.writeTextElement(SVDConstants::CPUREVISION , cpuContainer->getRevision());
+    writer.writeTextElement(SVDConstants::CPUENDIAN, cpuContainer->getEndian());
+    writeBoolean(writer, SVDConstants::CPUMPUPRESENT, cpuContainer->isMPUPresent());
+    writeBoolean(writer, SVDConstants::CPUFPUPRESENT, cpuContainer->isFPUPresent());
+    writer.writeTextElement(SVDConstants::CPPUNVICPRIOBITS, cpuContainer->getNVICPrioBits());
+    writeBoolean(writer, SVDConstants::CPUVENDORSYSTICKCONFIG, cpuContainer->isVendorSystickConfig());
 
     writer.writeEndElement(); //! cpu
 }
@@ -206,11 +254,11 @@ void SVDGenerator::writeBoolean(QXmlStreamWriter& writer, QString const& element
 {
     if (state == true)
     {
-        writer.writeTextElement(elementName, "true");
+        writer.writeTextElement(elementName, SVDConstants::BOOLEANTRUE);
     }
     else
     {
-        writer.writeTextElement(elementName, "false");
+        writer.writeTextElement(elementName, SVDConstants::BOOLEANFALSE);
     }
 }
 
@@ -220,41 +268,42 @@ void SVDGenerator::writeBoolean(QXmlStreamWriter& writer, QString const& element
 void SVDGenerator::writeAddressSpaceData(QXmlStreamWriter& writer,
     QSharedPointer<const ConnectivityInterface> cpuInterface)
 {
-    writer.writeTextElement("addressUnitBits", cpuInterface->getConnectedMemory()->getAUB());
-    writer.writeTextElement("width", cpuInterface->getConnectedMemory()->getWidth());
-    writer.writeTextElement("size", cpuInterface->getConnectedMemory()->getWidth());
+    writer.writeTextElement(SVDConstants::AUB, cpuInterface->getConnectedMemory()->getAUB());
+    writer.writeTextElement(SVDConstants::WIDTH, cpuInterface->getConnectedMemory()->getWidth());
+    writer.writeTextElement(SVDConstants::SIZE, cpuInterface->getConnectedMemory()->getWidth());
 }
 
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writePeripherals()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writePeripherals(QXmlStreamWriter& writer, QSharedPointer<SVDCPUDetailRoutes> routeCollection)
+void SVDGenerator::writePeripherals(QXmlStreamWriter& writer, QVector<QSharedPointer<CpuRouteStructs::CpuRoute>> cpuRouteDetails)
 {
-    writer.writeStartElement("peripherals");
-    QSharedPointer<const ConnectivityInterface> cpuInterface = routeCollection->getCPUInterface();
+    writer.writeStartElement(SVDConstants::PERIPHERALSELEMENT);
 
-    for (auto &masterSlaveRoute : *routeCollection->getRoutes())
+    for (auto singleRouteDetails : cpuRouteDetails)
     {
-        for (int i = 1; i < masterSlaveRoute.size(); ++i)
+        for (auto& masterSlaveRoute : singleRouteDetails->routes_)
         {
-            QSharedPointer<const ConnectivityInterface> routeInterface = masterSlaveRoute.at(i);
-            QSharedPointer<const ConnectivityComponent> interfacedComponent = routeInterface->getInstance();
-            QSharedPointer<MemoryItem> interfaceMemory = routeInterface->getConnectedMemory();
-
-            if (interfaceMemory && interfaceMemory->getType().compare(
-                MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
+            for (int i = 1; i < masterSlaveRoute.size(); ++i)
             {
-                QSharedPointer<const Component> component =
-                    ConnectivityGraphUtilities::getInterfacedComponent(library_, interfacedComponent);
+                QSharedPointer<const ConnectivityInterface> routeInterface = masterSlaveRoute.at(i);
+                QSharedPointer<const ConnectivityComponent> interfacedComponent = routeInterface->getInstance();
+                QSharedPointer<MemoryItem> interfaceMemory = routeInterface->getConnectedMemory();
 
-                MemoryConnectionAddressCalculator::ConnectionPathVariables pathAddresses =
-                    MemoryConnectionAddressCalculator::calculatePathAddresses(cpuInterface, routeInterface,
-                        masterSlaveRoute);
+                if (interfaceMemory && interfaceMemory->getType().compare(
+                    MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
+                {
+                    QSharedPointer<const Component> component =
+                        ConnectivityGraphUtilities::getInterfacedComponent(library_, interfacedComponent);
 
-                quint64 memoryBaseAddress = pathAddresses.remappedAddress_;
-                QString baseAddressInHexa = valueToHexa(memoryBaseAddress);
+                    MemoryConnectionAddressCalculator::ConnectionPathVariables pathAddresses =
+                        MemoryConnectionAddressCalculator::calculatePathAddresses(singleRouteDetails->cpuInterface_, routeInterface, masterSlaveRoute);
 
-                writePeripheral(writer, component, interfaceMemory, memoryBaseAddress, baseAddressInHexa);
+                    quint64 memoryBaseAddress = pathAddresses.remappedAddress_;
+                    QString baseAddressInHexa = valueToHexa(memoryBaseAddress);
+
+                    writePeripheral(writer, component, interfaceMemory, memoryBaseAddress, baseAddressInHexa);
+                }
             }
         }
     }
@@ -274,13 +323,13 @@ void SVDGenerator::writePeripheral(QXmlStreamWriter& writer, QSharedPointer<cons
         return;
     }
 
-    writer.writeStartElement("peripheral");
+    writer.writeStartElement(SVDConstants::SINGLEPERIPHERALELEMENT);
 
-    writer.writeTextElement("name", formatName(memoryMap->name()));
-    writer.writeTextElement("version", component->getVlnv().getVersion());
-    writeOptionalElement(writer, "description", memoryMap->description());
+    writer.writeTextElement(SVDConstants::NAME, formatName(memoryMap->name()));
+    writer.writeTextElement(SVDConstants::PERIPHERALVERSION, component->getVlnv().getVersion());
+    writeOptionalElement(writer, SVDConstants::DESCRIPTION, memoryMap->description());
 
-    writer.writeTextElement("baseAddress", mapBaseAddressInHexa);
+    writer.writeTextElement(SVDConstants::PERIPHERALBASEADDRESS, mapBaseAddressInHexa);
     writeAddressBlocks(writer, component, mapItem, mapBaseAddress);
     writeRegisters(writer, component, mapItem, mapBaseAddress);
     writer.writeEndElement(); //! peripheral
@@ -368,26 +417,26 @@ QVector<QSharedPointer<MemoryItem>> SVDGenerator::getSubMemoryItems(QSharedPoint
 void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 const& offset,
     QSharedPointer<MemoryItem> blockItem)
 {
-    writer.writeStartElement("addressBlock");
+    writer.writeStartElement(SVDConstants::ADDRESSBLOCKELEMENT);
 
     QString addressOffsetInHexa = valueToHexa(offset);
     QString rangeInHexa = valueToHexa(blockItem->getRange().toULongLong());
 
-    writer.writeTextElement("offset", addressOffsetInHexa);
-    writer.writeTextElement("size", rangeInHexa);
+    writer.writeTextElement(SVDConstants::ADDRESSBLOCKOFFSET, addressOffsetInHexa);
+    writer.writeTextElement(SVDConstants::SIZE, rangeInHexa);
 
-    QString usageString = "buffer";
+    QString usageString = SVDConstants::BUFFERUSAGE;
     General::Usage blockUsage = blockItem->getUsage();
     if (blockUsage == General::REGISTER || blockUsage == General::USAGE_COUNT)
     {
-        usageString = "registers";
+        usageString = SVDConstants::REGISTERSUSAGE;
     }
     if (blockUsage == General::RESERVED)
     {
-        usageString = "reserved";
+        usageString = SVDConstants::RESERVEDUSAGE;
     }
 
-    writer.writeTextElement("usage", usageString);
+    writer.writeTextElement(SVDConstants::USAGE, usageString);
 
     writer.writeEndElement(); //! addressBlock
 }
@@ -398,7 +447,7 @@ void SVDGenerator::writeSingleAddressBlock(QXmlStreamWriter& writer, quint64 con
 void SVDGenerator::writeRegisters(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
     QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress)
 {
-    writer.writeStartElement("registers");
+    writer.writeStartElement(SVDConstants::REGISTERSELEMENT);
 
     for (auto blockItem : getAddressBlockItems(mapItem))
     {
@@ -435,11 +484,10 @@ void SVDGenerator::writeRegisterCluster(QXmlStreamWriter& writer, QSharedPointer
         return;
     }
 
-    writer.writeStartElement("cluster");
+    writer.writeStartElement(SVDConstants::CLUSTER);
 
-    writer.writeTextElement("name", blockItem->getName());
-    writer.writeTextElement("addressOffset", addressOffsetInHexa);
-
+    writer.writeTextElement(SVDConstants::NAME, blockItem->getName());
+    writer.writeTextElement(SVDConstants::ADDRESSOFFSET, addressOffsetInHexa);
 
     for (auto registerItem : registerItems)
     {
@@ -472,20 +520,20 @@ void SVDGenerator::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Memory
     QString addressOffsetInHexa = valueToHexa(registerOffset);
     QString sizeString = registerItem->getSize();
 
-    writer.writeStartElement("register");
+    writer.writeStartElement(SVDConstants::REGISTERELEMENT);
 
     if (registerItem->getDimension().isEmpty() == false)
     {
-        writer.writeTextElement("dim", registerItem->getDimension());
-        writer.writeTextElement("dimIncrement", QString::number(sizeString.toInt() / 8));
+        writer.writeTextElement(SVDConstants::DIM, registerItem->getDimension());
+        writer.writeTextElement(SVDConstants::DIMINCREMENT, QString::number(sizeString.toInt() / 8));
 
         name.append("[%s]");
     }
 
-    writer.writeTextElement("name", formatName(name));
-    writeOptionalElement(writer, "description", realRegister->description());
+    writer.writeTextElement(SVDConstants::NAME, formatName(name));
+    writeOptionalElement(writer, SVDConstants::DESCRIPTION, realRegister->description());
 
-    writer.writeTextElement("addressOffset", addressOffsetInHexa);
+    writer.writeTextElement(SVDConstants::ADDRESSOFFSET, addressOffsetInHexa);
 
     QSharedPointer<MemoryItem> resetItem = getResetItem(registerItem);
     if (resetItem)
@@ -493,8 +541,8 @@ void SVDGenerator::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Memory
         writeReset(writer, resetItem);
     }
 
-    writer.writeTextElement("size", sizeString);
-    writeOptionalElement(writer, "access", AccessTypes::access2Str(realRegister->getAccess()));
+    writer.writeTextElement(SVDConstants::SIZE, sizeString);
+    writeOptionalElement(writer, SVDConstants::ACCESS, AccessTypes::access2Str(realRegister->getAccess()));
 
     QMap<quint64, QSharedPointer<MemoryItem> > fieldItems = getFieldItemsInOrder(registerItem, registerOffset);
     writeFields(writer, realRegister, fieldItems);
@@ -542,11 +590,11 @@ void SVDGenerator::writeReset(QXmlStreamWriter& writer, QSharedPointer<MemoryIte
         resetNumbers = maskNumbers;
     }
 
-    registerResetValue = "0x" + MemoryDesignerConstants::getValueWithZerosAdded(registerResetValue, resetNumbers);
-    registerResetMask = "0x" + MemoryDesignerConstants::getValueWithZerosAdded(registerResetMask, resetNumbers);
+    registerResetValue = SVDConstants::HEXADECIMAL + MemoryDesignerConstants::getValueWithZerosAdded(registerResetValue, resetNumbers);
+    registerResetMask = SVDConstants::HEXADECIMAL + MemoryDesignerConstants::getValueWithZerosAdded(registerResetMask, resetNumbers);
 
-    writer.writeTextElement("resetValue", registerResetValue);
-    writer.writeTextElement("resetMask", registerResetMask);
+    writer.writeTextElement(SVDConstants::RESETVALUE, registerResetValue);
+    writer.writeTextElement(SVDConstants::RESETMASK, registerResetMask);
 }
 
 //-----------------------------------------------------------------------------
@@ -577,7 +625,7 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
         return;
     }
 
-    writer.writeStartElement("fields");
+    writer.writeStartElement(SVDConstants::FIELDSELEMENT);
 
     QMapIterator<quint64, QSharedPointer<MemoryItem> > fieldIterator(fieldItems);
     while (fieldIterator.hasNext())
@@ -587,16 +635,16 @@ void SVDGenerator::writeFields(QXmlStreamWriter& writer, QSharedPointer<Register
         QSharedPointer<Field> actualField = getField(containingRegister, fieldItem);
         if (actualField)
         {
-            writer.writeStartElement("field");
+            writer.writeStartElement(SVDConstants::SINGLEFIELDELEMENT);
 
-            writer.writeTextElement("name", formatName(fieldItem->getName()));
-            writeOptionalElement(writer, "description", actualField->description());
+            writer.writeTextElement(SVDConstants::NAME, formatName(fieldItem->getName()));
+            writeOptionalElement(writer, SVDConstants::DESCRIPTION, actualField->description());
 
             QString fieldStart = fieldItem->getOffset();
             QString fieldEnd = QString::number(getFieldEnd(fieldItem, fieldStart.toULongLong()));
 
-            writer.writeTextElement("bitRange", "[" + fieldEnd + ":" + fieldStart + "]");
-            writeOptionalElement(writer, "access", AccessTypes::access2Str(actualField->getAccess()));
+            writer.writeTextElement(SVDConstants::BITRANGE, "[" + fieldEnd + ":" + fieldStart + "]");
+            writeOptionalElement(writer, SVDConstants::ACCESS, AccessTypes::access2Str(actualField->getAccess()));
 
             writeEnumeratedValues(writer, actualField, fieldItem);
 
@@ -649,19 +697,20 @@ void SVDGenerator::writeEnumeratedValues(QXmlStreamWriter& writer, QSharedPointe
         return;
     }
 
-    writer.writeStartElement("enumeratedValues");
+    writer.writeStartElement(SVDConstants::ENUMERATEDVALUESELEMENT);
 
     for (auto enumeratedItem : enumItems)
     {
         QSharedPointer<EnumeratedValue> actualEnumeration = getEnumeratedValue(containingField, enumeratedItem);
         if (actualEnumeration)
         {
-            writer.writeStartElement("enumeratedValue");
+            writer.writeStartElement(SVDConstants::SINGLEENUMERATEDVALUEELEMENT);
 
-            writer.writeTextElement("name", formatName(enumeratedItem->getName()));
-            writeOptionalElement(writer, "description", actualEnumeration->description());
-            writer.writeTextElement("value", enumeratedItem->getValue());
-            writeOptionalElement(writer, "usage", EnumeratedValue::usage2Str(actualEnumeration->getUsage()));
+            writer.writeTextElement(SVDConstants::NAME, formatName(enumeratedItem->getName()));
+            writeOptionalElement(writer, SVDConstants::DESCRIPTION, actualEnumeration->description());
+
+            writer.writeTextElement(SVDConstants::VALUE, enumeratedItem->getValue());
+            writeOptionalElement(writer, SVDConstants::USAGE, EnumeratedValue::usage2Str(actualEnumeration->getUsage()));
 
             writer.writeEndElement(); //! enumeratedValue
         }
@@ -680,7 +729,7 @@ QString SVDGenerator::valueToHexa(quint64 const& value) const
     int valueNumbers =
         MemoryDesignerConstants::getAmountOfNumbersInRange(valueInHexa, valueInHexa);
 
-    valueInHexa = "0x" +
+    valueInHexa = SVDConstants::HEXADECIMAL +
         MemoryDesignerConstants::getValueWithZerosAdded(valueInHexa, valueNumbers);
 
     return valueInHexa;

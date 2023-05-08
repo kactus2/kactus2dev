@@ -14,12 +14,12 @@
 //-----------------------------------------------------------------------------
 // Function: CPUDetailRoutes::CPUDetailRoutes()
 //-----------------------------------------------------------------------------
-CPUDetailRoutes::CPUDetailRoutes():
+CPUDetailRoutes::CPUDetailRoutes(QSharedPointer<Cpu> cpu):
+cpu_(cpu),
 cpuName_(),
 cpuID_(),
 createFile_(false),
-cpuInterface_(),
-routes_(new QVector < QVector<QSharedPointer<const ConnectivityInterface> > >())
+routes_()
 {
 
 }
@@ -28,16 +28,36 @@ routes_(new QVector < QVector<QSharedPointer<const ConnectivityInterface> > >())
 // Function: CPUDetailRoutes::CPUDetailRoutes()
 //-----------------------------------------------------------------------------
 CPUDetailRoutes::CPUDetailRoutes(const CPUDetailRoutes& other) :
+cpu_(other.getCpu()),
 cpuName_(other.getCPUName()),
 cpuID_(other.getCPUID()),
 createFile_(other.shouldCreateFile()),
-cpuInterface_(other.getCPUInterface()),
-routes_(new QVector < QVector<QSharedPointer<const ConnectivityInterface> > >())
+routes_()
 {
-    for (auto route : *other.getRoutes())
+    for (auto route : other.getRoutes())
     {
-        routes_->append(route);
+        QSharedPointer<CpuRouteStructs::CpuRoute> newRoute(new CpuRouteStructs::CpuRoute());
+        newRoute->cpuInterface_ = route->cpuInterface_;
+        newRoute->routes_ = route->routes_;
+
+        routes_.append(newRoute);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUDetailRoutes::getCpu()
+//-----------------------------------------------------------------------------
+QSharedPointer<Cpu> CPUDetailRoutes::getCpu() const
+{
+    return cpu_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUDetailRoutes::setCpu()
+//-----------------------------------------------------------------------------
+void CPUDetailRoutes::setCpu(QSharedPointer<Cpu> newCpu)
+{
+    cpu_ = newCpu;
 }
 
 //-----------------------------------------------------------------------------
@@ -89,25 +109,9 @@ void CPUDetailRoutes::setCreateFileFlag(bool newFlag)
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::getCPUInterface()
-//-----------------------------------------------------------------------------
-QSharedPointer<const ConnectivityInterface> CPUDetailRoutes::getCPUInterface() const
-{
-    return cpuInterface_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::setCPUInterface()
-//-----------------------------------------------------------------------------
-void CPUDetailRoutes::setCPUInterface(QSharedPointer<const ConnectivityInterface> newCPUInterface)
-{
-    cpuInterface_ = newCPUInterface;
-}
-
-//-----------------------------------------------------------------------------
 // Function: CPUDetailRoutes::getRoutes()
 //-----------------------------------------------------------------------------
-QSharedPointer< QVector < QVector<QSharedPointer<const ConnectivityInterface> > > > CPUDetailRoutes::getRoutes() const
+QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > CPUDetailRoutes::getRoutes() const
 {
     return routes_;
 }
@@ -115,12 +119,15 @@ QSharedPointer< QVector < QVector<QSharedPointer<const ConnectivityInterface> > 
 //-----------------------------------------------------------------------------
 // Function: CPUDetailRoutes::setRoutes()
 //-----------------------------------------------------------------------------
-void CPUDetailRoutes::setRoutes(QVector < QVector<QSharedPointer<const ConnectivityInterface> > > newRoutes)
+void CPUDetailRoutes::setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > newRoutes)
 {
-    routes_->clear();
+    routes_ = newRoutes;
+}
 
-    for (auto singleRoute : newRoutes)
-    {
-        routes_->append(singleRoute);
-    }
+//-----------------------------------------------------------------------------
+// Function: CPUDetailRoutes::addRoute()
+//-----------------------------------------------------------------------------
+void CPUDetailRoutes::addRoute(QSharedPointer<CpuRouteStructs::CpuRoute> newRoute)
+{
+    routes_.append(newRoute);
 }

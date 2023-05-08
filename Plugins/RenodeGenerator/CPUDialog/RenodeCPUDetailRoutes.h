@@ -25,8 +25,10 @@ public:
 
     /*!
      *  The constructor.
+     *
+     *      @param [in] renodeCpu   CPU for this container.
      */
-    RenodeCPUDetailRoutes();
+    RenodeCPUDetailRoutes(QSharedPointer<Cpu> renodeCpu);
 
     /*!
      *  The destructor.

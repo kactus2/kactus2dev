@@ -17,6 +17,22 @@
 #include <QString>
 #include <QSharedPointer>
 
+class Cpu;
+
+//! CPU route utilities.
+namespace CpuRouteStructs
+{
+    //! Container for CPU route details.
+    struct CpuRoute
+    {
+        //! Interface containing the CPU.
+        QSharedPointer<const ConnectivityInterface> cpuInterface_;
+
+        //! Routes connected to the master cpu interface.
+        QVector<QVector<QSharedPointer<const ConnectivityInterface> > > routes_;
+    };
+};
+
 //-----------------------------------------------------------------------------
 //! Container for routes connected to a master interface.
 //-----------------------------------------------------------------------------
@@ -27,8 +43,10 @@ public:
 
     /*!
      *  The constructor.
+     * 
+     *      @param [in] CPU     The CPU.
      */
-    CPUDetailRoutes();
+    CPUDetailRoutes(QSharedPointer<Cpu> cpu);
 
     /*!
      *  The destructor.
@@ -39,6 +57,20 @@ public:
      *  Copy constructor.
      */
     CPUDetailRoutes(const CPUDetailRoutes& other);
+
+    /*!
+     *  Get the containing CPU.
+     *
+     *      @return The containing CPU.
+     */
+    QSharedPointer<Cpu> getCpu() const;
+
+    /*!
+     *  Set the containing CPU.
+     *
+     *      @param [in] newCpu  The new CPU.
+     */
+    void setCpu(QSharedPointer<Cpu> newCpu);
 
     /*!
      *  Get the name.
@@ -83,32 +115,25 @@ public:
     void setCreateFileFlag(bool newFlag);
 
     /*!
-     *  Get the connectivity graph interface matching this CPU.
-     *
-     *      @return The connectivity graph interface.
-     */
-    QSharedPointer<const ConnectivityInterface> getCPUInterface() const;
-
-    /*!
-     *  Set the connectivity graph interface for this CPU.
-     *
-     *      @param [in] newCPUInterface     The selected connectivity graph interface.
-     */
-    void setCPUInterface(QSharedPointer<const ConnectivityInterface> newCPUInterface);
-
-    /*!
      *  Get a list of the interface routes connected to this CPU.
      *
      *      @return List of interface routes connected to this CPU.
      */
-    QSharedPointer<QVector < QVector<QSharedPointer<const ConnectivityInterface> > > > getRoutes() const;
+    QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > getRoutes() const;
 
     /*!
      *  Set new interface routes.
      *
      *      @param [in] newRoutes   The selected interface routes.
      */
-    void setRoutes(QVector < QVector<QSharedPointer<const ConnectivityInterface> > > newRoutes);
+    void setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > newRoutes);
+
+    /*!
+     *  Add a new CPU route.
+     *
+     *      @param [in] newRoute    The selected interface route.
+     */
+    void addRoute(QSharedPointer<CpuRouteStructs::CpuRoute> newRoute);
 
 private:
 
@@ -119,6 +144,9 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The containing CPU.
+    QSharedPointer<Cpu> cpu_;
+
     //! Name of the CPU.
     QString cpuName_;
 
@@ -128,11 +156,8 @@ private:
     //! Flag for creating an SVD file.
     bool createFile_;
 
-    //! Interface containing the CPU.
-    QSharedPointer<const ConnectivityInterface> cpuInterface_;
-
-    //! Routes connected to the master interface.
-    QSharedPointer<QVector < QVector<QSharedPointer<const ConnectivityInterface> > > > routes_;
+    //! Routes connected to the CPU interface.
+    QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > routes_;
 };
 
 #endif // CPUDETAILROUTES_H

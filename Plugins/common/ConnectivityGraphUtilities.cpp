@@ -11,6 +11,8 @@
 
 #include "ConnectivityGraphUtilities.h"
 
+#include <KactusAPI/include/IPluginUtility.h>
+
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 #include <editors/MemoryDesigner/MasterSlavePathSearch.h>
 #include <editors/MemoryDesigner/MemoryItem.h>
@@ -42,24 +44,26 @@ QSharedPointer<const Component> ConnectivityGraphUtilities::getInterfacedCompone
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectivityGraphUtilities::getInterfacedCPU()
+// Function: ConnectivityGraphUtilities::getInterfacedCPUs()
 //-----------------------------------------------------------------------------
-QSharedPointer<Cpu> ConnectivityGraphUtilities::getInterfacedCPU(QSharedPointer<const Component> containingComponent,
-    QSharedPointer<const ConnectivityInterface> routeInterface)
+QVector<QSharedPointer<Cpu> > ConnectivityGraphUtilities::getInterfacedCPUs(QSharedPointer<const Component> containingComponent, QSharedPointer<const ConnectivityInterface> routeInterface)
 {
+    QVector<QSharedPointer<Cpu> > cpus;
     QSharedPointer<MemoryItem> interfacedMemory = routeInterface->getConnectedMemory();
     if (interfacedMemory && interfacedMemory->getType() == MemoryDesignerConstants::ADDRESSSPACE_TYPE)
     {
+        QString memoryName = interfacedMemory->getName();
+
         for (auto componentCPU : *containingComponent->getCpus())
         {
-            if (componentCPU->getAddressSpaceRefs().contains(interfacedMemory->getName()))
+            if (componentCPU->getAddressSpaceRefs().contains(memoryName))
             {
-                return componentCPU;
+                cpus.append(componentCPU);
             }
         }
     }
 
-    return QSharedPointer<Cpu>();
+    return cpus;
 }
 
 //-----------------------------------------------------------------------------
@@ -80,8 +84,22 @@ QVector<QSharedPointer<CPUDetailRoutes> > ConnectivityGraphUtilities::getDefault
         QSharedPointer<const ConnectivityInterface> master = masterRoute.first();
         if (interfacedCpuExists(master, defaultCPUs))
         {
-            QSharedPointer<CPUDetailRoutes> checkInterface = getMatchingCpuContainer(master, defaultCPUs);
-            checkInterface->getRoutes()->append(masterRoute);
+            for (auto checkInterface : getMatchingCpuContainers(master, defaultCPUs))
+            {
+                QSharedPointer<CpuRouteStructs::CpuRoute> cpuRouteDetail = getRouteForInterface(master, checkInterface->getRoutes());
+                if (cpuRouteDetail)
+                {
+                    cpuRouteDetail->routes_.append(masterRoute);
+                }
+                else
+                {
+                    QSharedPointer<CpuRouteStructs::CpuRoute> newRoute(new CpuRouteStructs::CpuRoute());
+                    newRoute->cpuInterface_ = master;
+                    newRoute->routes_.append(masterRoute);
+
+                    checkInterface->addRoute(newRoute);
+                }
+            }
         }
         else
         {
@@ -90,19 +108,39 @@ QVector<QSharedPointer<CPUDetailRoutes> > ConnectivityGraphUtilities::getDefault
                 ConnectivityGraphUtilities::getInterfacedComponent(library, routeComponent);
             if (interfaceComponent)
             {
-                QSharedPointer<Cpu> interfaceCPU =
-                    ConnectivityGraphUtilities::getInterfacedCPU(interfaceComponent, master);
-                if (interfaceCPU)
+                for (auto interfaceCPU : ConnectivityGraphUtilities::getInterfacedCPUs(interfaceComponent, master))
                 {
                     QString checkBoxText = interfaceCPU->name() + " [" + routeComponent->getName() + "]";
-                    QSharedPointer<CPUDetailRoutes> cpuInterface(new CPUDetailRoutes());
-                    cpuInterface->setCPUName(checkBoxText);
-                    cpuInterface->setCPUID(checkBoxText);
-                    cpuInterface->setCPUInterface(master);
-                    cpuInterface->getRoutes()->append(masterRoute);
-                    cpuInterface->setCreateFileFlag(true);
 
-                    defaultCPUs.append(cpuInterface);
+                    QSharedPointer<CPUDetailRoutes> existingRoute = getCpuDetailRoute(interfaceCPU, defaultCPUs);
+                    if (existingRoute)
+                    {
+                        QSharedPointer<CpuRouteStructs::CpuRoute> cpuRouteDetail = getRouteForInterface(master, existingRoute->getRoutes());
+                        if (!cpuRouteDetail)
+                        {
+                            QSharedPointer<CpuRouteStructs::CpuRoute> newRoute(new CpuRouteStructs::CpuRoute());
+                            newRoute->cpuInterface_ = master;
+                            newRoute->routes_.append(masterRoute);
+
+                            existingRoute->addRoute(newRoute);
+                        }
+                    }
+                    else
+                    {
+                        QSharedPointer<CPUDetailRoutes> cpuInterface(new CPUDetailRoutes(interfaceCPU));
+                        cpuInterface->setCPUName(checkBoxText);
+                        cpuInterface->setCPUID(checkBoxText);
+
+                        QSharedPointer<CpuRouteStructs::CpuRoute> newRoute(new CpuRouteStructs::CpuRoute());
+                        newRoute->cpuInterface_ = master;
+                        newRoute->routes_.append(masterRoute);
+
+                        cpuInterface->addRoute(newRoute);
+
+                        cpuInterface->setCreateFileFlag(true);
+
+                        defaultCPUs.append(cpuInterface);
+                    }
                 }
             }
         }
@@ -112,15 +150,52 @@ QVector<QSharedPointer<CPUDetailRoutes> > ConnectivityGraphUtilities::getDefault
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectivityGraphUtilities::getRouteForInterface()
+//-----------------------------------------------------------------------------
+QSharedPointer<CpuRouteStructs::CpuRoute> ConnectivityGraphUtilities::getRouteForInterface(
+    QSharedPointer<const ConnectivityInterface> masterInterface, QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > cpuRoutes)
+{
+    for (auto cpuRouteDetail : cpuRoutes)
+    {
+        if (cpuRouteDetail->cpuInterface_ == masterInterface)
+        {
+            return cpuRouteDetail;
+        }
+    }
+
+    return QSharedPointer<CpuRouteStructs::CpuRoute>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphUtilities::getCpuDetailRoute()
+//-----------------------------------------------------------------------------
+QSharedPointer<CPUDetailRoutes> ConnectivityGraphUtilities::getCpuDetailRoute(QSharedPointer<Cpu> comparisonCpu,
+    QVector<QSharedPointer<CPUDetailRoutes>> existingRoutes)
+{
+    for (auto currentRoute : existingRoutes)
+    {
+        if (currentRoute->getCpu() == comparisonCpu)
+        {
+            return currentRoute;
+        }
+    }
+
+    return QSharedPointer<CPUDetailRoutes>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectivityGraphUtilities::interfacedCpuExists()
 //-----------------------------------------------------------------------------
 bool ConnectivityGraphUtilities::interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes>> cpuList)
 {
     for (auto checkInterface : cpuList)
     {
-        if (checkInterface->getCPUInterface() == master)
+        for (auto cpuRoute : checkInterface->getRoutes())
         {
-            return true;
+            if (cpuRoute->cpuInterface_ == master)
+            {
+                return true;
+            }
         }
     }
 
@@ -130,15 +205,21 @@ bool ConnectivityGraphUtilities::interfacedCpuExists(QSharedPointer<const Connec
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphUtilities::getMatchingCheckInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<CPUDetailRoutes> ConnectivityGraphUtilities::getMatchingCpuContainer(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes> > cpuList)
+QVector<QSharedPointer<CPUDetailRoutes> > ConnectivityGraphUtilities::getMatchingCpuContainers(
+    QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes> > cpuList)
 {
+    QVector<QSharedPointer<CPUDetailRoutes> > cpuContainer;
+
     for (auto checkInterface : cpuList)
     {
-        if (checkInterface->getCPUInterface() == master)
+        for (auto cpuRoute : checkInterface->getRoutes())
         {
-            return checkInterface;
+            if (cpuRoute->cpuInterface_ == master && !cpuContainer.contains(checkInterface))
+            {
+                cpuContainer.append(checkInterface);
+            }
         }
     }
 
-    return QSharedPointer<CPUDetailRoutes>();
+    return cpuContainer;
 }

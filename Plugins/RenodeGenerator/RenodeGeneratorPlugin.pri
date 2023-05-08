@@ -35,11 +35,14 @@ HEADERS += ./RenodeGenerator.h \
     ./CPUDialog/RenodeCpuEditor.h \
     ./CPUDialog/RenodeMemoriesEditor.h \
     ./CPUDialog/RenodeMemoriesModel.h \
+    ./CPUDialog/RenodeFileSelectionGroup.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
     ../common/ConnectivityGraphUtilities.h \
     ../common/CPUDetailRoutes.h \
-    ./CPUDialog/RenodeFileSelectionGroup.h
+    ../common/ConfigurationManager.h \
+    ../common/PluginConfigurationManager.h \
+    ./RenodeConfigurationManager.h
 SOURCES += ./RenodeGenerator.cpp \
     ./RenodeGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
@@ -63,6 +66,7 @@ SOURCES += ./RenodeGenerator.cpp \
     ../common/CPUDialog/CPUSelectionDialog.cpp \
     ./CPUDialog/RenodeCPUDetailRoutes.cpp \
     ./CPUDialog/RenodeCpuEditor.cpp \
+    ./CPUDialog/RenodeFileSelectionGroup.cpp \
     ./CPUDialog/RenodeMemoriesEditor.cpp \
     ./CPUDialog/RenodeMemoriesModel.cpp \
     ./CPUDialog/RenodePeripheralsDelegate.cpp \
@@ -71,5 +75,7 @@ SOURCES += ./RenodeGenerator.cpp \
     ./CPUDialog/RenodeUtilities.cpp \
     ../common/ConnectivityGraphUtilities.cpp \
     ../common/CPUDetailRoutes.cpp \
-    ./CPUDialog/RenodeFileSelectionGroup.cpp
+    ../common/ConfigurationManager.cpp \
+    ../common/PluginConfigurationManager.cpp \
+    ./RenodeConfigurationManager.cpp
 RESOURCES += RenodeGenerator.qrc

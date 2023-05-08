@@ -42,6 +42,7 @@ class Cpu;
 class MemoryMap;
 class EnumeratedValue;
 class SVDCPUDetailRoutes;
+class IPluginUtility;
 
 //-----------------------------------------------------------------------------
 //! Creates a CMSIS System View Description listing.
@@ -53,9 +54,9 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library     Interface for accessing libraries.
+     *      @param [in] utility     The plugin utility interface.
      */
-    explicit SVDGenerator(LibraryInterface* library);
+    explicit SVDGenerator(IPluginUtility* utility);
 
     /*!
      *  The destructor.
@@ -90,14 +91,14 @@ private:
     /*!
      *  Writes the CPU listing into a given file.
      *
-     *      @param [in] topComponent            Top component of the design.
-     *      @param [in] componentPath           Path to the component folder.
-     *      @param [in] cpuRoute                The selected CPU route container.
-     *      @param [in] fileNames               Names of the generated SVD files.
+     *      @param [in] topComponent    Top component of the design.
+     *      @param [in] componentPath   Path to the component folder.
+     *      @param [in] cpuDetails      Details for the selected CPU route container.
+     *      @param [in] fileNames       Names of the generated SVD files.
      */
     void writeFile(QSharedPointer<Component> topComponent,
         QString const& componentPath,
-        QSharedPointer<SVDCPUDetailRoutes> cpuRoute,
+        QSharedPointer<SVDCPUDetailRoutes> cpuDetails,
         QStringList& fileNames);
 
     /*!
@@ -158,11 +159,11 @@ private:
     /*!
      *  Write the peripherals of the selected CPU route container.
      *
-     *      @param [in] writer                  The xml stream writer.
-     *      @param [in] routeCollection         The selected CPU route container.
+     *      @param [in] writer              The xml stream writer.
+     *      @param [in] cpuRouteDetails     The selected CPU route container.
      */
     void writePeripherals(QXmlStreamWriter& writer,
-        QSharedPointer<SVDCPUDetailRoutes> routeCollection);
+        QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > cpuRouteDetails);
 
     /*!
      *  Write memory map peripheral of the selected memory item.
@@ -173,8 +174,11 @@ private:
      *      @param [in] mapBaseAddress          Base address of the memory map.
      *      @param [in] mapBaseAddressInHexa    Base address of the memory map in hex format.
      */
-    void writePeripheral(QXmlStreamWriter& writer, QSharedPointer<const Component> component,
-        QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress, QString const& mapBaseAddressInHexa);
+    void writePeripheral(QXmlStreamWriter& writer,
+        QSharedPointer<const Component> component,
+        QSharedPointer<MemoryItem> mapItem,
+        quint64 mapBaseAddress,
+        QString const& mapBaseAddressInHexa);
 
     /*!
      *  Write address blocks of the selected memory map item.
@@ -383,9 +387,22 @@ private:
      */
     void writeOptionalElement(QXmlStreamWriter& writer, QString const& elementName, QString const& elementValue);
 
+    /*!
+     *  Check for errors in the interface data of the selected file.
+     *
+     *      @param [in] fileName                Name of the selected file.
+     *      @param [in] comparisonInterface     The interface compared to.
+     *      @param [in] cpuRoutes               List of the routes in the selected file.
+     */
+    void checkForErrorsInAddressSpaceData(QString const& fileName, QSharedPointer<const ConnectivityInterface> comparisonInterface,
+        QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > cpuRoutes);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The plugin utility interface.
+    IPluginUtility* utility_;
 
     //! The available IP-XACT library.
     LibraryInterface* library_;

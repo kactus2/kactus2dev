@@ -73,7 +73,7 @@ void RenodeFileSelectionGroup::applyConfigurations(QJsonObject const& configurat
     {
         QJsonObject writeFlagsObject = writeFlagsValue.toObject();
 
-        writeCpuFlag = writeFlagsObject.value(RenodeConstants::CPU).toBool(true);
+        writeCpuFlag = writeFlagsObject.value(RenodeConstants::SINGLECPU).toBool(true);
         writeMemoryFlag = writeFlagsObject.value(RenodeConstants::MEMORY).toBool(true);
         writePeripheralsFlag = writeFlagsObject.value(RenodeConstants::PERIPHERALS).toBool(true);
     }
