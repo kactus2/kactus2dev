@@ -32,6 +32,7 @@
 
 #include <QTabWidget>
 #include <QVBoxLayout>
+#include <QSplitter>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::LibraryWidget()
@@ -471,9 +472,16 @@ void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
 //-----------------------------------------------------------------------------
 void LibraryWidget::setupLayout()
 {
+    QWidget* libraryGroup = new QWidget(this);
+
     QTabWidget* navigationTabs = new QTabWidget(this);
     navigationTabs->addTab(treeWidget_, tr("VLNV Tree"));
     navigationTabs->addTab(hierarchyWidget_, tr("Hierarchy"));
+
+    auto libraryLayout = new QVBoxLayout(libraryGroup);
+    libraryLayout->addWidget(navigationTabs, 1);
+    libraryLayout->addWidget(dialer_);
+    libraryLayout->setContentsMargins(0, 0, 0, 0);
 
     QWidget* previewGroup = new QWidget(this);
 
@@ -486,10 +494,29 @@ void LibraryWidget::setupLayout()
     previewLayout->addWidget(previewWidget_, 1, 0, 1, 2);
     previewLayout->setContentsMargins(4, 0, 4, 0);
 
+    QSplitter* viewSplit = new QSplitter(this);
+    viewSplit->setOrientation(Qt::Vertical);
+    viewSplit->addWidget(libraryGroup);
+    viewSplit->addWidget(previewGroup);
+    viewSplit->setStretchFactor(0, 4);
+    viewSplit->setContentsMargins(0, 0, 0, 0);
+
+    QSplitterHandle* handle = viewSplit->handle(1);
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setContentsMargins(2, 0, 0, 0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    viewSplit->setHandleWidth(10);
+
     auto containerLayout = new QVBoxLayout(this);
-    containerLayout->addWidget(navigationTabs, 1);
-    containerLayout->addWidget(dialer_);
-    containerLayout->addWidget(previewGroup);
+    containerLayout->addWidget(viewSplit, 1);
     containerLayout->setSpacing(0);
     containerLayout->setContentsMargins(0, 0, 0, 0);
 }
