@@ -155,6 +155,7 @@
 		<file>common/graphics/adhoc.png</file>
 		<file>common/graphics/mapping.png</file>
 		<file>common/graphics/log.png</file>
+		<file>common/graphics/automation.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

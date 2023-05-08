@@ -358,6 +358,14 @@ void MainWindow::setupActions()
         tr("Generate Documentation"), this);
     connect(actGenDocumentation_, SIGNAL(triggered()), this, SLOT(generateDoc()), Qt::UniqueConnection);
 
+    generationMenu_ = new QMenu(this);
+
+    actGenerate_ = new QAction(QIcon(":icons/common/graphics/automation.png"), tr("Generate"), this);   
+    actGenerate_->setMenu(generationMenu_);
+    connect(actGenerate_, SIGNAL(triggered()), this, SLOT(onGenerate()), Qt::UniqueConnection);
+
+    pluginActionGroup_ = new QActionGroup(this);
+
     // initialize the action to run import wizard for component.
     actRunImport_ = new QAction(QIcon(":icons/common/graphics/import.png"), tr("Import File to Component"), this);
     connect(actRunImport_, SIGNAL(triggered()), this, SLOT(onRunImportWizard()), Qt::UniqueConnection);
@@ -606,7 +614,7 @@ void MainWindow::setupMenus()
 
     // The "Generation" group.
     generationGroup_ = new RibbonGroup(tr("Generation"), ribbon_);
-    generationGroup_->addAction(actGenDocumentation_);
+    generationGroup_->addAction(actGenerate_);
 
     generationAction_ = ribbon_->addGroup(generationGroup_);
     generationAction_->setVisible(false);
@@ -897,6 +905,9 @@ void MainWindow::updateMenuStrip()
 
     actGenDocumentation_->setEnabled((isHWDesign|| isHWComp) && unlocked);
     actGenDocumentation_->setVisible((isHWDesign|| isHWComp));
+
+    actGenerate_->setEnabled(unlocked);
+    actGenerate_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
 
     actRunImport_->setEnabled(isHWComp && unlocked);
     actRunImport_->setVisible(isHWComp);
@@ -3346,6 +3357,14 @@ void MainWindow::setLibraryLocations()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MainWindow::onGenerate()
+//-----------------------------------------------------------------------------
+void MainWindow::onGenerate()
+{
+    generationMenu_->exec(QCursor::pos());
+}
+
+//-----------------------------------------------------------------------------
 // Function: MainWindow::onRunImportWizard()
 //-----------------------------------------------------------------------------
 void MainWindow::onRunImportWizard()
@@ -3397,7 +3416,9 @@ void MainWindow::onRunImportWizard()
 //-----------------------------------------------------------------------------
 void MainWindow::createGeneratorPluginActions()
 {
-    pluginActionGroup_ = new QActionGroup(this);
+    generationMenu_->clear();
+    
+    generationMenu_->addAction(actGenDocumentation_);
 
     for (IPlugin* plugin : PluginManager::getInstance().getActivePlugins())
     {
@@ -3417,7 +3438,7 @@ void MainWindow::createGeneratorPluginActions()
             QAction* action = new QAction(icon, genPlugin->getName(), this);
             action->setData(QVariant::fromValue((void*)genPlugin));
 
-            generationGroup_->addAction(action);
+            generationMenu_->addAction(action);
             pluginActionGroup_->addAction(action);
         }
     }
@@ -3439,12 +3460,11 @@ void MainWindow::updateGeneratorPluginActions()
         // Check if the action contains the plugin pointer.
         if (action->data().value<void*>() != 0)
         {
+            pluginActionGroup_->removeAction(action);
             generationGroup_->removeAction(action);
             delete action;
         }
     }
-
-    delete pluginActionGroup_;
 
     // Recreate the plugin actions.
     createGeneratorPluginActions();

@@ -430,6 +430,8 @@ private slots:
     //! Opens a dialog for setting library locations.
     void setLibraryLocations();
 
+    void onGenerate();
+
     //! Runs an import wizard for the currently open component.
     void onRunImportWizard();
 
@@ -727,6 +729,9 @@ private:
 	//! Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;
 
+    QAction* actGenerate_ = nullptr;
+
+
     //! Action to run import wizard.
     QAction* actRunImport_;
 
@@ -849,6 +854,8 @@ private:
     //! The action to filter unconnected memory items in a memory design.
     QAction* actionFilterUnconnectedMemoryItems_;
 
+    QMenu* generationMenu_ = nullptr;
+
 	//! The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
@@ -862,6 +869,7 @@ private:
     WorkspaceSettings workspace_;
 
     MessageMediator* messageChannel_;
+    
 };
 
 #endif // MAINWINDOW_H
