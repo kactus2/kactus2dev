@@ -399,7 +399,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     newAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     addAction(newAction);
 
-    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-open.png"), QString(),
+    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/opened-folder.png"), QString(),
         this, SLOT(onOpenAction()));
     openAction->setToolTip(tr("Open script from file... (Ctrl+O)"));
     openAction->setShortcut(QKeySequence::Open);

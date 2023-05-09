@@ -54,7 +54,6 @@
         <file>common/graphics/settings-plugins.png</file>
         <file>common/graphics/settings-environment_vars.png</file>
         <file>common/graphics/triangle_arrow_down.png</file>
-        <file>common/graphics/triangle_arrow_up.png</file>
         <file>common/graphics/triangle_arrow_right.png</file>
         <file>common/graphics/protection-locked.png</file>
         <file>common/graphics/protection-unlocked.png</file>
@@ -104,7 +103,7 @@
         <file>common/graphics/filterRegisters.png</file>
         <file>common/graphics/filterFields.png</file>
         <file>common/graphics/filterUnconnectedMemoryItems.png</file>
-        <file>common/graphics/folder-horizontal-open.png</file>
+        <file>common/graphics/opened-folder.png</file>
         <file>common/graphics/catalog.png</file>
         <file>common/graphics/generatorChain.png</file>
         <file>common/graphics/exclamation--frame.png</file>
@@ -112,7 +111,6 @@
         <file>common/graphics/export.png</file>
         <file>common/graphics/delete.png</file>
         <file>common/graphics/file.png</file>
-        <file>common/graphics/arrowLeft.png</file>
         <file>common/graphics/arrowRight.png</file>
         <file>common/graphics/settings-visibilities.png</file>
         <file>common/graphics/checkMark.png</file>
@@ -128,7 +126,6 @@
         <file>common/graphics/requires.png</file>
         <file>common/graphics/requires_provides.png</file>
         <file>common/graphics/script-save.png</file>
-        <file>common/graphics/script-open.png</file>
         <file>common/graphics/script-save-as.png</file>
         <file>common/graphics/script-run.png</file>
         <file>common/graphics/script-run-all.png</file>
