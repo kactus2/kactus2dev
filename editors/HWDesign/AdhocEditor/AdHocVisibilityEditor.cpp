@@ -81,7 +81,7 @@ void AdHocVisibilityEditor::setDataSource(AdHocEnabled* dataSource, QSharedPoint
     QSharedPointer<IEditProvider> editProvider, bool lockEditor)
 {
 	Q_ASSERT(dataSource);
-	parentWidget()->raise();
+	//parentWidget()->raise();
 
 	// If a previous data source has been specified, detach it from the editor.
 	if (dataSource_ != nullptr)

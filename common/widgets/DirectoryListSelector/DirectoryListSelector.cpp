@@ -21,7 +21,7 @@
 DirectoryListSelector::DirectoryListSelector(QString const& basePath,
     QStringList const& initialDirs, QWidget* parent) : 
 QWidget(parent),
-    buttonAdd_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), QString(), this)),
+    buttonAdd_(new QPushButton(QIcon(":/icons/common/graphics/opened-folder.png"), QString(), this)),
     buttonRemove_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),    
     directoryListView_(new QListView(this)),
     directoryListModel_(new QStringListModel(initialDirs)),

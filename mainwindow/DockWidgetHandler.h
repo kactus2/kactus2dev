@@ -18,7 +18,6 @@
 
 class LibraryHandler;
 class LibraryWidget;
-class ComponentPreviewBox;
 class MessageConsole;
 class ContextHelpBrowser;
 class DesignParameterReferenceCounter;
@@ -60,20 +59,35 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] library The used IP-XACT library.
-     *      @param [in] parent  The main window.
+     *      @param [in] library         The used IP-XACT library.
+     *      @param [in] messageChannel  The message channel for notifications and errors.
+     *      @param [in] leftToolbar     The left side toolbar in mainwindow.
+     *      @param [in] rightToolbar    The right side toolbar in mainwindow.
+     *      @param [in] parent          The main window.
      */
-    DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, QMainWindow* parent);
+    DockWidgetHandler(LibraryHandler* library, MessageMediator* messageChannel, 
+        QToolBar* leftToolbar, QToolBar* rightToolbar, QMainWindow* parent);
 
     /*!
      *  The destructor.
      */
     virtual ~DockWidgetHandler() = default;
 
+    //! No copying. No Assignment.
+    DockWidgetHandler(const DockWidgetHandler& other) = delete;
+    DockWidgetHandler& operator=(const DockWidgetHandler& other) = delete;
+
     /*!
      *  Setup the dock widgets.
      */
     void setupDockWidgets();
+
+    /*!
+     *  Setup the visibility actions for the visibility menu.
+     *
+     *      @param [in] visibilityMenu  The visibility menu.
+     */
+    void setupVisibilityActionMenu(QMenu& visibilityMenu);
 
     /*!
      *  Get the library handler created by the library widget.
@@ -87,7 +101,14 @@ public:
      *
      *      @param [in] settings    Settings containing the visibilities for the dockable items.
      */
-    void loadVisiblities(QSettings& settings);
+    void loadVisiblities(QSettings const& settings);
+
+    /*!
+     *  Save settings for dock widget visibilities.
+     *
+     *      @param [in] settings    The settings.
+     */
+    void saveVisibilitySettings(QSettings& settings) const;
 
     /*!
      *  Set filter settings for the library.
@@ -97,11 +118,14 @@ public:
     void loadFilterSettings(QSettings& settings);
 
     /*!
-     *  Setup the visibility actions for the visibility menu.
+     *  Save settings for dock widget filters.
      *
-     *      @param [in] visibilityMenu  The visibility menu.
+     *      @param [in] settings    The settings.
      */
-    void setupVisibilityActionMenu(QMenu& visibilityMenu) const;
+    void saveFilterSettings(QSettings& settings) const;
+
+    //! Apply the current application settings to widgets.
+    void applySettings();
 
     /*!
      *  Clear the item selection in design.
@@ -140,17 +164,16 @@ public:
      *      @param [in] tabCount            Number of items in the tab queue.
      *      @param [in] currentTabWidget    The currently active tab widget.
      */
-    void updateWindows(int const& tabCount, QWidget* currentTabWidget);
+    void updateWindows(QWidget* currentTabWidget);
 
     /*!
      *  Update the visibility of the selected dock widget.
      *
-     *      @param [in] tabCount            Number of items in the tab queue.
      *      @param [in] currentTabWidget    The currently active tab widget.
      *      @param [in] windowType          Type selected dock widget.
      *      @param [in] dock                The selected dock widget.
      */
-    void updateWindowAndControlVisibility(int const& tabCount, QWidget* currentTabWidget,
+    void updateWindowAndControlVisibility(QWidget* currentTabWidget,
         TabDocument::SupportedWindows windowType, QDockWidget* dock);
 
     /*!
@@ -173,12 +196,11 @@ public:
     /*!
      *  Set visibility for the supported window types.
      *
-     *      @param [in] tabCount            Number of items in the tab queue.
      *      @param [in] currentTabWidget    The currently active tab widget.
      *      @param [in] type                Type of the selected dock widget.
      *      @param [in] show                The new visibility value.
      */
-    void setWindowVisibilityForSupportedWindow(int const& tabCount, QWidget* currentTabWidget,
+    void setWindowVisibilityForSupportedWindow(QWidget* currentTabWidget,
         TabDocument::SupportedWindows type, bool show);
 
     /*!
@@ -211,42 +233,11 @@ public:
     void refreshDesignDocument(QWidget* currentTabWidget);
 
     /*!
-     *  Set filters for the library widget.
-     *
-     *      @param [in] options     The selected library filters.
-     */
-    void setLibraryFilters(Utils::FilterOptions options);
-
-    /*!
-     *  Get the current library filters.
-     *
-     *      @return The current library filters.
-     */
-    Utils::FilterOptions getLibraryFilters() const;
-
-    /*!
-     *  Save settings for dock widget filters.
-     *
-     *      @param [in] settings    The settings.
-     */
-    void saveFilterSettings(QSettings& settings) const;
-
-    /*!
-     *  Save settings for dock widget visibilities.
-     *
-     *      @param [in] settings    The settings.
-     */
-    void saveVisibilitySettings(QSettings& settings) const;
-
-    /*!
      *  Setup the design parameter finder.
      *
      *      @param [in] newDesign   The design of the currently active design tab document.
      */
     void setupDesignParameterFinder(QSharedPointer<Design> newDesign);
-
-    //! Apply the current application settings to widgets.
-    void applySettings();
 
 public slots:
 
@@ -313,13 +304,6 @@ private slots:
     void onContextHelpAction(bool show);
 
     /*!
-     *  Handles the action for the visibility of the component preview dock widget.
-     *
-     *      @param [in] show    Value for the visibility of the component preview dock widget.
-     */
-    void onPreviewAction(bool show);
-
-    /*!
      *  Handles the action for the visibility of the library dock widget.
      *
      *      @param [in] show    Value for the visibility of the library dock widget.
@@ -376,23 +360,21 @@ private slots:
     void onDesignParametersAction(bool show);
 
     /*!
-     *  Handles the action for the visibility of the script editor dock widget.
-     *
-     *      @param [in] show    Value for the visibility of the script editor dock widget.
-     */
-    void onScriptConsoleVisibilityAction(bool show);
-
-    /*!
      *  Handles the action for the visibility of the ad hoc port editor dock widget.
      *
      *      @param [in] show    Value for the visibility of the ad hoc port editor dock widget.
      */
     void onAdHocEditorAction(bool show);
 
+    /*!
+     *  Handles the change for the dock position.
+     *
+     *      @param [in] area    The area where the dock has been positioned.
+     */
+    void onDockLocationChanged(Qt::DockWidgetArea area);
+
+
 private:
-    //! No copying. No Assignment.
-    DockWidgetHandler(const DockWidgetHandler &other);
-    DockWidgetHandler &operator=(const DockWidgetHandler &other);
 
     /*!
      *  Setup the message console and the containing output dock widget.
@@ -408,11 +390,6 @@ private:
      *  Setup the library dock widget.
      */
     void setupLibraryDock();
-
-    /*!
-     *  Setup the component preview dock widget.
-     */
-    void setupComponentPreview();
 
     /*!
      *  Setup the design parameters editor dock widget.
@@ -449,8 +426,6 @@ private:
      */
     void setupConnectionEditor();
 
-    void setupConsole();
-
     /*!
     *  Setup the vendor extension editor dock widget.
     */
@@ -465,25 +440,24 @@ private:
      *
      *      @return True, if the window type is supported by the active document, false otherwise.
      */
-    bool isSupportedWindowType(int const& tabCount, QWidget* currentTabWidget,
-        TabDocument::SupportedWindows windowType);
+    bool isSupportedWindowType(QWidget* currentTabWidget,
+        TabDocument::SupportedWindows windowType) const;
 
     /*!
      *  Get the supported windows for the currently active tab widget.
      *
-     *      @param [in] tabCount            Number of items in the tab queue.
      *      @param [in] currentTabWidget    The currently active tab widget.
      *
      *      @return The currently supported dock widgets.
      */
-    unsigned int currentlySupportedWindows(int const& tabCount, QWidget* currentTabWidget);
+    unsigned int currentlySupportedWindows(QWidget* currentTabWidget) const;
 
     /*!
      *  Get the dock widgets that are visible regardless of the currently active tad document.
      *
      *      @return The default dock widgets.
      */
-    unsigned int defaultWindows();
+    unsigned int defaultWindows() const;
 
     /*!
      *  Set the visibility for the selected dock widget.
@@ -492,6 +466,17 @@ private:
      *      @param [in] show        The new visibility value.
      */
     void setWindowVisibility(TabDocument::SupportedWindows windowType, bool show);
+
+
+    /*!
+     * Places the visibility control action in the correct toolbar.
+     *
+     *     @param [in] action   The action to place in the toolbar.
+     *     @param [in] area     The area where the related dock widget is located.
+     *
+     *     @return 
+     */
+     void placeActionInToolbar(QAction* action, Qt::DockWidgetArea area);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -505,12 +490,6 @@ private:
 
     //! The widget containing library navigation.
     LibraryWidget* libraryWidget_;
-
-    //! The widget to display a preview of component.
-    ComponentPreviewBox* previewBox_;
-
-    //! The dock widget that contains the preview box.
-    QDockWidget* previewDock_;
 
     //! The widget to print errors and notifications to user.
     MessageConsole* console_;
@@ -578,9 +557,6 @@ private:
     //! The dock widget that contains the connection editor.
     QDockWidget* connectionDock_;
 
-    QDockWidget* scriptConsoleDock_;
-
-    PythonSourceEditor* scriptConsole_;
 
     //! The dock widget that contains the vendor extension editor.
     QDockWidget* extensionDock_;
@@ -591,9 +567,27 @@ private:
     //! The help window.
     HelpWindow* helpWnd_;
 
+    //! All the dock widgets.
+    QMap<TabDocument::SupportedWindows, QDockWidget*> docks_;
+
+    //! Visibility control actions for the dock widgets.
+    QMap<TabDocument::SupportedWindows, QAction*> visibilityControls_;
+
     //! Contains the visibility for the windows.
     //! Used to maintain the visibility information when windows are hidden by change of the active document.
     QMap<TabDocument::SupportedWindows, bool> visibilities_;
+
+    //! The left side toolbar.
+    QToolBar* leftToolbar_;
+
+    //! The right side toolbar.
+    QToolBar* rightToolbar_;
+
+    //! Action group for left side toolbar.
+    QActionGroup* leftActions_;
+
+    //! Action group for right side toolbar.
+    QActionGroup* rightActions_;
 
     //! The main window that should contain all of the dock widgets constructed in here.
     QMainWindow* mainWindow_;

@@ -42,6 +42,7 @@ class Ribbon;
 class RibbonGroup;
 class DockWidgetHandler;
 class MessageMediator;
+class PythonSourceEditor;
 
 //-----------------------------------------------------------------------------
 //! The main window of Kactus2.
@@ -430,6 +431,8 @@ private slots:
     //! Opens a dialog for setting library locations.
     void setLibraryLocations();
 
+    void onGenerate();
+
     //! Runs an import wizard for the currently open component.
     void onRunImportWizard();
 
@@ -575,6 +578,8 @@ private:
 	 */
 	void setupMenus();
 
+    void setupToolbars();
+
     /*!
      *  Adds generator plugin actions to the generation group.
      */
@@ -657,6 +662,10 @@ private:
 	//! Contains the open documents as each in it's own tab.
 	DrawingBoard* designTabs_;
 
+    QToolBar* leftToolbar_;
+
+    QToolBar* rightToolbar_;
+
     //! The dock widget handler.
     DockWidgetHandler* dockHandler_;
 
@@ -667,6 +676,9 @@ private:
 
 
     QStatusBar* statusBar_;
+
+
+    PythonSourceEditor* scriptEditor_;
 
 	//! Create a new document in the IP-Xact library
 	QAction* actNew_;
@@ -721,6 +733,9 @@ private:
 	//! Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;
 
+    QAction* actGenerate_ = nullptr;
+
+
     //! Action to run import wizard.
     QAction* actRunImport_;
 
@@ -765,6 +780,8 @@ private:
 
 	//! Action to select which dock widgets are visible.
 	QAction* actVisibleDocks_;
+
+    QAction* actVisibleScript_ = nullptr;
 
     //! Action to manage visibility control.
     QAction* actVisibilityControl_;
@@ -843,6 +860,8 @@ private:
     //! The action to filter unconnected memory items in a memory design.
     QAction* actionFilterUnconnectedMemoryItems_;
 
+    QMenu* generationMenu_ = nullptr;
+
 	//! The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
@@ -856,6 +875,7 @@ private:
     WorkspaceSettings workspace_;
 
     MessageMediator* messageChannel_;
+    
 };
 
 #endif // MAINWINDOW_H

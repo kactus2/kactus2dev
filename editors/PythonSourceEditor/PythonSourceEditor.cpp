@@ -80,10 +80,8 @@ PythonSourceEditor::~PythonSourceEditor()
 //-----------------------------------------------------------------------------
 // Function: PythonSourceEditor::applySettings()
 //-----------------------------------------------------------------------------
-void PythonSourceEditor::applySettings()
+void PythonSourceEditor::applySettings(QSettings& settings)
 {
-    QSettings settings;
-
     // Read font settings.
     QFont font = settings.value("Editor/Font", QFont("Consolas", 10)).value<QFont>();
     scriptView_.setFont(font);
@@ -108,7 +106,7 @@ void PythonSourceEditor::applySettings()
 }
 
 //-----------------------------------------------------------------------------
-// Function: PythonSourceEditor::onNewAction()
+// Function: PythonSourceEditor::getIdentifyingVLNV()
 //-----------------------------------------------------------------------------
 void PythonSourceEditor::onNewAction()
 {
@@ -401,7 +399,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     newAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     addAction(newAction);
 
-    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), QString(),
+    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/opened-folder.png"), QString(),
         this, SLOT(onOpenAction()));
     openAction->setToolTip(tr("Open script from file... (Ctrl+O)"));
     openAction->setShortcut(QKeySequence::Open);
@@ -436,7 +434,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
 
     toolBar_.addSeparator();
 
-    QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run.png"), QString(),
+    QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/control-play.png"), QString(),
         this, SLOT(onRunAction()));
     runAction->setToolTip(tr("Run selected line(s) (Ctrl+R)"));
     runAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));

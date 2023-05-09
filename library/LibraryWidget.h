@@ -22,9 +22,13 @@
 #include <IPXACTmodels/common/TagData.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
+
 #include "TableViewDialog.h"
 
 #include "ItemExporter.h"
+
+#include <QSettings>
 
 class LibraryHandler;
 
@@ -57,18 +61,20 @@ public:
      *      @return     The library access handle.
     */
     LibraryHandler* getLibraryHandler() const;
-
-    /*! Set filters for the library navigation.
+    
+    /*!
+     *  Set filter settings for the library.
      *
-     *      @param [in] filters    The filters to set.
-    */
-    void setFilters(Utils::FilterOptions filters);
+     *      @param [in] settings    Settings containing the library filters.
+     */
+    void loadFilterSettings(QSettings& settings);
 
-    /*! Get the current filters for the library navigation.
+    /*!
+     *  Save settings for dock widget filters.
      *
-     *      @return     The current library filters.
-    */
-    Utils::FilterOptions getFilters() const;
+     *      @param [in] settings    The settings.
+     */
+    void saveFilterSettings(QSettings& settings) const;
 
     /*!
      *  Selects the given VLNV in all library views.
@@ -152,6 +158,9 @@ public slots:
 
     void onRemoveVLNV(const QList<VLNV>);
 
+    //! Hides/shows the component preview.
+    void onPreviewShowHideClick();
+
 private:
     //! No copying
     LibraryWidget(const LibraryWidget& other);
@@ -186,9 +195,16 @@ private:
     //! The widget containing the library items in a tree-like view.
     LibraryTreeWidget* treeWidget_;
 
+    //! The widget that contains the component preview.
+    ComponentPreviewBox* previewWidget_;
+
+    //! Button for hiding/showing component preview.
+    QPushButton* previewHideButton_;
+
     //! Widget for showing integrity report on-demand.
     TableViewDialog* integrityWidget_;
 
+    bool hidePreview_;
 
 };
 

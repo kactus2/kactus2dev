@@ -109,7 +109,7 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
     }
 
     // Display this widget.
-    parentWidget()->raise();
+    //parentWidget()->raise();
 }
 
 //-----------------------------------------------------------------------------

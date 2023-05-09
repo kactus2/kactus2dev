@@ -121,9 +121,12 @@ MainWindow::MainWindow(LibraryHandler* library, MessageMediator* messageChannel,
 QMainWindow(parent),
 libraryHandler_(library),
 designTabs_(0),
-dockHandler_(new DockWidgetHandler(library, messageChannel, this)),
+leftToolbar_(new QToolBar(this)),
+rightToolbar_(new QToolBar(this)),
+dockHandler_(new DockWidgetHandler(library, messageChannel, leftToolbar_, rightToolbar_, this)),
 ribbon_(0), 
 statusBar_(new QStatusBar(this)),
+scriptEditor_(new PythonSourceEditor(this)),
 actNew_(0),
 actSave_(0),
 actSaveAs_(0),
@@ -201,6 +204,8 @@ messageChannel_(messageChannel)
         "*[mandatoryField=\"true\"] { background-color: LemonChiffon; }");
     setStyleSheet(defaultStyleSheet);
 
+    setupToolbars();
+
     // Setup windows.
     setupDrawBoard();
     dockHandler_->setupDockWidgets();
@@ -217,6 +222,14 @@ messageChannel_(messageChannel)
 
     // don't display empty editors
     updateWindows();
+
+
+    QSplitter* mainSplit = new QSplitter(Qt::Horizontal ,this);
+    mainSplit->addWidget(designTabs_);
+    mainSplit->addWidget(scriptEditor_);
+    scriptEditor_->setVisible(false);
+
+    setCentralWidget(mainSplit);
 
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
@@ -354,6 +367,14 @@ void MainWindow::setupActions()
         tr("Generate Documentation"), this);
     connect(actGenDocumentation_, SIGNAL(triggered()), this, SLOT(generateDoc()), Qt::UniqueConnection);
 
+    generationMenu_ = new QMenu(this);
+
+    actGenerate_ = new QAction(QIcon(":icons/common/graphics/automation.png"), tr("Run Generator"), this);   
+    actGenerate_->setMenu(generationMenu_);
+    connect(actGenerate_, SIGNAL(triggered()), this, SLOT(onGenerate()), Qt::UniqueConnection);
+
+    pluginActionGroup_ = new QActionGroup(this);
+
     // initialize the action to run import wizard for component.
     actRunImport_ = new QAction(QIcon(":icons/common/graphics/import.png"), tr("Import File to Component"), this);
     connect(actRunImport_, SIGNAL(triggered()), this, SLOT(onRunImportWizard()), Qt::UniqueConnection);
@@ -485,6 +506,12 @@ void MainWindow::setupActions()
     actVisibleDocks_->setMenu(&windowsMenu_);
     connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
 
+    actVisibleScript_ = new QAction(tr("Script editor"), this);
+    actVisibleScript_->setCheckable(true);
+    actVisibleScript_->setChecked(false);
+    connect(actVisibleScript_, SIGNAL(toggled(bool)), scriptEditor_, SLOT(setVisible(bool)));
+
+
     // Initialize the action to manage visibility control.
     actVisibilityControl_ = new QAction(QIcon(":icons/common/graphics/visibility.png"), tr("Visibility Control"), this);
     actVisibilityControl_->setEnabled(false);
@@ -514,7 +541,7 @@ void MainWindow::setupActions()
     connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
 
     // Initialize the action to open Kactus2 settings.
-    actSettings_ = new QAction(QIcon(":/icons/common/graphics/system-settings.png"), tr("Settings"), this);
+    actSettings_ = new QAction(QIcon(":/icons/common/graphics/settings-general.png"), tr("Settings"), this);
     connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
 
     // Initialize the action to open the about box.
@@ -537,6 +564,7 @@ void MainWindow::setupActions()
     connectVisibilityControls();
 
     setupMenus();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -545,13 +573,13 @@ void MainWindow::setupActions()
 void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, bool show)
 {
     int tabCount = designTabs_->count();
-    QWidget* currentWidget = 0;
+    QWidget* currentWidget = nullptr;
     if (tabCount > 0)
     {
         currentWidget = designTabs_->currentWidget();
     }
 
-    dockHandler_->setWindowVisibilityForSupportedWindow(tabCount, currentWidget, type, show);
+    dockHandler_->setWindowVisibilityForSupportedWindow(currentWidget, type, show);
 }
 
 //-----------------------------------------------------------------------------
@@ -560,7 +588,7 @@ void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, 
 void MainWindow::setupMenus()
 {
     ribbon_ = new Ribbon(this);
-    addToolBar(ribbon_);
+    addToolBar(Qt::TopToolBarArea, ribbon_);
 
     // The "File" group.
     RibbonGroup* fileGroup = new RibbonGroup(tr("File"), ribbon_);
@@ -601,7 +629,7 @@ void MainWindow::setupMenus()
 
     // The "Generation" group.
     generationGroup_ = new RibbonGroup(tr("Generation"), ribbon_);
-    generationGroup_->addAction(actGenDocumentation_);
+    generationGroup_->addAction(actGenerate_);
 
     generationAction_ = ribbon_->addGroup(generationGroup_);
     generationAction_->setVisible(false);
@@ -677,8 +705,36 @@ void MainWindow::setupMenus()
 
     ribbon_->addGroup(sysGroup);
 
+
     // the menu to display the dock widgets
+    windowsMenu_.addAction(actVisibleScript_);
+    windowsMenu_.addSeparator();
     dockHandler_->setupVisibilityActionMenu(windowsMenu_);
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::setupToolbars()
+//-----------------------------------------------------------------------------
+void MainWindow::setupToolbars()
+{
+    QString toolbarStyle = "background-color: #DAE1E9";
+
+    leftToolbar_->setObjectName("leftToolBar");
+    leftToolbar_->setOrientation(Qt::Vertical);
+    leftToolbar_->setMovable(false);
+    leftToolbar_->setIconSize(QSize(32, 32));
+    leftToolbar_->setStyleSheet(toolbarStyle);
+
+    addToolBar(Qt::LeftToolBarArea, leftToolbar_);
+
+    rightToolbar_->setObjectName("rightToolbar");
+    rightToolbar_->setOrientation(Qt::Vertical);
+    rightToolbar_->setMovable(false);
+    rightToolbar_->setIconSize(QSize(32, 32));
+    rightToolbar_->setStyleSheet(toolbarStyle);
+
+    addToolBar(Qt::RightToolBarArea, rightToolbar_);
 }
 
 //-----------------------------------------------------------------------------
@@ -690,7 +746,6 @@ void MainWindow::setupDrawBoard()
     designTabs_->setMovable(true);
     designTabs_->setTabsClosable(true);
 
-    setCentralWidget(designTabs_);
 
     connect(designTabs_, SIGNAL(lastDocumentClosed()), this, SLOT(onLastDocumentClosed()), Qt::UniqueConnection);
     connect(designTabs_, SIGNAL(currentChanged(int)), this, SLOT(onDocumentChanged(int)), Qt::UniqueConnection);
@@ -705,6 +760,7 @@ void MainWindow::setupDrawBoard()
         dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(designTabs_, SIGNAL(noticeMessage(const QString&)),
         dockHandler_, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -854,7 +910,7 @@ void MainWindow::updateMenuStrip()
 
     MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(doc);
     bool isMemoryDesign = memoryDocument != 0;
-
+    
     actSave_->setEnabled(doc != 0 && doc->isModified());
     actSaveAs_->setEnabled(doc != 0);
     actSaveHierarchy_->setEnabled(componentEditor || dynamic_cast<DesignWidget*>(doc));
@@ -866,6 +922,9 @@ void MainWindow::updateMenuStrip()
 
     actGenDocumentation_->setEnabled((isHWDesign|| isHWComp) && unlocked);
     actGenDocumentation_->setVisible((isHWDesign|| isHWComp));
+
+    actGenerate_->setEnabled(unlocked);
+    actGenerate_->setVisible(doc != 0 && (componentEditor != 0 || isHWDesign || isSystemDesign));
 
     actRunImport_->setEnabled(isHWComp && unlocked);
     actRunImport_->setVisible(isHWComp);
@@ -2774,7 +2833,7 @@ bool MainWindow::isOpen(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 void MainWindow::updateWindows()
 {
-    dockHandler_->updateWindows(designTabs_->count(), designTabs_->currentWidget());
+    dockHandler_->updateWindows(designTabs_->currentWidget());
 }
 
 //-----------------------------------------------------------------------------
@@ -3315,6 +3374,14 @@ void MainWindow::setLibraryLocations()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MainWindow::onGenerate()
+//-----------------------------------------------------------------------------
+void MainWindow::onGenerate()
+{
+    generationMenu_->exec(QCursor::pos());
+}
+
+//-----------------------------------------------------------------------------
 // Function: MainWindow::onRunImportWizard()
 //-----------------------------------------------------------------------------
 void MainWindow::onRunImportWizard()
@@ -3366,7 +3433,9 @@ void MainWindow::onRunImportWizard()
 //-----------------------------------------------------------------------------
 void MainWindow::createGeneratorPluginActions()
 {
-    pluginActionGroup_ = new QActionGroup(this);
+    generationMenu_->clear();
+    
+    generationMenu_->addAction(actGenDocumentation_);
 
     for (IPlugin* plugin : PluginManager::getInstance().getActivePlugins())
     {
@@ -3386,7 +3455,7 @@ void MainWindow::createGeneratorPluginActions()
             QAction* action = new QAction(icon, genPlugin->getName(), this);
             action->setData(QVariant::fromValue((void*)genPlugin));
 
-            generationGroup_->addAction(action);
+            generationMenu_->addAction(action);
             pluginActionGroup_->addAction(action);
         }
     }
@@ -3408,12 +3477,11 @@ void MainWindow::updateGeneratorPluginActions()
         // Check if the action contains the plugin pointer.
         if (action->data().value<void*>() != 0)
         {
+            pluginActionGroup_->removeAction(action);
             generationGroup_->removeAction(action);
             delete action;
         }
     }
-
-    delete pluginActionGroup_;
 
     // Recreate the plugin actions.
     createGeneratorPluginActions();
