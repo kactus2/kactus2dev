@@ -59,8 +59,7 @@ public:
         CONTEXT_HELP_WINDOW     = 0x200,
         ADHOC_WINDOW            = 0x800,
         DESIGNPARAMETERSWINDOW  = 0x1000,
-        VENDOREXTENSIONWINDOW   = 0x2000,
-        SCRIPTWINDOW            = 0x4000
+        VENDOREXTENSIONWINDOW   = 0x2000
 	};
 
     /*!

@@ -126,6 +126,7 @@ rightToolbar_(new QToolBar(this)),
 dockHandler_(new DockWidgetHandler(library, messageChannel, leftToolbar_, rightToolbar_, this)),
 ribbon_(0), 
 statusBar_(new QStatusBar(this)),
+scriptEditor_(new PythonSourceEditor(this)),
 actNew_(0),
 actSave_(0),
 actSaveAs_(0),
@@ -221,6 +222,14 @@ messageChannel_(messageChannel)
 
     // don't display empty editors
     updateWindows();
+
+
+    QSplitter* mainSplit = new QSplitter(Qt::Horizontal ,this);
+    mainSplit->addWidget(designTabs_);
+    mainSplit->addWidget(scriptEditor_);
+    scriptEditor_->setVisible(false);
+
+    setCentralWidget(mainSplit);
 
     setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
@@ -360,7 +369,7 @@ void MainWindow::setupActions()
 
     generationMenu_ = new QMenu(this);
 
-    actGenerate_ = new QAction(QIcon(":icons/common/graphics/automation.png"), tr("Generate"), this);   
+    actGenerate_ = new QAction(QIcon(":icons/common/graphics/automation.png"), tr("Run Generator"), this);   
     actGenerate_->setMenu(generationMenu_);
     connect(actGenerate_, SIGNAL(triggered()), this, SLOT(onGenerate()), Qt::UniqueConnection);
 
@@ -496,6 +505,12 @@ void MainWindow::setupActions()
     actVisibleDocks_ = new QAction(QIcon(":icons/common/graphics/dockSelect.png"), tr("Visible Windows"), this);
     actVisibleDocks_->setMenu(&windowsMenu_);
     connect(actVisibleDocks_, SIGNAL(triggered()), this, SLOT(selectVisibleDocks()), Qt::UniqueConnection);
+
+    actVisibleScript_ = new QAction(tr("Script editor"), this);
+    actVisibleScript_->setCheckable(true);
+    actVisibleScript_->setChecked(false);
+    connect(actVisibleScript_, SIGNAL(toggled(bool)), scriptEditor_, SLOT(setVisible(bool)));
+
 
     // Initialize the action to manage visibility control.
     actVisibilityControl_ = new QAction(QIcon(":icons/common/graphics/visibility.png"), tr("Visibility Control"), this);
@@ -692,6 +707,8 @@ void MainWindow::setupMenus()
 
 
     // the menu to display the dock widgets
+    windowsMenu_.addAction(actVisibleScript_);
+    windowsMenu_.addSeparator();
     dockHandler_->setupVisibilityActionMenu(windowsMenu_);
 
 }
@@ -729,7 +746,6 @@ void MainWindow::setupDrawBoard()
     designTabs_->setMovable(true);
     designTabs_->setTabsClosable(true);
 
-    setCentralWidget(designTabs_);
 
     connect(designTabs_, SIGNAL(lastDocumentClosed()), this, SLOT(onLastDocumentClosed()), Qt::UniqueConnection);
     connect(designTabs_, SIGNAL(currentChanged(int)), this, SLOT(onDocumentChanged(int)), Qt::UniqueConnection);
@@ -744,6 +760,7 @@ void MainWindow::setupDrawBoard()
         dockHandler_, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(designTabs_, SIGNAL(noticeMessage(const QString&)),
         dockHandler_, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------

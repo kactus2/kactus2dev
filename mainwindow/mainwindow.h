@@ -42,6 +42,7 @@ class Ribbon;
 class RibbonGroup;
 class DockWidgetHandler;
 class MessageMediator;
+class PythonSourceEditor;
 
 //-----------------------------------------------------------------------------
 //! The main window of Kactus2.
@@ -676,6 +677,9 @@ private:
 
     QStatusBar* statusBar_;
 
+
+    PythonSourceEditor* scriptEditor_;
+
 	//! Create a new document in the IP-Xact library
 	QAction* actNew_;
 
@@ -776,6 +780,8 @@ private:
 
 	//! Action to select which dock widgets are visible.
 	QAction* actVisibleDocks_;
+
+    QAction* actVisibleScript_ = nullptr;
 
     //! Action to manage visibility control.
     QAction* actVisibilityControl_;

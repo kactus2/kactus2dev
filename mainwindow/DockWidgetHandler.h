@@ -360,13 +360,6 @@ private slots:
     void onDesignParametersAction(bool show);
 
     /*!
-     *  Handles the action for the visibility of the script editor dock widget.
-     *
-     *      @param [in] show    Value for the visibility of the script editor dock widget.
-     */
-    void onScriptConsoleVisibilityAction(bool show);
-
-    /*!
      *  Handles the action for the visibility of the ad hoc port editor dock widget.
      *
      *      @param [in] show    Value for the visibility of the ad hoc port editor dock widget.
@@ -432,8 +425,6 @@ private:
      *  Setup the connection editor dock widget.
      */
     void setupConnectionEditor();
-
-    void setupConsole();
 
     /*!
     *  Setup the vendor extension editor dock widget.
@@ -566,9 +557,6 @@ private:
     //! The dock widget that contains the connection editor.
     QDockWidget* connectionDock_;
 
-    QDockWidget* scriptConsoleDock_;
-
-    PythonSourceEditor* scriptConsole_;
 
     //! The dock widget that contains the vendor extension editor.
     QDockWidget* extensionDock_;

@@ -20,6 +20,7 @@
 #include <QProgressBar>
 #include <QTabWidget>
 #include <QThread>
+#include <QSettings>
 
 #include <PythonAPI/ChannelRelay.h>
 
@@ -51,7 +52,7 @@ public:
     virtual ~PythonSourceEditor();
 
     //! Apply the application settings.
-    void applySettings();
+    void applySettings(QSettings& settings);
 
 signals:
     

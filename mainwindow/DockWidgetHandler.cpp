@@ -66,8 +66,7 @@ namespace
         { TabDocument::OUTPUTWINDOW, "OutputVisibility" },
         { TabDocument::CONTEXT_HELP_WINDOW, "ContextHelpVisibility" },
         { TabDocument::DESIGNPARAMETERSWINDOW, "DesignParameterVisibility" },
-        { TabDocument::VENDOREXTENSIONWINDOW, "VendorExtensionVisibility" },
-        { TabDocument::SCRIPTWINDOW, "ScriptVisibility" }
+        { TabDocument::VENDOREXTENSIONWINDOW, "VendorExtensionVisibility" }
     };
 };
 
@@ -105,8 +104,6 @@ libraryHandler_(library),
     interfaceDock_(0),
     connectionEditor_(0),
     connectionDock_(0),
-    scriptConsoleDock_(0),
-    scriptConsole_(0),
     extensionDock_(0),
     extensionEditor_(0),
     helpWnd_(0),
@@ -139,7 +136,6 @@ void DockWidgetHandler::setupDockWidgets()
     setupSystemDetailsEditor();
     setupInterfaceEditor();
     setupConnectionEditor();
-    setupConsole();
     setupVendorExtensionEditor();
 
     docks_ =
@@ -154,8 +150,7 @@ void DockWidgetHandler::setupDockWidgets()
         { TabDocument::OUTPUTWINDOW, consoleDock_ },
         { TabDocument::CONTEXT_HELP_WINDOW, contextHelpDock_ },
         { TabDocument::DESIGNPARAMETERSWINDOW, designParameterDock_ },
-        { TabDocument::VENDOREXTENSIONWINDOW, extensionDock_ },
-        { TabDocument::SCRIPTWINDOW, scriptConsoleDock_ }
+        { TabDocument::VENDOREXTENSIONWINDOW, extensionDock_ }
     };
 
     for (auto const& dock : docks_)
@@ -242,7 +237,7 @@ void DockWidgetHandler::saveFilterSettings(QSettings& settings) const
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::applySettings()
 {
-    scriptConsole_->applySettings();
+    // Nothing to do.
 }
 
 //-----------------------------------------------------------------------------
@@ -551,25 +546,6 @@ void DockWidgetHandler::setupConnectionEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::setupConsole()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::setupConsole()
-{
-    scriptConsoleDock_ = new QDockWidget(tr("Script"), mainWindow_);
-    scriptConsoleDock_->setObjectName(tr("Python console"));
-    scriptConsoleDock_->setWindowIcon(QIcon(":icons/common/graphics/code-file.png"));
-    scriptConsoleDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | 
-        Qt::BottomDockWidgetArea);
-    scriptConsoleDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
-        QDockWidget::DockWidgetFloatable);
-
-    scriptConsole_ = new PythonSourceEditor(scriptConsoleDock_);
-    scriptConsoleDock_->setWidget(scriptConsole_);
-
-    mainWindow_->addDockWidget(Qt::RightDockWidgetArea, scriptConsoleDock_);
-}
-
-//-----------------------------------------------------------------------------
 // Function: DockWidgetHandler::setupVendorExtensionEditor()
 //-----------------------------------------------------------------------------
 void DockWidgetHandler::setupVendorExtensionEditor()
@@ -780,8 +756,7 @@ unsigned int DockWidgetHandler::currentlySupportedWindows(QWidget* currentTabWid
 //-----------------------------------------------------------------------------
 unsigned int DockWidgetHandler::defaultWindows() const
 {
-    return TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW |
-        TabDocument::CONTEXT_HELP_WINDOW | TabDocument::SCRIPTWINDOW;
+    return TabDocument::OUTPUTWINDOW | TabDocument::LIBRARYWINDOW | TabDocument::CONTEXT_HELP_WINDOW;
 }
 
 //-----------------------------------------------------------------------------
@@ -930,8 +905,6 @@ void DockWidgetHandler::connectVisibilityControls()
         this, SLOT(onAdHocEditorAction(bool)), Qt::UniqueConnection);
     connect(visibilityControls_[TabDocument::VENDOREXTENSIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)), Qt::UniqueConnection);
-    connect(visibilityControls_[TabDocument::SCRIPTWINDOW], SIGNAL(toggled(bool)),
-        this, SLOT(onScriptConsoleVisibilityAction(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -961,8 +934,6 @@ void DockWidgetHandler::disconnectVisibilityControls()
         this, SLOT(onAdHocEditorAction(bool)));
     disconnect(visibilityControls_[TabDocument::VENDOREXTENSIONWINDOW], SIGNAL(toggled(bool)),
         this, SLOT(onVendorExtensionVisibilityAction(bool)));
-    disconnect(visibilityControls_[TabDocument::SCRIPTWINDOW], SIGNAL(toggled(bool)),
-        this, SLOT(onScriptConsoleVisibilityAction(bool)));
 }
 
 //-----------------------------------------------------------------------------
@@ -1051,14 +1022,6 @@ void DockWidgetHandler::onInstanceAction( bool show )
 void DockWidgetHandler::onDesignParametersAction(bool show)
 {
     emit adjustVisibilityInWindow(TabDocument::DESIGNPARAMETERSWINDOW, show);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DockWidgetHandler::onScriptConsoleVisibilityAction()
-//-----------------------------------------------------------------------------
-void DockWidgetHandler::onScriptConsoleVisibilityAction(bool show)
-{
-    emit adjustVisibilityInWindow(TabDocument::SCRIPTWINDOW, show);
 }
 
 //-----------------------------------------------------------------------------
