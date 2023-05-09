@@ -399,7 +399,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     newAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     addAction(newAction);
 
-    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), QString(),
+    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-open.png"), QString(),
         this, SLOT(onOpenAction()));
     openAction->setToolTip(tr("Open script from file... (Ctrl+O)"));
     openAction->setShortcut(QKeySequence::Open);
@@ -434,7 +434,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
 
     toolBar_.addSeparator();
 
-    QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run.png"), QString(),
+    QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/control-play.png"), QString(),
         this, SLOT(onRunAction()));
     runAction->setToolTip(tr("Run selected line(s) (Ctrl+R)"));
     runAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
