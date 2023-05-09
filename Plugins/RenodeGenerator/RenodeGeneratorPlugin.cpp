@@ -21,7 +21,7 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuEditor.h>
-#include <Plugins/RenodeGenerator/CPUDialog/RenodeCPUDetailRoutes.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeFileSelectionGroup.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 #include <Plugins/RenodeGenerator/RenodeConfigurationManager.h>
@@ -163,13 +163,13 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 
     if (selectionDialog.exec() == QDialog::Accepted)
     {
-        QVector<QSharedPointer<CPUDetailRoutes> > cpuRoutes = selectionDialog.getSelectedCPUs();
+        QVector<QSharedPointer<CpuRoutesContainer> > cpuRoutes = selectionDialog.getSelectedCPUs();
         if (!cpuRoutes.isEmpty())
         {
-            QVector<QSharedPointer<RenodeCPUDetailRoutes> > renodeCPURoutes;
+            QVector<QSharedPointer<RenodeCpuRoutesContainer> > renodeCPURoutes;
             for (auto cpu : cpuRoutes)
             {
-                QSharedPointer<RenodeCPUDetailRoutes> renodeCPU = cpu.dynamicCast<RenodeCPUDetailRoutes>();
+                QSharedPointer<RenodeCpuRoutesContainer> renodeCPU = cpu.dynamicCast<RenodeCpuRoutesContainer>();
                 if (renodeCPU)
                 {
                     renodeCPURoutes.append(renodeCPU);
@@ -301,10 +301,10 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 
     LibraryInterface* utilityLibrary = utility->getLibraryInterface();
 
-    QVector<QSharedPointer<RenodeCPUDetailRoutes> > renodeCPUs;
+    QVector<QSharedPointer<RenodeCpuRoutesContainer> > renodeCPUs;
     for (auto defaultCPU : ConnectivityGraphUtilities::getDefaultCPUs(utilityLibrary, component, viewName))
     {
-        QSharedPointer<RenodeCPUDetailRoutes> newCPU(new RenodeCPUDetailRoutes(*defaultCPU.data()));
+        QSharedPointer<RenodeCpuRoutesContainer> newCPU(new RenodeCpuRoutesContainer(*defaultCPU.data()));
         renodeCPUs.append(newCPU);
     }
 

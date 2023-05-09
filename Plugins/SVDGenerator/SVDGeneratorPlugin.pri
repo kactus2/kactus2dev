@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./SVDGenerator.h \
+HEADERS += ./SVDConfigurationManager.h \
+    ./SVDGenerator.h \
     ./SVDGeneratorPlugin.h \
     ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
@@ -27,20 +28,20 @@ HEADERS += ./SVDGenerator.h \
     ../../editors/MemoryDesigner/MemoryItem.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
     ./CPUDialog/SVDCPUColumns.h \
-    ./CPUDialog/SVDCPUDetailRoutes.h \
+    ./CPUDialog/SVDCpuRoutesContainer.h \
+    ./CPUDialog/SVDUtilities.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
     ./CPUDialog/SVDCPUEditor.h \
     ./CPUDialog/SVDCPUModel.h \
     ./CPUDialog/SVDCPUDelegate.h \
-    ../common/ConnectivityGraphUtilities.h \
-    ../common/CPUDetailRoutes.h \
-    ./SVDConfigurationManager.h \
-    ./CPUDialog/SVDUtilities.h \
-    ../common/PluginConfigurationManager.h \
     ../common/ConfigurationManager.h \
-    ../common/ConnectivityGraphStructs.h
-SOURCES += ./SVDGenerator.cpp \
+    ../common/ConnectivityGraphUtilities.h \
+    ../common/CpuRoutesContainer.h \
+    ../common/PluginConfigurationManager.h \
+    ../common/SingleCpuRoutesContainer.h
+SOURCES += ./SVDConfigurationManager.cpp \
+    ./SVDGenerator.cpp \
     ./SVDGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
     ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
@@ -62,12 +63,12 @@ SOURCES += ./SVDGenerator.cpp \
     ../common/CPUDialog/CPUEditor.cpp \
     ../common/CPUDialog/CPUSelectionDialog.cpp \
     ./CPUDialog/SVDCPUDelegate.cpp \
-    ./CPUDialog/SVDCPUDetailRoutes.cpp \
+    ./CPUDialog/SVDCpuRoutesContainer.cpp \
     ./CPUDialog/SVDCPUEditor.cpp \
     ./CPUDialog/SVDCPUModel.cpp \
+    ../common/ConfigurationManager.cpp \
     ../common/ConnectivityGraphUtilities.cpp \
-    ../common/CPUDetailRoutes.cpp \
-    ./SVDConfigurationManager.cpp \
+    ../common/CpuRoutesContainer.cpp \
     ../common/PluginConfigurationManager.cpp \
-    ../common/ConfigurationManager.cpp
+    ../common/SingleCpuRoutesContainer.cpp
 RESOURCES += SVDGenerator.qrc

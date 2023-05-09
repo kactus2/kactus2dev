@@ -11,7 +11,6 @@
 
 #include "RenodePeripheralsEditor.h"
 
-#include <Plugins/common/CPUDetailRoutes.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsDelegate.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsModel.h>
 

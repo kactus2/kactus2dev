@@ -11,7 +11,7 @@
 
 #include "RenodeCpuEditor.h"
 
-#include <Plugins/RenodeGenerator/CPUDialog/RenodeCPUDetailRoutes.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeMemoriesEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
@@ -134,7 +134,7 @@ void RenodeCpuEditor::onHandleTimeProviderChange(QString const& newTimeProvider)
 //-----------------------------------------------------------------------------
 void RenodeCpuEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView)
 {
-    QVector<QSharedPointer<RenodeCPUDetailRoutes> > cpuDetails = RenodeUtilities::getRenodeCpuRoutes(configurationObject_, library, component, activeView);
+    QVector<QSharedPointer<RenodeCpuRoutesContainer> > cpuDetails = RenodeUtilities::getRenodeCpuRoutes(configurationObject_, library, component, activeView);
     if (!cpuDetails.isEmpty())
     {
         renodeCPU_ = cpuDetails.first();
@@ -178,22 +178,22 @@ void RenodeCpuEditor::checkStartingInterfacesForErrores()
         QString currentAUB = currentInterface->getConnectedMemory()->getAUB();
         if (currentAUB != firstAUB)
         {
-            utility_->printError("Mis-matching address unit bits found in " + renodeCPU_->getCPUName() + " interface " + currentInterface->getName());
+            utility_->printError("Mis-matching address unit bits found in " + renodeCPU_->getFileName() + " interface " + currentInterface->getName());
         }
         QString currentWidth = currentInterface->getConnectedMemory()->getWidth();
         if (currentWidth != firstWidth)
         {
-            utility_->printError("Mis-matching width found in " + renodeCPU_->getCPUName() + " interface " + currentInterface->getName());
+            utility_->printError("Mis-matching width found in " + renodeCPU_->getFileName() + " interface " + currentInterface->getName());
         }
         QString currentSize = currentInterface->getConnectedMemory()->getSize();
         if (currentSize != firstSize)
         {
-            utility_->printError("Mis-matching size found in " + renodeCPU_->getCPUName() + " interface " + currentInterface->getName());
+            utility_->printError("Mis-matching size found in " + renodeCPU_->getFileName() + " interface " + currentInterface->getName());
         }
         QString currentBase = currentInterface->getBaseAddress();
         if (currentBase != firstBase)
         {
-            utility_->printError("Mis-matching base address found in " + renodeCPU_->getCPUName()  + " interface " + currentInterface->getName());
+            utility_->printError("Mis-matching base address found in " + renodeCPU_->getFileName()  + " interface " + currentInterface->getName());
         }
 
     }
@@ -202,9 +202,9 @@ void RenodeCpuEditor::checkStartingInterfacesForErrores()
 //-----------------------------------------------------------------------------
 // Function: RenodeCpuEditor::getSelectedCPUs()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<CPUDetailRoutes> > RenodeCpuEditor::getSelectedCPUs() const
+QVector<QSharedPointer<CpuRoutesContainer> > RenodeCpuEditor::getSelectedCPUs() const
 {
-    QVector<QSharedPointer<CPUDetailRoutes> > defaultCPUs;
+    QVector<QSharedPointer<CpuRoutesContainer> > defaultCPUs;
     if (renodeCPU_)
     {
         defaultCPUs.append(renodeCPU_);

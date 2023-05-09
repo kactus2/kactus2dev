@@ -25,7 +25,7 @@
 #include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <editors/MemoryDesigner/MemoryConnectionAddressCalculator.h>
 
-#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDCpuRoutesContainer.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -56,7 +56,7 @@ utility_(utility)
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::generate()
 //-----------------------------------------------------------------------------
-void SVDGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath, QVector<QSharedPointer<SVDCPUDetailRoutes>> const& cpuRoutes)
+void SVDGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath, QVector<QSharedPointer<SVDCpuRoutesContainer>> const& cpuRoutes)
 {
     QStringList fileNames;
     for (auto cpuMasterRoute : cpuRoutes)
@@ -80,7 +80,7 @@ QStringList SVDGenerator::getGeneratedFiles() const
 // Function: SVDGenerator::writeFile()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QSharedPointer<SVDCPUDetailRoutes> cpuDetails, QStringList& fileNames)
+    QSharedPointer<SVDCpuRoutesContainer> cpuDetails, QStringList& fileNames)
 {
     QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > cpuRoutes = cpuDetails->getRoutes();
     if (cpuRoutes.isEmpty())
@@ -221,7 +221,7 @@ QString SVDGenerator::formatName(QString const& name) const
 //-----------------------------------------------------------------------------
 // Function: SVDGenerator::writeCPU()
 //-----------------------------------------------------------------------------
-void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU, QSharedPointer<SVDCPUDetailRoutes> cpuContainer)
+void SVDGenerator::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> currentCPU, QSharedPointer<SVDCpuRoutesContainer> cpuContainer)
 {
     writer.writeStartElement(SVDConstants::CPUELEMENT);
 

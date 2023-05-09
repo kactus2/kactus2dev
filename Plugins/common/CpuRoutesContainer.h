@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: CPUDetailRoutes.h
+// File: CpuRoutesContainer.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -9,8 +9,8 @@
 // Container for routes connected to a master interface.
 //-----------------------------------------------------------------------------
 
-#ifndef CPUDETAILROUTES_H
-#define CPUDETAILROUTES_H
+#ifndef CPUROUTESCONTAINER_H
+#define CPUROUTESCONTAINER_H
 
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 
@@ -36,69 +36,53 @@ namespace CpuRouteStructs
 //-----------------------------------------------------------------------------
 //! Container for routes connected to a master interface.
 //-----------------------------------------------------------------------------
-class CPUDetailRoutes
+class CpuRoutesContainer
 {
 
 public:
 
     /*!
      *  The constructor.
-     * 
-     *      @param [in] CPU     The CPU.
      */
-    CPUDetailRoutes(QSharedPointer<Cpu> cpu);
+    CpuRoutesContainer();
 
     /*!
      *  The destructor.
      */
-    virtual ~CPUDetailRoutes() = default;
+    virtual ~CpuRoutesContainer() = default;
 
     /*!
      *  Copy constructor.
      */
-    CPUDetailRoutes(const CPUDetailRoutes& other);
-
-    /*!
-     *  Get the containing CPU.
-     *
-     *      @return The containing CPU.
-     */
-    QSharedPointer<Cpu> getCpu() const;
-
-    /*!
-     *  Set the containing CPU.
-     *
-     *      @param [in] newCpu  The new CPU.
-     */
-    void setCpu(QSharedPointer<Cpu> newCpu);
+    CpuRoutesContainer(const CpuRoutesContainer& other);
 
     /*!
      *  Get the name.
      *
      *      @return Name of the CPU.
      */
-    QString getCPUName() const;
+    QString getFileName() const;
 
     /*!
      *  Set a new name.
      *
      *      @param [in] newName     The new name for the CPU.
      */
-    void setCPUName(QString const& newName);
+    void setFileName(QString const& newName);
 
     /*!
      *  Get the ID.
      *
      *      @return ID of the CPU.
      */
-    QString getCPUID() const;
+    QString getFileID() const;
 
     /*!
      *  Set a new ID.
      *
      *      @param [in] newID   The new ID.
      */
-    void setCPUID(QString const& newID);
+    void setFileID(QString const& newID);
 
     /*!
      *  Flag for creating a file from this CPU.
@@ -138,20 +122,17 @@ public:
 private:
 
     // Disable copying.
-    CPUDetailRoutes& operator=(CPUDetailRoutes const& rhs);
+    CpuRoutesContainer& operator=(CpuRoutesContainer const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The containing CPU.
-    QSharedPointer<Cpu> cpu_;
-
-    //! Name of the CPU.
-    QString cpuName_;
+    //! Name of the container.
+    QString fileName_;
 
     //! ID of the CPU.
-    QString cpuID_;
+    QString fileID_;
 
     //! Flag for creating an SVD file.
     bool createFile_;
@@ -160,4 +141,4 @@ private:
     QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > routes_;
 };
 
-#endif // CPUDETAILROUTES_H
+#endif // CPUROUTESCONTAINER_H

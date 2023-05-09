@@ -317,10 +317,10 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: RenodeUtilities::getRenodeCpuRoutes()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<RenodeCPUDetailRoutes> > RenodeUtilities::getRenodeCpuRoutes(QJsonObject const& configurationObject, LibraryInterface* library,
+QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpuRoutes(QJsonObject const& configurationObject, LibraryInterface* library,
     QSharedPointer<Component> component, QString const& viewName)
 {
-    QVector<QSharedPointer<RenodeCPUDetailRoutes> > cpuDetails;
+    QVector<QSharedPointer<RenodeCpuRoutesContainer> > cpuDetails;
     for (auto defaultCPU : ConnectivityGraphUtilities::getDefaultCPUs(library, component, viewName))
     {
         QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > peripherals;
@@ -394,7 +394,7 @@ QVector<QSharedPointer<RenodeCPUDetailRoutes> > RenodeUtilities::getRenodeCpuRou
         }
 
 
-        QSharedPointer<RenodeCPUDetailRoutes> renodeCPU(new RenodeCPUDetailRoutes(*defaultCPU.data()));
+        QSharedPointer<RenodeCpuRoutesContainer> renodeCPU(new RenodeCpuRoutesContainer(*defaultCPU.data()));
 
         QJsonValue multiCpuValue = configurationObject.value(RenodeConstants::CPUS);
         if (multiCpuValue.isArray())

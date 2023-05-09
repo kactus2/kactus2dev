@@ -154,12 +154,6 @@
     <ClCompile Include="..\common\CPUDialog\CPUSelectionDialog.cpp">
       <Filter>Source Files\CPUDialog</Filter>
     </ClCompile>
-    <ClCompile Include="CPUDialog\SVDCPUDetailRoutes.cpp">
-      <Filter>Source Files\CPUDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\CPUDetailRoutes.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="SVDConfigurationManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -167,6 +161,15 @@
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="..\common\ConfigurationManager.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CpuRoutesContainer.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\SVDCpuRoutesContainer.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -259,12 +262,6 @@
     <ClInclude Include="..\common\ConnectivityGraphUtilities.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="CPUDialog\SVDCPUDetailRoutes.h">
-      <Filter>Header Files\CPUDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\CPUDetailRoutes.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="SVDConfigurationManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -275,6 +272,15 @@
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="..\common\ConfigurationManager.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CpuRoutesContainer.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\SVDCpuRoutesContainer.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\SingleCpuRoutesContainer.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>

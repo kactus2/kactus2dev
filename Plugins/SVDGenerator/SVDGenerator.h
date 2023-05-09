@@ -41,7 +41,7 @@ class Register;
 class Cpu;
 class MemoryMap;
 class EnumeratedValue;
-class SVDCPUDetailRoutes;
+class SVDCpuRoutesContainer;
 class IPluginUtility;
 
 //-----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ public:
      */
     void generate(QSharedPointer<Component> topComponent,
         QString const& componentPath,
-        QVector<QSharedPointer<SVDCPUDetailRoutes> > const& cpuRoutes);
+        QVector<QSharedPointer<SVDCpuRoutesContainer> > const& cpuRoutes);
 
     /*!
      *  Get the generated files.
@@ -98,7 +98,7 @@ private:
      */
     void writeFile(QSharedPointer<Component> topComponent,
         QString const& componentPath,
-        QSharedPointer<SVDCPUDetailRoutes> cpuDetails,
+        QSharedPointer<SVDCpuRoutesContainer> cpuDetails,
         QStringList& fileNames);
 
     /*!
@@ -137,7 +137,7 @@ private:
      */
     void writeCPU(QXmlStreamWriter& writer,
         QSharedPointer<Cpu> currentCPU,
-        QSharedPointer<SVDCPUDetailRoutes> cpuContainer);
+        QSharedPointer<SVDCpuRoutesContainer> cpuContainer);
 
     /*!
      *  Write a boolean flag.

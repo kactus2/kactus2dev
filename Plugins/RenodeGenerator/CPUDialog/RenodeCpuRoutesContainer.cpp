@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------------
-// File: RenodeCPUDetailRoutes.cpp
+// File: RenodeCpuRoutesContainer.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -9,13 +9,13 @@
 // Container for routes connected to a master interface for Renode generator.
 //-----------------------------------------------------------------------------
 
-#include "RenodeCPUDetailRoutes.h"
+#include "RenodeCpuRoutesContainer.h"
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::RenodeCPUDetailRoutes()
+// Function: RenodeCpuRoutesContainer::RenodeCpuRoutesContainer()
 //-----------------------------------------------------------------------------
-RenodeCPUDetailRoutes::RenodeCPUDetailRoutes(QSharedPointer<Cpu> renodeCpu):
-CPUDetailRoutes(renodeCpu),
+RenodeCpuRoutesContainer::RenodeCpuRoutesContainer(QSharedPointer<Cpu> renodeCpu):
+SingleCpuRoutesContainer(renodeCpu),
 peripherals_(),
 memories_(),
 className_(),
@@ -26,10 +26,10 @@ timeProvider_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::RenodeCPUDetailRoutes()
+// Function: RenodeCpuRoutesContainer::RenodeCpuRoutesContainer()
 //-----------------------------------------------------------------------------
-RenodeCPUDetailRoutes::RenodeCPUDetailRoutes(const CPUDetailRoutes& other) :
-CPUDetailRoutes(other),
+RenodeCpuRoutesContainer::RenodeCpuRoutesContainer(const SingleCpuRoutesContainer& other) :
+SingleCpuRoutesContainer(other),
 peripherals_(),
 memories_(),
 className_(),
@@ -40,9 +40,9 @@ timeProvider_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::initializeCpuData()
+// Function: RenodeCpuRoutesContainer::initializeCpuData()
 //-----------------------------------------------------------------------------
-void RenodeCPUDetailRoutes::initializeCpuData()
+void RenodeCpuRoutesContainer::initializeCpuData()
 {
     className_ = "IbexRiscV32";
     cpuType_ = "rv64gc";
@@ -50,81 +50,81 @@ void RenodeCPUDetailRoutes::initializeCpuData()
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::setPeripherals()
+// Function: RenodeCpuRoutesContainer::setPeripherals()
 //-----------------------------------------------------------------------------
-void RenodeCPUDetailRoutes::setPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > newPeripherals)
+void RenodeCpuRoutesContainer::setPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > newPeripherals)
 {
     peripherals_ = newPeripherals;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::getPeripherals()
+// Function: RenodeCpuRoutesContainer::getPeripherals()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > RenodeCPUDetailRoutes::getPeripherals() const
+QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > RenodeCpuRoutesContainer::getPeripherals() const
 {
     return peripherals_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::setMemories()
+// Function: RenodeCpuRoutesContainer::setMemories()
 //-----------------------------------------------------------------------------
-void RenodeCPUDetailRoutes::setMemories(QVector<QSharedPointer<RenodeStructs::cpuMemories> > newMemories)
+void RenodeCpuRoutesContainer::setMemories(QVector<QSharedPointer<RenodeStructs::cpuMemories> > newMemories)
 {
     memories_ = newMemories;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::getMemories()
+// Function: RenodeCpuRoutesContainer::getMemories()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<RenodeStructs::cpuMemories> > RenodeCPUDetailRoutes::getMemories() const
+QVector<QSharedPointer<RenodeStructs::cpuMemories> > RenodeCpuRoutesContainer::getMemories() const
 {
     return memories_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::setClassName()
+// Function: RenodeCpuRoutesContainer::setClassName()
 //-----------------------------------------------------------------------------
-void RenodeCPUDetailRoutes::setClassName(QString const& newClass)
+void RenodeCpuRoutesContainer::setClassName(QString const& newClass)
 {
     className_ = newClass;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::getClassName()
+// Function: RenodeCpuRoutesContainer::getClassName()
 //-----------------------------------------------------------------------------
-QString RenodeCPUDetailRoutes::getClassName()
+QString RenodeCpuRoutesContainer::getClassName()
 {
     return className_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::setCpuType()
+// Function: RenodeCpuRoutesContainer::setCpuType()
 //-----------------------------------------------------------------------------
-void RenodeCPUDetailRoutes::setCpuType(QString const& newType)
+void RenodeCpuRoutesContainer::setCpuType(QString const& newType)
 {
     cpuType_ = newType;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::getCpuType()
+// Function: RenodeCpuRoutesContainer::getCpuType()
 //-----------------------------------------------------------------------------
-QString RenodeCPUDetailRoutes::getCpuType()
+QString RenodeCpuRoutesContainer::getCpuType()
 {
     return cpuType_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::setTimeProvider()
+// Function: RenodeCpuRoutesContainer::setTimeProvider()
 //-----------------------------------------------------------------------------
-void RenodeCPUDetailRoutes::setTimeProvider(QString const& newTimeProvider)
+void RenodeCpuRoutesContainer::setTimeProvider(QString const& newTimeProvider)
 {
     timeProvider_ = newTimeProvider;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCPUDetailRoutes::getTimeProvider()
+// Function: RenodeCpuRoutesContainer::getTimeProvider()
 //-----------------------------------------------------------------------------
-QString RenodeCPUDetailRoutes::getTimeProvider()
+QString RenodeCpuRoutesContainer::getTimeProvider()
 {
     return timeProvider_;
 }

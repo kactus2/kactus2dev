@@ -148,12 +148,6 @@
     <ClCompile Include="CPUDialog\RenodePeripheralsModel.cpp">
       <Filter>Source Files\CPUDialog</Filter>
     </ClCompile>
-    <ClCompile Include="CPUDialog\RenodeCPUDetailRoutes.cpp">
-      <Filter>Source Files\CPUDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\CPUDetailRoutes.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="CPUDialog\RenodePeripheralsEditor.cpp">
       <Filter>Source Files\CPUDialog</Filter>
     </ClCompile>
@@ -183,6 +177,15 @@
     </ClCompile>
     <ClCompile Include="RenodeConfigurationManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CpuRoutesContainer.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\RenodeCpuRoutesContainer.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -280,12 +283,6 @@
     <ClInclude Include="RenodeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CPUDialog\RenodeCPUDetailRoutes.h">
-      <Filter>Header Files\CPUDialog</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\CPUDetailRoutes.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="CPUDialog\RenodeUtilities.h">
       <Filter>Header Files\CPUDialog</Filter>
     </ClInclude>
@@ -300,6 +297,15 @@
     </ClInclude>
     <ClInclude Include="RenodeConfigurationManager.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CpuRoutesContainer.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeCpuRoutesContainer.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\SingleCpuRoutesContainer.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

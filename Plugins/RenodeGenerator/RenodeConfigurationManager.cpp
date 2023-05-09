@@ -43,7 +43,7 @@ QJsonObject RenodeConfigurationManager::getConfigurationObject(QSharedPointer<Co
 //-----------------------------------------------------------------------------
 // Function: RenodeConfigurationManager::createConfigureFile()
 //-----------------------------------------------------------------------------
-void RenodeConfigurationManager::createConfigureFile(QVector<QSharedPointer<RenodeCPUDetailRoutes>> renodeData,
+void RenodeConfigurationManager::createConfigureFile(QVector<QSharedPointer<RenodeCpuRoutesContainer>> renodeData,
     QString const& selectedView, bool saveToFileSet, QString const& selectedFileSet, QString const& folderPath,
     bool writeCPU, bool writeMemory, bool writePeripherals, QSharedPointer<Component> topComponent)
 {
@@ -62,7 +62,7 @@ void RenodeConfigurationManager::createConfigureFile(QVector<QSharedPointer<Reno
 //-----------------------------------------------------------------------------
 // Function: RenodeConfigurationManager::createJsonDocument()
 //-----------------------------------------------------------------------------
-QJsonDocument RenodeConfigurationManager::createJsonDocument(QVector<QSharedPointer<RenodeCPUDetailRoutes>> renodeData,
+QJsonDocument RenodeConfigurationManager::createJsonDocument(QVector<QSharedPointer<RenodeCpuRoutesContainer>> renodeData,
     QString const& selectedView, bool saveToFileSetFlag, QString const& selectedFileSet, QString const& folderPath,
     bool writeCPU, bool writeMemory, bool writePeripherals)
 {
@@ -76,7 +76,7 @@ QJsonDocument RenodeConfigurationManager::createJsonDocument(QVector<QSharedPoin
         {
             QJsonObject cpuObject;
 
-            cpuObject.insert(RenodeConstants::CPUNAME, renodeCPU->getCPUName());
+            cpuObject.insert(RenodeConstants::CPUNAME, renodeCPU->getFileName());
             cpuObject.insert(RenodeConstants::CPUCLASS, renodeCPU->getClassName());
             cpuObject.insert(RenodeConstants::CPUTYPE, renodeCPU->getCpuType());
             cpuObject.insert(RenodeConstants::CPUTIME, renodeCPU->getTimeProvider());

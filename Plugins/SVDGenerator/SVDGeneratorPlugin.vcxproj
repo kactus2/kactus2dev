@@ -143,21 +143,22 @@
     <ClCompile Include="..\..\IPXACTmodels\utilities\ComponentSearch.cpp" />
     <ClCompile Include="..\common\ConfigurationManager.cpp" />
     <ClCompile Include="..\common\ConnectivityGraphUtilities.cpp" />
-    <ClCompile Include="..\common\CPUDetailRoutes.cpp" />
     <ClCompile Include="..\common\CPUDialog\CPUEditor.cpp" />
     <ClCompile Include="..\common\CPUDialog\CPUSelectionDialog.cpp" />
+    <ClCompile Include="..\common\CpuRoutesContainer.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp" />
     <ClCompile Include="..\common\HDLParser\MetaInstance.cpp" />
     <ClCompile Include="..\common\PluginConfigurationManager.cpp" />
+    <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="CPUDialog\SVDCPUDelegate.cpp" />
-    <ClCompile Include="CPUDialog\SVDCPUDetailRoutes.cpp" />
     <ClCompile Include="CPUDialog\SVDCPUEditor.cpp" />
     <ClCompile Include="CPUDialog\SVDCPUModel.cpp" />
+    <ClCompile Include="CPUDialog\SVDCpuRoutesContainer.cpp" />
     <ClCompile Include="SVDConfigurationManager.cpp" />
     <ClCompile Include="SVDGenerator.cpp" />
     <ClCompile Include="SVDGeneratorPlugin.cpp" />
@@ -191,11 +192,12 @@
     <ClInclude Include="..\common\ConnectivityGraphUtilities.h" />
     <QtMoc Include="..\common\CPUDialog\CPUEditor.h" />
     <QtMoc Include="..\common\CPUDialog\CPUSelectionDialog.h" />
-    <ClInclude Include="..\common\CPUDetailRoutes.h" />
+    <ClInclude Include="..\common\CpuRoutesContainer.h" />
     <ClInclude Include="..\common\HDLParser\MetaComponent.h" />
     <ClInclude Include="..\common\HDLParser\MetaDesign.h" />
     <ClInclude Include="..\common\HDLParser\MetaInstance.h" />
     <ClInclude Include="..\common\PluginConfigurationManager.h" />
+    <ClInclude Include="..\common\SingleCpuRoutesContainer.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h" />
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
     </QtMoc>
@@ -208,7 +210,7 @@
     <ClInclude Include="CPUDialog\SVDCPUColumns.h" />
     <QtMoc Include="CPUDialog\SVDCPUDelegate.h">
     </QtMoc>
-    <ClInclude Include="CPUDialog\SVDCPUDetailRoutes.h" />
+    <ClInclude Include="CPUDialog\SVDCpuRoutesContainer.h" />
     <ClInclude Include="CPUDialog\SVDUtilities.h" />
     <ClInclude Include="SVDConfigurationManager.h" />
     <ClInclude Include="SVDGenerator.h" />

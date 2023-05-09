@@ -18,7 +18,7 @@
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/ConnectivityComponent.h>
 
-#include <Plugins/common/CPUDetailRoutes.h>
+#include <Plugins/common/SingleCpuRoutesContainer.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -65,7 +65,7 @@ namespace ConnectivityGraphUtilities
      *
      *      @return List of the component CPU routes.
      */
-    QVector<QSharedPointer<CPUDetailRoutes> > getDefaultCPUs(LibraryInterface* library, QSharedPointer<Component> component, QString const& viewName);
+    QVector<QSharedPointer<SingleCpuRoutesContainer> > getDefaultCPUs(LibraryInterface* library, QSharedPointer<Component> component, QString const& viewName);
 
     /*!
      *  Check if a CPU exists for the selected interface.
@@ -75,7 +75,7 @@ namespace ConnectivityGraphUtilities
      *
      *      @return True, if a check box exists, false otherwise.
      */
-    bool interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes> > cpuList);
+    bool interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuList);
 
     /*!
      *  Get the route container for the selected interface.
@@ -95,7 +95,7 @@ namespace ConnectivityGraphUtilities
      *
      *      @return CPU containers matching the selected interface.
      */
-    QVector<QSharedPointer<CPUDetailRoutes> > getMatchingCpuContainers(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes> > cpuList);
+    QVector<QSharedPointer<SingleCpuRoutesContainer> > getMatchingCpuContainers(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuList);
 
     /*!
      *  Get the CPU route container for the selected CPU.
@@ -105,7 +105,7 @@ namespace ConnectivityGraphUtilities
      *
      *      @return The CPU route container containing the selected CPU.
      */
-    QSharedPointer<CPUDetailRoutes> getCpuDetailRoute(QSharedPointer<Cpu> comparisonCpu, QVector<QSharedPointer<CPUDetailRoutes> > existingRoutes);
+    QSharedPointer<SingleCpuRoutesContainer> getCpuDetailRoute(QSharedPointer<Cpu> comparisonCpu, QVector<QSharedPointer<SingleCpuRoutesContainer> > existingRoutes);
 };
 
 #endif //CONNECTIVITYGRAPHUTILITIES_H

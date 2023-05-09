@@ -21,8 +21,8 @@
 #include <Plugins/common/CPUDialog/CPUEditor.h>
 
 class SVDCPUModel;
-class CPUDetailRoutes;
-class SVDCPUDetailRoutes;
+class CpuRoutesContainer;
+class SVDCpuRoutesContainer;
 
 //-----------------------------------------------------------------------------
 //! Editor for CPU details in SVD generation.
@@ -60,7 +60,7 @@ public:
      *
      *      @return List of the selected CPU routes.
      */
-    virtual QVector<QSharedPointer<CPUDetailRoutes> > getSelectedCPUs() const override final;
+    virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const override final;
 
     //! No copying. No assignment.
     SVDCPUEditor(const SVDCPUEditor& other) = delete;
@@ -77,7 +77,7 @@ private:
      *
      *      @return The SVD CPU routes of the selected design.
      */
-    QVector<QSharedPointer<SVDCPUDetailRoutes> > getSVDCPURoutes(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView);
+    QVector<QSharedPointer<SVDCpuRoutesContainer> > getSVDCPURoutes(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -14,7 +14,7 @@
 #include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUModel.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUDelegate.h>
-#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDCpuRoutesContainer.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
 
 #include <QJsonArray>
@@ -54,7 +54,7 @@ configurationObject_(configurationObject)
 //-----------------------------------------------------------------------------
 void SVDCPUEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView)
 {
-    QVector<QSharedPointer<SVDCPUDetailRoutes> > cpuDetails = getSVDCPURoutes(library, component, activeView);
+    QVector<QSharedPointer<SVDCpuRoutesContainer> > cpuDetails = getSVDCPURoutes(library, component, activeView);
 
     model_->setupCPUDetails(cpuDetails);
     view_->resizeColumnsToContents();
@@ -63,7 +63,7 @@ void SVDCPUEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<Com
 //-----------------------------------------------------------------------------
 // Function: SVDCPUEditor::getSVDCPURoutes()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<SVDCPUDetailRoutes> > SVDCPUEditor::getSVDCPURoutes(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView)
+QVector<QSharedPointer<SVDCpuRoutesContainer> > SVDCPUEditor::getSVDCPURoutes(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView)
 {
     QJsonValue cpusValue = configurationObject_.value(SVDConstants::CONFIGURATIONCPUS);
     QJsonArray cpuArray;
@@ -72,10 +72,10 @@ QVector<QSharedPointer<SVDCPUDetailRoutes> > SVDCPUEditor::getSVDCPURoutes(Libra
         cpuArray = cpusValue.toArray();
     }
 
-    QVector<QSharedPointer<SVDCPUDetailRoutes> > cpuDetails;
+    QVector<QSharedPointer<SVDCpuRoutesContainer> > cpuDetails;
     for (auto defaultCPU : ConnectivityGraphUtilities::getDefaultCPUs(library, component, activeView))
     {
-        QSharedPointer<SVDCPUDetailRoutes> svdCPU(new SVDCPUDetailRoutes(*defaultCPU.data()));
+        QSharedPointer<SVDCpuRoutesContainer> svdCPU(new SVDCpuRoutesContainer(*defaultCPU.data()));
 
         for (auto cpuConfiguration : cpuArray)
         {
@@ -85,7 +85,7 @@ QVector<QSharedPointer<SVDCPUDetailRoutes> > SVDCPUEditor::getSVDCPURoutes(Libra
 
                 QString configurationName = cpuObject.value(SVDConstants::NAME).toString();
 
-                if (configurationName == svdCPU->getCPUName())
+                if (configurationName == svdCPU->getFileName())
                 {
                     svdCPU->setupConfiguration(cpuObject);
                 }
@@ -101,9 +101,9 @@ QVector<QSharedPointer<SVDCPUDetailRoutes> > SVDCPUEditor::getSVDCPURoutes(Libra
 //-----------------------------------------------------------------------------
 // Function: SVDCPUEditor::getSelectedCPUs()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<CPUDetailRoutes> > SVDCPUEditor::getSelectedCPUs() const
+QVector<QSharedPointer<CpuRoutesContainer> > SVDCPUEditor::getSelectedCPUs() const
 {
-    QVector<QSharedPointer<CPUDetailRoutes> > defaultCPUs;
+    QVector<QSharedPointer<CpuRoutesContainer> > defaultCPUs;
 
     for (auto svdCPU : model_->getCPUDetails())
     {

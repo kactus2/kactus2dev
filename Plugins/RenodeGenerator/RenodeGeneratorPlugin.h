@@ -19,7 +19,6 @@
 #include <KactusAPI/include/IPluginUtility.h>
 #include <KactusAPI/include/CLIGenerator.h>
 
-class RenodeCPUDetailRoutes;
 class LibraryInterface;
 class FileSet;
 class File;
