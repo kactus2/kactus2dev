@@ -116,5 +116,12 @@ bool InterfaceDirectionNameSorter::SortKey::operator<(SortKey const& other) cons
         return portDirection < other.portDirection;
     }
 
-    return port->name().compare(other.port->name(), Qt::CaseInsensitive) <= 0;
+    int less = port->name().compare(other.port->name(), Qt::CaseInsensitive);
+
+    if (less == 0)
+    {
+        return port->name().compare(other.port->name(), Qt::CaseSensitive) < 0;
+    }
+    
+    return less < 0;
 }
