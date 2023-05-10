@@ -32,6 +32,7 @@
 
 #include <QTabWidget>
 #include <QVBoxLayout>
+#include <QSplitter>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryWidget::LibraryWidget()
@@ -42,7 +43,10 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     itemExporter_(library_, this, this),
     hierarchyWidget_(new HierarchyWidget(library_, library_->getHierarchyModel(), this)),
     treeWidget_(new LibraryTreeWidget(library_, library_->getTreeModel(), this)),
-    integrityWidget_(nullptr)
+    previewWidget_(new ComponentPreviewBox(library, this)),
+    previewHideButton_(new QPushButton(QString(), this)),
+    integrityWidget_(nullptr),
+    hidePreview_(false)
 {
     GraphicalMessageMediator* guiChannel = dynamic_cast<GraphicalMessageMediator*>(messageChannel);
     if (guiChannel)
@@ -56,6 +60,14 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
 
+
+    QSettings settings;
+    hidePreview_ = !settings.value("PreviewWidget/Hidden", true).toBool();
+
+    previewHideButton_->setFlat(true);
+    previewHideButton_->setToolTip(tr("Show preview"));
+
+    onPreviewShowHideClick();
 
     connect(hierarchyWidget_, SIGNAL(componentSelected(const VLNV&)),
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
@@ -136,6 +148,12 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
      connect(&itemExporter_, SIGNAL(errorMessage(const QString&)),
          this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
 
+     connect(library_, SIGNAL(itemSelected(const VLNV&)),
+         previewWidget_, SLOT(setComponent(const VLNV&)), Qt::UniqueConnection);
+
+     connect(previewHideButton_, SIGNAL(clicked(bool)), 
+         this, SLOT(onPreviewShowHideClick()), Qt::UniqueConnection);
+
     setupLayout();
 } 
 
@@ -148,19 +166,19 @@ LibraryHandler* LibraryWidget::getLibraryHandler() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryWidget::setFilters()
+// Function: LibraryWidget::loadFilterSettings()
 //-----------------------------------------------------------------------------
-void LibraryWidget::setFilters(Utils::FilterOptions filters)
+void LibraryWidget::loadFilterSettings(QSettings& settings)
 {
-    dialer_->setFilters(filters);
+    dialer_->loadFilterSettings(settings);
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryWidget::getFilters()
+// Function: LibraryWidget::saveFilterSettings()
 //-----------------------------------------------------------------------------
-Utils::FilterOptions LibraryWidget::getFilters() const
+void LibraryWidget::saveFilterSettings(QSettings& settings) const
 {
-    return dialer_->getFilters();
+    dialer_->saveFilterSettings(settings);
 }
 
 //-----------------------------------------------------------------------------
@@ -170,6 +188,7 @@ void LibraryWidget::selectComponent(VLNV const& componentVLNV) const
 {
     treeWidget_->selectItem(componentVLNV);
     hierarchyWidget_->selectItems(componentVLNV);
+    previewWidget_->setComponent(componentVLNV);
 }
 
 //-----------------------------------------------------------------------------
@@ -327,7 +346,7 @@ void LibraryWidget::onGenerateIntegrityReport()
 
          LibraryErrorModel* model = new LibraryErrorModel(integrityWidget_);
 
-         for (auto vlnv : library_->getAllVLNVs())
+         for (auto const& vlnv : library_->getAllVLNVs())
          {
              if (library_->isValid(vlnv) == false)
              {
@@ -398,6 +417,29 @@ void LibraryWidget::onRemoveVLNV(const QList<VLNV> vlnvs)
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryWidget::onPreviewHideShowClick()
+//-----------------------------------------------------------------------------
+void LibraryWidget::onPreviewShowHideClick()
+{
+    hidePreview_ = !hidePreview_;
+    previewWidget_->setHidden(hidePreview_);
+
+    if (hidePreview_)
+    {
+        previewHideButton_->setToolTip(tr("Show preview"));
+        previewHideButton_->setIcon(QIcon(":icons/common/graphics/preview.png"));
+    }
+    else
+    {
+        previewHideButton_->setToolTip(tr("Hide preview"));
+        previewHideButton_->setIcon(QIcon(":icons/common/graphics/hide.png"));
+    }
+
+    QSettings settings;
+    settings.setValue("PreviewWidget/Hidden", hidePreview_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryWidget::connectVLNVFilter()
 //-----------------------------------------------------------------------------
 void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
@@ -430,13 +472,51 @@ void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
 //-----------------------------------------------------------------------------
 void LibraryWidget::setupLayout()
 {
+    QWidget* libraryGroup = new QWidget(this);
+
     QTabWidget* navigationTabs = new QTabWidget(this);
     navigationTabs->addTab(treeWidget_, tr("VLNV Tree"));
     navigationTabs->addTab(hierarchyWidget_, tr("Hierarchy"));
 
-    QVBoxLayout* containerLayout = new QVBoxLayout(this);
-    containerLayout->addWidget(navigationTabs, 1);
-    containerLayout->addWidget(dialer_, 0);
+    auto libraryLayout = new QVBoxLayout(libraryGroup);
+    libraryLayout->addWidget(navigationTabs, 1);
+    libraryLayout->addWidget(dialer_);
+    libraryLayout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget* previewGroup = new QWidget(this);
+
+    auto previewLayout = new QGridLayout(previewGroup);
+
+    QLabel* previewLabel = new QLabel(tr("Component Preview"), this);
+
+    previewLayout->addWidget(previewLabel, 0, 0, 1, 1);
+    previewLayout->addWidget(previewHideButton_, 0, 1, 1, 1, Qt::AlignRight);
+    previewLayout->addWidget(previewWidget_, 1, 0, 1, 2);
+    previewLayout->setContentsMargins(4, 0, 4, 0);
+
+    QSplitter* viewSplit = new QSplitter(this);
+    viewSplit->setOrientation(Qt::Vertical);
+    viewSplit->addWidget(libraryGroup);
+    viewSplit->addWidget(previewGroup);
+    viewSplit->setStretchFactor(0, 4);
+    viewSplit->setContentsMargins(0, 0, 0, 0);
+
+    QSplitterHandle* handle = viewSplit->handle(1);
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setContentsMargins(2, 0, 0, 0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    viewSplit->setHandleWidth(10);
+
+    auto containerLayout = new QVBoxLayout(this);
+    containerLayout->addWidget(viewSplit, 1);
     containerLayout->setSpacing(0);
     containerLayout->setContentsMargins(0, 0, 0, 0);
 }

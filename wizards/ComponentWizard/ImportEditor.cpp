@@ -58,7 +58,7 @@ componentViews_(component->getViews())
 {
     componentSelector_->setDisabled(true);
 
-    browseButton_->setIcon(QIcon(":icons/common/graphics/folder-horizontal-open.png"));
+    browseButton_->setIcon(QIcon(":icons/common/graphics/opened-folder.png"));
     browseButton_->setToolTip(tr("Browse"));
 
     QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));

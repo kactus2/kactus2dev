@@ -80,10 +80,7 @@ void WorkspaceSettings::restoreSettings()
 
     if (createDefaultWorkspaces)
     {
-        Utils::FilterOptions defaultOptions;
-        defaultOptions.type.advanced_ = false;
-
-        docks_->setLibraryFilters(defaultOptions);
+        docks_->loadFilterSettings(settings);
 
         createNewWorkspace("Default");
         createNewWorkspace("Design");

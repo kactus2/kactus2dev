@@ -181,7 +181,7 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
 {
 	Q_ASSERT(connection);
 
-	parentWidget()->raise();
+	//parentWidget()->raise();
 
 	// disconnect the previous connection
 	if (connection_)
