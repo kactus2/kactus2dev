@@ -9,13 +9,13 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../IPXACTmodels/utilities/Search.h \
     ../../../Plugins/VerilogImport/VerilogParameterParser.h \
+    ../../../common/expressions/utilities.h \
     ../../../Plugins/VerilogIncludeImport/verilogincludeimport_global.h \
-    ../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
     ../../../Plugins/VerilogIncludeImport/VerilogIncludeImport.h \
-    ../../../common/expressions/utilities.h
-SOURCES += ../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
+    ../../../KactusAPI/include/ImportHighlighter.h
+SOURCES += ../../../Plugins/VerilogIncludeImport/VerilogIncludeImport.cpp \
+    ../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ../../../Plugins/VerilogImport/VerilogSyntax.cpp \
-    ../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
-    ../../../Plugins/VerilogIncludeImport/VerilogIncludeImport.cpp \
+    ../../../common/expressions/utilities.cpp \
     ./tst_VerilogIncludeImport.cpp \
-    ../../../common/expressions/utilities.cpp
+    ../../../KactusAPI/plugins/ImportHighlighter.cpp

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------------
-// File: SVDCPUDetailRoutes.cpp
+// File: SVDCpuRoutesContainer.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -9,17 +9,17 @@
 // Container for routes connected to a master interface for SVD generator.
 //-----------------------------------------------------------------------------
 
-#include "SVDCPUDetailRoutes.h"
+#include "SVDCpuRoutesContainer.h"
 
 #include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
 
 #include <QJsonObject>
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::SVDCPUDetailRoutes()
+// Function: SVDCpuRoutesContainer::SVDCpuRoutesContainer()
 //-----------------------------------------------------------------------------
-SVDCPUDetailRoutes::SVDCPUDetailRoutes(QSharedPointer<Cpu> cpu):
-CPUDetailRoutes(cpu),
+SVDCpuRoutesContainer::SVDCpuRoutesContainer(QSharedPointer<Cpu> cpu):
+SingleCpuRoutesContainer(cpu),
 revision_(QString("")),
 endian_(QString("")),
 mpuPresent_(false),
@@ -31,10 +31,10 @@ vendorSystickConfig_(false)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::SVDCPUDetailRoutes()
+// Function: SVDCpuRoutesContainer::SVDCpuRoutesContainer()
 //-----------------------------------------------------------------------------
-SVDCPUDetailRoutes::SVDCPUDetailRoutes(const CPUDetailRoutes& other) :
-CPUDetailRoutes(other),
+SVDCpuRoutesContainer::SVDCpuRoutesContainer(const SingleCpuRoutesContainer& other) :
+SingleCpuRoutesContainer(other),
 revision_(QString()),
 endian_(QString()),
 mpuPresent_(false),
@@ -46,9 +46,9 @@ vendorSystickConfig_(false)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::setupConfiguration()
+// Function: SVDCpuRoutesContainer::setupConfiguration()
 //-----------------------------------------------------------------------------
-void SVDCPUDetailRoutes::setupConfiguration(QJsonObject const& configurationObject)
+void SVDCpuRoutesContainer::setupConfiguration(QJsonObject const& configurationObject)
 {
     setCreateFileFlag(configurationObject.value(SVDConstants::CREATESVDFLAG).toBool(false));
     setEndian(configurationObject.value(SVDConstants::CPUENDIAN).toString(QString("")));
@@ -60,97 +60,97 @@ void SVDCPUDetailRoutes::setupConfiguration(QJsonObject const& configurationObje
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::getRevision()
+// Function: SVDCpuRoutesContainer::getRevision()
 //-----------------------------------------------------------------------------
-QString SVDCPUDetailRoutes::getRevision() const
+QString SVDCpuRoutesContainer::getRevision() const
 {
     return revision_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::setRevision()
+// Function: SVDCpuRoutesContainer::setRevision()
 //-----------------------------------------------------------------------------
-void SVDCPUDetailRoutes::setRevision(QString const& newRevision)
+void SVDCpuRoutesContainer::setRevision(QString const& newRevision)
 {
     revision_ = newRevision;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::getEndian()
+// Function: SVDCpuRoutesContainer::getEndian()
 //-----------------------------------------------------------------------------
-QString SVDCPUDetailRoutes::getEndian() const
+QString SVDCpuRoutesContainer::getEndian() const
 {
     return endian_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::setEndian()
+// Function: SVDCpuRoutesContainer::setEndian()
 //-----------------------------------------------------------------------------
-void SVDCPUDetailRoutes::setEndian(QString const& newEndian)
+void SVDCpuRoutesContainer::setEndian(QString const& newEndian)
 {
     endian_ = newEndian;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::isMPUPresent()
+// Function: SVDCpuRoutesContainer::isMPUPresent()
 //-----------------------------------------------------------------------------
-bool SVDCPUDetailRoutes::isMPUPresent() const
+bool SVDCpuRoutesContainer::isMPUPresent() const
 {
     return mpuPresent_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::setMPUPresence()
+// Function: SVDCpuRoutesContainer::setMPUPresence()
 //-----------------------------------------------------------------------------
-void SVDCPUDetailRoutes::setMPUPresence(bool newPresence)
+void SVDCpuRoutesContainer::setMPUPresence(bool newPresence)
 {
     mpuPresent_ = newPresence;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::isFPUPresent()
+// Function: SVDCpuRoutesContainer::isFPUPresent()
 //-----------------------------------------------------------------------------
-bool SVDCPUDetailRoutes::isFPUPresent() const
+bool SVDCpuRoutesContainer::isFPUPresent() const
 {
     return fpuPresent_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::setFPUPresence()
+// Function: SVDCpuRoutesContainer::setFPUPresence()
 //-----------------------------------------------------------------------------
-void SVDCPUDetailRoutes::setFPUPresence(bool newPresence)
+void SVDCpuRoutesContainer::setFPUPresence(bool newPresence)
 {
     fpuPresent_ = newPresence;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::getNVICPrioBits()
+// Function: SVDCpuRoutesContainer::getNVICPrioBits()
 //-----------------------------------------------------------------------------
-QString SVDCPUDetailRoutes::getNVICPrioBits() const
+QString SVDCpuRoutesContainer::getNVICPrioBits() const
 {
     return nvicPrioBits_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::setNVICPrioBits()
+// Function: SVDCpuRoutesContainer::setNVICPrioBits()
 //-----------------------------------------------------------------------------
-void SVDCPUDetailRoutes::setNVICPrioBits(QString const& newBits)
+void SVDCpuRoutesContainer::setNVICPrioBits(QString const& newBits)
 {
     nvicPrioBits_ = newBits;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::isVendorSystickConfig()
+// Function: SVDCpuRoutesContainer::isVendorSystickConfig()
 //-----------------------------------------------------------------------------
-bool SVDCPUDetailRoutes::isVendorSystickConfig() const
+bool SVDCpuRoutesContainer::isVendorSystickConfig() const
 {
     return vendorSystickConfig_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SVDCPUDetailRoutes::setVendorSystickConfig()
+// Function: SVDCpuRoutesContainer::setVendorSystickConfig()
 //-----------------------------------------------------------------------------
-void SVDCPUDetailRoutes::setVendorSystickConfig(bool newConfig)
+void SVDCpuRoutesContainer::setVendorSystickConfig(bool newConfig)
 {
     vendorSystickConfig_ = newConfig;
 }

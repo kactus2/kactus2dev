@@ -12,12 +12,12 @@
 #include "SVDConfigurationManager.h"
 
 #include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
-#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDCpuRoutesContainer.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/File.h>
 
-#include <LibraryInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QJsonArray>
 
@@ -47,7 +47,7 @@ QJsonObject SVDConfigurationManager::getConfigurationObject(QSharedPointer<Compo
 //-----------------------------------------------------------------------------
 // Function: SVDConfigurationManager::createConfigureFile()
 //-----------------------------------------------------------------------------
-void SVDConfigurationManager::createConfigureFile(QVector<QSharedPointer<SVDCPUDetailRoutes>> svdData,
+void SVDConfigurationManager::createConfigureFile(QVector<QSharedPointer<SVDCpuRoutesContainer>> svdData,
     QSharedPointer<Component> topComponent, QString const& selectedView, bool saveToFileSet,
     QString const& selectedFileSet, QString const& folderPath)
 {
@@ -66,7 +66,7 @@ void SVDConfigurationManager::createConfigureFile(QVector<QSharedPointer<SVDCPUD
 //-----------------------------------------------------------------------------
 // Function: SVDConfigurationManager::createJsonDocument()
 //-----------------------------------------------------------------------------
-QJsonDocument SVDConfigurationManager::createJsonDocument(QVector<QSharedPointer<SVDCPUDetailRoutes>> svdData,
+QJsonDocument SVDConfigurationManager::createJsonDocument(QVector<QSharedPointer<SVDCpuRoutesContainer>> svdData,
     QString const& selectedView, bool saveToFileSetFlag,
     QString const& selectedFileSet, QString const& folderPath)
 {
@@ -80,7 +80,7 @@ QJsonDocument SVDConfigurationManager::createJsonDocument(QVector<QSharedPointer
         {
             QJsonObject cpuObject;
             
-            cpuObject.insert(SVDConstants::NAME, singleCPU->getCPUName());
+            cpuObject.insert(SVDConstants::NAME, singleCPU->getFileName());
             cpuObject.insert(SVDConstants::CPUREVISION, singleCPU->getRevision());
             cpuObject.insert(SVDConstants::CREATESVDFLAG, singleCPU->shouldCreateFile());
             cpuObject.insert(SVDConstants::CPUENDIAN, singleCPU->getEndian());

@@ -12,7 +12,7 @@
 #ifndef RENODEUTILITIES_H
 #define RENODEUTILITIES_H
 
-#include <Plugins/RenodeGenerator/CPUDialog/RenodeCPUDetailRoutes.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -36,7 +36,7 @@ namespace RenodeUtilities
      *
      *      @return List of cpu detail routes for Renode generator.
      */
-    QVector<QSharedPointer<RenodeCPUDetailRoutes> > getRenodeCpuRoutes(
+    QVector<QSharedPointer<RenodeCpuRoutesContainer> > getRenodeCpuRoutes(
         QJsonObject const& configurationObject,
         LibraryInterface* library,
         QSharedPointer<Component> component,

@@ -25,7 +25,7 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDCPUEditor.h>
-#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDCpuRoutesContainer.h>
 #include <Plugins/SVDGenerator/SVDConfigurationManager.h>
 #include <Plugins/SVDGenerator/CPUDialog/SVDUtilities.h>
 
@@ -172,13 +172,13 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
         configurationFolderPath, saveToFileSetFlag, configurationFileSet, configurationView);
     if (selectionDialog.exec() == QDialog::Accepted)
     {
-        QVector<QSharedPointer<CPUDetailRoutes> > cpuRoutes = selectionDialog.getSelectedCPUs();
+        QVector<QSharedPointer<CpuRoutesContainer> > cpuRoutes = selectionDialog.getSelectedCPUs();
         if (!cpuRoutes.isEmpty())
         {
-            QVector<QSharedPointer<SVDCPUDetailRoutes> > svdCPURoutes;
+            QVector<QSharedPointer<SVDCpuRoutesContainer> > svdCPURoutes;
             for (auto cpu : cpuRoutes)
             {
-                QSharedPointer<SVDCPUDetailRoutes> svdCPU = cpu.dynamicCast<SVDCPUDetailRoutes>();
+                QSharedPointer<SVDCpuRoutesContainer> svdCPU = cpu.dynamicCast<SVDCpuRoutesContainer>();
                 if (svdCPU)
                 {
                     svdCPURoutes.append(svdCPU);
@@ -251,10 +251,10 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
 
     LibraryInterface* utilityLibrary = utility->getLibraryInterface();
 
-    QVector<QSharedPointer<SVDCPUDetailRoutes> > svdCPUs;
+    QVector<QSharedPointer<SVDCpuRoutesContainer> > svdCPUs;
     for (auto defaultCPU : ConnectivityGraphUtilities::getDefaultCPUs(utilityLibrary, component, viewName))
     {
-        QSharedPointer<SVDCPUDetailRoutes> newCPU(new SVDCPUDetailRoutes(*defaultCPU.data()));
+        QSharedPointer<SVDCpuRoutesContainer> newCPU(new SVDCpuRoutesContainer(*defaultCPU.data()));
         svdCPUs.append(newCPU);
     }
 

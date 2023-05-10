@@ -12,7 +12,7 @@
 #include <QtTest>
 
 #include <Plugins/MemoryViewGenerator/MemoryViewGenerator.h>
-#include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -283,10 +283,12 @@ void tst_MemoryViewGenerator::testConnectedSlaveRegistersAndFieldsAreWritten()
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterIf_space;addressSpace;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister;register;0x2;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.HARD;reset;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister;register;0x2;;;32;2;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.secondField;field;0x2;;1;;0;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.firstField;field;0x2;;16;;1;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.secondField;field;0x2;;1;;0;\n"));
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.HARD;reset;0x0;;;;;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -326,10 +328,12 @@ void tst_MemoryViewGenerator::testConnectedRegisterDimensionsAreWritten()
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterIf_space;addressSpace;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0];register;0x0;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0];register;0x0;;;32;0;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0].firstField;field;0x0;;16;;1;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1];register;0x1;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1].firstField;field;0x1;;16;;1;\n"));
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0].HARD;reset;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1];register;0x1;;;32;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1].firstField;field;0x1;;16;;1;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1].HARD;reset;0x0;;;;;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -370,8 +374,9 @@ void tst_MemoryViewGenerator::testMasterOffsetIsCalculated()
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterIf_space;addressSpace;0x100;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x100;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x110;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x118;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;field;0x118;;16;;0;\n"));
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x118;;;32;8;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;field;0x118;;16;;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.HARD;reset;0x100;;;;;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -424,12 +429,15 @@ void tst_MemoryViewGenerator::testRegisterWithLongFields()
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterIf_space;addressSpace;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;16;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0];register;0x0;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1];register;0x2;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister;register;0x4;;;64;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0];register;0x0;;;32;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0].HARD;reset;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1];register;0x2;;;32;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1].HARD;reset;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister;register;0x4;;;64;4;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.firstField;field;0x4;;16;;0;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.secondField;field;0x5;;16;;0;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.thirdField;field;0x6;;4;;8;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.secondField;field;0x5;;16;;16;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.thirdField;field;0x6;;4;;40;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.HARD;reset;0x0;;;;;\n"
     ));
 }
 
@@ -472,10 +480,13 @@ void tst_MemoryViewGenerator::testExpressionsWithoutReferences()
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterIf_space;addressSpace;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x4;12;16;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x6;;;16;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x6;;;16;2;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;field;0x6;;16;;3;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[0];register;0x8;;;16;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[1];register;0xa;;;16;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.HARD;reset;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[0];register;0x8;;;16;4;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[0].HARD;reset;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[1];register;0xa;;;16;4;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[1].HARD;reset;0x0;;;;;\n"
     ));
 }
 
@@ -525,7 +536,8 @@ void tst_MemoryViewGenerator::testIsPresent()
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterIf_space;addressSpace;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.HARD;reset;0x0;;;;;\n"
     ));
 }
 
@@ -913,10 +925,12 @@ void tst_MemoryViewGenerator::testRemapStatesOnSlave()
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterIf_space;addressSpace;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.HARD;reset;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap;memoryRemap;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap.remapAddressBlock;addressBlock;0x10;4;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap.remapAddressBlock.remapRegister;register;0x10;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap.remapAddressBlock.remapRegister;register;0x10;;;32;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap.remapAddressBlock.remapRegister.HARD;reset;0x0;;;;;\n"
     ));
 }
 
@@ -1191,8 +1205,9 @@ void tst_MemoryViewGenerator::testParameterOverrideAtInstance()
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterIf_space;addressSpace;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x0;;;;;\n"
         "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;field;0x0;;32;;1;\n"));
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;field;0x0;;32;;1;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.HARD;reset;0x0;;;;;\n"));
 }
 
 //-----------------------------------------------------------------------------

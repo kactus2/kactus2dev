@@ -21,10 +21,10 @@
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
 
-class CPUDetailRoutes;
+class CpuRoutesContainer;
 class LibraryInterface;
 class Component;
-class RenodeCPUDetailRoutes;
+class RenodeCpuRoutesContainer;
 class RenodePeripheralsEditor;
 class RenodeMemoriesEditor;
 class IPluginUtility;
@@ -70,7 +70,7 @@ public:
      *
      *      @return List of the selected CPUs.
      */
-    virtual QVector<QSharedPointer<CPUDetailRoutes> > getSelectedCPUs() const override final;
+    virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const override final;
 
     /*!
      *  Setup the folder path.
@@ -126,7 +126,7 @@ private:
     IPluginUtility* utility_;
 
     //! The selected CPU (work in progress, should be multiple cpus).
-    QSharedPointer<RenodeCPUDetailRoutes> renodeCPU_;
+    QSharedPointer<RenodeCpuRoutesContainer> renodeCPU_;
 
     //! Editor for peripherals.
     RenodePeripheralsEditor* peripheralEditor_;

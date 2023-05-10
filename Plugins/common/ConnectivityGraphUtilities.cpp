@@ -69,9 +69,9 @@ QVector<QSharedPointer<Cpu> > ConnectivityGraphUtilities::getInterfacedCPUs(QSha
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphUtilities::getDefaultCPUs()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<CPUDetailRoutes> > ConnectivityGraphUtilities::getDefaultCPUs(LibraryInterface* library, QSharedPointer<Component> component, QString const& viewName)
+QVector<QSharedPointer<SingleCpuRoutesContainer> > ConnectivityGraphUtilities::getDefaultCPUs(LibraryInterface* library, QSharedPointer<Component> component, QString const& viewName)
 {
-    QVector<QSharedPointer<CPUDetailRoutes> > defaultCPUs;
+    QVector<QSharedPointer<SingleCpuRoutesContainer> > defaultCPUs;
 
     ConnectivityGraphFactory graphFactory(library);
     QSharedPointer<ConnectivityGraph> graph = graphFactory.createConnectivityGraph(component, viewName);
@@ -112,7 +112,7 @@ QVector<QSharedPointer<CPUDetailRoutes> > ConnectivityGraphUtilities::getDefault
                 {
                     QString checkBoxText = interfaceCPU->name() + " [" + routeComponent->getName() + "]";
 
-                    QSharedPointer<CPUDetailRoutes> existingRoute = getCpuDetailRoute(interfaceCPU, defaultCPUs);
+                    QSharedPointer<SingleCpuRoutesContainer> existingRoute = getCpuDetailRoute(interfaceCPU, defaultCPUs);
                     if (existingRoute)
                     {
                         QSharedPointer<CpuRouteStructs::CpuRoute> cpuRouteDetail = getRouteForInterface(master, existingRoute->getRoutes());
@@ -127,9 +127,9 @@ QVector<QSharedPointer<CPUDetailRoutes> > ConnectivityGraphUtilities::getDefault
                     }
                     else
                     {
-                        QSharedPointer<CPUDetailRoutes> cpuInterface(new CPUDetailRoutes(interfaceCPU));
-                        cpuInterface->setCPUName(checkBoxText);
-                        cpuInterface->setCPUID(checkBoxText);
+                        QSharedPointer<SingleCpuRoutesContainer> cpuInterface(new SingleCpuRoutesContainer(interfaceCPU));
+                        cpuInterface->setFileName(checkBoxText);
+                        cpuInterface->setFileID(checkBoxText);
 
                         QSharedPointer<CpuRouteStructs::CpuRoute> newRoute(new CpuRouteStructs::CpuRoute());
                         newRoute->cpuInterface_ = master;
@@ -169,8 +169,8 @@ QSharedPointer<CpuRouteStructs::CpuRoute> ConnectivityGraphUtilities::getRouteFo
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphUtilities::getCpuDetailRoute()
 //-----------------------------------------------------------------------------
-QSharedPointer<CPUDetailRoutes> ConnectivityGraphUtilities::getCpuDetailRoute(QSharedPointer<Cpu> comparisonCpu,
-    QVector<QSharedPointer<CPUDetailRoutes>> existingRoutes)
+QSharedPointer<SingleCpuRoutesContainer> ConnectivityGraphUtilities::getCpuDetailRoute(QSharedPointer<Cpu> comparisonCpu,
+    QVector<QSharedPointer<SingleCpuRoutesContainer>> existingRoutes)
 {
     for (auto currentRoute : existingRoutes)
     {
@@ -180,13 +180,13 @@ QSharedPointer<CPUDetailRoutes> ConnectivityGraphUtilities::getCpuDetailRoute(QS
         }
     }
 
-    return QSharedPointer<CPUDetailRoutes>();
+    return QSharedPointer<SingleCpuRoutesContainer>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphUtilities::interfacedCpuExists()
 //-----------------------------------------------------------------------------
-bool ConnectivityGraphUtilities::interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes>> cpuList)
+bool ConnectivityGraphUtilities::interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<SingleCpuRoutesContainer>> cpuList)
 {
     for (auto checkInterface : cpuList)
     {
@@ -205,10 +205,10 @@ bool ConnectivityGraphUtilities::interfacedCpuExists(QSharedPointer<const Connec
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphUtilities::getMatchingCheckInterface()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<CPUDetailRoutes> > ConnectivityGraphUtilities::getMatchingCpuContainers(
-    QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<CPUDetailRoutes> > cpuList)
+QVector<QSharedPointer<SingleCpuRoutesContainer> > ConnectivityGraphUtilities::getMatchingCpuContainers(
+    QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuList)
 {
-    QVector<QSharedPointer<CPUDetailRoutes> > cpuContainer;
+    QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuContainer;
 
     for (auto checkInterface : cpuList)
     {

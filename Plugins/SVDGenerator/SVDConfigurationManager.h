@@ -14,7 +14,7 @@
 
 #include <Plugins/common/PluginConfigurationManager.h>
 
-class SVDCPUDetailRoutes;
+class SVDCpuRoutesContainer;
 
 //-----------------------------------------------------------------------------
 //! Manager for storing and restoring SVD editor configurations.
@@ -53,7 +53,7 @@ public:
      *      @param [in] selectedFileSet     Name of the target file set.
      *      @param [in] folderPath          Path for the renode files.
      */
-    void createConfigureFile(QVector<QSharedPointer<SVDCPUDetailRoutes> > svdData,
+    void createConfigureFile(QVector<QSharedPointer<SVDCpuRoutesContainer> > svdData,
         QSharedPointer<Component> topComponent,
         QString const& selectedView,
         bool saveToFileSet,
@@ -73,7 +73,7 @@ private:
      *
      *      @return The JSON configuration document.
      */
-    QJsonDocument createJsonDocument(QVector<QSharedPointer<SVDCPUDetailRoutes> > svdData,
+    QJsonDocument createJsonDocument(QVector<QSharedPointer<SVDCpuRoutesContainer> > svdData,
         QString const& selectedView,
         bool saveToFileSetFlag,
         QString const& selectedFileSet,

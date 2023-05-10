@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------------
-// File: CPUDetailRoutes.cpp
+// File: CpuRoutesContainer.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -9,15 +9,14 @@
 // Container for routes connected to a master interface.
 //-----------------------------------------------------------------------------
 
-#include "CPUDetailRoutes.h"
+#include "CpuRoutesContainer.h"
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::CPUDetailRoutes()
+// Function: CpuRoutesContainer::CpuRoutesContainer()
 //-----------------------------------------------------------------------------
-CPUDetailRoutes::CPUDetailRoutes(QSharedPointer<Cpu> cpu):
-cpu_(cpu),
-cpuName_(),
-cpuID_(),
+CpuRoutesContainer::CpuRoutesContainer():
+fileName_(),
+fileID_(),
 createFile_(false),
 routes_()
 {
@@ -25,12 +24,11 @@ routes_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::CPUDetailRoutes()
+// Function: CpuRoutesContainer::CpuRoutesContainer()
 //-----------------------------------------------------------------------------
-CPUDetailRoutes::CPUDetailRoutes(const CPUDetailRoutes& other) :
-cpu_(other.getCpu()),
-cpuName_(other.getCPUName()),
-cpuID_(other.getCPUID()),
+CpuRoutesContainer::CpuRoutesContainer(const CpuRoutesContainer& other) :
+fileName_(other.getFileName()),
+fileID_(other.getFileID()),
 createFile_(other.shouldCreateFile()),
 routes_()
 {
@@ -45,89 +43,73 @@ routes_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::getCpu()
+// Function: CpuRoutesContainer::getFileName()
 //-----------------------------------------------------------------------------
-QSharedPointer<Cpu> CPUDetailRoutes::getCpu() const
+QString CpuRoutesContainer::getFileName() const
 {
-    return cpu_;
+    return fileName_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::setCpu()
+// Function: CpuRoutesContainer::setFileName()
 //-----------------------------------------------------------------------------
-void CPUDetailRoutes::setCpu(QSharedPointer<Cpu> newCpu)
+void CpuRoutesContainer::setFileName(QString const& newName)
 {
-    cpu_ = newCpu;
+    fileName_ = newName;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::getCPUName()
+// Function: CpuRoutesContainer::getFileID()
 //-----------------------------------------------------------------------------
-QString CPUDetailRoutes::getCPUName() const
+QString CpuRoutesContainer::getFileID() const
 {
-    return cpuName_;
+    return fileID_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::setCPUName()
+// Function: CpuRoutesContainer::setCPUID()
 //-----------------------------------------------------------------------------
-void CPUDetailRoutes::setCPUName(QString const& newName)
+void CpuRoutesContainer::setFileID(QString const& newID)
 {
-    cpuName_ = newName;
+    fileID_ = newID;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::getCPUID()
+// Function: CpuRoutesContainer::shouldCreateFile()
 //-----------------------------------------------------------------------------
-QString CPUDetailRoutes::getCPUID() const
-{
-    return cpuID_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::setCPUID()
-//-----------------------------------------------------------------------------
-void CPUDetailRoutes::setCPUID(QString const& newID)
-{
-    cpuID_ = newID;
-}
-
-//-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::shouldCreateFile()
-//-----------------------------------------------------------------------------
-bool CPUDetailRoutes::shouldCreateFile() const
+bool CpuRoutesContainer::shouldCreateFile() const
 {
     return createFile_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::setCreateFileFlag()
+// Function: CpuRoutesContainer::setCreateFileFlag()
 //-----------------------------------------------------------------------------
-void CPUDetailRoutes::setCreateFileFlag(bool newFlag)
+void CpuRoutesContainer::setCreateFileFlag(bool newFlag)
 {
     createFile_ = newFlag;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::getRoutes()
+// Function: CpuRoutesContainer::getRoutes()
 //-----------------------------------------------------------------------------
-QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > CPUDetailRoutes::getRoutes() const
+QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > CpuRoutesContainer::getRoutes() const
 {
     return routes_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::setRoutes()
+// Function: CpuRoutesContainer::setRoutes()
 //-----------------------------------------------------------------------------
-void CPUDetailRoutes::setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > newRoutes)
+void CpuRoutesContainer::setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > newRoutes)
 {
     routes_ = newRoutes;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CPUDetailRoutes::addRoute()
+// Function: CpuRoutesContainer::addRoute()
 //-----------------------------------------------------------------------------
-void CPUDetailRoutes::addRoute(QSharedPointer<CpuRouteStructs::CpuRoute> newRoute)
+void CpuRoutesContainer::addRoute(QSharedPointer<CpuRouteStructs::CpuRoute> newRoute)
 {
     routes_.append(newRoute);
 }

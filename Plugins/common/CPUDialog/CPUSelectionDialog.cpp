@@ -18,7 +18,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <Plugins/common/CPUDetailRoutes.h>
+#include <Plugins/common/CpuRoutesContainer.h>
 #include <Plugins/common/CPUDialog/CPUEditor.h>
 
 #include <QDialogButtonBox>
@@ -179,7 +179,7 @@ void CPUSelectionDialog::setupCPUSelection()
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::getSelectedCPUs()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<CPUDetailRoutes> > CPUSelectionDialog::getSelectedCPUs()
+QVector<QSharedPointer<CpuRoutesContainer> > CPUSelectionDialog::getSelectedCPUs()
 {
     return cpuDetailEditor_->getSelectedCPUs();
 }

@@ -17,7 +17,7 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
-class SVDCPUDetailRoutes;
+class SVDCpuRoutesContainer;
 
 //-----------------------------------------------------------------------------
 //! The model to manage the SVD CPU details.
@@ -45,14 +45,14 @@ public:
      *
      *      @param [in] cpuDetails  The selected CPUs.
      */
-    void setupCPUDetails(QVector<QSharedPointer<SVDCPUDetailRoutes> > cpuDetails);
+    void setupCPUDetails(QVector<QSharedPointer<SVDCpuRoutesContainer> > cpuDetails);
 
     /*!
      *  Get the CPU data.
      *
      *      @return List of CPU detail routes.
      */
-    QVector<QSharedPointer<SVDCPUDetailRoutes> > getCPUDetails() const;
+    QVector<QSharedPointer<SVDCpuRoutesContainer> > getCPUDetails() const;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -142,7 +142,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The CPU details being edited.
-    QVector<QSharedPointer<SVDCPUDetailRoutes> > cpus_;
+    QVector<QSharedPointer<SVDCpuRoutesContainer> > cpus_;
 };
 
 #endif // SVDCPUMODEL_H

@@ -14,7 +14,7 @@
 
 #include <Plugins/common/PluginConfigurationManager.h>
 
-class RenodeCPUDetailRoutes;
+class RenodeCpuRoutesContainer;
 
 //-----------------------------------------------------------------------------
 //! Manager for storing and restoring renode editor configurations.
@@ -58,7 +58,7 @@ public:
      *      @param [in] library             Interface for accessing the library.
      *      @param [in] topComponent        Top level component.
      */
-    void createConfigureFile(QVector<QSharedPointer<RenodeCPUDetailRoutes> > renodeData,
+    void createConfigureFile(QVector<QSharedPointer<RenodeCpuRoutesContainer> > renodeData,
         QString const& selectedView,
         bool saveToFileSet,
         QString const& selectedFileSet,
@@ -84,7 +84,7 @@ private:
      *
      *      @return The JSON configuration document.
      */
-    QJsonDocument createJsonDocument(QVector<QSharedPointer<RenodeCPUDetailRoutes> > renodeData,
+    QJsonDocument createJsonDocument(QVector<QSharedPointer<RenodeCpuRoutesContainer> > renodeData,
         QString const& selectedView,
         bool saveToFileSetFlag,
         QString const& selectedFileSet,

@@ -19,7 +19,7 @@
 
 class Component;
 class LibraryInterface;
-class RenodeCPUDetailRoutes;
+class RenodeCpuRoutesContainer;
 
 #include <QList>
 #include <QString>
@@ -61,7 +61,7 @@ public:
      */
     void generate(QSharedPointer<Component> topComponent,
         QString const& componentPath,
-        QVector<QSharedPointer<RenodeCPUDetailRoutes> > const& cpuRoutes,
+        QVector<QSharedPointer<RenodeCpuRoutesContainer> > const& cpuRoutes,
         bool createCpuFile,
         bool createMemoryFile,
         bool createPeripheralFile);
@@ -88,7 +88,7 @@ private:
      */
     void writeFile(QSharedPointer<Component> topComponent,
         QString const& componentPath,
-        QSharedPointer<RenodeCPUDetailRoutes> cpuRoute,
+        QSharedPointer<RenodeCpuRoutesContainer> cpuRoute,
         QStringList& fileNames,
         bool createCpuFile,
         bool createMemoryFile,
@@ -111,7 +111,7 @@ private:
      *      @param [in] currentCPU      The selected CPU.
      *      @param [in] cpuContainer    The CPU data container.
      */
-    void writeCPU(QString const& filePath, QSharedPointer<RenodeCPUDetailRoutes> cpuContainer);
+    void writeCPU(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> cpuContainer);
 
     /*!
      *  Write the peripherals of the selected CPU route container.
@@ -120,7 +120,7 @@ private:
      *      @param [in] renodeCollection    The selected CPU route container.
      *      @param [in] renodeFilePath      The file path to the Renode platform files.
      */
-    void writePeripherals(QString const& filePath, QString const& componentPath, QSharedPointer<RenodeCPUDetailRoutes> renodeCollection);
+    void writePeripherals(QString const& filePath, QString const& componentPath, QSharedPointer<RenodeCpuRoutesContainer> renodeCollection);
 
     /*!
      *  Write a single peripheral.
@@ -138,7 +138,7 @@ private:
      *      @param [in] filePath            File path for the Renode platform files.
      *      @param [in] renodeCollection    The selected CPU route container.
      */
-    void writeMemories(QString const& filePath, QSharedPointer<RenodeCPUDetailRoutes> renodeCollection);
+    void writeMemories(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> renodeCollection);
 
     /*!
      *  Write a single memory item.

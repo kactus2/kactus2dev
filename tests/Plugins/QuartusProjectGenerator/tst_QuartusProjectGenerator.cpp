@@ -13,7 +13,7 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <KactusAPI/include/IPluginUtility.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 

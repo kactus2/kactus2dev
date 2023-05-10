@@ -30,7 +30,7 @@ class Component;
 class LibraryInterface;
 class Cpu;
 class CPUEditor;
-class CPUDetailRoutes;
+class CpuRoutesContainer;
 
 #include <QJsonDocument>
 
@@ -82,7 +82,7 @@ public:
      *
      *      @return List of the CPU data and their connected paths.
      */
-    QVector<QSharedPointer<CPUDetailRoutes> > getSelectedCPUs();
+    QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs();
 
     /*!
      *  Check if the files should be saved to a file set.

@@ -146,29 +146,6 @@ void MetaComponent::parseParameters()
 //-----------------------------------------------------------------------------
 void MetaComponent::formatParameters(ExpressionFormatter const& formatter)
 {
-   /* auto allParameters = QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> >());
-    allParameters->append(*parameters_);
-    allParameters->append(*moduleParameters_);
-    parameters_->clear();
-    moduleParameters_->clear();
-
-    sortParameters(allParameters);
-    for (QSharedPointer<Parameter> parameter : *allParameters)
-    {
-        parameter->setValue(formatter.formatReferringExpression(parameter->getValue()));
-
-        QSharedPointer<ModuleParameter> moduleParameter = parameter.dynamicCast<ModuleParameter>();
-        if (moduleParameter)
-        {
-            moduleParameters_->append(moduleParameter);
-        }
-        else
-        {
-            parameters_->append(parameter);
-        }
-    }*/
-
-
     sortParameters(parameters_);
     for (QSharedPointer<Parameter> parameter : *parameters_)
     {
@@ -187,43 +164,21 @@ void MetaComponent::formatParameters(ExpressionFormatter const& formatter)
 //-----------------------------------------------------------------------------
 void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters)
 {
-    // Go through existing ones on the instance.
-    foreach (QSharedPointer<Parameter> current, *sortParameters)
-    {
-        // The value of the inspected parameter.
-        QString currentValue = current->getValue();
-        QString currentId = current->getValueId();
-
-        // The start position for the second pass.
-        auto startPosition = std::find_if(sortParameters->begin(), sortParameters->end(),
-            [&currentValue](QSharedPointer<Parameter> referenced) { return currentValue.contains(
-                referenced->getValueId()); });
-
-        // If none found, next search starts from the beginning.
-        if (startPosition == sortParameters->end())
+    std::sort(sortParameters->begin(), sortParameters->end(),
+        [](QSharedPointer<Parameter>& currentParameter, QSharedPointer<Parameter>& nextParameter)
         {
-            startPosition = sortParameters->begin();
-        }
-
-        auto firstReferencing = std::find_if(startPosition, sortParameters->end(),
-            [&currentId](QSharedPointer<Parameter> referencing){ return referencing->getValue().contains(
-                currentId); });
-        
-        // Move to end of the list, unless referencing parameter is found.
-        int target = sortParameters->size();
-        if (firstReferencing != sortParameters->end())
-        {
-            target = sortParameters->indexOf(*firstReferencing);
-
-            if (target > sortParameters->indexOf(current))
+            if (nextParameter->getValue().contains(currentParameter->getValueId()))
             {
-                --target;
+                return true;
             }
-        }
 
-        sortParameters->removeOne(current);
-        sortParameters->insert(target - 1, current);
-    }
+            if (currentParameter->getValue().contains(nextParameter->getValueId()))
+            {
+                return false;
+            }
+        
+            return currentParameter->name() < nextParameter->name();
+        });
 }
 
 //-----------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 
 #include <Plugins/common/ConnectivityGraphUtilities.h>
 
-class CPUDetailRoutes;
+class CpuRoutesContainer;
 class LibraryInterface;
 class Component;
 
@@ -57,7 +57,7 @@ public:
      *
      *      @return List of the selected CPUs.
      */
-    virtual QVector<QSharedPointer<CPUDetailRoutes> > getSelectedCPUs() const = 0;
+    virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const = 0;
 
     /*!
      *  Setup the folder path.

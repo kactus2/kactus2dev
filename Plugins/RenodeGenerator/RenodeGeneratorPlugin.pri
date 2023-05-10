@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./RenodeGenerator.h \
+HEADERS += ./RenodeConfigurationManager.h \
+    ./RenodeGenerator.h \
     ./RenodeGeneratorPlugin.h \
     ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
@@ -26,7 +27,7 @@ HEADERS += ./RenodeGenerator.h \
     ../../editors/MemoryDesigner/MemoryDesignerConstants.h \
     ../../editors/MemoryDesigner/MemoryItem.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
-    ./CPUDialog/RenodeCPUDetailRoutes.h \
+    ./CPUDialog/RenodeCpuRoutesContainer.h \
     ./CPUDialog/RenodeStructs.h \
     ./CPUDialog/RenodeUtilities.h \
     ./CPUDialog/RenodePeripheralsModel.h \
@@ -38,12 +39,13 @@ HEADERS += ./RenodeGenerator.h \
     ./CPUDialog/RenodeFileSelectionGroup.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
-    ../common/ConnectivityGraphUtilities.h \
-    ../common/CPUDetailRoutes.h \
     ../common/ConfigurationManager.h \
+    ../common/ConnectivityGraphUtilities.h \
+    ../common/CpuRoutesContainer.h \
     ../common/PluginConfigurationManager.h \
-    ./RenodeConfigurationManager.h
-SOURCES += ./RenodeGenerator.cpp \
+    ../common/SingleCpuRoutesContainer.h
+SOURCES += ./RenodeConfigurationManager.cpp \
+    ./RenodeGenerator.cpp \
     ./RenodeGeneratorPlugin.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
     ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
@@ -64,7 +66,7 @@ SOURCES += ./RenodeGenerator.cpp \
     ../../IPXACTmodels/utilities/ComponentSearch.cpp \
     ../common/CPUDialog/CPUEditor.cpp \
     ../common/CPUDialog/CPUSelectionDialog.cpp \
-    ./CPUDialog/RenodeCPUDetailRoutes.cpp \
+    ./CPUDialog/RenodeCpuRoutesContainer.cpp \
     ./CPUDialog/RenodeCpuEditor.cpp \
     ./CPUDialog/RenodeFileSelectionGroup.cpp \
     ./CPUDialog/RenodeMemoriesEditor.cpp \
@@ -73,9 +75,9 @@ SOURCES += ./RenodeGenerator.cpp \
     ./CPUDialog/RenodePeripheralsEditor.cpp \
     ./CPUDialog/RenodePeripheralsModel.cpp \
     ./CPUDialog/RenodeUtilities.cpp \
-    ../common/ConnectivityGraphUtilities.cpp \
-    ../common/CPUDetailRoutes.cpp \
     ../common/ConfigurationManager.cpp \
+    ../common/ConnectivityGraphUtilities.cpp \
+    ../common/CpuRoutesContainer.cpp \
     ../common/PluginConfigurationManager.cpp \
-    ./RenodeConfigurationManager.cpp
+    ../common/SingleCpuRoutesContainer.cpp
 RESOURCES += RenodeGenerator.qrc

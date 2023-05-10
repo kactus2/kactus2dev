@@ -16,7 +16,7 @@
 #include <common/KactusColors.h>
 
 #include <Plugins/common/ConnectivityGraphUtilities.h>
-#include <Plugins/SVDGenerator/CPUDialog/SVDCPUDetailRoutes.h>
+#include <Plugins/SVDGenerator/CPUDialog/SVDCpuRoutesContainer.h>
 
 #include <QColor>
 
@@ -32,7 +32,7 @@ cpus_()
 //-----------------------------------------------------------------------------
 // Function: SVDCPUModel::setupCPUDetails()
 //-----------------------------------------------------------------------------
-void SVDCPUModel::setupCPUDetails(QVector<QSharedPointer<SVDCPUDetailRoutes>> cpuDetails)
+void SVDCPUModel::setupCPUDetails(QVector<QSharedPointer<SVDCpuRoutesContainer>> cpuDetails)
 {
     beginResetModel();
 
@@ -45,7 +45,7 @@ void SVDCPUModel::setupCPUDetails(QVector<QSharedPointer<SVDCPUDetailRoutes>> cp
 //-----------------------------------------------------------------------------
 // Function: SVDCPUModel::getCPUDetails()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<SVDCPUDetailRoutes> > SVDCPUModel::getCPUDetails() const
+QVector<QSharedPointer<SVDCpuRoutesContainer> > SVDCPUModel::getCPUDetails() const
 {
     return cpus_;
 }
@@ -189,7 +189,7 @@ QVariant SVDCPUModel::data(QModelIndex const& index, int role) const
         if (index.column() == SVDCPUColumns::CREATESVD || index.column() == SVDCPUColumns::MPUPRESENT ||
             index.column() == SVDCPUColumns::FPUPRESENT || index.column() == SVDCPUColumns::VENDORSYSTICKCONFIG)
         {
-            QSharedPointer<SVDCPUDetailRoutes> indexedCPU = cpus_.at(index.row());
+            QSharedPointer<SVDCpuRoutesContainer> indexedCPU = cpus_.at(index.row());
             if ((index.column() == SVDCPUColumns::CREATESVD && indexedCPU->shouldCreateFile()) ||
                 (index.column() == SVDCPUColumns::MPUPRESENT && indexedCPU->isMPUPresent()) ||
                 (index.column() == SVDCPUColumns::FPUPRESENT && indexedCPU->isFPUPresent()) ||
@@ -221,7 +221,7 @@ bool SVDCPUModel::setData(QModelIndex const& index, QVariant const& value, int r
 		return false;
 	}
 
-    QSharedPointer<SVDCPUDetailRoutes> indexedCPU = cpus_.at(index.row());
+    QSharedPointer<SVDCpuRoutesContainer> indexedCPU = cpus_.at(index.row());
     if (Qt::EditRole == role)
     {
         if (index.column() == SVDCPUColumns::REVISION)
@@ -271,11 +271,11 @@ bool SVDCPUModel::setData(QModelIndex const& index, QVariant const& value, int r
 //-----------------------------------------------------------------------------
 QVariant SVDCPUModel::valueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<SVDCPUDetailRoutes> indexedCPU = cpus_.at(index.row());
+    QSharedPointer<SVDCpuRoutesContainer> indexedCPU = cpus_.at(index.row());
 
     if (index.column() == SVDCPUColumns::NAME)
     {
-        return indexedCPU->getCPUName();
+        return indexedCPU->getFileName();
     }
     else if (index.column() == SVDCPUColumns::REVISION)
     {

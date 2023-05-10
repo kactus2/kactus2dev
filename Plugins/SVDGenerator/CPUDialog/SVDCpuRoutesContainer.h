@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: SVDCPUDetailRoutes.h
+// File: SVDCpuRoutesContainer.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -9,10 +9,10 @@
 // Container for routes connected to a master interface for SVD generator.
 //-----------------------------------------------------------------------------
 
-#ifndef SVDCPUDETAILROUTES_H
-#define SVDCPUDETAILROUTES_H
+#ifndef SVDCPUROUTESCONTAINER_H
+#define SVDCPUROUTESCONTAINER_H
 
-#include <Plugins/common/CPUDetailRoutes.h>
+#include <Plugins/common/SingleCpuRoutesContainer.h>
 
 #include <QJsonObject>
 
@@ -21,7 +21,7 @@ class Cpu;
 //-----------------------------------------------------------------------------
 //! Container for routes connected to a master interface for SVD generator.
 //-----------------------------------------------------------------------------
-class SVDCPUDetailRoutes : public CPUDetailRoutes
+class SVDCpuRoutesContainer : public SingleCpuRoutesContainer
 {
 
 public:
@@ -31,19 +31,19 @@ public:
      * 
      *      @param [in] cpu     The CPU.
      */
-    SVDCPUDetailRoutes(QSharedPointer<Cpu> cpu);
+    SVDCpuRoutesContainer(QSharedPointer<Cpu> cpu);
 
     /*!
      *  The destructor.
      */
-    virtual ~SVDCPUDetailRoutes() = default;
+    virtual ~SVDCpuRoutesContainer() = default;
 
     /*!
      *  Creates an SVD CPU route from CPU route.
      *
      *      @return SVD CPU route.
      */
-    SVDCPUDetailRoutes(CPUDetailRoutes const& other);
+    SVDCpuRoutesContainer(SingleCpuRoutesContainer const& other);
 
     /*!
      *  Setup the data.
@@ -139,8 +139,8 @@ public:
 private:
 
     // Disable copying.
-    SVDCPUDetailRoutes(SVDCPUDetailRoutes const& rhs);
-    SVDCPUDetailRoutes& operator=(SVDCPUDetailRoutes const& rhs);
+    SVDCpuRoutesContainer(SVDCpuRoutesContainer const& rhs);
+    SVDCpuRoutesContainer& operator=(SVDCpuRoutesContainer const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -166,4 +166,4 @@ private:
 
 };
 
-#endif // SVDCPUDETAILROUTES_H
+#endif // SVDCPUROUTESCONTAINER_H

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: RenodeCPUDetailRoutes.h
+// File: RenodeCpuRoutesContainer.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -9,16 +9,16 @@
 // Container for routes connected to a master interface for Renode generator.
 //-----------------------------------------------------------------------------
 
-#ifndef RENODECPUDETAILROUTES_H
-#define RENODECPUDETAILROUTES_H
+#ifndef RENODECPUROUTESCONTAINER_H
+#define RENODECPUROUTESCONTAINER_H
 
-#include <Plugins/common/CPUDetailRoutes.h>
+#include <Plugins/common/SingleCpuRoutesContainer.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
 
 //-----------------------------------------------------------------------------
 //! Container for routes connected to a master interface for Renode generator.
 //-----------------------------------------------------------------------------
-class RenodeCPUDetailRoutes : public CPUDetailRoutes
+class RenodeCpuRoutesContainer : public SingleCpuRoutesContainer
 {
 
 public:
@@ -28,19 +28,19 @@ public:
      *
      *      @param [in] renodeCpu   CPU for this container.
      */
-    RenodeCPUDetailRoutes(QSharedPointer<Cpu> renodeCpu);
+    RenodeCpuRoutesContainer(QSharedPointer<Cpu> renodeCpu);
 
     /*!
      *  The destructor.
      */
-    virtual ~RenodeCPUDetailRoutes() = default;
+    virtual ~RenodeCpuRoutesContainer() = default;
 
     /*!
      *  Creates a Renode CPU route from CPU route.
      *
      *      @return Renode CPU route.
      */
-    RenodeCPUDetailRoutes(CPUDetailRoutes const& other);
+    RenodeCpuRoutesContainer(SingleCpuRoutesContainer const& other);
 
     /*!
      *  Set the peripheral data.
@@ -115,8 +115,8 @@ public:
 private:
 
     // Disable copying.
-    RenodeCPUDetailRoutes(RenodeCPUDetailRoutes const& rhs);
-    RenodeCPUDetailRoutes& operator=(RenodeCPUDetailRoutes const& rhs);
+    RenodeCpuRoutesContainer(RenodeCpuRoutesContainer const& rhs);
+    RenodeCpuRoutesContainer& operator=(RenodeCpuRoutesContainer const& rhs);
 
     /*!
      *  Initialize the CPU data.
@@ -143,4 +143,4 @@ private:
     QString timeProvider_;
 };
 
-#endif // RENODECPUDETAILROUTES_H
+#endif // RENODECPUROUTESCONTAINER_H
