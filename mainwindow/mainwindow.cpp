@@ -297,11 +297,11 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
 void MainWindow::setupActions()
 {
     // the action to create a new hierarchical component
-    actNew_ = new QAction(QIcon(":/icons/common/graphics/file-new.png"), tr("New (Ctrl+N)"), this);
+    actNew_ = new QAction(QIcon(":/icons/common/graphics/file-new.png"), tr("New"), this);
     actNew_->setShortcut(QKeySequence::New);
     connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
 
-    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save (Ctrl+S)"), this);
+    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save"), this);
     actSave_->setShortcut(QKeySequence::Save);
     actSave_->setEnabled(false);
     connect(actSave_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocument()));
@@ -315,7 +315,7 @@ void MainWindow::setupActions()
     connect(actSaveAs_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocumentAs()));
 
     actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
-        tr("Save All (Ctrl+Shift+S)"), this);
+        tr("Save All"), this);
     actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
     connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
 
@@ -329,7 +329,7 @@ void MainWindow::setupActions()
     saveMenu->addAction(actSaveHierarchy_);
     actSaveAs_->setMenu(saveMenu);
 
-    actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print (Ctrl+P)"), this);
+    actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print"), this);
     actPrint_->setShortcut(QKeySequence::Print);
     actPrint_->setEnabled(false);
     connect(actPrint_, SIGNAL(triggered()), designTabs_, SLOT(printCurrentDocument()));
@@ -338,12 +338,12 @@ void MainWindow::setupActions()
     actImageExport_->setEnabled(false);
     connect(actImageExport_, SIGNAL(triggered()), designTabs_, SLOT(exportCurrentDocumentAsImage()));
 
-    actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), tr("Undo (Ctrl+Z)"), this);
+    actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), tr("Undo"), this);
     actUndo_->setShortcut(QKeySequence::Undo);
     connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
 
     actRedo_ = new QAction(QIcon(":/icons/common/graphics/edit-redo.png"),
-        tr("Redo (") + QKeySequence(QKeySequence::Redo).toString() +")", this);
+        tr("Redo"), this);
     actRedo_->setShortcut(QKeySequence::Redo);
     connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
 
@@ -364,7 +364,7 @@ void MainWindow::setupActions()
 
     // initialize the action to generate documentation for the component/design
     actGenDocumentation_ = new QAction(QIcon(":icons/common/graphics/documentation.png"),
-        tr("Generate Documentation"), this);
+        tr("Documentation"), this);
     connect(actGenDocumentation_, SIGNAL(triggered()), this, SLOT(generateDoc()), Qt::UniqueConnection);
 
     generationMenu_ = new QMenu(this);
@@ -530,11 +530,11 @@ void MainWindow::setupActions()
     connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
     actWorkspaces_->setMenu(&workspaceMenu_);
 
-    actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh (F5)"), this);
+    actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this);
     actRefresh_->setShortcut(QKeySequence("F5"));
     connect(actRefresh_, SIGNAL(triggered(bool)), designTabs_, SLOT(refreshCurrentDocument()));
 
-    actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), tr("Unlocked (Ctrl+L)"), this);
+    actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), tr("Unlocked"), this);
     actProtect_->setCheckable(true);
     actProtect_->setEnabled(false);
     actProtect_->setShortcut(QKeySequence("Ctrl+L"));
@@ -549,7 +549,7 @@ void MainWindow::setupActions()
     connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
 
     // Initialize the action to open the help window.
-    actHelp_= new QAction(QIcon(":/icons/common/graphics/system-help.png"), tr("Help (F1)"), this);
+    actHelp_= new QAction(QIcon(":/icons/common/graphics/system-help.png"), tr("Help"), this);
     actHelp_->setShortcut(QKeySequence::HelpContents);
     connect(actHelp_, SIGNAL(triggered()), dockHandler_, SLOT(showHelp()), Qt::UniqueConnection);
 
