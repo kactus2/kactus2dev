@@ -18,9 +18,9 @@
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <Plugins/VHDLimport/VHDLimport.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
-#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
+#include <KactusAPI/include/ImportColors.h>
+#include <KactusAPI/include/ImportHighlighter.h>
 
 #include <QPlainTextEdit>
 #include <QSharedPointer>

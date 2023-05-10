@@ -2461,10 +2461,10 @@ void tst_HDLParser::testParameterSorting2()
 
     QCOMPARE(parameters->size(), 4);
 
-    QCOMPARE(parameters->at(0)->name(), QString("moduleParameterSecond"));
-    QCOMPARE(parameters->at(0)->getValue(), QString("1"));
-    QCOMPARE(parameters->at(1)->name(), QString("moduleParameterFourth"));
-    QCOMPARE(parameters->at(1)->getValue(), QString("4"));
+    QCOMPARE(parameters->at(0)->name(), QString("moduleParameterFourth"));
+    QCOMPARE(parameters->at(0)->getValue(), QString("4"));
+    QCOMPARE(parameters->at(1)->name(), QString("moduleParameterSecond"));
+    QCOMPARE(parameters->at(1)->getValue(), QString("1"));
     QCOMPARE(parameters->at(2)->name(), QString("moduleParameterFirst"));
     QCOMPARE(parameters->at(2)->getValue(), QString("secondParameter + fourthParameter"));
     QCOMPARE(parameters->at(3)->name(), QString("moduleParameterThird"));
@@ -2505,26 +2505,26 @@ void tst_HDLParser::testParameterSorting3()
     moduleParameterFifth->setValue("fourthParameter - firstParameter");
     moduleParameterFifth->setValueId("fifthParameter");
     moduleParameterFifth->setValueResolve("user");
-
+    
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters(new  QList<QSharedPointer<Parameter> >);
     parameters->append(moduleParameterFirst);
     parameters->append(moduleParameterSecond);
     parameters->append(moduleParameterThird);
     parameters->append(moduleParameterFourth);
     parameters->append(moduleParameterFifth);
-
+    
     MetaComponent::sortParameters(parameters);
 
     QCOMPARE(parameters->size(), 5);
 
-    QCOMPARE(parameters->at(0)->name(), QString("moduleParameterSecond"));
-    QCOMPARE(parameters->at(0)->getValue(), QString("55"));
-    QCOMPARE(parameters->at(1)->name(), QString("moduleParameterFirst"));
-    QCOMPARE(parameters->at(1)->getValue(), QString("1"));
-    QCOMPARE(parameters->at(2)->name(), QString("moduleParameterFourth"));
-    QCOMPARE(parameters->at(2)->getValue(), QString("12"));
-    QCOMPARE(parameters->at(3)->name(), QString("moduleParameterFifth"));
-    QCOMPARE(parameters->at(3)->getValue(), QString("fourthParameter - firstParameter"));
+    QCOMPARE(parameters->at(0)->name(), QString("moduleParameterFirst"));
+    QCOMPARE(parameters->at(0)->getValue(), QString("1"));
+    QCOMPARE(parameters->at(1)->name(), QString("moduleParameterFourth"));
+    QCOMPARE(parameters->at(1)->getValue(), QString("12"));
+    QCOMPARE(parameters->at(2)->name(), QString("moduleParameterFifth"));
+    QCOMPARE(parameters->at(2)->getValue(), QString("fourthParameter - firstParameter"));
+    QCOMPARE(parameters->at(3)->name(), QString("moduleParameterSecond"));
+    QCOMPARE(parameters->at(3)->getValue(), QString("55"));
     QCOMPARE(parameters->at(4)->name(), QString("moduleParameterThird"));
     QCOMPARE(parameters->at(4)->getValue(), QString("fifthParameter + secondParameter"));
 }

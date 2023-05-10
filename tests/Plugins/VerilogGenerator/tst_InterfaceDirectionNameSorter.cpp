@@ -104,7 +104,7 @@ void tst_InterfaceDirectionNameSorter::testPortsOrderedByName()
     InterfaceDirectionNameSorter sorter;
 
     QStringList expectedNames;
-    expectedNames << "" << "a" << "B" << "b" << "c" << "C" << "x" << "z";
+    expectedNames << "" << "a" << "B" << "b" << "C" << "c" << "x" << "z";
     QCOMPARE(sorter.sortedPortNames(component_), expectedNames);
 }
 

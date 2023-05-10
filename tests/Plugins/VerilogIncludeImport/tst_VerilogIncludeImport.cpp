@@ -14,9 +14,9 @@
 #include <QPlainTextEdit>
 
 #include <Plugins/VerilogIncludeImport/VerilogIncludeImport.h>
-#include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
+#include <KactusAPI/include/ImportColors.h>
 
-#include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
+#include <KactusAPI/include/ImportHighlighter.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Model.h>
