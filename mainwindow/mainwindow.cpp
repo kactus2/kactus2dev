@@ -205,6 +205,7 @@ messageChannel_(messageChannel)
     setStyleSheet(defaultStyleSheet);
 
     setupToolbars();
+    setContextMenuPolicy(Qt::NoContextMenu);
 
     // Setup windows.
     setupDrawBoard();
