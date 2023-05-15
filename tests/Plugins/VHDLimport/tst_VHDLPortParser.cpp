@@ -319,6 +319,26 @@ void tst_VHDLPortParser::testMultiplePortsAreParsed_data()
         ");"
         "END test;"
         << 2;
+
+    QTest::newRow("Last port is parsed with lots of comments preceding") <<
+        "entity DIG_TOP is\n"
+        "\n"
+        "  port(\n"
+        "--    cfg_comp_12_analog_hyst_pos_in      : in  std_logic_vector(8 - 1 downto 0);\n"
+        "--    cfg_comp_12_analog_hyst_neg_in      : in  std_logic_vector(8 - 1 downto 0);\n"
+        "--    cfg_comp_13_analog_hyst_neg_in      : in  std_logic_vector(8 - 1 downto 0);\n"
+        "--    cfg_comp_14_analog_hyst_pos_in      : in  std_logic_vector(8 - 1 downto 0);\n"
+        "--    cfg_comp_14_analog_hyst_neg_in      : in  std_logic_vector(8 - 1 downto 0);\n"
+        "--    cfg_comp_15_analog_hyst_pos_in      : in  std_logic_vector(8 - 1 downto 0);\n"
+        "--    cfg_comp_15_analog_hyst_neg_in      : in  std_logic_vector(8 - 1 downto 0);\n"
+        "--    cfg_comp_16_analog_hyst_pos_in      : in  std_logic_vector(8 - 1 downto 0);\n"
+        "\n"
+        "    --clk, rstb\n"
+        "    clk_in     : in std_logic;\n"
+        "    rstb_in    : in std_logic\n"
+        "  );\n"
+        "end DIG_TOP;\n"
+        << 2;
 }
 
 //-----------------------------------------------------------------------------
