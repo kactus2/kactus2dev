@@ -918,8 +918,9 @@ CreateHelp
     <ClCompile Include="mainwindow\SplashScreen.cpp" />
     <ClCompile Include="mainwindow\WorkspaceSettings.cpp" />
     <ClCompile Include="Plugins\common\ConnectivityGraphUtilities.cpp" />
-    <ClCompile Include="Plugins\common\CPUDetailRoutes.cpp" />
+    <ClCompile Include="Plugins\common\CpuRoutesContainer.cpp" />
     <ClCompile Include="Plugins\common\LanguageHighlighter.cpp" />
+    <ClCompile Include="Plugins\common\SingleCpuRoutesContainer.cpp" />
     <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp" />
     <ClCompile Include="PythonAPI\ChannelRelay.cpp" />
     <ClCompile Include="PythonAPI\extensions\IOCatcher.cpp" />
@@ -2195,7 +2196,8 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="mainwindow\WorkspaceSettings.h" />
     <ClInclude Include="Plugins\common\ConnectivityGraphUtilities.h" />
-    <ClInclude Include="Plugins\common\CPUDetailRoutes.h" />
+    <ClInclude Include="Plugins\common\CpuRoutesContainer.h" />
+    <ClInclude Include="Plugins\common\SingleCpuRoutesContainer.h" />
     <ClInclude Include="Plugins\common\SourceHighlightStyle.h" />
     <QtMoc Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
     </QtMoc>

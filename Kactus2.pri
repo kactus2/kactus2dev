@@ -198,7 +198,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
     ./Plugins/common/ConnectivityGraphUtilities.h \
-    ./Plugins/common/CPUDetailRoutes.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
     ./library/LibraryInterface.h \
@@ -816,7 +815,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./Plugins/common/CpuRoutesContainer.h \
+    ./Plugins/common/SingleCpuRoutesContainer.h
 SOURCES += ./kactusGenerators/DocumentGenerator/DocumentationWriter.cpp \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.cpp \
     ./kactusGenerators/DocumentGenerator/MarkdownWriter.cpp \
@@ -987,7 +988,6 @@ SOURCES += ./kactusGenerators/DocumentGenerator/DocumentationWriter.cpp \
     ./Help/HelpSystem/HelpSearchWidget.cpp \
     ./Help/HelpSystem/HelpWindow.cpp \
     ./Plugins/common/ConnectivityGraphUtilities.cpp \
-    ./Plugins/common/CPUDetailRoutes.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
     ./library/ItemExporter.cpp \
@@ -1545,5 +1545,7 @@ SOURCES += ./kactusGenerators/DocumentGenerator/DocumentationWriter.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./Plugins/common/CpuRoutesContainer.cpp \
+    ./Plugins/common/SingleCpuRoutesContainer.cpp
 RESOURCES += kactus.qrc

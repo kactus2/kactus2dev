@@ -3145,9 +3145,6 @@
     <ClCompile Include="Plugins\common\ConnectivityGraphUtilities.cpp">
       <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
-    <ClCompile Include="Plugins\common\CPUDetailRoutes.cpp">
-      <Filter>Source Files\Plugins\common</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\WorkspaceSettings.cpp">
       <Filter>Source Files\mainwindow</Filter>
     </ClCompile>
@@ -3169,13 +3166,19 @@
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.cpp">
       <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Plugins\common\CpuRoutesContainer.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\common\SingleCpuRoutesContainer.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
     <ClCompile Include="kactusGenerators\DocumentGenerator\DocumentationWriter.cpp">
       <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp">
+    <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp">
       <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp">
+    <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp">
       <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4024,12 +4027,6 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\ExpressionEditor.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
-      <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\ExpressionDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
@@ -5605,9 +5602,6 @@
     <ClInclude Include="Plugins\common\ConnectivityGraphUtilities.h">
       <Filter>Header Files\Plugins\common</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\common\CPUDetailRoutes.h">
-      <Filter>Header Files\Plugins\common</Filter>
-    </ClInclude>
     <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityColumns.h">
       <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
     </ClInclude>
@@ -5617,13 +5611,19 @@
     <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.h">
       <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
     </ClInclude>
+    <ClInclude Include="Plugins\common\CpuRoutesContainer.h">
+      <Filter>Header Files\Plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\common\SingleCpuRoutesContainer.h">
+      <Filter>Header Files\Plugins\common</Filter>
+    </ClInclude>
     <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentationWriter.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </ClInclude>
-    <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h">
+    <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </ClInclude>
-    <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h">
+    <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </ClInclude>
   </ItemGroup>
@@ -5668,6 +5668,12 @@
     </QtMoc>
     <QtMoc Include="editors\HWDesign\AdhocEditor\AdHocVisibilityEditor.h">
       <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
