@@ -27,7 +27,7 @@ class IPXACTMODELS_EXPORT Extendable
 public:
 
 	//! The destructor.
-	virtual ~Extendable();
+	virtual ~Extendable() = default;
             
     /*!
      *  Gets the vendor extensions for the element.
@@ -64,6 +64,15 @@ protected:
      */
     QList<QSharedPointer<VendorExtension> > getGroupedExtensionsByType(QString const& groupName,
         QString const& extensionType) const;
+
+    /*!
+     *  Find a vendor extension by given type.
+     *
+     *      @param [in] type        The type of extension to find.
+     *
+     *      @return The first found extension with the given type.
+     */
+    QSharedPointer<VendorExtension> findVendorExtension(QString const& type) const;
 
 private:
 

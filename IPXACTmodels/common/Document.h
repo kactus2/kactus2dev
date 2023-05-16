@@ -42,15 +42,21 @@ class IPXACTMODELS_EXPORT Document : public Extendable
 {
 public:
 
+    //! IP-XACT standard revision information.
+    enum class Revision
+    {
+        Std14, Std22, Unknown
+    };
+
     //! The default constructor.
-	Document();
+	explicit Document(Revision revision = Revision::Std14);
 
 	/*!
 	 *  The constructor.
 	 *
 	 *      @param [in] vlnv   The VLNV for the document.
 	 */
-	Document(VLNV const& vlnv);
+	Document(VLNV const& vlnv, Revision revision = Revision::Std14);
 
     //! Copy constructor.
 	Document(const Document &other);
@@ -59,7 +65,7 @@ public:
 	Document &operator=(const Document &other);
 
     //! The destructor.
-	virtual ~Document();
+	virtual ~Document() = default;
 
     /*!
 	 *  Creates a perfect copy of the document.
@@ -297,7 +303,7 @@ private:
     /*
      *  Add the default namespaces to the list of namespaces.
      */
-    void addDefaultNameSpaces();
+    void addDefaultNameSpaces(Revision revision);
     
     /*!
      *  Copies parameters from another document.
@@ -343,7 +349,7 @@ private:
      *      @param [in] tagContainer    Extension container for tags.
      *      @param [in] newTags         The new tags.
      */
-    void removeNonExistingTags(QSharedPointer<Kactus2Group> tagContainer, QVector<TagData> newTags) const;
+    void removeNonExistingTags(QSharedPointer<Kactus2Group> tagContainer, QVector<TagData> const& newTags) const;
 
     /*!
      *  Get the name of the selected tag.
@@ -354,22 +360,14 @@ private:
      */
     QString getTagName(QSharedPointer<VendorExtension> tagExtension) const;
 
-    /*!
-     *  Check if a tag exists in the selected list.
-     *
-     *      @param [in] tagExtension    The selected tag extension.
-     *      @param [in] newTags         Selected list of tags.
-     *
-     *      @return True, if the selected tag exists in the selected list, false otherwise.
-     */
-    bool tagExistsInList(QSharedPointer<VendorExtension> tagExtension, QVector<TagData> newTags) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     // The unique identifier for the document.
 	VLNV vlnv_;
+
+    Revision revision_;
 
     //! The description for the document.
     QString description_;
@@ -384,10 +382,12 @@ private:
     QVector<QPair<QString, QString> > xmlNameSpaces_;
 
     //! A list of parameters for the document.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ =
+        QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> >());
 
     //! A list of assertions for the document.
-    QSharedPointer<QList<QSharedPointer<Assertion> > > assertions_;
+    QSharedPointer<QList<QSharedPointer<Assertion> > > assertions_ =
+        QSharedPointer<QList<QSharedPointer<Assertion> > >(new QList<QSharedPointer<Assertion> >());
 
 };
 

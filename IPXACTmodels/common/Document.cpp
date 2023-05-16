@@ -27,37 +27,22 @@
 //-----------------------------------------------------------------------------
 // Function: Document::Document()
 //-----------------------------------------------------------------------------
-Document::Document():
+Document::Document(Revision revision):
 Extendable(),
-    vlnv_(), 
-    description_(),
-    topComments_(),
-    xmlProcessingInstructions_(),
-    xmlNameSpaces_(),
-    parameters_(new QList<QSharedPointer<Parameter> >()),
-    assertions_(new QList<QSharedPointer<Assertion> >())
+    revision_(revision)
 {
-    vlnv_ = VLNV();
-
-    addDefaultNameSpaces();
+    addDefaultNameSpaces(revision);
 }
 
 //-----------------------------------------------------------------------------
 // Function: Document::Document()
 //-----------------------------------------------------------------------------
-Document::Document(const VLNV &vlnv):
+Document::Document(const VLNV &vlnv, Revision revision):
 Extendable(),
-    vlnv_(), 
-    description_(),
-    topComments_(),
-    xmlProcessingInstructions_(),
-    xmlNameSpaces_(),
-    parameters_(new QList<QSharedPointer<Parameter> >()),
-    assertions_(new QList<QSharedPointer<Assertion> >())
+    vlnv_(vlnv),
+    revision_(revision)
 {
-    vlnv_ = vlnv;
-
-    addDefaultNameSpaces();
+    addDefaultNameSpaces(revision);
 }
 
 //-----------------------------------------------------------------------------
@@ -66,12 +51,11 @@ Extendable(),
 Document::Document(Document const& other):
 Extendable(other),
     vlnv_(other.vlnv_),
+    revision_(other.revision_),
     description_(other.description_),
     topComments_(other.topComments_),
     xmlProcessingInstructions_(other.xmlProcessingInstructions_),
-    xmlNameSpaces_(other.xmlNameSpaces_),
-    parameters_(new QList<QSharedPointer<Parameter> >()),
-    assertions_(new QList<QSharedPointer<Assertion> >())
+    xmlNameSpaces_(other.xmlNameSpaces_)
 {
     copyParameters(other);
     copyAssertions(other);
@@ -98,6 +82,9 @@ Document & Document::operator=( const Document &other )
 		description_ = other.description_;
 		topComments_ = other.topComments_;
 
+        xmlProcessingInstructions_ = other.xmlProcessingInstructions_;
+        xmlNameSpaces_ = other.xmlNameSpaces_;
+
         copyParameters(other);
         copyAssertions(other);
 
@@ -105,13 +92,6 @@ Document & Document::operator=( const Document &other )
 	return *this;
 }
 
-//-----------------------------------------------------------------------------
-// Function: Document::~Document()
-//-----------------------------------------------------------------------------
-Document::~Document()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: Document::getVlnv()
@@ -174,8 +154,7 @@ QSharedPointer<QList<QSharedPointer<Assertion> > > Document::getAssertions() con
 //-----------------------------------------------------------------------------
 void Document::setTopComments(QString const& comment)
 {
-    QStringList comments = comment.split(QStringLiteral("\n"));
-    topComments_ = comments;
+    topComments_ = comment.split(QStringLiteral("\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -216,15 +195,11 @@ QVector<QPair<QString, QString> > Document::getXmlProcessingInstructions() const
 void Document::addXmlNameSpace(QString const& nameSpace, QString const& uri)
 {
     // Go through all known xml name spaces.
-    for (int i = 0; i < xmlNameSpaces_.size(); ++i)
+    // Discard the change if it already exists.
+    if (std::any_of(xmlNameSpaces_.cbegin(), xmlNameSpaces_.cend(), 
+        [nameSpace](auto& xmlNameSpace) {return xmlNameSpace.first == nameSpace;}))
     {
-        QPair<QString, QString> value = xmlNameSpaces_[i];
-
-        // Discard the change if it already exists.
-        if (value.first == nameSpace)
-        {
-            return;
-        }
+        return;
     }
 
     // Otherwise append to the list.
@@ -252,13 +227,12 @@ QStringList Document::getDependentDirs() const
 //-----------------------------------------------------------------------------
 void Document::setVersion(QString const& versionNumber)
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:version"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:version"))
-        {
-            extension.dynamicCast<Kactus2Value>()->setValue(versionNumber);
-            return;
-        }
+        extension.dynamicCast<Kactus2Value>()->setValue(versionNumber);
+        return;
     }
 
     getVendorExtensions()->append(QSharedPointer<Kactus2Value>(new Kactus2Value(QStringLiteral("kactus2:version"),
@@ -270,12 +244,11 @@ void Document::setVersion(QString const& versionNumber)
 //-----------------------------------------------------------------------------
 QString Document::getVersion() const
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:version"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:version"))
-        {
-            return extension.dynamicCast<Kactus2Value>()->value();
-        }
+        return extension.dynamicCast<Kactus2Value>()->value();
     }
 
     return QString();
@@ -286,15 +259,8 @@ QString Document::getVersion() const
 //-----------------------------------------------------------------------------
 bool Document::hasKactusAttributes() const
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(getVendorExtensions()->cbegin(), getVendorExtensions()->cend(), 
+        [](auto& extension) {return extension->type() == QLatin1String("kactus2:extensions"); });
 }
 
 //-----------------------------------------------------------------------------
@@ -302,13 +268,12 @@ bool Document::hasKactusAttributes() const
 //-----------------------------------------------------------------------------
 bool Document::hasImplementation() const
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
-            return attributes->getImplementation() != KactusAttribute::KTS_IMPLEMENTATION_COUNT;
-        }
+        QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
+        return attributes->getImplementation() != KactusAttribute::KTS_IMPLEMENTATION_COUNT;
     }
 
     return false;
@@ -319,12 +284,11 @@ bool Document::hasImplementation() const
 //-----------------------------------------------------------------------------
 void Document::setImplementation(KactusAttribute::Implementation implementation)
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            return extension.dynamicCast<KactusAttribute>()->setImplementation(implementation);
-        }
+        return extension.dynamicCast<KactusAttribute>()->setImplementation(implementation);
     }
 
     QSharedPointer<KactusAttribute> attributes(new KactusAttribute());
@@ -338,24 +302,21 @@ void Document::setImplementation(KactusAttribute::Implementation implementation)
 //-----------------------------------------------------------------------------
 KactusAttribute::Implementation Document::getImplementation() const
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    auto implementationType = KactusAttribute::HW;
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
+        auto readType = extension.dynamicCast<KactusAttribute>()->getImplementation();
+
+        if (readType != KactusAttribute::KTS_IMPLEMENTATION_COUNT)
         {
-            KactusAttribute::Implementation implementationType =
-                extension.dynamicCast<KactusAttribute>()->getImplementation();
-            if (implementationType == KactusAttribute::KTS_IMPLEMENTATION_COUNT)
-            {
-                return KactusAttribute::HW;
-            }
-            else
-            {
-                return implementationType;
-            }
+            implementationType = readType;
         }
     }
 
-    return KactusAttribute::HW;
+    return implementationType;
 }
 
 //-----------------------------------------------------------------------------
@@ -363,13 +324,12 @@ KactusAttribute::Implementation Document::getImplementation() const
 //-----------------------------------------------------------------------------
 bool Document::hasProductHierarchy() const
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
-            return attributes->getHierarchy() != KactusAttribute::KTS_PRODHIER_COUNT;
-        }
+        QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
+        return attributes->getHierarchy() != KactusAttribute::KTS_PRODHIER_COUNT;
     }
 
     return false;
@@ -380,12 +340,11 @@ bool Document::hasProductHierarchy() const
 //-----------------------------------------------------------------------------
 void Document::setHierarchy(KactusAttribute::ProductHierarchy productHierarchy)
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            return extension.dynamicCast<KactusAttribute>()->setHierarchy(productHierarchy);
-        }
+        return extension.dynamicCast<KactusAttribute>()->setHierarchy(productHierarchy);
     }
 
     QSharedPointer<KactusAttribute> attributes(new KactusAttribute());
@@ -399,12 +358,11 @@ void Document::setHierarchy(KactusAttribute::ProductHierarchy productHierarchy)
 //-----------------------------------------------------------------------------
 KactusAttribute::ProductHierarchy Document::getHierarchy() const
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            return extension.dynamicCast<KactusAttribute>()->getHierarchy();
-        }
+        return extension.dynamicCast<KactusAttribute>()->getHierarchy();
     }
 
     return KactusAttribute::FLAT;
@@ -415,13 +373,12 @@ KactusAttribute::ProductHierarchy Document::getHierarchy() const
 //-----------------------------------------------------------------------------
 bool Document::hasFirmness() const
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
-            return attributes->getFirmness() != KactusAttribute::KTS_REUSE_LEVEL_COUNT;
-        }
+        QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
+        return attributes->getFirmness() != KactusAttribute::KTS_REUSE_LEVEL_COUNT;
     }
 
     return false;
@@ -432,13 +389,12 @@ bool Document::hasFirmness() const
 //-----------------------------------------------------------------------------
 KactusAttribute::Firmness Document::getFirmness() const
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
-            return attributes->getFirmness();
-        }
+        QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
+        return attributes->getFirmness();
     }
 
     return KactusAttribute::MUTABLE;
@@ -449,12 +405,11 @@ KactusAttribute::Firmness Document::getFirmness() const
 //-----------------------------------------------------------------------------
 void Document::setFirmness(KactusAttribute::Firmness firmness)
 {
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:extensions"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:extensions"))
-        {
-            return extension.dynamicCast<KactusAttribute>()->setFirmness(firmness);
-        }
+        return extension.dynamicCast<KactusAttribute>()->setFirmness(firmness);
     }
 
     QSharedPointer<KactusAttribute> attributes(new KactusAttribute());
@@ -468,13 +423,12 @@ void Document::setFirmness(KactusAttribute::Firmness firmness)
 //-----------------------------------------------------------------------------
 QString Document::getLicense() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:license"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:license"))
-        {
-            QSharedPointer<Kactus2Value> licenseExtension = extension.dynamicCast<Kactus2Value>();
-            return licenseExtension->value();
-        }
+        QSharedPointer<Kactus2Value> licenseExtension = extension.dynamicCast<Kactus2Value>();
+        return licenseExtension->value();
     }
 
     return QString();
@@ -485,28 +439,41 @@ QString Document::getLicense() const
 //-----------------------------------------------------------------------------
 void Document::setLicense(QString const& license)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:license"))
-        {
-            getVendorExtensions()->removeAll(extension);
-        }
-    }
+    auto extension = findVendorExtension(QStringLiteral("kactus2:license"));
 
-    if (!license.isEmpty())
+    if (extension != nullptr)
+    {
+        QSharedPointer<Kactus2Value> licenseExtension = extension.dynamicCast<Kactus2Value>();
+        licenseExtension->setValue(license);
+    }
+    else if (license.isEmpty() == false)
     {
         QSharedPointer<Kactus2Value> licenseValue (new Kactus2Value(QStringLiteral("kactus2:license"), license));
         getVendorExtensions()->append(licenseValue);
+    }
+    else
+    {
+        getVendorExtensions()->removeAll(extension);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: Document::addDefaultNameSpaces()
 //-----------------------------------------------------------------------------
-void Document::addDefaultNameSpaces()
+void Document::addDefaultNameSpaces(Revision revision)
 {
     xmlNameSpaces_.append(qMakePair(QStringLiteral("xsi"), QStringLiteral("http://www.w3.org/2001/XMLSchema-instance")));
-    xmlNameSpaces_.append(qMakePair(QStringLiteral("ipxact"), QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014")));
+
+    if (revision == Revision::Std14)
+    {
+        xmlNameSpaces_.append(qMakePair(QStringLiteral("ipxact"), QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014")));
+    }
+    else if (revision == Revision::Std22)
+    {
+
+        xmlNameSpaces_.append(qMakePair(QStringLiteral("ipxact"), QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2022")));
+    }
+
     xmlNameSpaces_.append(qMakePair(QStringLiteral("kactus2"), QStringLiteral("http://kactus2.cs.tut.fi")));
 }
 
@@ -516,7 +483,7 @@ void Document::addDefaultNameSpaces()
 void Document::copyParameters(Document const& other)
 {
     parameters_->reserve(other.parameters_->count());
-    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
+    for (QSharedPointer<Parameter> parameter : *other.parameters_)
     {
         QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
         parameters_->append(copy);
@@ -529,7 +496,7 @@ void Document::copyParameters(Document const& other)
 void Document::copyAssertions(Document const& other)
 {
     assertions_->reserve(other.assertions_->count());
-    foreach (QSharedPointer<Assertion> assertion, *other.assertions_)
+    for (QSharedPointer<Assertion> assertion : *other.assertions_)
     {
         if (assertion)
         {
@@ -544,48 +511,48 @@ void Document::copyAssertions(Document const& other)
 //-----------------------------------------------------------------------------
 QVector<TagData> Document::getTags() const
 {
-    QVector<TagData> documentTags;
-
     QSharedPointer<Kactus2Group> tagGroup = getTagGroup();
-    if (tagGroup)
+    if (tagGroup == nullptr)
     {
-        for (auto singleTag : tagGroup->getByType(QLatin1String("kactus2:tag")))
+        return QVector<TagData>();
+    }
+
+    QVector<TagData> documentTags;
+    for (auto singleTag : tagGroup->getByType(QLatin1String("kactus2:tag")))
+    {
+        QSharedPointer<Kactus2Group> tagValue = singleTag.dynamicCast<Kactus2Group>();
+        if (tagValue)
         {
-            QSharedPointer<Kactus2Group> tagValue = singleTag.dynamicCast<Kactus2Group>();
-            if (tagValue)
+            QString newTagName;
+            QString newTagColor;
+
+            QList<QSharedPointer<VendorExtension> > tagNamesExtension =
+                tagValue->getByType(QLatin1String("kactus2:name"));
+            if (tagNamesExtension.size() == 1)
             {
-                QString newTagName;
-                QString newTagColor;
-
-                QList<QSharedPointer<VendorExtension> > tagNamesExtension =
-                    tagValue->getByType(QLatin1String("kactus2:name"));
-                if (tagNamesExtension.size() == 1)
+                QSharedPointer<Kactus2Value> tagName =
+                    tagNamesExtension.first().dynamicCast<Kactus2Value>();
+                if (tagName)
                 {
-                    QSharedPointer<Kactus2Value> tagName =
-                        tagNamesExtension.first().dynamicCast<Kactus2Value>();
-                    if (tagName)
-                    {
-                        newTagName = tagName->value();
-                    }
+                    newTagName = tagName->value();
                 }
+            }
 
-                QList<QSharedPointer<VendorExtension> > tagColorsExtension =
-                    tagValue->getByType(QLatin1String("kactus2:color"));
-                if (tagColorsExtension.size() == 1)
+            QList<QSharedPointer<VendorExtension> > tagColorsExtension =
+                tagValue->getByType(QLatin1String("kactus2:color"));
+            if (tagColorsExtension.size() == 1)
+            {
+                QSharedPointer<Kactus2Value> tagColor =
+                    tagColorsExtension.first().dynamicCast<Kactus2Value>();
+                if (tagColor)
                 {
-                    QSharedPointer<Kactus2Value> tagColor =
-                        tagColorsExtension.first().dynamicCast<Kactus2Value>();
-                    if (tagColor)
-                    {
-                        newTagColor = tagColor->value();
-                    }
+                    newTagColor = tagColor->value();
                 }
+            }
 
-                if (!newTagName.isEmpty() && !newTagColor.isEmpty())
-                {
-                    TagData newTag({ newTagName, newTagColor });
-                    documentTags.append(newTag);
-                }
+            if (!newTagName.isEmpty() && !newTagColor.isEmpty())
+            {
+                documentTags.append(TagData({ newTagName, newTagColor }));
             }
         }
     }
@@ -598,23 +565,14 @@ QVector<TagData> Document::getTags() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Kactus2Group> Document::getTagGroup() const
 {
-    QSharedPointer<QList<QSharedPointer<VendorExtension> > > componentExtensions = getVendorExtensions();
-    if (componentExtensions)
+    auto extension = findVendorExtension(QStringLiteral("kactus2:tags"));
+
+    if (extension != nullptr)
     {
-        for (auto extension : *componentExtensions)
+        QSharedPointer<Kactus2Group> tagGroup = extension.dynamicCast<Kactus2Group>();
+        if (tagGroup)
         {
-            if (extension->type() == QLatin1String("kactus2:tags"))
-            {
-                QSharedPointer<Kactus2Group> tagGroup = extension.dynamicCast<Kactus2Group>();
-                if (tagGroup)
-                {
-                    return tagGroup;
-                }
-                else
-                {
-                    return QSharedPointer<Kactus2Group>();
-                }
-            }
+            return tagGroup;
         }
     }
 
@@ -645,12 +603,9 @@ void Document::setTags(QVector<TagData> newTags) const
         getVendorExtensions()->append(tagGroup);
     }
 
-    for (auto singleTag : newTags)
+    for (auto const& tag : newTags)
     {
-        QString tagName = singleTag.name_;
-        QString tagColor = singleTag.color_;
-
-        QSharedPointer<Kactus2Group> existingTag = getTagByName(tagName, tagGroup);
+        QSharedPointer<Kactus2Group> existingTag = getTagByName(tag.name_, tagGroup);
         if (existingTag)
         {
             QList<QSharedPointer<VendorExtension> > colorExtension =
@@ -661,14 +616,14 @@ void Document::setTags(QVector<TagData> newTags) const
                     colorExtension.first().dynamicCast<Kactus2Value>();
                 if (tagColorExtension)
                 {
-                    tagColorExtension->setValue(tagColor);
+                    tagColorExtension->setValue(tag.color_);
                 }
             }
         }
         else
         {
-            QSharedPointer<Kactus2Value> newTagName(new Kactus2Value(QLatin1String("kactus2:name"), tagName));
-            QSharedPointer<Kactus2Value> newTagColor(new Kactus2Value(QLatin1String("kactus2:color"), tagColor));
+            QSharedPointer<Kactus2Value> newTagName(new Kactus2Value(QLatin1String("kactus2:name"), tag.name_));
+            QSharedPointer<Kactus2Value> newTagColor(new Kactus2Value(QLatin1String("kactus2:color"), tag.color_));
 
             QSharedPointer<Kactus2Group> newTagContainer(new Kactus2Group(QLatin1String("kactus2:tag")));
             newTagContainer->addToGroup(newTagName);
@@ -708,32 +663,17 @@ QSharedPointer<Kactus2Group> Document::getTagByName(QString const& name, QShared
 //-----------------------------------------------------------------------------
 // Function: Document::removeNonExistingTags()
 //-----------------------------------------------------------------------------
-void Document::removeNonExistingTags(QSharedPointer<Kactus2Group> tagContainer, QVector<TagData> newTags) const
+void Document::removeNonExistingTags(QSharedPointer<Kactus2Group> tagContainer, QVector<TagData> const& newTags) const
 {
     for (auto tagExtension : tagContainer->getByType(QLatin1String("kactus2:tag")))
     {
-        if (!tagExistsInList(tagExtension, newTags))
+        QString tagName = getTagName(tagExtension);
+        if (std::none_of(newTags.cbegin(), newTags.cend(), 
+            [tagName](auto& comparisonTag) {return comparisonTag.name_ == tagName; }))  
         {
             tagContainer->removeFromGroup(tagExtension);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Document::tagExistsInList()
-//-----------------------------------------------------------------------------
-bool Document::tagExistsInList(QSharedPointer<VendorExtension> tagExtension, QVector<TagData> newTags) const
-{
-    QString tagName = getTagName(tagExtension);
-    for (auto comparisonTag : newTags)
-    {
-        if (comparisonTag.name_ == tagName)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -745,7 +685,7 @@ QString Document::getTagName(QSharedPointer<VendorExtension> tagExtension) const
     if (tag)
     {
         QList<QSharedPointer<VendorExtension> > tagNameContainer = tag->getByType(QLatin1String("kactus2:name"));
-        if (tagNameContainer.size() == 1 && tagNameContainer.first())
+        if (tagNameContainer.size() == 1)
         {
             QSharedPointer<Kactus2Value> tagName = tagNameContainer.first().dynamicCast<Kactus2Value>();
             if (tagName)

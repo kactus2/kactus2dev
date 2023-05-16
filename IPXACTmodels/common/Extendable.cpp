@@ -15,14 +15,6 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
 //-----------------------------------------------------------------------------
-// Function: Extendable::~Extendable()
-//-----------------------------------------------------------------------------
-Extendable::~Extendable()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: Extendable::getVendorExtensions()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<VendorExtension> > > Extendable::getVendorExtensions() const
@@ -63,30 +55,45 @@ Extendable& Extendable::operator=(Extendable const& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: librarycomponent::copyVendorExtensions()
+// Function: Extendable::copyVendorExtensions()
 //-----------------------------------------------------------------------------
 void Extendable::copyVendorExtensions(Extendable const& other)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *other.vendorExtensions_)
+    for (QSharedPointer<VendorExtension> extension : *other.vendorExtensions_)
     {
         vendorExtensions_->append(QSharedPointer<VendorExtension>(extension->clone()));
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: Design::getGroupedExtensionsByType()
+// Function: Extendable::getGroupedExtensionsByType()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<VendorExtension> > Extendable::getGroupedExtensionsByType(QString const& groupName,
     QString const& extensionType) const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(groupName);
+
+    if (extension != nullptr)
     {
-        if (extension->type() == groupName)
-        {
-            QSharedPointer<Kactus2Group> extensionGroup = extension.dynamicCast<Kactus2Group>();
-            return extensionGroup->getByType(extensionType);
-        }
+        QSharedPointer<Kactus2Group> extensionGroup = extension.dynamicCast<Kactus2Group>();
+        return extensionGroup->getByType(extensionType);
     }
 
     return QList<QSharedPointer<VendorExtension> >();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Extendable::findVendorExtension()
+//-----------------------------------------------------------------------------
+QSharedPointer<VendorExtension> Extendable::findVendorExtension(QString const& type) const
+{
+    auto it = std::find_if(vendorExtensions_->cbegin(), vendorExtensions_->cend(), 
+        [type](auto& extension) {return extension->type() == type;  });
+
+    if (it == vendorExtensions_->cend())
+    {
+        return nullptr;
+    }
+
+    return *it;
 }
