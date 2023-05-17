@@ -29,7 +29,8 @@ public:
     tst_BusDefinitionReader();
 
 private slots:
-    void testReadVLNAndMandatoryFields();
+    void testReadVLNVAndMandatoryFields();
+    void testReadDocumentNameGroupAndMandatoryFields();
 
     void testReadTopComments();
     void testProcessingInstructionsAreParsed();
@@ -38,6 +39,8 @@ private slots:
     void testReadBroadcastAndDescription();
     void testReadMaximumMasterAndMaximumSlave();
     void testReadSystemGroupNames();
+
+    void testReadChoices();
 
     void testReadParameters();
     void testReadAssertions();
@@ -54,9 +57,9 @@ tst_BusDefinitionReader::tst_BusDefinitionReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_BusDefinitionReader::testReadVLNAndMandatoryFields()
+// Function: tst_BusDefinitionReader::testReadDocumentNameGroupAndMandatoryFields()
 //-----------------------------------------------------------------------------
-void tst_BusDefinitionReader::testReadVLNAndMandatoryFields()
+void tst_BusDefinitionReader::testReadVLNVAndMandatoryFields()
 {
     QDomDocument document;
     document.setContent(QString(        
@@ -75,13 +78,48 @@ void tst_BusDefinitionReader::testReadVLNAndMandatoryFields()
 
     BusDefinitionReader busReader;
     QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
-   
+    
     VLNV busVLNV = testBus->getVlnv();
     QCOMPARE(busVLNV.getVendor(), QString("TUT"));
     QCOMPARE(busVLNV.getLibrary(), QString("TestLibrary"));
     QCOMPARE(busVLNV.getName(), QString("MinimalBus"));
     QCOMPARE(busVLNV.getVersion(), QString("1.0"));
-      
+    
+    QCOMPARE(testBus->getDirectConnection(), false);
+    QCOMPARE(testBus->getIsAddressable(), false);
+}
+
+void tst_BusDefinitionReader::testReadDocumentNameGroupAndMandatoryFields()
+{
+    QDomDocument document;
+    document.setContent(QString(
+        "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>MinimalBus</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:displayName>TEST</ipxact:displayName>"
+            "<ipxact:shortDescription>testdesc</ipxact:shortDescription>"
+            "<ipxact:description>Test description</ipxact:description>"
+            "<ipxact:directConnection>false</ipxact:directConnection>"
+            "<ipxact:isAddressable>false</ipxact:isAddressable>"
+        "</ipxact:busDefinition>"));
+
+    BusDefinitionReader busReader;
+    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+    VLNV busVLNV = testBus->getVlnv();
+    QCOMPARE(busVLNV.getVendor(), QString("TUT"));
+    QCOMPARE(busVLNV.getLibrary(), QString("TestLibrary"));
+    QCOMPARE(busVLNV.getName(), QString("MinimalBus"));
+    QCOMPARE(busVLNV.getVersion(), QString("1.0"));
+    QCOMPARE(testBus->getDisplayName(), QString("TEST"));
+    QCOMPARE(testBus->getShortDescription(), QString("testdesc"));
+    QCOMPARE(testBus->getDescription(), QString("Test description"));
+
     QCOMPARE(testBus->getDirectConnection(), false);
     QCOMPARE(testBus->getIsAddressable(), false);
 }
@@ -277,6 +315,45 @@ void tst_BusDefinitionReader::testReadSystemGroupNames()
 
     QCOMPARE(testBus->getSystemGroupNames().count(), 3);
     QCOMPARE(testBus->getSystemGroupNames().join(','), QString("system1,system2,system3"));
+}
+
+void tst_BusDefinitionReader::testReadChoices()
+{
+    QDomDocument document;
+    document.setContent(QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestBus</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:directConnection>true</ipxact:directConnection>"
+            "<ipxact:isAddressable>true</ipxact:isAddressable>"
+            "<ipxact:choices>"
+                "<ipxact:choice>"
+                    "<ipxact:name>bitsize</ipxact:name>"
+                    "<ipxact:enumeration text=\"32 bits\">32</ipxact:enumeration>"
+                    "<ipxact:enumeration text=\"64 bits\">64</ipxact:enumeration>"
+                "</ipxact:choice>"
+                "<ipxact:choice>"
+                    "<ipxact:name>testChoice</ipxact:name>"
+                    "<ipxact:enumeration text=\"some bits\">some</ipxact:enumeration>"
+                    "<ipxact:enumeration text=\"lots of bits\">lots</ipxact:enumeration>"
+                "</ipxact:choice>"
+            "</ipxact:choices>"
+        "</ipxact:busDefinition>"
+    ));
+    
+    BusDefinitionReader busReader;
+    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+
+    QCOMPARE(testBus->getChoices()->size(), 2);
+    QCOMPARE(testBus->getChoices()->at(0).name(), QString("bitsize"));
+    QCOMPARE(testBus->getChoices()->at(1).name(), QString("testChoice"));
 }
 
 //-----------------------------------------------------------------------------
