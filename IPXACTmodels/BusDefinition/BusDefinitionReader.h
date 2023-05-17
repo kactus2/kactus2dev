@@ -33,6 +33,10 @@ public:
 	//! The destructor.
 	~BusDefinitionReader();
 
+    //! Disable copying.
+    BusDefinitionReader(BusDefinitionReader const& rhs) = delete;
+    BusDefinitionReader& operator=(BusDefinitionReader const& rhs) = delete;
+
     /*!
      *  Creates a bus definition from XML description.
      *
@@ -44,10 +48,6 @@ public:
  
 private:
 
-	//! Disable copying.
-	BusDefinitionReader(BusDefinitionReader const& rhs);
-	BusDefinitionReader& operator=(BusDefinitionReader const& rhs);
-        
     /*!
      *  Reads the direct connection property from XML to a bus definition.
      *
@@ -81,20 +81,20 @@ private:
     void parseExtends(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
                     
     /*!
-     *  Reads the maximum number of masters from XML to a bus definition.
+     *  Reads the maximum number of initiators from XML to a bus definition.
      *
      *      @param [in]     busNode         The XML description of the bus definition.
-     *      @param [in/out] busDefinition   The bus definition to insert the maximum number of masters into.
+     *      @param [in/out] busDefinition   The bus definition to insert the maximum number of initiators into.
      */
-    void parseMaximumMasters(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
+    void parseMaximumInitiators(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
                     
     /*!
-     *  Reads the maximum number of slaves from XML to a bus definition.
+     *  Reads the maximum number of targets from XML to a bus definition.
      *
      *      @param [in]     busNode         The XML description of the bus definition.
-     *      @param [in/out] busDefinition   The bus definition to insert the maximum number of slaves into.
+     *      @param [in/out] busDefinition   The bus definition to insert the maximum number of targets into.
      */
-    void parseMaximumSlaves(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
+    void parseMaximumTargets(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
                     
     /*!
      *  Reads the system group names from XML to a bus definition.
@@ -103,6 +103,14 @@ private:
      *      @param [in/out] busDefinition   The bus definition to insert the system group names into.
      */
     void parseSystemGroupNames(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
+
+    /*!
+     *  Reads the choices from XML to a bus definition.
+     *
+     *      @param [in]     busNode         The XML description of the bus definition.
+     *      @param [in/out] busDefinition   The bus definition to insert the choices into.
+     */
+    void parseChoices(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const;
 };
 
 #endif // BUSDEFINITIONREADER_H

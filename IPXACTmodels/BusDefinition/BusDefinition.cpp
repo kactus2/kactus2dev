@@ -25,17 +25,18 @@
 // Function: BusDefinition::BusDefinition()
 //-----------------------------------------------------------------------------
 BusDefinition::BusDefinition(): 
-Document(), 
-directConnection_(true),
-broadcast_(),
-isAddressable_(true),
-maxMasters_(),
-maxSlaves_(),
-systemGroupNames_(), 
-extends_(), 
-attributes_()
+Document()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefinition::BusDefinition()
+//-----------------------------------------------------------------------------
+BusDefinition::BusDefinition(VLNV vlnv, Document::Revision revision):
+Document(revision)
+{
+	setVlnv(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,9 +49,9 @@ broadcast_(other.broadcast_),
 isAddressable_(other.isAddressable_),
 maxMasters_(other.maxMasters_),
 maxSlaves_(other.maxSlaves_),
+choices_(other.choices_),
 systemGroupNames_(other.systemGroupNames_),
-extends_(other.extends_),
-attributes_(other.attributes_)
+extends_(other.extends_)
 {
 
 }
@@ -68,9 +69,9 @@ BusDefinition & BusDefinition::operator=(BusDefinition const& other)
 		isAddressable_ = other.isAddressable_;
 		maxMasters_ = other.maxMasters_;
 		maxSlaves_ = other.maxSlaves_;
+		choices_ = other.choices_;
 		systemGroupNames_ = other.systemGroupNames_;
 		extends_ = other.extends_;
-		attributes_ = other.attributes_;
 	}
 	return *this;
 }
@@ -170,7 +171,7 @@ void BusDefinition::setExtends(VLNV const& extends)
 //-----------------------------------------------------------------------------
 void BusDefinition::setMaxMasters(QString const& maxMasters)
 {
-    maxMasters_ = maxMasters;
+	setMaxInitiators(maxMasters);
 }
 
 //-----------------------------------------------------------------------------
@@ -178,7 +179,7 @@ void BusDefinition::setMaxMasters(QString const& maxMasters)
 //-----------------------------------------------------------------------------
 QString BusDefinition::getMaxMasters() const
 {
-    return maxMasters_;
+	return getMaxInitiators();
 }
 
 //-----------------------------------------------------------------------------
@@ -186,7 +187,7 @@ QString BusDefinition::getMaxMasters() const
 //-----------------------------------------------------------------------------
 void BusDefinition::setMaxSlaves(QString const& maxSlaves)
 {
-	maxSlaves_ = maxSlaves;
+	setMaxTargets(maxSlaves);
 }
 
 //-----------------------------------------------------------------------------
@@ -194,7 +195,39 @@ void BusDefinition::setMaxSlaves(QString const& maxSlaves)
 //-----------------------------------------------------------------------------
 QString BusDefinition::getMaxSlaves() const
 {
-    return maxSlaves_;
+	return getMaxTargets();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefinition::setMaxInitiators()
+//-----------------------------------------------------------------------------
+void BusDefinition::setMaxInitiators(QString const& maxInitiators)
+{
+	maxMasters_ = maxInitiators;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefinition::getMaxInitiators()
+//-----------------------------------------------------------------------------
+QString BusDefinition::getMaxInitiators() const
+{
+	return maxMasters_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefinition::setMaxTargets()
+//-----------------------------------------------------------------------------
+void BusDefinition::setMaxTargets(QString const& maxTargets)
+{
+	maxSlaves_ = maxTargets;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefinition::getMaxTargets()
+//-----------------------------------------------------------------------------
+QString BusDefinition::getMaxTargets() const
+{
+	return maxSlaves_;
 }
 
 //-----------------------------------------------------------------------------
@@ -211,6 +244,22 @@ void BusDefinition::setSystemGroupNames(QStringList const& systemGroupNames)
 QStringList BusDefinition::getSystemGroupNames() const
 {
 	return systemGroupNames_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefinition::setChoices()
+//-----------------------------------------------------------------------------
+void BusDefinition::setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices)
+{
+	choices_ = choices;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusDefinition::getChoices()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Choice> > > BusDefinition::getChoices() const
+{
+	return choices_;
 }
 
 //-----------------------------------------------------------------------------

@@ -16,10 +16,11 @@
 #include <IPXACTmodels/common/BooleanValue.h>
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/VLNV.h>
+
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-
-#include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
  
@@ -39,6 +40,8 @@ public:
 
 	//! The default constructor.
 	BusDefinition();
+
+	BusDefinition(VLNV vlnv, Document::Revision revision);
 
 	//! Copy constructor.
 	BusDefinition(BusDefinition const& other);
@@ -136,6 +139,30 @@ public:
 	 */
 	QString getMaxSlaves() const;
 
+	/*! Set the maximum number of initiators on this bus
+	 *
+	 *      @param [in] maxInitiators The maximum number of initiators
+	 */
+    void setMaxInitiators(QString const& maxInitiators);
+
+    /*! Get the maximum number of initiators on this bus
+	 *
+	 *      @return unsigned int containing maximum number of initiators
+	 */
+	QString getMaxInitiators() const;
+
+	/*! Set the maximum number of targets on this bus
+	 *
+	 *      @param [in] The maximum number of targets
+	 */
+	void setMaxTargets(QString const& maxTargets);
+
+	/*! Get the maximum number of targets on this bus
+	 *
+	 *      @return The maximum number of targets
+	 */
+	QString getMaxTargets() const;
+
 	/*! Set the systemGroupNames.
 	 *
 	 *      @param [in] systemGroupNames The names of the systemGroups available in onSystem mode.
@@ -147,6 +174,18 @@ public:
 	 *      @return The names of available systemGroups
 	 */
 	QStringList getSystemGroupNames() const;
+
+	/*! Sets the choices.
+	 *
+	 *      @param [in] choices The choices to set.
+	 */
+	void setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+	
+	/*! Gets the choices.
+	 *
+	 *      @return A list of the busDefinition choices
+	 */
+	QSharedPointer<QList<QSharedPointer<Choice> > > getChoices() const;
 
 	/*! Get the VLNVs that this busDefinition depends on.
 	 *
@@ -165,13 +204,13 @@ public:
 private:
 
 	//! Direct connection specifies if direct master-slave connections are allowed.
-	bool directConnection_;
+	bool directConnection_ = true;
 
     //! Specifies if the bus supports broadcast mode.
     BooleanValue broadcast_;
 
 	//! Specifies if the bus has addressing information.
-	bool isAddressable_;
+	bool isAddressable_ = true;
 
 	//! Maximum number of masters allowed on this bus.
 	QString maxMasters_;
@@ -179,14 +218,15 @@ private:
 	//! Maximum number of slaves allowed on this bus.
 	QString maxSlaves_;
 
+	//! The choices of the bus definition
+	QSharedPointer<QList<QSharedPointer<Choice> > > choices_ = 
+		QSharedPointer<QList<QSharedPointer<Choice> > >(new QList<QSharedPointer<Choice > >);
+
 	//! List of systemGroupName elements.
 	QStringList systemGroupNames_;
 
 	//! specifies if this definition is an extension from another bus.
 	VLNV extends_;
-
-	//! Contains the attributes for the ipxact:busDefinition element.
-	QMap<QString, QString> attributes_;
 
 };
 
