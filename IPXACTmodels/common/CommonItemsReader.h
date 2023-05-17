@@ -19,6 +19,8 @@
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
+#include <IPXACTmodels/component/Choice.h>
+
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -106,6 +108,14 @@ protected:
      *      @return A QString containing the isPresent element for the item.
      */
     QString parseIsPresent(QDomElement const& isPresentElement) const;
+
+    /*!
+     *  Parses choices.
+     *
+     *      @param [in] itemNode        XML description of the IP-XACT element.
+     *      @return [out]               A list of choices.
+     */
+    QSharedPointer<QList<QSharedPointer<Choice> > > parseChoices(QDomNode const& itemNode) const;
 
 private:
 

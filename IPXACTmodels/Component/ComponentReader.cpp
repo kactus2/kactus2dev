@@ -419,21 +419,8 @@ void ComponentReader::parseComponentGenerators(QDomNode const& componentNode,
 //-----------------------------------------------------------------------------
 void ComponentReader::parseChoices(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    QDomElement choicesElement = componentNode.firstChildElement(QStringLiteral("ipxact:choices"));
-
-    if (!choicesElement.isNull())
-    {
-        ChoiceReader choiceReader;
-
-        QDomNodeList choiceNodeList = choicesElement.elementsByTagName(QStringLiteral("ipxact:choice"));
-        for (int choiceIndex = 0; choiceIndex < choiceNodeList.count(); ++choiceIndex)
-        {
-            QDomNode choiceNode = choiceNodeList.at(choiceIndex);
-            QSharedPointer<Choice> newChoice = choiceReader.createChoiceFrom(choiceNode);
-
-            newComponent->getChoices()->append(newChoice);
-        }
-    }
+    auto parsedChoices = CommonItemsReader::parseChoices(componentNode);
+    newComponent->setChoices(parsedChoices);
 }
 
 //-----------------------------------------------------------------------------

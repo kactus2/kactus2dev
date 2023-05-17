@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
+#include <IPXACTmodels/Component/ChoiceReader.h>
+
 //-----------------------------------------------------------------------------
 // Function: CommonItemsReader::CommonItemsReader()
 //-----------------------------------------------------------------------------
@@ -160,4 +162,30 @@ QString CommonItemsReader::parseIsPresent(QDomElement const& isPresentElement) c
     {
         return QString();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parseChoices()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Choice> > > CommonItemsReader::parseChoices(QDomNode const& itemNode) const
+{
+    QDomElement choicesElement = itemNode.firstChildElement(QStringLiteral("ipxact:choices"));
+    
+    QSharedPointer<QList<QSharedPointer<Choice> > > parsedChoices(new QList<QSharedPointer<Choice> >);
+
+    if (!choicesElement.isNull())
+    {
+        ChoiceReader choiceReader;
+
+        QDomNodeList choiceNodeList = choicesElement.elementsByTagName(QStringLiteral("ipxact:choice"));
+        for (int choiceIndex = 0; choiceIndex < choiceNodeList.count(); ++choiceIndex)
+        {
+            QDomNode choiceNode = choiceNodeList.at(choiceIndex);
+            QSharedPointer<Choice> newChoice = choiceReader.createChoiceFrom(choiceNode);
+
+            parsedChoices->append(newChoice);
+        }
+    }
+
+    return parsedChoices;
 }
