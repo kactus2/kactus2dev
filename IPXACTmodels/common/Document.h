@@ -85,8 +85,32 @@ public:
 	 *      @param [in] vlnv The vlnv to set.
 	*/
 	virtual void setVlnv(const VLNV& vlnv);
-    	
-	/*! Get the description of the document
+    
+    /*! Get the display name of the element described in the document.
+     *
+     *      @return The display name of the document.
+     */
+    QString getDisplayName() const;
+
+    /*! Set the display name of the document.
+     *
+     *      @param [in] displayName The display name to set.
+    */
+    void setDisplayName(const QString& displayName);
+
+    /*! Get the short description of the element described in the document.
+     *
+     *      @return The short description of the document.
+     */
+    QString getShortDescription() const;
+
+    /*! Set the short description of the document.
+     *
+     *      @param [in] shortDescription The short description to set.
+    */
+    void setShortDescription(const QString& shortDescription);
+
+	/*! Get the description of the document.
 	 *
 	 *      @return QString containing the description of the document.
 	 */
@@ -94,7 +118,7 @@ public:
 
 	/*! Set the description of this document.
 	 *
-	 *      @return QString QString containing the description
+	 *      @param [in] description The description to set.
 	 */
 	void setDescription(QString const& description);
     
@@ -364,13 +388,26 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    // The unique identifier for the document.
-	VLNV vlnv_;
+    struct DocumentNameGroup
+    {
+        // The unique identifier for the document.
+	    VLNV vlnv;
 
-    Revision revision_;
+        //! The document display name.
+        QString displayName;
 
-    //! The description for the document.
-    QString description_;
+        //! The short description for the document.
+        QString shortDescription;
+
+        //! The description for the document.
+        QString description;
+    };
+
+    //! The document name group
+    DocumentNameGroup documentNameGroup_;
+
+    //! The selected IP-XACT standard revision
+	Revision revision_;	
 
 	//! Contains the comment lines from the beginning of the document.
 	QStringList topComments_;

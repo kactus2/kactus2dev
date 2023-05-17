@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 Document::Document(Revision revision):
 Extendable(),
+    
     revision_(revision)
 {
     addDefaultNameSpaces(revision);
@@ -39,9 +40,9 @@ Extendable(),
 //-----------------------------------------------------------------------------
 Document::Document(const VLNV &vlnv, Revision revision):
 Extendable(),
-    vlnv_(vlnv),
     revision_(revision)
 {
+    documentNameGroup_.vlnv = vlnv;
     addDefaultNameSpaces(revision);
 }
 
@@ -50,9 +51,8 @@ Extendable(),
 //-----------------------------------------------------------------------------
 Document::Document(Document const& other):
 Extendable(other),
-    vlnv_(other.vlnv_),
+    documentNameGroup_(other.documentNameGroup_),
     revision_(other.revision_),
-    description_(other.description_),
     topComments_(other.topComments_),
     xmlProcessingInstructions_(other.xmlProcessingInstructions_),
     xmlNameSpaces_(other.xmlNameSpaces_)
@@ -70,16 +70,16 @@ Document & Document::operator=( const Document &other )
     {
         Extendable::operator=(other);
 
-        if (!vlnv_.isEmpty())
+        if (!documentNameGroup_.vlnv.isEmpty())
         {
-            vlnv_ = other.vlnv_;
+            documentNameGroup_.vlnv = other.documentNameGroup_.vlnv;
         }
 		else
         {
-			vlnv_ = VLNV();
+            documentNameGroup_.vlnv = VLNV();
         }
 
-		description_ = other.description_;
+        documentNameGroup_.description = other.documentNameGroup_.description;
 		topComments_ = other.topComments_;
 
         xmlProcessingInstructions_ = other.xmlProcessingInstructions_;
@@ -98,7 +98,7 @@ Document & Document::operator=( const Document &other )
 //-----------------------------------------------------------------------------
 VLNV Document::getVlnv() const
 {
-	return vlnv_;
+	return documentNameGroup_.vlnv;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +106,39 @@ VLNV Document::getVlnv() const
 //-----------------------------------------------------------------------------
 void Document::setVlnv(VLNV const& vlnv)
 {
-	vlnv_ = vlnv;
+    documentNameGroup_.vlnv = vlnv;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getDisplayName()
+//-----------------------------------------------------------------------------
+QString Document::getDisplayName() const
+{
+    return documentNameGroup_.displayName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::setDisplayName()
+//-----------------------------------------------------------------------------
+void Document::setDisplayName(const QString& displayName)
+{
+    documentNameGroup_.displayName = displayName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getShortDescription()
+//-----------------------------------------------------------------------------
+QString Document::getShortDescription() const
+{
+    return documentNameGroup_.shortDescription;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::setShortDescription()
+//-----------------------------------------------------------------------------
+void Document::setShortDescription(const QString& shortDescription)
+{
+    documentNameGroup_.shortDescription = shortDescription;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +146,7 @@ void Document::setVlnv(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 QString Document::getDescription() const
 {
-    return description_;
+    return documentNameGroup_.description;
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +154,7 @@ QString Document::getDescription() const
 //-----------------------------------------------------------------------------
 void Document::setDescription(QString const& description)
 {
-	description_ = description;
+    documentNameGroup_.description = description;
 }
 
 //-----------------------------------------------------------------------------
