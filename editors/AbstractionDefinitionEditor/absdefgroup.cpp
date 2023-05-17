@@ -38,6 +38,7 @@ AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterf
 QWidget(parent),
 vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
 extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
+busDisplay_(new VLNVDisplayer(this, VLNV())),
 descriptionEditor_(new QPlainTextEdit(this)),
 portTabs_(this),
 portInterface_(portInterface),
@@ -50,6 +51,8 @@ libraryHandler_(libraryHandler)
     vlnvDisplay_->setTitle(QStringLiteral("Abstraction definition"));
     extendEditor_->setTitle(tr("Extended abstraction definition"));
     extendEditor_->setMandatory(false);
+
+    busDisplay_->setTitle(QStringLiteral("Bus Type"));
 
     portTabs_.addTab(wirePortsEditor_, QStringLiteral("Wire ports"));
     portTabs_.addTab(transactionalPortsEditor_, QStringLiteral("Transactional ports"));
@@ -106,6 +109,8 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
     vlnvDisplay_->setVLNV(absDef->getVlnv());
 
     extendEditor_->setVLNV(absDef->getExtends());
+
+    busDisplay_->setVLNV(absDef->getBusType());
 
     if (abstractionContainsTransactionalPorts())
     {
@@ -235,6 +240,7 @@ void AbsDefGroup::setupLayout()
     topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
     topLayout->addWidget(extendEditor_, 0, 1, 1, 1);
     topLayout->addWidget(descriptionGroup, 1, 0, 1, 1);
+    topLayout->addWidget(busDisplay_, 1, 1, 1, 1);
     topLayout->addWidget(&portTabs_, 2, 0, 1, 2);
 
     topLayout->setColumnStretch(0, 1);

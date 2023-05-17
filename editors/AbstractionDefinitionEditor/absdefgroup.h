@@ -156,6 +156,9 @@ private:
     //! Editor for the abstraction definition extend.
     VLNVEditor* extendEditor_;
 
+    //! Displays the VLNV of the referenced bus definition.
+    VLNVDisplayer* busDisplay_;
+
     //! Editor for the description of the abstraction definition.
     QPlainTextEdit* descriptionEditor_;
 
