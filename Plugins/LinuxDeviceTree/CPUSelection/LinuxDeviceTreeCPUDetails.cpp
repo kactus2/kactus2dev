@@ -20,109 +20,100 @@
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/MemoryConnectionAddressCalculator.h>
 
+#include <Plugins/common/SingleCpuRoutesContainer.h>
+#include <Plugins/common/ConnectivityGraphUtilities.h>
+
 #include <KactusAPI/include/LibraryInterface.h>
 
+namespace
+{
+    //-----------------------------------------------------------------------------
+    // Function: routeExistsInList()
+    //-----------------------------------------------------------------------------
+    bool routeExistsInList(QSharedPointer<CpuRouteStructs::CpuRoute> route,
+        QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > routeData)
+    {
+        for (auto comparisonRoute : routeData)
+        {
+            if (comparisonRoute->cpuInterface_ == route->cpuInterface_)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: containerContainsSameRoutes()
+    //-----------------------------------------------------------------------------
+    bool containerContainsSameRoutes(QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> container,
+        QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > routeData)
+    {
+        if (routeData.size() == container->getRoutes().size())
+        {
+            for (auto comparisonRoute : container->getRoutes())
+            {
+                if (!routeExistsInList(comparisonRoute, routeData))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //-----------------------------------------------------------------------------
+    // Function: getContainerForRouteData()
+    //-----------------------------------------------------------------------------
+    QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> getContainerForRouteData(
+        QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > routeData,
+        QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > containers)
+    {
+        for (auto singleCpuContainer : containers)
+        {
+            if (containerContainsSameRoutes(singleCpuContainer, routeData))
+            {
+                return singleCpuContainer;
+            }
+        }
+
+        return QSharedPointer<LinuxDeviceTreeCpuRoutesContainer>();
+    }
+}
 
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeCPUDetails::getCPUContainers()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > LinuxDeviceTreeCPUDetails::getCPUContainers(
-    QString const& fileName, QVector<QSharedPointer<ConnectivityInterface>> roots, LibraryInterface* library)
+QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > LinuxDeviceTreeCPUDetails::getCPUContainers(
+    QString const& fileName, QSharedPointer<Component> topComponent, QString const& viewName, LibraryInterface* library)
 {
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > containers;
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > dtsCpuContainers;
 
-    QVector<QSharedPointer<ConnectivityInterface>> visitedInterfaces;
-    QMultiMap<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > cpuNodes =
-        getCPUInterfacePairs(roots, visitedInterfaces, library);
-
-    QMultiMapIterator<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > cpuNodeIterator(cpuNodes);
-    while (cpuNodeIterator.hasNext())
+    for (auto container : ConnectivityGraphUtilities::getDefaultCPUs(library, topComponent, viewName))
     {
-        cpuNodeIterator.next();
-
-        QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> containerCPU =
-            getContainerForCPU(cpuNodeIterator.key(), containers);
-        if (!containerCPU)
+        QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> singleDtsContainer =
+            getContainerForRouteData(container->getRoutes(), dtsCpuContainers);
+        if (!singleDtsContainer)
         {
-            containerCPU = QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer>(
-                new LinuxDeviceTreeCPUDetails::CPUContainer());
-            containerCPU->createFile_ = true;
-            containerCPU->fileName_ = "";
-            containerCPU->filePath_ = "";
-            containerCPU->interfacedCPUs_.append(cpuNodeIterator.key());
+            singleDtsContainer = QSharedPointer<LinuxDeviceTreeCpuRoutesContainer>(new LinuxDeviceTreeCpuRoutesContainer(*container.data()));
 
-            containers.append(containerCPU);
+            dtsCpuContainers.append(singleDtsContainer);
         }
 
-        containerCPU->rootInterfaces_.append(cpuNodeIterator.value());
+        singleDtsContainer->addCpu(container->getCpu());
     }
 
-    for (int i = 0; i < containers.size(); ++i)
+    for (int i = 0; i < dtsCpuContainers.size(); ++i)
     {
-        QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> singleContainer = containers.at(i);
-        singleContainer->fileName_ = fileName + "_" + QString::number(i);
-
-        int comparisonIterator = i + 1;
-        while (comparisonIterator < containers.size())
-        {
-            QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> comparisonContainer =
-                containers.at(comparisonIterator);
-            if (singleContainer->rootInterfaces_ == comparisonContainer->rootInterfaces_)
-            {
-                singleContainer->interfacedCPUs_.append(comparisonContainer->interfacedCPUs_);
-                containers.remove(comparisonIterator);
-            }
-            else
-            {
-                comparisonIterator++;
-            }
-        }
+        QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> singleContainer = dtsCpuContainers.at(i);
+        singleContainer->setFileName(fileName + "_" + QString::number(i));
     }
 
-    return containers;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreeCPUDetails::getCPUInterfacePairs()
-//-----------------------------------------------------------------------------
-QMultiMap<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > LinuxDeviceTreeCPUDetails::
-getCPUInterfacePairs(QVector<QSharedPointer<ConnectivityInterface>> roots,
-    QVector<QSharedPointer<ConnectivityInterface>>& visitedInterfaces, LibraryInterface* library)
-{
-    QMultiMap<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > cpuNodes;
-
-    for (auto interfaceNode : roots)
-    {
-        if (!visitedInterfaces.contains(interfaceNode))
-        {
-            visitedInterfaces.append(interfaceNode);
-
-            QSharedPointer<const Component> component = getComponentContainingInterface(interfaceNode, library);
-            if (component)
-            {
-                QVector<QSharedPointer<const Cpu> > cpus = getInterfacedCPUs(component, interfaceNode);
-
-                for (auto singleCPU : cpus)
-                {
-                    cpuNodes.insert(singleCPU, interfaceNode);
-                }
-
-            }
-
-            QMultiMap<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> > childCPUNodes =
-                getCPUInterfacePairs(interfaceNode->getChildInterfaceNodes(), visitedInterfaces, library);
-
-            QMultiMapIterator<QSharedPointer<const Cpu>, QSharedPointer<ConnectivityInterface> >
-                childIterator(childCPUNodes);
-            while (childIterator.hasNext())
-            {
-                childIterator.next();
-                cpuNodes.insert(childIterator.key(), childIterator.value());
-            }
-        }
-    }
-
-    return cpuNodes;
+    return dtsCpuContainers;
 }
 
 //-----------------------------------------------------------------------------
@@ -147,76 +138,31 @@ QSharedPointer<Component const> LinuxDeviceTreeCPUDetails::getComponentContainin
 }
 
 //-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreeCPUDetails::getInterfacedCPUs()
-//-----------------------------------------------------------------------------
-QVector<QSharedPointer<const Cpu> > LinuxDeviceTreeCPUDetails::getInterfacedCPUs(
-    QSharedPointer<const Component> containingComponent, QSharedPointer<const ConnectivityInterface> interfaceNode)
-{
-    QVector<QSharedPointer<const Cpu > > interfacedCPUs;
-
-    QSharedPointer<MemoryItem> connectedMemory = interfaceNode->getConnectedMemory();
-    if (connectedMemory && connectedMemory->getType().compare("addressSpace", Qt::CaseInsensitive) == 0)
-    {
-        QString spaceName = connectedMemory->getName();
-        if (containingComponent && containingComponent->getAddressSpaceNames().contains(spaceName))
-        {
-            for (auto singleCPU : *containingComponent->getCpus())
-            {
-                if (singleCPU->getAddressSpaceRefs().contains(spaceName))
-                {
-                    interfacedCPUs.append(singleCPU);
-                }
-            }
-        }
-    }
-
-    return interfacedCPUs;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LinuxDeviceTreeCPUDetails::getContainerForCPU()
-//-----------------------------------------------------------------------------
-QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> LinuxDeviceTreeCPUDetails::getContainerForCPU(
-    QSharedPointer<const Cpu> singleCPU,
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > containers)
-{
-    for (auto cpuContainer : containers)
-    {
-        if (cpuContainer->interfacedCPUs_.contains(singleCPU))
-        {
-            return cpuContainer;
-        }
-    }
-
-    return QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer>();
-}
-
-//-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeCPUDetails::getMemories()
 //-----------------------------------------------------------------------------
 QVector<LinuxDeviceTreeCPUDetails::CpuMemory> LinuxDeviceTreeCPUDetails::getMemories(
-    QSharedPointer<const ConnectivityInterface> previousInterface,
-    QSharedPointer<ConnectivityInterface> interfaceNode, quint64 baseAddress, quint64 const& memoryItemRange)
+    QSharedPointer<DeviceTreeUtilities::CpuDeviceTree> deviceTreeContainer, quint64 baseAddress, quint64 const& memoryItemRange)
 {
     QVector<LinuxDeviceTreeCPUDetails::CpuMemory> newCpuMemories;
     quint64 newBaseAddress = baseAddress;
     quint64 newMemoryRange = memoryItemRange;
 
-    if (interfaceNode->getMode().compare(QLatin1String("master"), Qt::CaseInsensitive) == 0)
+    QSharedPointer<const ConnectivityInterface> containerInterface = deviceTreeContainer->interface_;
+    if (containerInterface->getMode().compare(QLatin1String("master"), Qt::CaseInsensitive) == 0)
     {
-        newBaseAddress += interfaceNode->getBaseAddress().toULongLong();
+        newBaseAddress += containerInterface->getBaseAddress().toULongLong();
     }
-    else if (interfaceNode->getMode().compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0)
+    else if (containerInterface->getMode().compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0)
     {
-        newBaseAddress += interfaceNode->getRemapAddress().toULongLong();
-        newMemoryRange = interfaceNode->getRemapRange().toULongLong();
+        newBaseAddress += containerInterface->getRemapAddress().toULongLong();
+        newMemoryRange = containerInterface->getRemapRange().toULongLong();
     }
-    else if (interfaceNode->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0)
+    else if (containerInterface->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0)
     {
-        if (interfacedItemIsMemory(interfaceNode))
+        if (interfacedItemIsMemory(containerInterface))
         {
             QPair<quint64, quint64> memoryAddress = MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(
-                interfaceNode->getConnectedMemory());
+                containerInterface->getConnectedMemory());
 
             quint64 memoryBase = newBaseAddress;
             newBaseAddress += memoryAddress.first;
@@ -225,24 +171,18 @@ QVector<LinuxDeviceTreeCPUDetails::CpuMemory> LinuxDeviceTreeCPUDetails::getMemo
                 newMemoryRange = memoryAddress.second + 1;
             }
 
-            LinuxDeviceTreeCPUDetails::CpuMemory newMemory{
-                interfaceNode, memoryBase, newBaseAddress, newMemoryRange };
+            LinuxDeviceTreeCPUDetails::CpuMemory newMemory{containerInterface, memoryBase, newBaseAddress, newMemoryRange };
             newCpuMemories.append(newMemory);
             return newCpuMemories;
         }
     }
 
-    for (int i = interfaceNode->getChildInterfaceNodes().size() - 1; i >= 0; i--)
+    for (auto leafContainer : deviceTreeContainer->childContainers_)
     {
-        QSharedPointer<ConnectivityInterface> pathNode = interfaceNode->getChildInterfaceNodes().at(i);
-        if (pathNode != previousInterface)
+        QVector<LinuxDeviceTreeCPUDetails::CpuMemory> nodeMemories = getMemories(leafContainer, newBaseAddress, newMemoryRange);
+        if (!nodeMemories.isEmpty())
         {
-            QVector<LinuxDeviceTreeCPUDetails::CpuMemory> nodeMemories =
-                getMemories(interfaceNode, pathNode, newBaseAddress, newMemoryRange);
-            if (!nodeMemories.isEmpty())
-            {
-                newCpuMemories.append(nodeMemories);
-            }
+            newCpuMemories.append(nodeMemories);
         }
     }
 

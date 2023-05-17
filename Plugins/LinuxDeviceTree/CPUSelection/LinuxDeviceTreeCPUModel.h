@@ -17,6 +17,8 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
+class LinuxDeviceTreeCpuRoutesContainer;
+
 //-----------------------------------------------------------------------------
 //! The model to manage the Linux Device Tree CPU details.
 //-----------------------------------------------------------------------------
@@ -43,9 +45,14 @@ public:
      *
      *      @param [in] cpuDetails  The selected CPU containers.
      */
-    void setupCPUDetails(QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuDetails);
+    void setupCPUDetails(QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > cpuDetails);
 
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > getCPUDetails() const;
+    /*!
+     *  Get the selected CPU containers.
+     *
+     *      @return List of CPU containers that should be written into files.
+     */
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > getCPUDetails() const;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -135,7 +142,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The CPU containers being edited.
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpus_;
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > cpus_;
 };
 
 #endif // LINUXDEVICETREECPUMODEL_H

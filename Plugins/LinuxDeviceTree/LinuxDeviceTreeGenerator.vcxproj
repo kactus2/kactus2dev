@@ -137,11 +137,15 @@
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp" />
+    <ClCompile Include="..\common\ConnectivityGraphUtilities.cpp" />
+    <ClCompile Include="..\common\CpuRoutesContainer.cpp" />
+    <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUDelegate.cpp" />
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUDetails.cpp" />
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUEditor.cpp" />
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUModel.cpp" />
+    <ClCompile Include="CPUSelection\LinuxDeviceTreeCpuRoutesContainer.cpp" />
     <ClCompile Include="LinuxDeviceTreeDialog.cpp" />
     <ClCompile Include="LinuxDeviceTreeGenerator.cpp" />
     <ClCompile Include="LinuxDeviceTreePlugin.cpp" />
@@ -158,6 +162,9 @@
     <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h" />
     <QtMoc Include="LinuxDeviceTreeDialog.h">
     </QtMoc>
+    <ClInclude Include="..\common\ConnectivityGraphUtilities.h" />
+    <ClInclude Include="..\common\CpuRoutesContainer.h" />
+    <ClInclude Include="..\common\SingleCpuRoutesContainer.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />
     <QtMoc Include="CPUSelection\LinuxDeviceTreeCPUModel.h">
     </QtMoc>
@@ -167,6 +174,7 @@
     <QtMoc Include="CPUSelection\LinuxDeviceTreeCPUEditor.h">
     </QtMoc>
     <ClInclude Include="CPUSelection\LinuxDeviceTreeCPUDetails.h" />
+    <ClInclude Include="CPUSelection\LinuxDeviceTreeCpuRoutesContainer.h" />
     <ClInclude Include="LinuxDeviceTreeGenerator.h" />
     <ClInclude Include="LinuxDeviceTreeGenerator_global.h" />
     <QtMoc Include="LinuxDeviceTreePlugin.h">

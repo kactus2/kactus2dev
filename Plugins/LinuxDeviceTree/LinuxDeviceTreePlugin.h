@@ -22,9 +22,10 @@
 
 #include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUDetails.h>
 
-class FileSet;
-
 #include <QObject>
+
+class FileSet;
+class LinuxDeviceTreeCpuRoutesContainer;
 
 //-----------------------------------------------------------------------------
 //! Generator plugin for Linux Device Tree.
@@ -184,7 +185,7 @@ private:
      */
     void generateDeviceTree(QSharedPointer<Component> component, QString const& activeView,
         QString const& folderPath, bool writeBlocks,
-        QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > acceptedContainers);
+        QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > acceptedContainers);
 
     //-----------------------------------------------------------------------------
     // Data.

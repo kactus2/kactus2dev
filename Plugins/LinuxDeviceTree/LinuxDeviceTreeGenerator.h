@@ -29,6 +29,7 @@ class Cpu;
 class AddressSpace;
 class Design;
 class DesignConfiguration;
+class LinuxDeviceTreeCpuRoutesContainer;
 
 //-----------------------------------------------------------------------------
 //! Creates a Linux Device Tree from the selected document.
@@ -59,8 +60,10 @@ public:
      *      @param [in] cpuContainers       List of CPU containers.
      *      @param [in] outputFolder        Path to the output folder.
      */
-    bool generate(QSharedPointer<Component> topComponent, QString const& activeView, bool writeAddressBlocks,
-        QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuContainers,
+    bool generate(QSharedPointer<Component> topComponent,
+        QString const& activeView,
+        bool writeAddressBlocks,
+        QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > cpuContainers,
         QString const& outputFolder);
 
 private:
@@ -78,8 +81,10 @@ private:
      *      @param [in] writeAddressBlocks  Flag for writing address block data.
      *      @param [in] outputFolder        Path for the folder.
      */
-    void writeFile(QString const& designVendor, QString const& designName,
-        QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> cpuContainer, bool writeAddressBlocks,
+    void writeFile(QString const& designVendor,
+        QString const& designName,
+        QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> cpuContainer,
+        bool writeAddressBlocks,
         QString const& outputFolder);
 
     /*!
@@ -102,7 +107,7 @@ private:
      *      @param [in] prefix              Current tab prefix of the items.
      */
     void writeContainer(QTextStream& outputStream,
-        QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> cpuContainer, bool writeAddressBlocks,
+        QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> cpuContainer, bool writeAddressBlocks,
         QString& prefix, int addressSize, int rangeSize);
 
     /*!
@@ -114,9 +119,12 @@ private:
      *      @param [in] writeAddressBlocks  Flag for writing address block data.
      *      @param [in] prefix              Current tab prefix of the items.
      */
-    void startPathWriting(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> pathRootNode,
-        QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> cpuContainer, bool writeAddressBlocks,
-        QString& prefix, int addressSize, int rangeSize);
+    void startPathWriting(QTextStream& outputStream,
+        QSharedPointer<DeviceTreeUtilities::CpuDeviceTree> nodeContainer,
+        bool writeAddressBlocks,
+        QString& prefix,
+        int addressSize,
+        int rangeSize);
 
     /*!
      *	Write an introduction to the CPUs.
@@ -146,15 +154,23 @@ private:
      *
      *      @param [in] outputStream        The stream to write into.
      *      @param [in] previousInterface   The previously written interface.
-     *      @param [in] interfaceNode       The current interface.
+     *      @param [in] nodeContainer       Container for the interface node.
      *      @param [in] baseAddress         Currently effective base address.
      *      @param [in] memoryItemRange     Currently effective range of the memory item.
      *      @param [in] prefix              Current tab prefix of the items.
      *      @param [in] writeAddressBlocks  Flag for writing address block data.
+     *      @param [in] addressSize         Current address size.
+     *      @param [in] rangeSize           Current range size.
      */
-    void writePathNode(QTextStream& outputStream, QSharedPointer<const ConnectivityInterface> previousInterface,
-        QSharedPointer<const ConnectivityInterface> interfaceNode, quint64 const& baseAddress,
-        quint64 const& memoryItemRange, QString& prefix, bool writeAddressBlocks, int addressSize, int rangeSize);
+    void writePathNode(QTextStream& outputStream,
+        QSharedPointer<const ConnectivityInterface> previousInterface,
+        QSharedPointer<DeviceTreeUtilities::CpuDeviceTree> nodeContainer,
+        quint64 const& baseAddress,
+        quint64 const& memoryItemRange,
+        QString& prefix,
+        bool writeAddressBlocks,
+        int addressSize,
+        int rangeSize);
 
     /*!
      *  Check if an interface node has access to memory interface nodes.
@@ -191,7 +207,7 @@ private:
     /*!
      *  Get address and size requirements of the selected interface node.
      *
-     *      @param [in] itemNode        The selected interface node.
+     *      @param [in] rootContainer   Container containing the selected interface node.
      *      @param [in] previousNode    Previous node in the connectivity graph.
      *      @param [in] baseAddress     The current base address of the connection chain.
      *      @param [in] memoryRange     Current range for the memory items.
@@ -199,8 +215,10 @@ private:
      *
      *      @return Addres / size requirement pair.
      */
-    QPair<quint64, quint64> getAddressAndSizeRequirements(QSharedPointer<ConnectivityInterface const> itemNode,
-        QSharedPointer<ConnectivityInterface const> previousNode, quint64 baseAddress, quint64 memoryRange,
+    QPair<quint64, quint64> getAddressAndSizeRequirements(QSharedPointer<DeviceTreeUtilities::CpuDeviceTree> rootContainer,
+        QSharedPointer<ConnectivityInterface const> previousNode,
+        quint64 baseAddress,
+        quint64 memoryRange,
         bool stopAtBridges);
 
     /*!
@@ -272,7 +290,7 @@ private:
      *      @param [in] writeAddressBlocks  Flag for writing address block data.
      */
     void writeMemories(QTextStream& outputStream,
-        QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> cpuContainer, QString& prefix,
+        QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> cpuContainer, QString& prefix,
         bool writeAddressBlocks,int addressSize, int rangeSize) const;
 
     /*!

@@ -20,6 +20,8 @@
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/ConnectivityComponent.h>
 
+#include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCpuRoutesContainer.h>
+
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeCPUModel::LinuxDeviceTreeCPUModel()
 //-----------------------------------------------------------------------------
@@ -32,8 +34,7 @@ cpus_()
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeCPUModel::setupCPUDetails()
 //-----------------------------------------------------------------------------
-void LinuxDeviceTreeCPUModel::setupCPUDetails(
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer>> cpuDetails)
+void LinuxDeviceTreeCPUModel::setupCPUDetails(QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer>> cpuDetails)
 {
     beginResetModel();
 
@@ -46,12 +47,12 @@ void LinuxDeviceTreeCPUModel::setupCPUDetails(
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeCPUModel::getCPUDetails()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > LinuxDeviceTreeCPUModel::getCPUDetails() const
+QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > LinuxDeviceTreeCPUModel::getCPUDetails() const
 {
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > acceptedContainers;
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > acceptedContainers;
     for (auto cpuContainer : cpus_)
     {
-        if (cpuContainer->createFile_)
+        if (cpuContainer->shouldCreateFile())
         {
             acceptedContainers.append(cpuContainer);
         }
@@ -178,8 +179,8 @@ QVariant LinuxDeviceTreeCPUModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == LinuxDeviceTreeCPUColumns::CREATEDEVICETREE)
         {
-            QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> indexedCPU = cpus_.at(index.row());
-            if (indexedCPU->createFile_)
+            QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> indexedCPU = cpus_.at(index.row());
+            if (indexedCPU->shouldCreateFile())
             {
                 return Qt::Checked;
             }
@@ -207,12 +208,12 @@ bool LinuxDeviceTreeCPUModel::setData(QModelIndex const& index, QVariant const& 
 		return false;
 	}
 
-    QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> indexedCPU = cpus_.at(index.row());
+    QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> indexedCPU = cpus_.at(index.row());
     if (Qt::EditRole == role)
     {
         if (index.column() == LinuxDeviceTreeCPUColumns::FILE_NAME)
         {
-            indexedCPU->fileName_ = value.toString();
+            indexedCPU->setFileName(value.toString());
         }
 
         emit dataChanged(index, index);
@@ -222,7 +223,7 @@ bool LinuxDeviceTreeCPUModel::setData(QModelIndex const& index, QVariant const& 
     {
         if (index.column() == LinuxDeviceTreeCPUColumns::CREATEDEVICETREE)
         {
-            indexedCPU->createFile_ = value.toBool();
+            indexedCPU->setCreateFileFlag(value.toBool());
         }
 
         emit dataChanged(index, index);
@@ -237,20 +238,20 @@ bool LinuxDeviceTreeCPUModel::setData(QModelIndex const& index, QVariant const& 
 //-----------------------------------------------------------------------------
 QVariant LinuxDeviceTreeCPUModel::valueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> indexedContainer = cpus_.at(index.row());
+    QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> indexedContainer = cpus_.at(index.row());
 
     if (index.column() == LinuxDeviceTreeCPUColumns::FILE_NAME)
     {
-        return indexedContainer->fileName_;
+        return indexedContainer->getFileName();
     }
     else if (index.column() == LinuxDeviceTreeCPUColumns::CPUS)
     {
         QString cpuText = "";
-        for (auto currentCPU : indexedContainer->interfacedCPUs_)
+        for (auto currentCPU : indexedContainer->getCpus())
         {
             cpuText += currentCPU->name();
 
-            if (currentCPU != indexedContainer->interfacedCPUs_.last())
+            if (currentCPU != indexedContainer->getCpus().last())
             {
                 cpuText += ", ";
             }
@@ -260,9 +261,9 @@ QVariant LinuxDeviceTreeCPUModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == LinuxDeviceTreeCPUColumns::CONTAINING_COMPONENT)
     {
-        if (indexedContainer->rootInterfaces_.isEmpty() == false)
+        if (indexedContainer->getRoutes().isEmpty() == false && indexedContainer->getRoutes().first()->cpuInterface_)
         {
-            return indexedContainer->rootInterfaces_.first()->getInstance()->getVlnv();
+            return indexedContainer->getRoutes().first()->cpuInterface_->getInstance()->getVlnv();
         }
         else
         {
@@ -282,12 +283,12 @@ QVariant LinuxDeviceTreeCPUModel::tooltipForIndex(QModelIndex const& index) cons
     {
         QString cpuTooltip = "CPUs:\n";
 
-        QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> indexedContainer = cpus_.at(index.row());
-        for (auto currentCPU : indexedContainer->interfacedCPUs_)
+        QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> indexedContainer = cpus_.at(index.row());
+        for (auto currentCPU : indexedContainer->getCpus())
         {
             cpuTooltip += currentCPU->name();
 
-            if (currentCPU != indexedContainer->interfacedCPUs_.last())
+            if (currentCPU != indexedContainer->getCpus().last())
             {
                 cpuTooltip += "\n";
             }
