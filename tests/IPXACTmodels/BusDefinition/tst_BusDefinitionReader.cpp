@@ -94,10 +94,10 @@ void tst_BusDefinitionReader::testReadDocumentNameGroupAndMandatoryFields()
     QDomDocument document;
     document.setContent(QString(
         "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
-        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>MinimalBus</ipxact:name>"
@@ -323,10 +323,10 @@ void tst_BusDefinitionReader::testReadChoices()
     document.setContent(QString(
         "<?xml version=\"1.0\"?>"
         "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
-        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestBus</ipxact:name>"
@@ -352,8 +352,8 @@ void tst_BusDefinitionReader::testReadChoices()
     QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getChoices()->size(), 2);
-    QCOMPARE(testBus->getChoices()->at(0).name(), QString("bitsize"));
-    QCOMPARE(testBus->getChoices()->at(1).name(), QString("testChoice"));
+    QCOMPARE(testBus->getChoices()->at(0)->name(), QString("bitsize"));
+    QCOMPARE(testBus->getChoices()->at(1)->name(), QString("testChoice"));
 }
 
 //-----------------------------------------------------------------------------
