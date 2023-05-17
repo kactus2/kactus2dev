@@ -15,9 +15,7 @@
 // Function: InterconnectionConfiguration::InterconnectionConfiguration()
 //-----------------------------------------------------------------------------
 InterconnectionConfiguration::InterconnectionConfiguration():
-isPresent_(),
-interconnectionRef_(),
-abstractorInstances_(new QList<QSharedPointer<MultipleAbstractorInstances> >)
+    Extendable()
 {
 
 }
@@ -26,11 +24,12 @@ abstractorInstances_(new QList<QSharedPointer<MultipleAbstractorInstances> >)
 // Function: InterconnectionConfiguration::InterconnectionConfigurationCopy()
 //-----------------------------------------------------------------------------
 InterconnectionConfiguration::InterconnectionConfiguration(const InterconnectionConfiguration& other):
+    Extendable(other),
 isPresent_(other.isPresent_),
 interconnectionRef_(other.interconnectionRef_),
 abstractorInstances_(new QList<QSharedPointer<MultipleAbstractorInstances> > )
 {
-    foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, *other.abstractorInstances_)
+    for (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor : *other.abstractorInstances_)
     {
         if (multipleAbstractor)
         {
@@ -98,7 +97,7 @@ QList<VLNV> InterconnectionConfiguration::getDependantVLNVs() const
 {
     QList<VLNV> vlnvList;
 
-    foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, *abstractorInstances_)
+    for (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor : *abstractorInstances_)
     {
         vlnvList.append(multipleAbstractor->getDependantVLNVs());
     }

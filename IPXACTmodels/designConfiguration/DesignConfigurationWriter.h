@@ -35,7 +35,12 @@ public:
     DesignConfigurationWriter();
 
     //! The destructor.
-    ~DesignConfigurationWriter();
+    ~DesignConfigurationWriter() override = default;
+
+
+    //! No copying allowed.
+    DesignConfigurationWriter(DesignConfigurationWriter const& rhs) = delete;
+    DesignConfigurationWriter& operator=(DesignConfigurationWriter const& rhs) = delete;
 
     /*!
      *  Writes the given design configuration into xml.
@@ -47,10 +52,6 @@ public:
         QSharedPointer<DesignConfiguration> designConfiguration) const;
 
 private:
-
-    //! No copying allowed.
-    DesignConfigurationWriter(DesignConfigurationWriter const& rhs);
-    DesignConfigurationWriter& operator=(DesignConfigurationWriter const& rhs);
 
     /*!
      *  Write the document start elements.
@@ -94,7 +95,8 @@ private:
      *      @param [in] multipleAbstractors     A list of multipleAbastractors.
      */
     void writeMultipleAbstractorInstances(QXmlStreamWriter& writer,
-        QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > multipleAbstractors) const;
+        QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > multipleAbstractors,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the interface references.
@@ -103,7 +105,8 @@ private:
      *      @param [in] interfaceReferences     A list of interface references.
      */
     void writeInterfaceReferences(QXmlStreamWriter& writer,
-        QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences) const;
+        QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the abstractor instances.
@@ -112,7 +115,8 @@ private:
      *      @param [in] abstractorInstances     A list of abstractor instances.
      */
     void writeAbstractorInstances(QXmlStreamWriter& writer,
-        QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances) const;
+        QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the view configurations.

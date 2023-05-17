@@ -30,14 +30,10 @@
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::DesignConfiguration()
 //-----------------------------------------------------------------------------
-DesignConfiguration::DesignConfiguration(VLNV const& vlnv):
-Document(vlnv), 
-designRef_(),
-generatorChainConfigurations_(new QList<QSharedPointer<ConfigurableVLNVReference> >),
-interconnectionConfigurations_(new QList<QSharedPointer<InterconnectionConfiguration> > ),
-viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> > )
+DesignConfiguration::DesignConfiguration(VLNV const& vlnv, Revision revision):
+Document(vlnv, revision)
 {
-    setVlnv(vlnv);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -45,36 +41,33 @@ viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> > )
 //-----------------------------------------------------------------------------
 DesignConfiguration::DesignConfiguration(DesignConfiguration const& other):
 Document(other),
-designRef_(other.designRef_),
-generatorChainConfigurations_(new QList<QSharedPointer<ConfigurableVLNVReference> >),
-interconnectionConfigurations_(new QList<QSharedPointer<InterconnectionConfiguration> >),
-viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> >)
+designRef_(other.designRef_)
 {
-    foreach (QSharedPointer<ConfigurableVLNVReference> generatorChainConf, *other.generatorChainConfigurations_)
+    for (QSharedPointer<ConfigurableVLNVReference> generatorChainConf : *other.generatorChainConfigurations_)
     {
         if (generatorChainConf)
         {
             QSharedPointer<ConfigurableVLNVReference> copy = QSharedPointer<ConfigurableVLNVReference>(
-                new ConfigurableVLNVReference(*generatorChainConf.data()));
+                new ConfigurableVLNVReference(*generatorChainConf));
             generatorChainConfigurations_->append(copy);
         }
     }
-    foreach (QSharedPointer<InterconnectionConfiguration> configuration, *other.interconnectionConfigurations_)
+    for (QSharedPointer<InterconnectionConfiguration> configuration : *other.interconnectionConfigurations_)
     {
         if (configuration)
         {
             QSharedPointer<InterconnectionConfiguration> copy = QSharedPointer<InterconnectionConfiguration>(
-                new InterconnectionConfiguration(*configuration.data()));
+                new InterconnectionConfiguration(*configuration));
             interconnectionConfigurations_->append(copy);
         }
     }
 
-    foreach (QSharedPointer<ViewConfiguration> configuration, *other.viewConfigurations_)
+    for (QSharedPointer<ViewConfiguration> configuration : *other.viewConfigurations_)
     {
         if (configuration)
         {
             QSharedPointer<ViewConfiguration> copy = QSharedPointer<ViewConfiguration>(
-                new ViewConfiguration(*configuration.data()));
+                new ViewConfiguration(*configuration));
             viewConfigurations_->append(copy);
         }
     }
@@ -85,11 +78,7 @@ viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> >)
 // Function: DesignConfiguration::DesignConfiguration()
 //-----------------------------------------------------------------------------
 DesignConfiguration::DesignConfiguration():
-Document(),
-designRef_(),
-generatorChainConfigurations_(new QList<QSharedPointer<ConfigurableVLNVReference> >),
-interconnectionConfigurations_(new QList<QSharedPointer<InterconnectionConfiguration> >),
-viewConfigurations_(new QList<QSharedPointer<ViewConfiguration> > )
+Document()
 {
 
 }
@@ -105,7 +94,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
 		designRef_ = other.designRef_;
 
         generatorChainConfigurations_->clear();
-        foreach (QSharedPointer<ConfigurableVLNVReference> generatorChainConf, *other.generatorChainConfigurations_)
+        for (QSharedPointer<ConfigurableVLNVReference> generatorChainConf : *other.generatorChainConfigurations_)
         {
             if (generatorChainConf)
             {
@@ -116,7 +105,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
 		}
 
         interconnectionConfigurations_->clear();
-        foreach (QSharedPointer<InterconnectionConfiguration> configuration, *other.interconnectionConfigurations_)
+        for  (QSharedPointer<InterconnectionConfiguration> configuration : *other.interconnectionConfigurations_)
         {
             if (configuration)
             {
@@ -127,7 +116,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
 		}
 
         viewConfigurations_->clear();
-        foreach (QSharedPointer<ViewConfiguration> configuration, *other.viewConfigurations_)
+        for (QSharedPointer<ViewConfiguration> configuration : *other.viewConfigurations_)
         {
             if (configuration)
             {
@@ -141,7 +130,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignConfiguration::~DesignConfiguration()
+// Function: DesignConfiguration::clone()
 //-----------------------------------------------------------------------------
 DesignConfiguration::~DesignConfiguration()
 {
@@ -307,7 +296,7 @@ void DesignConfiguration::addViewConfiguration(QString const& instanceName, QStr
 //-----------------------------------------------------------------------------
 void DesignConfiguration::removeViewConfiguration(QString const& instanceName)
 {
-    foreach (QSharedPointer<ViewConfiguration> configuration, *viewConfigurations_)
+    for (QSharedPointer<ViewConfiguration> configuration : *viewConfigurations_)
     {
         if (configuration->getInstanceName() == instanceName)
         {
@@ -321,15 +310,17 @@ void DesignConfiguration::removeViewConfiguration(QString const& instanceName)
 //-----------------------------------------------------------------------------
 QSharedPointer<ViewConfiguration> DesignConfiguration::getViewConfiguration(QString const& instanceName) const
 {
-    foreach (QSharedPointer<ViewConfiguration> configuration, *viewConfigurations_)
+    QSharedPointer<ViewConfiguration> configuration = nullptr;
+
+    auto it = std::find_if(viewConfigurations_->cbegin(), viewConfigurations_->cend(),
+        [instanceName](auto const& viewConfiguration) {return viewConfiguration->getInstanceName() == instanceName; });
+
+    if (it != viewConfigurations_->cend())
     {
-        if (configuration->getInstanceName() == instanceName)
-        {
-            return configuration;
-        }
+        configuration = *it;
     }
 
-    return QSharedPointer<ViewConfiguration>();
+    return configuration;
 }
 
 //-----------------------------------------------------------------------------
@@ -337,12 +328,11 @@ QSharedPointer<ViewConfiguration> DesignConfiguration::getViewConfiguration(QStr
 //-----------------------------------------------------------------------------
 QString DesignConfiguration::getActiveView(QString const& instanceName) const
 {
-    foreach (QSharedPointer<ViewConfiguration> configuration, *viewConfigurations_)
+    auto configuration = getViewConfiguration(instanceName);
+
+    if (configuration)
     {
-        if (configuration->getInstanceName() == instanceName)
-        {
-            return configuration->getViewReference();
-        }
+        return configuration->getViewReference();
     }
 
     return QString();
@@ -379,12 +369,12 @@ QMap<QString, QString> DesignConfiguration::getConfigurableElementValues(QString
 {
     QMap<QString, QString> configurableElements;
     QString instanceIdentifier = QStringLiteral("kactus2:componentInstance");
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:configurableElementValues"))
         {
             QSharedPointer<Kactus2Group> cevsGroup = extension.dynamicCast<Kactus2Group>();
-            foreach (QSharedPointer<VendorExtension> instanceNode, 
+            for (QSharedPointer<VendorExtension> instanceNode :
                 cevsGroup->getByType(instanceIdentifier))
             {
                 QSharedPointer<Kactus2Group> instanceGroup = instanceNode.dynamicCast<Kactus2Group>();
@@ -399,7 +389,7 @@ QMap<QString, QString> DesignConfiguration::getConfigurableElementValues(QString
                 if (groupUUID == instanceUUID)
                 {
                     QString elementIdentifier = QStringLiteral("kactus2:configurableElementValue");
-                    foreach (QSharedPointer<VendorExtension> value, instanceGroup->getByType(elementIdentifier))
+                    for (QSharedPointer<VendorExtension> value : instanceGroup->getByType(elementIdentifier))
                     {
                         QSharedPointer<Kactus2Placeholder> valueHolder = value.dynamicCast<Kactus2Placeholder>();
                         configurableElements.insert(valueHolder->getAttributeValue(QStringLiteral("referenceId")), 
@@ -431,7 +421,7 @@ void DesignConfiguration::setConfigurableElementValues(QString const& instanceUU
 
    QString elementIdentifier = QStringLiteral("kactus2:configurableElementValue");
                    
-    foreach (QSharedPointer<VendorExtension> value, instanceGroup->getByType(elementIdentifier))
+    for (QSharedPointer<VendorExtension> value : instanceGroup->getByType(elementIdentifier))
     {
         QSharedPointer<Kactus2Placeholder> existingValue = value.dynamicCast<Kactus2Placeholder>();
 
@@ -448,7 +438,7 @@ void DesignConfiguration::setConfigurableElementValues(QString const& instanceUU
         }
     }
 
-    foreach (QString const& newId, valuesToSet.keys())
+    for (QString const& newId : valuesToSet.keys())
     {
         QSharedPointer<Kactus2Placeholder> valueHolder(
             new Kactus2Placeholder(QStringLiteral("kactus2:configurableElementValue")));
@@ -463,22 +453,16 @@ void DesignConfiguration::setConfigurableElementValues(QString const& instanceUU
 //-----------------------------------------------------------------------------
 QMap<QString, QString> DesignConfiguration::getKactus2ViewOverrides() const
 {
-    QSharedPointer<Kactus2Group> overrideGroup;
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:viewOverrides"))
-        {
-            overrideGroup = extension.dynamicCast<Kactus2Group>();
-            break;
-        }
-    }
+    QSharedPointer<Kactus2Group> overrideGroup =
+        findVendorExtension(QStringLiteral("kactus2:viewOverrides")).dynamicCast<Kactus2Group>();
 
     QMap <QString, QString> viewOverrides;
 
     if (overrideGroup)
     {
-        QString overrideIndentifier = QStringLiteral("kactus2:instanceView");
-        foreach (QSharedPointer<VendorExtension> extension, overrideGroup->getByType(overrideIndentifier))
+        auto overrideIndentifier = QStringLiteral("kactus2:instanceView");
+        for (QSharedPointer<VendorExtension> extension : 
+            overrideGroup->getByType(overrideIndentifier))
         {
             QSharedPointer<Kactus2Placeholder> viewExtension = extension.dynamicCast<Kactus2Placeholder>();
 
@@ -500,30 +484,22 @@ QMap<QString, QString> DesignConfiguration::getKactus2ViewOverrides() const
 //-----------------------------------------------------------------------------
 void DesignConfiguration::setKactus2ViewOverrides(QMap<QString, QString> kactus2ViewOverrides)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:viewOverrides"))
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
+    auto extension = findVendorExtension(QLatin1String("kactus2:viewOverrides"));
+
+    getVendorExtensions()->removeAll(extension);
 
     if (!kactus2ViewOverrides.isEmpty())
     {
         QSharedPointer<Kactus2Group> overrideGroup (new Kactus2Group(QStringLiteral("kactus2:viewOverrides")));
 
-        QMap<QString, QString>::const_iterator overrideIndex = kactus2ViewOverrides.constBegin();
-        while (overrideIndex != kactus2ViewOverrides.constEnd())
+        for (auto const& id : kactus2ViewOverrides.keys())
         {
             QSharedPointer<Kactus2Placeholder> treeItemExtension(
                 new Kactus2Placeholder(QStringLiteral("kactus2:instanceView")));
-            treeItemExtension->setAttribute(QStringLiteral("id"), overrideIndex.key());
-            treeItemExtension->setAttribute(QStringLiteral("viewName"), overrideIndex.value());
+            treeItemExtension->setAttribute(QStringLiteral("id"), id);
+            treeItemExtension->setAttribute(QStringLiteral("viewName"), kactus2ViewOverrides.value(id));
 
             overrideGroup->addToGroup(treeItemExtension);
-
-            overrideIndex++;
         }
 
         getVendorExtensions()->append(overrideGroup);
@@ -535,17 +511,10 @@ void DesignConfiguration::setKactus2ViewOverrides(QMap<QString, QString> kactus2
 //-----------------------------------------------------------------------------
 QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtension(QString const& instanceUUID)
 {
-    QSharedPointer<Kactus2Group> cevGroup;
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:configurableElementValues"))
-        {
-            cevGroup = extension.dynamicCast<Kactus2Group>();
-            break;
-        }
-    }
+    QSharedPointer<Kactus2Group> cevGroup =
+        findVendorExtension(QLatin1String("kactus2:configurableElementValues")).dynamicCast<Kactus2Group>();
 
-    if (cevGroup.isNull())
+    if (cevGroup == nullptr)
     {
         cevGroup = QSharedPointer<Kactus2Group>(new Kactus2Group(QStringLiteral("kactus2:configurableElementValues")));
         getVendorExtensions()->append(cevGroup);
@@ -553,7 +522,7 @@ QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtensi
 
     QSharedPointer<Kactus2Group> targetInstanceGroup;
     QString instanceIdentifier = QStringLiteral("kactus2:componentInstance");
-    foreach (QSharedPointer<VendorExtension> instanceNode, cevGroup->getByType(instanceIdentifier))
+    for  (QSharedPointer<VendorExtension> instanceNode : cevGroup->getByType(instanceIdentifier))
     {
         QSharedPointer<Kactus2Group> instanceGroup = instanceNode.dynamicCast<Kactus2Group>();
         QString groupUUID;

@@ -20,29 +20,25 @@ DesignConfigurationReader::DesignConfigurationReader(): DocumentReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignConfigurationReader::~DesignConfigurationReader()
-//-----------------------------------------------------------------------------
-DesignConfigurationReader::~DesignConfigurationReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::createDesignConfigurationFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfigurationFrom(
     QDomDocument const& document) const
 {
-    QSharedPointer<DesignConfiguration> newDesignConfiguration (new DesignConfiguration);
+    QDomNode designConfigurationNode = document.firstChildElement();
+
+    VLNV vlnv = createVLNVFrom(designConfigurationNode, VLNV::DESIGNCONFIGURATION);
+    Document::Revision docRevision = getXMLDocumentRevision(designConfigurationNode);
+
+    QSharedPointer<DesignConfiguration> newDesignConfiguration (new DesignConfiguration(vlnv, docRevision));
 
     parseTopComments(document, newDesignConfiguration);
 
     parseXMLProcessingInstructions(document, newDesignConfiguration);
 
-    QDomNode designConfigurationNode = document.firstChildElement();
     parseNamespaceDeclarations(designConfigurationNode, newDesignConfiguration);
 
-    parseVLNVElements(designConfigurationNode, newDesignConfiguration, VLNV::DESIGNCONFIGURATION);
+    parseDocumentNameGroup(designConfigurationNode, newDesignConfiguration);
 
     parseDesignReference(designConfigurationNode, newDesignConfiguration);
 
@@ -51,8 +47,6 @@ QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfi
     parseInterconnectionConfigurations(document, newDesignConfiguration);
 
     parseViewConfigurations(document, newDesignConfiguration);
-
-    parseDescription(designConfigurationNode, newDesignConfiguration);
 
     parseParameters(designConfigurationNode, newDesignConfiguration);
 
@@ -118,6 +112,8 @@ void DesignConfigurationReader::parseInterconnectionConfigurations(QDomDocument 
     QDomNodeList interconnectionElements =
         designConfigurationDocument.elementsByTagName(QStringLiteral("ipxact:interconnectionConfiguration"));
 
+    auto docRevision = newDesignConfiguration->getRevision();
+
     for (int interconConfIndex = 0; interconConfIndex < interconnectionElements.size(); ++interconConfIndex)
     {
         QDomNode interconnectionConfigurationNode = interconnectionElements.at(interconConfIndex);
@@ -125,14 +121,22 @@ void DesignConfigurationReader::parseInterconnectionConfigurations(QDomDocument 
         QSharedPointer<InterconnectionConfiguration> newInterconnectionConfiguration (
             new InterconnectionConfiguration());
 
-        newInterconnectionConfiguration->setIsPresent (
-            interconnectionConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+        if (docRevision == Document::Revision::Std14)
+        {
+            newInterconnectionConfiguration->setIsPresent(
+                interconnectionConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+        }
 
         newInterconnectionConfiguration->setInterconnectionReference(interconnectionConfigurationNode.
             firstChildElement(QStringLiteral("ipxact:interconnectionRef")).firstChild().nodeValue());
 
-        parseMultipleAbstractors(interconnectionConfigurationNode, newInterconnectionConfiguration);
+        parseMultipleAbstractors(interconnectionConfigurationNode, newInterconnectionConfiguration, docRevision);
         
+        if (docRevision == Document::Revision::Std22)
+        {
+            parseVendorExtensions(interconnectionConfigurationNode, newInterconnectionConfiguration);
+        }
+
         newDesignConfiguration->getInterconnectionConfs()->append(newInterconnectionConfiguration);
     }
 }
@@ -141,7 +145,8 @@ void DesignConfigurationReader::parseInterconnectionConfigurations(QDomDocument 
 // Function: DesignConfigurationReader::parseMultipleAbstractors()
 //-----------------------------------------------------------------------------
 void DesignConfigurationReader::parseMultipleAbstractors(QDomNode const& interconnectionConfigurationNode,
-    QSharedPointer<InterconnectionConfiguration> newInterconnectionConfiguration) const
+    QSharedPointer<InterconnectionConfiguration> newInterconnectionConfiguration, 
+    Document::Revision docRevision) const
 {
     QDomNodeList multipleAbstractorsNodes =
         getNamedChildNodes(interconnectionConfigurationNode, QStringLiteral("ipxact:abstractorInstances"));
@@ -153,12 +158,15 @@ void DesignConfigurationReader::parseMultipleAbstractors(QDomNode const& interco
 
         QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractors (new MultipleAbstractorInstances());
 
-        newMultipleAbstractors->setIsPresent(
-            multipleAbstractorNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+        if (docRevision == Document::Revision::Std14)
+        {
+            newMultipleAbstractors->setIsPresent(
+                multipleAbstractorNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+        }
 
-        parseInterfaceReferences(multipleAbstractorNode, newMultipleAbstractors);
+        parseInterfaceReferences(multipleAbstractorNode, newMultipleAbstractors, docRevision);
 
-        parseAbstractorInstances(multipleAbstractorNode, newMultipleAbstractors);
+        parseAbstractorInstances(multipleAbstractorNode, newMultipleAbstractors, docRevision);
 
         newInterconnectionConfiguration->getAbstractorInstances()->append(newMultipleAbstractors);
     }
@@ -168,7 +176,7 @@ void DesignConfigurationReader::parseMultipleAbstractors(QDomNode const& interco
 // Function: DesignConfigurationReader::parseMultipleAbstractors()
 //-----------------------------------------------------------------------------
 void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipleAbstractorsNode,
-    QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances) const
+    QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances, Document::Revision docRevision) const
 {
     QDomNodeList interfaceRefNodes = getNamedChildNodes(multipleAbstractorsNode, QStringLiteral("ipxact:interfaceRef"));
 
@@ -182,8 +190,17 @@ void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipl
 
         newInterfaceRef->setComponentRef(attributeMap.namedItem(QStringLiteral("componentRef")).nodeValue());
         newInterfaceRef->setBusRef(attributeMap.namedItem(QStringLiteral("busRef")).nodeValue());
-        newInterfaceRef->setIsPresent(
-            singleInterfaceRefNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+        
+        if (docRevision == Document::Revision::Std14)
+        {
+            newInterfaceRef->setIsPresent(
+                singleInterfaceRefNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+        }
+
+        if (docRevision == Document::Revision::Std22)
+        {
+            parseVendorExtensions(singleInterfaceRefNode, newInterfaceRef);
+        }
 
         newMultipleAbstractorInstances->getInterfaceReferences()->append(newInterfaceRef);
     }
@@ -193,7 +210,7 @@ void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipl
 // Function: DesignConfigurationReader::parseAbstractorInstances()
 //-----------------------------------------------------------------------------
 void DesignConfigurationReader::parseAbstractorInstances(QDomNode const& multipleAbstractorsNode,
-    QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances) const
+    QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances, Document::Revision docRevision) const
 {
     QDomNodeList abstractorInstanceNodes = getNamedChildNodes(multipleAbstractorsNode, QStringLiteral("ipxact:abstractorInstance"));
 
@@ -207,6 +224,13 @@ void DesignConfigurationReader::parseAbstractorInstances(QDomNode const& multipl
             singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue());
         newAbstractorInstance->setDisplayName(
             singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
+
+        if (docRevision == Document::Revision::Std22)
+        {
+            newAbstractorInstance->setShortDescription(
+                singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue());
+        }
+
         newAbstractorInstance->setDescription(
             singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
         newAbstractorInstance->setViewName(
@@ -217,6 +241,11 @@ void DesignConfigurationReader::parseAbstractorInstances(QDomNode const& multipl
 
         QSharedPointer<ConfigurableVLNVReference> newAbstractorRef = 
             parseConfigurableVLNVReference(abstractorReferenceNode, VLNV::ABSTRACTOR);
+
+        if (docRevision == Document::Revision::Std22)
+        {
+            parseVendorExtensions(singleAbstractorInstanceNode, newAbstractorInstance);
+        }
 
         newAbstractorInstance->setAbstractorRef(newAbstractorRef);
 
@@ -253,6 +282,8 @@ void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& desi
 {
     QDomNodeList viewConfigurationNodes = designConfigurationDocument.elementsByTagName(QStringLiteral("ipxact:viewConfiguration"));
 
+    auto docRevision = newDesignConfiguration->getRevision();
+
     for (int i = 0; i < viewConfigurationNodes.size(); ++i)
     {
         QDomNode singleViewConfigurationNode = viewConfigurationNodes.at(i);
@@ -261,8 +292,12 @@ void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& desi
 
         newViewConfiguration->setInstanceName(
             singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue());
-        newViewConfiguration->setIsPresent(
-            singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+
+        if (docRevision == Document::Revision::Std14)
+        {
+            newViewConfiguration->setIsPresent(
+                singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+        }
 
         QDomNode viewNode = singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:view"));
         
@@ -280,6 +315,11 @@ void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& desi
                 parseConfigurableElementValue(configurableElementNodes.at(i));
 
             newViewConfiguration->getViewConfigurableElements()->append(newConfigurableElementValue);
+        }
+
+        if (docRevision == Document::Revision::Std22)
+        {
+            parseVendorExtensions(singleViewConfigurationNode, newViewConfiguration);
         }
 
         newDesignConfiguration->getViewConfigurations()->append(newViewConfiguration);

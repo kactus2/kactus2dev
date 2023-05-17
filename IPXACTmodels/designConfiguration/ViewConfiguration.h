@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
+#include <IPXACTmodels/common/Extendable.h>
 
 #include <QString>
 #include <QMap>
@@ -23,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! Matches the ipxact:abstractorInstances element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ViewConfiguration
+class IPXACTMODELS_EXPORT ViewConfiguration : public Extendable
 {
 public:
 
@@ -49,7 +50,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~ViewConfiguration();
+    ~ViewConfiguration() override = default;
 
     /*!
      *  Get the name of this instance.
@@ -120,7 +121,8 @@ private:
     QString viewRef_;
 
     //! A list of pointers to the configurable element values of the referenced view.
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > viewConfigurables_;
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > viewConfigurables_ =
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >(new QList<QSharedPointer<ConfigurableElementValue> >);
 };
 
 #endif // VIEWCONFIGURATION_H

@@ -42,7 +42,10 @@ public:
     /*!
      *  The destructor.
      */
-    ~MultipleAbstractorInstances();
+    ~MultipleAbstractorInstances() = default;
+
+    //! No assignment.
+    MultipleAbstractorInstances& operator=(const MultipleAbstractorInstances& other) = delete;
 
     /*!
      *  Get the value for the isPresent.
@@ -99,10 +102,12 @@ private:
     QString isPresent_;
 
     //! A list of interface references.
-    QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences_;
+    QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences_ =
+        QSharedPointer<QList<QSharedPointer<InterfaceRef> > >(new QList<QSharedPointer<InterfaceRef> >);
 
     //! A list of abstractor instances.
-    QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances_;
+    QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances_ =
+        QSharedPointer<QList<QSharedPointer<AbstractorInstance> > >(new QList<QSharedPointer<AbstractorInstance> >);
 };
 
 #endif // MULTIPLEABSTRACTORINSTANCES_H

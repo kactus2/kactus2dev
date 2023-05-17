@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/Extendable.h>
 
 #include <QString>
 #include <QList>
@@ -23,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! Matches the ipxact:abstractorInstance element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AbstractorInstance
+class IPXACTMODELS_EXPORT AbstractorInstance : public Extendable
 {
 public:
 
@@ -42,7 +43,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~AbstractorInstance();
+    ~AbstractorInstance() override = default;
 
     /*!
      *  Get the VLNV reference to the abstractor.
@@ -50,6 +51,13 @@ public:
      *      @return The configurable VLNV of the abstractor.
      */
     QSharedPointer<ConfigurableVLNVReference> getAbstractorRef() const;
+
+    /*!
+     *  Get the description.
+     *
+     *      @return The description.
+     */
+    QString getShortDescription() const;
 
     /*!
 	 *  Get the description.
@@ -87,6 +95,13 @@ public:
     void setAbstractorRef(QSharedPointer<ConfigurableVLNVReference> abstractorRef);
 
     /*!
+     *  Set the short description.
+     *
+     *      @param [in] shortDescription     The new short description.
+     */
+    void setShortDescription(const QString& shortDescription);
+
+    /*!
 	 *  Set the description.
 	 *
 	 *      @param [in] description     The new description.
@@ -122,11 +137,15 @@ private:
     //! Descriptive text of the instance.
 	QString displayName_;
 
+    //! The short description of the instance.
+    QString shortDescription_;
+
     //! Textual description of the instance.
 	QString description_;
 
     //! Configurable VLNV of the abstractor reference.
-    QSharedPointer<ConfigurableVLNVReference> abstractorRef_;
+    QSharedPointer<ConfigurableVLNVReference> abstractorRef_ =
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference());
 
     //! Defines the selected view.
 	QString viewName_;

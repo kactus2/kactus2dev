@@ -322,6 +322,8 @@ public:
      */
     void setTags(QVector<TagData> newTags) const;
 
+    Revision getRevision() const;
+
 private:
 
     /*

@@ -15,11 +15,7 @@
 // Function: AbstractorInstance::AbstractorInstance()
 //-----------------------------------------------------------------------------
 AbstractorInstance::AbstractorInstance():
-instanceName_(),
-displayName_(),
-description_(),
-abstractorRef_(new ConfigurableVLNVReference()),
-viewName_()
+    Extendable()
 {
 
 }
@@ -38,19 +34,19 @@ viewName_(other.viewName_)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractorInstance::~AbstractorInstance()
-//-----------------------------------------------------------------------------
-AbstractorInstance::~AbstractorInstance()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractorInstance::getAbstractorRef()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConfigurableVLNVReference> AbstractorInstance::getAbstractorRef() const
 {
     return abstractorRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractorInstance::getShortDescription()
+//-----------------------------------------------------------------------------
+QString AbstractorInstance::getShortDescription() const
+{
+    return shortDescription_;
 }
 
 //-----------------------------------------------------------------------------
@@ -91,6 +87,14 @@ QString AbstractorInstance::getViewName() const
 void AbstractorInstance::setAbstractorRef(QSharedPointer<ConfigurableVLNVReference> abstractorRef)
 {
     abstractorRef_ = abstractorRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractorInstance::setShortDescription()
+//-----------------------------------------------------------------------------
+void AbstractorInstance::setShortDescription(const QString& shortDescription)
+{
+    shortDescription_ = shortDescription;
 }
 
 //-----------------------------------------------------------------------------

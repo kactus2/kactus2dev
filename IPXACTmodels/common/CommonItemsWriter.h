@@ -25,7 +25,7 @@ class ConfigurableElementValue;
 //-----------------------------------------------------------------------------
 //! Writer class for common IP-XACT elements: VLNV, parameters, assertions, vendor extensions and presence.
 //-----------------------------------------------------------------------------
-class CommonItemsWriter : public QObject
+class CommonItemsWriter
 {
 public:
 
@@ -33,7 +33,7 @@ public:
     CommonItemsWriter();
 
 	//! The destructor.
-    virtual ~CommonItemsWriter();
+    virtual ~CommonItemsWriter() = default;
 
 protected:
 

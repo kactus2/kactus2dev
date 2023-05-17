@@ -23,15 +23,7 @@
 //-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::CommonItemsWriter()
 //-----------------------------------------------------------------------------
-CommonItemsWriter::CommonItemsWriter() : QObject()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::~CommonItemsWriter()
-//-----------------------------------------------------------------------------
-CommonItemsWriter::~CommonItemsWriter()
+CommonItemsWriter::CommonItemsWriter()
 {
 
 }

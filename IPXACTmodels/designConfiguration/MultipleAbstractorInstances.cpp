@@ -14,10 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: MultipleAbstractorInstances::MultipleAbstractorInstances()
 //-----------------------------------------------------------------------------
-MultipleAbstractorInstances::MultipleAbstractorInstances():
-isPresent_(),
-interfaceReferences_(new QList<QSharedPointer<InterfaceRef> >),
-abstractorInstances_(new QList<QSharedPointer<AbstractorInstance> >)
+MultipleAbstractorInstances::MultipleAbstractorInstances()
 {
 
 }
@@ -26,37 +23,27 @@ abstractorInstances_(new QList<QSharedPointer<AbstractorInstance> >)
 // Function: MultipleAbstractorInstances::MultipleAbstractorInstancesCopy()
 //-----------------------------------------------------------------------------
 MultipleAbstractorInstances::MultipleAbstractorInstances(const MultipleAbstractorInstances& other):
-isPresent_(other.isPresent_),
-interfaceReferences_(new QList<QSharedPointer<InterfaceRef> >),
-abstractorInstances_(new QList<QSharedPointer<AbstractorInstance> >)
+isPresent_(other.isPresent_)
 {
-    foreach (QSharedPointer<InterfaceRef> interfaceReference, *other.interfaceReferences_)
+    for (QSharedPointer<InterfaceRef> interfaceReference : *other.interfaceReferences_)
     {
         if (interfaceReference)
         {
             QSharedPointer<InterfaceRef> copy = QSharedPointer<InterfaceRef>(
-                new InterfaceRef(*interfaceReference.data()));
+                new InterfaceRef(*interfaceReference));
             interfaceReferences_->append(copy);
         }
     }
 
-    foreach (QSharedPointer<AbstractorInstance> abstractorInstance, *other.abstractorInstances_)
+    for (QSharedPointer<AbstractorInstance> abstractorInstance : *other.abstractorInstances_)
     {
         if (abstractorInstance)
         {
             QSharedPointer<AbstractorInstance> copy = QSharedPointer<AbstractorInstance>(
-                new AbstractorInstance(*abstractorInstance.data()));
+                new AbstractorInstance(*abstractorInstance));
             abstractorInstances_->append(copy);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MultipleAbstractorInstances::~MultipleAbstractorInstances()
-//-----------------------------------------------------------------------------
-MultipleAbstractorInstances::~MultipleAbstractorInstances()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -116,7 +103,7 @@ QList<VLNV> MultipleAbstractorInstances::getDependantVLNVs() const
 {
     QList<VLNV> vlnvList;
 
-    foreach (QSharedPointer<AbstractorInstance> abstractor, *abstractorInstances_)
+    for (QSharedPointer<AbstractorInstance> abstractor : *abstractorInstances_)
     {
         VLNV abstractorRefVLNV = *abstractor->getAbstractorRef();
         vlnvList.append(abstractorRefVLNV);

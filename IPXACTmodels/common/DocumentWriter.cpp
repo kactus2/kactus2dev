@@ -23,13 +23,6 @@ DocumentWriter::DocumentWriter() : CommonItemsWriter()
 
 }
 
-//-----------------------------------------------------------------------------
-// Function: DocumentWriter::~DocumentWriter()
-//-----------------------------------------------------------------------------
-DocumentWriter::~DocumentWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeTopComments()
@@ -75,8 +68,31 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
     }
 
     // Also write the schema location.
-    writer.writeAttribute(QStringLiteral("xsi:schemaLocation"), 
-        QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd"));
+    if (document->getRevision() == Document::Revision::Std14)
+    {
+        writer.writeAttribute(QStringLiteral("xsi:schemaLocation"),
+            QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd"));
+    }
+    else if (document->getRevision() == Document::Revision::Std22)
+    {
+        writer.writeAttribute(QStringLiteral("xsi:schemaLocation"),
+            QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2022 http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd"));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentWriter::writeDocumentNameGroup()
+//-----------------------------------------------------------------------------
+void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+{
+    writeVLNVElements(writer, document->getVlnv());
+
+    if (!document->getShortDescription().isEmpty())
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:shortDescription"), document->getShortDescription());
+    }
+
+    writeDescription(writer, document);
 }
 
 //-----------------------------------------------------------------------------

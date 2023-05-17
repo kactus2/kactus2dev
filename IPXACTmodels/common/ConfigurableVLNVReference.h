@@ -58,7 +58,12 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~ConfigurableVLNVReference();
+    ~ConfigurableVLNVReference() final {};
+
+    /*!
+     *  Assignment operator.
+     */
+    ConfigurableVLNVReference& operator=(const ConfigurableVLNVReference& other);
 
     /*!
      *  Sets the VLNV reference.

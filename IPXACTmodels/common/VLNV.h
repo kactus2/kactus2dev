@@ -88,7 +88,7 @@ public:
 	VLNV(VLNV const& other) = default;
 
 	//! The destructor
-	~VLNV() = default;
+	virtual ~VLNV() {};
 
     /*! Get the vendor of the VLNV.
 	 *

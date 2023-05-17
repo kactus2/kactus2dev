@@ -15,10 +15,7 @@
 // Function: ViewConfiguration::ViewConfiguration()
 //-----------------------------------------------------------------------------
 ViewConfiguration::ViewConfiguration():
-instanceName_(),
-isPresent_(),
-viewRef_(),
-viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
+Extendable()
 {
 
 }
@@ -27,10 +24,7 @@ viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
 // Function: ViewConfiguration::ViewConfiguration()
 //-----------------------------------------------------------------------------
 ViewConfiguration::ViewConfiguration(QString const& instanceName):
-instanceName_(instanceName),
-isPresent_(),
-viewRef_(),
-viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
+instanceName_(instanceName)
 {
 
 }
@@ -39,25 +33,18 @@ viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
 // Function: ViewConfiguration::ViewConfiguration()
 //-----------------------------------------------------------------------------
 ViewConfiguration::ViewConfiguration(const ViewConfiguration& other):
+    Extendable(other),
 instanceName_(other.instanceName_),
 isPresent_(other.isPresent_),
 viewRef_(other.viewRef_),
 viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
 {
-    foreach (QSharedPointer<ConfigurableElementValue> configurable, *other.viewConfigurables_)
+    for (QSharedPointer<ConfigurableElementValue> configurable : *other.viewConfigurables_)
     {
         QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
             new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
         viewConfigurables_->append(copy);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewConfiguration::~ViewConfiguration()
-//-----------------------------------------------------------------------------
-ViewConfiguration::~ViewConfiguration()
-{
-    viewConfigurables_->clear();
 }
 
 //-----------------------------------------------------------------------------

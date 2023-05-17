@@ -28,19 +28,24 @@ public:
 
 private slots:
 
-    void initTestCase();
-    void cleanupTestCase();
     void init();
     void cleanup();
 
     void testSimpleDesignConfiguration();
+    void test2022DesignConfiguration();
+
     void testTopCommentsAreWritten();
     void testProcessingInstructionsAreWritten();
 
     void testDesignReference();
     void testGeneratorChainConfiguration();
+
     void testInterconnectionConfiguration();
+    void test2022InterconnectionConfiguration();
+
     void testViewConfigurations();
+    void test2022ViewConfigurations();
+
     void testParameters();
     void testAssertion();
     void testVendorExtensions();
@@ -65,28 +70,11 @@ designConfiguration_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationWriter::initTestCase()
-//-----------------------------------------------------------------------------
-void tst_DesignConfigurationWriter::initTestCase()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationWriter::cleanupTestCase()
-//-----------------------------------------------------------------------------
-void tst_DesignConfigurationWriter::cleanupTestCase()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_DesignConfigurationWriter::init()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::init()
 {
-    VLNV designConfigurationVLNV(VLNV::DESIGNCONFIGURATION, "TUT", "TestLibrary", "TestDesignConfiguration", "0.1");
-    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(designConfigurationVLNV));
+
 }
 
 //-----------------------------------------------------------------------------
@@ -102,6 +90,10 @@ void tst_DesignConfigurationWriter::cleanup()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+    designConfiguration_->setDescription("TestDescription");
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
     
@@ -111,7 +103,7 @@ void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
     DesignConfigurationWriter designConfigurationWriter;
     designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
-    QString expectedOutput(
+    QString expectedOutput = 
         "<?xml version=\"1.0\"?>\n"
         "<ipxact:designConfiguration "
         "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
@@ -120,34 +112,51 @@ void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
-        "\t<ipxact:library>TestLibrary</ipxact:library>\n"
-        "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
-        "\t<ipxact:version>0.1</ipxact:version>\n"
-        "</ipxact:designConfiguration>\n");
-    QCOMPARE(output, expectedOutput);
-
-    expectedOutput.clear();
-    output.clear();
-
-    designConfiguration_->setDescription("TestDescription");
-    expectedOutput = 
-        "<?xml version=\"1.0\"?>\n"
-        "<ipxact:designConfiguration "
-        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
-        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
-        ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
         "\t<ipxact:description>TestDescription</ipxact:description>\n"
         "</ipxact:designConfiguration>\n";
 
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationWriter::test2022DesignConfiguration()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationWriter::test2022DesignConfiguration()
+{
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std22));
+    designConfiguration_->setShortDescription("Short");
+    designConfiguration_->setDescription("TestDescription");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignConfigurationWriter designConfigurationWriter;
     designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+
+    QString expectedOutput =
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\""
+        ">\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+        "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+        "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
+        "\t<ipxact:version>0.1</ipxact:version>\n"
+        "\t<ipxact:shortDescription>Short</ipxact:shortDescription>\n"
+        "\t<ipxact:description>TestDescription</ipxact:description>\n"
+        "</ipxact:designConfiguration>\n";
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -157,6 +166,8 @@ void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testTopCommentsAreWritten()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
     designConfiguration_->setTopComments("Comments");
 
     QString output;
@@ -178,7 +189,7 @@ void tst_DesignConfigurationWriter::testTopCommentsAreWritten()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
@@ -191,6 +202,8 @@ void tst_DesignConfigurationWriter::testTopCommentsAreWritten()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testProcessingInstructionsAreWritten()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
     designConfiguration_->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\"");
 
     QString output;
@@ -211,7 +224,7 @@ void tst_DesignConfigurationWriter::testProcessingInstructionsAreWritten()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
             "\t<ipxact:version>0.1</ipxact:version>\n"
@@ -224,7 +237,10 @@ void tst_DesignConfigurationWriter::testProcessingInstructionsAreWritten()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testDesignReference()
 {
-    VLNV designReference(VLNV::DESIGN, "TUT", "TestLibrary", "DesignReference", "1.1");
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
+    VLNV designReference(VLNV::DESIGN, "tuni.fi", "TestLibrary", "DesignReference", "1.1");
     designConfiguration_->setDesignRef(designReference);
 
     QString output;
@@ -245,11 +261,11 @@ void tst_DesignConfigurationWriter::testDesignReference()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
-        "\t<ipxact:designRef vendor=\"TUT\" library=\"TestLibrary\" name=\"DesignReference\" version=\"1.1\"/>\n"
+        "\t<ipxact:designRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"DesignReference\" version=\"1.1\"/>\n"
         "</ipxact:designConfiguration>\n");
 
     compareOutputToExpected(output, expectedOutput);
@@ -260,8 +276,11 @@ void tst_DesignConfigurationWriter::testDesignReference()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
     QSharedPointer<ConfigurableVLNVReference> generatorChainConf (
-        new ConfigurableVLNVReference(VLNV::GENERATORCHAIN, "TUT", "TestLibrary", "testGenCon", "1.0"));
+        new ConfigurableVLNVReference(VLNV::GENERATORCHAIN, "tuni.fi", "TestLibrary", "testGenCon", "1.0"));
 
     QSharedPointer<ConfigurableElementValue> generatorChainConfigurable (
         new ConfigurableElementValue("10", "testReferenceID"));
@@ -287,11 +306,11 @@ void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
-        "\t<ipxact:generatorChainConfiguration vendor=\"TUT\" library=\"TestLibrary\" name=\"testGenCon\" "
+        "\t<ipxact:generatorChainConfiguration vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"testGenCon\" "
             "version=\"1.0\">\n"
             "\t\t<ipxact:configurableElementValues>\n"
                 "\t\t\t<ipxact:configurableElementValue referenceId=\"testReferenceID\">10"
@@ -308,8 +327,11 @@ void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
     QSharedPointer<ConfigurableVLNVReference> testAbstractorRef (
-        new ConfigurableVLNVReference(VLNV::ABSTRACTOR, "TUT", "TestLibrary", "testAbstractor", "1.1"));
+        new ConfigurableVLNVReference(VLNV::ABSTRACTOR, "tuni.fi", "TestLibrary", "testAbstractor", "1.1"));
     QSharedPointer<ConfigurableElementValue> abstractorCEV (new ConfigurableElementValue("12", "testReferenceID"));
     testAbstractorRef->getConfigurableElementValues()->append(abstractorCEV);
 
@@ -355,7 +377,7 @@ void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
@@ -371,7 +393,7 @@ void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
                     "\t\t\t\t<ipxact:instanceName>testAbstractorInstance</ipxact:instanceName>\n"
                     "\t\t\t\t<ipxact:displayName>abstractorDisplay</ipxact:displayName>\n"
                     "\t\t\t\t<ipxact:description>abstractorDescription</ipxact:description>\n"
-                    "\t\t\t\t<ipxact:abstractorRef vendor=\"TUT\" library=\"TestLibrary\" name=\"testAbstractor\" "
+                    "\t\t\t\t<ipxact:abstractorRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"testAbstractor\" "
                         "version=\"1.1\">\n"
                         "\t\t\t\t\t<ipxact:configurableElementValues>\n"
                             "\t\t\t\t\t\t<ipxact:configurableElementValue referenceId=\"testReferenceID\">12"
@@ -388,11 +410,114 @@ void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
     compareOutputToExpected(output, expectedOutput);
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationWriter::test2022InterconnectionConfiguration()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationWriter::test2022InterconnectionConfiguration()
+{
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std22));
+
+    QSharedPointer<ConfigurableVLNVReference> testAbstractorRef(
+        new ConfigurableVLNVReference(VLNV::ABSTRACTOR, "tuni.fi", "TestLibrary", "testAbstractor", "1.1"));
+    QSharedPointer<ConfigurableElementValue> abstractorCEV(new ConfigurableElementValue("12", "testReferenceID"));
+    testAbstractorRef->getConfigurableElementValues()->append(abstractorCEV);
+
+    QSharedPointer<AbstractorInstance> testAbstractorInstance(new AbstractorInstance());
+    testAbstractorInstance->setInstanceName("testAbstractorInstance");
+    testAbstractorInstance->setDisplayName("abstractorDisplay");
+    testAbstractorInstance->setShortDescription("brief");
+    testAbstractorInstance->setDescription("abstractorDescription");
+    testAbstractorInstance->setViewName("abstractorView");
+    testAbstractorInstance->setAbstractorRef(testAbstractorRef);
+    testAbstractorInstance->getVendorExtensions()->append(QSharedPointer<VendorExtension>(
+        new Kactus2Value("abstractorExtension", "On")));
+
+    QSharedPointer<InterfaceRef> testInterfaceReference(new InterfaceRef());
+    testInterfaceReference->setComponentRef("testComponent");
+    testInterfaceReference->setBusRef("testBus");
+    testInterfaceReference->getVendorExtensions()->append(QSharedPointer<VendorExtension>(
+        new Kactus2Value("interfaceExtension", "On")));
+
+    QSharedPointer<MultipleAbstractorInstances> multipleAbstractors(new MultipleAbstractorInstances());
+    multipleAbstractors->getInterfaceReferences()->append(testInterfaceReference);
+    multipleAbstractors->getAbstractorInstances()->append(testAbstractorInstance);
+
+    QSharedPointer<InterconnectionConfiguration> testInterconnectionConfig(new InterconnectionConfiguration());
+    testInterconnectionConfig->setInterconnectionReference("testInterconnectionReference");
+    testInterconnectionConfig->getAbstractorInstances()->append(multipleAbstractors);
+    testInterconnectionConfig->getVendorExtensions()->append(QSharedPointer<VendorExtension>(
+        new Kactus2Value("interconnectExtension", "On")));
+
+    designConfiguration_->getInterconnectionConfs()->append(testInterconnectionConfig);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignConfigurationWriter designConfigurationWriter;
+    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\""
+        ">\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+        "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+        "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
+        "\t<ipxact:version>0.1</ipxact:version>\n"
+        "\t<ipxact:interconnectionConfiguration>\n"
+        "\t\t<ipxact:interconnectionRef>testInterconnectionReference</ipxact:interconnectionRef>\n"
+        "\t\t<ipxact:abstractorInstances>\n"
+        "\t\t\t<ipxact:interfaceRef componentRef=\"testComponent\" busRef=\"testBus\">\n"
+        "\t\t\t\t<ipxact:vendorExtensions>\n"
+        "\t\t\t\t\t<interfaceExtension>On</interfaceExtension>\n"
+        "\t\t\t\t</ipxact:vendorExtensions>\n"
+        "\t\t\t</ipxact:interfaceRef>\n"
+        "\t\t\t<ipxact:abstractorInstance>\n"
+        "\t\t\t\t<ipxact:instanceName>testAbstractorInstance</ipxact:instanceName>\n"
+        "\t\t\t\t<ipxact:displayName>abstractorDisplay</ipxact:displayName>\n"
+        "\t\t\t\t<ipxact:shortDescription>brief</ipxact:shortDescription>\n"
+        "\t\t\t\t<ipxact:description>abstractorDescription</ipxact:description>\n"
+        "\t\t\t\t<ipxact:abstractorRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"testAbstractor\" "
+        "version=\"1.1\">\n"
+        "\t\t\t\t\t<ipxact:configurableElementValues>\n"
+        "\t\t\t\t\t\t<ipxact:configurableElementValue referenceId=\"testReferenceID\">12"
+        "</ipxact:configurableElementValue>\n"
+        "\t\t\t\t\t</ipxact:configurableElementValues>\n"
+        "\t\t\t\t</ipxact:abstractorRef>\n"
+        "\t\t\t\t<ipxact:viewName>abstractorView</ipxact:viewName>\n"
+        "\t\t\t\t<ipxact:vendorExtensions>\n"
+        "\t\t\t\t\t<abstractorExtension>On</abstractorExtension>\n"
+        "\t\t\t\t</ipxact:vendorExtensions>\n"
+        "\t\t\t</ipxact:abstractorInstance>\n"
+        "\t\t</ipxact:abstractorInstances>\n"
+        "\t\t<ipxact:vendorExtensions>\n"
+        "\t\t\t<interconnectExtension>On</interconnectExtension>\n"
+        "\t\t</ipxact:vendorExtensions>\n"
+        "\t</ipxact:interconnectionConfiguration>\n"
+        "</ipxact:designConfiguration>\n"
+    );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
 //-----------------------------------------------------------------------------
 // Function: tst_DesignConfigurationWriter::testViewConfiguration()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testViewConfigurations()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
     QSharedPointer<ViewConfiguration> testViewConfiguration (new ViewConfiguration("testViewConfig"));
     testViewConfiguration->setIsPresent("1");
     testViewConfiguration->setViewReference("referenceToTestView");
@@ -420,7 +545,7 @@ void tst_DesignConfigurationWriter::testViewConfigurations()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
@@ -441,10 +566,70 @@ void tst_DesignConfigurationWriter::testViewConfigurations()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationWriter::test2022ViewConfigurations()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationWriter::test2022ViewConfigurations()
+{
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std22));
+
+    QSharedPointer<ViewConfiguration> testViewConfiguration(new ViewConfiguration("testViewConfig"));
+    testViewConfiguration->setViewReference("referenceToTestView");
+    testViewConfiguration->getVendorExtensions()->append(QSharedPointer<VendorExtension>(
+        new Kactus2Value("viewExtension", "Yes")));
+
+    QSharedPointer<ConfigurableElementValue> viewConfigCEV(new ConfigurableElementValue("2", "testReferenceID"));
+    testViewConfiguration->getViewConfigurableElements()->append(viewConfigCEV);
+
+    designConfiguration_->getViewConfigurations()->append(testViewConfiguration);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignConfigurationWriter designConfigurationWriter;
+    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\""
+        ">\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+        "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+        "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
+        "\t<ipxact:version>0.1</ipxact:version>\n"
+        "\t<ipxact:viewConfiguration>\n"
+        "\t\t<ipxact:instanceName>testViewConfig</ipxact:instanceName>\n"
+        "\t\t<ipxact:view viewRef=\"referenceToTestView\">\n"
+        "\t\t\t<ipxact:configurableElementValues>\n"
+        "\t\t\t\t<ipxact:configurableElementValue referenceId=\"testReferenceID\">2</ipxact:configurableElementValue>\n"
+        "\t\t\t</ipxact:configurableElementValues>\n"
+        "\t\t</ipxact:view>\n"
+        "\t\t<ipxact:vendorExtensions>\n"
+        "\t\t\t<viewExtension>Yes</viewExtension>\n"
+        "\t\t</ipxact:vendorExtensions>\n"
+        "\t</ipxact:viewConfiguration>\n"
+        "</ipxact:designConfiguration>\n"
+    );
+
+    compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_DesignConfigurationWriter::testParameters()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testParameters()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
     QSharedPointer<Parameter> testParameter(new Parameter());
     testParameter->setValueId("testID");
     testParameter->setName("testParameter");
@@ -470,7 +655,7 @@ void tst_DesignConfigurationWriter::testParameters()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
@@ -491,6 +676,9 @@ void tst_DesignConfigurationWriter::testParameters()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testAssertion()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
     QSharedPointer<Assertion> testAssertion(new Assertion());
     testAssertion->setName("testAssertion");
     testAssertion->setDisplayName("assertionDisplay");
@@ -517,7 +705,7 @@ void tst_DesignConfigurationWriter::testAssertion()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
@@ -540,6 +728,9 @@ void tst_DesignConfigurationWriter::testAssertion()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testVendorExtensions()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
     QDomDocument document;
     QDomElement extensionNode = document.createElement("testExtension");
     extensionNode.setAttribute("testExtensionAttribute", "extension");
@@ -568,7 +759,7 @@ void tst_DesignConfigurationWriter::testVendorExtensions()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
@@ -587,6 +778,9 @@ void tst_DesignConfigurationWriter::testVendorExtensions()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testWriteConfigurableElementValues()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
     QMap<QString, QString> configurableElementValues;
     configurableElementValues.insert("referencedID","referencedValue");
     configurableElementValues.insert("otherID", "4-4-4");
@@ -612,7 +806,7 @@ void tst_DesignConfigurationWriter::testWriteConfigurableElementValues()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\""
         ">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
             "\t<ipxact:version>0.1</ipxact:version>\n"
@@ -638,6 +832,9 @@ void tst_DesignConfigurationWriter::testWriteConfigurableElementValues()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationWriter::testWriteViewOverrides()
 {
+    VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
+    designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+
     QMap<QString, QString> viewOverrides;
     viewOverrides.insert("instanceId", "testView");
     viewOverrides.insert("otherId", "otherView");
@@ -662,7 +859,7 @@ void tst_DesignConfigurationWriter::testWriteViewOverrides()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
             "\t<ipxact:version>0.1</ipxact:version>\n"

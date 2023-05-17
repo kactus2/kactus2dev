@@ -46,7 +46,7 @@ public:
 	 *
 	 *      @param [in] vlnv    VLNV to be set for the design configuration.
 	 */
-	DesignConfiguration(VLNV const& vlnv);
+	DesignConfiguration(VLNV const& vlnv, Revision revision);
 
     /*!
 	 *  The constructor.
@@ -66,7 +66,7 @@ public:
     /*!
 	 *  The destructor.
 	 */
-	virtual ~DesignConfiguration();
+	~DesignConfiguration() final;
 
     /*!
 	 *  Clone this design configuration.
@@ -259,13 +259,17 @@ private:
     VLNV designRef_;
 
     //! A list containing pointers to the generator chain configurations.
-    QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > > generatorChainConfigurations_;
+    QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > > generatorChainConfigurations_ =
+        QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > >(new QList<QSharedPointer<ConfigurableVLNVReference> >);
 
     //! A list containing pointers to the interconnection configurations.
-    QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > > interconnectionConfigurations_;
+    QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > > interconnectionConfigurations_ =
+        QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > >(new QList<QSharedPointer<InterconnectionConfiguration> >);
 
     //! A list containing pointers to the view configurations.
-    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > viewConfigurations_;
+    QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > viewConfigurations_ =
+        QSharedPointer<QList<QSharedPointer<ViewConfiguration> > >(new QList<QSharedPointer<ViewConfiguration> >);
+
 };
 
 #endif // DESIGNCONFIGURATION_H

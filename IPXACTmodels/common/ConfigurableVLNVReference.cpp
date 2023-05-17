@@ -58,11 +58,23 @@ configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> > 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConfigurableVLNVReference::~ConfigurableVLNVReference()
+// Function: ConfigurableVLNVReference::operator=()
 //-----------------------------------------------------------------------------
-ConfigurableVLNVReference::~ConfigurableVLNVReference()
+ConfigurableVLNVReference& ConfigurableVLNVReference::operator=(const ConfigurableVLNVReference& other)
 {
-    
+    if (this != &other)
+    {
+        VLNV::operator=(other);
+
+        configurableElementValues_->clear();
+        for (QSharedPointer<ConfigurableElementValue> configurable : *other.configurableElementValues_)
+        {
+            QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
+                new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
+            configurableElementValues_->append(copy);
+        }
+    }
+    return *this;
 }
 
 //-----------------------------------------------------------------------------

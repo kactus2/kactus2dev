@@ -12,6 +12,8 @@
 #ifndef INTERFACEREF_H
 #define INTERFACEREF_H
 
+#include <IPXACTmodels/common/Extendable.h>
+
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
@@ -20,7 +22,7 @@
 //-----------------------------------------------------------------------------
 //! Matches the ipxact:interfaceRef element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT InterfaceRef
+class IPXACTMODELS_EXPORT InterfaceRef : public Extendable
 {
 public:
 
@@ -37,7 +39,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~InterfaceRef();
+    ~InterfaceRef() override = default;
 
     /*!
      *  Get the isPresent value.

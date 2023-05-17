@@ -15,9 +15,7 @@
 // Function: InterfaceRef::InterfaceRef()
 //-----------------------------------------------------------------------------
 InterfaceRef::InterfaceRef():
-componentRef_(),
-busRef_(),
-isPresent_()
+    Extendable()
 {
 
 }
@@ -26,17 +24,10 @@ isPresent_()
 // Function: InterfaceRef::InterfaceRef()
 //-----------------------------------------------------------------------------
 InterfaceRef::InterfaceRef(const InterfaceRef& other):
+    Extendable(other),
 componentRef_(other.componentRef_),
 busRef_(other.busRef_),
 isPresent_(other.isPresent_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceRef::~InterfaceRef()
-//-----------------------------------------------------------------------------
-InterfaceRef::~InterfaceRef()
 {
 
 }

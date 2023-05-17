@@ -30,7 +30,7 @@ public:
     DocumentWriter();
 
 	//! The destructor.
-	virtual ~DocumentWriter();
+	~DocumentWriter() override = default;
 
 protected:
 
@@ -58,6 +58,7 @@ protected:
      */
     void writeNamespaceDeclarations(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
 
+    void writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
     /*!
      *  Writes the document description into XML.
      *

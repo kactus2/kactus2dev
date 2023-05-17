@@ -32,7 +32,11 @@ public:
     /*!
 	 *  The destructor.
 	 */
-    ~DesignConfigurationReader();
+    ~DesignConfigurationReader() override = default;
+
+    // Disable copying.
+    DesignConfigurationReader(DesignConfigurationReader const& rhs) = delete;
+    DesignConfigurationReader& operator=(DesignConfigurationReader const& rhs) = delete;
 
     /*!
      *  Creates a design configuration from XML definition.
@@ -45,10 +49,6 @@ public:
         QDomDocument const& document) const;
 
 private:
-
-    // Disable copying.
-    DesignConfigurationReader(DesignConfigurationReader const& rhs);
-    DesignConfigurationReader& operator=(DesignConfigurationReader const& rhs);
 
     /*!
      *  Reads the design reference property from XML to a design configuration.
@@ -91,27 +91,33 @@ private:
      *
      *      @param [in] interconnectionConfigurationNode    The XML description of an interconnection configuration.
      *      @param [in] newInterconnectionConfiguration     The item where to insert multiple abstractor instances.
+     *      @param [in] docRevision                         The applied IP-XACT standard revision.
      */
     void parseMultipleAbstractors(QDomNode const& interconnectionConfigurationNode,
-        QSharedPointer<InterconnectionConfiguration> newInterconnectionConfiguration) const;
+        QSharedPointer<InterconnectionConfiguration> newInterconnectionConfiguration,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the interface references from XML.
      *
      *      @param [in] multipleAbstractorsNode             The XML description of multiple abstractor instances.
      *      @param [in] newMultipleAbstractorInstances      The item where to insert the interface references.
+     *      @param [in] docRevision                         The applied IP-XACT standard revision.
      */
     void parseInterfaceReferences(QDomNode const& multipleAbstractorsNode,
-        QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances) const;
+        QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the abstractor instances from XML.
      *
      *      @param [in] multipleAbstractorsNode             The XML description of a multiple abstractor instances.
      *      @param [in] newMultipleAbstractorInstances      The item where to insert the abstractor instances.
+     *      @param [in] docRevision                         The applied IP-XACT standard revision.
      */
     void parseAbstractorInstances(QDomNode const& multipleAbstractorsNode,
-        QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances) const;
+        QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances, 
+        Document::Revision docRevision) const;
 
     /*!
      *  Get a list of name containing QDomNode child nodes.

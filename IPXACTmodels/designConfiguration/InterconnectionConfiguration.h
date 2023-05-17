@@ -14,6 +14,8 @@
 
 #include "MultipleAbstractorInstances.h"
 
+#include <IPXACTmodels/common/Extendable.h>
+
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
@@ -21,7 +23,7 @@
 //-----------------------------------------------------------------------------
 //! Matches the ipxact:interconnectionConfiguration element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT InterconnectionConfiguration
+class IPXACTMODELS_EXPORT InterconnectionConfiguration : public Extendable
 {
 public:
 
@@ -38,7 +40,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~InterconnectionConfiguration() = default;
+    ~InterconnectionConfiguration() override = default;
 
     /*!
      *  Get the isPresent value.
@@ -99,7 +101,8 @@ private:
     QString interconnectionRef_;
 
     //! List of multiple abstractor elements.
-    QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > abstractorInstances_;
+    QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > abstractorInstances_ =
+        QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > >(new QList<QSharedPointer<MultipleAbstractorInstances> >);
 };
 
 #endif // INTERCONNECTIONCONFIGURATION_H
