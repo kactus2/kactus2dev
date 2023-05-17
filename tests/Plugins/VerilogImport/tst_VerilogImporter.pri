@@ -7,31 +7,25 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../KactusAPI/include/ComponentParameterFinder.h \
-    ../../../KactusAPI/include/ExpressionParser.h \
+HEADERS += ../../../KactusAPI/include/ExpressionParser.h \
     ../../../KactusAPI/include/ExpressionSupport.h \
-    ../../../KactusAPI/include/IPXactSystemVerilogParser.h \
     ../../../KactusAPI/include/ImportColors.h \
     ../../../common/NameGenerationPolicy.h \
-    ../../../KactusAPI/include/NullParser.h \
     ../../../IPXACTmodels/utilities/Search.h \
     ../../../KactusAPI/include/SystemVerilogExpressionParser.h \
+    ../../../Plugins/VerilogImport/VerilogInstanceParser.h \
     ../../../Plugins/VerilogImport/VerilogParameterParser.h \
     ../../../Plugins/VerilogImport/VerilogPortParser.h \
+    ../../../common/expressions/utilities.h \
     ../../../KactusAPI/include/ImportHighlighter.h \
-    ../../../Plugins/VerilogImport/VerilogImporter.h \
-    ../../../Plugins/VerilogImport/VerilogInstanceParser.h \
-    ../../../common/expressions/utilities.h
-SOURCES += ../../../KactusAPI/expressions/ComponentParameterFinder.cpp \
-    ../../../KactusAPI/expressions/IPXactSystemVerilogParser.cpp \
-    ../../../KactusAPI/plugins/ImportHighlighter.cpp \
+    ../../../Plugins/VerilogImport/VerilogImporter.h
+SOURCES += ../../../KactusAPI/plugins/ImportHighlighter.cpp \
     ../../../common/NameGenerationPolicy.cpp \
-    ../../../KactusAPI/expressions/NullParser.cpp \
     ../../../KactusAPI/expressions/SystemVerilogExpressionParser.cpp \
     ../../../Plugins/VerilogImport/VerilogImporter.cpp \
+    ../../../Plugins/VerilogImport/VerilogInstanceParser.cpp \
     ../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ../../../Plugins/VerilogImport/VerilogPortParser.cpp \
     ../../../Plugins/VerilogImport/VerilogSyntax.cpp \
-    ./tst_VerilogImporter.cpp \
-    ../../../Plugins/VerilogImport/VerilogInstanceParser.cpp \
-    ../../../common/expressions/utilities.cpp
+    ../../../common/expressions/utilities.cpp \
+    ./tst_VerilogImporter.cpp

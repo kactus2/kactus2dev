@@ -534,7 +534,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createRegisterResetItem(
     QMap<quint64, QSharedPointer<MemoryItem>> fieldItems, QSharedPointer<MemoryItem> registerItem,
     QString const& registerIdentifier, int const& addressUnitBits) const
 {
-    QString resetIdentifier = registerIdentifier + MemoryDesignerConstants::HARD_RESET_TYPE;
+    QString resetIdentifier = registerIdentifier + QStringLiteral(".") + MemoryDesignerConstants::HARD_RESET_TYPE;
 
     QString resetValue = "";
     QString resetMask = "";

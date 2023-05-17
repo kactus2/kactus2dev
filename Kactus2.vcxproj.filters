@@ -2308,12 +2308,6 @@
     <ClCompile Include="common\graphicsItems\GraphicsColumnAddCommand.cpp">
       <Filter>Source Files\common\graphicsItems</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\DocumentGenerator\ViewDocumentGenerator.cpp">
-      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.cpp">
-      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionPortsSortFilter.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -3174,6 +3168,15 @@
     </ClCompile>
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.cpp">
       <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\DocumentGenerator\DocumentationWriter.cpp">
+      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp">
+      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp">
+      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4397,12 +4400,6 @@
     <QtMoc Include="mainwindow\DockWidgetHandler.h">
       <Filter>Header Files\mainwindow</Filter>
     </QtMoc>
-    <QtMoc Include="kactusGenerators\DocumentGenerator\ViewDocumentGenerator.h">
-      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
-    </QtMoc>
-    <QtMoc Include="kactusGenerators\DocumentGenerator\GeneralDocumentGenerator.h">
-      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
-    </QtMoc>
     <CustomBuild Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsColumns.h">
       <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
     </CustomBuild>
@@ -5242,9 +5239,6 @@
     <ClInclude Include="common\graphicsItems\GraphicsColumnAddCommand.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </ClInclude>
-    <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentGeneratorHTML.h">
-      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\ports\PortWireTypeColumns.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
@@ -5622,6 +5616,15 @@
     </ClInclude>
     <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.h">
       <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentationWriter.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

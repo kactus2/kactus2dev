@@ -478,7 +478,7 @@ void DockWidgetHandler::setupConfigurationEditor()
 {
     configurationDock_ = new QDockWidget(tr("Design Configuration Details"), mainWindow_);
     configurationDock_->setObjectName(tr("Configuration editor"));
-    configurationDock_->setWindowIcon(QIcon(":icons/common/graphics/settings-general.png"));
+    configurationDock_->setWindowIcon(QIcon(":icons/common/graphics/hierarchy-blue.png"));
     configurationDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     configurationDock_->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable |
         QDockWidget::DockWidgetFloatable);

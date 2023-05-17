@@ -18,14 +18,13 @@
           <section title="Step 3: Creating Documents" ref="gettingStarted/creatingDocuments.html"/>
         </section>
         <section title="General Help" ref="general/ribbon.html">
-          <section title="Toolbar" ref="general/ribbon.html"/>
+          <section title="Toolbars and views" ref="general/toolbarsAndViews.html"/>
           <section title="Library Navigation" ref="general/libraryNavigation.html"/>
           <section title="Keyboard and Mouse Shortcuts" ref="general/shortcuts.html"/>
           <section title="Expressions" ref="general/expressions.html"/>
           <section title="Colors" ref="general/colors.html"/>
           <section title="Workspace" ref="general/workSpace.html"/>
           <section title="Default Applications" ref="general/defaultApplication.html"/>
-          <section title="Windows" ref="general/windows.html"/>
         </section>
         <section title="Bus Definition" ref="definitions/busdefinition.html"/>
         <section title="Catalog" ref="definitions/catalog.html" />

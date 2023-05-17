@@ -102,9 +102,9 @@ public:
     /*!
     *  Sorts list of parameters based on their interdependencies.
     *
-    *      @param [out] sortParameters         The list containing the parameters that will be sorted.
+    *      @param [out] parameters         The list containing the parameters that will be sorted.
     */
-    static void sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters);
+    static void sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters);
 
 protected:
 

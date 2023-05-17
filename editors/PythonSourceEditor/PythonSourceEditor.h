@@ -52,7 +52,7 @@ public:
     virtual ~PythonSourceEditor();
 
     //! Apply the application settings.
-    void applySettings(QSettings& settings);
+    void applySettings();
 
 signals:
     

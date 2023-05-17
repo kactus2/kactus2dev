@@ -80,8 +80,10 @@ PythonSourceEditor::~PythonSourceEditor()
 //-----------------------------------------------------------------------------
 // Function: PythonSourceEditor::applySettings()
 //-----------------------------------------------------------------------------
-void PythonSourceEditor::applySettings(QSettings& settings)
+void PythonSourceEditor::applySettings()
 {
+    QSettings settings;
+
     // Read font settings.
     QFont font = settings.value("Editor/Font", QFont("Consolas", 10)).value<QFont>();
     scriptView_.setFont(font);

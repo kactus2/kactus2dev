@@ -32,7 +32,6 @@
         <file>common/graphics/view-zoom_original.png</file>
         <file>common/graphics/view-fit_best.png</file>
         <file>common/graphics/system-exit.png</file>
-        <file>common/graphics/system-settings.png</file>
         <file>common/graphics/system-about.png</file>
         <file>common/graphics/system-help.png</file>
         <file>common/graphics/mcapi-endpoint.png</file>
@@ -43,6 +42,7 @@
         <file>common/graphics/mcapi-type.png</file>
         <file>common/graphics/connect.png</file>
         <file>common/graphics/hierarchy.png</file>
+        <file>common/graphics/hierarchy-blue.png</file>
         <file>common/graphics/imported.png</file>
         <file>common/graphics/cleanup.png</file>
         <file>common/graphics/new-com_definition.png</file>

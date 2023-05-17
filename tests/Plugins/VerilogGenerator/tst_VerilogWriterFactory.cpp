@@ -1786,7 +1786,7 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
         "    // IP-XACT VLNV: Test:TestLibrary:TestTieOff:1.0\n"
         "    TestTieOff tieOffer(\n"
         "        // These ports are not in any interface\n"
-        "        .defaultValue        (15),\n"
+        "        .defaultValue        (4'b1111),\n"
         "        .n/aTieOff           (tieOffer_n/aTieOff),\n"
         "        .numberedTieOff      (tieOffer_numberedTieOff),\n"
         "        .oneTieOff           (tieOffer_oneTieOff),\n"

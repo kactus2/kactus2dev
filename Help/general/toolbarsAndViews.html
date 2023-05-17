@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
     <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
@@ -6,9 +6,11 @@
     <title>Toolbar</title>
   </head>
   <body>
-    <h2>Toolbar</h2>
+    <h1>Toolbars and views</h1>
+    <h2>Toolbars</h2>
     <p>
-    The toolbar contains actions for performing common actions within the Kactus2.
+    The Kactus2 main window contains a toolbar at the top and sidebars on both sides. The toolbar contains actions for
+    performing common actions within the Kactus2.
     </p>
     <p>
     The toolbar adapts to the size of the window. If the window gets too small for the
@@ -18,6 +20,11 @@
     <p>
     The toolbar hides actions that are not available in the current environment. For example,
     generators are not show when no component or design has been selected.
+    </p>
+    <p>
+    UI views can be docked to a sidebar. Multiple views can be docked
+    to the same sidebar and the active view can be hidden by clicking its icon in the sidebar, or changed 
+    by clicking the icon of another view.
     </p>
     <h3>The toolbar groups</h3>
     <p>
@@ -43,17 +50,17 @@
             </li>
             <br />
             <li>
-            <img src="../images/file-save-hierarchical.png"><br><b>Save Hierarchy.</b> Saves the open document
-            and the underlying hierarchy with new names.
-            </li>
-            <br>
-            <li>
             <img src="../images/file-print.png"><br><b>Print.</b> Prints the currently open design.
             </li>
             <br />
             <li>
                 <img src="../images/export.png"><br/><b>Export image.</b> Export an image of the currently open
                 design document. Possible image formats are SVG, JPG and PNG.
+            </li>
+            <br>
+            <li>
+                <img src="../images/import.png"><br><b>Import File to Component.</b> Imports elements from a
+                source file e.g. VHDL or verilog to the active component.
             </li>
         </ul>
     </p>
@@ -93,23 +100,12 @@
         </ul>
     </p>
     <p>
-    The <b>Generation</b> group shows all the available generator plugins and also the following items:
+    The <b>Generation</b> group shows all the available generator plugins underneath Run generator:
         <ul>
             <li>
-            <img src="../images/documentation.png"><br><b>Document generator.</b> Generates documentation
-            of the active component in HTML-format. If the active document is a design, all component instances
-            are included as well.
-            </li>
-            <br>
-            <li>
-            <img src="../images/import.png"><br><b>Import File to Component.</b> Imports elements from a
-            source file e.g. VHDL or verilog to the active component.
-            </li>
-            <br>
-            <li>
-            <img src="../images/vhdl_gen.png"><br><b>VHDL generator.</b> Generates top-level VHDL entity
-            template for the current component. If the active document is a design, the generator creates a
-            structural architecture from the component instances and interconnections.
+            <img src="../images/automation.png"><br><b>Run generator</b>
+            Runs a chosen generator for the active component. If the active document is a design, all component
+            instances are included in documentation generation.
             </li>
         </ul>
     </p>
@@ -195,6 +191,11 @@
 				from the furthest address space to the connected memory maps.
             </li>
 			<br />
+            <li>
+                <img src="../images/filterUnconnectedMemoryItems.png" /><br />
+                <b>Unconnected items filter</b> Show/hide unconnected memory items.
+            </li>
+			<br />
 			<li>
                 <img src="../images/compressMemoryItems.png" /><br />
                 <b>Compress Memory Items.</b> Minimize the vertical space taken by the
@@ -278,7 +279,7 @@
     The <b>System</b> group contains actions related to the whole system.
         <ul>
             <li>
-            <img src="../images/system-settings.png"><br><b>Settings.</b> Displays the available settings
+            <img src="../images/settings-general.png"><br><b>Settings.</b> Displays the available settings
             for Kactus2.
             </li>
             <br>
@@ -292,6 +293,97 @@
             <br>
             <li>
             <img src="../images/system-exit.png"><br><b>Exit.</b> Exit Kactus2.
+            </li>
+        </ul>
+    </p>
+
+    <h2>Views</h2>
+    <p>
+        Views are used to present additional data regarding the currently open document.
+    </p>
+    <h3>Common</h3>
+    <p>
+        Views that can be displayed regardless of the currently open document:
+        <ul>
+            <li>
+                <b>Context Help</b> displays help of the currently open document or editor.
+            </li>
+            <li>
+                <b>IP-XACT Library</b> shows the used libraries of Kactus2. See
+                <a href="libraryNavigation.html">library navigation</a>.
+            </li>
+            <li>
+                <b>Output</b> displays data of the actions performed by Kactus2.
+            </li>
+        </ul>
+    </p>
+    <h3>Vendor Extensions</h3>
+    <p>
+          Vendor Extensions are used to edit the user defined extensions. Depending on the currently
+          active editor, either the extensions of the current document or the active element are displayed.
+    </p>
+    <h3>Design</h3>
+    <p>
+        Views that are related to design documents, both HW and system.
+        <ul>
+            <li>
+                <b>Connection Editor</b> displays data of the currently active interconnection. See
+                <a href="../hwdesign/connection.html">interconnection</a>,
+                <a href="../hwdesign/adhocconnection.html">ad-hoc connection</a>,
+                <a href="../swsysdesign/apiconnection.html">api connection</a> or
+                <a href="../swsysdesign/comconnection.html">com connection</a>.
+            </li>
+            <li>
+                <b>Component Instance Details</b> displays details of the active component instance. See
+                <a href="../hwdesign/hwinstance.html">component instance</a>,
+                <a href="../swsysdesign/hwmappinginstance.html">HW mapping instance</a>,
+                <a href="../swsysdesign/swinstance.html">SW component instance</a>.
+            </li>
+            <li>
+                <b>Design Configuration Details</b> allows the editing of the design details. The current
+                <i>design configuration</i> can be changed, and the view configuration allows the
+                editing of the active views for the contained component instances.
+            </li>
+            <li>
+                <b>Interface Editor</b> displays data related to the currently active interface:
+                <ul>
+                    <li>
+                        <b>Bus interface</b> contains data of the <i>bus type</i>, <i>abstraction type</i>, the
+                        <i>interface mode</i> and the contained <i>port maps</i>.
+                    </li>
+                    <li>
+                        <b>API interface</b> displays the <i>API type</i> of the interface and its
+                        <i>dependency direction</i>.
+                    </li>
+                    <li>
+                        <b>COM interface</b> details the <i>COM type</i>, <i>transfer type</i> and
+                        <i>direction</i> of the interface, as well as allowing editing of its property values.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </p>
+    <h3>HW design</h3>
+    <p>
+        Views for displaying details only related to a HW design.
+        <ul>
+            <li>
+                <b>Ad hoc port editor</b> allows the editing of ad hoc ports. The port names and directions are displayed, and
+                port visibility can be enabled or disabled.
+            </li>
+            <li>
+                <b>Design parameters</b> displays the parameters of the parameters associated with the current
+                design. See <a href="../componenteditor/params.html">parameters</a>.
+            </li>
+        </ul>
+    </p>
+    <h3>System design</h3>
+    <p>
+        Views for displaying details related only to a system design.
+        <ul>
+            <li>
+                <b>HW Mapping Details</b> allows the editing of the referenced HW component and selecting the
+                referenced active view. Additional functions for handling the SW are also provided.
             </li>
         </ul>
     </p>

@@ -45,7 +45,7 @@ namespace
 
     //! Ports are declared inside entity by PORT ( <port_declarations> );
     const QRegularExpression PORTS_BEGIN("(PORT)\\s*[(]", QRegularExpression::CaseInsensitiveOption);
-    const QRegularExpression PORTS_END("[)]\\s*[;](?=\\s*(?:" + VHDLSyntax::COMMENT + "\\s*)*(END|BEGIN|PORT)\\s+)", 
+    const QRegularExpression PORTS_END("[)]\\s*[;](?=\\s*(((PORT\\s*[(])|BEGIN)|(END\\s+(ENTITY\\s+)?\\w+)))",
         QRegularExpression::CaseInsensitiveOption);
 }
 
