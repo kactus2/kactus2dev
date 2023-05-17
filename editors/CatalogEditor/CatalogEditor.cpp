@@ -85,8 +85,8 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
         this, SIGNAL(openCatalog(VLNV const&)), Qt::UniqueConnection);
     connect(fileModel_, SIGNAL(openComponent(VLNV const&)),
         this, SIGNAL(openComponent(VLNV const&)), Qt::UniqueConnection);
-    connect(fileModel_, SIGNAL(openBus(VLNV const&, VLNV const&)),
-        this, SIGNAL(openBus(VLNV const&, VLNV const&)), Qt::UniqueConnection);
+    connect(fileModel_, SIGNAL(openBus(VLNV const&)),
+        this, SIGNAL(openBus(VLNV const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

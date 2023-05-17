@@ -476,49 +476,12 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
 
     else if (documentType == VLNV::BUSDEFINITION)
     {
-        QList<VLNV> absDefVLNVs;
-        hierarchyModel_->getChildren(absDefVLNVs, vlnv);
-
-        if (absDefVLNVs.size() == 1)
-        {
-            emit openBus(vlnv, absDefVLNVs.first(), false);
-        }
-
-        else // the abstraction definition can not be identified by the bus definition.
-        {
-            emit openBus(vlnv, VLNV(), false);
-        }
+        emit openBus(vlnv);
     }
 
     else if (documentType == VLNV::ABSTRACTIONDEFINITION)
     {
-        QSharedPointer<const Document> document = getModelReadOnly(vlnv);
-        QSharedPointer<const AbstractionDefinition> absDef = document.staticCast<const AbstractionDefinition>();
-
-        VLNV busDefVLNV = absDef->getBusType();
-
-        if (contains(busDefVLNV) == false)
-        {
-            QString message(
-                tr("Library does not contain bus definition %1 required by abstraction definition %2").arg(
-                busDefVLNV.toString(), vlnv.toString()));
-
-            messageChannel_->showError(message);
-            return;
-        }
-
-        QList<VLNV> absDefVLNVs;
-        hierarchyModel_->getChildren(absDefVLNVs, busDefVLNV);
-
-        // If there is exactly one abstraction definition per bus definition, open it.
-        if (absDefVLNVs.size() == 1 && absDefVLNVs.first() == vlnv)
-        {
-            emit openBus(busDefVLNV, vlnv, false);
-        }
-        else  // If there are multiple abstraction definitions for that one bus def, disable bus definition.
-        {
-            emit openBus(busDefVLNV, vlnv, true);
-        }
+        emit openAbsDef(vlnv);
     }
 
     else

@@ -310,7 +310,7 @@ signals:
 	void openDesign(const VLNV& componentVLNV, const QString& viewName);
 
 	//! \brief Emitted when a bus editor should be opened for given bus.
-	void openBus(const VLNV& busdefVLNV, const VLNV& absdefVLNV);
+	void openBus(const VLNV& busdefVLNV);
 
 	//! \brief Emitted when a COM definition should be opened in an editor.
 	void openComDefinition(const VLNV& comdefVLNV);

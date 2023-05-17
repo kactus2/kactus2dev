@@ -177,7 +177,10 @@ signals:
     void openComponent(VLNV const& vlnv);
 
     //! Emitted when a bus should be opened.
-    void openBus(VLNV const& busVLNV, VLNV const& absVLNV);
+    void openBus(VLNV const& busVLNV);
+
+    //! Emitted when a bus should be opened.
+    void openAbsDef(VLNV const& absDefVLNV);
 
 public slots:
 

@@ -14,20 +14,16 @@
 
 #include <common/widgets/tabDocument/TabDocument.h>
 
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include "busdefgroup.h"
-#include "absdefgroup.h"
 
 #include <QSharedPointer>
 
-class AbstractionDefinitionValidator;
 class BusDefinitionValidator;
 class ExpressionParser;
-class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
 //! Bus Editor is editor for Bus- and Abstraction definition.
@@ -44,57 +40,51 @@ public:
 	 *      @param [in] parent          The owner of this widget.
 	 *      @param [in] libHandler      The instance that manages library.
 	 *      @param [in] busDef          The bus definition to edit.
-	 *      @param [in] absDef          The abstraction definition to edit.
-	 *      @param [in] disableBusDef If true then the BusDefGroup is disabled.
      */
-	BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<BusDefinition> busDef,
-        QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(),
-        bool disableBusDef = false);
+	BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<BusDefinition> busDef);
 	
 	/*!
      *  The destructor.
      */
-	virtual ~BusDefinitionEditor();
+	~BusDefinitionEditor() override = default;
+
+    //! No copying. No assignment.
+    BusDefinitionEditor(const BusDefinitionEditor& other) = delete;
+    BusDefinitionEditor& operator=(const BusDefinitionEditor& other) = delete;
 
 	/*!
      *  Get the VLNV that can be used to identify the Bus.
 	 *
 	 *      @return The VLNV that identifies the Bus.
      */
-	virtual VLNV getIdentifyingVLNV() const;
+	VLNV getIdentifyingVLNV() const override;
 
     /*!
      *  Refreshes the editor.
      */
-    virtual void refresh();
+    void refresh() override;
 
     /*!
      *  Sets the protection state of the document.
      *
      *      @param [in] locked True for locked state; false for unlocked.
      */
-    virtual void setProtection(bool locked);
+    void setProtection(bool locked) override;
 
 	/*!
      *  Get the vlnv of the current bus definition.
 	 *
 	 *      @return VLNV of the bus definition/abstraction definition being edited.
 	 */
-	virtual VLNV getDocumentVLNV() const;
+	VLNV getDocumentVLNV() const override;
 
     /*!
      *  Sets the edited bus definition.
      * 
      *      @param [in] busDef   The bus definition to set. Must not be NULL.
      */
-    virtual void setBusDef(QSharedPointer<BusDefinition> busDef);
+    void setBusDef(QSharedPointer<BusDefinition> busDef);
 
-    /*!
-     *  Sets the edited abstraction definition.
-     *
-     *       @param [in] absDef   The abstraction definition to set.
-     */
-    virtual void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
 
 public slots:
 
@@ -137,52 +127,33 @@ protected:
     virtual void showEvent(QShowEvent* event);
 
 private:
-	//! No copying. No assignment.
-	BusDefinitionEditor(const BusDefinitionEditor& other);
-	BusDefinitionEditor& operator=(const BusDefinitionEditor& other);
 
 	/*!
      *  Set the layout of the widget
      */
 	void setupLayout();
 
-    /*!
-     *  Create interface for accessing port abstractions.
-     *
-     *      @return Interface for accessing port abstractions.
-     */
-    PortAbstractionInterface* createPortAbstractionInterface();
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
 	//! The instance that handles the library
-	LibraryInterface* libHandler_;
+	LibraryInterface* libHandler_ = nullptr;
 
 	//! The original bus definition to use when saving.
-	QSharedPointer<BusDefinition> busDef_;
-
-	//! The original abstraction definition to use when saving.
-	QSharedPointer<AbstractionDefinition> absDef_;
+	QSharedPointer<BusDefinition> busDef_ = nullptr;
 
 	//! Group containing elements to edit bus definition
 	BusDefGroup busDefGroup_;
 
-	//! Group containing elements to edit abstraction definition.
-	AbsDefGroup absDefGroup_;
-
     //! Parser for expressions in definitions.
-    QSharedPointer<ExpressionParser> expressionParser_;
+    QSharedPointer<ExpressionParser> expressionParser_ = nullptr;
 
     //! Validator for bus definition.
-    QSharedPointer<BusDefinitionValidator> busDefinitionValidator_;
-
-    //! Validator for abstraction definition.
-    QSharedPointer<AbstractionDefinitionValidator> absDefinitionValidator_;
+    QSharedPointer<BusDefinitionValidator> busDefinitionValidator_ =nullptr;
 
     //! Flag for save status on bus definition.
-    bool busDefinitionSaved_;
+    bool busDefinitionSaved_= false;
 };
 
 #endif // BUSDEFINITIONEDITOR_H
