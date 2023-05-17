@@ -32,6 +32,47 @@ DocumentReader::~DocumentReader()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DocumentReader::getXMLDocumentRevision()
+//-----------------------------------------------------------------------------
+Document::Revision DocumentReader::getXMLDocumentRevision(QDomNode const& document) const
+{
+    QDomNamedNodeMap attributeMap = document.attributes();
+
+    auto ipxactSchemaAttribute = attributeMap.namedItem(QStringLiteral("xmlns:ipxact"));
+    QString schemaURI = ipxactSchemaAttribute.nodeValue();
+
+    if (schemaURI.contains(QStringLiteral("1685-2014")))
+    {
+        return Document::Revision::Std14;
+    }
+    else if (schemaURI.contains(QStringLiteral("1685-2022")))
+    {
+        return Document::Revision::Std22;
+    }
+    else
+    {
+        return Document::Revision::Unknown;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentReader::parseDocumentNameGroup()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseDocumentNameGroup(QDomNode const& documentNode, QSharedPointer<Document> document) const
+{
+    if (document->getRevision() == Document::Revision::Std22)
+    {
+        document->setDisplayName(
+            documentNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
+        document->setShortDescription(
+            documentNode.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue());
+    }
+
+    document->setDescription(
+        documentNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
+}
+
+//-----------------------------------------------------------------------------
 // Function: DocumentReader::parseTopComments()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseTopComments(QDomNode const& documentNode, QSharedPointer<Document> document) const

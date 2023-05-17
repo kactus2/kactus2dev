@@ -43,6 +43,21 @@ public:
 protected:
 
     /*!
+     *  Parses the document revision from XML.
+     *
+     *      @param [in] document    The XML description of the document.
+     */
+    Document::Revision getXMLDocumentRevision(QDomNode const& document) const;
+
+    /*!
+     *  Parses the document name group data.
+     *
+     *      @param [in] documentNode    The XML description of the document.
+     *      @param [in] document        The document to insert the parsed data.
+     */
+    void parseDocumentNameGroup(QDomNode const& documentNode, QSharedPointer<Document> document) const;
+
+    /*!
      *  Parses the comments preceding the document from XML.
      *
      *      @param [in] documentNode    The XML description of the document.
