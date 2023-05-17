@@ -13,7 +13,6 @@
 
 #include "BusInterfaceWizard.h"
 
-#include <editors/BusDefinitionEditor/absdefgroup.h>
 #include <editors/BusDefinitionEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <KactusAPI/include/ExpressionParser.h>

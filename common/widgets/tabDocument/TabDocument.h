@@ -312,6 +312,9 @@ signals:
 	//! \brief Emitted when a bus editor should be opened for given bus.
 	void openBus(const VLNV& busdefVLNV);
 
+    //! \brief Emitted when a abstraction editor should be opened for given bus.
+    void openAbsDef(const VLNV& absdefVLNV);
+
 	//! \brief Emitted when a COM definition should be opened in an editor.
 	void openComDefinition(const VLNV& comdefVLNV);
 

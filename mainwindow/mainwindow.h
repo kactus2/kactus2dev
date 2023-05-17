@@ -341,9 +341,8 @@ public slots:
 	 *
 	 *      @param [in] busDefVLNV      Identifies the bus definition.
 	 *      @param [in] directory       The directory where to save the abstraction definition.
-	 *      @param [in] disableBusDef   If true then the bus definition editor is disabled when editor is opened.
 	 */
-	void createAbsDef(const VLNV& busDefVLNV, const QString& directory, bool disableBusDef);
+	void createAbsDef(const VLNV& busDefVLNV, const QString& directory);
 
     /*!
      *  Creates a new COM definition.

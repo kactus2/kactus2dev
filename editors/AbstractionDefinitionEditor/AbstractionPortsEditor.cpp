@@ -14,12 +14,12 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
-#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
-#include <editors/BusDefinitionEditor/AbstractionWirePortsSortFilter.h>
-#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsSortFilter.h>
-#include <editors/BusDefinitionEditor/AbstractionWirePortsDelegate.h>
-#include <editors/BusDefinitionEditor/AbstractionTransactionalPortsDelegate.h>
-#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
+#include "AbstractionPortsModel.h"
+#include "AbstractionWirePortsSortFilter.h"
+#include "AbstractionTransactionalPortsSortFilter.h"
+#include "AbstractionWirePortsDelegate.h"
+#include "AbstractionTransactionalPortsDelegate.h"
+#include "LogicalPortColumns.h"
 
 #include <QHeaderView>
 #include <QVBoxLayout>

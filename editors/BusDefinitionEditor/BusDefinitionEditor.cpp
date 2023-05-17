@@ -41,23 +41,18 @@ busDefGroup_(libHandler, this),
 expressionParser_(new SystemVerilogExpressionParser()),
 busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_))
 {
-    if (busDef_)
-    {
-        busDefGroup_.setBusDef(busDef_);
-    } 
-    
-	busDefGroup_.setDisabled(!busDef_);
-
     setDocumentType(tr("Bus Definition"));
 
     if (busDef_)
     {
+        busDefGroup_.setBusDef(busDef_);
+
         VLNV vlnv = busDef_->getVlnv();
         setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
 
         // Open in unlocked mode by default only if the version is draft.
         setProtection(vlnv.getVersion() != "draft");
-    }
+    } 
     else
     {
         setProtection(true);
@@ -141,25 +136,16 @@ void BusDefinitionEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
 // Function: BusDefinitionEditor::validate()
 //-----------------------------------------------------------------------------
 bool BusDefinitionEditor::validate(QVector<QString>& errorList)
-{    
-    // if bus definition is being edited
-    if (busDefGroup_.isEnabled())
-    {
-        QVector<QString> busDefinitionErrors;
-        busDefinitionValidator_->findErrorsIn(busDefinitionErrors, busDef_);
+{
+    QVector<QString> busDefinitionErrors;
+    busDefinitionValidator_->findErrorsIn(busDefinitionErrors, busDef_);
 
-        if (busDefinitionErrors.isEmpty())
-        {
-            libHandler_->writeModelToFile(busDef_);
-            busDefinitionSaved_ = true;
-        }
-        else
-        {
-            errorList.append(busDefinitionErrors);
-        }
+    if (busDefinitionErrors.isEmpty() == false)
+    {
+        errorList.append(busDefinitionErrors);
     }
 
-    return errorList.isEmpty();
+    return busDefinitionErrors.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -167,18 +153,9 @@ bool BusDefinitionEditor::validate(QVector<QString>& errorList)
 //-----------------------------------------------------------------------------
 bool BusDefinitionEditor::save()
 {
-    // If bus definition is being edited, save it.
-    if (busDefGroup_.isEnabled())
-    {
-        if (busDefinitionSaved_ == false)
-        {
-            libHandler_->writeModelToFile(busDef_);
-        }
+    libHandler_->writeModelToFile(busDef_);
 
-        busDefinitionSaved_ = false;
-    }
-
-	return TabDocument::save();
+    return TabDocument::save();
 }
 
 //-----------------------------------------------------------------------------

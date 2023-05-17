@@ -12,7 +12,7 @@
 #ifndef ABSTRACTIONTRANSACTIONALPORTSDELEGATE_H
 #define ABSTRACTIONTRANSACTIONALPORTSDELEGATE_H
 
-#include <editors/BusDefinitionEditor/AbstractionPortsDelegate.h>
+#include "AbstractionPortsDelegate.h"
 
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors for transactional port properties in Abstraction Definition.
