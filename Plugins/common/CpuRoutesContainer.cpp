@@ -18,7 +18,7 @@ CpuRoutesContainer::CpuRoutesContainer():
 fileName_(),
 fileID_(),
 createFile_(false),
-routes_()
+routeContainers_()
 {
 
 }
@@ -30,7 +30,7 @@ CpuRoutesContainer::CpuRoutesContainer(const CpuRoutesContainer& other) :
 fileName_(other.getFileName()),
 fileID_(other.getFileID()),
 createFile_(other.shouldCreateFile()),
-routes_()
+routeContainers_()
 {
     for (auto route : other.getRoutes())
     {
@@ -38,7 +38,7 @@ routes_()
         newRoute->cpuInterface_ = route->cpuInterface_;
         newRoute->routes_ = route->routes_;
 
-        routes_.append(newRoute);
+        routeContainers_.append(newRoute);
     }
 }
 
@@ -95,7 +95,7 @@ void CpuRoutesContainer::setCreateFileFlag(bool newFlag)
 //-----------------------------------------------------------------------------
 QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > CpuRoutesContainer::getRoutes() const
 {
-    return routes_;
+    return routeContainers_;
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > CpuRoutesContainer::getRout
 //-----------------------------------------------------------------------------
 void CpuRoutesContainer::setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > newRoutes)
 {
-    routes_ = newRoutes;
+    routeContainers_ = newRoutes;
 }
 
 //-----------------------------------------------------------------------------
@@ -111,5 +111,5 @@ void CpuRoutesContainer::setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuR
 //-----------------------------------------------------------------------------
 void CpuRoutesContainer::addRoute(QSharedPointer<CpuRouteStructs::CpuRoute> newRoute)
 {
-    routes_.append(newRoute);
+    routeContainers_.append(newRoute);
 }

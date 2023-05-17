@@ -32,6 +32,8 @@ class LinuxDeviceTreeCPUEditor;
 #include <QSharedPointer>
 #include <QCheckBox>
 
+class LinuxDeviceTreeCpuRoutesContainer;
+
 //-----------------------------------------------------------------------------
 //! Dialog for setting linux device tree generation options.
 //-----------------------------------------------------------------------------
@@ -97,7 +99,7 @@ public:
      *
      *      @return List of the selected CPU containers.
      */
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > getAcceptedContainers() const;
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > getAcceptedContainers() const;
 
 public slots:
 

@@ -110,14 +110,14 @@ public:
      *
      *      @param [in] newRoutes   The selected interface routes.
      */
-    void setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > newRoutes);
+    virtual void setRoutes(QVector <QSharedPointer<CpuRouteStructs::CpuRoute> > newRoutes);
 
     /*!
      *  Add a new CPU route.
      *
      *      @param [in] newRoute    The selected interface route.
      */
-    void addRoute(QSharedPointer<CpuRouteStructs::CpuRoute> newRoute);
+    virtual void addRoute(QSharedPointer<CpuRouteStructs::CpuRoute> newRoute);
 
 private:
 
@@ -138,7 +138,7 @@ private:
     bool createFile_;
 
     //! Routes connected to the CPU interface.
-    QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > routes_;
+    QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > routeContainers_;
 };
 
 #endif // CPUROUTESCONTAINER_H
