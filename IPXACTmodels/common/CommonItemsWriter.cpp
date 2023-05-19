@@ -91,7 +91,7 @@ void CommonItemsWriter::writeParameters(QXmlStreamWriter& writer,
         writer.writeStartElement(QStringLiteral("ipxact:parameters"));
 
         ParameterWriter parameterWriter;
-        foreach (QSharedPointer<Parameter> parameter, *parameters)
+        for (auto const& parameter : *parameters)
         {
             parameterWriter.writeParameter(writer, parameter);
         }
@@ -108,7 +108,7 @@ void CommonItemsWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedP
     if (!element->getVendorExtensions()->isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
-        foreach (QSharedPointer<VendorExtension> extension, *element->getVendorExtensions())
+        for (auto extension : *element->getVendorExtensions())
         {
             extension->write(writer);
         }
@@ -137,7 +137,7 @@ void CommonItemsWriter::writeConfigurableElementValues(QXmlStreamWriter& writer,
     {
         writer.writeStartElement(QStringLiteral("ipxact:configurableElementValues"));
 
-        foreach (QSharedPointer<ConfigurableElementValue> element, *configurableElements)
+        for (auto const& element : *configurableElements)
         {
             writer.writeStartElement(QStringLiteral("ipxact:configurableElementValue"));
 

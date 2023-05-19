@@ -36,7 +36,7 @@ DocumentWriter::~DocumentWriter()
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeTopComments(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
-    foreach (QString const& comment, document->getTopComments())
+    for (auto const& comment : document->getTopComments())
     {
         writer.writeComment(comment);
     }
@@ -48,12 +48,11 @@ void DocumentWriter::writeTopComments(QXmlStreamWriter& writer, QSharedPointer<D
 void DocumentWriter::writeXmlProcessingInstructions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
     QVector<QPair<QString, QString> > instructions = document->getXmlProcessingInstructions();
-    
-    int instructionCount = instructions.count();
-    for (int i = 0; i < instructionCount; i++)
+
+    for (auto const& [target, data] : instructions)
     {
-        writer.writeProcessingInstruction(instructions.at(i).first, instructions.at(i).second);
-    }   
+        writer.writeProcessingInstruction(target, data);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -63,14 +62,8 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
 {
     QVector<QPair<QString, QString> > nameSpaces = document->getXmlNameSpaces();
 
-    // Write each known xml namespace.
-    for (int i = 0; i < nameSpaces.size(); ++i)
+    for (auto const& [name, uri] : nameSpaces)
     {
-        QPair<QString, QString> value = nameSpaces[i];
-
-        QString name = value.first;
-        QString uri = value.second;
-
         writer.writeNamespace(uri, name);
     }
 
@@ -85,7 +78,9 @@ void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPoi
 {
     writeVLNVElements(writer, document->getVlnv());
 
-    if (document->getRevision() != Document::Revision::Std14)
+    if (auto revision = document->getRevision();
+        revision != Document::Revision::Std14 &&
+        revision != Document::Revision::Unknown)
     {
         if (auto const& displayName = document->getDisplayName(); !displayName.isEmpty())
         {
@@ -109,12 +104,10 @@ void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPoi
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeDescription(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
-    if (document->getRevision() == Document::Revision::Std14)
+    if (document->getRevision() == Document::Revision::Std14 &&
+        !document->getDescription().isEmpty())    
     {
-        if (!document->getDescription().isEmpty())
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:description"), document->getDescription());
-        }
+        writer.writeTextElement(QStringLiteral("ipxact:description"), document->getDescription());
     }
 }
 
@@ -136,7 +129,7 @@ void DocumentWriter::writeAssertions(QXmlStreamWriter& writer, QSharedPointer<Do
         writer.writeStartElement(QStringLiteral("ipxact:assertions"));
 
         NameGroupWriter nameGroupWriter;
-        foreach (QSharedPointer<Assertion> assertion, *document->getAssertions())
+        for (auto const& assertion : *document->getAssertions())
         {
             writer.writeStartElement(QStringLiteral("ipxact:assertion"));
 

@@ -156,7 +156,7 @@ void BusDefinitionWriter::writeSystemGroupNames(QXmlStreamWriter& writer,
     if (!systemGroupNames.isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:systemGroupNames"));
-        foreach (QString name, systemGroupNames)
+        for (auto const& name : systemGroupNames)
         {
             writer.writeTextElement(QStringLiteral("ipxact:systemGroupName"), name);
         }
