@@ -667,6 +667,14 @@ void Document::setTags(QVector<TagData> newTags) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Document::getRevision()
+//-----------------------------------------------------------------------------
+Document::Revision Document::getRevision() const
+{
+    return revision_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Document::getTagByName()
 //-----------------------------------------------------------------------------
 QSharedPointer<Kactus2Group> Document::getTagByName(QString const& name, QSharedPointer<Kactus2Group> tagGroup) const

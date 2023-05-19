@@ -19,7 +19,7 @@
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
-#include <IPXACTmodels/component/Choice.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <QSharedPointer>
 #include <QDomNode>
