@@ -247,8 +247,8 @@ void tst_BusDefinition::testWriteDocmentNameGroup()
         "<ipxact:library>TestLibrary</ipxact:library>"
         "<ipxact:name>TestBus</ipxact:name>"
         "<ipxact:version>1.0</ipxact:version>"
-        "ipxact:displayName>BusDef</ipxact:displayName>"
-        "ipxact:shortDescription>Shortdesc.</ipxact:shortDescription>"
+        "<ipxact:displayName>BusDef</ipxact:displayName>"
+        "<ipxact:shortDescription>Shortdesc.</ipxact:shortDescription>"
         "<ipxact:description>Bus description</ipxact:description>"
         "<ipxact:directConnection>true</ipxact:directConnection>"
         "<ipxact:isAddressable>true</ipxact:isAddressable>"
@@ -338,9 +338,11 @@ void tst_BusDefinition::testWriteChoices()
     testChoice->setName("bitsize");
 
     QSharedPointer<Enumeration> testEnum1(new Enumeration());
+    testEnum1->setValue("32");
     testEnum1->setText("32 bits");
     
     QSharedPointer<Enumeration> testEnum2(new Enumeration());
+    testEnum2->setValue("64");
     testEnum2->setText("64 bits");
     testEnum2->setHelp("this is a help text");
     
