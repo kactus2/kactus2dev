@@ -15,6 +15,8 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
+#include <IPXACTmodels/Component/Choice.h>
+
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
 
@@ -34,9 +36,12 @@ private slots:
 
     void testWriteExtendingBusDefinition();
     void testWriteBroadcastAndDescription();
+    void testWriteDocmentNameGroup();
 
     void testWriteMasterAndSlaveMaximum();
     void testWriteSystemGroupNames();
+
+    void testWriteChoices();
 
     void testWriteParameters();
     void testWriteAssertions();
@@ -56,8 +61,7 @@ tst_BusDefinition::tst_BusDefinition()
 void tst_BusDefinition::testWriteMinimalBusDefinition()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "MinimalBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->setDirectConnection(true);
     busDefinition->setIsAddressable(false);
 
@@ -89,8 +93,7 @@ void tst_BusDefinition::testWriteMinimalBusDefinition()
 void tst_BusDefinition::testTopCommentsAreWritten()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "MinimalBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->setTopComments("Commented section");
 
     QString output;
@@ -122,8 +125,7 @@ void tst_BusDefinition::testTopCommentsAreWritten()
 void tst_BusDefinition::testProcessingInstructionsAreWritten()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "StyledBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\" attribute=\"value\"");
 
     QString output;
@@ -157,8 +159,7 @@ void tst_BusDefinition::testWriteExtendingBusDefinition()
     VLNV extendedVlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "extended", "1.0");
 
     VLNV extendingVlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "extending", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(extendingVlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(extendingVlnv, Document::Revision::Std14));
     busDefinition->setExtends(extendedVlnv);
 
     QString output;
@@ -190,8 +191,7 @@ void tst_BusDefinition::testWriteExtendingBusDefinition()
 void tst_BusDefinition::testWriteBroadcastAndDescription()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->setBroadcast(true);
     busDefinition->setDescription("Bus description");
 
@@ -220,13 +220,48 @@ void tst_BusDefinition::testWriteBroadcastAndDescription()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_BusDefinitionWriter::testWriteDocmentNameGroup()
+//-----------------------------------------------------------------------------
+void tst_BusDefinition::testWriteDocmentNameGroup()
+{
+    VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std22));
+    busDefinition->setDescription("Bus description");
+    busDefinition->setShortDescription("Shortdesc.");
+    busDefinition->setDisplayName("BusDef");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    BusDefinitionWriter busWriter;
+
+    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+        "<ipxact:vendor>TUT</ipxact:vendor>"
+        "<ipxact:library>TestLibrary</ipxact:library>"
+        "<ipxact:name>TestBus</ipxact:name>"
+        "<ipxact:version>1.0</ipxact:version>"
+        "ipxact:displayName>BusDef</ipxact:displayName>"
+        "ipxact:shortDescription>Shortdesc.</ipxact:shortDescription>"
+        "<ipxact:description>Bus description</ipxact:description>"
+        "<ipxact:directConnection>true</ipxact:directConnection>"
+        "<ipxact:isAddressable>true</ipxact:isAddressable>"
+        "</ipxact:busDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_BusDefinitionWriter::testWriteMasterAndSlaveMaximum()
 //-----------------------------------------------------------------------------
 void tst_BusDefinition::testWriteMasterAndSlaveMaximum()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->setMaxMasters("1");
     busDefinition->setMaxSlaves("8-1");
 
@@ -260,8 +295,7 @@ void tst_BusDefinition::testWriteMasterAndSlaveMaximum()
 void tst_BusDefinition::testWriteSystemGroupNames()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
 
     QStringList systemGroupNames;
     systemGroupNames << "system1" << "system2" << "system3";
@@ -295,14 +329,62 @@ void tst_BusDefinition::testWriteSystemGroupNames()
         "</ipxact:busDefinition>\n"));
 }
 
+void tst_BusDefinition::testWriteChoices()
+{
+    VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std22));
+    
+    QSharedPointer<Choice> testChoice(new Choice());
+    testChoice->setName("bitsize");
+
+    QSharedPointer<Enumeration> testEnum1(new Enumeration());
+    testEnum1->setText("32 bits");
+    
+    QSharedPointer<Enumeration> testEnum2(new Enumeration());
+    testEnum2->setText("64 bits");
+    testEnum2->setHelp("this is a help text");
+    
+    testChoice->enumerations()->append(testEnum1);
+    testChoice->enumerations()->append(testEnum2);
+
+    busDefinition->getChoices()->append(testChoice);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    BusDefinitionWriter busWriter;
+
+    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+        "<ipxact:vendor>TUT</ipxact:vendor>"
+        "<ipxact:library>TestLibrary</ipxact:library>"
+        "<ipxact:name>TestBus</ipxact:name>"
+        "<ipxact:version>1.0</ipxact:version>"
+        "<ipxact:directConnection>true</ipxact:directConnection>"
+        "<ipxact:isAddressable>true</ipxact:isAddressable>"
+        "<ipxact:choices>"
+            "<ipxact:choice>"
+                "<ipxact:name>bitsize</ipxact:name>"
+                "<ipxact:enumeration text=\"32 bits\">32</ipxact:enumeration>"
+                "<ipxact:enumeration text=\"64 bits\" help=\"this is a help text\">64</ipxact:enumeration>"
+            "</ipxact:choice>"
+        "</ipxact:choices>"
+        "</ipxact:busDefinition>\n"));
+}
+
 //-----------------------------------------------------------------------------
 // Function: tst_BusDefinition::testWriteParameters()
 //-----------------------------------------------------------------------------
 void tst_BusDefinition::testWriteParameters()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
 
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setName("parameter1");
@@ -356,8 +438,7 @@ void tst_BusDefinition::testWriteParameters()
 void tst_BusDefinition::testWriteAssertions()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
 
     QSharedPointer<Assertion> firstTestAssertion(new Assertion());
     firstTestAssertion->setName("testAssertion1");
@@ -412,8 +493,7 @@ void tst_BusDefinition::testWriteAssertions()
 void tst_BusDefinition::testVendorExtensions()
 {
     VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(vlnv);
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->setVersion("3.0.0");
 
     QDomDocument document;
