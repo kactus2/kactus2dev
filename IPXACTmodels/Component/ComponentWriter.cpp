@@ -23,13 +23,13 @@
 #include "InstantiationsWriter.h"
 #include "PortWriter.h"
 #include "ComponentGeneratorWriter.h"
-#include "ChoiceWriter.h"
 #include "FileSetWriter.h"
 #include "CPUWriter.h"
 #include "OtherClockDriverWriter.h"
 #include "ResetType.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
+#include <IPXACTmodels/common/ChoiceWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWriter::ComponentWriter()
@@ -339,13 +339,11 @@ void ComponentWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<Comp
 {
     if (!component->getChoices()->isEmpty())
     {
-        ChoiceWriter choiceWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:choices"));
 
         foreach (QSharedPointer<Choice> choice, *component->getChoices())
         {
-            choiceWriter.writeChoice(writer, choice);
+            ChoiceWriter::writeChoice(writer, choice);
         }
 
         writer.writeEndElement(); // ipxact:choices

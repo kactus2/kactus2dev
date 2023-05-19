@@ -33,6 +33,7 @@ Extendable(),
     revision_(revision)
 {
     addDefaultNameSpaces(revision);
+    setSchemaLocation(revision);
 }
 
 //-----------------------------------------------------------------------------
@@ -44,6 +45,7 @@ Extendable(),
 {
     documentNameGroup_.vlnv = vlnv;
     addDefaultNameSpaces(revision);
+    setSchemaLocation(revision);
 }
 
 //-----------------------------------------------------------------------------
@@ -55,7 +57,8 @@ Extendable(other),
     revision_(other.revision_),
     topComments_(other.topComments_),
     xmlProcessingInstructions_(other.xmlProcessingInstructions_),
-    xmlNameSpaces_(other.xmlNameSpaces_)
+    xmlNameSpaces_(other.xmlNameSpaces_),
+    xmlSchemaLocation_(other.xmlSchemaLocation_)
 {
     copyParameters(other);
     copyAssertions(other);
@@ -84,6 +87,7 @@ Document & Document::operator=( const Document &other )
 
         xmlProcessingInstructions_ = other.xmlProcessingInstructions_;
         xmlNameSpaces_ = other.xmlNameSpaces_;
+        xmlSchemaLocation_ = other.xmlSchemaLocation_;
 
         copyParameters(other);
         copyAssertions(other);
@@ -244,6 +248,33 @@ void Document::addXmlNameSpace(QString const& nameSpace, QString const& uri)
 QVector<QPair<QString, QString> > Document::getXmlNameSpaces() const
 {
     return xmlNameSpaces_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::setSchemaLocation()
+//-----------------------------------------------------------------------------
+void Document::setSchemaLocation(Document::Revision revision)
+{
+    if (revision == Revision::Std14)
+    {
+        xmlSchemaLocation_ = QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd");
+    }
+    else if (revision == Revision::Std22)
+    {
+        xmlSchemaLocation_ = QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2022 http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd");
+    }
+    else
+    {
+        xmlSchemaLocation_ = QStringLiteral("");
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getSchemaLocation()
+//-----------------------------------------------------------------------------
+QString Document::getSchemaLocation() const
+{
+    return xmlSchemaLocation_;
 }
 
 //-----------------------------------------------------------------------------

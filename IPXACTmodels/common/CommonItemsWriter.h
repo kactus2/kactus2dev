@@ -19,6 +19,7 @@ class Extendable;
 class VendorExtension;
 class VLNV;
 class Parameter;
+class Choice;
 class Assertion;
 class ConfigurableElementValue;
 
@@ -98,6 +99,14 @@ public:
      *      @param [in] VLNV        The VLNV to write.
      */
     static void writeShortDescription(QXmlStreamWriter& writer, std::string const& shortDescription);
+
+    /*!
+     *  Writes the choices of given element into XML.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] choices     The choices of the element.
+     */
+    static void writeChoices(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Choice> > > choices);
 
     /*!
      *  Writes the parameters of a given document into XML.

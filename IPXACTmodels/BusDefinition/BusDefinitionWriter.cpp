@@ -12,6 +12,7 @@
 #include "BusDefinitionWriter.h"
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::BusDefinitionWriter()
@@ -44,8 +45,7 @@ void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer,
     writer.writeStartElement(QStringLiteral("ipxact:busDefinition"));
     writeNamespaceDeclarations(writer, busDefinition);
 
-
-    writeVLNVElements(writer, busDefinition->getVlnv());
+    writeDocumentNameGroup(writer, busDefinition);
 
     writer.writeTextElement(QStringLiteral("ipxact:directConnection"), bool2Str(busDefinition->getDirectConnection()));
 
@@ -55,12 +55,14 @@ void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer,
 
     writeExtends(writer, busDefinition);
 
-    writeMaximumMasters(writer, busDefinition);
-    writeMaximumSlaves(writer, busDefinition);
+    writeMaximumInitiators(writer, busDefinition);
+    writeMaximumTargets(writer, busDefinition);
 
     writeSystemGroupNames(writer, busDefinition);
 
     writeDescription(writer, busDefinition->getDescription());
+
+    writeChoices(writer, busDefinition);
 
     writeParameters(writer, busDefinition);
 
@@ -85,7 +87,6 @@ void BusDefinitionWriter::writeBroadcast(QXmlStreamWriter& writer,
     }
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeExtends()
 //-----------------------------------------------------------------------------
@@ -100,26 +101,48 @@ void BusDefinitionWriter::writeExtends(QXmlStreamWriter& writer, QSharedPointer<
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefinitionWriter::writeMaximumMasters()
+// Function: BusDefinitionWriter::writeMaximumInitiators()
 //-----------------------------------------------------------------------------
-void BusDefinitionWriter::writeMaximumMasters(QXmlStreamWriter& writer,
+void BusDefinitionWriter::writeMaximumInitiators(QXmlStreamWriter& writer,
     QSharedPointer<BusDefinition> busDefinition) const
 {
-    if (!busDefinition->getMaxMasters().isEmpty())
+    auto const& maxInitiators = busDefinition->getMaxInitiators();
+
+    if (maxInitiators.isEmpty())
     {
-        writer.writeTextElement(QStringLiteral("ipxact:maxMasters"), busDefinition->getMaxMasters());
+        return;
+    }
+
+    if (busDefinition->getRevision() == Document::Revision::Std14)
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:maxMasters"), maxInitiators);
+    }
+    else if (busDefinition->getRevision() == Document::Revision::Std22)
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:maxInitiators"), maxInitiators);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefinitionWriter::writeMaximumSlaves()
+// Function: BusDefinitionWriter::writeMaximumTargets()
 //-----------------------------------------------------------------------------
-void BusDefinitionWriter::writeMaximumSlaves(QXmlStreamWriter& writer,
+void BusDefinitionWriter::writeMaximumTargets(QXmlStreamWriter& writer,
     QSharedPointer<BusDefinition> busDefinition) const
 {
-    if (!busDefinition->getMaxSlaves().isEmpty())
+    auto const& maxTargets = busDefinition->getMaxTargets();
+
+    if (maxTargets.isEmpty())
     {
-        writer.writeTextElement(QStringLiteral("ipxact:maxSlaves"), busDefinition->getMaxSlaves());
+        return;
+    }
+
+    if (busDefinition->getRevision() == Document::Revision::Std14)
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:maxSlaves"), maxTargets);
+    }
+    else if (busDefinition->getRevision() == Document::Revision::Std22)
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:maxTargets"), maxTargets);
     }
 }
 
@@ -133,7 +156,7 @@ void BusDefinitionWriter::writeSystemGroupNames(QXmlStreamWriter& writer,
     if (!systemGroupNames.isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:systemGroupNames"));
-        foreach (QString name, systemGroupNames)
+        for (auto const& name : systemGroupNames)
         {
             writer.writeTextElement(QStringLiteral("ipxact:systemGroupName"), name);
         }
@@ -141,6 +164,16 @@ void BusDefinitionWriter::writeSystemGroupNames(QXmlStreamWriter& writer,
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusDefinitionWriter::writeChoices()
+//-----------------------------------------------------------------------------
+void BusDefinitionWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const
+{
+    if (busDefinition->getRevision() != Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeChoices(writer, busDefinition->getChoices());
+    }
+}
 
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::bool2Str()

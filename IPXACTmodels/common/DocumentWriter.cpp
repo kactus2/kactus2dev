@@ -40,12 +40,11 @@ void DocumentWriter::writeTopComments(QXmlStreamWriter& writer, QSharedPointer<D
 void DocumentWriter::writeXmlProcessingInstructions(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
 {
     QVector<QPair<QString, QString> > instructions = document->getXmlProcessingInstructions();
-    
-    int instructionCount = instructions.count();
-    for (int i = 0; i < instructionCount; i++)
+
+    for (auto const& [target, data] : instructions)
     {
-        writer.writeProcessingInstruction(instructions.at(i).first, instructions.at(i).second);
-    }   
+        writer.writeProcessingInstruction(target, data);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -55,14 +54,8 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
 {
     QVector<QPair<QString, QString> > nameSpaces = document->getXmlNameSpaces();
 
-    // Write each known xml namespace.
-    for (int i = 0; i < nameSpaces.size(); ++i)
+    for (auto const& [name, uri] : nameSpaces)
     {
-        QPair<QString, QString> value = nameSpaces[i];
-
-        QString name = value.first;
-        QString uri = value.second;
-
         writer.writeNamespace(uri, name);
     }
 
@@ -82,13 +75,19 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeDocumentNameGroup()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
+void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPointer<Document> document)
 {
     CommonItemsWriter::writeVLNVElements(writer, document->getVlnv());
 
-    CommonItemsWriter::writeShortDescription(writer, document->getShortDescription());
+    if (auto revision = document->getRevision();
+        revision == Document::Revision::Std22)
+    {
+        CommonItemsWriter::writeDisplayName(writer, document->getDisplayName());
 
-    CommonItemsWriter::writeDescription(writer, document->getDescription());
+        CommonItemsWriter::writeShortDescription(writer, document->getShortDescription());
+        
+        CommonItemsWriter::writeDescription(writer, document->getDescription());
+    }
 }
 
 //-----------------------------------------------------------------------------

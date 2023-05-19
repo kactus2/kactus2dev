@@ -143,6 +143,7 @@
     <ClCompile Include="common\BooleanValue.cpp" />
     <ClCompile Include="common\BuildModel.cpp" />
     <ClCompile Include="common\CellSpecification.cpp" />
+    <ClCompile Include="common\ChoiceWriter.cpp" />
     <ClCompile Include="common\ClockUnit.cpp" />
     <ClCompile Include="common\CommonItemsReader.cpp" />
     <ClCompile Include="common\CommonItemsWriter.cpp" />
@@ -206,7 +207,6 @@
     <ClCompile Include="Component\ChannelWriter.cpp" />
     <ClCompile Include="Component\Choice.cpp" />
     <ClCompile Include="Component\ChoiceReader.cpp" />
-    <ClCompile Include="Component\ChoiceWriter.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\ComponentGenerator.cpp" />
     <ClCompile Include="Component\ComponentGeneratorReader.cpp" />
@@ -375,6 +375,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
+    <ClInclude Include="common\ChoiceWriter.h" />
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="Component\FieldReset.h" />
@@ -772,8 +773,6 @@
     </CustomBuild>
     <ClInclude Include="Component\Choice.h" />
     <QtMoc Include="Component\ChoiceReader.h">
-    </QtMoc>
-    <QtMoc Include="Component\ChoiceWriter.h">
     </QtMoc>
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\ComponentGenerator.h" />

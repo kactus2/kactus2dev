@@ -347,9 +347,6 @@
     <ClCompile Include="Component\ChoiceReader.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Component\ChoiceWriter.cpp">
-      <Filter>Source Files\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Component\Component.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
@@ -911,6 +908,9 @@
     <ClCompile Include="common\validators\CommonItemsValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
+    <ClCompile Include="common\ChoiceWriter.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1468,6 +1468,9 @@
     <ClInclude Include="common\validators\CommonItemsValidator.h">
       <Filter>Header Files\common\validators</Filter>
     </ClInclude>
+    <ClInclude Include="common\ChoiceWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1534,9 +1537,6 @@
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
     <QtMoc Include="Component\ChoiceReader.h">
-      <Filter>Header Files\Component</Filter>
-    </QtMoc>
-    <QtMoc Include="Component\ChoiceWriter.h">
       <Filter>Header Files\Component</Filter>
     </QtMoc>
     <CustomBuild Include="Component\ComponentGeneratorReader.h">
