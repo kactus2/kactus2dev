@@ -59,6 +59,14 @@ protected:
     void writeNamespaceDeclarations(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
 
     /*!
+     *  Writes the document name group data.
+     *
+     *      @param [in] writer          The writer to use.
+     *      @param [in] document        The document whose document name group to write.
+     */
+    void writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
+
+    /*!
      *  Writes the document description into XML.
      *
      *      @param [in] writer       The used XML writer.

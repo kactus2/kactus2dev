@@ -75,8 +75,33 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
     }
 
     // Also write the schema location.
-    writer.writeAttribute(QStringLiteral("xsi:schemaLocation"), 
-        QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd"));
+    writer.writeAttribute(QStringLiteral("xsi:schemaLocation"), document->getSchemaLocation());
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentWriter::writeDocumentNameGroup()
+//-----------------------------------------------------------------------------
+void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+{
+    writeVLNVElements(writer, document->getVlnv());
+
+    if (document->getRevision() != Document::Revision::Std14)
+    {
+        if (auto const& displayName = document->getDisplayName(); !displayName.isEmpty())
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName);
+        }
+
+        if (auto const& shortDescription = document->getShortDescription(); !shortDescription.isEmpty())
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:shortDescription"), shortDescription);
+        }
+        
+        if (auto const& description = document->getDescription(); !description.isEmpty())
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:description"), description);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -84,9 +109,12 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeDescription(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
-    if (!document->getDescription().isEmpty())
+    if (document->getRevision() == Document::Revision::Std14)
     {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), document->getDescription());
+        if (!document->getDescription().isEmpty())
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:description"), document->getDescription());
+        }
     }
 }
 

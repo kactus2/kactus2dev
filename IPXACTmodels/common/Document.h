@@ -192,6 +192,20 @@ public:
      */
     QVector<QPair<QString, QString> > getXmlNameSpaces() const;
 
+    /*!
+     *  Set the XML schema location based on std revision.
+     *
+     *      @param [in] revision    The document std revision.
+     */
+    void setSchemaLocation(Document::Revision revision);
+
+    /*!
+     *  Get the XML schema location.
+     *  
+     *      @return The schema location as a string.
+     */
+    QString getSchemaLocation() const;
+
 	/*! A pure virtual function to be implemented by subclasses.
 	 *
 	 *      @return QStringList containing the file dependencies of the document.
@@ -424,6 +438,9 @@ private:
 
     //! The map of xml namespaces with namespace as key and uri as value.
     QVector<QPair<QString, QString> > xmlNameSpaces_;
+    
+    //! The map of xml attributes with attribute as key and uri as value.
+    QString xmlSchemaLocation_;
 
     //! A list of parameters for the document.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ =
