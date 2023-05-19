@@ -32,7 +32,7 @@ public:
     /*!
 	 *  The destructor.
 	 */
-    ~DesignConfigurationReader() override = default;
+    ~DesignConfigurationReader() final = default;
 
     // Disable copying.
     DesignConfigurationReader(DesignConfigurationReader const& rhs) = delete;

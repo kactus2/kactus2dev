@@ -167,9 +167,8 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
 
     else if (documentType == VLNV::DESIGNCONFIGURATION)
     {
-        DesignConfigurationWriter designConfigurationWriter;
         QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
-        designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
+        DesignConfigurationWriter::writeDesignConfiguration(xmlWriter, designConfiguration);
     }
 
     else if (documentType == VLNV::APIDEFINITION)

@@ -38,7 +38,7 @@ public:
      *
      *      @param [in] instanceName    The name of this instance.
      */
-    ViewConfiguration(QString const& instanceName);
+    explicit ViewConfiguration(QString const& instanceName);
 
     /*!
      *  Copy constructor.
@@ -50,7 +50,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~ViewConfiguration() override = default;
+    ~ViewConfiguration() final = default;
 
     /*!
      *  Get the name of this instance.

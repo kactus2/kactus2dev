@@ -22,41 +22,34 @@
 #include <QMap>
 #include <QSharedPointer>
 
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationWriter::DesignConfigurationWriter()
-//-----------------------------------------------------------------------------
-DesignConfigurationWriter::DesignConfigurationWriter(): DocumentWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeDesignConfiguration()
 //-----------------------------------------------------------------------------
 void DesignConfigurationWriter::writeDesignConfiguration(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
     writer.writeStartDocument();
 
-    writeDesignConfigurationStart(writer, designConfiguration);
+    Details::writeDesignConfigurationStart(writer, designConfiguration);
 
-    writeNamespaceDeclarations(writer, designConfiguration);
+    DocumentWriter::writeNamespaceDeclarations(writer, designConfiguration);
 
-    writeDocumentNameGroup(writer, designConfiguration);
+    DocumentWriter::writeDocumentNameGroup(writer, designConfiguration);
 
-    writeDesignReference(writer, designConfiguration->getDesignRef());
+    Details::writeDesignReference(writer, designConfiguration->getDesignRef());
 
-    writeGeneratorChainConfiguration(writer, designConfiguration);
+    Details::writeGeneratorChainConfiguration(writer, designConfiguration);
 
-    writeInterConnectionConfiguration(writer, designConfiguration);
+    Details::writeInterConnectionConfiguration(writer, designConfiguration);
 
-    writeViewConfigurations(writer, designConfiguration);
+    Details::writeViewConfigurations(writer, designConfiguration);
 
-    writeParameters(writer, designConfiguration);
+    DocumentWriter::writeParameters(writer, designConfiguration);
 
-    writeAssertions(writer, designConfiguration);
+    DocumentWriter::writeAssertions(writer, designConfiguration);
 
-    writeVendorExtensions(writer, designConfiguration);
+    CommonItemsWriter::writeVendorExtensions(writer, designConfiguration);
 
     writer.writeEndElement(); // ipxact:designConfiguration
     writer.writeEndDocument();
@@ -65,41 +58,40 @@ void DesignConfigurationWriter::writeDesignConfiguration(QXmlStreamWriter& write
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeDesignConfigurationStart()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeDesignConfigurationStart(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
+void DesignConfigurationWriter::Details::writeDesignConfigurationStart(QXmlStreamWriter& writer,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
-    writeTopComments(writer, designConfiguration);
-    writeXmlProcessingInstructions(writer, designConfiguration);
+    DocumentWriter::writeTopComments(writer, designConfiguration);
+    DocumentWriter::writeXmlProcessingInstructions(writer, designConfiguration);
     writer.writeStartElement(QStringLiteral("ipxact:designConfiguration"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeDesignReference()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeDesignReference(QXmlStreamWriter& writer, VLNV const& designReference) const
+void DesignConfigurationWriter::Details::writeDesignReference(QXmlStreamWriter& writer, VLNV const& designReference)
 {
     if (designReference.isValid())
     {
         writer.writeEmptyElement(QStringLiteral("ipxact:designRef"));
 
-        writeVLNVAttributes(writer, designReference);
+        CommonItemsWriter::writeVLNVAttributes(writer, designReference);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeGeneratorChainConfiguration()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeGeneratorChainConfiguration(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
+void DesignConfigurationWriter::Details::writeGeneratorChainConfiguration(QXmlStreamWriter& writer,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
     for (auto const& currentChain : *designConfiguration->getGeneratorChainConfs())
     {
         writer.writeStartElement(QStringLiteral("ipxact:generatorChainConfiguration"));
 
-        VLNV currentChainVLNV = *currentChain;
-        writeVLNVAttributes(writer, currentChainVLNV);
+        CommonItemsWriter::writeVLNVAttributes(writer, *currentChain);
 
-        writeConfigurableElementValues(writer, currentChain->getConfigurableElementValues());
+        CommonItemsWriter::writeConfigurableElementValues(writer, currentChain->getConfigurableElementValues());
 
         writer.writeEndElement(); // ipxact:generatorChainConfiguration
     }
@@ -108,8 +100,8 @@ void DesignConfigurationWriter::writeGeneratorChainConfiguration(QXmlStreamWrite
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeInterConnectionConfiguration()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeInterConnectionConfiguration(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
+void DesignConfigurationWriter::Details::writeInterConnectionConfiguration(QXmlStreamWriter& writer,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
     auto docRevision = designConfiguration->getRevision();
 
@@ -117,9 +109,9 @@ void DesignConfigurationWriter::writeInterConnectionConfiguration(QXmlStreamWrit
     {
         writer.writeStartElement(QStringLiteral("ipxact:interconnectionConfiguration"));
 
-        if (docRevision == Document::Revision::Std14 && !configuration->getIsPresent().isEmpty())
+        if (docRevision == Document::Revision::Std14)
         {
-            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), configuration->getIsPresent());
+            CommonItemsWriter::writeIsPresent(writer, configuration->getIsPresent());
         }
 
         writer.writeTextElement(QStringLiteral("ipxact:interconnectionRef"), configuration->getInterconnectionReference());
@@ -128,7 +120,7 @@ void DesignConfigurationWriter::writeInterConnectionConfiguration(QXmlStreamWrit
 
         if (docRevision == Document::Revision::Std22)
         {
-            writeVendorExtensions(writer, configuration);
+            CommonItemsWriter::writeVendorExtensions(writer, configuration);
         }
 
         writer.writeEndElement(); // ipxact:interconnectionConfiguration
@@ -138,17 +130,17 @@ void DesignConfigurationWriter::writeInterConnectionConfiguration(QXmlStreamWrit
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeMultipleAbstractorInstances()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeMultipleAbstractorInstances(QXmlStreamWriter& writer,
+void DesignConfigurationWriter::Details::writeMultipleAbstractorInstances(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > multipleAbstractors,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     for (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor : *multipleAbstractors)
     {
         writer.writeStartElement(QStringLiteral("ipxact:abstractorInstances"));
 
-        if (docRevision == Document::Revision::Std14 && !multipleAbstractor->getIsPresent().isEmpty())
+        if (docRevision == Document::Revision::Std14)
         {
-            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), multipleAbstractor->getIsPresent());
+            CommonItemsWriter::writeIsPresent(writer, multipleAbstractor->getIsPresent());
         }
 
         writeInterfaceReferences(writer, multipleAbstractor->getInterfaceReferences(), docRevision);
@@ -161,9 +153,9 @@ void DesignConfigurationWriter::writeMultipleAbstractorInstances(QXmlStreamWrite
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeInterfaceReferences()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeInterfaceReferences(QXmlStreamWriter& writer,
+void DesignConfigurationWriter::Details::writeInterfaceReferences(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     for (QSharedPointer<InterfaceRef> singleInterface : *interfaceReferences)
     {
@@ -172,14 +164,14 @@ void DesignConfigurationWriter::writeInterfaceReferences(QXmlStreamWriter& write
         writer.writeAttribute(QStringLiteral("componentRef"), singleInterface->getComponentRef());
         writer.writeAttribute(QStringLiteral("busRef"), singleInterface->getBusRef());
 
-        if (docRevision == Document::Revision::Std14 && !singleInterface->getIsPresent().isEmpty())
+        if (docRevision == Document::Revision::Std14)
         {
-            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), singleInterface->getIsPresent());
+            CommonItemsWriter::writeIsPresent(writer, singleInterface->getIsPresent());
         }
         
         if (docRevision == Document::Revision::Std22)
         {
-            writeVendorExtensions(writer, singleInterface);
+            CommonItemsWriter::writeVendorExtensions(writer, singleInterface);
         }
 
         writer.writeEndElement(); // ipxact:interfaceRef
@@ -189,9 +181,9 @@ void DesignConfigurationWriter::writeInterfaceReferences(QXmlStreamWriter& write
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeAbstractorInstances()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& writer,
+void DesignConfigurationWriter::Details::writeAbstractorInstances(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<AbstractorInstance> > > abstractorInstances,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     for (QSharedPointer<AbstractorInstance> abstractorInstance : *abstractorInstances)
     {
@@ -199,28 +191,22 @@ void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& write
 
         writer.writeTextElement(QStringLiteral("ipxact:instanceName"), abstractorInstance->getInstanceName());
 
-        if (!abstractorInstance->getDisplayName().isEmpty())
+        CommonItemsWriter::writeDisplayName(writer, abstractorInstance->getDisplayName());
+
+        if (docRevision == Document::Revision::Std22)
         {
-            writer.writeTextElement(QStringLiteral("ipxact:displayName"), abstractorInstance->getDisplayName());
+            CommonItemsWriter::writeShortDescription(writer, abstractorInstance->getShortDescription());
         }
 
-        if (docRevision == Document::Revision::Std22 && !abstractorInstance->getShortDescription().isEmpty())
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:shortDescription"), abstractorInstance->getShortDescription());
-        }
-
-        if (!abstractorInstance->getDescription().isEmpty())
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:description"), abstractorInstance->getDescription());
-        }
+        CommonItemsWriter::writeDescription(writer, abstractorInstance->getDescription());
 
         writer.writeStartElement(QStringLiteral("ipxact:abstractorRef"));
 
         QSharedPointer<ConfigurableVLNVReference> abstractorRef = abstractorInstance->getAbstractorRef();  
 
-        writeVLNVAttributes(writer, *abstractorRef);
+        CommonItemsWriter::writeVLNVAttributes(writer, *abstractorRef);
 
-        writeConfigurableElementValues(writer, abstractorRef->getConfigurableElementValues());
+        CommonItemsWriter::writeConfigurableElementValues(writer, abstractorRef->getConfigurableElementValues());
 
         writer.writeEndElement(); // ipxact:abstractorRef
 
@@ -228,7 +214,7 @@ void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& write
 
         if (docRevision == Document::Revision::Std22)
         {
-            writeVendorExtensions(writer, abstractorInstance);
+            CommonItemsWriter::writeVendorExtensions(writer, abstractorInstance);
         }
 
         writer.writeEndElement(); // ipxact:abstractorInstance
@@ -238,8 +224,8 @@ void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& write
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationWriter::writeViewConfigurations()
 //-----------------------------------------------------------------------------
-void DesignConfigurationWriter::writeViewConfigurations(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfiguration> designConfiguration) const
+void DesignConfigurationWriter::Details::writeViewConfigurations(QXmlStreamWriter& writer,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
     auto docRevision = designConfiguration->getRevision();
 
@@ -249,22 +235,21 @@ void DesignConfigurationWriter::writeViewConfigurations(QXmlStreamWriter& writer
 
         writer.writeTextElement(QStringLiteral("ipxact:instanceName"), configuration->getInstanceName());
 
-        if (docRevision == Document::Revision::Std14 &&
-            !configuration->getIsPresent().isEmpty())
+        if (docRevision == Document::Revision::Std14)
         {
-            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), configuration->getIsPresent());
+            CommonItemsWriter::writeIsPresent(writer, configuration->getIsPresent());
         }
 
         writer.writeStartElement(QStringLiteral("ipxact:view"));
         writer.writeAttribute(QStringLiteral("viewRef"), configuration->getViewReference());
 
-        writeConfigurableElementValues(writer, configuration->getViewConfigurableElements());
+        CommonItemsWriter::writeConfigurableElementValues(writer, configuration->getViewConfigurableElements());
 
         writer.writeEndElement(); // ipxact:view
 
         if (docRevision == Document::Revision::Std22)
         {
-            writeVendorExtensions(writer, configuration);
+            CommonItemsWriter::writeVendorExtensions(writer, configuration);
         }
 
         writer.writeEndElement(); // ipxact:viewConfiguration

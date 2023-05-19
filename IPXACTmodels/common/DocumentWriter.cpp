@@ -23,13 +23,12 @@ DocumentWriter::DocumentWriter() : CommonItemsWriter()
 
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeTopComments()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeTopComments(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+void DocumentWriter::writeTopComments(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
 {
-    foreach (QString const& comment, document->getTopComments())
+    for (QString const& comment : document->getTopComments())
     {
         writer.writeComment(comment);
     }
@@ -38,7 +37,7 @@ void DocumentWriter::writeTopComments(QXmlStreamWriter& writer, QSharedPointer<D
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeXmlProcessingInstructions()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeXmlProcessingInstructions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+void DocumentWriter::writeXmlProcessingInstructions(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
 {
     QVector<QPair<QString, QString> > instructions = document->getXmlProcessingInstructions();
     
@@ -52,7 +51,7 @@ void DocumentWriter::writeXmlProcessingInstructions(QXmlStreamWriter& writer, QS
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeNamespaceDeclarations()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
 {
     QVector<QPair<QString, QString> > nameSpaces = document->getXmlNameSpaces();
 
@@ -83,33 +82,19 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeDocumentNameGroup()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
 {
-    writeVLNVElements(writer, document->getVlnv());
+    CommonItemsWriter::writeVLNVElements(writer, document->getVlnv());
 
-    if (!document->getShortDescription().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:shortDescription"), document->getShortDescription());
-    }
+    CommonItemsWriter::writeShortDescription(writer, document->getShortDescription());
 
-    writeDescription(writer, document);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DocumentWriter::writeDescription()
-//-----------------------------------------------------------------------------
-void DocumentWriter::writeDescription(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
-{
-    if (!document->getDescription().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), document->getDescription());
-    }
+    CommonItemsWriter::writeDescription(writer, document->getDescription());
 }
 
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeParameters()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeParameters(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+void DocumentWriter::writeParameters(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
 {
     CommonItemsWriter::writeParameters(writer, document->getParameters());
 }
@@ -117,14 +102,14 @@ void DocumentWriter::writeParameters(QXmlStreamWriter& writer, QSharedPointer<Do
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeAssertions()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeAssertions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+void DocumentWriter::writeAssertions(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
 {
     if (!document->getAssertions()->isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:assertions"));
 
         NameGroupWriter nameGroupWriter;
-        foreach (QSharedPointer<Assertion> assertion, *document->getAssertions())
+        for (auto const& assertion : *document->getAssertions())
         {
             writer.writeStartElement(QStringLiteral("ipxact:assertion"));
 

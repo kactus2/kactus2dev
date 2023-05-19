@@ -49,11 +49,6 @@ public:
 	DesignConfiguration(VLNV const& vlnv, Revision revision);
 
     /*!
-	 *  The constructor.
-	 */
-	DesignConfiguration();
-
-    /*!
 	 *  Copy constructor.
 	 */
 	DesignConfiguration(const DesignConfiguration& other);
@@ -66,7 +61,7 @@ public:
     /*!
 	 *  The destructor.
 	 */
-	~DesignConfiguration() final;
+	~DesignConfiguration() final = default;
 
     /*!
 	 *  Clone this design configuration.

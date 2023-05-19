@@ -41,7 +41,7 @@ viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
 {
     for (QSharedPointer<ConfigurableElementValue> configurable : *other.viewConfigurables_)
     {
-        QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
+        auto copy = QSharedPointer<ConfigurableElementValue>(
             new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
         viewConfigurables_->append(copy);
     }

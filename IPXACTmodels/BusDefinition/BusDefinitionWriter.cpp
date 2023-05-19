@@ -60,7 +60,7 @@ void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer,
 
     writeSystemGroupNames(writer, busDefinition);
 
-    writeDescription(writer, busDefinition);
+    writeDescription(writer, busDefinition->getDescription());
 
     writeParameters(writer, busDefinition);
 

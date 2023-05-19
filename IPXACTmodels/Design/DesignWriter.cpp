@@ -49,7 +49,7 @@ void DesignWriter::writeDesign(QXmlStreamWriter& writer, QSharedPointer<Design> 
 
     writeAdHocConnections(writer, design);
 
-    writeDescription(writer, design);
+    writeDescription(writer, design->getDescription());
 
     writeParameters(writer, design);
 

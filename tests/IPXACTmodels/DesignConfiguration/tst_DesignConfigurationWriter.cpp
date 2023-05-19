@@ -100,8 +100,8 @@ void tst_DesignConfigurationWriter::testSimpleDesignConfiguration()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput = 
         "<?xml version=\"1.0\"?>\n"
@@ -138,8 +138,7 @@ void tst_DesignConfigurationWriter::test2022DesignConfiguration()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput =
         "<?xml version=\"1.0\"?>\n"
@@ -176,8 +175,7 @@ void tst_DesignConfigurationWriter::testTopCommentsAreWritten()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -212,8 +210,7 @@ void tst_DesignConfigurationWriter::testProcessingInstructionsAreWritten()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -249,8 +246,7 @@ void tst_DesignConfigurationWriter::testDesignReference()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -294,8 +290,7 @@ void tst_DesignConfigurationWriter::testGeneratorChainConfiguration()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -365,8 +360,7 @@ void tst_DesignConfigurationWriter::testInterconnectionConfiguration()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -458,8 +452,7 @@ void tst_DesignConfigurationWriter::test2022InterconnectionConfiguration()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -533,8 +526,7 @@ void tst_DesignConfigurationWriter::testViewConfigurations()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -589,8 +581,7 @@ void tst_DesignConfigurationWriter::test2022ViewConfigurations()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -643,8 +634,7 @@ void tst_DesignConfigurationWriter::testParameters()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -693,8 +683,7 @@ void tst_DesignConfigurationWriter::testAssertion()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -747,8 +736,7 @@ void tst_DesignConfigurationWriter::testVendorExtensions()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -794,8 +782,7 @@ void tst_DesignConfigurationWriter::testWriteConfigurableElementValues()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -848,8 +835,7 @@ void tst_DesignConfigurationWriter::testWriteViewOverrides()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignConfigurationWriter designConfigurationWriter;
-    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+    DesignConfigurationWriter::writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"

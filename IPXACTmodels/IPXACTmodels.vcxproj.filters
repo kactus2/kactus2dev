@@ -57,12 +57,6 @@
     <Filter Include="Source Files\AbstractionDefinition">
       <UniqueIdentifier>{77c749b9-09e3-42ef-bc9f-febe4f45e004}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\designConfiguration">
-      <UniqueIdentifier>{08dd8af0-de2a-47a7-9b4c-07b5f19ca328}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\designConfiguration">
-      <UniqueIdentifier>{3756b817-3a7e-4d61-aaeb-4228dc0db3b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Design">
       <UniqueIdentifier>{3105a439-452c-4dc3-9807-e87a57bfc118}</UniqueIdentifier>
     </Filter>
@@ -99,12 +93,6 @@
     <Filter Include="Source Files\AbstractionDefinition\validators">
       <UniqueIdentifier>{95fa34c7-584f-4e11-97ce-905ebabfe1f4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\designConfiguration\validators">
-      <UniqueIdentifier>{069e3eba-3a4e-4c79-afa5-f6963520eef9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\designConfiguration\validators">
-      <UniqueIdentifier>{b997b8ac-3800-4bf7-b01f-9f96768da459}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Design\validators">
       <UniqueIdentifier>{4adde65a-aa38-44fb-ba47-3725121b1fe2}</UniqueIdentifier>
     </Filter>
@@ -135,6 +123,18 @@
     <Filter Include="Source Files\utilities">
       <UniqueIdentifier>{54d2758c-a610-4b1c-9a03-7f22e6644109}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DesignConfiguration">
+      <UniqueIdentifier>{3756b817-3a7e-4d61-aaeb-4228dc0db3b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DesignConfiguration\validators">
+      <UniqueIdentifier>{069e3eba-3a4e-4c79-afa5-f6963520eef9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DesignConfiguration">
+      <UniqueIdentifier>{08dd8af0-de2a-47a7-9b4c-07b5f19ca328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DesignConfiguration\validators">
+      <UniqueIdentifier>{b997b8ac-3800-4bf7-b01f-9f96768da459}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BusDefinition\BusDefinition.cpp">
@@ -147,28 +147,28 @@
       <Filter>Source Files\BusDefinition</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\AbstractorInstance.cpp">
-      <Filter>Source Files\designConfiguration</Filter>
+      <Filter>Source Files\DesignConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\DesignConfiguration.cpp">
-      <Filter>Source Files\designConfiguration</Filter>
+      <Filter>Source Files\DesignConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\DesignConfigurationReader.cpp">
-      <Filter>Source Files\designConfiguration</Filter>
+      <Filter>Source Files\DesignConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\DesignConfigurationWriter.cpp">
-      <Filter>Source Files\designConfiguration</Filter>
+      <Filter>Source Files\DesignConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\InterconnectionConfiguration.cpp">
-      <Filter>Source Files\designConfiguration</Filter>
+      <Filter>Source Files\DesignConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\InterfaceRef.cpp">
-      <Filter>Source Files\designConfiguration</Filter>
+      <Filter>Source Files\DesignConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\MultipleAbstractorInstances.cpp">
-      <Filter>Source Files\designConfiguration</Filter>
+      <Filter>Source Files\DesignConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\ViewConfiguration.cpp">
-      <Filter>Source Files\designConfiguration</Filter>
+      <Filter>Source Files\DesignConfiguration</Filter>
     </ClCompile>
     <ClCompile Include="Design\MonitorInterface.cpp">
       <Filter>Source Files\Design</Filter>
@@ -251,12 +251,6 @@
     <ClCompile Include="AbstractionDefinition\WirePort.cpp">
       <Filter>Source Files\AbstractionDefinition</Filter>
     </ClCompile>
-    
-    
-    
-    
-    
-    
     <ClCompile Include="kactusExtensions\ApiInterconnection.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
@@ -305,22 +299,6 @@
     <ClCompile Include="kactusExtensions\SystemView.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <ClCompile Include="Component\AddressBlock.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
@@ -549,22 +527,6 @@
     <ClCompile Include="Component\WriteValueConstraint.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     <ClCompile Include="common\Array.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -821,13 +783,13 @@
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\validators\InterconnectionConfigurationValidator.cpp">
-      <Filter>Source Files\designConfiguration\validators</Filter>
+      <Filter>Source Files\DesignConfiguration\validators</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\validators\ViewConfigurationValidator.cpp">
-      <Filter>Source Files\designConfiguration\validators</Filter>
+      <Filter>Source Files\DesignConfiguration\validators</Filter>
     </ClCompile>
     <ClCompile Include="designConfiguration\validators\DesignConfigurationValidator.cpp">
-      <Filter>Source Files\designConfiguration\validators</Filter>
+      <Filter>Source Files\DesignConfiguration\validators</Filter>
     </ClCompile>
     <ClCompile Include="Design\validator\AdHocConnectionValidator.cpp">
       <Filter>Source Files\Design\validators</Filter>
@@ -910,10 +872,6 @@
     <ClCompile Include="common\validators\NMTokenValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
-    
-    
-    
-    
     <ClCompile Include="utilities\XmlUtils.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
@@ -956,22 +914,22 @@
       <Filter>Header Files\BusDefinition</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\AbstractorInstance.h">
-      <Filter>Header Files\designConfiguration</Filter>
+      <Filter>Header Files\DesignConfiguration</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\DesignConfiguration.h">
-      <Filter>Header Files\designConfiguration</Filter>
+      <Filter>Header Files\DesignConfiguration</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\InterconnectionConfiguration.h">
-      <Filter>Header Files\designConfiguration</Filter>
+      <Filter>Header Files\DesignConfiguration</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\InterfaceRef.h">
-      <Filter>Header Files\designConfiguration</Filter>
+      <Filter>Header Files\DesignConfiguration</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\MultipleAbstractorInstances.h">
-      <Filter>Header Files\designConfiguration</Filter>
+      <Filter>Header Files\DesignConfiguration</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\ViewConfiguration.h">
-      <Filter>Header Files\designConfiguration</Filter>
+      <Filter>Header Files\DesignConfiguration</Filter>
     </ClInclude>
     <ClInclude Include="Design\ActiveInterface.h">
       <Filter>Header Files\Design</Filter>
@@ -1391,13 +1349,13 @@
       <Filter>Header Files\common\validators</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\validators\InterconnectionConfigurationValidator.h">
-      <Filter>Header Files\designConfiguration\validators</Filter>
+      <Filter>Header Files\DesignConfiguration\validators</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\validators\ViewConfigurationValidator.h">
-      <Filter>Header Files\designConfiguration\validators</Filter>
+      <Filter>Header Files\DesignConfiguration\validators</Filter>
     </ClInclude>
     <ClInclude Include="designConfiguration\validators\DesignConfigurationValidator.h">
-      <Filter>Header Files\designConfiguration\validators</Filter>
+      <Filter>Header Files\DesignConfiguration\validators</Filter>
     </ClInclude>
     <ClInclude Include="Design\validator\AdHocConnectionValidator.h">
       <Filter>Header Files\Design\validators</Filter>
@@ -1513,10 +1471,10 @@
       <Filter>Header Files\BusDefinition</Filter>
     </CustomBuild>
     <CustomBuild Include="designConfiguration\DesignConfigurationReader.h">
-      <Filter>Header Files\designConfiguration</Filter>
+      <Filter>Header Files\DesignConfiguration</Filter>
     </CustomBuild>
     <CustomBuild Include="designConfiguration\DesignConfigurationWriter.h">
-      <Filter>Header Files\designConfiguration</Filter>
+      <Filter>Header Files\DesignConfiguration</Filter>
     </CustomBuild>
     <CustomBuild Include="Design\DesignReader.h">
       <Filter>Header Files\Design</Filter>

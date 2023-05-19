@@ -40,7 +40,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~InterconnectionConfiguration() override = default;
+    ~InterconnectionConfiguration() final = default;
 
     /*!
      *  Get the isPresent value.

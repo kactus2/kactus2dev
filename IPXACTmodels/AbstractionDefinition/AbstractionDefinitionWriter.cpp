@@ -56,7 +56,7 @@ void AbstractionDefinitionWriter::writeAbstractionDefinition(QXmlStreamWriter& w
 
     writePorts(writer, abstractionDefinition);
 
-    writeDescription(writer, abstractionDefinition);
+    writeDescription(writer, abstractionDefinition->getDescription());
 
     writeParameters(writer, abstractionDefinition);
 

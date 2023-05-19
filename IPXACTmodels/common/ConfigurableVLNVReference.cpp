@@ -28,9 +28,9 @@ ConfigurableVLNVReference::ConfigurableVLNVReference(const ConfigurableVLNVRefer
 VLNV(other),
 configurableElementValues_(new QList<QSharedPointer<ConfigurableElementValue> >)
 {
-    foreach (QSharedPointer<ConfigurableElementValue> configurable, *other.configurableElementValues_)
+    for (QSharedPointer<ConfigurableElementValue> configurable : *other.configurableElementValues_)
     {
-            QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
+            auto copy = QSharedPointer<ConfigurableElementValue>(
                 new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
             configurableElementValues_->append(copy);
     }
@@ -69,7 +69,7 @@ ConfigurableVLNVReference& ConfigurableVLNVReference::operator=(const Configurab
         configurableElementValues_->clear();
         for (QSharedPointer<ConfigurableElementValue> configurable : *other.configurableElementValues_)
         {
-            QSharedPointer<ConfigurableElementValue> copy = QSharedPointer<ConfigurableElementValue>(
+            auto copy = QSharedPointer<ConfigurableElementValue>(
                 new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
             configurableElementValues_->append(copy);
         }
@@ -109,15 +109,8 @@ void ConfigurableVLNVReference::setConfigurableElementValues(
 //-----------------------------------------------------------------------------
 bool ConfigurableVLNVReference::hasConfigurableElementValue(QString const& referenceId) const
 {
-    foreach (QSharedPointer<ConfigurableElementValue> singleElement, *configurableElementValues_)
-    {
-        if (0 == referenceId.compare(singleElement->getReferenceId(), Qt::CaseInsensitive))
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(configurableElementValues_->cbegin(), configurableElementValues_->cend(),
+        [referenceId](auto const& singleElement) { return referenceId.compare(singleElement->getReferenceId()) == 0; });
 }
 
 //-----------------------------------------------------------------------------
@@ -125,12 +118,12 @@ bool ConfigurableVLNVReference::hasConfigurableElementValue(QString const& refer
 //-----------------------------------------------------------------------------
 QString ConfigurableVLNVReference::getSingleConfigurableElementValue(QString const& referenceId) const
 {
-    foreach (QSharedPointer<ConfigurableElementValue> singleElement, *configurableElementValues_)
+    auto element = std::find_if(configurableElementValues_->cbegin(), configurableElementValues_->cend(),
+        [referenceId](auto const& singleElement) {return referenceId.compare(singleElement->getReferenceId()) == 0; });
+
+    if (element != configurableElementValues_->cend())
     {
-        if (0 == referenceId.compare(singleElement->getReferenceId(), Qt::CaseInsensitive))
-        {
-            return singleElement->getConfigurableValue();
-        }
+        return (*element)->getConfigurableValue();
     }
 
     return QString();

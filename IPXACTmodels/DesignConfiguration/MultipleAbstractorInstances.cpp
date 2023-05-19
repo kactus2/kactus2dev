@@ -105,8 +105,7 @@ QList<VLNV> MultipleAbstractorInstances::getDependantVLNVs() const
 
     for (QSharedPointer<AbstractorInstance> abstractor : *abstractorInstances_)
     {
-        VLNV abstractorRefVLNV = *abstractor->getAbstractorRef();
-        vlnvList.append(abstractorRefVLNV);
+        vlnvList.append(*abstractor->getAbstractorRef());
     }
 
     return vlnvList;

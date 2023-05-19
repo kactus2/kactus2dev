@@ -47,7 +47,7 @@ designRef_(other.designRef_)
     {
         if (generatorChainConf)
         {
-            QSharedPointer<ConfigurableVLNVReference> copy = QSharedPointer<ConfigurableVLNVReference>(
+            auto copy = QSharedPointer<ConfigurableVLNVReference>(
                 new ConfigurableVLNVReference(*generatorChainConf));
             generatorChainConfigurations_->append(copy);
         }
@@ -56,7 +56,7 @@ designRef_(other.designRef_)
     {
         if (configuration)
         {
-            QSharedPointer<InterconnectionConfiguration> copy = QSharedPointer<InterconnectionConfiguration>(
+            auto copy = QSharedPointer<InterconnectionConfiguration>(
                 new InterconnectionConfiguration(*configuration));
             interconnectionConfigurations_->append(copy);
         }
@@ -66,20 +66,10 @@ designRef_(other.designRef_)
     {
         if (configuration)
         {
-            QSharedPointer<ViewConfiguration> copy = QSharedPointer<ViewConfiguration>(
-                new ViewConfiguration(*configuration));
+            auto copy = QSharedPointer<ViewConfiguration>(new ViewConfiguration(*configuration));
             viewConfigurations_->append(copy);
         }
     }
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::DesignConfiguration()
-//-----------------------------------------------------------------------------
-DesignConfiguration::DesignConfiguration():
-Document()
-{
 
 }
 
@@ -98,7 +88,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
         {
             if (generatorChainConf)
             {
-                QSharedPointer<ConfigurableVLNVReference> copy = QSharedPointer<ConfigurableVLNVReference>
+                auto copy = QSharedPointer<ConfigurableVLNVReference>
                     (new ConfigurableVLNVReference(*generatorChainConf.data()));
                 generatorChainConfigurations_->append(copy);
 			}
@@ -109,7 +99,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
         {
             if (configuration)
             {
-                QSharedPointer<InterconnectionConfiguration> copy = QSharedPointer<InterconnectionConfiguration>(
+                auto copy = QSharedPointer<InterconnectionConfiguration>(
                     new InterconnectionConfiguration(*configuration.data()));
                 interconnectionConfigurations_->append(copy);
 			}
@@ -120,23 +110,13 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
         {
             if (configuration)
             {
-                QSharedPointer<ViewConfiguration> copy = QSharedPointer<ViewConfiguration>(
+                auto copy = QSharedPointer<ViewConfiguration>(
                     new ViewConfiguration(*configuration.data()));
                 viewConfigurations_->append(copy);
             }
         }
 	}
 	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfiguration::clone()
-//-----------------------------------------------------------------------------
-DesignConfiguration::~DesignConfiguration()
-{
-    generatorChainConfigurations_.clear();
-    interconnectionConfigurations_.clear();
-    viewConfigurations_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -259,19 +239,19 @@ QList<VLNV> DesignConfiguration::getDependentVLNVs() const
 	}
 
 	// Append all vlnvs representing generator chains associated with this design configuration.
-    for (int i = 0; i < generatorChainConfigurations_->size(); ++i)
+    for (auto const& generatorChainConfiguration : *generatorChainConfigurations_)
     {
-        if (generatorChainConfigurations_->at(i)->isValid())
+        if (generatorChainConfiguration->isValid())
         {
-            VLNV generatorChainVLNV = *generatorChainConfigurations_->at(i);
+            VLNV generatorChainVLNV = *generatorChainConfiguration;
             vlnvList.append(generatorChainVLNV);
 		}
 	}
 
 	// Append all vlnvs referencing the abstractors that this designConfiguration depends on.
-    for (int i = 0; i < interconnectionConfigurations_->size(); ++i)
+    for (auto const& interconnectionConfiguration : *interconnectionConfigurations_)
     {
-        vlnvList.append(interconnectionConfigurations_->at(i)->getDependantVLNVs());
+        vlnvList.append(interconnectionConfiguration->getDependantVLNVs());
 	}
 
 	return vlnvList;

@@ -43,7 +43,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~AbstractorInstance() override = default;
+    ~AbstractorInstance() final = default;
 
     /*!
      *  Get the VLNV reference to the abstractor.

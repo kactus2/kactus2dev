@@ -39,7 +39,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~InterfaceRef() override = default;
+    ~InterfaceRef() final = default;
 
     /*!
      *  Get the isPresent value.

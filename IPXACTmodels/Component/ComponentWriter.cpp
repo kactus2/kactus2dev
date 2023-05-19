@@ -90,7 +90,7 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
 
     writeResetTypes(writer, component);
 
-    writeDescription(writer, component);
+    writeDescription(writer, component->getDescription());
 
     writeParameters(writer, component);
 

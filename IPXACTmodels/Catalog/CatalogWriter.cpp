@@ -46,7 +46,7 @@ void CatalogWriter::writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalo
 
     writeVLNVElements(writer, catalog->getVlnv());
 
-    writeDescription(writer, catalog);
+    writeDescription(writer, catalog->getDescription());
 
     writeCatalogs(writer, catalog);
 

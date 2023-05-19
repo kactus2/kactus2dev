@@ -35,15 +35,13 @@ public:
 	//! The destructor.
     virtual ~CommonItemsWriter() = default;
 
-protected:
-
     /*!
      *  Writes the given VLNV as separate elements into XML.
      *
      *      @param [in] writer      The used XML writer.
      *      @param [in] VLNV        The VLNV to write.
      */
-    void writeVLNVElements(QXmlStreamWriter& writer, VLNV const& vlnv) const;
+    static void writeVLNVElements(QXmlStreamWriter& writer, VLNV const& vlnv);
     
     /*!
      *  Writes the given VLNV as attributes for the current element into XML.
@@ -51,16 +49,40 @@ protected:
      *      @param [in] writer      The used XML writer.
      *      @param [in] VLNV        The VLNV to write.
      */
-    void writeVLNVAttributes(QXmlStreamWriter& writer, VLNV const& vlnv) const;
-    
+    static void writeVLNVAttributes(QXmlStreamWriter& writer, VLNV const& vlnv);
+
+    /*!
+     *  Writes the description for the current element into XML.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] VLNV        The VLNV to write.
+     */
+    static void writeDisplayName(QXmlStreamWriter& writer, QString const& displayName);
+
+    /*!
+     *  Writes the description for the current element into XML.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] VLNV        The VLNV to write.
+     */
+    static void writeDescription(QXmlStreamWriter& writer, QString const& description);
+
+
+    /*!
+     *  Writes the short description for the current element into XML.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] VLNV        The VLNV to write.
+     */
+    static void writeShortDescription(QXmlStreamWriter& writer, QString const& shortDescription);
+
     /*!
      *  Writes the parameters of a given document into XML.
      *
      *      @param [in] writer      The used XML writer.
      *      @param [in] parameters  A list of the parameters to be written.
      */
-    void writeParameters(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Parameter> > > parameters)
-        const;
+    static void writeParameters(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Parameter> > > parameters);
 
     /*!
      *  Writes the vendor extensions of a given element into XML.
@@ -68,7 +90,7 @@ protected:
      *      @param [in] writer      The XML writer to use.
      *      @param [in] element     The element whose vendor extensions to write.
      */
-    void writeVendorExtensions(QXmlStreamWriter& writer,  QSharedPointer<Extendable> element) const;
+    static void writeVendorExtensions(QXmlStreamWriter& writer,  QSharedPointer<Extendable> element);
 
     /*!
      *  Write the isPresent element.
@@ -76,16 +98,18 @@ protected:
      *      @param [in] writer      The XML writer to use.
      *      @param [in] isPresent   The value for the isPresent element.
      */
-    void writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent) const;
+    static void writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent);
 
     /*!
      *  Write the configurable element values.
      *
      *      @param [in] writer                  The XML writer to use.
-     *      @param [in] configurableElements    The configurable elemenets.
+     *      @param [in] configurableElements    The configurable elements.
      */
-    void writeConfigurableElementValues(QXmlStreamWriter& writer,
-        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElements) const;
+    static void writeConfigurableElementValues(QXmlStreamWriter& writer,
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElements);
+
+    static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, QString const& value);
 
 private:
 
@@ -94,5 +118,6 @@ private:
     CommonItemsWriter& operator=(CommonItemsWriter const& rhs);
 
 };
+
 
 #endif // DOCUMENTWRITER_H
