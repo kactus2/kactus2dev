@@ -61,8 +61,8 @@ bool SystemDesignConfigurationValidator::hasValidViewConfigurations(
             getViewConfigurationValidator()->changeComponentInstances(hwInstances);
             systemViewConfigurationValidator_->changeComponentInstances(hwInstances);
 
-            QVector<QString> instanceNames;
-            foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
+            QVector<std::string> instanceNames;
+            for (QSharedPointer<ViewConfiguration> viewConfiguration :
                 *designConfiguration->getViewConfigurations())
             {
 				if ( instanceNames.contains(viewConfiguration->getInstanceName() ) )
@@ -101,9 +101,9 @@ bool SystemDesignConfigurationValidator::viewConfigurationReferencesHWInstance(
     QSharedPointer<ViewConfiguration> viewConfiguration,
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > hwInstances) const
 {
-    foreach (QSharedPointer<ComponentInstance> instance, *hwInstances)
+    for (QSharedPointer<ComponentInstance> instance : *hwInstances)
     {
-        if (viewConfiguration->getInstanceName() == instance->getInstanceName())
+        if (viewConfiguration->getInstanceName() == instance->getInstanceName().toStdString())
         {
             return true;
         }
@@ -135,16 +135,17 @@ void SystemDesignConfigurationValidator::findErrorsInViewConfigurations(QVector<
                 systemViewConfigurationValidator_->changeComponentInstances(hwInstances);
             }
 
-            QVector<QString> instanceNames;
-            QVector<QString> duplicateNames;
-            foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
+            QVector<std::string> instanceNames;
+            QVector<std::string> duplicateNames;
+            for (QSharedPointer<ViewConfiguration> viewConfiguration :
                 *designConfiguration->getViewConfigurations())
             {
-                if (instanceNames.contains(viewConfiguration->getInstanceName()) &&
-                    !duplicateNames.contains(viewConfiguration->getInstanceName()))
+                auto instanceName = viewConfiguration->getInstanceName();
+                if (instanceNames.contains(instanceName) &&
+                    !duplicateNames.contains(instanceName))
                 {
                     errors.append(QObject::tr("View configuration name '%1' within %2 is not unique.")
-                        .arg(viewConfiguration->getInstanceName()).arg(context));
+                        .arg(QString::fromStdString(instanceName), context));
                     duplicateNames.append(viewConfiguration->getInstanceName());
                 }
                 else

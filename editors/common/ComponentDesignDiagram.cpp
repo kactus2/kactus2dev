@@ -727,11 +727,12 @@ void ComponentDesignDiagram::openInComponentEditor(ComponentItem* comp)
 QString ComponentDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 {
     QString activeViewName;
+    std::string instanceName = compItem->name().toStdString();
 
     QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
-    if (designConf && designConf->hasActiveView(compItem->name())) 
+    if (designConf && designConf->hasActiveView(instanceName)) 
     {
-        activeViewName = designConf->getActiveView(compItem->name());
+        activeViewName = QString::fromStdString(designConf->getActiveView(instanceName));
     }
 
     return activeViewName;

@@ -16,7 +16,6 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <QString>
 #include <QMap>
 
 //-----------------------------------------------------------------------------
@@ -34,7 +33,7 @@ public:
     /*!
      *  Copy constructor.
      */
-    InterfaceRef(const InterfaceRef& other);
+    InterfaceRef(const InterfaceRef& other) = default;
 
     /*!
      *  The destructor.
@@ -46,53 +45,53 @@ public:
      *
      *      @return The value of isPresent.
      */
-    QString getIsPresent() const;
+    std::string getIsPresent() const;
 
     /*!
      *  Set the value for isPresent.
      *
      *      @param [in] newIsPresent    The new value for isPresent.
      */
-    void setIsPresent(QString const& newIsPresent);
+    void setIsPresent(std::string const& newIsPresent);
 
     /*!
      *  Get the name of the referenced component.
      *
      *      @return The name of the referenced component.
      */
-    QString getComponentRef() const;
+    std::string getComponentRef() const;
 
     /*!
      *  Set the referenced component.
      *
      *      @param [in] newComponentRef     The name of the referenced component.
      */
-    void setComponentRef(QString const& newComponentRef);
+    void setComponentRef(std::string const& newComponentRef);
 
     /*!
      *  Get the name of the referenced bus interface.
      *
      *      @return The name of the referenced bus interface.
      */
-    QString getBusRef() const;
+    std::string getBusRef() const;
 
     /*!
      *  Set the referenced bus interface.
      *
      *      @param [in] newBusRef   The name of the referenced bus interface.
      */
-    void setBusRef(QString const& newBusRef);
+    void setBusRef(std::string const& newBusRef);
 
 private:
 
     //! The name of the referenced component.
-    QString componentRef_;
+    std::string componentRef_;
     
     //! The name of the referenced bus interface.
-    QString busRef_;
+    std::string busRef_;
 
     //! Defines the presenced of the element
-    QString isPresent_;
+    std::string isPresent_;
 };
 
 #endif // INTERFACEREF_H

@@ -25,27 +25,13 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
-#include <QRegularExpression>
-
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfigurationValidator::InterconnectionConfigurationValidator()
 //-----------------------------------------------------------------------------
 InterconnectionConfigurationValidator::InterconnectionConfigurationValidator(
     QSharedPointer<ExpressionParser> parser, LibraryInterface* library ):
 parser_(parser),
-libraryHandler_(library),
-availableInterconnections_(),
-availableMonitorInterconnections_(),
-availableComponentInstances_(),
-availableBusInterfaces_()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterconnectionConfigurationValidator::~InterconnectionConfigurationValidator()
-//-----------------------------------------------------------------------------
-InterconnectionConfigurationValidator::~InterconnectionConfigurationValidator()
+libraryHandler_(library)
 {
 
 }
@@ -75,26 +61,26 @@ bool InterconnectionConfigurationValidator::validate(QSharedPointer<Interconnect
 bool InterconnectionConfigurationValidator::hasValidInterconnectionReference(
     QSharedPointer<InterconnectionConfiguration> configuration) const
 {
+    auto matchReference = [configuration](auto const& connection)
+    {
+        return (configuration->getInterconnectionReference() == connection->name().toStdString());
+    };
+
     if (availableInterconnections_)
     {
-        foreach (QSharedPointer<Interconnection> connection, *availableInterconnections_)
+        auto hasConnection = std::any_of(availableInterconnections_->cbegin(), availableInterconnections_->cend(), matchReference);
+        if (hasConnection)
         {
-            if (configuration->getInterconnectionReference() == connection->name())
-            {
-                return true;
-            }
+            return true;
         }
     }
 
     if (availableMonitorInterconnections_)
     {
-        foreach (QSharedPointer<MonitorInterconnection> connection, *availableMonitorInterconnections_)
-        {
-            if (configuration->getInterconnectionReference() == connection->name())
-            {
-                return true;
-            }
-        }
+        auto hasMonitorConnection = std::any_of(availableMonitorInterconnections_->cbegin(), 
+            availableMonitorInterconnections_->cend(), matchReference);
+
+        return hasMonitorConnection;
     }
 
     return false;
@@ -103,11 +89,11 @@ bool InterconnectionConfigurationValidator::hasValidInterconnectionReference(
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfigurationValidator::hasValidIsPresent()
 //-----------------------------------------------------------------------------
-bool InterconnectionConfigurationValidator::hasValidIsPresent(QString const& isPresent) const
+bool InterconnectionConfigurationValidator::hasValidIsPresent(std::string const& isPresent) const
 {
-    if (!isPresent.isEmpty())
+    if (isPresent.empty() == false)
     {
-        QString solvedValue = parser_->parseExpression(isPresent);
+        QString solvedValue = parser_->parseExpression(QString::fromStdString(isPresent));
 
         bool toIntOk = true;
         int intValue = solvedValue.toInt(&toIntOk);
@@ -132,7 +118,7 @@ bool InterconnectionConfigurationValidator::hasValidMultipleAbstractorInstances(
         return false;
     }
 
-    foreach (QSharedPointer<MultipleAbstractorInstances> instance, *configuration->getAbstractorInstances())
+    for (QSharedPointer<MultipleAbstractorInstances> instance : *configuration->getAbstractorInstances())
     {
         if (!multipleAbstractorInstanceIsValid(instance))
         {
@@ -155,8 +141,8 @@ bool InterconnectionConfigurationValidator::multipleAbstractorInstanceIsValid(
         return false;
     }
 
-    QVector<QString> instanceNames;
-    foreach (QSharedPointer<AbstractorInstance> instance, *multipleInstance->getAbstractorInstances())
+    QVector<std::string> instanceNames;
+    for (QSharedPointer<AbstractorInstance> instance : *multipleInstance->getAbstractorInstances())
     {
         if (instanceNames.contains(instance->getInstanceName()) || !abstractorInstanceIsValid(instance))
         {
@@ -179,7 +165,7 @@ bool InterconnectionConfigurationValidator::hasValidInterfaceReferences(
 {
     if (multipleInstance->getInterfaceReferences())
     {
-        foreach (QSharedPointer<InterfaceRef> interfaceReference, *multipleInstance->getInterfaceReferences())
+        for (QSharedPointer<InterfaceRef> interfaceReference : *multipleInstance->getInterfaceReferences())
         {
             if (!interfaceReferenceComponentReferenceIsValid(interfaceReference) ||
                 !interfaceReferenceBusReferenceIsValid(interfaceReference) ||
@@ -199,11 +185,11 @@ bool InterconnectionConfigurationValidator::hasValidInterfaceReferences(
 bool InterconnectionConfigurationValidator::interfaceReferenceComponentReferenceIsValid(
     QSharedPointer<InterfaceRef> interfaceReference) const
 {
-    if (!interfaceReference->getComponentRef().isEmpty() && availableComponentInstances_)
+    if (interfaceReference->getComponentRef().empty() == false && availableComponentInstances_)
     {
-        foreach (QSharedPointer<ComponentInstance> instance, *availableComponentInstances_)
+        for (QSharedPointer<ComponentInstance> instance : *availableComponentInstances_)
         {
-            if (interfaceReference->getComponentRef() == instance->getInstanceName())
+            if (interfaceReference->getComponentRef() == instance->getInstanceName().toStdString())
             {
                 return true;
             }
@@ -221,11 +207,11 @@ bool InterconnectionConfigurationValidator::interfaceReferenceBusReferenceIsVali
 {
     changeAvailableBusInterfaces(interfaceReference);
 
-    if (!interfaceReference->getBusRef().isEmpty() && availableBusInterfaces_)
+    if (interfaceReference->getBusRef().empty() == false && availableBusInterfaces_)
     {
-        foreach (QSharedPointer<BusInterface> currentInterface, *availableBusInterfaces_)
+        for (QSharedPointer<BusInterface> currentInterface : *availableBusInterfaces_)
         {
-            if (interfaceReference->getBusRef() == currentInterface->name())
+            if (interfaceReference->getBusRef() == currentInterface->name().toStdString())
             {
                 return true;
             }
@@ -243,9 +229,9 @@ void InterconnectionConfigurationValidator::changeAvailableBusInterfaces(
 {
     if (availableComponentInstances_)
     {
-        foreach (QSharedPointer<ComponentInstance> instance, *availableComponentInstances_)
+        for (QSharedPointer<ComponentInstance> instance : *availableComponentInstances_)
         {
-            if (instance->getInstanceName() == interfaceReference->getComponentRef())
+            if (instance->getInstanceName().toStdString() == interfaceReference->getComponentRef())
             {
                 if (instance->getComponentRef() && instance->getComponentRef()->isValid())
                 {
@@ -284,18 +270,9 @@ bool InterconnectionConfigurationValidator::abstractorInstanceIsValid(QSharedPoi
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfigurationValidator::hasValidName()
 //-----------------------------------------------------------------------------
-bool InterconnectionConfigurationValidator::hasValidName(QString const& name) const
+bool InterconnectionConfigurationValidator::hasValidName(std::string const& name) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
-
-    if (name.isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return (name.empty() == false && std::all_of(name.begin(), name.end(), isspace) == false);
 }
 
 //-----------------------------------------------------------------------------
@@ -305,7 +282,7 @@ void InterconnectionConfigurationValidator::findErrorsIn(QVector<QString>& error
     QSharedPointer<InterconnectionConfiguration> configuration, QString const& context)
 {
     QString interconnectionContext = QObject::tr("interconnection configuration %1")
-        .arg(configuration->getInterconnectionReference());
+        .arg(QString::fromStdString(configuration->getInterconnectionReference()));
 
     findErrorsInInterconnectionReference(errors, configuration, context);
     findErrorsInIsPresent(errors, configuration->getIsPresent(), interconnectionContext, context);
@@ -321,7 +298,7 @@ void InterconnectionConfigurationValidator::findErrorsInInterconnectionReference
     if (!hasValidInterconnectionReference(configuration))
     {
         errors.append(QObject::tr("Invalid interconnection reference '%1' given for interconnection configuration "
-            "within %2.").arg(configuration->getInterconnectionReference()).arg(context));
+            "within %2.").arg(QString::fromStdString(configuration->getInterconnectionReference()), context));
     }
 }
 
@@ -329,7 +306,7 @@ void InterconnectionConfigurationValidator::findErrorsInInterconnectionReference
 // Function: InterconnectionConfigurationValidator::findErrorsInIsPresent()
 //-----------------------------------------------------------------------------
 void InterconnectionConfigurationValidator::findErrorsInIsPresent(QVector<QString>& errors,
-    QString const& isPresent, QString const& innerContext, QString const& context) const
+    std::string const& isPresent, QString const& innerContext, QString const& context) const
 {
     if (!hasValidIsPresent(isPresent))
     {
@@ -347,10 +324,10 @@ void InterconnectionConfigurationValidator::findErrorsInMultipleAbstractorInstan
     if (!configuration->getAbstractorInstances() || configuration->getAbstractorInstances()->isEmpty())
     {
         errors.append(QObject::tr("No abstractor instances found in interconnection configuration '%1' within %2")
-            .arg(configuration->getInterconnectionReference()).arg(context));
+            .arg(QString::fromStdString(configuration->getInterconnectionReference()), context));
     }
 
-    foreach (QSharedPointer<MultipleAbstractorInstances> multipleInstance, *configuration->getAbstractorInstances())
+    for (QSharedPointer<MultipleAbstractorInstances> multipleInstance : *configuration->getAbstractorInstances())
     {
         findErrorsInOneMultipleAbstractorInstance(errors, multipleInstance, innerContext);
     }
@@ -365,17 +342,17 @@ void InterconnectionConfigurationValidator::findErrorsInOneMultipleAbstractorIns
     QString multipleInstanceContext = QObject::tr("abstractor instance group");
     findErrorsInIsPresent(errors, multipleInstance->getIsPresent(), multipleInstanceContext, context);
 
-    foreach (QSharedPointer<InterfaceRef> interfaceReference, *multipleInstance->getInterfaceReferences())
+    for (QSharedPointer<InterfaceRef> interfaceReference : *multipleInstance->getInterfaceReferences())
     {
         if (!interfaceReferenceComponentReferenceIsValid(interfaceReference))
         {
             errors.append(QObject::tr("Invalid component instance reference '%1' set for %2 within %3")
-                .arg(interfaceReference->getComponentRef()).arg(multipleInstanceContext).arg(context));
+                .arg(QString::fromStdString(interfaceReference->getComponentRef())).arg(multipleInstanceContext).arg(context));
         }
         if (!interfaceReferenceBusReferenceIsValid(interfaceReference))
         {
             errors.append(QObject::tr("Invalid bus interface reference '%1' set for %2 within %3")
-                .arg(interfaceReference->getBusRef()).arg(multipleInstanceContext).arg(context));
+                .arg(QString::fromStdString(interfaceReference->getBusRef())).arg(multipleInstanceContext).arg(context));
         }
         if (!hasValidIsPresent(interfaceReference->getIsPresent()))
         {
@@ -391,15 +368,15 @@ void InterconnectionConfigurationValidator::findErrorsInOneMultipleAbstractorIns
     }
     else
     {
-        QVector<QString> instanceNames;
-        QVector<QString> duplicateNames;
-        foreach (QSharedPointer<AbstractorInstance> instance, *multipleInstance->getAbstractorInstances())
+        QVector<std::string> instanceNames;
+        QVector<std::string> duplicateNames;
+        for (QSharedPointer<AbstractorInstance> instance : *multipleInstance->getAbstractorInstances())
         {
             if (instanceNames.contains(instance->getInstanceName()) &&
                 !duplicateNames.contains(instance->getInstanceName()))
             {
                 errors.append(QObject::tr("Abstractor instance name '%1' within %2 is not unique.")
-                    .arg(instance->getInstanceName()).arg(context));
+                    .arg(QString::fromStdString(instance->getInstanceName())).arg(context));
 
                 duplicateNames.append(instance->getInstanceName());
             }
@@ -419,16 +396,18 @@ void InterconnectionConfigurationValidator::findErrorsInAbstractorInstance(QVect
     if (!hasValidName(instance->getInstanceName()))
     {
         errors.append(QObject::tr("Invalid instance name '%1' set for abstractor instance within %2")
-            .arg(instance->getInstanceName()).arg(context));
+            .arg(QString::fromStdString(instance->getInstanceName())).arg(context));
     }
 
-    QString abstractorContext = QObject::tr("abstractor instance %1").arg(instance->getInstanceName());
+    QString abstractorContext = QObject::tr("abstractor instance %1").arg(QString::fromStdString(instance->getInstanceName()));
 
     instance->getAbstractorRef()->isValid(errors, abstractorContext);
 
     if (!hasValidName(instance->getViewName()))
     {
-        errors.append(QObject::tr("Invalid view name '%1' set for abstractor instance %2 within %3")
-            .arg(instance->getViewName()).arg(instance->getInstanceName()).arg(context));
+        errors.append(QObject::tr("Invalid view name '%1' set for abstractor instance %2 within %3").arg(
+            QString::fromStdString(instance->getViewName()),
+            QString::fromStdString(instance->getInstanceName()),
+            context));
     }
 }

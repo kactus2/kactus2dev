@@ -151,14 +151,14 @@ void ViewConfigurer::setupLayout()
 void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDesign,
     QSharedPointer<DesignConfiguration> currentDesignConfiguration, QTreeWidgetItem* parentItem)
 {
-    foreach (QSharedPointer<ComponentInstance> currentInstance, *currentDesign->getComponentInstances())
+    for (QSharedPointer<ComponentInstance> currentInstance : *currentDesign->getComponentInstances())
     {
         if (!currentInstance->isDraft())
         {
             VLNV componentReference = *currentInstance->getComponentRef();
             QSharedPointer<Component> component = libraryHandler_->getModel(componentReference).dynamicCast<Component>();
 
-            QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance->getInstanceName());
+            QString instanceViewName = QString::fromStdString(currentDesignConfiguration->getActiveView(currentInstance->getInstanceName().toStdString()));
 
             QTreeWidgetItem* instanceItem (new QTreeWidgetItem(parentItem));
             instanceItem->setText(ViewConfigurerColumns::ITEM_VLNV, componentReference.toString(":"));

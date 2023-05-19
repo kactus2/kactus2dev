@@ -185,7 +185,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
 
                     if (designConf != 0)
                     {
-                        view = designConf->getActiveView(instance->getInstanceName());
+                        view = QString::fromStdString(designConf->getActiveView(instance->getInstanceName().toStdString()));
                     }
 
                     // Otherwise parse the hierarchical components recursively.
@@ -458,7 +458,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
 
         if (designConf != 0)
         {
-            viewName = designConf->getActiveView(hwInstance->getInstanceName());
+            viewName = QString::fromStdString(designConf->getActiveView(hwInstance->getInstanceName().toStdString()));
         }
 
         if (component != 0)

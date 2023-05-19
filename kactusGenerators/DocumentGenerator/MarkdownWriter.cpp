@@ -623,7 +623,7 @@ void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<De
                 + instance->getComponentRef()->toString(":") + ")"
             << getComponentInstanceConfigurableElements(instance, design)
             << (configuration && configuration->getDesignRef() == design->getVlnv()
-                ? configuration->getActiveView(instance->getInstanceName())
+                ? QString::fromStdString(configuration->getActiveView(instance->getInstanceName().toStdString()))
                 : QStringLiteral(""))
         );
 

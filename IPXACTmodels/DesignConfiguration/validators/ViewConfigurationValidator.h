@@ -169,7 +169,7 @@ private:
     QSharedPointer<ExpressionParser> parser_;
 
     //! The currently available views.
-    QStringList availableViews_;
+    QVector<std::string> availableViews_;
 
     //! The currently available component instances.
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > availableInstances_;

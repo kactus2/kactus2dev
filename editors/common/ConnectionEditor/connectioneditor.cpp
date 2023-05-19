@@ -450,7 +450,7 @@ QString ConnectionEditor::getActiveViewForEndPoint(ConnectionEndpoint* endPoint)
         {
             QSharedPointer<DesignConfiguration> configuration = diagram_->getDesignConfiguration();
             QSharedPointer<ComponentInstance> instance = endPoint->encompassingComp()->getComponentInstance();
-            activeView = configuration->getActiveView(instance->getInstanceName());
+            activeView = QString::fromStdString(configuration->getActiveView(instance->getInstanceName().toStdString()));
         }
     }
 

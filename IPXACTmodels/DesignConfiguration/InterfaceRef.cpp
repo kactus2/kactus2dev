@@ -21,21 +21,9 @@ InterfaceRef::InterfaceRef():
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterfaceRef::InterfaceRef()
-//-----------------------------------------------------------------------------
-InterfaceRef::InterfaceRef(const InterfaceRef& other):
-    Extendable(other),
-componentRef_(other.componentRef_),
-busRef_(other.busRef_),
-isPresent_(other.isPresent_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: InterfaceRef::getIsPresent()
 //-----------------------------------------------------------------------------
-QString InterfaceRef::getIsPresent() const
+std::string InterfaceRef::getIsPresent() const
 {
     return isPresent_;
 }
@@ -43,7 +31,7 @@ QString InterfaceRef::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: InterfaceRef::setIsPresent()
 //-----------------------------------------------------------------------------
-void InterfaceRef::setIsPresent(QString const& newIsPresent)
+void InterfaceRef::setIsPresent(std::string const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }
@@ -51,7 +39,7 @@ void InterfaceRef::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: InterfaceRef::getComponentRef()
 //-----------------------------------------------------------------------------
-QString InterfaceRef::getComponentRef() const
+std::string InterfaceRef::getComponentRef() const
 {
     return componentRef_;
 }
@@ -59,7 +47,7 @@ QString InterfaceRef::getComponentRef() const
 //-----------------------------------------------------------------------------
 // Function: InterfaceRef::setComponentRef()
 //-----------------------------------------------------------------------------
-void InterfaceRef::setComponentRef(QString const& newComponentRef)
+void InterfaceRef::setComponentRef(std::string const& newComponentRef)
 {
     componentRef_ = newComponentRef;
 }
@@ -67,7 +55,7 @@ void InterfaceRef::setComponentRef(QString const& newComponentRef)
 //-----------------------------------------------------------------------------
 // Function: InterfaceRef::getBusRef()
 //-----------------------------------------------------------------------------
-QString InterfaceRef::getBusRef() const
+std::string InterfaceRef::getBusRef() const
 {
     return busRef_;
 }
@@ -75,7 +63,7 @@ QString InterfaceRef::getBusRef() const
 //-----------------------------------------------------------------------------
 // Function: InterfaceRef::setBusRef()
 //-----------------------------------------------------------------------------
-void InterfaceRef::setBusRef(QString const& newBusRef)
+void InterfaceRef::setBusRef(std::string const& newBusRef)
 {
     busRef_ = newBusRef;
 }

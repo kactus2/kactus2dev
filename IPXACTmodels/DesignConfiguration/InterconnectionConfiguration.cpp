@@ -43,7 +43,7 @@ abstractorInstances_(new QList<QSharedPointer<MultipleAbstractorInstances> > )
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfiguration::getIsPresent()
 //-----------------------------------------------------------------------------
-QString InterconnectionConfiguration::getIsPresent() const
+std::string InterconnectionConfiguration::getIsPresent() const
 {
     return isPresent_;
 }
@@ -51,7 +51,7 @@ QString InterconnectionConfiguration::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfiguration::setIsPresent()
 //-----------------------------------------------------------------------------
-void InterconnectionConfiguration::setIsPresent(QString const& newIsPresent)
+void InterconnectionConfiguration::setIsPresent(std::string const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }
@@ -59,7 +59,7 @@ void InterconnectionConfiguration::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfiguration::getInterconnectionReference()
 //-----------------------------------------------------------------------------
-QString InterconnectionConfiguration::getInterconnectionReference() const
+std::string InterconnectionConfiguration::getInterconnectionReference() const
 {
     return interconnectionRef_;
 }
@@ -67,7 +67,7 @@ QString InterconnectionConfiguration::getInterconnectionReference() const
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfiguration::setInterconnectionReference()
 //-----------------------------------------------------------------------------
-void InterconnectionConfiguration::setInterconnectionReference(QString const& newInterconnecionReference)
+void InterconnectionConfiguration::setInterconnectionReference(std::string const& newInterconnecionReference)
 {
     interconnectionRef_ = newInterconnecionReference;
 }

@@ -122,7 +122,7 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<DesignInstantiation>
             QString activeView;
             if (designConfiguration)
             {
-                activeView = designConfiguration->getActiveView(componentInstance->getInstanceName());
+                activeView = QString::fromStdString(designConfiguration->getActiveView(componentInstance->getInstanceName().toStdString()));
             }
 
             QSharedPointer<ConnectivityComponent> instanceNode = createInstanceData(componentInstance, 

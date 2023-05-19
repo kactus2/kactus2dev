@@ -218,7 +218,7 @@ void MetaDesign::findInstances()
         if (designConf_)
         {
             activeView = ComponentSearch::findView(component,
-                designConf_->getActiveView(instance->getInstanceName()));
+                QString::fromStdString(designConf_->getActiveView(instance->getInstanceName().toStdString())));
         }
 
         // No chosen active view -> If there is only one in the component, use it.
@@ -313,7 +313,7 @@ void MetaDesign::parseInstances()
         if (designConf_)
         {
             QSharedPointer<ViewConfiguration> viewConfig = designConf_->getViewConfiguration(
-                mInstance->getComponentInstance()->getInstanceName());
+                mInstance->getComponentInstance()->getInstanceName().toStdString());
 
             if (viewConfig)
             {

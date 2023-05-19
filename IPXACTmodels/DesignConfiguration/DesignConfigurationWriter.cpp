@@ -114,7 +114,8 @@ void DesignConfigurationWriter::Details::writeInterConnectionConfiguration(QXmlS
             CommonItemsWriter::writeIsPresent(writer, configuration->getIsPresent());
         }
 
-        writer.writeTextElement(QStringLiteral("ipxact:interconnectionRef"), configuration->getInterconnectionReference());
+        writer.writeTextElement(QStringLiteral("ipxact:interconnectionRef"), 
+            QString::fromStdString(configuration->getInterconnectionReference()));
 
         writeMultipleAbstractorInstances(writer, configuration->getAbstractorInstances(), docRevision);
 
@@ -161,8 +162,8 @@ void DesignConfigurationWriter::Details::writeInterfaceReferences(QXmlStreamWrit
     {
         writer.writeStartElement(QStringLiteral("ipxact:interfaceRef"));
         
-        writer.writeAttribute(QStringLiteral("componentRef"), singleInterface->getComponentRef());
-        writer.writeAttribute(QStringLiteral("busRef"), singleInterface->getBusRef());
+        writer.writeAttribute(QStringLiteral("componentRef"), QString::fromStdString(singleInterface->getComponentRef()));
+        writer.writeAttribute(QStringLiteral("busRef"), QString::fromStdString(singleInterface->getBusRef()));
 
         if (docRevision == Document::Revision::Std14)
         {
@@ -189,7 +190,7 @@ void DesignConfigurationWriter::Details::writeAbstractorInstances(QXmlStreamWrit
     {
         writer.writeStartElement(QStringLiteral("ipxact:abstractorInstance"));
 
-        writer.writeTextElement(QStringLiteral("ipxact:instanceName"), abstractorInstance->getInstanceName());
+        writer.writeTextElement(QStringLiteral("ipxact:instanceName"), QString::fromStdString(abstractorInstance->getInstanceName()));
 
         CommonItemsWriter::writeDisplayName(writer, abstractorInstance->getDisplayName());
 
@@ -210,7 +211,7 @@ void DesignConfigurationWriter::Details::writeAbstractorInstances(QXmlStreamWrit
 
         writer.writeEndElement(); // ipxact:abstractorRef
 
-        writer.writeTextElement(QStringLiteral("ipxact:viewName"), abstractorInstance->getViewName());
+        writer.writeTextElement(QStringLiteral("ipxact:viewName"), QString::fromStdString(abstractorInstance->getViewName()));
 
         if (docRevision == Document::Revision::Std22)
         {
@@ -233,7 +234,7 @@ void DesignConfigurationWriter::Details::writeViewConfigurations(QXmlStreamWrite
     {
         writer.writeStartElement(QStringLiteral("ipxact:viewConfiguration"));
 
-        writer.writeTextElement(QStringLiteral("ipxact:instanceName"), configuration->getInstanceName());
+        writer.writeTextElement(QStringLiteral("ipxact:instanceName"), QString::fromStdString(configuration->getInstanceName()));
 
         if (docRevision == Document::Revision::Std14)
         {
@@ -241,7 +242,7 @@ void DesignConfigurationWriter::Details::writeViewConfigurations(QXmlStreamWrite
         }
 
         writer.writeStartElement(QStringLiteral("ipxact:view"));
-        writer.writeAttribute(QStringLiteral("viewRef"), configuration->getViewReference());
+        writer.writeAttribute(QStringLiteral("viewRef"), QString::fromStdString(configuration->getViewReference()));
 
         CommonItemsWriter::writeConfigurableElementValues(writer, configuration->getViewConfigurableElements());
 

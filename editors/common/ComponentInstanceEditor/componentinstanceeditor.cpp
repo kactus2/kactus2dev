@@ -139,7 +139,8 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 
     if (designConfiguration)
     {
-        instanceViewName = designConfiguration->getActiveView(componentItem->name());
+        instanceViewName = 
+            QString::fromStdString(designConfiguration->getActiveView(componentItem->name().toStdString()));
     }
 
     activeViewLabel_->parentWidget()->show();
@@ -208,7 +209,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
         if (designConfiguration)
         {
             QSharedPointer<ViewConfiguration> matchingViewConfiguration =
-                designConfiguration->getViewConfiguration(componentItem->getComponentInstance()->getInstanceName());
+                designConfiguration->getViewConfiguration(componentItem->getComponentInstance()->getInstanceName().toStdString());
 
             // Show the component's configurable elements in case of HW.
             configurableElements_->setComponent(componentItem->componentModel(), componentItem->getComponentInstance(),

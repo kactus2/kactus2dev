@@ -23,7 +23,7 @@ Extendable()
 //-----------------------------------------------------------------------------
 // Function: ViewConfiguration::ViewConfiguration()
 //-----------------------------------------------------------------------------
-ViewConfiguration::ViewConfiguration(QString const& instanceName):
+ViewConfiguration::ViewConfiguration(std::string const& instanceName):
 instanceName_(instanceName)
 {
 
@@ -50,7 +50,7 @@ viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
 //-----------------------------------------------------------------------------
 // Function: ViewConfiguration::getInstanceName()
 //-----------------------------------------------------------------------------
-QString ViewConfiguration::getInstanceName() const
+std::string ViewConfiguration::getInstanceName() const
 {
     return instanceName_;
 }
@@ -58,7 +58,7 @@ QString ViewConfiguration::getInstanceName() const
 //-----------------------------------------------------------------------------
 // Function: ViewConfiguration::setInstanceName()
 //-----------------------------------------------------------------------------
-void ViewConfiguration::setInstanceName(QString const& newInstanceName)
+void ViewConfiguration::setInstanceName(std::string const& newInstanceName)
 {
     instanceName_ = newInstanceName;
 }
@@ -66,7 +66,7 @@ void ViewConfiguration::setInstanceName(QString const& newInstanceName)
 //-----------------------------------------------------------------------------
 // Function: ViewConfiguration::getIsPresent()
 //-----------------------------------------------------------------------------
-QString ViewConfiguration::getIsPresent() const
+std::string ViewConfiguration::getIsPresent() const
 {
     return isPresent_;
 }
@@ -74,7 +74,7 @@ QString ViewConfiguration::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: ViewConfiguration::setIsPresent()
 //-----------------------------------------------------------------------------
-void ViewConfiguration::setIsPresent(QString const& newIsPresent)
+void ViewConfiguration::setIsPresent(std::string const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }
@@ -82,7 +82,7 @@ void ViewConfiguration::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: ViewConfiguration::getViewReference()
 //-----------------------------------------------------------------------------
-QString ViewConfiguration::getViewReference() const
+std::string ViewConfiguration::getViewReference() const
 {
     return viewRef_;
 }
@@ -90,7 +90,7 @@ QString ViewConfiguration::getViewReference() const
 //-----------------------------------------------------------------------------
 // Function: ViewConfiguration::setViewReference()
 //-----------------------------------------------------------------------------
-void ViewConfiguration::setViewReference(QString const& newViewReference)
+void ViewConfiguration::setViewReference(std::string const& newViewReference)
 {
     viewRef_ = newViewReference;
 }

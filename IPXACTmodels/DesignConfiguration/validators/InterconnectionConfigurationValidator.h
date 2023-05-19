@@ -50,7 +50,7 @@ public:
     InterconnectionConfigurationValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
 
 	//! The destructor.
-	~InterconnectionConfigurationValidator();
+	~InterconnectionConfigurationValidator() = default;
     
     /*!
      *  Change the available elements contained in a design.
@@ -84,7 +84,7 @@ public:
      *
      *      @return True, if the is present value is valid, otherwise false.
      */
-    bool hasValidIsPresent(QString const& isPresent) const;
+    bool hasValidIsPresent(std::string const& isPresent) const;
 
     /*!
      *  Check if the multiple abstractor instances are valid.
@@ -170,7 +170,7 @@ private:
      *
      *      @return True, if the name is valid, otherwise false.
      */
-    bool hasValidName(QString const& name) const;
+    bool hasValidName(std::string const& name) const;
 
     /*!
      *  Find errors in interconnection reference.
@@ -189,7 +189,7 @@ private:
      *      @param [in] isPresent   The selected is present value.
      *      @param [in] context     Context to help locate the errors.
      */
-    void findErrorsInIsPresent(QVector<QString>& errors, QString const& isPresent,
+    void findErrorsInIsPresent(QVector<QString>& errors, std::string const& isPresent,
         QString const& innerContext, QString const& context) const;
 
     /*!

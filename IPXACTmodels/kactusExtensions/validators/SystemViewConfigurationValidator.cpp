@@ -48,15 +48,10 @@ bool SystemViewConfigurationValidator::hasValidViewReference(QSharedPointer<View
 {
     changeAvailableSystemViews(configuration);
 
-    if (!configuration->getViewReference().isEmpty() && !availableViews_.isEmpty())
+    if (auto reference = configuration->getViewReference(); reference.empty() == false && !availableViews_.isEmpty())
     {
-        foreach (QString currentView, availableViews_)
-        {
-            if (configuration->getViewReference() == currentView)
-            {
-                return true;
-            }
-        }
+        return std::any_of(availableViews_.cbegin(), availableViews_.cend(),
+            [&reference](auto const& view) { return reference == view.toStdString();  });
     }
 
     return false;
@@ -67,11 +62,11 @@ bool SystemViewConfigurationValidator::hasValidViewReference(QSharedPointer<View
 //-----------------------------------------------------------------------------
 void SystemViewConfigurationValidator::changeAvailableSystemViews(QSharedPointer<ViewConfiguration> configuration)
 {
-    if (!configuration->getInstanceName().isEmpty() && getAvailableInstances())
+    if (configuration->getInstanceName().empty() == false && getAvailableInstances())
     {
-        foreach (QSharedPointer<ComponentInstance> instance, *getAvailableInstances())
+        for (QSharedPointer<ComponentInstance> instance : *getAvailableInstances())
         {
-            if (instance->getInstanceName() == configuration->getInstanceName())
+            if (instance->getInstanceName().toStdString() == configuration->getInstanceName())
             {
                 if (instance->getComponentRef() && instance->getComponentRef()->isValid())
                 {

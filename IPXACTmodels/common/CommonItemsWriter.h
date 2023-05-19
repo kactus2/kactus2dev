@@ -65,8 +65,23 @@ public:
      *      @param [in] writer      The used XML writer.
      *      @param [in] VLNV        The VLNV to write.
      */
+    static void writeDisplayName(QXmlStreamWriter& writer, std::string const& displayName);
+
+    /*!
+     *  Writes the description for the current element into XML.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] VLNV        The VLNV to write.
+     */
     static void writeDescription(QXmlStreamWriter& writer, QString const& description);
 
+    /*!
+     *  Writes the description for the current element into XML.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] VLNV        The VLNV to write.
+     */
+    static void writeDescription(QXmlStreamWriter& writer, std::string const& description);
 
     /*!
      *  Writes the short description for the current element into XML.
@@ -75,6 +90,14 @@ public:
      *      @param [in] VLNV        The VLNV to write.
      */
     static void writeShortDescription(QXmlStreamWriter& writer, QString const& shortDescription);
+
+    /*!
+     *  Writes the short description for the current element into XML.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] VLNV        The VLNV to write.
+     */
+    static void writeShortDescription(QXmlStreamWriter& writer, std::string const& shortDescription);
 
     /*!
      *  Writes the parameters of a given document into XML.
@@ -101,6 +124,14 @@ public:
     static void writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent);
 
     /*!
+     *  Write the isPresent element.
+     *
+     *      @param [in] writer      The XML writer to use.
+     *      @param [in] isPresent   The value for the isPresent element.
+     */
+    static void writeIsPresent(QXmlStreamWriter& writer, std::string const& isPresent);
+
+    /*!
      *  Write the configurable element values.
      *
      *      @param [in] writer                  The XML writer to use.
@@ -110,6 +141,8 @@ public:
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElements);
 
     static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, QString const& value);
+
+    static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, std::string const& value);
 
 private:
 

@@ -52,14 +52,14 @@ public:
      *
      *      @return The value of the isPresent.
      */
-    QString getIsPresent() const;
+    std::string getIsPresent() const;
 
     /*!
      *  Set the value for the isPresent.
      *
      *      @param [in] newIsPresent    The new value for the isPresent.
      */
-    void setIsPresent(QString const& newIsPresent);
+    void setIsPresent(std::string const& newIsPresent);
 
     /*!
      *  Get interface references.
@@ -99,7 +99,7 @@ public:
 private:
 
     //! Defines the presence of this element.
-    QString isPresent_;
+    std::string isPresent_;
 
     //! A list of interface references.
     QSharedPointer<QList<QSharedPointer<InterfaceRef> > > interfaceReferences_ =

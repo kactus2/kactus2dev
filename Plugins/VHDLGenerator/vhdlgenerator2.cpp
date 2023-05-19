@@ -598,7 +598,7 @@ void VhdlGenerator2::parseInstances()
 		// if configuration is used then get the active view for the instance
 		if (desConf_)
         {
-			instanceActiveView = desConf_->getActiveView(instance->getInstanceName());
+			instanceActiveView = QString::fromStdString(desConf_->getActiveView(instance->getInstanceName().toStdString()));
 		}
 
 		// create the instance

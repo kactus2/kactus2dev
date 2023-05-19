@@ -395,7 +395,7 @@ void tst_DesignConfigurationValidator::testHasValidGeneratorChainConfigurations_
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidInterconnectionReference()
 {
-    QFETCH(QString, interconnectionName);
+    QFETCH(std::string, interconnectionName);
     QFETCH(bool, referenceOk);
     QFETCH(bool, isValid);
 
@@ -408,13 +408,13 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
     {
         QSharedPointer<Interconnection> testConnection (new Interconnection());
 
-        if (interconnectionName.isEmpty())
+        if (interconnectionName.empty())
         {
             testConnection->setName("Champloo");
         }
         else
         {
-            testConnection->setName(interconnectionName);
+            testConnection->setName(QString::fromStdString(interconnectionName));
         }
 
         testDesign->getInterconnections()->append(testConnection);
@@ -433,7 +433,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
 
         QString expectedError = QObject::tr("Invalid interconnection reference '%1' given for interconnection "
             "configuration within %2.")
-            .arg(interconnectionName).arg("test");
+            .arg(QString::fromStdString(interconnectionName), "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -447,15 +447,15 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidInterconnectionReference_data()
 {
-    QTest::addColumn<QString>("interconnectionName");
+    QTest::addColumn<std::string>("interconnectionName");
     QTest::addColumn<bool>("referenceOk");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Interconnection configuration referencing existing interconnection is valid") <<
-        "Baldur" << true << true;
-    QTest::newRow("Empty interconnection reference is not valid") << "" << true << false;
+        std::string("Baldur") << true << true;
+    QTest::newRow("Empty interconnection reference is not valid") << std::string() << true << false;
     QTest::newRow("Interconnection configuration referencing a non-existing interconnection is not valid") <<
-        "Baldur" << false << false;
+        std::string("Baldur") << false << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -463,7 +463,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<InterconnectionConfiguration> testConfiguration (new InterconnectionConfiguration());
@@ -481,7 +481,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
         validator->findErrorsIn(foundErrors, testConfiguration, "test");
 
         QString expectedError = QObject::tr("Invalid isPresent set for interconnection configuration %1 within %2")
-            .arg(testConfiguration->getInterconnectionReference()).arg("test");
+            .arg(QString::fromStdString(testConfiguration->getInterconnectionReference()), "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -495,16 +495,16 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
+    QTest::addColumn<std::string>("isPresent");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    QTest::newRow("IsPresent 1 is valid") << std::string("1") << true;
+    QTest::newRow("IsPresent 1*3-3 is valid") << std::string("1*3-3") << true;
+    QTest::newRow("IsPresent 2*100 is invalid") << std::string("2*100") << false;
+    QTest::newRow("IsPresent -14 is invalid") << std::string("-14") << false;
+    QTest::newRow("Real number isPresent  0.12 is invalid") << std::string("0.12") << false;
+    QTest::newRow("Text as isPresent is invalid") << std::string("test") << false;
+    QTest::newRow("String as isPresent is invalid") << std::string("\"test\"") << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -512,12 +512,12 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidAbstractorInstance()
 {
-    QFETCH(QString, instanceName);
+    QFETCH(std::string, instanceName);
     QFETCH(QString, abstractorVendor);
     QFETCH(QString, abstractorLibrary);
     QFETCH(QString, abstractorName);
     QFETCH(QString, abstractorVersion);
-    QFETCH(QString, viewName);
+    QFETCH(std::string, viewName);
     QFETCH(bool, copyInstance);
     QFETCH(bool, isValid);
 
@@ -552,41 +552,44 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidA
         QVector<QString> foundErrors;
         validator->findErrorsIn(foundErrors, testConfiguration, "test");
 
+        QString name = QString::fromStdString(instanceName);
+        QString reference = QString::fromStdString(testConfiguration->getInterconnectionReference());
         QString expectedError = QObject::tr("Invalid instance name '%1' set for abstractor instance within "
-            "interconnection configuration %2")
-            .arg(instanceName).arg(testConfiguration->getInterconnectionReference());
+            "interconnection configuration %2").arg(
+                name,
+                reference);
 
         if (abstractorVendor.isEmpty())
         {
             expectedError = QObject::tr("No vendor specified for vlnv within abstractor instance %1").
-                arg(instanceName);
+                arg(name);
         }
         else if (abstractorLibrary.isEmpty())
         {
             expectedError = QObject::tr("No library specified for vlnv within abstractor instance %1").
-                arg(instanceName);
+                arg(name);
         }
         else if (abstractorName.isEmpty())
         {
             expectedError = QObject::tr("No name specified for vlnv within abstractor instance %1").
-                arg(instanceName);
+                arg(name);
         }
         else if (abstractorVersion.isEmpty())
         {
             expectedError = QObject::tr("No version specified for vlnv within abstractor instance %1").
-                arg(instanceName);
+                arg(name);
         }
-        else if (viewName.isEmpty())
+        else if (viewName.empty())
         {
             expectedError = QObject::tr("Invalid view name '%1' set for abstractor instance %2 within "
                 "interconnection configuration %3")
-                .arg(viewName).arg(instanceName).arg(testConfiguration->getInterconnectionReference());
+                .arg(QString::fromStdString(viewName), name, reference);
         }
         else if (copyInstance)
         {
             expectedError = QObject::tr("Abstractor instance name '%1' within interconnection configuration %2 is "
                 "not unique.")
-                .arg(instanceName).arg(testConfiguration->getInterconnectionReference());
+                .arg(name, reference);
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -601,34 +604,34 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidA
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidAbstractorInstance_data()
 {
-    QTest::addColumn<QString>("instanceName");
+    QTest::addColumn<std::string>("instanceName");
     QTest::addColumn<QString>("abstractorVendor");
     QTest::addColumn<QString>("abstractorLibrary");
     QTest::addColumn<QString>("abstractorName");
     QTest::addColumn<QString>("abstractorVersion");
-    QTest::addColumn<QString>("viewName");
+    QTest::addColumn<std::string>("viewName");
     QTest::addColumn<bool>("copyInstance");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Abstractor instance with name, abstractor reference and view name is valid") <<
-        "Infinity" << "Yu-Jing" << "JSA" << "O-yoroi" << "Kidobutai" << "HMG" << false << true;
+        std::string("Infinity") << "Yu-Jing" << "JSA" << "O-yoroi" << "Kidobutai" << std::string("HMG") << false << true;
     QTest::newRow("Abstractor instance without name is not valid") <<
-        "" << "Yu-Jing" << "JSA" << "O-yoroi" << "Kidobutai" << "HMG" << false << false;
+        std::string() << "Yu-Jing" << "JSA" << "O-yoroi" << "Kidobutai" << std::string("HMG") << false << false;
 
     QTest::newRow("Abstractor instance without referenced abstractor vendor is not valid") <<
-        "Infinity" << "" << "JSA" << "O-yoroi" << "Kidobutai" << "HMG" << false << false;
+        std::string("Infinity") << "" << "JSA" << "O-yoroi" << "Kidobutai" << std::string("HMG") << false << false;
     QTest::newRow("Abstractor instance without referenced abstractor library is not valid") <<
-        "Infinity" << "Yu-Jing" << "" << "O-yoroi" << "Kidobutai" << "HMG" << false << false;
+        std::string("Infinity") << "Yu-Jing" << "" << "O-yoroi" << "Kidobutai" << std::string("HMG") << false << false;
     QTest::newRow("Abstractor instance without referenced abstractor name is not valid") <<
-        "Infinity" << "Yu-Jing" << "JSA" << "" << "Kidobutai" << "HMG" << false << false;
+        std::string("Infinity") << "Yu-Jing" << "JSA" << "" << "Kidobutai" << std::string("HMG") << false << false;
     QTest::newRow("Abstractor instance without referenced abstractor version is not valid") <<
-        "Infinity" << "Yu-Jing" << "JSA" << "O-yoroi" << "" << "HMG" << false << false;
+        std::string("Infinity") << "Yu-Jing" << "JSA" << "O-yoroi" << "" << std::string("HMG") << false << false;
 
     QTest::newRow("Abstractor instance without view name is not valid") <<
-        "Infinity" << "Yu-Jing" << "JSA" << "O-yoroi" << "Kidobutai" << "" << false << false;
+        std::string("Infinity") << "Yu-Jing" << "JSA" << "O-yoroi" << "Kidobutai" << std::string() << false << false;
 
     QTest::newRow("Abstractor instance with non-unique instance name is not valid") <<
-        "Infinity" << "Yu-Jing" << "JSA" << "O-yoroi" << "Kidobutai" << "HMG" << true << false;
+        std::string("Infinity") << "Yu-Jing" << "JSA" << "O-yoroi" << "Kidobutai" << std::string("HMG") << true << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -636,7 +639,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidA
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidAbstractorIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<ConfigurableVLNVReference> abstractorRef (new ConfigurableVLNVReference(VLNV::ABSTRACTOR,
@@ -666,7 +669,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidA
         validator->findErrorsIn(foundErrors, testConfiguration, "test");
 
         QString expectedError = QObject::tr("Invalid isPresent set for abstractor instance group within "
-            "interconnection configuration %1").arg(testConfiguration->getInterconnectionReference());
+            "interconnection configuration %1").arg(QString::fromStdString(testConfiguration->getInterconnectionReference()));
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -680,16 +683,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidA
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidAbstractorIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    testInterconnectionConfigurationHasValidIsPresent_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -698,9 +692,9 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidA
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidInterfaceReference()
 {
     QFETCH(bool, interfaceRefExists);
-    QFETCH(QString, componentReference);
+    QFETCH(std::string, componentReference);
     QFETCH(bool, componentInstanceExists);
-    QFETCH(QString, busReference);
+    QFETCH(std::string, busReference);
     QFETCH(bool, busInterfaceExists);
     QFETCH(bool, isValid);
 
@@ -732,7 +726,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
     if (componentInstanceExists)
     {
         QSharedPointer<ComponentInstance> componentInstance (
-            new ComponentInstance(componentReference, componentVLNV));
+            new ComponentInstance(QString::fromStdString(componentReference), componentVLNV));
 
         testDesign->getComponentInstances()->append(componentInstance);
     }
@@ -742,7 +736,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
     if (busInterfaceExists)
     {
         QSharedPointer<BusInterface> testInterface (new BusInterface());
-        testInterface->setName(busReference);
+        testInterface->setName(QString::fromStdString(busReference));
 
         QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
         testComponent->getBusInterfaces()->append(testInterface);
@@ -767,13 +761,14 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
 
         QString expectedError = QObject::tr("Invalid component instance reference '%1' set for abstractor "
             "instance group within interconnection configuration %2")
-            .arg(componentReference).arg(testConfiguration->getInterconnectionReference());
+            .arg(QString::fromStdString(componentReference),
+                QString::fromStdString(testConfiguration->getInterconnectionReference()));
 
-        if (busReference.isEmpty() || !busInterfaceExists)
+        if (busReference.empty() || !busInterfaceExists)
         {
             expectedError = QObject::tr("Invalid bus interface reference '%1' set for abstractor "
                 "instance group within interconnection configuration %2")
-                .arg(busReference).arg(testConfiguration->getInterconnectionReference());
+                .arg(QString::fromStdString(busReference), QString::fromStdString(testConfiguration->getInterconnectionReference()));
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -789,25 +784,25 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidInterfaceReference_data()
 {
     QTest::addColumn<bool>("interfaceRefExists");
-    QTest::addColumn<QString>("componentReference");
+    QTest::addColumn<std::string>("componentReference");
     QTest::addColumn<bool>("componentInstanceExists");
-    QTest::addColumn<QString>("busReference");
+    QTest::addColumn<std::string>("busReference");
     QTest::addColumn<bool>("busInterfaceExists");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Non-existing interface reference is valid") <<
-        false << "" << false << "" << false << true;
+        false << std::string() << false << std::string() << false << true;
     QTest::newRow("Interface reference with component and bus reference is valid") <<
-        true << "Space" << true << "Dandy" << true << true;
+        true << std::string("Space") << true << std::string("Dandy") << true << true;
 
     QTest::newRow("Interface reference without component reference is not valid") <<
-        true << "" << true << "Dandy" << true << false;
+        true << std::string() << true << std::string("Dandy") << true << false;
     QTest::newRow("Interface reference with component reference to non-existing instance is not valid") <<
-        true << "Space" << false << "Dandy" << true << false;
+        true << std::string("Space") << false << std::string("Dandy") << true << false;
     QTest::newRow("Interface reference without bus reference is not valid") <<
-        true << "Space" << true << "" << true << false;
+        true << std::string("Space") << true << std::string() << true << false;
     QTest::newRow("Interface reference with bus reference to non-existing bus is not valid") <<
-        true << "Space" << true << "Dandy" << false << false;
+        true << std::string("Space") << true << std::string("Dandy") << false << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -815,7 +810,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationInterfaceHasValidIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Guilty", "Gear", "Heavy", "day")));
@@ -832,8 +827,8 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationInterface
     testMultipleInstance->getAbstractorInstances()->append(testInstance);
 
     QSharedPointer<InterfaceRef> interfaceReference (new InterfaceRef());
-    interfaceReference->setComponentRef(QLatin1String("Space"));
-    interfaceReference->setBusRef(QLatin1String("Dandy"));
+    interfaceReference->setComponentRef("Space");
+    interfaceReference->setBusRef("Dandy");
     interfaceReference->setIsPresent(isPresent);
 
     testMultipleInstance->getInterfaceReferences()->append(interfaceReference);
@@ -842,12 +837,12 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationInterface
         new ConfigurableVLNVReference(VLNV::COMPONENT, "Vendor", "Library", "Name", "Version"));
 
     QSharedPointer<ComponentInstance> componentInstance (
-        new ComponentInstance(interfaceReference->getComponentRef(), componentVLNV));
+        new ComponentInstance(QString::fromStdString(interfaceReference->getComponentRef()), componentVLNV));
 
     testDesign->getComponentInstances()->append(componentInstance);
 
     QSharedPointer<BusInterface> testInterface (new BusInterface());
-    testInterface->setName(interfaceReference->getBusRef());
+    testInterface->setName(QString::fromStdString(interfaceReference->getBusRef()));
 
     QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
     testComponent->getBusInterfaces()->append(testInterface);
@@ -872,7 +867,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationInterface
 
         QString expectedError = QObject::tr("Invalid isPresent set for interface reference in abstractor instance "
             "group within interconnection configuration %1")
-            .arg(testConfiguration->getInterconnectionReference());
+            .arg(QString::fromStdString(testConfiguration->getInterconnectionReference()));
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -886,16 +881,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationInterface
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testInterconnectionConfigurationInterfaceHasValidIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    testInterconnectionConfigurationHasValidIsPresent_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -927,9 +913,9 @@ void tst_DesignConfigurationValidator::testHasValidInterconnectionConfigurations
     {
         if (interconnectionReferenceExists)
         {
-            interconnectionConfiguration->setInterconnectionReference(QLatin1String("Evangelion"));
+            interconnectionConfiguration->setInterconnectionReference("Evangelion");
             QSharedPointer<Interconnection> interconnection (new Interconnection());
-            interconnection->setName(interconnectionConfiguration->getInterconnectionReference());
+            interconnection->setName(QString::fromStdString(interconnectionConfiguration->getInterconnectionReference()));
 
             testDesign->getInterconnections()->append(interconnection);
         }
@@ -973,30 +959,29 @@ void tst_DesignConfigurationValidator::testHasValidInterconnectionConfigurations
         QVector<QString> foundErrors;
         validator->findErrorsIn(foundErrors, testConfiguration);
 
+        QString reference = QString::fromStdString(interconnectionConfiguration->getInterconnectionReference());
         QString expectedError = QObject::tr("Invalid interconnection reference '%1' given for interconnection "
             "configuration within design configuration %2.")
-            .arg(interconnectionConfiguration->getInterconnectionReference())
-            .arg(testConfiguration->getVlnv().toString());
+            .arg(reference, testConfiguration->getVlnv().toString());
 
         if (copyInterconnectionConfiguration)
         {
             expectedError = QObject::tr("Interconnection reference '%1' set for interconnection configuration "
                 "within design configuration %2 is not unique.")
-                .arg(interconnectionConfiguration->getInterconnectionReference())
-                .arg(testConfiguration->getVlnv().toString());
+                .arg(reference, testConfiguration->getVlnv().toString());
         }
         else if (!multipleAbstractorInstanceExists)
         {
             expectedError = QObject::tr("No abstractor instances found in interconnection configuration '%1' "
                 "within design configuration %2")
-                .arg(interconnectionConfiguration->getInterconnectionReference())
-                .arg(testConfiguration->getVlnv().toString());
+                .arg(reference,
+                    testConfiguration->getVlnv().toString());
         }
         else if (!abstractorInstanceExists)
         {
             expectedError = QObject::tr("No abstractor instances found in abstractor instance group within "
                 "interconnection configuration %2")
-                .arg(interconnectionConfiguration->getInterconnectionReference());
+                .arg(reference);
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -1038,11 +1023,11 @@ void tst_DesignConfigurationValidator::testHasValidInterconnectionConfigurations
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testViewConfigurationHasValidName()
 {
-    QFETCH(QString, name);
+    QFETCH(std::string, name);
     QFETCH(bool, isValid);
 
     QSharedPointer<ComponentInstance> testInstance (new ComponentInstance());
-    testInstance->setInstanceName(name);
+    testInstance->setInstanceName(QString::fromStdString(name));
 
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances
         (new QList<QSharedPointer<ComponentInstance> > ());
@@ -1062,7 +1047,7 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidName()
         validator->findErrorsIn(foundErrors, testConfiguration, "test");
 
         QString expectedError = QObject::tr("Invalid name '%1' set for view configuration within %2")
-            .arg(name).arg("test");
+            .arg(QString::fromStdString(name), "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -1076,13 +1061,13 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidName()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testViewConfigurationHasValidName_data()
 {
-    QTest::addColumn<QString>("name");
+    QTest::addColumn<std::string>("name");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Name test is valid") << "test" << true;
-    QTest::newRow("Empty name is invalid") << "" << false;
-    QTest::newRow("Name consisting of only white spaces is invalid") << "    " << false;
-    QTest::newRow("Name consisting of characters and white spaces is valid") << "  test  " << true;
+    QTest::newRow("Name test is valid") << std::string("test") << true;
+    QTest::newRow("Empty name is invalid") << std::string() << false;
+    QTest::newRow("Name consisting of only white spaces is invalid") << std::string("    ") << false;
+    QTest::newRow("Name consisting of characters and white spaces is valid") << std::string("  test  ") << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1090,7 +1075,7 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidName_data()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testViewConfigurationHasValidIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<ViewConfiguration> testConfiguration (new ViewConfiguration("Karasu"));
@@ -1107,7 +1092,7 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidIsPresent()
         validator->findErrorsIn(foundErrors, testConfiguration, "test");
 
         QString expectedError = QObject::tr("Invalid isPresent set for view configuration %1 within %2")
-            .arg(testConfiguration->getInstanceName()).arg("test");
+            .arg(QString::fromStdString(testConfiguration->getInstanceName()), "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -1121,16 +1106,7 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidIsPresent()
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testViewConfigurationHasValidIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    testInterconnectionConfigurationHasValidIsPresent_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -1138,7 +1114,7 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidIsPresent_da
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReference()
 {
-    QFETCH(QString, viewReference);
+    QFETCH(std::string, viewReference);
     QFETCH(bool, viewExists);
     QFETCH(bool, isValid);
 
@@ -1155,10 +1131,13 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances
         (new QList<QSharedPointer<ComponentInstance> > ());
 
+    QString instanceName = QString::fromStdString(testConfiguration->getInstanceName());
+    QString swInstanceName = QString::fromStdString(testSWConfiguration->getInstanceName());
+
     if (viewExists)
     {
-		QSharedPointer<View> testView (new View(viewReference));
-        if (viewReference.isEmpty())
+		QSharedPointer<View> testView (new View(QString::fromStdString(viewReference)));
+        if (viewReference.empty())
         {
 			testView->setName("Champloo");
         }
@@ -1166,18 +1145,18 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
         QSharedPointer<ConfigurableVLNVReference> componentVLNV
             (new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "vendor", "library", "testComponent", "1")));
 
-        QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+        QSharedPointer<Component> testComponent (new Component(*componentVLNV));
 		testComponent->getViews()->append(testView);
 
         mockLibrary->addComponent(testComponent);
 
         QSharedPointer<ComponentInstance> testInstance (
-            new ComponentInstance(testConfiguration->getInstanceName(), componentVLNV));
+            new ComponentInstance(instanceName, componentVLNV));
 
 		instances->append(testInstance);
 
 		QSharedPointer<ComponentInstance> testSWInstance (
-			new ComponentInstance(testSWConfiguration->getInstanceName(), componentVLNV));
+			new ComponentInstance(swInstanceName, componentVLNV));
 
 		instances->append(testSWInstance);
     }
@@ -1195,7 +1174,7 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
 		validator->findErrorsIn(foundErrors, testSWConfiguration, "swtest");
 
         QString expectedError = QObject::tr("Invalid view reference '%1' set for view configuration %2 within %3")
-            .arg(viewReference).arg(testConfiguration->getInstanceName()).arg("test");
+            .arg(QString::fromStdString(viewReference), instanceName, "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -1209,15 +1188,15 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
 //-----------------------------------------------------------------------------
 void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReference_data()
 {
-    QTest::addColumn<QString>("viewReference");
+    QTest::addColumn<std::string>("viewReference");
     QTest::addColumn<bool>("viewExists");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("View configuration with a view reference to an existing view is valid") <<
-        "Shishigami" << true << true;
-    QTest::newRow("View configuration without a view reference is not valid") << "" << true << false;
+        std::string("Shishigami") << true << true;
+    QTest::newRow("View configuration without a view reference is not valid") << std::string() << true << false;
     QTest::newRow("View configuration referencing non-existing view is not valid") <<
-		"Shishigami" << false << false;
+        std::string("Shishigami") << false << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1226,8 +1205,8 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
 void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
 {
     QFETCH(bool, createViewConfiguration);
-    QFETCH(QString, instanceName);
-    QFETCH(QString, viewReference);
+    QFETCH(std::string, instanceName);
+    QFETCH(std::string, viewReference);
     QFETCH(bool, copyConfiguration);
     QFETCH(bool, isValid);
 
@@ -1250,8 +1229,8 @@ void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
         viewConfiguration->setViewReference(viewReference);
         testConfiguration->getViewConfigurations()->append(viewConfiguration);
 
-        QSharedPointer<View> testView (new View(viewReference));
-        if (viewReference.isEmpty())
+        QSharedPointer<View> testView (new View(QString::fromStdString(viewReference)));
+        if (viewReference.empty())
         {
             testView->setName("SaederKrupp");
         }
@@ -1261,7 +1240,7 @@ void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
 
         mockLibrary->addComponent(testComponent);
 
-        QSharedPointer<ComponentInstance> testInstance (new ComponentInstance(instanceName, componentVLNV));
+        QSharedPointer<ComponentInstance> testInstance (new ComponentInstance(QString::fromStdString(instanceName), componentVLNV));
         referencedDesign->getComponentInstances()->append(testInstance);
 
         if (copyConfiguration)
@@ -1282,19 +1261,19 @@ void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
 
         QString expectedError = QObject::tr("Invalid name '%1' set for view configuration within design "
             "configuration %2")
-            .arg(instanceName).arg(testConfiguration->getVlnv().toString());
+            .arg(QString::fromStdString(instanceName), testConfiguration->getVlnv().toString());
 
-        if (viewReference.isEmpty())
+        if (viewReference.empty())
         {
             expectedError = QObject::tr("Invalid view reference '%1' set for view configuration %2 within design "
                 "configuration %3")
-                .arg(viewReference).arg(instanceName).arg(testConfiguration->getVlnv().toString());
+                .arg(QString::fromStdString(viewReference), QString::fromStdString(instanceName), testConfiguration->getVlnv().toString());
         }
         else if (copyConfiguration)
         {
             expectedError = QObject::tr("View configuration name '%1' within design configuration %2 is not "
                 "unique.")
-                .arg(instanceName).arg(testConfiguration->getVlnv().toString());
+                .arg(QString::fromStdString(instanceName), testConfiguration->getVlnv().toString());
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -1309,22 +1288,22 @@ void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
 void tst_DesignConfigurationValidator::testHasValidViewConfigurations_data()
 {
     QTest::addColumn<bool>("createViewConfiguration");
-    QTest::addColumn<QString>("instanceName");
-    QTest::addColumn<QString>("viewReference");
+    QTest::addColumn<std::string>("instanceName");
+    QTest::addColumn<std::string>("viewReference");
     QTest::addColumn<bool>("copyConfiguration");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Design configuration without view configurations is valid") <<
-        false << "" << "" << false << true;
+        false << std::string() << std::string() << false << true;
     QTest::newRow("View configuration with name and view reference is valid") <<
-        true << "Bang" << "Shishigami" << false << true;
+        true << std::string("Bang") << std::string("Shishigami") << false << true;
 
     QTest::newRow("View configuration without name is not valid") <<
-        true << "" << "Shishigami" << false << false;
+        true << std::string() << std::string("Shishigami") << false << false;
     QTest::newRow("View configuration without view reference is not valid") <<
-        true << "Bang" << "" << false << false;
+        true << std::string("Bang") << std::string() << false << false;
     QTest::newRow("View configurations with non-unique name is not valid") <<
-        true << "Bang" << "Shishigami" << true << false;
+        true << std::string("Bang") << std::string("Shishigami") << true << false;
 }
 
 //-----------------------------------------------------------------------------

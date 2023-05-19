@@ -17,7 +17,6 @@
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 #include <IPXACTmodels/common/Extendable.h>
 
-#include <QString>
 #include <QMap>
 #include <QSharedPointer>
 
@@ -38,7 +37,7 @@ public:
      *
      *      @param [in] instanceName    The name of this instance.
      */
-    explicit ViewConfiguration(QString const& instanceName);
+    explicit ViewConfiguration(std::string const& instanceName);
 
     /*!
      *  Copy constructor.
@@ -57,42 +56,42 @@ public:
      *
      *      @return The name of this instance.
      */
-    QString getInstanceName() const;
+    std::string getInstanceName() const;
 
     /*!
      *  Set the name for this instance.
      *
      *      @param [in] newInstanceName     The new name for this instance.
      */
-    void setInstanceName(QString const& newInstanceName);
+    void setInstanceName(std::string const& newInstanceName);
 
     /*!
      *  Get the value of isPresent.
      *
      *      @return The value of isPresent.
      */
-    QString getIsPresent() const;
+    std::string getIsPresent() const;
 
     /*!
      *  Set the value for isPresent.
      *
      *      @param [in] newIsPresent    The new value for isPresent.
      */
-    void setIsPresent(QString const& newIsPresent);
+    void setIsPresent(std::string const& newIsPresent);
 
     /*!
      *  Get the referenced view.
      *
      *      @return The referenced view.
      */
-    QString getViewReference() const;
+    std::string getViewReference() const;
 
     /*!
      *  Set the referenced view.
      *
      *      @param [in] newViewReference    The new view reference.
      */
-    void setViewReference(QString const& newViewReference);
+    void setViewReference(std::string const& newViewReference);
 
     /*!
      *  Get the configurable element values of the referenced view.
@@ -112,13 +111,13 @@ public:
 private:
 
     //! The name of this instance.
-    QString instanceName_;
+    std::string instanceName_;
 
     //! Defines the presence of this element.
-    QString isPresent_;
+    std::string isPresent_;
 
     //! The referenced view.
-    QString viewRef_;
+    std::string viewRef_;
 
     //! A list of pointers to the configurable element values of the referenced view.
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > viewConfigurables_ =

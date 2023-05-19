@@ -67,23 +67,15 @@ bool ViewConfigurationValidator::validate(QSharedPointer<ViewConfiguration> conf
 //-----------------------------------------------------------------------------
 bool ViewConfigurationValidator::hasValidName(QSharedPointer<ViewConfiguration> configuration) const
 {
-    if (!configuration->getInstanceName().isEmpty() && availableInstances_)
+    if (configuration->getInstanceName().empty() == false && availableInstances_)
     {
-        foreach (QSharedPointer<ComponentInstance> instance, *availableInstances_)
+        for (auto const& instance : *availableInstances_)
         {
-            if (instance->getInstanceName() == configuration->getInstanceName())
+            if (auto name = instance->getInstanceName().toStdString(); name == configuration->getInstanceName())
             {
-                QRegularExpression whiteSpaceExpression;
-                whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-                QRegularExpressionMatch whiteSpaceMatch =
-                    whiteSpaceExpression.match(configuration->getInstanceName());
+                bool emptyName = std::all_of(name.cbegin(), name.cend(), isspace);
 
-                if (configuration->getInstanceName().isEmpty() || whiteSpaceMatch.hasMatch())
-                {
-                    return false;
-                }
-
-                return true;
+                return (name.empty() == false && emptyName == false);
             }
         }
     }
@@ -96,9 +88,9 @@ bool ViewConfigurationValidator::hasValidName(QSharedPointer<ViewConfiguration> 
 //-----------------------------------------------------------------------------
 bool ViewConfigurationValidator::hasValidIsPresent(QSharedPointer<ViewConfiguration> configuration) const
 {
-    if (!configuration->getIsPresent().isEmpty())
+    if (configuration->getIsPresent().empty() == false)
     {
-        QString solvedValue = parser_->parseExpression(configuration->getIsPresent());
+        QString solvedValue = parser_->parseExpression(QString::fromStdString(configuration->getIsPresent()));
 
         bool toIntOk = true;
         int intValue = solvedValue.toInt(&toIntOk);
@@ -119,15 +111,10 @@ bool ViewConfigurationValidator::hasValidViewReference(QSharedPointer<ViewConfig
 {
     changeAvailableViews(configuration);
 
-    if (!configuration->getViewReference().isEmpty())
+    if (auto viewReference = configuration->getViewReference(); viewReference.empty() == false)
     {
-        foreach (const QString& currentView, availableViews_)
-        {
-            if (configuration->getViewReference() == currentView)
-            {
-                return true;
-            }
-        }
+        return std::any_of(availableViews_.cbegin(), availableViews_.cend(), 
+            [&viewReference](auto const& view){ return view == viewReference; });
     }
 
     return false;
@@ -138,20 +125,25 @@ bool ViewConfigurationValidator::hasValidViewReference(QSharedPointer<ViewConfig
 //-----------------------------------------------------------------------------
 void ViewConfigurationValidator::changeAvailableViews(QSharedPointer<ViewConfiguration> configuration)
 {
-    if (!configuration->getInstanceName().isEmpty() && availableInstances_)
+    if (configuration->getInstanceName().empty() == false && availableInstances_)
     {
-        foreach (QSharedPointer<ComponentInstance> instance, *availableInstances_)
+        for (auto const& instance : *availableInstances_)
         {
-            if (instance->getInstanceName() == configuration->getInstanceName())
+            if (instance->getInstanceName().toStdString() == configuration->getInstanceName())
             {
                 if (instance->getComponentRef() && instance->getComponentRef()->isValid())
                 {
                     QSharedPointer<Component> component =
-                        libraryHandler_->getModel(*instance->getComponentRef().data()).dynamicCast<Component>();
+                        libraryHandler_->getModel<Component>(*instance->getComponentRef());
 
                     if (component)
                     {
-						availableViews_ = component->getViewNames();
+                        availableViews_.clear();
+                        for (auto const& view : component->getViewNames())
+                        {
+                            availableViews_.append(view.toStdString());
+                        }
+
                         return;
                     }
                 }
@@ -184,7 +176,7 @@ void ViewConfigurationValidator::findErrorsInName(QVector<QString>& errors,
     if (!hasValidName(configuration))
     {
         errors.append(QObject::tr("Invalid name '%1' set for view configuration within %2")
-            .arg(configuration->getInstanceName()).arg(context));
+            .arg(QString::fromStdString(configuration->getInstanceName()), context));
     }
 }
 
@@ -197,7 +189,7 @@ void ViewConfigurationValidator::findErrorsInIsPresent(QVector<QString>& errors,
     if (!hasValidIsPresent(configuration))
     {
         errors.append(QObject::tr("Invalid isPresent set for view configuration %1 within %2")
-            .arg(configuration->getInstanceName()).arg(context));
+            .arg(QString::fromStdString(configuration->getInstanceName()), context));
     }
 }
 
@@ -210,7 +202,9 @@ void ViewConfigurationValidator::findErrorsInViewReference(QVector<QString>& err
     if (!hasValidViewReference(configuration))
     {
         errors.append(QObject::tr("Invalid view reference '%1' set for view configuration %2 within %3")
-            .arg(configuration->getViewReference()).arg(configuration->getInstanceName()).arg(context));
+            .arg(QString::fromStdString(configuration->getViewReference()),
+                QString::fromStdString(configuration->getInstanceName()),
+                context));
     }
 }
 

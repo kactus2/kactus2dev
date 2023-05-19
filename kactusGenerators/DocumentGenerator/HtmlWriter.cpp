@@ -691,7 +691,7 @@ void HtmlWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design
                 + instance->getComponentRef()->toString(" - ") + "</a>"
             << getComponentInstanceConfigurableElements(instance, design)
             << (configuration && configuration->getDesignRef() == design->getVlnv()
-                ? configuration->getActiveView(instance->getInstanceName())
+                ? QString::fromStdString(configuration->getActiveView(instance->getInstanceName().toStdString()))
                 : QStringLiteral(""))
         );
 

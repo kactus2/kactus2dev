@@ -23,7 +23,6 @@
 
 #include <QSharedPointer>
 #include <QList>
-#include <QString>
 #include <QMap>
 #include <QDomDocument>
 #include <QDomNode>
@@ -153,14 +152,14 @@ public:
 	 *      @param [in] instanceName    The name of the component instance that's view is set.
 	 *      @param [in] viewName        The name of the component's view that is set as active.
 	 */
-	virtual void addViewConfiguration(QString const& instanceName, QString const& viewName);
+	virtual void addViewConfiguration(std::string const& instanceName, std::string const& viewName);
 
     /*!
 	 *  Remove the view configuration.
 	 *
 	 *      @param [in] instanceName    The instance name of the view configuration to be removed.
 	 */
-	virtual void removeViewConfiguration(QString const& instanceName);
+	virtual void removeViewConfiguration(std::string const& instanceName);
 
     /*!
 	 *  Get the active view configuration for the given component instance.
@@ -169,7 +168,7 @@ public:
      *
      *      @return The active view configuration.
 	 */
-	QSharedPointer<ViewConfiguration> getViewConfiguration(QString const& instanceName) const;
+	QSharedPointer<ViewConfiguration> getViewConfiguration(std::string const& instanceName) const;
 
     /*!
 	 *  Get the active view name for the given component instance.
@@ -178,7 +177,7 @@ public:
      *
      *      @return The name of the active view.
 	 */
-	QString getActiveView(QString const& instanceName) const;
+	std::string getActiveView(std::string const& instanceName) const;
 
     /*!
 	 *  Check if an active view has been defined for the given instance.
@@ -187,7 +186,7 @@ public:
      *
      *      @return True if an active view is found, false otherwise.
 	 */
-	bool hasActiveView(QString const& instanceName) const;
+	bool hasActiveView(std::string const& instanceName) const;
 
     /*!
 	 *  Set the implementation type of the design configuration.

@@ -122,7 +122,7 @@ void SWStackParser::parse(QString const& sysViewName)
 		QSharedPointer<Component> hardComponent = library_->getModel(*hardwareVLNV).dynamicCast<Component>();
 
 		// Find the view corresponding the active view name
-		QString hardViewName = designConf_->getActiveView(hardInstance->getInstanceName());
+		QString hardViewName = QString::fromStdString(designConf_->getActiveView(hardInstance->getInstanceName().toStdString()));
 		QSharedPointer<View> hardView = hardComponent->getModel()->findView(hardViewName);
 
 		// If not found, skip.
@@ -236,7 +236,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
 	}
 
 	// There may be only one active software view.
-	QString softViewName = designConf_->getActiveView(softInstance->getInstanceName());
+	QString softViewName = QString::fromStdString(designConf_->getActiveView(softInstance->getInstanceName().toStdString()));
 
     // It must correspond an actual view in the component.
 	QSharedPointer<View> softView = softComponent->getModel()->findView(softViewName);
