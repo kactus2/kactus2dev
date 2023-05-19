@@ -74,10 +74,8 @@ void tst_DesignConfigurationReader::testReadSimpleDesignConfiguration()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getVlnv().getVendor(), QString("tuni.fi"));
@@ -110,10 +108,8 @@ void tst_DesignConfigurationReader::testRead2022DesignConfiguration()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesignConfiguration->getVlnv().getVendor(), QString("tuni.fi"));
@@ -150,10 +146,8 @@ void tst_DesignConfigurationReader::testReadTopComments()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getTopComments().size(), 3);
@@ -184,10 +178,8 @@ void tst_DesignConfigurationReader::testProcessingInstructionsAreParsed()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getXmlProcessingInstructions().count(), 1);
@@ -221,10 +213,8 @@ void tst_DesignConfigurationReader::testReadDesignReference()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getDesignRef().getVendor(), QString("tuni.fi"));
@@ -270,10 +260,8 @@ void tst_DesignConfigurationReader::testReadGeneratorChainConfigurations()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getGeneratorChainConfs()->size(), 2);
@@ -350,10 +338,8 @@ void tst_DesignConfigurationReader::testReadInterconnectionConfigurations()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getInterconnectionConfs()->size(), 1);
@@ -448,10 +434,8 @@ void tst_DesignConfigurationReader::testRead2022InterconnectionConfigurations()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesignConfiguration->getInterconnectionConfs()->size(), 1);
@@ -534,10 +518,8 @@ void tst_DesignConfigurationReader::testReadViewConfigurations()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getViewConfigurations()->size(), 1);
@@ -592,10 +574,8 @@ void tst_DesignConfigurationReader::testRead2022ViewConfigurations()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesignConfiguration->getViewConfigurations()->size(), 1);
@@ -645,10 +625,8 @@ void tst_DesignConfigurationReader::testReadParameters()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getParameters()->size(), 1);
@@ -688,10 +666,8 @@ void tst_DesignConfigurationReader::testReadAssertions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getAssertions()->size(), 1);
@@ -728,10 +704,8 @@ void tst_DesignConfigurationReader::testReadVendorExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 2);
@@ -773,10 +747,8 @@ void tst_DesignConfigurationReader::testReadConfigurableElementValues()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 2);
@@ -820,10 +792,8 @@ void tst_DesignConfigurationReader::testReadViewOverrides()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignConfigurationReader designConfigurationReader;
-
     QSharedPointer<DesignConfiguration> testDesignConfiguration =
-        designConfigurationReader.createDesignConfigurationFrom(document);
+        DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesignConfiguration->getVendorExtensions()->size(), 2);

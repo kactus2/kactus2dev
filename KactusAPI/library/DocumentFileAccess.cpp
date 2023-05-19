@@ -96,8 +96,7 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     }
     else if (toCreate == VLNV::DESIGNCONFIGURATION)
     {
-        DesignConfigurationReader reader;
-        return reader.createDesignConfigurationFrom(doc);
+        return DesignConfigurationReader::createDesignConfigurationFrom(doc);
     }
 
     else if (toCreate == VLNV::APIDEFINITION)

@@ -11,48 +11,42 @@
 
 #include "DesignConfigurationReader.h"
 
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationReader::DesignConfigurationReader()
-//-----------------------------------------------------------------------------
-DesignConfigurationReader::DesignConfigurationReader(): DocumentReader()
-{
-
-}
+#include <IPXACTmodels/common/DocumentReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::createDesignConfigurationFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfigurationFrom(
-    QDomDocument const& document) const
+    QDomDocument const& document)
 {
     QDomNode designConfigurationNode = document.firstChildElement();
 
-    VLNV vlnv = createVLNVFrom(designConfigurationNode, VLNV::DESIGNCONFIGURATION);
-    Document::Revision docRevision = getXMLDocumentRevision(designConfigurationNode);
+    VLNV vlnv = CommonItemsReader::createVLNVFrom(designConfigurationNode, VLNV::DESIGNCONFIGURATION);
+    Document::Revision docRevision = DocumentReader::getXMLDocumentRevision(designConfigurationNode);
 
     QSharedPointer<DesignConfiguration> newDesignConfiguration (new DesignConfiguration(vlnv, docRevision));
 
-    parseTopComments(document, newDesignConfiguration);
+    DocumentReader::parseTopComments(document, newDesignConfiguration);
 
-    parseXMLProcessingInstructions(document, newDesignConfiguration);
+    DocumentReader::parseXMLProcessingInstructions(document, newDesignConfiguration);
 
-    parseNamespaceDeclarations(designConfigurationNode, newDesignConfiguration);
+    DocumentReader::parseNamespaceDeclarations(designConfigurationNode, newDesignConfiguration);
 
-    parseDocumentNameGroup(designConfigurationNode, newDesignConfiguration);
+    DocumentReader::parseDocumentNameGroup(designConfigurationNode, newDesignConfiguration);
 
-    parseDesignReference(designConfigurationNode, newDesignConfiguration);
+    Details::parseDesignReference(designConfigurationNode, newDesignConfiguration);
 
-    parseGeneratorChainConfigurations(document, newDesignConfiguration);
+    Details::parseGeneratorChainConfigurations(document, newDesignConfiguration);
 
-    parseInterconnectionConfigurations(document, newDesignConfiguration);
+    Details::parseInterconnectionConfigurations(document, newDesignConfiguration);
 
-    parseViewConfigurations(document, newDesignConfiguration);
+    Details::parseViewConfigurations(document, newDesignConfiguration);
 
-    parseParameters(designConfigurationNode, newDesignConfiguration);
+    DocumentReader::parseParameters(designConfigurationNode, newDesignConfiguration);
 
-    parseAssertions(designConfigurationNode, newDesignConfiguration);
+    DocumentReader::parseAssertions(designConfigurationNode, newDesignConfiguration);
 
-    parseDesignConfigurationExtensions(designConfigurationNode, newDesignConfiguration);
+    Details::parseDesignConfigurationExtensions(designConfigurationNode, newDesignConfiguration);
 
     return newDesignConfiguration;
 }
@@ -60,8 +54,8 @@ QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfi
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseDesignReference()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseDesignReference(QDomNode const& designConfigurationNode,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+void DesignConfigurationReader::Details::parseDesignReference(QDomNode const& designConfigurationNode,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
     QDomNode designReferenceNode = designConfigurationNode.firstChildElement(QStringLiteral("ipxact:designRef"));
 
@@ -79,8 +73,8 @@ void DesignConfigurationReader::parseDesignReference(QDomNode const& designConfi
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseGeneratorChainConfigurations()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseGeneratorChainConfigurations(QDomDocument const& designConfigurationDocument,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+void DesignConfigurationReader::Details::parseGeneratorChainConfigurations(QDomDocument const& designConfigurationDocument,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
     QDomNodeList chainConfigurationElements =
         designConfigurationDocument.elementsByTagName(QStringLiteral("ipxact:generatorChainConfiguration"));
@@ -94,11 +88,11 @@ void DesignConfigurationReader::parseGeneratorChainConfigurations(QDomDocument c
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseSingleGeneratorChainConfiguration()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseSingleGeneratorChainConfiguration(QDomNode const& chainConfigurationNode,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+void DesignConfigurationReader::Details::parseSingleGeneratorChainConfiguration(QDomNode const& chainConfigurationNode,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
     QSharedPointer<ConfigurableVLNVReference> newChainConfiguration = 
-        parseConfigurableVLNVReference(chainConfigurationNode, VLNV::GENERATORCHAIN);
+        CommonItemsReader::parseConfigurableVLNVReference(chainConfigurationNode, VLNV::GENERATORCHAIN);
 
     newDesignConfiguration->getGeneratorChainConfs()->append(newChainConfiguration);
 }
@@ -106,8 +100,8 @@ void DesignConfigurationReader::parseSingleGeneratorChainConfiguration(QDomNode 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseInterconnectionConfigurations()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseInterconnectionConfigurations(QDomDocument const& designConfigurationDocument,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+void DesignConfigurationReader::Details::parseInterconnectionConfigurations(QDomDocument const& designConfigurationDocument,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
     QDomNodeList interconnectionElements =
         designConfigurationDocument.elementsByTagName(QStringLiteral("ipxact:interconnectionConfiguration"));
@@ -134,7 +128,7 @@ void DesignConfigurationReader::parseInterconnectionConfigurations(QDomDocument 
         
         if (docRevision == Document::Revision::Std22)
         {
-            parseVendorExtensions(interconnectionConfigurationNode, newInterconnectionConfiguration);
+            CommonItemsReader::parseVendorExtensions(interconnectionConfigurationNode, newInterconnectionConfiguration);
         }
 
         newDesignConfiguration->getInterconnectionConfs()->append(newInterconnectionConfiguration);
@@ -144,9 +138,9 @@ void DesignConfigurationReader::parseInterconnectionConfigurations(QDomDocument 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseMultipleAbstractors()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseMultipleAbstractors(QDomNode const& interconnectionConfigurationNode,
+void DesignConfigurationReader::Details::parseMultipleAbstractors(QDomNode const& interconnectionConfigurationNode,
     QSharedPointer<InterconnectionConfiguration> newInterconnectionConfiguration, 
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     QDomNodeList multipleAbstractorsNodes =
         getNamedChildNodes(interconnectionConfigurationNode, QStringLiteral("ipxact:abstractorInstances"));
@@ -175,8 +169,8 @@ void DesignConfigurationReader::parseMultipleAbstractors(QDomNode const& interco
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseMultipleAbstractors()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipleAbstractorsNode,
-    QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances, Document::Revision docRevision) const
+void DesignConfigurationReader::Details::parseInterfaceReferences(QDomNode const& multipleAbstractorsNode,
+    QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances, Document::Revision docRevision)
 {
     QDomNodeList interfaceRefNodes = getNamedChildNodes(multipleAbstractorsNode, QStringLiteral("ipxact:interfaceRef"));
 
@@ -199,7 +193,7 @@ void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipl
 
         if (docRevision == Document::Revision::Std22)
         {
-            parseVendorExtensions(singleInterfaceRefNode, newInterfaceRef);
+            CommonItemsReader::parseVendorExtensions(singleInterfaceRefNode, newInterfaceRef);
         }
 
         newMultipleAbstractorInstances->getInterfaceReferences()->append(newInterfaceRef);
@@ -209,8 +203,8 @@ void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipl
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseAbstractorInstances()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseAbstractorInstances(QDomNode const& multipleAbstractorsNode,
-    QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances, Document::Revision docRevision) const
+void DesignConfigurationReader::Details::parseAbstractorInstances(QDomNode const& multipleAbstractorsNode,
+    QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances, Document::Revision docRevision)
 {
     QDomNodeList abstractorInstanceNodes = getNamedChildNodes(multipleAbstractorsNode, QStringLiteral("ipxact:abstractorInstance"));
 
@@ -240,11 +234,11 @@ void DesignConfigurationReader::parseAbstractorInstances(QDomNode const& multipl
             = singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:abstractorRef"));
 
         QSharedPointer<ConfigurableVLNVReference> newAbstractorRef = 
-            parseConfigurableVLNVReference(abstractorReferenceNode, VLNV::ABSTRACTOR);
+            CommonItemsReader::parseConfigurableVLNVReference(abstractorReferenceNode, VLNV::ABSTRACTOR);
 
         if (docRevision == Document::Revision::Std22)
         {
-            parseVendorExtensions(singleAbstractorInstanceNode, newAbstractorInstance);
+            CommonItemsReader::parseVendorExtensions(singleAbstractorInstanceNode, newAbstractorInstance);
         }
 
         newAbstractorInstance->setAbstractorRef(newAbstractorRef);
@@ -256,7 +250,7 @@ void DesignConfigurationReader::parseAbstractorInstances(QDomNode const& multipl
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::getNamedChildNodes()
 //-----------------------------------------------------------------------------
-QDomNodeList DesignConfigurationReader::getNamedChildNodes(QDomNode const& targetNode, QString elementName) const
+QDomNodeList DesignConfigurationReader::Details::getNamedChildNodes(QDomNode const& targetNode, QString elementName)
 {
     QDomNodeList allChildNodes = targetNode.childNodes();
 
@@ -277,8 +271,8 @@ QDomNodeList DesignConfigurationReader::getNamedChildNodes(QDomNode const& targe
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseViewConfigurations()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& designConfigurationDocument,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+void DesignConfigurationReader::Details::parseViewConfigurations(QDomDocument const& designConfigurationDocument,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
     QDomNodeList viewConfigurationNodes = designConfigurationDocument.elementsByTagName(QStringLiteral("ipxact:viewConfiguration"));
 
@@ -312,14 +306,14 @@ void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& desi
         for (int i = 0; i < configurableElementNodes.size(); ++i)
         {
             QSharedPointer<ConfigurableElementValue> newConfigurableElementValue =
-                parseConfigurableElementValue(configurableElementNodes.at(i));
+                CommonItemsReader::parseConfigurableElementValue(configurableElementNodes.at(i));
 
             newViewConfiguration->getViewConfigurableElements()->append(newConfigurableElementValue);
         }
 
         if (docRevision == Document::Revision::Std22)
         {
-            parseVendorExtensions(singleViewConfigurationNode, newViewConfiguration);
+            CommonItemsReader::parseVendorExtensions(singleViewConfigurationNode, newViewConfiguration);
         }
 
         newDesignConfiguration->getViewConfigurations()->append(newViewConfiguration);
@@ -329,8 +323,8 @@ void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& desi
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseDesignConfigurationExtensions()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseDesignConfigurationExtensions(QDomNode const& designConfigurationNode,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+void DesignConfigurationReader::Details::parseDesignConfigurationExtensions(QDomNode const& designConfigurationNode,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
     QDomNode extensionsNode = designConfigurationNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
@@ -347,14 +341,14 @@ void DesignConfigurationReader::parseDesignConfigurationExtensions(QDomNode cons
         parseViewOverrides(viewOverridesNode, newDesignConfiguration);
     }
 
-    parseKactusAndVendorExtensions(designConfigurationNode, newDesignConfiguration);
+    DocumentReader::parseKactusAndVendorExtensions(designConfigurationNode, newDesignConfiguration);
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseConfigurableElementValues()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseInstanceConfigurableElementValues(QDomElement const& configurableElementsNode,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+void DesignConfigurationReader::Details::parseInstanceConfigurableElementValues(QDomElement const& configurableElementsNode,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
     QDomNodeList componentInstanceList =
         configurableElementsNode.elementsByTagName(QStringLiteral("kactus2:componentInstance"));
@@ -387,8 +381,8 @@ void DesignConfigurationReader::parseInstanceConfigurableElementValues(QDomEleme
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationReader::parseViewOverrides()
 //-----------------------------------------------------------------------------
-void DesignConfigurationReader::parseViewOverrides(QDomElement const& viewOverridesNode,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration) const
+void DesignConfigurationReader::Details::parseViewOverrides(QDomElement const& viewOverridesNode,
+    QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
     QMap<QString, QString> newViewOverrides;
 

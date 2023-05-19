@@ -34,7 +34,7 @@ DocumentReader::~DocumentReader()
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::getXMLDocumentRevision()
 //-----------------------------------------------------------------------------
-Document::Revision DocumentReader::getXMLDocumentRevision(QDomNode const& document) const
+Document::Revision DocumentReader::getXMLDocumentRevision(QDomNode const& document)
 {
     QDomNamedNodeMap attributeMap = document.attributes();
 
@@ -58,7 +58,7 @@ Document::Revision DocumentReader::getXMLDocumentRevision(QDomNode const& docume
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::parseDocumentNameGroup()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseDocumentNameGroup(QDomNode const& documentNode, QSharedPointer<Document> document) const
+void DocumentReader::parseDocumentNameGroup(QDomNode const& documentNode, QSharedPointer<Document> document)
 {
     if (document->getRevision() == Document::Revision::Std22)
     {
@@ -75,7 +75,7 @@ void DocumentReader::parseDocumentNameGroup(QDomNode const& documentNode, QShare
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::parseTopComments()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseTopComments(QDomNode const& documentNode, QSharedPointer<Document> document) const
+void DocumentReader::parseTopComments(QDomNode const& documentNode, QSharedPointer<Document> document)
 {
     QStringList comments;
 
@@ -97,7 +97,7 @@ void DocumentReader::parseTopComments(QDomNode const& documentNode, QSharedPoint
 // Function: DocumentReader::parseXMLProcessingInstructions()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseXMLProcessingInstructions(QDomNode const& documentNode, 
-    QSharedPointer<Document> document) const
+    QSharedPointer<Document> document)
 {
     QDomNodeList nodeList = documentNode.childNodes();
     QDomNode singleDocumentNode = documentNode.firstChildElement();
@@ -119,7 +119,7 @@ void DocumentReader::parseXMLProcessingInstructions(QDomNode const& documentNode
 // Function: DocumentWriter::parseNamespaceDeclarations()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseNamespaceDeclarations(QDomNode const& documentNode, 
-    QSharedPointer<Document> document) const
+    QSharedPointer<Document> document)
 {
     QDomNamedNodeMap attributeMap = documentNode.attributes();
     QString nameSpaceIdentifier = QStringLiteral("xmlns:");
@@ -142,7 +142,7 @@ void DocumentReader::parseNamespaceDeclarations(QDomNode const& documentNode,
 // Function: DocumentReader::parseVLNV()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document,
-    VLNV::IPXactType type) const
+    VLNV::IPXactType type)
 {
     document->setVlnv(createVLNVFrom(documentNode, type));
 }
@@ -150,7 +150,7 @@ void DocumentReader::parseVLNVElements(QDomNode const& documentNode, QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::parseDescription()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseDescription(QDomNode const& documentNode, QSharedPointer<Document> document) const
+void DocumentReader::parseDescription(QDomNode const& documentNode, QSharedPointer<Document> document)
 {
     document->setDescription(documentNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
 }
@@ -158,7 +158,7 @@ void DocumentReader::parseDescription(QDomNode const& documentNode, QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::parseParameters()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointer<Document> document) const
+void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointer<Document> document)
 {
     QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(documentNode);
 
@@ -171,7 +171,7 @@ void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::parseAssertions()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointer<Document> document) const
+void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointer<Document> document)
 {
     QDomNodeList assertionNodeList = documentNode.firstChildElement(QStringLiteral("ipxact:assertions")).childNodes();
 
@@ -199,7 +199,7 @@ void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointe
 // Function: DocumentReader::parseKactusAndVendorExtensions()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode, 
-    QSharedPointer<Document> document) const
+    QSharedPointer<Document> document)
 {
     QDomElement extensionNodes = documentNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
@@ -233,7 +233,7 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::parseKactusAttributes()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QSharedPointer<Document> document) const
+void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QSharedPointer<Document> document)
 {
     QDomNode hierarchyNode = attributesNode.firstChildElement(QStringLiteral("kactus2:kts_productHier"));
     if (!hierarchyNode.isNull())
@@ -262,7 +262,7 @@ void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QShar
 //-----------------------------------------------------------------------------
 // Function: DocumentReader::parseTags()
 //-----------------------------------------------------------------------------
-void DocumentReader::parseTags(QDomNode const& tagsGroupNode, QSharedPointer<Document> document) const
+void DocumentReader::parseTags(QDomNode const& tagsGroupNode, QSharedPointer<Document> document)
 {
     QVector<TagData> documentTags;
 

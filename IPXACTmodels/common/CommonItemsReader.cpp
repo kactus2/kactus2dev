@@ -58,7 +58,7 @@ VLNV CommonItemsReader::parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXa
 // Function: CommonItemsReader::parseAndCreateParameters()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Parameter> > > CommonItemsReader::parseAndCreateParameters(
-    QDomNode const& itemNode) const
+    QDomNode const& itemNode)
 {
     QDomNodeList parameterNodeList = itemNode.firstChildElement(QStringLiteral("ipxact:parameters")).childNodes();
     
@@ -80,7 +80,6 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > CommonItemsReader::parseAndCr
 // Function: CommonItemsReader::parseVendorExtensions()
 //-----------------------------------------------------------------------------
 void CommonItemsReader::parseVendorExtensions(QDomNode const& itemNode, QSharedPointer<Extendable> element)
-    const
 {
     QDomNodeList extensionNodes = itemNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions")).childNodes();
 
@@ -101,7 +100,7 @@ void CommonItemsReader::parseVendorExtensions(QDomNode const& itemNode, QSharedP
 // Function: CommonItemsReader::parseConfigurableVLNVReference()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConfigurableVLNVReference> CommonItemsReader::parseConfigurableVLNVReference(
-    QDomNode const& configurableVLNVNode, VLNV::IPXactType type) const
+    QDomNode const& configurableVLNVNode, VLNV::IPXactType type)
 {
     QDomNamedNodeMap attributeMap = configurableVLNVNode.attributes();
 
@@ -131,7 +130,7 @@ QSharedPointer<ConfigurableVLNVReference> CommonItemsReader::parseConfigurableVL
 // Function: CommonItemsReader::parseConfigurableElementValue()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConfigurableElementValue> CommonItemsReader::parseConfigurableElementValue(
-    QDomNode const& configurableElementNode) const
+    QDomNode const& configurableElementNode)
 {
     QSharedPointer<ConfigurableElementValue> newConfigurableElementValue (new ConfigurableElementValue());
 

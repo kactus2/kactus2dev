@@ -59,8 +59,6 @@ public:
     */
     static VLNV parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXactType vlnvType);
 
-protected:
-
     /*!
      *  Parses and creates parameters from XML.
      *
@@ -68,8 +66,8 @@ protected:
      *
      *      @return A list of new parameters.
      */
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parseAndCreateParameters
-        (QDomNode const& itemNode) const;
+    static QSharedPointer<QList<QSharedPointer<Parameter> > > parseAndCreateParameters
+        (QDomNode const& itemNode);
 
     /*!
      *  Parses the vendor extensions from XML to a document.
@@ -77,7 +75,7 @@ protected:
      *      @param [in] itemNode    The XML description of the document.
      *      @param [in] element     The object in which the parsed vendor extensions are stored.
      */
-    void parseVendorExtensions(QDomNode const& itemNode, QSharedPointer<Extendable> element) const;
+    static void parseVendorExtensions(QDomNode const& itemNode, QSharedPointer<Extendable> element);
 
     /*!
      *  Parses a configurable VLNV.
@@ -87,8 +85,8 @@ protected:
      *
      *      @return A VLNV with configurable element values.
      */
-    QSharedPointer<ConfigurableVLNVReference> parseConfigurableVLNVReference(
-        QDomNode const& configurableVLNVNode, VLNV::IPXactType type) const;
+    static QSharedPointer<ConfigurableVLNVReference> parseConfigurableVLNVReference(
+        QDomNode const& configurableVLNVNode, VLNV::IPXactType type);
 
     /*!
      *  Parses a single configurable element value.
@@ -97,8 +95,8 @@ protected:
      *
      *      @return A configurable element value.
      */
-    QSharedPointer<ConfigurableElementValue> parseConfigurableElementValue(
-        QDomNode const& configurableElementNode) const;
+    static QSharedPointer<ConfigurableElementValue> parseConfigurableElementValue(
+        QDomNode const& configurableElementNode);
 
     /*!
      *  Parses the isPresent element.
