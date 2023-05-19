@@ -20,6 +20,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <QRegularExpression>
@@ -30,9 +32,7 @@
 ViewConfigurationValidator::ViewConfigurationValidator(LibraryInterface* library,
     QSharedPointer<ExpressionParser> parser):
 libraryHandler_(library),
-parser_(parser),
-availableViews_(),
-availableInstances_()
+parser_(parser)
 {
 
 }
@@ -67,15 +67,14 @@ bool ViewConfigurationValidator::validate(QSharedPointer<ViewConfiguration> conf
 //-----------------------------------------------------------------------------
 bool ViewConfigurationValidator::hasValidName(QSharedPointer<ViewConfiguration> configuration) const
 {
-    if (configuration->getInstanceName().empty() == false && availableInstances_)
+    if (auto nameInConfiguration = configuration->getInstanceName(); 
+        nameInConfiguration.empty() == false && availableInstances_)
     {
         for (auto const& instance : *availableInstances_)
         {
-            if (auto name = instance->getInstanceName().toStdString(); name == configuration->getInstanceName())
+            if (auto instanceName = instance->getInstanceName().toStdString(); instanceName == nameInConfiguration)
             {
-                bool emptyName = std::all_of(name.cbegin(), name.cend(), isspace);
-
-                return (name.empty() == false && emptyName == false);
+                return CommonItemsValidator::hasValidName(instanceName);
             }
         }
     }
@@ -83,25 +82,13 @@ bool ViewConfigurationValidator::hasValidName(QSharedPointer<ViewConfiguration> 
     return false;
 }
 
+
 //-----------------------------------------------------------------------------
 // Function: ViewConfigurationValidator::hasValidIsPresent()
 //-----------------------------------------------------------------------------
 bool ViewConfigurationValidator::hasValidIsPresent(QSharedPointer<ViewConfiguration> configuration) const
 {
-    if (configuration->getIsPresent().empty() == false)
-    {
-        QString solvedValue = parser_->parseExpression(QString::fromStdString(configuration->getIsPresent()));
-
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-
-        if (!toIntOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidIsPresent(configuration->getIsPresent(), parser_);
 }
 
 //-----------------------------------------------------------------------------

@@ -181,6 +181,7 @@
     <ClCompile Include="common\TransactionalTypes.cpp" />
     <ClCompile Include="common\validators\AssertionValidator.cpp" />
     <ClCompile Include="common\validators\CellSpecificationValidator.cpp" />
+    <ClCompile Include="common\validators\CommonItemsValidator.cpp" />
     <ClCompile Include="common\validators\namevalidator.cpp" />
     <ClCompile Include="common\validators\NMTokenValidator.cpp" />
     <ClCompile Include="common\validators\ParameterValidator.cpp" />
@@ -375,6 +376,7 @@
   <ItemGroup>
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
     <ClInclude Include="common\TagData.h" />
+    <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="Component\FieldReset.h" />
     <ClInclude Include="Component\MemoryBlockBaseReader.h" />
     <ClInclude Include="Component\MemoryBlockBaseWriter.h" />

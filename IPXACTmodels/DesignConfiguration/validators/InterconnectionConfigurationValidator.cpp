@@ -23,6 +23,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+
 #include <KactusAPI/include/ExpressionParser.h>
 
 //-----------------------------------------------------------------------------
@@ -51,7 +53,8 @@ void InterconnectionConfigurationValidator::designChanged(QSharedPointer<Design>
 //-----------------------------------------------------------------------------
 bool InterconnectionConfigurationValidator::validate(QSharedPointer<InterconnectionConfiguration> configuration)
 {
-    return hasValidInterconnectionReference(configuration) && hasValidIsPresent(configuration->getIsPresent()) &&
+    return hasValidInterconnectionReference(configuration) && 
+        hasValidIsPresent(configuration->getIsPresent()) &&
         hasValidMultipleAbstractorInstances(configuration);
 }
 
@@ -91,20 +94,7 @@ bool InterconnectionConfigurationValidator::hasValidInterconnectionReference(
 //-----------------------------------------------------------------------------
 bool InterconnectionConfigurationValidator::hasValidIsPresent(std::string const& isPresent) const
 {
-    if (isPresent.empty() == false)
-    {
-        QString solvedValue = parser_->parseExpression(QString::fromStdString(isPresent));
-
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-
-        if (!toIntOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidIsPresent(isPresent, parser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -118,15 +108,8 @@ bool InterconnectionConfigurationValidator::hasValidMultipleAbstractorInstances(
         return false;
     }
 
-    for (QSharedPointer<MultipleAbstractorInstances> instance : *configuration->getAbstractorInstances())
-    {
-        if (!multipleAbstractorInstanceIsValid(instance))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return std::all_of(configuration->getAbstractorInstances()->cbegin(), configuration->getAbstractorInstances()->cend(),
+        [this](auto const& instance) { return multipleAbstractorInstanceIsValid(instance); });
 }
 
 //-----------------------------------------------------------------------------
@@ -165,15 +148,14 @@ bool InterconnectionConfigurationValidator::hasValidInterfaceReferences(
 {
     if (multipleInstance->getInterfaceReferences())
     {
-        for (QSharedPointer<InterfaceRef> interfaceReference : *multipleInstance->getInterfaceReferences())
+        return std::all_of(multipleInstance->getInterfaceReferences()->cbegin(),
+            multipleInstance->getInterfaceReferences()->cend(),
+            [this](auto const& interfaceReference)
         {
-            if (!interfaceReferenceComponentReferenceIsValid(interfaceReference) ||
-                !interfaceReferenceBusReferenceIsValid(interfaceReference) ||
-                !hasValidIsPresent(interfaceReference->getIsPresent()))
-            {
-                return false;
-            }
-        }
+            return interfaceReferenceComponentReferenceIsValid(interfaceReference) &&
+                interfaceReferenceBusReferenceIsValid(interfaceReference) &&
+                hasValidIsPresent(interfaceReference->getIsPresent());
+        });
     }
 
     return true;
@@ -185,15 +167,14 @@ bool InterconnectionConfigurationValidator::hasValidInterfaceReferences(
 bool InterconnectionConfigurationValidator::interfaceReferenceComponentReferenceIsValid(
     QSharedPointer<InterfaceRef> interfaceReference) const
 {
-    if (interfaceReference->getComponentRef().empty() == false && availableComponentInstances_)
+    auto componentRef = interfaceReference->getComponentRef();
+    if (componentRef.empty() == false && availableComponentInstances_)
     {
-        for (QSharedPointer<ComponentInstance> instance : *availableComponentInstances_)
+        return std::any_of(availableComponentInstances_->cbegin(), availableComponentInstances_->cend(),
+            [&componentRef](auto const& instance)
         {
-            if (interfaceReference->getComponentRef() == instance->getInstanceName().toStdString())
-            {
-                return true;
-            }
-        }
+            return instance->getInstanceName().toStdString() == componentRef;
+        });
     }
 
     return false;
@@ -207,15 +188,14 @@ bool InterconnectionConfigurationValidator::interfaceReferenceBusReferenceIsVali
 {
     changeAvailableBusInterfaces(interfaceReference);
 
-    if (interfaceReference->getBusRef().empty() == false && availableBusInterfaces_)
+    auto busRef = interfaceReference->getBusRef();
+    if (busRef.empty() == false && availableBusInterfaces_)
     {
-        for (QSharedPointer<BusInterface> currentInterface : *availableBusInterfaces_)
+        return std::any_of(availableBusInterfaces_->cbegin(), availableBusInterfaces_->cend(),
+            [&busRef](auto const& currentInterface)
         {
-            if (interfaceReference->getBusRef() == currentInterface->name().toStdString())
-            {
-                return true;
-            }
-        }
+            return currentInterface->name().toStdString() == busRef;
+        });
     }
 
     return false;
@@ -272,7 +252,7 @@ bool InterconnectionConfigurationValidator::abstractorInstanceIsValid(QSharedPoi
 //-----------------------------------------------------------------------------
 bool InterconnectionConfigurationValidator::hasValidName(std::string const& name) const
 {
-    return (name.empty() == false && std::all_of(name.begin(), name.end(), isspace) == false);
+    return CommonItemsValidator::hasValidName(name);
 }
 
 //-----------------------------------------------------------------------------

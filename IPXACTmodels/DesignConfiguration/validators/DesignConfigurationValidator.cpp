@@ -113,10 +113,7 @@ bool DesignConfigurationValidator::hasValidGeneratorChainConfigurations(
                 QSharedPointer<ConfigurableVLNVReference> comparedReference =
                     designConfiguration->getGeneratorChainConfs()->at(comparisonIndex);
 
-                if (chainReference->getVendor() == comparedReference->getVendor() &&
-                    chainReference->getLibrary() == comparedReference->getLibrary() &&
-                    chainReference->getName() == comparedReference->getName() &&
-                    chainReference->getVersion() == comparedReference->getVersion())
+                if (chainReference->VLNV::operator==(*comparedReference))
                 {
                     return false;
                 }
@@ -208,7 +205,7 @@ bool DesignConfigurationValidator::hasValidParameters(QSharedPointer<DesignConfi
     if (!designConfiguration->getParameters()->isEmpty())
     {
         QVector<QString> parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *designConfiguration->getParameters())
+        for (auto const& parameter : *designConfiguration->getParameters())
         {
             if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
             {
@@ -231,7 +228,7 @@ bool DesignConfigurationValidator::hasValidAssertions(QSharedPointer<DesignConfi
     if (!designConfiguration->getAssertions()->isEmpty())
     {
         QVector<QString> assertionNames;
-        foreach (QSharedPointer<Assertion> assertion, *designConfiguration->getAssertions())
+        for (auto const& assertion : *designConfiguration->getAssertions())
         {
             if (assertionNames.contains(assertion->name()) || !assertionValidator_->validate(assertion))
             {
@@ -283,7 +280,7 @@ void DesignConfigurationValidator::findErrorsInDesignReference(QVector<QString>&
         {
             errors.append(QObject::tr("Design reference %1 within %2 was not found in the "
                 "library")
-                .arg(designConfiguration->getDesignRef().toString()).arg(context));
+                .arg(designConfiguration->getDesignRef().toString(), context));
         }
 
         designConfiguration->getDesignRef().isValid(errors, QLatin1String("design reference"));
@@ -317,10 +314,7 @@ void DesignConfigurationValidator::findErrorsInGeneratorChainConfigurations(QVec
                 QSharedPointer<ConfigurableVLNVReference> comparedReference =
                     designConfiguration->getGeneratorChainConfs()->at(comparisonIndex);
 
-                if (chainReference->getVendor() == comparedReference->getVendor() &&
-                    chainReference->getLibrary() == comparedReference->getLibrary() &&
-                    chainReference->getName() == comparedReference->getName() &&
-                    chainReference->getVersion() == comparedReference->getVersion())
+                if (chainReference->VLNV::operator==(*comparedReference))
                 {
                     errors.append(QObject::tr("Generator chain configuration %1 is not unique within %2.")
                         .arg(chainReference->toString()).arg(context));
@@ -412,12 +406,12 @@ void DesignConfigurationValidator::findErrorsInParameters(QVector<QString>& erro
     {
         QVector<QString> parameterNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Parameter> parameter, *designConfiguration->getParameters())
+        for (auto const& parameter : *designConfiguration->getParameters())
         {
             if (parameterNames.contains(parameter->name()) && !duplicateNames.contains(parameter->name()))
             {
                 errors.append(QObject::tr("Parameter name %1 within %2 is not unique.")
-                    .arg(parameter->name()).arg(context));
+                    .arg(parameter->name(), context));
                 duplicateNames.append(parameter->name());
             }
 
@@ -437,12 +431,12 @@ void DesignConfigurationValidator::findErrorsInAssertions(QVector<QString>& erro
     {
         QVector<QString> assertionNames;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Assertion> assertion, *designConfiguration->getAssertions())
+        for (auto const& assertion : *designConfiguration->getAssertions())
         {
             if (assertionNames.contains(assertion->name()) && !duplicateNames.contains(assertion->name()))
             {
                 errors.append(QObject::tr("Assertion name %1 within %2 is not unique.")
-                    .arg(assertion->name()).arg(context));
+                    .arg(assertion->name(), context));
                 duplicateNames.append(assertion->name());
             }
 

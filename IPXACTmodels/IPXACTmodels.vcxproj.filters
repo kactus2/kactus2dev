@@ -908,6 +908,9 @@
     <ClCompile Include="Component\validators\SubspaceMapValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="common\validators\CommonItemsValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1461,6 +1464,9 @@
     </ClInclude>
     <ClInclude Include="Component\validators\SubspaceMapValidator.h">
       <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\CommonItemsValidator.h">
+      <Filter>Header Files\common\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

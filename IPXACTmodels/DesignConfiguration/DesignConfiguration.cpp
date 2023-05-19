@@ -89,7 +89,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
             if (generatorChainConf)
             {
                 auto copy = QSharedPointer<ConfigurableVLNVReference>
-                    (new ConfigurableVLNVReference(*generatorChainConf.data()));
+                    (new ConfigurableVLNVReference(*generatorChainConf));
                 generatorChainConfigurations_->append(copy);
 			}
 		}
@@ -100,7 +100,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
             if (configuration)
             {
                 auto copy = QSharedPointer<InterconnectionConfiguration>(
-                    new InterconnectionConfiguration(*configuration.data()));
+                    new InterconnectionConfiguration(*configuration));
                 interconnectionConfigurations_->append(copy);
 			}
 		}
@@ -111,7 +111,7 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
             if (configuration)
             {
                 auto copy = QSharedPointer<ViewConfiguration>(
-                    new ViewConfiguration(*configuration.data()));
+                    new ViewConfiguration(*configuration));
                 viewConfigurations_->append(copy);
             }
         }
@@ -143,10 +143,8 @@ void DesignConfiguration::setVlnv(const VLNV& vlnv)
 void DesignConfiguration::setInterconnectionConfs(
     QSharedPointer<QList<QSharedPointer<InterconnectionConfiguration> > > interconnectionConfs)
 {
-    // delete old values
     interconnectionConfigurations_->clear();
 
-    // save new values
     interconnectionConfigurations_ = interconnectionConfs;
 }
 
@@ -156,10 +154,8 @@ void DesignConfiguration::setInterconnectionConfs(
 void DesignConfiguration::setViewConfigurations(
     QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > newViewConfigurations)
 {
-    // delete old values
     viewConfigurations_->clear();
 
-    // save new values
     viewConfigurations_ = newViewConfigurations;
 }
 
@@ -168,7 +164,6 @@ void DesignConfiguration::setViewConfigurations(
 //-----------------------------------------------------------------------------
 void DesignConfiguration::setDesignRef(const VLNV& designRef)
 {
-    // save new designRef
     designRef_ = designRef;
 }
 
@@ -194,10 +189,8 @@ QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > DesignConfiguration::
 void DesignConfiguration::setGeneratorChainConfs(
     QSharedPointer<QList<QSharedPointer<ConfigurableVLNVReference> > > generatorChainConfs)
 {
-    // delete old generatorChainConfs
     generatorChainConfigurations_->clear();
 
-    // save new generatorChainConfs
     generatorChainConfigurations_ = generatorChainConfs;
 }
 

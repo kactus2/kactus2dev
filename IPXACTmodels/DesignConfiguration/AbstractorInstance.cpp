@@ -27,7 +27,7 @@ AbstractorInstance::AbstractorInstance(const AbstractorInstance& other):
 instanceName_(other.instanceName_),
 displayName_(other.displayName_),
 description_(other.description_),
-abstractorRef_(new ConfigurableVLNVReference(*other.abstractorRef_.data())),
+abstractorRef_(new ConfigurableVLNVReference(*other.abstractorRef_)),
 viewName_(other.viewName_)
 {
 
