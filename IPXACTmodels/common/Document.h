@@ -49,14 +49,14 @@ public:
     };
 
     //! The default constructor.
-	explicit Document(Revision revision = Revision::Std14);
+	explicit Document(Revision revision = Revision::Unknown);
 
 	/*!
 	 *  The constructor.
 	 *
 	 *      @param [in] vlnv   The VLNV for the document.
 	 */
-	Document(VLNV const& vlnv, Revision revision = Revision::Std14);
+	Document(VLNV const& vlnv, Revision revision = Revision::Unknown);
 
     //! Copy constructor.
 	Document(const Document &other);
@@ -322,7 +322,12 @@ public:
      */
     void setTags(QVector<TagData> newTags) const;
 
-    Revision getRevision() const;
+    /*!
+     *  Get the IP-XACT document standard revision.
+     *
+     *      @return The document standard revision.
+     */
+    Document::Revision getRevision() const;
 
 private:
 
