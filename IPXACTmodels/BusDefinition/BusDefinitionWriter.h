@@ -67,20 +67,20 @@ private:
     void writeExtends(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const;
   
     /*!
-     *  Writes the maximum number of masters allowed in a given bus definition into xml.
+     *  Writes the maximum number of initiators allowed in a given bus definition into xml.
      *
      *      @param [in] writer          The xml writer to use.
-     *      @param [in] busDefinition   The bus definition whose master count to write.
+     *      @param [in] busDefinition   The bus definition whose initiator count to write.
      */
-    void writeMaximumMasters(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const;
-      
+    void writeMaximumInitiators(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const;
+
     /*!
-     *  Writes the maximum number of slaves allowed in a given bus definition into xml.
+     *  Writes the maximum number of targets allowed in a given bus definition into xml.
      *
      *      @param [in] writer          The xml writer to use.
-     *      @param [in] busDefinition   The bus definition whose slave count to write.
+     *      @param [in] busDefinition   The bus definition whose targets count to write.
      */
-    void writeMaximumSlaves(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const;
+    void writeMaximumTargets(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const;
       
     /*!
      *  Writes the system group names defined in a given bus definition into xml.
@@ -89,6 +89,14 @@ private:
      *      @param [in] busDefinition   The bus definition whose system group names to write.
      */
     void writeSystemGroupNames(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const;
+
+    /*!
+     *  Writes the choices of a bus definition into xml.
+     *
+     *      @param [in] writer          The xml writer to use.
+     *      @param [in] busDefinition   The bus definition whose choices to write.
+     */
+    void writeChoices(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const;
       
     /*!
      *  Converts boolean value to string.

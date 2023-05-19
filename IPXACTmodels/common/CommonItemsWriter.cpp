@@ -14,6 +14,9 @@
 
 #include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/ChoiceWriter.h>
+
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
@@ -56,6 +59,25 @@ void CommonItemsWriter::writeVLNVAttributes(QXmlStreamWriter& writer, VLNV const
     writer.writeAttribute(QStringLiteral("library"), vlnv.getLibrary());
     writer.writeAttribute(QStringLiteral("name"), vlnv.getName());
     writer.writeAttribute(QStringLiteral("version"), vlnv.getVersion());
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writeChoices()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Choice> > > choices) const
+{
+    if (choices->isEmpty())
+    {
+        return;
+    }
+    writer.writeStartElement(QStringLiteral("ipxact:choices"));
+
+    for (auto const& choice : *choices)
+    {
+        ChoiceWriter::writeChoice(writer, choice);
+    }
+
+    writer.writeEndElement(); // ipxact:choices
 }
 
 //-----------------------------------------------------------------------------
