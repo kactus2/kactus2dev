@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/Design/Design.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

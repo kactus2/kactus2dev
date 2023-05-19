@@ -17,7 +17,7 @@
 
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <QFileInfo>
 #include <QRegularExpression>

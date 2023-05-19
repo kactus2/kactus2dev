@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: DocumentTreeBuilder::DocumentTreeBuilder()

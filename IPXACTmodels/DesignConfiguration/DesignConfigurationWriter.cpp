@@ -17,7 +17,7 @@
 #include <IPXACTmodels/common/ParameterWriter.h>
 
 #include <IPXACTmodels/common/VLNV.h>
-#include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/InterconnectionConfiguration.h>
 
 #include <QMap>
 #include <QSharedPointer>

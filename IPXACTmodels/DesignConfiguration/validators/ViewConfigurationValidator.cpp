@@ -13,7 +13,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/ViewConfiguration.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 

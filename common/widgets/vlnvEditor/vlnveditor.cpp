@@ -23,7 +23,7 @@
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

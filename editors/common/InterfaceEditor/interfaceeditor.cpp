@@ -33,7 +33,7 @@
 #include <IPXACTmodels/Design/HierInterface.h>
 #include <IPXACTmodels/Design/Interconnection.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/common/validators/namevalidator.h>
 

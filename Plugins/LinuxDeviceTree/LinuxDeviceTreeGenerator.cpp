@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 

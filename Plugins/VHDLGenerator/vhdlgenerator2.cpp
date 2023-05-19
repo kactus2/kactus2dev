@@ -38,7 +38,7 @@
 
 #include <IPXACTmodels/Design/Interconnection.h>
 #include <IPXACTmodels/Design/validator/DesignValidator.h>
-#include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/DesignConfigurationValidator.h>
 
 #include <IPXACTmodels/utilities/ComponentSearch.h>
 

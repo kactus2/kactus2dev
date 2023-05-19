@@ -26,7 +26,7 @@
 #include <KactusAPI/include/ListParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
@@ -192,7 +192,7 @@ void ConfigurationEditor::createAndSaveConfiguration(CreateConfigurationDialog c
     VLNV const& configurationVLNV = dialog.getConfigurationVLNV();
 
     // Create the configuration.
-    QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(configurationVLNV));
+    QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(configurationVLNV, Document::Revision::Unknown));
     designConfiguration->setDesignConfigImplementation(KactusAttribute::HW);
     designConfiguration->setVersion(VersionHelper::versionFileStr());
 

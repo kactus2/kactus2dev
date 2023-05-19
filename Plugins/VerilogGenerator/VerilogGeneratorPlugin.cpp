@@ -24,7 +24,7 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <QDir>
 

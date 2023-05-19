@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 

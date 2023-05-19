@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/ViewConfiguration.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>

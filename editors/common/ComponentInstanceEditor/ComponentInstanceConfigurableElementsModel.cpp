@@ -26,7 +26,7 @@
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/ViewConfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceConfigurableElementsModel::ComponentInstanceConfigurableElementsModel()

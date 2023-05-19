@@ -14,7 +14,7 @@
 
 #include <editors/common/ComponentInstanceEditor/configurableelementeditor.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <QAbstractItemModel>
 #include <QSharedPointer>

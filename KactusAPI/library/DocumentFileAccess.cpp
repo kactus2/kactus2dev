@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Catalog/Catalog.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
@@ -28,7 +28,7 @@
 #include <IPXACTmodels/Catalog/CatalogReader.h>
 #include <IPXACTmodels/Component/ComponentReader.h>
 #include <IPXACTmodels/Design/DesignReader.h>
-#include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfigurationReader.h>
 
 #include <IPXACTmodels/kactusExtensions/ComDefinitionReader.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionReader.h>
@@ -38,7 +38,7 @@
 #include <IPXACTmodels/Catalog/CatalogWriter.h>
 #include <IPXACTmodels/Component/ComponentWriter.h>
 #include <IPXACTmodels/Design/DesignWriter.h>
-#include <IPXACTmodels/designConfiguration/DesignConfigurationWriter.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfigurationWriter.h>
 
 #include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>

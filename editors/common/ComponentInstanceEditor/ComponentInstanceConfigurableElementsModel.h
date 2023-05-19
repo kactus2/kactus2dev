@@ -18,7 +18,7 @@
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <QAbstractTableModel>
 #include <QList>

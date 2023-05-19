@@ -106,17 +106,17 @@ HEADERS += ./generaldeclarations.h \
     ./AbstractionDefinition/TransactionalAbstractionWriter.h \
     ./AbstractionDefinition/WireAbstractionReader.h \
     ./AbstractionDefinition/validators/AbstractionDefinitionValidator.h \
-    ./designConfiguration/AbstractorInstance.h \
-    ./designConfiguration/DesignConfiguration.h \
-    ./designConfiguration/InterconnectionConfiguration.h \
-    ./designConfiguration/InterfaceRef.h \
-    ./designConfiguration/MultipleAbstractorInstances.h \
-    ./designConfiguration/ViewConfiguration.h \
-    ./designConfiguration/DesignConfigurationReader.h \
-    ./designConfiguration/DesignConfigurationWriter.h \
-    ./designConfiguration/validators/DesignConfigurationValidator.h \
-    ./designConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./designConfiguration/validators/ViewConfigurationValidator.h \
+    ./DesignConfiguration/AbstractorInstance.h \
+    ./DesignConfiguration/DesignConfiguration.h \
+    ./DesignConfiguration/InterconnectionConfiguration.h \
+    ./DesignConfiguration/InterfaceRef.h \
+    ./DesignConfiguration/MultipleAbstractorInstances.h \
+    ./DesignConfiguration/ViewConfiguration.h \
+    ./DesignConfiguration/DesignConfigurationReader.h \
+    ./DesignConfiguration/DesignConfigurationWriter.h \
+    ./DesignConfiguration/validators/DesignConfigurationValidator.h \
+    ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
     ./Design/ActiveInterface.h \
     ./Design/AdHocConnection.h \
     ./Design/ComponentInstance.h \
@@ -362,17 +362,17 @@ SOURCES += ./generaldeclarations.cpp \
     ./AbstractionDefinition/WireAbstractionWriter.cpp \
     ./AbstractionDefinition/WirePort.cpp \
     ./AbstractionDefinition/validators/AbstractionDefinitionValidator.cpp \
-    ./designConfiguration/AbstractorInstance.cpp \
-    ./designConfiguration/DesignConfiguration.cpp \
-    ./designConfiguration/DesignConfigurationReader.cpp \
-    ./designConfiguration/DesignConfigurationWriter.cpp \
-    ./designConfiguration/InterconnectionConfiguration.cpp \
-    ./designConfiguration/InterfaceRef.cpp \
-    ./designConfiguration/MultipleAbstractorInstances.cpp \
-    ./designConfiguration/ViewConfiguration.cpp \
-    ./designConfiguration/validators/DesignConfigurationValidator.cpp \
-    ./designConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./designConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./DesignConfiguration/AbstractorInstance.cpp \
+    ./DesignConfiguration/DesignConfiguration.cpp \
+    ./DesignConfiguration/DesignConfigurationReader.cpp \
+    ./DesignConfiguration/DesignConfigurationWriter.cpp \
+    ./DesignConfiguration/InterconnectionConfiguration.cpp \
+    ./DesignConfiguration/InterfaceRef.cpp \
+    ./DesignConfiguration/MultipleAbstractorInstances.cpp \
+    ./DesignConfiguration/ViewConfiguration.cpp \
+    ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
+    ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
     ./Design/ActiveInterface.cpp \
     ./Design/AdHocConnection.cpp \
     ./Design/ComponentInstance.cpp \

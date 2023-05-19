@@ -21,7 +21,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/LibraryInterface.h>

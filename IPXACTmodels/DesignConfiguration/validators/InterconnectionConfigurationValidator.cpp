@@ -11,7 +11,7 @@
 
 #include "InterconnectionConfigurationValidator.h"
 
-#include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/InterconnectionConfiguration.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 

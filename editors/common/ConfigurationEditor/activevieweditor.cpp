@@ -12,7 +12,7 @@
 #include "activevieweditor.h"
 #include "activeviewdelegate.h"
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <editors/common/DesignDiagram.h>
 #include <editors/common/DesignWidget.h>

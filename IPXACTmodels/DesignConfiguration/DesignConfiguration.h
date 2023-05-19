@@ -16,8 +16,8 @@
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/Document.h>
 
-#include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
-#include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/InterconnectionConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/ViewConfiguration.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 

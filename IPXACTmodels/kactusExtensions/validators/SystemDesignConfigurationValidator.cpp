@@ -13,12 +13,12 @@
 
 #include <IPXACTmodels/kactusExtensions/validators/SystemViewConfigurationValidator.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/ViewConfigurationValidator.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 

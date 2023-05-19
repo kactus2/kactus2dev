@@ -21,18 +21,18 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-#include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
-#include <IPXACTmodels/designConfiguration/MultipleAbstractorInstances.h>
-#include <IPXACTmodels/designConfiguration/AbstractorInstance.h>
-#include <IPXACTmodels/designConfiguration/InterfaceRef.h>
-#include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/InterconnectionConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/MultipleAbstractorInstances.h>
+#include <IPXACTmodels/DesignConfiguration/AbstractorInstance.h>
+#include <IPXACTmodels/DesignConfiguration/InterfaceRef.h>
+#include <IPXACTmodels/DesignConfiguration/ViewConfiguration.h>
 
-#include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
-#include <IPXACTmodels/designConfiguration/validators/InterconnectionConfigurationValidator.h>
-#include <IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/DesignConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/InterconnectionConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/ViewConfigurationValidator.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -126,7 +126,7 @@ void tst_DesignConfigurationValidator::testHasValidVLNV()
     QFETCH(bool, isValid);
 
     VLNV designConfigurationVLNV(VLNV::DESIGNCONFIGURATION, vendor, library, name, version);
-    QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(designConfigurationVLNV));
+    QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(designConfigurationVLNV, Document::Revision::Std14));
 
     QSharedPointer<DesignConfigurationValidator> validator = createDesignConfigurationValidator(0);
     QCOMPARE(validator->hasValidVLNV(testConfiguration), isValid);
@@ -202,7 +202,7 @@ void tst_DesignConfigurationValidator::testHasValidDesignReference()
     LibraryMock* mockLibrary (new LibraryMock(this));
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
 
     VLNV designReference (VLNV::DESIGN, vendor, library, name, version);
     
@@ -302,7 +302,7 @@ void tst_DesignConfigurationValidator::testHasValidGeneratorChainConfigurations(
     QFETCH(bool, isValid);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
 
     QSharedPointer<ConfigurableVLNVReference> chainVLNV (
         new ConfigurableVLNVReference(VLNV::GENERATORCHAIN, vendor, library, name, version));
@@ -918,7 +918,7 @@ void tst_DesignConfigurationValidator::testHasValidInterconnectionConfigurations
     mockLibrary->addComponent(testDesign);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testConfiguration->setDesignRef(designVLNV);
 
     QSharedPointer<InterconnectionConfiguration> interconnectionConfiguration (new InterconnectionConfiguration());
@@ -1238,7 +1238,7 @@ void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
     mockLibrary->addComponent(referencedDesign);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testConfiguration->setDesignRef(referencedDesign->getVlnv());
 
     QSharedPointer<ConfigurableVLNVReference> componentVLNV
@@ -1342,7 +1342,7 @@ void tst_DesignConfigurationValidator::testHasValidParameters()
     testParameter->setValue(value);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
-        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
 
     testConfiguration->getParameters()->append(testParameter);
 
@@ -1414,7 +1414,7 @@ void tst_DesignConfigurationValidator::testHasValidAssertions()
     testAssertion->setAssert(assertValue);
 
     QSharedPointer<DesignConfiguration> testConfiguration (
-        new DesignConfiguration(VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        new DesignConfiguration(VLNV(VLNV::DESIGNCONFIGURATION, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testConfiguration->getAssertions()->append(testAssertion);
 
     if (copyAssertion)
@@ -1483,8 +1483,8 @@ bool tst_DesignConfigurationValidator::errorIsNotFoundInErrorList(QString const&
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
+        for (QString error : errorList)
         {
             qDebug() << error;
         }

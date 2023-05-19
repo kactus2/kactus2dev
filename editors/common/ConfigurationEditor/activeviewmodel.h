@@ -12,7 +12,7 @@
 #ifndef ACTIVEVIEWMODEL_H
 #define ACTIVEVIEWMODEL_H
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <editors/HWDesign/HWComponentItem.h>
 

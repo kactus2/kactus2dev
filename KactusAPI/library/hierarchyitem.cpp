@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/Catalog/IpxactFile.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 

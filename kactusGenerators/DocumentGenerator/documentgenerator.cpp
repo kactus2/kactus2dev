@@ -40,7 +40,7 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <QString>
 #include <QDir>

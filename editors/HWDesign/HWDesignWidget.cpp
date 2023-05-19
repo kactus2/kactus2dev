@@ -61,7 +61,7 @@
 
 #include <IPXACTmodels/Design/Design.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -861,7 +861,7 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	model->getViews()->append(hierView);
 
 	// create the design configuration
-	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Unknown));
 	designConf->setDesignRef(designVLNV);
 
 	QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));

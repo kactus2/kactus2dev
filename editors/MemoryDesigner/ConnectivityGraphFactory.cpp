@@ -47,7 +47,7 @@
 #include <IPXACTmodels/Component/SlaveInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::ConnectivityGraphFactory()

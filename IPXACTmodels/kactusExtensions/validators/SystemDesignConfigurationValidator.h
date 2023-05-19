@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/DesignConfigurationValidator.h>
 
 #include <QSharedPointer>
 #include <QString>

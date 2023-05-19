@@ -12,7 +12,7 @@
 #ifndef CONFIGURABLEELEMENTEDITOR_H
 #define CONFIGURABLEELEMENTEDITOR_H
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionFormatter.h>

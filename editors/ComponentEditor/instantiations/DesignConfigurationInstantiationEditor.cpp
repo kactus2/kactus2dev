@@ -25,7 +25,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QApplication>

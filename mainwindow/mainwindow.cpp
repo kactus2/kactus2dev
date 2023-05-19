@@ -86,7 +86,7 @@
 #include <IPXACTmodels/Component/View.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
@@ -1466,7 +1466,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
     design->setDesignImplementation(KactusAttribute::HW);
     design->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Unknown));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::HW);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -1569,7 +1569,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     component->getDesignConfigurationInstantiations()->append(hierarchyInstantiation);
 
     // Create the design and design configuration objects.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Unknown));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::HW);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -1697,7 +1697,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     design->setDesignImplementation(KactusAttribute::SW);
     design->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Unknown));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -1810,7 +1810,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     component->setVersion(VersionHelper::versionFileStr());
 
     // Create the design and design configuration objects.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Unknown));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -1953,7 +1953,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     generateSystemDesignV2(libraryHandler_, parentComp->getHierRef(viewName), *sysDesign);
 
     // Create the design configuration.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Unknown));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -2057,7 +2057,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     component->setSystemViews(systemViews);
 
     // Create the design and design configuration objects to the same folder as the component.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Unknown));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
     designConf->setVersion(VersionHelper::versionFileStr());

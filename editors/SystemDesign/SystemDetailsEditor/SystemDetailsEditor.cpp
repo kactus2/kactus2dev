@@ -19,7 +19,7 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 #include <IPXACTmodels/Design/Design.h>
 

@@ -11,7 +11,7 @@
 
 #include "DesignConfigurationValidator.h"
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Design/Design.h>
 
@@ -20,8 +20,8 @@
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
 
-#include <IPXACTmodels/designConfiguration/validators/InterconnectionConfigurationValidator.h>
-#include <IPXACTmodels/designConfiguration/validators/ViewConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/InterconnectionConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/ViewConfigurationValidator.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 

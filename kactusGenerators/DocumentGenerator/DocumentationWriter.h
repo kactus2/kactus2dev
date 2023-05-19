@@ -14,7 +14,7 @@
 
 #include <KactusAPI/include/ExpressionFormatterFactory.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <QTextStream>
 #include <QString>

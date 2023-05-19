@@ -15,7 +15,7 @@
 #include <editors/HWDesign/AdHocEnabled.h>
 #include <editors/common/DrawMode.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 

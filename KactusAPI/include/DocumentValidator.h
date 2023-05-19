@@ -22,7 +22,7 @@
 #include <IPXACTmodels/Catalog/validators/CatalogValidator.h>
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 #include <IPXACTmodels/Design/validator/DesignValidator.h>
-#include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
+#include <IPXACTmodels/DesignConfiguration/validators/DesignConfigurationValidator.h>
 #include <IPXACTmodels/kactusExtensions/validators/SystemDesignConfigurationValidator.h>
 
 class Document;

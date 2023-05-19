@@ -89,7 +89,7 @@
 #include <IPXACTmodels/Design/Interconnection.h>
 #include <IPXACTmodels/Design/PortReference.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
