@@ -235,7 +235,7 @@ void ComponentEditorItem::onEditorChanged()
 	// update this item
 	emit contentChanged(this);
 
-    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    for (auto const& childItem : childItems_)
     {
         emit contentChanged(childItem.data());
     }

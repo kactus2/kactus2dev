@@ -25,7 +25,6 @@ class Component;
 class LibraryInterface;
 class Document;
 class KactusAttributeEditor;
-class ComponentPreviewBox;
 
 //-----------------------------------------------------------------------------
 //! GeneralEditor class.
@@ -125,9 +124,6 @@ private:
 
 	//! The editor to view/edit the header of the XML-file.
 	QPlainTextEdit* headerEditor_;
-
-    //! The preview box.
-    ComponentPreviewBox* previewBox_;
 };
 
 //-----------------------------------------------------------------------------

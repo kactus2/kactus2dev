@@ -20,6 +20,7 @@
 class ComponentEditorTreeModel;
 class ItemEditor;
 class Component;
+class ComponentPreviewBox;
 
 //-----------------------------------------------------------------------------
 //! The general-item in the component editor navigation tree.
@@ -42,7 +43,11 @@ public:
         QSharedPointer<Component> component, ComponentEditorItem* parent);
 
 	//! The destructor.
-	virtual ~ComponentEditorGeneralItem();
+	~ComponentEditorGeneralItem() override = default;
+
+    //! No copying. No assignment. No mercy.
+    ComponentEditorGeneralItem(const ComponentEditorGeneralItem& other) = delete;
+    ComponentEditorGeneralItem& operator=(const ComponentEditorGeneralItem& other) = delete;
 
 	/*!
      *  Get the tool tip for the item.
@@ -79,12 +84,22 @@ public:
 	 */
 	virtual ItemEditor* editor();
 
+	/*!
+	 *  Get pointer to the visualizer of this item.
+	 *
+	 *      @return Pointer to the visualizer to use for this item.
+	 */
+	ItemVisualizer* visualizer() override;
+
+	/*!
+	 *  Refresh the contents of the editor associated with this item.
+	 */
+	void refreshEditor() override;
+
 private:
 
-	//! No copying. No assignment. No mercy.
-	ComponentEditorGeneralItem(const ComponentEditorGeneralItem& other);
-	ComponentEditorGeneralItem& operator=(const ComponentEditorGeneralItem& other);
-
+	//! Component preview for visualization.
+	ComponentPreviewBox* previewBox_;
 };
 
 #endif // COMPONENTEDITORGENERALITEM_H

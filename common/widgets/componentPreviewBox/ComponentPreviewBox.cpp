@@ -22,6 +22,7 @@
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
+#include <QLayout>
 #include <QPainter>
 #include <QRectF>
 
@@ -78,27 +79,23 @@ namespace
 // Function: ComponentPreviewBox::ComponentPreviewBox()
 //-----------------------------------------------------------------------------
 ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh, QWidget* parent):
-QGraphicsView(parent), 
+ItemVisualizer(parent),
     lh_(lh),
-    component_(),
-    scene_(0)
+    view_(new QGraphicsView(parent)),
+    scene_(new GridScene(view_))
 {
     // Create the scene.
-    scene_ = new GridScene(this);
-    setScene(scene_);
-    centerOn(0, 0);
+    view_->setScene(scene_);
+    view_->centerOn(0, 0);
 
     setMinimumHeight(MIN_BOX_HEIGHT);
 
     // Disable interactivity by default.
-    setInteractive(false);
-}
+    view_->setInteractive(false);
 
-//-----------------------------------------------------------------------------
-// Function: ComponentPreviewBox::~ComponentPreviewBox()
-//-----------------------------------------------------------------------------
-ComponentPreviewBox::~ComponentPreviewBox()
-{
+    auto layout = new QVBoxLayout(this);
+    layout->addWidget(view_);
+    layout->setContentsMargins(0, 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -108,8 +105,8 @@ void ComponentPreviewBox::updatePreview()
 {
     // Re-create the scene.
     delete scene_;
-    scene_ = new GridScene(this);
-    setScene(scene_);
+    scene_ = new GridScene(view_);
+    view_->setScene(scene_);
 
     if (component_ != 0)
     {
@@ -173,4 +170,20 @@ void ComponentPreviewBox::setComponent( const VLNV& vlnv )
 QRectF ComponentPreviewBox::itemsBoundingRect() const
 {
 	return scene_->itemsBoundingRect();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentPreviewBox::scene()
+//-----------------------------------------------------------------------------
+QGraphicsScene* ComponentPreviewBox::scene() const
+{
+    return scene_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentPreviewBox::setInteractive()
+//-----------------------------------------------------------------------------
+void ComponentPreviewBox::setInteractive(bool interactive)
+{
+    view_->setInteractive(interactive);
 }

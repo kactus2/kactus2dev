@@ -13,6 +13,8 @@
 
 #include <editors/ComponentEditor/general/generaleditor.h>
 
+#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
@@ -20,17 +22,13 @@
 //-----------------------------------------------------------------------------
 ComponentEditorGeneralItem::ComponentEditorGeneralItem( ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent)
+ComponentEditorItem(model, libHandler, component, parent),
+previewBox_(new ComponentPreviewBox(libHandler, nullptr))
 {
+    previewBox_->setInteractive(true);
+    previewBox_->setComponent(component);
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: componenteditorgeneralitem::~ComponentEditorGeneralItem()
-//-----------------------------------------------------------------------------
-ComponentEditorGeneralItem::~ComponentEditorGeneralItem()
-{
-
+    connect(previewBox_, SIGNAL(endpointsRearranged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,6 +73,23 @@ ItemEditor* ComponentEditorGeneralItem::editor()
         connectItemEditorToVendorExtensionsEditor();
 	}
 	return editor_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorgeneralitem::visualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer* ComponentEditorGeneralItem::visualizer()
+{
+	return previewBox_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorgeneralitem::refreshEditor()
+//-----------------------------------------------------------------------------
+void ComponentEditorGeneralItem::refreshEditor()
+{
+	ComponentEditorItem::refreshEditor();
+	previewBox_->updatePreview();
 }
 
 //-----------------------------------------------------------------------------

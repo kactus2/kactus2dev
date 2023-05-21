@@ -15,7 +15,6 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
-#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -38,8 +37,7 @@ ItemEditor(component, libHandler, parent),
     authorEditor_(new QLineEdit(this)),
     licenseEditor_(new QLineEdit(this)),
     descriptionEditor_(new QPlainTextEdit(this)),
-    headerEditor_(new QPlainTextEdit(this)),
-    previewBox_(new ComponentPreviewBox(libHandler, this))
+    headerEditor_(new QPlainTextEdit(this))
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(component != 0);
@@ -48,14 +46,11 @@ ItemEditor(component, libHandler, parent),
     vlnvDisplayer_->setTitle(tr("Component VLNV and location"));
 	vlnvDisplayer_->setPath(xmlPath);
 
-    previewBox_->setInteractive(true);
-    previewBox_->setComponent(component);
-    //previewBox_->setFixedWidth(280);
-    previewBox_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     setupLayout();
 
-    connect(previewBox_, SIGNAL(endpointsRearranged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+
     connect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()), Qt::UniqueConnection);
     connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
     connect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
@@ -160,8 +155,6 @@ void GeneralEditor::showEvent( QShowEvent* event )
 {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/general.html");
-
-    previewBox_->updatePreview();
 }
 
 //-----------------------------------------------------------------------------
@@ -225,9 +218,7 @@ void GeneralEditor::setupLayout()
 
     QSplitter* splitter = new QSplitter(Qt::Vertical, this);    
     splitter->addWidget(topWidget);
-    splitter->addWidget(previewBox_);
     splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 2);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(splitter);
