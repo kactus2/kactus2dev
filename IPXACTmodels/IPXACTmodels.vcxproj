@@ -311,17 +311,17 @@
     <ClCompile Include="Component\Wire.cpp" />
     <ClCompile Include="Component\WireTypeDef.cpp" />
     <ClCompile Include="Component\WriteValueConstraint.cpp" />
-    <ClCompile Include="designConfiguration\AbstractorInstance.cpp" />
-    <ClCompile Include="designConfiguration\DesignConfiguration.cpp" />
-    <ClCompile Include="designConfiguration\DesignConfigurationReader.cpp" />
-    <ClCompile Include="designConfiguration\DesignConfigurationWriter.cpp" />
-    <ClCompile Include="designConfiguration\InterconnectionConfiguration.cpp" />
-    <ClCompile Include="designConfiguration\InterfaceRef.cpp" />
-    <ClCompile Include="designConfiguration\MultipleAbstractorInstances.cpp" />
-    <ClCompile Include="designConfiguration\validators\DesignConfigurationValidator.cpp" />
-    <ClCompile Include="designConfiguration\validators\InterconnectionConfigurationValidator.cpp" />
-    <ClCompile Include="designConfiguration\validators\ViewConfigurationValidator.cpp" />
-    <ClCompile Include="designConfiguration\ViewConfiguration.cpp" />
+    <ClCompile Include="DesignConfiguration\AbstractorInstance.cpp" />
+    <ClCompile Include="DesignConfiguration\DesignConfiguration.cpp" />
+    <ClCompile Include="DesignConfiguration\DesignConfigurationReader.cpp" />
+    <ClCompile Include="DesignConfiguration\DesignConfigurationWriter.cpp" />
+    <ClCompile Include="DesignConfiguration\InterconnectionConfiguration.cpp" />
+    <ClCompile Include="DesignConfiguration\InterfaceRef.cpp" />
+    <ClCompile Include="DesignConfiguration\MultipleAbstractorInstances.cpp" />
+    <ClCompile Include="DesignConfiguration\validators\DesignConfigurationValidator.cpp" />
+    <ClCompile Include="DesignConfiguration\validators\InterconnectionConfigurationValidator.cpp" />
+    <ClCompile Include="DesignConfiguration\validators\ViewConfigurationValidator.cpp" />
+    <ClCompile Include="DesignConfiguration\ViewConfiguration.cpp" />
     <ClCompile Include="Design\ActiveInterface.cpp" />
     <ClCompile Include="Design\AdHocConnection.cpp" />
     <ClCompile Include="Design\ComponentInstance.cpp" />
@@ -388,6 +388,17 @@
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
     <ClInclude Include="Component\validators\RegisterFileValidator.h" />
     <ClInclude Include="Component\validators\SubspaceMapValidator.h" />
+    <ClInclude Include="DesignConfiguration\AbstractorInstance.h" />
+    <ClInclude Include="DesignConfiguration\DesignConfiguration.h" />
+    <ClInclude Include="DesignConfiguration\DesignConfigurationReader.h" />
+    <ClInclude Include="DesignConfiguration\DesignConfigurationWriter.h" />
+    <ClInclude Include="DesignConfiguration\InterconnectionConfiguration.h" />
+    <ClInclude Include="DesignConfiguration\InterfaceRef.h" />
+    <ClInclude Include="DesignConfiguration\MultipleAbstractorInstances.h" />
+    <ClInclude Include="DesignConfiguration\validators\DesignConfigurationValidator.h" />
+    <ClInclude Include="DesignConfiguration\validators\InterconnectionConfigurationValidator.h" />
+    <ClInclude Include="DesignConfiguration\validators\ViewConfigurationValidator.h" />
+    <ClInclude Include="DesignConfiguration\ViewConfiguration.h" />
     <ClInclude Include="utilities\BusDefinitionUtils.h" />
     <ClInclude Include="utilities\XmlUtils.h" />
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">
@@ -1234,9 +1245,6 @@
     <ClInclude Include="Component\Wire.h" />
     <ClInclude Include="Component\WireTypeDef.h" />
     <ClInclude Include="Component\WriteValueConstraint.h" />
-    <ClInclude Include="designConfiguration\validators\DesignConfigurationValidator.h" />
-    <ClInclude Include="designConfiguration\validators\InterconnectionConfigurationValidator.h" />
-    <ClInclude Include="designConfiguration\validators\ViewConfigurationValidator.h" />
     <ClInclude Include="Design\validator\AdHocConnectionValidator.h" />
     <ClInclude Include="Design\validator\ComponentInstanceValidator.h" />
     <ClInclude Include="Design\validator\DesignValidator.h" />
@@ -1364,44 +1372,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </Command>
     </CustomBuild>
-    <ClInclude Include="designConfiguration\AbstractorInstance.h" />
-    <ClInclude Include="designConfiguration\DesignConfiguration.h" />
-    <CustomBuild Include="designConfiguration\DesignConfigurationReader.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-    </CustomBuild>
-    <CustomBuild Include="designConfiguration\DesignConfigurationWriter.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-    </CustomBuild>
-    <ClInclude Include="designConfiguration\InterconnectionConfiguration.h" />
-    <ClInclude Include="designConfiguration\InterfaceRef.h" />
-    <ClInclude Include="designConfiguration\MultipleAbstractorInstances.h" />
-    <ClInclude Include="designConfiguration\ViewConfiguration.h" />
     <ClInclude Include="Design\ActiveInterface.h" />
     <ClInclude Include="Design\AdHocConnection.h" />
     <ClInclude Include="Design\ComponentInstance.h" />
