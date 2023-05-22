@@ -76,8 +76,7 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     }
     else if (toCreate == VLNV::BUSDEFINITION)
     {
-        BusDefinitionReader reader;
-        return reader.createBusDefinitionFrom(doc);
+        return BusDefinitionReader::createBusDefinitionFrom(doc);
     }
     else if (toCreate == VLNV::CATALOG)
     {
@@ -141,9 +140,8 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
 
     else if (documentType == VLNV::BUSDEFINITION)
     {
-        BusDefinitionWriter writer;
         QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
-        writer.writeBusDefinition(xmlWriter, busDef);
+        BusDefinitionWriter::writeBusDefinition(xmlWriter, busDef);
     }
     else if (documentType == VLNV::CATALOG)
     {
