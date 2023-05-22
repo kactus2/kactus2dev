@@ -79,11 +79,25 @@ public:
      */
     virtual void setupFolderPath(QString const& newFolderPath) override final;
 
+    /*!
+     *  Get the name of the currently active CPU.
+     *
+     *      @return Name of the currently active CPU.
+     */
+    QString getSelectedCpuName();
+
     //! No copying. No assignment.
     RenodeCpuEditor(const RenodeCpuEditor& other) = delete;
     RenodeCpuEditor& operator=(const RenodeCpuEditor& other) = delete;
 
 private slots:
+
+    /*!
+     *  Handle the change in CPU selection.
+     *
+     *      @param [in] newCPU  Name of the new CPU.
+     */
+    void onHandleCpuChange(QString const& newCPU);
 
     /*!
      *  Handle the changes in the CPU class.
@@ -111,12 +125,31 @@ private:
     /*!
      *  Check the starting routes for errors.
      */
-    void checkStartingInterfacesForErrores();
+    void checkStartingInterfacesForErrors();
+
+    /*!
+     *  Set up the currently active CPU container.
+     */
+    void setupActiveCpuContainer();
+
+    /*!
+     *  Set up the editors for the currently active CPU.
+     */
+    void setupEditorsForCpu();
 
     /*!
      *  Setup the items for the CPU class selector.
      */
     void setupCpuClassEditor();
+
+    /*!
+     *  Get the CPU container for the selected CPU.
+     *
+     *      @param [in] cpuName     Name of the selected CPU.
+     *
+     *      @return CPU container for the selected CPU.
+     */
+    QSharedPointer<RenodeCpuRoutesContainer> getContainerForCpu(QString const& cpuName) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -124,6 +157,9 @@ private:
 
     //! The plugin utility interface.
     IPluginUtility* utility_;
+
+    //! List of available cpu containers.
+    QVector<QSharedPointer<RenodeCpuRoutesContainer> > availableCpuContainers_;
 
     //! The selected CPU (work in progress, should be multiple cpus).
     QSharedPointer<RenodeCpuRoutesContainer> renodeCPU_;
@@ -133,6 +169,9 @@ private:
 
     //! Editor for memory.
     RenodeMemoriesEditor* memoryEditor_;
+
+    //! Selector for the currently active CPU.
+    QComboBox* cpuSelector_;
 
     //! Editor for CPU class.
     QComboBox* cpuClassCombo_;

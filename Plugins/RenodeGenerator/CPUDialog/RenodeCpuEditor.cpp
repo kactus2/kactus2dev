@@ -32,9 +32,11 @@
 RenodeCpuEditor::RenodeCpuEditor(IPluginUtility* utility, QJsonObject const& configurationObject, QWidget *parent /* = 0 */):
 CPUEditor(parent),
 utility_(utility),
+availableCpuContainers_(),
 renodeCPU_(),
 peripheralEditor_(new RenodePeripheralsEditor(this)),
 memoryEditor_(new RenodeMemoriesEditor(this)),
+cpuSelector_(new QComboBox(this)),
 cpuClassCombo_(new QComboBox(this)),
 cpuTypeEditor_(new QLineEdit(this)),
 cpuTimeProviderEditor_(new QLineEdit(this)),
@@ -45,6 +47,7 @@ configurationObject_(configurationObject)
     cpuClassCombo_->setEditable(true);
 
     QFormLayout* cpuLayout(new QFormLayout());
+    cpuLayout->addRow("CPU", cpuSelector_);
     cpuLayout->addRow("Class", cpuClassCombo_);
     cpuLayout->addRow("Architecture", cpuTypeEditor_);
     cpuLayout->addRow("Time provider", cpuTimeProviderEditor_);
@@ -97,6 +100,31 @@ void RenodeCpuEditor::setupCpuClassEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: RenodeCpuEditor::onHandleCpuChange()
+//-----------------------------------------------------------------------------
+void RenodeCpuEditor::onHandleCpuChange(QString const& newCPU)
+{
+    renodeCPU_ = getContainerForCpu(newCPU);
+    setupEditorsForCpu();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCpuEditor::getContainerForCpu()
+//-----------------------------------------------------------------------------
+QSharedPointer<RenodeCpuRoutesContainer> RenodeCpuEditor::getContainerForCpu(QString const& cpuName) const
+{
+    for (auto container : availableCpuContainers_)
+    {
+        if (container->getCpu()->name() == cpuName)
+        {
+            return container;
+        }
+    }
+
+    return QSharedPointer<RenodeCpuRoutesContainer>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: RenodeCpuEditor::onHandleClassChange()
 //-----------------------------------------------------------------------------
 void RenodeCpuEditor::onHandleClassChange(QString const& newClass)
@@ -134,30 +162,62 @@ void RenodeCpuEditor::onHandleTimeProviderChange(QString const& newTimeProvider)
 //-----------------------------------------------------------------------------
 void RenodeCpuEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView)
 {
-    QVector<QSharedPointer<RenodeCpuRoutesContainer> > cpuDetails = RenodeUtilities::getRenodeCpuRoutes(configurationObject_, library, component, activeView);
-    if (!cpuDetails.isEmpty())
+    availableCpuContainers_ = RenodeUtilities::getRenodeCpuRoutes(configurationObject_, library, component, activeView);
+    if (!availableCpuContainers_.isEmpty())
     {
-        renodeCPU_ = cpuDetails.first();
-
-        checkStartingInterfacesForErrores();
-
-        cpuClassCombo_->setCurrentText(renodeCPU_->getClassName());
-        cpuTypeEditor_->setText(renodeCPU_->getCpuType());
-        cpuTimeProviderEditor_->setText(renodeCPU_->getTimeProvider());
-
-        peripheralEditor_->setupPeripherals(renodeCPU_->getPeripherals());
-        memoryEditor_->setupMemories(renodeCPU_->getMemories());
+        setupActiveCpuContainer();
+        setupEditorsForCpu();
     }
 
+    connect(cpuSelector_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onHandleCpuChange(QString const&)), Qt::UniqueConnection);
     connect(cpuClassCombo_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onHandleClassChange(QString const&)), Qt::UniqueConnection);
     connect(cpuTypeEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onHandleTypeChange(QString const&)), Qt::UniqueConnection);
     connect(cpuTimeProviderEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onHandleTimeProviderChange(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeCpuEditor::checkStartingInterfacesForErrores()
+// Function: RenodeCpuEditor::setupActiveCpuContainer()
 //-----------------------------------------------------------------------------
-void RenodeCpuEditor::checkStartingInterfacesForErrores()
+void RenodeCpuEditor::setupActiveCpuContainer()
+{
+    QString selectedCpu = configurationObject_.value(RenodeConstants::SINGLECPU).toString("");
+    if (selectedCpu.isEmpty())
+    {
+        selectedCpu = availableCpuContainers_.first()->getCpu()->name();
+    }
+
+    for (auto cpuContainer : availableCpuContainers_)
+    {
+        cpuSelector_->addItem(cpuContainer->getCpu()->name());
+
+        if (!renodeCPU_ && cpuContainer->getCpu()->name() == selectedCpu)
+        {
+            renodeCPU_ = cpuContainer;
+        }
+    }
+
+    cpuSelector_->setCurrentText(selectedCpu);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCpuEditor::setupEditorsForCpu()
+//-----------------------------------------------------------------------------
+void RenodeCpuEditor::setupEditorsForCpu()
+{
+    checkStartingInterfacesForErrors();
+
+    cpuClassCombo_->setCurrentText(renodeCPU_->getClassName());
+    cpuTypeEditor_->setText(renodeCPU_->getCpuType());
+    cpuTimeProviderEditor_->setText(renodeCPU_->getTimeProvider());
+
+    peripheralEditor_->setupPeripherals(renodeCPU_->getPeripherals());
+    memoryEditor_->setupMemories(renodeCPU_->getMemories());
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCpuEditor::checkStartingInterfacesForErrors()
+//-----------------------------------------------------------------------------
+void RenodeCpuEditor::checkStartingInterfacesForErrors()
 {
     if (renodeCPU_->getRoutes().isEmpty())
     {
@@ -211,6 +271,14 @@ QVector<QSharedPointer<CpuRoutesContainer> > RenodeCpuEditor::getSelectedCPUs() 
     }
 
     return defaultCPUs;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeCpuEditor::getSelectedCpuName()
+//-----------------------------------------------------------------------------
+QString RenodeCpuEditor::getSelectedCpuName()
+{
+    return cpuSelector_->currentText();
 }
 
 //-----------------------------------------------------------------------------

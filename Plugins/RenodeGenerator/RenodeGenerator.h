@@ -54,14 +54,14 @@ public:
      *
      *      @param [in] topComponent            The top component in the hierarchy to generate listing for.
      *      @param [in] componentPath           Path to the component folder.
-     *      @param [in] cpuRoutes               CPU and its connected routes.
+     *      @param [in] cpuContainer            CPU and its connected routes.
      *      @param [in] createCpuFile           Flag for creating a CPU file.
      *      @param [in] createMemoryFile        Flag for creating a memory file.
      *      @param [in] createPeripheralFile    Flag for creating a peripherals file.
      */
     void generate(QSharedPointer<Component> topComponent,
         QString const& componentPath,
-        QVector<QSharedPointer<RenodeCpuRoutesContainer> > const& cpuRoutes,
+        QSharedPointer<RenodeCpuRoutesContainer> const& cpuContainer,
         bool createCpuFile,
         bool createMemoryFile,
         bool createPeripheralFile);
