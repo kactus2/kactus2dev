@@ -67,9 +67,8 @@ void tst_BusDefinition::testWriteMinimalBusDefinition()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -98,9 +97,8 @@ void tst_BusDefinition::testTopCommentsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -130,9 +128,8 @@ void tst_BusDefinition::testProcessingInstructionsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -164,9 +161,8 @@ void tst_BusDefinition::testWriteExtendingBusDefinition()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -197,9 +193,8 @@ void tst_BusDefinition::testWriteBroadcastAndDescription()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -232,9 +227,8 @@ void tst_BusDefinition::testWriteDocmentNameGroup()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -267,9 +261,8 @@ void tst_BusDefinition::testWriteMasterAndSlaveMaximum()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -304,9 +297,8 @@ void tst_BusDefinition::testWriteSystemGroupNames()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -353,9 +345,8 @@ void tst_BusDefinition::testWriteChoices()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -404,9 +395,8 @@ void tst_BusDefinition::testWriteParameters()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -457,9 +447,8 @@ void tst_BusDefinition::testWriteAssertions()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -509,9 +498,8 @@ void tst_BusDefinition::testVendorExtensions()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    BusDefinitionWriter busWriter;
-
-    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+    
+    BusDefinitionWriter::writeBusDefinition(xmlStreamWriter, busDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"

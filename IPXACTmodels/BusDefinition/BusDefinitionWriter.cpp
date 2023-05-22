@@ -6,7 +6,7 @@
 // Date: 05.08.2015
 //
 // Description:
-// Writer class for IP-XACT BusDefinition element.
+// Writer for IP-XACT BusDefinition element.
 //-----------------------------------------------------------------------------
 
 #include "BusDefinitionWriter.h"
@@ -15,60 +15,44 @@
 #include <IPXACTmodels/Component/Choice.h>
 
 //-----------------------------------------------------------------------------
-// Function: BusDefinitionWriter::BusDefinitionWriter()
-//-----------------------------------------------------------------------------
-BusDefinitionWriter::BusDefinitionWriter(): DocumentWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionWriter::~BusDefinitionWriter()
-//-----------------------------------------------------------------------------
-BusDefinitionWriter::~BusDefinitionWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeBusDefinition()
 //-----------------------------------------------------------------------------
 void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer, 
-    QSharedPointer<BusDefinition> busDefinition) const
+    QSharedPointer<BusDefinition> busDefinition)
 {
     writer.writeStartDocument();
     
-    writeTopComments(writer, busDefinition);
+    DocumentWriter::writeTopComments(writer, busDefinition);
 
-    writeXmlProcessingInstructions(writer, busDefinition);
+    DocumentWriter::writeXmlProcessingInstructions(writer, busDefinition);
 
     writer.writeStartElement(QStringLiteral("ipxact:busDefinition"));
-    writeNamespaceDeclarations(writer, busDefinition);
+    DocumentWriter::writeNamespaceDeclarations(writer, busDefinition);
 
-    writeDocumentNameGroup(writer, busDefinition);
+    DocumentWriter::writeDocumentNameGroup(writer, busDefinition);
 
-    writer.writeTextElement(QStringLiteral("ipxact:directConnection"), bool2Str(busDefinition->getDirectConnection()));
+    writer.writeTextElement(QStringLiteral("ipxact:directConnection"), Details::bool2Str(busDefinition->getDirectConnection()));
 
-    writeBroadcast(writer, busDefinition);
+    Details::writeBroadcast(writer, busDefinition);
 
-    writer.writeTextElement(QStringLiteral("ipxact:isAddressable"), bool2Str(busDefinition->getIsAddressable()));
+    writer.writeTextElement(QStringLiteral("ipxact:isAddressable"), Details::bool2Str(busDefinition->getIsAddressable()));
 
-    writeExtends(writer, busDefinition);
+    Details::writeExtends(writer, busDefinition);
 
-    writeMaximumInitiators(writer, busDefinition);
-    writeMaximumTargets(writer, busDefinition);
+    Details::writeMaximumInitiators(writer, busDefinition);
+    Details::writeMaximumTargets(writer, busDefinition);
 
-    writeSystemGroupNames(writer, busDefinition);
+    Details::writeSystemGroupNames(writer, busDefinition);
 
-    writeDescription(writer, busDefinition->getDescription());
+    Details::writeDescription(writer, busDefinition);
 
-    writeChoices(writer, busDefinition);
+    Details::writeChoices(writer, busDefinition);
 
-    writeParameters(writer, busDefinition);
+    DocumentWriter::writeParameters(writer, busDefinition);
 
-    writeAssertions(writer, busDefinition);
+    DocumentWriter::writeAssertions(writer, busDefinition);
 
-    writeVendorExtensions(writer, busDefinition);
+    DocumentWriter::writeVendorExtensions(writer, busDefinition);
 
     writer.writeEndElement(); // QStringLiteral("ipxact:busDefinition"
     writer.writeEndDocument();
@@ -77,8 +61,8 @@ void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeBroadcast()
 //-----------------------------------------------------------------------------
-void BusDefinitionWriter::writeBroadcast(QXmlStreamWriter& writer, 
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionWriter::Details::writeBroadcast(QXmlStreamWriter& writer, 
+    QSharedPointer<BusDefinition> busDefinition)
 {
     BooleanValue broadcastValue = busDefinition->getBroadcast();
     if (!broadcastValue.toString().isEmpty())
@@ -90,12 +74,12 @@ void BusDefinitionWriter::writeBroadcast(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeExtends()
 //-----------------------------------------------------------------------------
-void BusDefinitionWriter::writeExtends(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionWriter::Details::writeExtends(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition)
 {
     if (!busDefinition->getExtends().isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:extends"));
-        writeVLNVAttributes(writer, busDefinition->getExtends());
+        CommonItemsWriter::writeVLNVAttributes(writer, busDefinition->getExtends());
         writer.writeEndElement();
     }
 }
@@ -103,8 +87,8 @@ void BusDefinitionWriter::writeExtends(QXmlStreamWriter& writer, QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeMaximumInitiators()
 //-----------------------------------------------------------------------------
-void BusDefinitionWriter::writeMaximumInitiators(QXmlStreamWriter& writer,
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionWriter::Details::writeMaximumInitiators(QXmlStreamWriter& writer,
+    QSharedPointer<BusDefinition> busDefinition)
 {
     auto const& maxInitiators = busDefinition->getMaxInitiators();
 
@@ -126,8 +110,8 @@ void BusDefinitionWriter::writeMaximumInitiators(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeMaximumTargets()
 //-----------------------------------------------------------------------------
-void BusDefinitionWriter::writeMaximumTargets(QXmlStreamWriter& writer,
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionWriter::Details::writeMaximumTargets(QXmlStreamWriter& writer,
+    QSharedPointer<BusDefinition> busDefinition)
 {
     auto const& maxTargets = busDefinition->getMaxTargets();
 
@@ -149,8 +133,8 @@ void BusDefinitionWriter::writeMaximumTargets(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeSystemGroupNames()
 //-----------------------------------------------------------------------------
-void BusDefinitionWriter::writeSystemGroupNames(QXmlStreamWriter& writer,
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionWriter::Details::writeSystemGroupNames(QXmlStreamWriter& writer,
+    QSharedPointer<BusDefinition> busDefinition)
 {
     QStringList systemGroupNames = busDefinition->getSystemGroupNames();
     if (!systemGroupNames.isEmpty())
@@ -167,7 +151,8 @@ void BusDefinitionWriter::writeSystemGroupNames(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeChoices()
 //-----------------------------------------------------------------------------
-void BusDefinitionWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionWriter::Details::writeChoices(QXmlStreamWriter& writer, 
+    QSharedPointer<BusDefinition> busDefinition)
 {
     if (busDefinition->getRevision() != Document::Revision::Std14)
     {
@@ -176,9 +161,21 @@ void BusDefinitionWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusDefinitionWriter::writeDescription()
+//-----------------------------------------------------------------------------
+void BusDefinitionWriter::Details::writeDescription(QXmlStreamWriter& writer,
+    QSharedPointer<BusDefinition> busDefinition)
+{
+    if (busDefinition->getRevision() == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeDescription(writer, busDefinition->getDescription());
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::bool2Str()
 //-----------------------------------------------------------------------------
-QString BusDefinitionWriter::bool2Str(bool value) const
+QString BusDefinitionWriter::Details::bool2Str(bool value)
 {
     if (value)
     {
