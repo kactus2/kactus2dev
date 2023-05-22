@@ -16,15 +16,24 @@
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/ParameterFinder.h>
+
+#include <IPXACTmodels/Component/validators/ComponentValidator.h>
+
+#include <library/LibraryErrorModel.h>
+
 #include <QSharedPointer>
 #include <QLineEdit>
 #include <QSettings>
 #include <QPlainTextEdit>
+#include <QTableView>
 
 class Component;
 class LibraryInterface;
 class Document;
 class KactusAttributeEditor;
+
 
 //-----------------------------------------------------------------------------
 //! GeneralEditor class.
@@ -46,7 +55,7 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~GeneralEditor();
+    ~GeneralEditor() final = default;
 
     /*!
      *  Check for the validity of the edited item.
@@ -124,6 +133,27 @@ private:
 
 	//! The editor to view/edit the header of the XML-file.
 	QPlainTextEdit* headerEditor_;
+
+    //! Icon for displaying validity status.
+    QLabel* validityIcon_ = new QLabel(this);
+
+    //! Textual summary of validity status.
+    QLabel* validityStatus_ = new QLabel(this);
+
+    //! View for validity error listing.
+    QTableView* errorView_ = new QTableView(this);
+
+    //! Model for validity errors.
+    LibraryErrorModel* errorModel_ = new LibraryErrorModel(this);
+
+    //! Parameter finder for expressin parser.
+    QSharedPointer<ParameterFinder> finder_;
+
+    //! Expression parser for validator.
+    QSharedPointer<ExpressionParser> parser_;
+
+    //! Validator for checking the component compliance.
+    QSharedPointer<ComponentValidator> validator_;
 };
 
 //-----------------------------------------------------------------------------

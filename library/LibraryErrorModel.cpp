@@ -27,6 +27,7 @@ void LibraryErrorModel::addErrors(QVector<QString> const& errorList, QString con
     beginResetModel();
     errors_ += errorList;
 
+
     int errorCount = errorList.count();
     for (int i = 0; i < errorCount; i++)
     {
@@ -34,6 +35,15 @@ void LibraryErrorModel::addErrors(QVector<QString> const& errorList, QString con
     }
 
     endResetModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryErrorModel::clear()
+//-----------------------------------------------------------------------------
+void LibraryErrorModel::clear()
+{
+    errors_.clear();
+    errorSources_.clear();
 }
 
 //-----------------------------------------------------------------------------
