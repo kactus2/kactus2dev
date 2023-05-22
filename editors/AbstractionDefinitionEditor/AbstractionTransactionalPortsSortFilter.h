@@ -12,7 +12,7 @@
 #ifndef ABSTRACTIONTRANSACTIONALPORTSSORTFILTER_H
 #define ABSTRACTIONTRANSACTIONALPORTSSORTFILTER_H
 
-#include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
+#include "AbstractionDefinitionPortsSortFilter.h"
 
 #include <QSortFilterProxyModel>
 #include <QColor>

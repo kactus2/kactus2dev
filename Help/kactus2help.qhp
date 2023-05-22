@@ -27,6 +27,7 @@
           <section title="Default Applications" ref="general/defaultApplication.html"/>
         </section>
         <section title="Bus Definition" ref="definitions/busdefinition.html"/>
+        <section title="Abstraction Definition" ref="definitions/abstractiondefinition.html"/>
         <section title="Catalog" ref="definitions/catalog.html" />
         <section title="Component" ref="componenteditor/componenteditor.html">
           <section title="General" ref="componenteditor/general.html" />

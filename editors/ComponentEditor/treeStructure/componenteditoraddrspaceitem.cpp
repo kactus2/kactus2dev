@@ -129,7 +129,8 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childGraphicsChanged(int)), this, SLOT(onChildGraphicsChanged(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(addressingChanged()), this, SLOT(onAddressingChanged()), Qt::UniqueConnection);
-		
+        connect(editor_, SIGNAL(childAddressingChanged(int)), this, SLOT(onChildAddressingChanged(int)), Qt::UniqueConnection);
+
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childRemoved(int)),	this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
@@ -275,18 +276,7 @@ void ComponentEditorAddrSpaceItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpaceItem::onChildAddressingChanged(int index)
 {
-    if (graphItem_ != nullptr)
-    {
-        childItems_.at(index)->updateGraphics();
-
-        auto childBlock = childItems_.at(index).dynamicCast<ComponentEditorAddrBlockItem>();
-        if (childBlock)
-        {
-            childBlock->onAddressingChanged();
-        }
-
-        graphItem_->redoChildLayout();
-    }
+    addrSpaceVisualizer_->refresh();
 }
 
 //-----------------------------------------------------------------------------

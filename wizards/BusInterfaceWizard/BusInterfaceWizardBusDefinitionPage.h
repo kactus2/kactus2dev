@@ -15,6 +15,7 @@
 #include <editors/BusDefinitionEditor/BusDefinitionEditor.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QWizardPage>
 #include <QMap>

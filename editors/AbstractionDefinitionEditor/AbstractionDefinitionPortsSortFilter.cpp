@@ -13,8 +13,8 @@
 
 #include <common/KactusColors.h>
 
-#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
-#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
+#include "AbstractionPortsModel.h"
+#include "LogicalPortColumns.h"
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionPortsSortFilter::AbstractionDefinitionPortsSortFilter()

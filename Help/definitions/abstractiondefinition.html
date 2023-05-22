@@ -1,0 +1,253 @@
+<html>
+<head>
+    <link href="../style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <h2>Abstraction Definition</h2>
+    <p>
+    <p>
+        An abstraction definition can also be linked with a bus definition to provide additional validation
+        for bus connections. Abstraction definition defines what logical signals must be present in the bus
+        interface in order for the bus connection with such abstraction definition to be valid. A logical
+        signal can be either a wire signal or a transactional signal.
+    </p>
+
+    <p>
+        Logical signal editor contains a context menu (right mouse button) that provides following options:
+    </p>
+    <ul>
+        <li>Add master signal interface mode</li>
+        <li>Add slave signal interface mode</li>
+        <li>Add system signal interface mode</li>
+        <li>Add all unconnected system signals from the bus definition system group</li>
+        <li>Reset extended ports to reload the signals that have been extended from the extended abstraction definition </li>
+        <li>Add new logical signal (Add row)</li>
+        <li>Remove logical signal (Remove row)</li>
+        <li>Clear the selected cells</li>
+        <li>Copy the contents of the selected cells to clipboard</li>
+        <li>Paste the contents of the clipboard to the selected cells</li>
+        <li>Import a csv-file to the editor</li>
+        <li>Export the contents of the editor to a csv-file</li>
+    </ul>
+
+    <h4>Extended abstraction definition</h4>
+    <p>
+        Allows the creation of a family of interconnectable abstraction definitions. The extending abstraction
+        definition must have a bus type that extends the bus type of the extended abstraction definition. The
+        logical signals of the extended abstraction definition can be used and the following elements can be
+        edited:
+        <ul>
+            <li>Presence</li>
+            <li>Width</li>
+            <li>Default value</li>
+            <li>Driver</li>
+            <li>System group</li>
+        </ul>
+    </p>
+
+    <h3>Logical signal properties</h3>
+    <p>
+        <b>Name</b> is a mandatory unique identifier for the logical signal.
+    </p>
+
+    <p>
+        <b>Mode</b> defines for which interface mode the settings apply.
+    </p>
+    <ul>
+        <li>
+            <b>master</b> defines constraints for this signal when present in a master bus interface.
+        </li>
+        <li>
+            <b>slave</b> defines constraints for this signal when present in a slave bus interface.
+        </li>
+        <li>
+            <b>system</b> defines constraints for this signal when present in a system bus interface with a
+            matching group name.
+        </li>
+    </ul>
+
+    <p>
+        <b>Presence</b> is an optional restriction for the logical signal presence in a bus interface. It can
+        have one of the following three values:
+    </p>
+    <ul>
+        <li>
+            <b>required</b> indicates that the logical signal must appear in the connected bus interface.
+        </li>
+        <li>
+            <b>illegal</b> indicates that the logical signal must not appear in the connected bus interface.
+        </li>
+        <li>
+            <b>optional</b> does not apply any restrictions. This is the default value.
+        </li>
+    </ul>
+
+    <p>
+        <b>Qualifier</b> is an optional indicator for what kind of information the the signal carries. It can
+        have one of the following five values:
+    </p>
+    <ul>
+        <li>
+            <b>address</b> indicates that the signal carries address information.
+        </li>
+        <li>
+            <b>data</b> indicates that the signal carries data.
+        </li>
+        <li>
+            <b>empty</b> indicates that the signal may carry any information.
+        </li>
+    </ul>
+    <p>
+        <b>System group</b> helps identify the system interface the signal belongs to. System group is
+        mandatory for system mode and illegal for other modes.
+    </p>
+    <p>
+        <b>Description</b> is an optional free text for further details.
+    </p>
+
+    <h3>Wire properties</h3>
+    <p>
+        <b>Direction</b> is an optional restriction for the logical signal direction in the connected bus
+        interface. Direction can have one of the following values:
+    </p>
+    <ul>
+        <li>
+            <b>in</b>
+        </li>
+        <li>
+            <b>out</b>
+        </li>
+        <li>
+            <b>inout</b>
+        </li>
+    </ul>
+    <p>
+        <b>Width</b> is an optional definition of the number of bits in the logical signal. If not specified,
+        the number of bits in the connected physical port is used.
+    </p>
+    <p>
+        <b>Default value</b> is an optional value that is applied when the logical signal is not connected in
+        a connected bus interface.
+    </p>
+    <p>
+        <b>Driver</b> is an optional setting for defining what kind of a driver the logical signal requires in
+        a complete design. The possible values are the following:
+    </p>
+    <ul>
+        <li>
+            <b>any</b> indicates that any logical signal or value is valid for driving the signal. This is the
+            default value.
+        </li>
+        <li>
+            <b>clock</b> indicates that a repeating waveform is required.
+        </li>
+        <li>
+            <b>singleshot</b> indicates that a non-repeating waveform is required.
+        </li>
+        <li>
+            <b>none</b> indicates that no driver is required.
+        </li>
+    </ul>
+    <p>
+        Wire ports have additional values for <b>Qualifier</b>:
+    </p>
+    <ul>
+        <li>
+            <b>address</b> indicates that the signal carries address information.
+        </li>
+        <li>
+            <b>data</b> indicates that the signal carries data.
+        </li>
+        <li>
+            <b>clock</b> indicates that the signal is a repeating clock signal for the bus interface.
+        </li>
+        <li>
+            <b>reset</b> indicates that the signal is a reset signal for the bus interface and is used to set
+            the interface into a know valid state.
+        </li>
+    </ul>
+
+    <h3>Transactional properties</h3>
+    <p>
+        <b>Initiative</b> optional definition of the access type. Initiative can have any of the folowing
+        values:
+    </p>
+    <ul>
+        <li>
+            <b>requires</b>
+        </li>
+        <li>
+            <b>provides</b>
+        </li>
+        <li>
+            <b>requires/provides</b>
+        </li>
+    </ul>
+    <p>
+        <b>Kind</b> specifies the type of the transactional port. It can be one of the following values, though
+        tlm_port should be used for TLM1 notation, while others whould be used for TLM2:
+    </p>
+    <ul>
+        <li>
+            <b>tlm_port</b>
+        </li>
+        <li>
+            <b>tlm_socket</b>
+        </li>
+        <li>
+            <b>simple_socket</b>
+        </li>
+        <li>
+            <b>multi_socket</b>
+        </li>
+        <li>
+            <b>custom</b> name
+        </li>
+    </ul>
+    <p>
+        <b>Bus width</b> specifies the data width in bits.
+    </p>
+    <p>
+        <b>Protocol type</b> characterizes the communication protocol. Type can be one of these values:
+    </p>
+    <ul>
+        <li>
+            <b>tlm</b>
+        </li>
+        <li>
+            <b>custom</b>
+        </li>
+    </ul>
+    <p>
+        Protocol can contain a <b>payload</b> specifying the way information is transported. Payload has the
+        following sub elements:
+    </p>
+    <ul>
+        <li>
+            <b>Name</b>, specifying the payload's name.
+        </li>
+        <li>
+            <b>Type</b> mandatory specification of typing. Can have either of the two values:
+            <ul>
+                <li>
+                    generic
+                </li>
+                <li>
+                    specific
+                </li>
+            </ul>
+        </li>
+        <li>
+            <b>Extension</b> determines an extension for the payload.
+        </li>
+    </ul>
+
+    <h3>Extended abstraction definition</h3>
+    <p>
+        <b>Initiative</b> optional definition of the access type. Initiative can have any of the folowing
+        values:
+    </p>
+
+    </p>
+</body>
+</html>

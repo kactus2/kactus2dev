@@ -14,8 +14,8 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <editors/BusDefinitionEditor/AbstractionPortsView.h>
-#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
+#include "AbstractionPortsView.h"
+#include "LogicalPortColumns.h"
 
 #include <QWidget>
 #include <QObject>

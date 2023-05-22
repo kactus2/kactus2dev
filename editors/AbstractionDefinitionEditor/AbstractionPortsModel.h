@@ -24,7 +24,7 @@
 #include <QSharedPointer>
 #include <QString>
 
-#include <editors/BusDefinitionEditor/AbstractionDefinitionSignalRow.h>
+#include "AbstractionDefinitionSignalRow.h"
 
 class BusDefinition;
 class LibraryInterface;

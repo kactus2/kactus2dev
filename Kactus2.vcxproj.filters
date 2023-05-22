@@ -929,9 +929,6 @@
     <Filter Include="Header Files\editors\ComponentEditor\fileSet\interfaces">
       <UniqueIdentifier>{87070864-35d7-43b4-b521-35c12ad9742a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\BusDefinitionEditor\interfaces">
-      <UniqueIdentifier>{3cebef82-5883-4778-b1e8-75e74187f053}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\editors\BusDefinitionEditor\interfaces">
       <UniqueIdentifier>{a7c8e980-018f-4596-aad8-996bf453851a}</UniqueIdentifier>
     </Filter>
@@ -988,6 +985,12 @@
     </Filter>
     <Filter Include="Header Files\common\views\ExpandingTreeView">
       <UniqueIdentifier>{6b22f01c-62dd-440c-b783-a6595960ebb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\AbstractionDefinitionEditor">
+      <UniqueIdentifier>{afe1bfda-9c24-4fe6-8ddf-a6d6deae40c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\AbstractionDefinitionEditor">
+      <UniqueIdentifier>{ab39fec5-dbe0-4925-a046-20a4922a8a01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2107,9 +2110,6 @@
     <ClCompile Include="mainwindow\NewPages\NewBusDefinitionPage.cpp">
       <Filter>Source Files\mainwindow\NewPages</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\absdefgroup.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\busdefgroup.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -2307,9 +2307,6 @@
     </ClCompile>
     <ClCompile Include="common\graphicsItems\GraphicsColumnAddCommand.cpp">
       <Filter>Source Files\common\graphicsItems</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionPortsSortFilter.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\ports\PortWireTypeEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
@@ -2797,18 +2794,6 @@
     <ClCompile Include="editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
       <Filter>Source Files\editors\MemoryDesigner</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsView.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsDelegate.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsDelegate.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="editors\BusDefinitionEditor\SystemGroupListEditor.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -3004,12 +2989,6 @@
     <ClCompile Include="common\widgets\tagEditor\TagSelector.cpp">
       <Filter>Source Files\common\widgets\tagEditor</Filter>
     </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsModel.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="PythonAPI\PythonInterpreter.cpp">
       <Filter>Source Files\PythonAPI</Filter>
     </ClCompile>
@@ -3021,15 +3000,6 @@
     </ClCompile>
     <ClCompile Include="PythonAPI\StdInputListener.cpp">
       <Filter>Source Files\PythonAPI</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionPortsEditor.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.cpp">
-      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="PythonAPI\extensions\IOCatcher.cpp">
       <Filter>Source Files\PythonAPI\extensions</Filter>
@@ -3166,20 +3136,56 @@
     <ClCompile Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.cpp">
       <Filter>Source Files\editors\HWDesign\AdhocEditor</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\DocumentGenerator\DocumentationWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Plugins\common\CpuRoutesContainer.cpp">
       <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
     <ClCompile Include="Plugins\common\SingleCpuRoutesContainer.cpp">
       <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\DocumentGenerator\DocumentationWriter.cpp">
+      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\DocumentGenerator\MarkdownWriter.cpp">
+      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="kactusGenerators\DocumentGenerator\HtmlWriter.cpp">
+      <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionEditor.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionPortsSortFilter.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionSignalRow.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionPortsDelegate.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionPortsEditor.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionPortsModel.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionPortsView.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionTransactionalPortsDelegate.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionTransactionalPortsSortFilter.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionWirePortsDelegate.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionWirePortsSortFilter.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\absdefgroup.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4028,12 +4034,6 @@
     <QtMoc Include="editors\ComponentEditor\common\ExpressionEditor.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\ExpressionDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </QtMoc>
@@ -4229,9 +4229,6 @@
     <QtMoc Include="mainwindow\NewPages\NewBusDefinitionPage.h">
       <Filter>Header Files\mainwindow\NewPages</Filter>
     </QtMoc>
-    <QtMoc Include="editors\BusDefinitionEditor\absdefgroup.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </QtMoc>
     <QtMoc Include="editors\BusDefinitionEditor\busdefgroup.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </QtMoc>
@@ -4405,9 +4402,6 @@
     </QtMoc>
     <CustomBuild Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsColumns.h">
       <Filter>Header Files\common\dialogs\LibrarySettingsDialog</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusDefinitionEditor\AbstractionDefinitionPortsSortFilter.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </CustomBuild>
     <QtMoc Include="editors\ComponentEditor\ports\PortWireTypeEditor.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
@@ -4673,18 +4667,6 @@
     <CustomBuild Include="editors\HWDesign\undoCommands\PhysicalPortDeleteCommand.h">
       <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </CustomBuild>
-    <QtMoc Include="editors\BusDefinitionEditor\AbstractionPortsView.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\BusDefinitionEditor\AbstractionWirePortsDelegate.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\BusDefinitionEditor\AbstractionPortsDelegate.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsDelegate.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </QtMoc>
     <QtMoc Include="editors\BusDefinitionEditor\SystemGroupListEditor.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </QtMoc>
@@ -4844,9 +4826,6 @@
     <QtMoc Include="common\widgets\tagEditor\TagSelector.h">
       <Filter>Header Files\common\widgets\tagEditor</Filter>
     </QtMoc>
-    <QtMoc Include="editors\BusDefinitionEditor\AbstractionPortsModel.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </QtMoc>
     <QtMoc Include="PythonAPI\ChannelRelay.h">
       <Filter>Header Files\PythonAPI</Filter>
     </QtMoc>
@@ -4855,9 +4834,6 @@
     </QtMoc>
     <QtMoc Include="PythonAPI\StdInputListener.h">
       <Filter>Header Files\PythonAPI</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\BusDefinitionEditor\AbstractionPortsEditor.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </QtMoc>
     <CustomBuild Include="PythonAPI\WriteChannel.h">
       <Filter>Header Files\PythonAPI</Filter>
@@ -5569,15 +5545,6 @@
     <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortColumns.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
-    <ClInclude Include="editors\BusDefinitionEditor\AbstractionDefinitionSignalRow.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\BusDefinitionEditor\AbstractionWirePortsSortFilter.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="editors\BusDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
-      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
-    </ClInclude>
     <ClInclude Include="PythonAPI\extensions\IOCatcher.h">
       <Filter>Header Files\PythonAPI\extensions</Filter>
     </ClInclude>
@@ -5617,20 +5584,35 @@
     <ClInclude Include="editors\HWDesign\AdhocEditor\AdHocVisibilityPolicy.h">
       <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
     </ClInclude>
-    <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentationWriter.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionPortsSortFilter.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </ClInclude>
-    <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionSignalRow.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </ClInclude>
-    <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionTransactionalPortsSortFilter.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionWirePortsSortFilter.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </ClInclude>
     <ClInclude Include="Plugins\common\CpuRoutesContainer.h">
       <Filter>Header Files\Plugins\common</Filter>
     </ClInclude>
     <ClInclude Include="Plugins\common\SingleCpuRoutesContainer.h">
       <Filter>Header Files\Plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\AbstractionDefinitionEditor\LogicalPortColumns.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\MarkdownWriter.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\HtmlWriter.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="kactusGenerators\DocumentGenerator\DocumentationWriter.h">
+      <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -5674,6 +5656,36 @@
     </QtMoc>
     <QtMoc Include="editors\HWDesign\AdhocEditor\AdHocVisibilityEditor.h">
       <Filter>Header Files\editors\HWDesign\AdhocEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\referenceCounter\ReferenceCounter.h">
+      <Filter>Header Files\editors\ComponentEditor\referenceCounter</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\absdefgroup.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionEditor.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionPortsDelegate.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionPortsEditor.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionPortsModel.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionPortsView.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionTransactionalPortsDelegate.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionWirePortsDelegate.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

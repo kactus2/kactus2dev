@@ -507,16 +507,11 @@ void CatalogFileModel::onOpenItem(QModelIndex const& index)
     }
     else if (type == VLNV::BUSDEFINITION)
     {
-        emit openBus(fileVLNV, VLNV());
+        emit openBus(fileVLNV);
     }
     else if (type == VLNV::ABSTRACTIONDEFINITION)
     {
-        QSharedPointer<AbstractionDefinition const> abstraction = 
-            library_->getModelReadOnly(fileVLNV).dynamicCast<AbstractionDefinition const>();
-        if (abstraction)
-        {
-            emit openBus(abstraction->getBusType(), fileVLNV);
-        }
+        emit openAbsDef(fileVLNV);
     }
     else if (type == VLNV::COMPONENT)
     {

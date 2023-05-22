@@ -13,7 +13,6 @@
 
 #include "BusInterfaceWizard.h"
 
-#include <editors/BusDefinitionEditor/absdefgroup.h>
 #include <editors/BusDefinitionEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <KactusAPI/include/ExpressionParser.h>
@@ -54,7 +53,7 @@ QWizardPage(parent),
     busIf_(busIf),
     absDefVLNV_(absDefVLNV),
     physicalPorts_(physicalPorts),
-    editor_(this, handler_, QSharedPointer<BusDefinition>(0), QSharedPointer<AbstractionDefinition>(0), true),
+    editor_(this, handler_, QSharedPointer<BusDefinition>(0)),
     portNamesPolicy_(namingPolicy),
     portMappings_(),
     hasChanged_(false),
@@ -130,7 +129,6 @@ void BusInterfaceWizardBusDefinitionEditorPage::initializePage()
         mappingMode_ = NO_GENERATION;
     }
 
-    editor_.setAbsDef(absDef);   
     editor_.setBusDef(handler_->getModel(busIf_->getBusType()).dynamicCast<BusDefinition>());
     editor_.setProtection(!newAbsDef);   
 }

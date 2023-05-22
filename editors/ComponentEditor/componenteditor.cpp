@@ -177,8 +177,8 @@ parameterReferenceWindow_()
 		this, SLOT(onNavigationTreeSelection(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
 		this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-	connect(&navigationModel_, SIGNAL(openBus(const VLNV&, const VLNV&)),
-		this, SIGNAL(openBus(const VLNV&, const VLNV&)), Qt::UniqueConnection);
+	connect(&navigationModel_, SIGNAL(openBus(const VLNV&)),
+		this, SIGNAL(openBus(const VLNV&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(openComDefinition(const VLNV&)),
 		this, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),

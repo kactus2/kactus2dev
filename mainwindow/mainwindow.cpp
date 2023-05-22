@@ -50,6 +50,7 @@
 #include <editors/SystemDesign/SystemDesignDiagram.h>
 #include <editors/MemoryDesigner/MemoryDesignDocument.h>
 
+#include <editors/AbstractionDefinitionEditor/AbstractionDefinitionEditor.h>
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <editors/BusDefinitionEditor/BusDefinitionEditor.h>
 #include <editors/ComDefinitionEditor/ComDefinitionEditor.h>
@@ -801,8 +802,10 @@ void MainWindow::setupAndConnectLibraryHandler()
         this, SLOT(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(openSystemDesign(const VLNV&, QString const&)),
         this, SLOT(openSystemDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(libraryHandler_, SIGNAL(openBus(const VLNV&, const VLNV&, bool)),
-        this, SLOT(openBus(const VLNV&, const VLNV&, bool)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(openBus(const VLNV&)),
+        this, SLOT(openBus(const VLNV&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(openAbsDef(const VLNV&)),
+        this, SLOT(openAbsDef(const VLNV&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(openComDefinition(const VLNV&)),
         this, SLOT(openComDefinition(const VLNV&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(openApiDefinition(const VLNV&)),
@@ -2176,9 +2179,9 @@ void MainWindow::createBus(VLNV const& vlnv, QString const& directory)
     if (success)
     {
         // Open the bus editor.
-        openBus(busVLNV, absVLNV, false);
+        openBus(busVLNV);
 
-        unlockNewlyCreatedDocument(absVLNV);
+        unlockNewlyCreatedDocument(busVLNV);
     }
     else
     {
@@ -2189,7 +2192,7 @@ void MainWindow::createBus(VLNV const& vlnv, QString const& directory)
 //-----------------------------------------------------------------------------
 // Function: mainwindow::createAbsDef()
 //-----------------------------------------------------------------------------
-void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory, bool disableBusDef )
+void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory )
 {
     Q_ASSERT(busDefVLNV.isValid());
     Q_ASSERT(!directory.isEmpty());
@@ -2236,7 +2239,7 @@ void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory,
     }
 
     // Open the bus editor.
-    openBus(busDefVLNV, absVLNV, disableBusDef);
+    openAbsDef(absVLNV);
 
     unlockNewlyCreatedDocument(absVLNV);
 }
@@ -2293,9 +2296,9 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
 //-----------------------------------------------------------------------------
 // Function: mainwindow::openBus()
 //-----------------------------------------------------------------------------
-void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool disableBusDef)
+void MainWindow::openBus(const VLNV& busDefVLNV)
 {
-    if (isOpen(absDefVLNV) || isOpen(busDefVLNV) || !busDefVLNV.isValid())
+    if (isOpen(busDefVLNV) || !busDefVLNV.isValid())
     {
         return;
     }
@@ -2305,9 +2308,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
     {
         TabDocument* editor = dynamic_cast<TabDocument*>(designTabs_->widget(i));
 
-        if (editor &&
-            ((absDefVLNV.isValid() && editor->getDocumentVLNV() == absDefVLNV) ||
-            editor->getDocumentVLNV() == busDefVLNV))
+        if (editor && editor->getDocumentVLNV() == busDefVLNV)
         {
             designTabs_->setCurrentIndex(i);
             return;
@@ -2316,7 +2317,6 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 
     // Editor for given vlnv was not yet open so create one for it
     QSharedPointer<BusDefinition> busDef;
-    QSharedPointer<AbstractionDefinition> absDef;
 
     if (libraryHandler_->contains(busDefVLNV) &&
         libraryHandler_->getDocumentType(busDefVLNV) == VLNV::BUSDEFINITION)
@@ -2328,6 +2328,36 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
         emit errorMessage(tr("Bus definition %1 was not found in the library").arg(busDefVLNV.toString()));
         return;
     }
+
+    BusDefinitionEditor* editor = new BusDefinitionEditor(this, libraryHandler_, busDef);
+
+    designTabs_->addAndOpenDocument(editor);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::openAbsDef()
+//-----------------------------------------------------------------------------
+void MainWindow::openAbsDef(const VLNV& absDefVLNV)
+{
+    if (isOpen(absDefVLNV) || !absDefVLNV.isValid())
+    {
+        return;
+    }
+
+    // Check if the abstraction editor is already open and activate it.
+    for (int i = 0; i < designTabs_->count(); i++)
+    {
+        TabDocument* editor = dynamic_cast<TabDocument*>(designTabs_->widget(i));
+
+        if (editor && editor->getDocumentVLNV() == absDefVLNV)
+        {
+            designTabs_->setCurrentIndex(i);
+            return;
+        }
+    }
+
+    QSharedPointer<AbstractionDefinition> absDef;
 
     if (absDefVLNV.isValid())
     {
@@ -2344,7 +2374,8 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
         }
     }
 
-    BusDefinitionEditor* editor = new BusDefinitionEditor(this, libraryHandler_, busDef, absDef, absDef && disableBusDef);
+
+    auto editor = new AbstractionDefinitionEditor(this, libraryHandler_, absDef);
 
     designTabs_->addAndOpenDocument(editor);
 }
@@ -2377,8 +2408,11 @@ void MainWindow::openCatalog(const VLNV& vlnv)
     connect(editor, SIGNAL(openCatalog(const VLNV&)),
         this, SLOT(openCatalog(const VLNV&)), Qt::UniqueConnection);
 
-    connect(editor, SIGNAL(openBus(const VLNV&, VLNV const&)),
-        this, SLOT(openBus(const VLNV&, VLNV const&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(openBus(const VLNV&)),
+        this, SLOT(openBus(const VLNV&)), Qt::UniqueConnection);
+
+    connect(editor, SIGNAL(openAbsDef(const VLNV&)),
+        this, SLOT(openAbsDef(const VLNV&)), Qt::UniqueConnection);
 
     connect(editor, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
@@ -2431,8 +2465,8 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
         this, SLOT(openDesign(const VLNV&, const QString&)));
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
-        this, SLOT(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
+    connect(designWidget, SIGNAL(openBus(VLNV const&)),
+        this, SLOT(openBus(VLNV const&)), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(componentSelected(ComponentItem*)),
         this, SLOT(onComponentSelected(ComponentItem*)), Qt::UniqueConnection);
@@ -2722,8 +2756,10 @@ void MainWindow::openComponent(VLNV const& vlnv)
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SLOT(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(editor, SIGNAL(openBus(const VLNV&, const VLNV&)),
-        this, SLOT(openBus(const VLNV&, const VLNV&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(openBus(const VLNV&)),
+        this, SLOT(openBus(const VLNV&)), Qt::UniqueConnection);
+    connect(editor, SIGNAL(openAbsDef(const VLNV&)),
+        this, SLOT(openAbsDef(const VLNV&)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openComDefinition(const VLNV&)),
         this, SLOT(openComDefinition(const VLNV&)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openSWDesign(const VLNV&, const QString&)),

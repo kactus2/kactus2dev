@@ -109,7 +109,9 @@ handler_(handler)
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(itemAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(itemRemoved(int)), Qt::UniqueConnection);
-        
+    connect(model_, SIGNAL(childAddressingChanged(int)),
+        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+
     connect(model_, SIGNAL(graphicsChanged(int)), this, SIGNAL(childGraphicsChanged(int)), Qt::UniqueConnection);
     connect(model_, SIGNAL(itemAdded(int)), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(itemRemoved(int)), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);

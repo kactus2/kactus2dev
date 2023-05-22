@@ -107,6 +107,8 @@ signals:
 
     void addressingChanged();
 
+    void childAddressingChanged(int index);
+
 public slots:
 
     /*!

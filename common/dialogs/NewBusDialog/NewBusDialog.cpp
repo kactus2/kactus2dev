@@ -21,7 +21,6 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <editors/BusDefinitionEditor/absdefgroup.h>
 #include <editors/BusDefinitionEditor/busdefgroup.h>
 
 #include <QVBoxLayout>

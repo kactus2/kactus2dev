@@ -84,6 +84,8 @@ signals:
 
     void addressingChanged();
 
+    void childAddressingChanged(int index);
+
     void childGraphicsChanged(int index);
 
 protected:

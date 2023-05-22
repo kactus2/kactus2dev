@@ -68,8 +68,8 @@ parent_(parent)
 		model, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
 		model, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-	connect(this, SIGNAL(openBus(const VLNV&, const VLNV&)),
-		model, SIGNAL(openBus(const VLNV&, const VLNV&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(openBus(const VLNV&)),
+		model, SIGNAL(openBus(const VLNV&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(openComDefinition(const VLNV&)),
 		model, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
 }

@@ -303,7 +303,7 @@ signals:
     void openDesign(const VLNV& vlnv, const QString& viewName);
 
     //! Signaled when the bus with the given vlnv should be opened for editing.
-    void openBus(VLNV const& vlnv, VLNV const& absDefVLNV, bool disableBusDef);
+    void openBus(VLNV const& vlnv);
 
     //! Signaled when the draw mode has changed.
     void modeChanged(DrawMode mode);

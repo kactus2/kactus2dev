@@ -81,6 +81,8 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, blockInterfac
 
     connect(&localMemMapEditor_, SIGNAL(addressingChanged()),
         this, SIGNAL(addressingChanged()), Qt::UniqueConnection);
+    connect(&localMemMapEditor_, SIGNAL(childAddressingChanged(int)),
+        this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection); 
 
     connect(&generalEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)),
         &localMemMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
