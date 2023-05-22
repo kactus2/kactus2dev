@@ -21,6 +21,7 @@
 class BusDefinition;
 class ExpressionParser;
 class ParameterValidator;
+class ChoiceValidator;
 class LibraryInterface;
 
 //-----------------------------------------------------------------------------
@@ -85,6 +86,9 @@ private:
 
     //! The validator for parameters.
     QSharedPointer<ParameterValidator> parameterValidator_;
+
+    //! The validator for choices.
+    QSharedPointer<ChoiceValidator> choiceValidator_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

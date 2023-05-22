@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
@@ -26,7 +27,8 @@ BusDefinitionValidator::BusDefinitionValidator(LibraryInterface* library,
     QSharedPointer<ExpressionParser> expressionParser):
 library_(library),
 expressionParser_(expressionParser),
-parameterValidator_(new ParameterValidator(expressionParser, QSharedPointer<QList<QSharedPointer<Choice> > >()))
+parameterValidator_(new ParameterValidator(expressionParser, QSharedPointer<QList<QSharedPointer<Choice> > >())),
+choiceValidator_(new ChoiceValidator(expressionParser))
 {
 
 }
@@ -68,13 +70,21 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
 		return false;
 	}
 
- 	foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
+ 	for (auto const& currentParameter : *busDefinition->getParameters())
 	{
         if (parameterValidator_->validate(currentParameter) == false)
 		{
 			return false;
 		}
 	}
+
+    for (auto const& currentChoice : *busDefinition->getChoices())
+    {
+        if (!choiceValidator_->validate(currentChoice))
+        {
+            return false;
+        }
+    }
 
 	return true;
 }
@@ -107,24 +117,29 @@ void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
             busDefinition->getExtends().toString(), context));
     }
 
-    bool mastersValid = false;
-    expressionParser_->parseExpression(busDefinition->getMaxMasters(), &mastersValid);
-	if (mastersValid == false)
+    bool initiatorsValid = false;
+    expressionParser_->parseExpression(busDefinition->getMaxInitiators(), &initiatorsValid);
+	if (initiatorsValid == false)
 	{
-		errors.append(QObject::tr("MaxMasters '%1' is not a valid expression within %2.").arg(
-            busDefinition->getMaxMasters(), context));
+		errors.append(QObject::tr("MaxInitiators '%1' is not a valid expression within %2.").arg(
+            busDefinition->getMaxInitiators(), context));
 	}
     
-    bool slavesValid = false;
-	expressionParser_->parseExpression(busDefinition->getMaxSlaves(), &slavesValid);
-    if (slavesValid == false)
+    bool targetsValid = false;
+	expressionParser_->parseExpression(busDefinition->getMaxTargets(), &targetsValid);
+    if (targetsValid == false)
 	{
-		errors.append(QObject::tr("MaxSlaves '%1' is not a valid expression within %2.").arg(
-            busDefinition->getMaxSlaves(), context));
+		errors.append(QObject::tr("MaxTargets '%1' is not a valid expression within %2.").arg(
+            busDefinition->getMaxTargets(), context));
 	}
 
-    foreach (QSharedPointer<Parameter> currentParameter, *busDefinition->getParameters())
+    for (auto const& currentParameter : *busDefinition->getParameters())
     {
         parameterValidator_->findErrorsIn(errors, currentParameter, context);
+    }
+
+    for (auto const& currentChoice : *busDefinition->getChoices())
+    {
+        choiceValidator_->findErrorsIn(errors, currentChoice, context);
     }
 }
