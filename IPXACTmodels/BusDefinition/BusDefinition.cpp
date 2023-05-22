@@ -169,7 +169,7 @@ void BusDefinition::setExtends(VLNV const& extends)
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::setMaxMasters()
 //-----------------------------------------------------------------------------
-void BusDefinition::setMaxMasters(QString const& maxMasters)
+void BusDefinition::setMaxMasters(std::string const& maxMasters)
 {
 	setMaxInitiators(maxMasters);
 }
@@ -177,7 +177,7 @@ void BusDefinition::setMaxMasters(QString const& maxMasters)
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::getMaxMasters()
 //-----------------------------------------------------------------------------
-QString BusDefinition::getMaxMasters() const
+std::string BusDefinition::getMaxMasters() const
 {
 	return getMaxInitiators();
 }
@@ -185,7 +185,7 @@ QString BusDefinition::getMaxMasters() const
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::setMaxSlaves()
 //-----------------------------------------------------------------------------
-void BusDefinition::setMaxSlaves(QString const& maxSlaves)
+void BusDefinition::setMaxSlaves(std::string const& maxSlaves)
 {
 	setMaxTargets(maxSlaves);
 }
@@ -193,7 +193,7 @@ void BusDefinition::setMaxSlaves(QString const& maxSlaves)
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::getMaxSlaves()
 //-----------------------------------------------------------------------------
-QString BusDefinition::getMaxSlaves() const
+std::string BusDefinition::getMaxSlaves() const
 {
 	return getMaxTargets();
 }
@@ -201,7 +201,7 @@ QString BusDefinition::getMaxSlaves() const
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::setMaxInitiators()
 //-----------------------------------------------------------------------------
-void BusDefinition::setMaxInitiators(QString const& maxInitiators)
+void BusDefinition::setMaxInitiators(std::string const& maxInitiators)
 {
 	maxMasters_ = maxInitiators;
 }
@@ -209,7 +209,7 @@ void BusDefinition::setMaxInitiators(QString const& maxInitiators)
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::getMaxInitiators()
 //-----------------------------------------------------------------------------
-QString BusDefinition::getMaxInitiators() const
+std::string BusDefinition::getMaxInitiators() const
 {
 	return maxMasters_;
 }
@@ -217,7 +217,7 @@ QString BusDefinition::getMaxInitiators() const
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::setMaxTargets()
 //-----------------------------------------------------------------------------
-void BusDefinition::setMaxTargets(QString const& maxTargets)
+void BusDefinition::setMaxTargets(std::string const& maxTargets)
 {
 	maxSlaves_ = maxTargets;
 }
@@ -225,7 +225,7 @@ void BusDefinition::setMaxTargets(QString const& maxTargets)
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::getMaxTargets()
 //-----------------------------------------------------------------------------
-QString BusDefinition::getMaxTargets() const
+std::string BusDefinition::getMaxTargets() const
 {
 	return maxSlaves_;
 }

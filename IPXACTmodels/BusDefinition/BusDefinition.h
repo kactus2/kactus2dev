@@ -119,49 +119,49 @@ public:
 	 *
 	 *      @param [in] maxMasters The maximum number of masters
 	 */
-    void setMaxMasters(QString const& maxMasters);
+    void setMaxMasters(std::string const& maxMasters);
 
     /*! Get the maximum number of masters on this bus
 	 *
 	 *      @return unsigned int containing maximum number of masters
 	 */
-	QString getMaxMasters() const;
+	std::string getMaxMasters() const;
 
 	/*! Set the maximum number of slaves on this bus
 	 *
 	 *      @param [in] The maximum number of slaves
 	 */
-	void setMaxSlaves(QString const& maxSlaves);
+	void setMaxSlaves(std::string const& maxSlaves);
 
 	/*! Get the maximum number of slaves on this bus
 	 *
 	 *      @return The maximum number of slaves
 	 */
-	QString getMaxSlaves() const;
+	std::string getMaxSlaves() const;
 
 	/*! Set the maximum number of initiators on this bus
 	 *
 	 *      @param [in] maxInitiators The maximum number of initiators
 	 */
-    void setMaxInitiators(QString const& maxInitiators);
+    void setMaxInitiators(std::string const& maxInitiators);
 
     /*! Get the maximum number of initiators on this bus
 	 *
 	 *      @return unsigned int containing maximum number of initiators
 	 */
-	QString getMaxInitiators() const;
+	std::string getMaxInitiators() const;
 
 	/*! Set the maximum number of targets on this bus
 	 *
 	 *      @param [in] The maximum number of targets
 	 */
-	void setMaxTargets(QString const& maxTargets);
+	void setMaxTargets(std::string const& maxTargets);
 
 	/*! Get the maximum number of targets on this bus
 	 *
 	 *      @return The maximum number of targets
 	 */
-	QString getMaxTargets() const;
+	std::string getMaxTargets() const;
 
 	/*! Set the systemGroupNames.
 	 *
@@ -213,10 +213,10 @@ private:
 	bool isAddressable_ = true;
 
 	//! Maximum number of masters allowed on this bus.
-	QString maxMasters_;
+	std::string maxMasters_;
 
 	//! Maximum number of slaves allowed on this bus.
-	QString maxSlaves_;
+	std::string maxSlaves_;
 
 	//! The choices of the bus definition
 	QSharedPointer<QList<QSharedPointer<Choice> > > choices_ = 

@@ -92,18 +92,18 @@ void BusDefinitionWriter::Details::writeMaximumInitiators(QXmlStreamWriter& writ
 {
     auto const& maxInitiators = busDefinition->getMaxInitiators();
 
-    if (maxInitiators.isEmpty())
+    if (maxInitiators.empty())
     {
         return;
     }
 
     if (busDefinition->getRevision() == Document::Revision::Std14)
     {
-        writer.writeTextElement(QStringLiteral("ipxact:maxMasters"), maxInitiators);
+        writer.writeTextElement(QStringLiteral("ipxact:maxMasters"), QString::fromStdString(maxInitiators));
     }
     else if (busDefinition->getRevision() == Document::Revision::Std22)
     {
-        writer.writeTextElement(QStringLiteral("ipxact:maxInitiators"), maxInitiators);
+        writer.writeTextElement(QStringLiteral("ipxact:maxInitiators"), QString::fromStdString(maxInitiators));
     }
 }
 
@@ -115,18 +115,18 @@ void BusDefinitionWriter::Details::writeMaximumTargets(QXmlStreamWriter& writer,
 {
     auto const& maxTargets = busDefinition->getMaxTargets();
 
-    if (maxTargets.isEmpty())
+    if (maxTargets.empty())
     {
         return;
     }
 
     if (busDefinition->getRevision() == Document::Revision::Std14)
     {
-        writer.writeTextElement(QStringLiteral("ipxact:maxSlaves"), maxTargets);
+        writer.writeTextElement(QStringLiteral("ipxact:maxSlaves"), QString::fromStdString(maxTargets));
     }
     else if (busDefinition->getRevision() == Document::Revision::Std22)
     {
-        writer.writeTextElement(QStringLiteral("ipxact:maxTargets"), maxTargets);
+        writer.writeTextElement(QStringLiteral("ipxact:maxTargets"), QString::fromStdString(maxTargets));
     }
 }
 

@@ -117,7 +117,7 @@ void BusDefinitionReader::Details::parseMaximumInitiators(QDomNode const& busNod
     QDomNode maximumInitiatorsNode = busNode.firstChildElement(QStringLiteral("ipxact:maxMasters"));
     if (!maximumInitiatorsNode.isNull())
     {
-        busDefinition->setMaxMasters(maximumInitiatorsNode.firstChild().nodeValue());
+        busDefinition->setMaxMasters(maximumInitiatorsNode.firstChild().nodeValue().toStdString());
     }
 }
 
@@ -130,7 +130,7 @@ void BusDefinitionReader::Details::parseMaximumTargets(QDomNode const& busNode,
     QDomNode maximumTargetsNode = busNode.firstChildElement(QStringLiteral("ipxact:maxSlaves"));
     if (!maximumTargetsNode.isNull())
     {
-        busDefinition->setMaxSlaves(maximumTargetsNode.firstChild().nodeValue());
+        busDefinition->setMaxSlaves(maximumTargetsNode.firstChild().nodeValue().toStdString());
     }
 }
 

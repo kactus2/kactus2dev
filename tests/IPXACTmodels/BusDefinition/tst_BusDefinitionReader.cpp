@@ -273,8 +273,8 @@ void tst_BusDefinitionReader::testReadMaximumMasterAndMaximumSlave()
 
         QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
-    QCOMPARE(testBus->getMaxMasters(), QString("1"));
-    QCOMPARE(testBus->getMaxSlaves(), QString("8-1"));
+    QCOMPARE(testBus->getMaxMasters(), std::string("1"));
+    QCOMPARE(testBus->getMaxSlaves(), std::string("8-1"));
 }
 
 //-----------------------------------------------------------------------------

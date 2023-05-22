@@ -93,8 +93,8 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
     isBroadcast_.setChecked(busDef_->getBroadcast().toBool());
 	isAddressable_.setChecked(busDef_->getIsAddressable());
 
-    maxMastersEditor_.setText(busDef_->getMaxMasters());
-	maxSlavesEditor_.setText(busDef_->getMaxSlaves());
+    maxMastersEditor_.setText(QString::fromStdString(busDef_->getMaxMasters()));
+    maxSlavesEditor_.setText(QString::fromStdString(busDef_->getMaxSlaves()));
 
     systemGroupEditor_.setItems(busDef_);
 
@@ -133,7 +133,7 @@ void BusDefGroup::onIsAddressableChanged(bool checked)
 //-----------------------------------------------------------------------------
 void BusDefGroup::onMastersChanged()
 {
-    busDef_->setMaxMasters(maxMastersEditor_.text());
+    busDef_->setMaxMasters(maxMastersEditor_.text().toStdString());
 	emit contentChanged();
 }
 
@@ -142,7 +142,7 @@ void BusDefGroup::onMastersChanged()
 //-----------------------------------------------------------------------------
 void BusDefGroup::onSlavesChanged()
 {
-	busDef_->setMaxSlaves(maxSlavesEditor_.text());
+	busDef_->setMaxSlaves(maxSlavesEditor_.text().toStdString());
 	emit contentChanged();
 }
 

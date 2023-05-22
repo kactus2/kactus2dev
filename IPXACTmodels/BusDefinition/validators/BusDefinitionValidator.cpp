@@ -57,14 +57,14 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
     }
     
     bool validMasters = false;
-    expressionParser_->parseExpression(busDefinition->getMaxMasters(), &validMasters);
+    expressionParser_->parseExpression(QString::fromStdString(busDefinition->getMaxMasters()), &validMasters);
     if (validMasters == false)
 	{
 		return false;
 	}
     
     bool validSlaves = false;
-    expressionParser_->parseExpression(busDefinition->getMaxSlaves(), &validSlaves);
+    expressionParser_->parseExpression(QString::fromStdString(busDefinition->getMaxSlaves()), &validSlaves);
     if (validSlaves == false)
 	{
 		return false;
@@ -118,19 +118,21 @@ void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
     }
 
     bool initiatorsValid = false;
-    expressionParser_->parseExpression(busDefinition->getMaxInitiators(), &initiatorsValid);
+    expressionParser_->parseExpression(QString::fromStdString(busDefinition->getMaxInitiators()),
+        &initiatorsValid);
+
 	if (initiatorsValid == false)
 	{
 		errors.append(QObject::tr("MaxInitiators '%1' is not a valid expression within %2.").arg(
-            busDefinition->getMaxInitiators(), context));
+            QString::fromStdString(busDefinition->getMaxInitiators()), context));
 	}
     
     bool targetsValid = false;
-	expressionParser_->parseExpression(busDefinition->getMaxTargets(), &targetsValid);
+    expressionParser_->parseExpression(QString::fromStdString(busDefinition->getMaxTargets()), &targetsValid);
     if (targetsValid == false)
 	{
 		errors.append(QObject::tr("MaxTargets '%1' is not a valid expression within %2.").arg(
-            busDefinition->getMaxTargets(), context));
+            QString::fromStdString(busDefinition->getMaxTargets()), context));
 	}
 
     for (auto const& currentParameter : *busDefinition->getParameters())
