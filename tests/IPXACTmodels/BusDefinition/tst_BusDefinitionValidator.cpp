@@ -31,6 +31,9 @@ private slots:
 	void maxFail();
     void maxPass();
     void testEmptyMaximumMastersAndSlaves();
+    
+    void testFailChoices();
+    void testValidChoices();
 };
 
 //-----------------------------------------------------------------------------
@@ -162,6 +165,66 @@ void tst_BusDefinitionValidator::testEmptyMaximumMastersAndSlaves()
 
     QVERIFY(validator.validate(busDefinition));
     QCOMPARE(errorList.size(), 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusDefinitionValidator::testFailChoices()
+//-----------------------------------------------------------------------------
+void tst_BusDefinitionValidator::testFailChoices()
+{
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
+    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendor", "library", "name", "version"));
+
+    // Invalid enumeration.
+    QSharedPointer<Choice> testChoice(new Choice());
+    testChoice->setName("testChoice");
+
+    QSharedPointer<Enumeration> testEnumeration(new Enumeration());
+    testEnumeration->setValue("32#|!|!||||");
+
+    testChoice->enumerations()->append(testEnumeration);
+
+    busDefinition->getChoices()->append(testChoice);
+
+    // No enumerations, no name.
+    QSharedPointer<Choice> testChoice2(new Choice());
+
+    busDefinition->getChoices()->append(testChoice2);
+
+    BusDefinitionValidator validator(nullptr, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, busDefinition);
+
+    QCOMPARE(errorList.size(), 3);
+    QVERIFY(!validator.validate(busDefinition));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusDefinitionValidator::testValidChoices()
+//-----------------------------------------------------------------------------
+void tst_BusDefinitionValidator::testValidChoices()
+{
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
+    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendor", "library", "name", "version"));
+    
+    QSharedPointer<Choice> testChoice(new Choice());
+    testChoice->setName("TestChoice");
+
+    QSharedPointer<Enumeration> testEnumeration(new Enumeration());
+    testEnumeration->setValue("32");
+
+    testChoice->enumerations()->append(testEnumeration);
+    
+    busDefinition->getChoices()->append(testChoice);
+
+    BusDefinitionValidator validator(nullptr, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, busDefinition);
+
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(busDefinition));
 }
 
 QTEST_APPLESS_MAIN(tst_BusDefinitionValidator)
