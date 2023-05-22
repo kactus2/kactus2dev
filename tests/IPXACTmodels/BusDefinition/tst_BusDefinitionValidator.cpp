@@ -14,7 +14,7 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 class tst_BusDefinitionValidator : public QObject
 {

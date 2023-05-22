@@ -19,18 +19,23 @@ CONFIG += c++11 testcase console
 
 linux-g++ | linux-g++-64 | linux-g++-32 {
  LIBS += -L../../../executable \
-     -lIPXACTmodels
+     -lIPXACTmodelsd
+ LIBS += -L../../../executable \
+     -lKactusAPId
 
 }
 win64 | win32 {
  LIBS += -L../../../x64/executable \
      -lIPXACTmodelsd
+ LIBS += -L../../../x64/executable \
+     -lKactusAPId
 }
 
 DESTDIR = ./release
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../
+INCLUDEPATH += ../../../KactusAPI/include
 
 DEPENDPATH += .
 DEPENDPATH += ../../../
