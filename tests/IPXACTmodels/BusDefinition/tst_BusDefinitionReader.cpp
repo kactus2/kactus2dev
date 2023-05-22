@@ -76,8 +76,7 @@ void tst_BusDefinitionReader::testReadVLNVAndMandatoryFields()
             "<ipxact:isAddressable>false</ipxact:isAddressable>"
         "</ipxact:busDefinition>"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
     
     VLNV busVLNV = testBus->getVlnv();
     QCOMPARE(busVLNV.getVendor(), QString("TUT"));
@@ -109,8 +108,7 @@ void tst_BusDefinitionReader::testReadDocumentNameGroupAndMandatoryFields()
             "<ipxact:isAddressable>false</ipxact:isAddressable>"
         "</ipxact:busDefinition>"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
     VLNV busVLNV = testBus->getVlnv();
     QCOMPARE(busVLNV.getVendor(), QString("TUT"));
     QCOMPARE(busVLNV.getLibrary(), QString("TestLibrary"));
@@ -149,8 +147,7 @@ void tst_BusDefinitionReader::testReadTopComments()
         "</ipxact:busDefinition>"
         "<!--Comment not to include-->"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getTopComments().size(), 2);
     QCOMPARE(testBus->getTopComments().first(), QString("Commented line 1"));   
@@ -181,8 +178,7 @@ void tst_BusDefinitionReader::testProcessingInstructionsAreParsed()
         "</ipxact:busDefinition>"
         "<!--Comment not to include-->"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getXmlProcessingInstructions().count(), 1);
 
@@ -214,8 +210,7 @@ void tst_BusDefinitionReader::testReadExtends()
             "<ipxact:extends vendor=\"TUT\" library=\"TestLibrary\" name=\"extended\" version=\"1.0\"/>"
         "</ipxact:busDefinition>"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     VLNV extendedBus = testBus->getExtends();
     QCOMPARE(extendedBus.getVendor(), QString("TUT"));
@@ -247,8 +242,7 @@ void tst_BusDefinitionReader::testReadBroadcastAndDescription()
             "<ipxact:description>Bus description</ipxact:description>"
         "</ipxact:busDefinition>"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getBroadcast().toBool(), true);
     QCOMPARE(testBus->getDescription(), QString("Bus description"));
@@ -277,8 +271,7 @@ void tst_BusDefinitionReader::testReadMaximumMasterAndMaximumSlave()
             "<ipxact:maxSlaves>8-1</ipxact:maxSlaves>"
         "</ipxact:busDefinition>"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getMaxMasters(), QString("1"));
     QCOMPARE(testBus->getMaxSlaves(), QString("8-1"));
@@ -310,8 +303,7 @@ void tst_BusDefinitionReader::testReadSystemGroupNames()
             "</ipxact:systemGroupNames>"
         "</ipxact:busDefinition>"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getSystemGroupNames().count(), 3);
     QCOMPARE(testBus->getSystemGroupNames().join(','), QString("system1,system2,system3"));
@@ -348,8 +340,7 @@ void tst_BusDefinitionReader::testReadChoices()
         "</ipxact:busDefinition>"
     ));
     
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getChoices()->size(), 2);
     QCOMPARE(testBus->getChoices()->at(0)->name(), QString("bitsize"));
@@ -387,8 +378,7 @@ void tst_BusDefinitionReader::testReadParameters()
             "</ipxact:parameters>"
         "</ipxact:busDefinition>"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getParameters()->count(), 2);
     
@@ -426,8 +416,7 @@ void tst_BusDefinitionReader::testReadAssertions()
             "</ipxact:assertions>"
         "</ipxact:busDefinition>"));
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getAssertions()->count(), 1);
 
@@ -465,8 +454,7 @@ void tst_BusDefinitionReader::testReadVendorExtension()
 
     QDomElement parameterElement = document.firstChildElement();
 
-    BusDefinitionReader busReader;
-    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+        QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
 
     QCOMPARE(testBus->getVendorExtensions()->count(), 2);
     QCOMPARE(testBus->getVersion(), QString("3.0.0"));

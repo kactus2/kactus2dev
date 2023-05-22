@@ -6,70 +6,52 @@
 // Date: 07.08.2015
 //
 // Description:
-// XML reader class for IP-XACT Parameter element.
+// XML reader for IP-XACT Bus definition element.
 //-----------------------------------------------------------------------------
 
 #include "BusDefinitionReader.h"
 
-#include "BusDefinition.h"
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::BusDefinitionReader()
-//-----------------------------------------------------------------------------
-BusDefinitionReader::BusDefinitionReader(): DocumentReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::~BusDefinitionReader()
-//-----------------------------------------------------------------------------
-BusDefinitionReader::~BusDefinitionReader()
-{
-
-}
-
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::createBusDefinitionFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomNode const& document) const
+QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomNode const& document)
 {
     QDomNode busNode = document.firstChildElement();
-    Document::Revision docRevision = getXMLDocumentRevision(busNode);
+    Document::Revision docRevision = DocumentReader::getXMLDocumentRevision(busNode);
     
-    VLNV vlnv = createVLNVFrom(busNode, VLNV::BUSDEFINITION);
+    VLNV vlnv = CommonItemsReader::createVLNVFrom(busNode, VLNV::BUSDEFINITION);
 
     QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, docRevision));
 
-    parseTopComments(document, busDefinition);
+    DocumentReader::parseTopComments(document, busDefinition);
 
-    parseXMLProcessingInstructions(document, busDefinition);
+    DocumentReader::parseXMLProcessingInstructions(document, busDefinition);
 
-    parseNamespaceDeclarations(busNode, busDefinition);
+    DocumentReader::parseNamespaceDeclarations(busNode, busDefinition);
 
-    parseDocumentNameGroup(busNode, busDefinition);
+    DocumentReader::parseDocumentNameGroup(busNode, busDefinition);
 
-    parseDirectConnection(busNode, busDefinition);
-
-    parseBroadcast(busNode, busDefinition);
-
-    parseIsAddressable(busNode, busDefinition);
-
-    parseExtends(busNode, busDefinition);
-
-    parseMaximumInitiators(busNode, busDefinition);
+    Details::parseDirectConnection(busNode, busDefinition);
     
-    parseMaximumTargets(busNode, busDefinition);
+    Details::parseBroadcast(busNode, busDefinition);
+    
+    Details::parseIsAddressable(busNode, busDefinition);
+    
+    Details::parseExtends(busNode, busDefinition);
+    
+    Details::parseMaximumInitiators(busNode, busDefinition);
+    
+    Details::parseMaximumTargets(busNode, busDefinition);
+    
+    Details::parseSystemGroupNames(busNode, busDefinition);
+    
+    Details::parseChoices(busNode, busDefinition);
+    
+    DocumentReader::parseParameters(busNode, busDefinition);
 
-    parseSystemGroupNames(busNode, busDefinition);
+    DocumentReader::parseAssertions(busNode, busDefinition);
 
-    parseChoices(busNode, busDefinition);
-
-    parseParameters(busNode, busDefinition);
-
-    parseAssertions(busNode, busDefinition);
-
-    parseKactusAndVendorExtensions(busNode, busDefinition);
+    DocumentReader::parseKactusAndVendorExtensions(busNode, busDefinition);
 
     return busDefinition;
 }
@@ -77,18 +59,18 @@ QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomN
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::parseDirectConnection()
 //-----------------------------------------------------------------------------
-void BusDefinitionReader::parseDirectConnection(QDomNode const& busNode,
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionReader::Details::parseDirectConnection(QDomNode const& busNode,
+    QSharedPointer<BusDefinition> busDefinition)
 {
     QString directConnection = busNode.firstChildElement(QStringLiteral("ipxact:directConnection")).firstChild().nodeValue();
     busDefinition->setDirectConnection(directConnection == QLatin1String("true"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefinitionReader::parseBroadcast()
+// Function: parseBroadcast()
 //-----------------------------------------------------------------------------
-void BusDefinitionReader::parseBroadcast(QDomNode const& busNode,
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionReader::Details::parseBroadcast(QDomNode const& busNode,
+    QSharedPointer<BusDefinition> busDefinition)
 {
     QDomNode broadcastNode = busNode.firstChildElement(QStringLiteral("ipxact:broadcast"));
     if (!broadcastNode.isNull())
@@ -100,8 +82,7 @@ void BusDefinitionReader::parseBroadcast(QDomNode const& busNode,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::parseIsAddressable()
 //-----------------------------------------------------------------------------
-void BusDefinitionReader::parseIsAddressable(QDomNode const& busNode, 
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionReader::Details::parseIsAddressable(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition)
 {
     QString addressable = busNode.firstChildElement(QStringLiteral("ipxact:isAddressable")).firstChild().nodeValue();
     busDefinition->setIsAddressable(addressable == QLatin1String("true"));
@@ -110,7 +91,7 @@ void BusDefinitionReader::parseIsAddressable(QDomNode const& busNode,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::parseExtends()
 //-----------------------------------------------------------------------------
-void BusDefinitionReader::parseExtends(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionReader::Details::parseExtends(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition)
 {
     QDomNode extendsNode = busNode.firstChildElement(QStringLiteral("ipxact:extends"));
     if (!extendsNode.isNull())
@@ -130,8 +111,8 @@ void BusDefinitionReader::parseExtends(QDomNode const& busNode, QSharedPointer<B
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::parseMaximumInitiators()
 //-----------------------------------------------------------------------------
-void BusDefinitionReader::parseMaximumInitiators(QDomNode const& busNode,
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionReader::Details::parseMaximumInitiators(QDomNode const& busNode,
+    QSharedPointer<BusDefinition> busDefinition)
 {
     QDomNode maximumInitiatorsNode = busNode.firstChildElement(QStringLiteral("ipxact:maxMasters"));
     if (!maximumInitiatorsNode.isNull())
@@ -143,8 +124,8 @@ void BusDefinitionReader::parseMaximumInitiators(QDomNode const& busNode,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::parseMaximumTargets()
 //-----------------------------------------------------------------------------
-void BusDefinitionReader::parseMaximumTargets(QDomNode const& busNode,
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionReader::Details::parseMaximumTargets(QDomNode const& busNode,
+    QSharedPointer<BusDefinition> busDefinition)
 {
     QDomNode maximumTargetsNode = busNode.firstChildElement(QStringLiteral("ipxact:maxSlaves"));
     if (!maximumTargetsNode.isNull())
@@ -156,8 +137,8 @@ void BusDefinitionReader::parseMaximumTargets(QDomNode const& busNode,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::parseSystemGroupNames()
 //-----------------------------------------------------------------------------
-void BusDefinitionReader::parseSystemGroupNames(QDomNode const& busNode,
-    QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionReader::Details::parseSystemGroupNames(QDomNode const& busNode,
+    QSharedPointer<BusDefinition> busDefinition)
 {
     QDomNodeList systemNodes = busNode.firstChildElement(QStringLiteral("ipxact:systemGroupNames")).childNodes();
     
@@ -174,7 +155,7 @@ void BusDefinitionReader::parseSystemGroupNames(QDomNode const& busNode,
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionReader::parseChoices()
 //-----------------------------------------------------------------------------
-void BusDefinitionReader::parseChoices(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const
+void BusDefinitionReader::Details::parseChoices(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition)
 {
     if (busDefinition->getRevision() == Document::Revision::Std14 ||
         busDefinition->getRevision() == Document::Revision::Unknown)

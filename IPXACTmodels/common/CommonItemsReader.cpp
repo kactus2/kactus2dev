@@ -166,7 +166,7 @@ QString CommonItemsReader::parseIsPresent(QDomElement const& isPresentElement) c
 //-----------------------------------------------------------------------------
 // Function: CommonItemsReader::parseChoices()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<Choice> > > CommonItemsReader::parseChoices(QDomNode const& itemNode) const
+QSharedPointer<QList<QSharedPointer<Choice> > > CommonItemsReader::parseChoices(QDomNode const& itemNode)
 {
     QDomElement choicesElement = itemNode.firstChildElement(QStringLiteral("ipxact:choices"));
     
