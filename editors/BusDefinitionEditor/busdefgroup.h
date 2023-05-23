@@ -84,12 +84,12 @@ private slots:
 	/*!
      *  Handler for changes in max masters line edit.
      */
-	void onMastersChanged();
+	void onInitiatorsChanged();
 
 	/*!
      *  Handler for changes in max slaves line edit.
      */
-	void onSlavesChanged();
+	void onTargetsChanged();
 
     /*!
      *  Handler for changes in system group names.
@@ -166,11 +166,11 @@ private:
 	//! Check box to set the is addressable option.
 	QCheckBox isAddressable_;
 
-	//! Editor to set the maximum number of masters.
-	QLineEdit maxMastersEditor_;
+	//! Editor to set the maximum number of initiators.
+	QLineEdit maxInitiatorsEditor_;
 
-	//! Editor to set the maximum number of slaves.
-	QLineEdit maxSlavesEditor_;
+	//! Editor to set the maximum number of targets.
+	QLineEdit maxTargetsEditor_;
 
     //! Editor for system group names.
     SystemGroupListEditor systemGroupEditor_;

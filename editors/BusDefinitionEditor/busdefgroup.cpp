@@ -36,8 +36,8 @@ busDef_(),
 directConnection_(tr("Allow non-mirrored connections"), this),
 isBroadcast_(tr("Support broadcast"), this),
 isAddressable_(tr("Addressable bus"), this),
-maxMastersEditor_(this),
-maxSlavesEditor_(this),
+maxInitiatorsEditor_(this),
+maxTargetsEditor_(this),
 systemGroupEditor_(libraryHandler, this),
 descriptionEditor_(this),
 vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
@@ -49,17 +49,17 @@ extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
 
     QRegularExpression numberExpression(QString("[0-9]*"));
     QRegularExpressionValidator* numberValidator = new QRegularExpressionValidator(numberExpression, this);
-    maxMastersEditor_.setValidator(numberValidator);
-    maxSlavesEditor_.setValidator(numberValidator);
+    maxInitiatorsEditor_.setValidator(numberValidator);
+    maxTargetsEditor_.setValidator(numberValidator);
 
 #if QT_VERSION > QT_VERSION_CHECK(5,3,0)
-    maxMastersEditor_.setPlaceholderText(tr("unbound"));
-    maxSlavesEditor_.setPlaceholderText(tr("unbound"));
+    maxInitiatorsEditor_.setPlaceholderText(tr("unbound"));
+    maxTargetsEditor_.setPlaceholderText(tr("unbound"));
 #endif
     setupLayout();
 
-	connect(&maxMastersEditor_, SIGNAL(editingFinished()), this, SLOT(onMastersChanged()), Qt::UniqueConnection);
-	connect(&maxSlavesEditor_, SIGNAL(editingFinished()),	this, SLOT(onSlavesChanged()), Qt::UniqueConnection);
+	connect(&maxInitiatorsEditor_, SIGNAL(editingFinished()), this, SLOT(onInitiatorsChanged()), Qt::UniqueConnection);
+	connect(&maxTargetsEditor_, SIGNAL(editingFinished()),	this, SLOT(onTargetsChanged()), Qt::UniqueConnection);
 	 
 	connect(&directConnection_, SIGNAL(toggled(bool)),
         this, SLOT(onDirectConnectionChanged(bool)), Qt::UniqueConnection);
@@ -93,8 +93,8 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
     isBroadcast_.setChecked(busDef_->getBroadcast().toBool());
 	isAddressable_.setChecked(busDef_->getIsAddressable());
 
-    maxMastersEditor_.setText(QString::fromStdString(busDef_->getMaxMasters()));
-    maxSlavesEditor_.setText(QString::fromStdString(busDef_->getMaxSlaves()));
+    maxInitiatorsEditor_.setText(QString::fromStdString(busDef_->getMaxInitiators()));
+    maxTargetsEditor_.setText(QString::fromStdString(busDef_->getMaxTargets()));
 
     systemGroupEditor_.setItems(busDef_);
 
@@ -129,20 +129,20 @@ void BusDefGroup::onIsAddressableChanged(bool checked)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefGroup::onMastersChanged()
+// Function: BusDefGroup::onInitiatorsChanged()
 //-----------------------------------------------------------------------------
-void BusDefGroup::onMastersChanged()
+void BusDefGroup::onInitiatorsChanged()
 {
-    busDef_->setMaxMasters(maxMastersEditor_.text().toStdString());
+    busDef_->setMaxInitiators(maxInitiatorsEditor_.text().toStdString());
 	emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefGroup::onSlavesChanged()
+// Function: BusDefGroup::onTargetsChanged()
 //-----------------------------------------------------------------------------
-void BusDefGroup::onSlavesChanged()
+void BusDefGroup::onTargetsChanged()
 {
-	busDef_->setMaxSlaves(maxSlavesEditor_.text().toStdString());
+	busDef_->setMaxTargets(maxTargetsEditor_.text().toStdString());
 	emit contentChanged();
 }
 
@@ -221,9 +221,9 @@ void BusDefGroup::removeSystemGroupsFromExtendedDefinition()
 //-----------------------------------------------------------------------------
 void BusDefGroup::setupLayout()
 {
-    QFormLayout* masterSlaveLayout = new QFormLayout();
-    masterSlaveLayout->addRow(tr("Max masters on bus:"), &maxMastersEditor_);
-    masterSlaveLayout->addRow(tr("Max slaves on bus:"), &maxSlavesEditor_);
+    QFormLayout* initiatorTargetLayout = new QFormLayout();
+    initiatorTargetLayout->addRow(tr("Max initiators on bus:"), &maxInitiatorsEditor_);
+    initiatorTargetLayout->addRow(tr("Max targets on bus:"), &maxTargetsEditor_);
 
     QGroupBox* selectionGroup = new QGroupBox(tr("Constraints"), this);
 
@@ -231,7 +231,7 @@ void BusDefGroup::setupLayout()
     selectionsLayout->addWidget(&directConnection_);
     selectionsLayout->addWidget(&isBroadcast_);
     selectionsLayout->addWidget(&isAddressable_);
-    selectionsLayout->addLayout(masterSlaveLayout);
+    selectionsLayout->addLayout(initiatorTargetLayout);
     selectionsLayout->addStretch();    
 
     QGroupBox* descriptionGroup = new QGroupBox(tr("Description"), this);
@@ -255,8 +255,8 @@ void BusDefGroup::setupLayout()
     topLayout->setColumnStretch(1, 25);
     topLayout->setColumnStretch(2, 50);
 
-    maxMastersEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
-    maxSlavesEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+    maxInitiatorsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+    maxTargetsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
 }
 
 //-----------------------------------------------------------------------------
