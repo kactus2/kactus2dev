@@ -359,7 +359,10 @@ signals:
     void openSystemDesign(VLNV const& vlnv, QString const& viewName);
 
     //! Signal that user wants to open specified bus for editing
-    void openBus(VLNV const& busDefVLNV, VLNV const& absDefVLNV, bool disableBusDef);
+    void openBus(VLNV const& busDefVLNV);
+
+    //! Signal that user wants to open specified abstraction for editing
+    void openAbsDef(VLNV const& absDefVLNV);
 
     //! Signal that user wants to open specified component for editing
     void openComponent(VLNV const& vlnv);

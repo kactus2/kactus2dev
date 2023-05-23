@@ -310,18 +310,7 @@ void LibraryWidget::onCreateAbsDef(VLNV const& busDefVLNV)
     QFileInfo busDefInfo(library_->getPath(busDefVLNV));
     QString directory = busDefInfo.absolutePath();
 
-    QList<VLNV> absDefVLNVs;
-    library_->getHierarchyModel()->getChildren(absDefVLNVs, busDefVLNV);
-
-    // if theres no previous abstraction definition for given bus def
-    if (absDefVLNVs.isEmpty())
-    {
-        emit createAbsDef(busDefVLNV, directory, false);
-    }
-    else // the abstraction definition can not be identified by the bus definition.
-    {
-        emit createAbsDef(busDefVLNV, directory, true);
-    }
+    emit createAbsDef(busDefVLNV, directory);
 }
 
 //-----------------------------------------------------------------------------

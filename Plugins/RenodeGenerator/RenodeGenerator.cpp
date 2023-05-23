@@ -33,17 +33,15 @@ generatedFiles_()
 // Function: RenodeGenerator::generate()
 //-----------------------------------------------------------------------------
 void RenodeGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QVector<QSharedPointer<RenodeCpuRoutesContainer>> const& cpuRoutes, bool createCpuFile, bool createMemoryFile, bool createPeripheralFile)
+    QSharedPointer<RenodeCpuRoutesContainer> const& cpuContainer, bool createCpuFile, bool createMemoryFile,
+    bool createPeripheralFile)
 {
     QStringList cpuNames;
-    for (auto cpuMasterRoute : cpuRoutes)
+    if (cpuContainer->getRoutes().empty() == false)
     {
-        if (cpuMasterRoute->getRoutes().empty() == false)
+        if (createCpuFile || createMemoryFile || createPeripheralFile)
         {
-            if (createCpuFile || createMemoryFile || createPeripheralFile)
-            {
-                writeFile(topComponent, componentPath, cpuMasterRoute, cpuNames, createCpuFile, createMemoryFile, createPeripheralFile);
-            }
+            writeFile(topComponent, componentPath, cpuContainer, cpuNames, createCpuFile, createMemoryFile, createPeripheralFile);
         }
     }
 }

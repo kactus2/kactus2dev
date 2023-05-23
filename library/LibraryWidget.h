@@ -92,7 +92,7 @@ signals:
     void errorMessage(const QString& message);
 
     //! Signal that user wants to create a new abstraction definition for given bus definition.
-    void createAbsDef(VLNV const& busDefVLNV, const QString& directory, bool disableBusDef);
+    void createAbsDef(VLNV const& busDefVLNV, const QString& directory);
 
     //! Signal that user wants to create a new bus with given vlnv
     void createBus(VLNV const& vlnv, const QString& directory);

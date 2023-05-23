@@ -48,7 +48,7 @@ model_(new LinuxDeviceTreeCPUModel(this))
 // Function: LinuxDeviceTreeCPUEditor::setCPUDetails()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeCPUEditor::setupCPUDetails(
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuDetails)
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > cpuDetails)
 {
     model_->setupCPUDetails(cpuDetails);
     view_->resizeColumnsToContents();
@@ -57,7 +57,7 @@ void LinuxDeviceTreeCPUEditor::setupCPUDetails(
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeCPUEditor::getAcceptedContainers()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > LinuxDeviceTreeCPUEditor::getAcceptedContainers()
+QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > LinuxDeviceTreeCPUEditor::getAcceptedContainers()
 const
 {
     return model_->getCPUDetails();

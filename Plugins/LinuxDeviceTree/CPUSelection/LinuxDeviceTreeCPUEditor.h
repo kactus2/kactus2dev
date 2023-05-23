@@ -46,14 +46,14 @@ public:
      *
      *      @param [in] cpuDetails  The selected CPU containers.
      */
-    void setupCPUDetails(QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuDetails);
+    void setupCPUDetails(QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > cpuDetails);
 
     /*!
      *  Get the selected CPU containers.
      *
      *      @return The selected CPU containers.
      */
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > getAcceptedContainers() const;
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > getAcceptedContainers() const;
 
     //! No copying. No assignment.
     LinuxDeviceTreeCPUEditor(const LinuxDeviceTreeCPUEditor& other) = delete;

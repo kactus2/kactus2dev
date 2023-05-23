@@ -29,6 +29,7 @@
 
 #include <wizards/BusInterfaceWizard/BusInterfaceWizard.h>
 
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/common/VLNV.h>

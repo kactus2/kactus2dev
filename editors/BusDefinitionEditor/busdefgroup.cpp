@@ -33,7 +33,7 @@ BusDefGroup::BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent):
 QWidget(parent),
 library_(libraryHandler),
 busDef_(),
-directConnection_(tr("Allow non-mirrored connections"), this),
+directConnection_(tr("Allow direct connections"), this),
 isBroadcast_(tr("Support broadcast"), this),
 isAddressable_(tr("Addressable bus"), this),
 maxInitiatorsEditor_(this),
@@ -247,13 +247,14 @@ void BusDefGroup::setupLayout()
     QGridLayout* topLayout = new QGridLayout(this);
     topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
     topLayout->addWidget(extendEditor_, 0, 1, 1, 1);
-    topLayout->addWidget(selectionGroup, 1, 0, 1, 1);
+    topLayout->addWidget(descriptionGroup, 1, 0, 1, 1);
     topLayout->addWidget(systemGroupBox, 1, 1, 1, 1);
-    topLayout->addWidget(descriptionGroup, 0, 2, 2, 2);
+    topLayout->addWidget(selectionGroup, 2, 0, 1, 1);
 
-    topLayout->setColumnStretch(0, 25);
-    topLayout->setColumnStretch(1, 25);
-    topLayout->setColumnStretch(2, 50);
+    topLayout->setColumnStretch(0, 1);
+    topLayout->setColumnStretch(1, 1);
+
+    topLayout->setRowStretch(1, 1);
 
     maxInitiatorsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
     maxTargetsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
@@ -268,17 +269,13 @@ void BusDefGroup::setupExtendedBus()
     if (extendedBus)
     {
         extendBusDefinition(extendedBus);
-
-#if QT_VERSION > QT_VERSION_CHECK(5,3,0)
         descriptionEditor_.setPlaceholderText(extendedBus->getDescription());
-#endif
+
         return;
     }
 
     removeBusExtension();
-#if QT_VERSION > QT_VERSION_CHECK(5,3,0)
-    descriptionEditor_.setPlaceholderText(QString(""));
-# endif
+    descriptionEditor_.setPlaceholderText(QString());
 }
 
 //-----------------------------------------------------------------------------

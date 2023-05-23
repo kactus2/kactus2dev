@@ -29,6 +29,18 @@
     <Filter Include="Header Files\CPUSelection">
       <UniqueIdentifier>{a930d07a-9747-4365-b0bb-92a27fa37e68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{84b9bd44-af87-4e2f-b917-3d961b8dacfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MemoryDesigner">
+      <UniqueIdentifier>{7d92c563-ff5c-43cd-83b1-8ec7b22f4f86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{948137d2-3be7-4849-9559-f86838773504}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MemoryDesigner">
+      <UniqueIdentifier>{2e1b6bae-757c-42b4-b456-b7304d129396}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="LinuxDeviceTreePlugin.cpp">
@@ -37,37 +49,7 @@
     <ClCompile Include="LinuxDeviceTreeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LinuxDeviceTreeDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUDelegate.cpp">
@@ -79,15 +61,51 @@
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUModel.cpp">
       <Filter>Source Files\CPUSelection</Filter>
     </ClCompile>
-    
-    
-    
     <ClCompile Include="CPUSelection\LinuxDeviceTreeCPUDetails.cpp">
       <Filter>Source Files\CPUSelection</Filter>
     </ClCompile>
-    
-    
-    
+    <ClCompile Include="CPUSelection\LinuxDeviceTreeCpuRoutesContainer.cpp">
+      <Filter>Source Files\CPUSelection</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\ConnectivityGraphUtilities.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CpuRoutesContainer.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityInterface.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\MemoryDesigner\MemoryItem.cpp">
+      <Filter>Source Files\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LinuxDeviceTreeGenerator_global.h">
@@ -96,41 +114,53 @@
     <ClInclude Include="LinuxDeviceTreeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CPUSelection\LinuxDeviceTreeCPUColumns.h">
       <Filter>Header Files\CPUSelection</Filter>
     </ClInclude>
     <ClInclude Include="CPUSelection\LinuxDeviceTreeCPUDetails.h">
       <Filter>Header Files\CPUSelection</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUSelection\LinuxDeviceTreeCpuRoutesContainer.h">
+      <Filter>Header Files\CPUSelection</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ConnectivityGraphUtilities.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CpuRoutesContainer.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\SingleCpuRoutesContainer.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraphFactory.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityInterface.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MasterSlavePathSearch.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryConnectionAddressCalculator.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryDesignerConstants.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\MemoryDesigner\MemoryItem.h">
+      <Filter>Header Files\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

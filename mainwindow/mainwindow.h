@@ -129,12 +129,11 @@ public slots:
      *  Open bus to be edited.
 	 *
 	 *      @param [in] busDefVLNV      Identifies the bus definition.
-	 *      @param [in] absDefVLNV      Identifies the abstraction definition.
-     *      @param [in] disableBusDef   Flag for forcing disable on bus definitino edits.
 	 */
-	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV = VLNV(), bool disableBusDef = false);
+	void openBus(const VLNV& busDefVLNV);
 
-	/*!
+    void openAbsDef(const VLNV& absDefVLNV);
+    /*!
      *  Open catalog editor to edit catalog details.
 	 *
 	 *      @param [in] vlnv           Identifies the catalog to edit.
@@ -342,9 +341,8 @@ public slots:
 	 *
 	 *      @param [in] busDefVLNV      Identifies the bus definition.
 	 *      @param [in] directory       The directory where to save the abstraction definition.
-	 *      @param [in] disableBusDef   If true then the bus definition editor is disabled when editor is opened.
 	 */
-	void createAbsDef(const VLNV& busDefVLNV, const QString& directory, bool disableBusDef);
+	void createAbsDef(const VLNV& busDefVLNV, const QString& directory);
 
     /*!
      *  Creates a new COM definition.

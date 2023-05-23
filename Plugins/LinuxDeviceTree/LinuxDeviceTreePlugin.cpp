@@ -16,17 +16,17 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Design/Design.h>
 
-#include <Plugins/common/HDLParser/HDLCommandLineParser.h>
-#include <KactusAPI/include/IPluginUtility.h>
-
-#include <Plugins/LinuxDeviceTree/LinuxDeviceTreeDialog.h>
-#include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>
-
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 #include <editors/MemoryDesigner/MasterSlavePathSearch.h>
 #include <editors/MemoryDesigner/ConnectivityGraphFactory.h>
 
+#include <KactusAPI/include/IPluginUtility.h>
 #include <KactusAPI/include/LibraryInterface.h>
+
+#include <Plugins/common/HDLParser/HDLCommandLineParser.h>
+#include <Plugins/LinuxDeviceTree/LinuxDeviceTreeDialog.h>
+#include <Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.h>
+#include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCpuRoutesContainer.h>
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -139,8 +139,7 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > acceptedContainers =
-            dialog.getAcceptedContainers();
+        QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > acceptedContainers = dialog.getAcceptedContainers();
 
         if (!acceptedContainers.isEmpty())
         {
@@ -155,7 +154,7 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
                 for (auto cpuContainer : acceptedContainers)
                 {
                     QString relativePath =
-                        General::getRelativePath(targetInfo.absoluteFilePath(), cpuContainer->filePath_);
+                        General::getRelativePath(targetInfo.absoluteFilePath(), cpuContainer->getFilePath());
 
                     saveFileToFileSet(component, targetFileSet, relativePath);
 
@@ -204,12 +203,8 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     ConnectivityGraphFactory graphFactory(library);
     MasterSlavePathSearch searchAlgorithm;
 
-    QSharedPointer<ConnectivityGraph> graph = graphFactory.createConnectivityGraph(component, viewName);
-
-    QVector < QSharedPointer<ConnectivityInterface> > masterRoots = searchAlgorithm.findMasterSlaveRoots(graph);
-
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuContainers =
-        LinuxDeviceTreeCPUDetails::getCPUContainers(component->getVlnv().getName(), masterRoots, library);
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > cpuContainers =
+        LinuxDeviceTreeCPUDetails::getCPUContainers(component->getVlnv().getName(), component, viewName, library);
 
     generateDeviceTree(component, viewName, outputDirectory, false, cpuContainers);
 }
@@ -252,7 +247,7 @@ QString LinuxDeviceTreePlugin::createFileNamePath(QString const& suggestedPath, 
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreePlugin::generateDeviceTree(QSharedPointer<Component> component, QString const& activeView,
     QString const& folderPath, bool writeBlocks,
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer>> acceptedContainers)
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer>> acceptedContainers)
 {
     LinuxDeviceTreeGenerator generator(utility_->getLibraryInterface());
     if (generator.generate(component, activeView, writeBlocks, acceptedContainers, folderPath) == true)

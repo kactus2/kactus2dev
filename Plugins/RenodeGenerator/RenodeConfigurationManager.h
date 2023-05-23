@@ -16,6 +16,8 @@
 
 class RenodeCpuRoutesContainer;
 
+#include <QJsonArray>
+
 //-----------------------------------------------------------------------------
 //! Manager for storing and restoring renode editor configurations.
 //-----------------------------------------------------------------------------
@@ -55,10 +57,10 @@ public:
      *      @param [in] writeCPU            Flag for writing a CPU file.
      *      @param [in] writeMemory         Flag for writing a memory file.
      *      @param [in] writePeripherals    Flag for writing a peripherals file.
-     *      @param [in] library             Interface for accessing the library.
+     *      @param [in] selectedCpu         Name of the active CPU.
      *      @param [in] topComponent        Top level component.
      */
-    void createConfigureFile(QVector<QSharedPointer<RenodeCpuRoutesContainer> > renodeData,
+    void createConfigureFile(QSharedPointer<RenodeCpuRoutesContainer> renodeData,
         QString const& selectedView,
         bool saveToFileSet,
         QString const& selectedFileSet,
@@ -66,6 +68,7 @@ public:
         bool writeCPU,
         bool writeMemory,
         bool writePeripherals,
+        QString const& selectedCpu,
         QSharedPointer<Component> topComponent);
 
 private:
@@ -73,7 +76,7 @@ private:
     /*!
      *  Create a JSON document for storing the generator configurations.
      *
-     *      @param [in] renodeData          Container for renode generator data.
+     *      @param [in] renodeCpu           Container for renode generator data.
      *      @param [in] selectedView        Name of the view to use in the generator.
      *      @param [in] saveToFileSetFlag   Flag for save to file set.
      *      @param [in] selectedFileSet     Name of the target file set.
@@ -81,21 +84,33 @@ private:
      *      @param [in] writeCPU            Flag for writing a CPU file.
      *      @param [in] writeMemory         Flag for writing a memory file.
      *      @param [in] writePeripherals    Flag for writing a peripherals file.
+     *      @param [in] selectedCpu         Name of the active CPU.
      *
      *      @return The JSON configuration document.
      */
-    QJsonDocument createJsonDocument(QVector<QSharedPointer<RenodeCpuRoutesContainer> > renodeData,
+    QJsonDocument createJsonDocument(QSharedPointer<RenodeCpuRoutesContainer> renodeCpu,
         QString const& selectedView,
         bool saveToFileSetFlag,
         QString const& selectedFileSet,
         QString const& folderPath,
         bool writeCPU,
         bool writeMemory,
-        bool writePeripherals);
+        bool writePeripherals,
+        QString const& selectedCpu);
+
+    /*!
+     *  Remove the selected CPU container from the CPU configuration array.
+     *
+     *      @param [in] cpuContainer    The selected CPU container.
+     */
+    void removeCpuContainerFromConfigurationArray(QSharedPointer<RenodeCpuRoutesContainer> cpuContainer);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! Configuration array for CPUs.
+    QJsonArray cpuArray_;
 };
 
 #endif // RENODECONFIGURATIONMANAGER_H

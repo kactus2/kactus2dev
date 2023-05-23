@@ -22,6 +22,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUEditor.h>
 
 #include <QFileDialog>
@@ -48,6 +49,8 @@ cpuEditor_(new LinuxDeviceTreeCPUEditor(this)),
 graphFactory_(library),
 searchAlgorithm_()
 {
+    setMinimumWidth(800);
+
     setWindowTitle("Linux Device Tree generator");
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
@@ -215,13 +218,8 @@ void LinuxDeviceTreeDialog::setupFileSetSelector(
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreeDialog::setupCPUEditor(QString const& view)
 {
-    QSharedPointer<ConnectivityGraph> graph =
-        graphFactory_.createConnectivityGraph(topComponent_, view);
-
-    QVector < QSharedPointer<ConnectivityInterface> > masterRoots = searchAlgorithm_.findMasterSlaveRoots(graph);
-
-    QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > cpuContainers =
-        LinuxDeviceTreeCPUDetails::getCPUContainers(topComponent_->getVlnv().getName(), masterRoots, library_);
+    QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > cpuContainers =
+        LinuxDeviceTreeCPUDetails::getCPUContainers(topComponent_->getVlnv().getName(), topComponent_, view, library_);
 
     cpuEditor_->setupCPUDetails(cpuContainers);
 }
@@ -323,7 +321,7 @@ void LinuxDeviceTreeDialog::setupLayout()
     buttons->addButton(QDialogButtonBox::Cancel);
 
     QHBoxLayout* editorLayout = new QHBoxLayout();
-    editorLayout->addWidget(settingsGroup, 2);
+    editorLayout->addWidget(settingsGroup);
     editorLayout->addWidget(cpuEditor_, 3);
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
@@ -338,8 +336,7 @@ void LinuxDeviceTreeDialog::setupLayout()
 //-----------------------------------------------------------------------------
 // Function: LinuxDeviceTreeDialog::getAcceptedContainers()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<LinuxDeviceTreeCPUDetails::CPUContainer> > LinuxDeviceTreeDialog::getAcceptedContainers()
-const
+QVector<QSharedPointer<LinuxDeviceTreeCpuRoutesContainer> > LinuxDeviceTreeDialog::getAcceptedContainers() const
 {
     return cpuEditor_->getAcceptedContainers();
 }

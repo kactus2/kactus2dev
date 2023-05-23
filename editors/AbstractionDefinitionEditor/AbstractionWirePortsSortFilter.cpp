@@ -13,7 +13,7 @@
 
 #include <editors/BusDefinitionEditor/LogicalPortColumns.h>
 
-#include <editors/BusDefinitionEditor/AbstractionPortsModel.h>
+#include "AbstractionPortsModel.h"
 #include <KactusAPI/include/PortAbstractionInterface.h>
 
 //-----------------------------------------------------------------------------

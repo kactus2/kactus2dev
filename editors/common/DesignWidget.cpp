@@ -102,8 +102,8 @@ void DesignWidget::setDiagram(DesignDiagram* diagram)
         this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
         this, SIGNAL(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(diagram_, SIGNAL(openBus(VLNV const&, VLNV const&, bool)),
-        this, SIGNAL(openBus(VLNV const&, VLNV const&, bool)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openBus(VLNV const&)),
+        this, SIGNAL(openBus(VLNV const&)), Qt::UniqueConnection);
     connect(diagram_, SIGNAL(openCSource(ComponentItem*)),
         this, SIGNAL(openCSource(ComponentItem*)), Qt::UniqueConnection);
 

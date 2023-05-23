@@ -20,7 +20,6 @@
 #define VERSION_MINOR          11
 #define VERSION_BUILDNO        447
 #define VERSION_EXTEND         0
-
 #define VERSION_FILE           3,11,447,0
 #define VERSION_PRODUCT        3,11,447,0
 #define VERSION_FILESTR        "3,11,447,0"

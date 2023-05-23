@@ -12,7 +12,7 @@
 #ifndef ABSTRACTIONWIREPORTSSORTFILTER_H
 #define ABSTRACTIONWIREPORTSSORTFILTER_H
 
-#include <editors/BusDefinitionEditor/AbstractionDefinitionPortsSortFilter.h>
+#include "AbstractionDefinitionPortsSortFilter.h"
 
 //-----------------------------------------------------------------------------
 //! Sort filter proxy model for abstraction definition wire ports.
