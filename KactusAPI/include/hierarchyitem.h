@@ -268,7 +268,7 @@ public:
 
 	/*! Checks if the component this item represents is hierarchical or not.
 	 *
-	 *      @return bool true if the component is hierarhical.
+	 *      @return bool true if the component is hierarchical.
 	*/
 	bool isHierarchical() const;
 
@@ -366,7 +366,7 @@ private:
      *
      *      @param [in] view   The view whose reference to find.
      *
-     *      @return The design referenced ín the view.
+     *      @return The design referenced in the view.
      */
     VLNV findDesignReference(QSharedPointer<View> view);
 

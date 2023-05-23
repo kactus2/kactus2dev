@@ -55,7 +55,7 @@ GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Compon
     vlnvDisplayer_->setTitle(tr("Component VLNV and location"));
 	vlnvDisplayer_->setPath(xmlPath);
 
-    validityIcon_->setFixedSize(16, 16);
+    validityIcon_->setFixedSize(24, 24);
 
     errorView_->setModel(errorModel_);
     errorView_->hideColumn(2);
@@ -137,7 +137,7 @@ void GeneralEditor::refresh()
         errorModel_->addErrors(errors, QString());
         errorView_->resizeColumnsToContents();
 
-        validityIcon_->setPixmap(QPixmap(":icons/common/graphics/exclamation.png"));
+        validityIcon_->setPixmap(QPixmap(":icons/common/graphics/warning.png").scaled(24, 24));
         validityStatus_->setText(tr("%1 error(s) found:").arg(QString::number(errors.count())));
     }
     else

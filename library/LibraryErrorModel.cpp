@@ -85,7 +85,7 @@ QVariant LibraryErrorModel::data(QModelIndex const& index, int role) const
 
     if (index.column() == COLUMN_NUMBER)
     {
-        return index.row();
+        return index.row() + 1;
     }
     else if (index.column() == DESCRIPTION)
     {

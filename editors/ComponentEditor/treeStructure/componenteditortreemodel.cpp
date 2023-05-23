@@ -135,11 +135,7 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
         if (!item->isValid())
         {
             return KactusColors::ERROR;
-        }         
-        else if (item->highlight())
-        {
-            return KactusColors::REGULAR_MESSAGE;
-        }  
+        }
         else
         {
             return KactusColors::REGULAR_TEXT;
@@ -149,9 +145,14 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
     {
 		return item->getTooltip();
 	}
-    else if( role == Qt::DecorationRole && item->hasIcon() )
+    else if (role == Qt::SizeHintRole)
     {
-        return item->getIcon();
+		QSize size(80, 18);
+		if (item->parent() == rootItem_)
+		{
+			size.setHeight(26);
+		}
+		return size;
     }
 	// not supported role
 	else

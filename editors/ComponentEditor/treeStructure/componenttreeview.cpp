@@ -36,18 +36,12 @@ componentVLNV_(compVLNV)
 
 	setIndentation(20);
 
+	setFrameShape(QFrame::NoFrame);
+
 	// only one item can be selected at a time
 	setSelectionMode(QAbstractItemView::SingleSelection);
 
 	setSelectionBehavior(QAbstractItemView::SelectItems);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentTreeView::~ComponentTreeView()
-//-----------------------------------------------------------------------------
-ComponentTreeView::~ComponentTreeView() 
-{
-
 }
 
 //-----------------------------------------------------------------------------

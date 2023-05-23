@@ -81,6 +81,8 @@ public:
      */
     void setInteractive(bool interactive);
 
+
+
 public slots:
 
 	/*! 
