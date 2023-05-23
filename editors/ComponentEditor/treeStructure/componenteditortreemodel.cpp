@@ -21,8 +21,7 @@
 // Function: componenteditortreemodel::ComponentEditorTreeModel()
 //-----------------------------------------------------------------------------
 ComponentEditorTreeModel::ComponentEditorTreeModel(QObject* parent) :
-QAbstractItemModel(parent),
-rootItem_()
+QAbstractItemModel(parent)
 {
 	setObjectName(tr("ComponentEditorTreeModel"));
 }
@@ -122,6 +121,10 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
 		if (text.isEmpty())
         {
 			text = tr("unnamed");
+		}
+		if (item->isModified())
+		{
+			text.append(QStringLiteral("*"));
 		}
 
 		return text;
@@ -382,12 +385,20 @@ QModelIndex ComponentEditorTreeModel::getIndexOfItem(QVector<QString> itemIdenti
 {
     QModelIndex itemIndex;
 
-    foreach (QString currentIdentifier, itemIdentifierChain)
+    for (auto const& currentIdentifier : itemIdentifierChain)
     {
         itemIndex = findIndexByItemIdentifier(currentIdentifier, itemIndex);
     }
 
     return itemIndex;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditortreemodel::clearItemsModified()
+//-----------------------------------------------------------------------------
+void ComponentEditorTreeModel::clearItemsModified() const
+{
+	rootItem_->clearModified();
 }
 
 //-----------------------------------------------------------------------------

@@ -321,6 +321,7 @@ bool ComponentEditor::save()
 {
 	if (libHandler_->writeModelToFile(component_))
     {
+        navigationModel_.clearItemsModified();
 		return TabDocument::save();
 	}
 	else
@@ -385,6 +386,7 @@ bool ComponentEditor::saveAs()
 	if (libHandler_->writeModelToFile(directory, component_))
     {
 		setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
+        navigationModel_.clearItemsModified();
 		return TabDocument::saveAs();
 	}
 	else
@@ -533,7 +535,7 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 
     // List of the hidden rows in component editor.
     QStringList hiddenRows;
-    foreach (QString name, settings.childKeys()) 
+    for (QString name : settings.childKeys()) 
     {
         if (settings.value(name, true).toBool() == false)
         {
@@ -749,10 +751,7 @@ void ComponentEditor::updateComponentFiles(QSharedPointer<Component> targetCompo
     }
 
     // get the files from the other component
-    QStringList files = getComponentFileNames(otherComponent);
-
-    // take each file
-    foreach (QString file, files)
+    for (QString const& file : getComponentFileNames(otherComponent))
     {
         // get the absolute path to the file
         QDir source(sourcePath);
@@ -786,7 +785,7 @@ void ComponentEditor::updateComponentFiles(QSharedPointer<Component> targetCompo
 QStringList ComponentEditor::getComponentFileNames(QSharedPointer<Component> component) const
 {
     QStringList fileNames;
-    foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+    for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
     {
         fileNames.append(fileSet->getFileNames());
     }
@@ -800,7 +799,7 @@ QStringList ComponentEditor::getComponentFileNames(QSharedPointer<Component> com
 void ComponentEditor::changeFileName(QString const& from, QString const& to, QSharedPointer<Component> component)
     const
 {
-    foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+    for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
     {
         if (fileSet->contains(from))
         {

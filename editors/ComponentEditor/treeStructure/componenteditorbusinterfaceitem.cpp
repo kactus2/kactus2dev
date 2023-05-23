@@ -93,7 +93,6 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor()
 
         connectReferenceTree();
 	}
-    setHighlight(false);
 	return editor_;
 }
 

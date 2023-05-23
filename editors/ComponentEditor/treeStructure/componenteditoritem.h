@@ -171,19 +171,10 @@ public:
 	 */
 	virtual bool isValid() const;
 
-    /*!
-     *  Set the highlight.
-     *
-     *      @param [in] highlight   The highlight status.
-     */
-    virtual void setHighlight(bool highlight);
 
-    /*!
-     *  Get the highlight status.
-     *
-     *      @return True, if the editor item is highlighted, false otherwise.
-     */
-    virtual bool highlight() const;
+    bool isModified() const;
+
+    void clearModified();
 
 	/*!
      *  Get pointer to the editor of this item.
@@ -389,35 +380,38 @@ protected:
      */
     virtual void connectItemEditorToVendorExtensionsEditor();
 
+	//! Sets the item as modified.
+    void setModified();
+
     //! Pointer to the instance that manages the library.
-	LibraryInterface* libHandler_;
+	LibraryInterface* libHandler_ = nullptr;
 
 	//! Pointer to the component being edited.
-	QSharedPointer<Component> component_;
+	QSharedPointer<Component> component_ = nullptr;
 
 	//! Pointer to the model that owns this item.
-	ComponentEditorTreeModel* model_;
+	ComponentEditorTreeModel* model_ = nullptr;
 
 	//! Contains the children of this item.
 	QList<QSharedPointer<ComponentEditorItem> > childItems_;
 
 	//! The editor for the component editor item.
-	ItemEditor* editor_;
+	ItemEditor* editor_ = nullptr;
 
 	//! Defines the lock-status for editors.
-	bool locked_;
+	bool locked_ = true;
 
-    //! Flag for indicating highlight of the item.
-    bool highlight_;
+    //! Flag for modification of the item.
+    bool modified_ = false;
 
     //! Allows increasing and decreasing of parameter usage counts.
-    QSharedPointer<ReferenceCounter> referenceCounter_;
+    QSharedPointer<ReferenceCounter> referenceCounter_ = nullptr;
 
     //! Parameter finder, finds the desired parameters.
-    QSharedPointer<ParameterFinder> parameterFinder_;
+    QSharedPointer<ParameterFinder> parameterFinder_ = nullptr;
 
     //! Expression formatter, formats the referencing expressions.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+    QSharedPointer<ExpressionFormatter> expressionFormatter_ = nullptr;
 
 protected slots:
 
@@ -453,6 +447,7 @@ protected slots:
 	 */
 	virtual void onMoveChild(int source, int target);
 
+
 private slots:
 
 	//! Slot for display requests of this item.
@@ -465,7 +460,7 @@ private:
 	ComponentEditorItem& operator=(const ComponentEditorItem& other);
 
 	//! Pointer to the parent item.
-	ComponentEditorItem* parent_;
+	ComponentEditorItem* parent_ = nullptr;
 };
 
 #endif // COMPONENTEDITORITEM_H
