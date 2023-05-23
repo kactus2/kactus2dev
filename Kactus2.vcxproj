@@ -945,6 +945,7 @@ CreateHelp
     <ClCompile Include="settings\SettingsPage.cpp" />
     <ClCompile Include="settings\SettingsUpdater.cpp" />
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizard.cpp" />
+    <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardAbsDefinitionPage.cpp" />
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.cpp" />
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardConclusionPage.cpp" />
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.cpp" />
@@ -2209,6 +2210,7 @@ CreateHelp
     <ClInclude Include="settings\FileTypeColumns.h" />
     <QtMoc Include="settings\NewPluginsDialog.h">
     </QtMoc>
+    <QtMoc Include="wizards\BusInterfaceWizard\BusInterfaceWizardAbsDefinitionPage.h" />
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h" />
     <ClInclude Include="wizards\common\IPXactDiff.h" />
     <ClInclude Include="wizards\common\IPXactElementComparator.h" />

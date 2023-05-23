@@ -63,7 +63,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~BusInterfaceWizardGeneralOptionsPage();
+    ~BusInterfaceWizardGeneralOptionsPage() final = default;
 
     /*!
      *  Returns the ID of the next page.

@@ -44,24 +44,16 @@
 // Function: BusInterfaceWizardBusDefinitionPage::BusInterfaceWizardBusDefinitionPage()
 //-----------------------------------------------------------------------------
 BusInterfaceWizardBusDefinitionEditorPage::BusInterfaceWizardBusDefinitionEditorPage(QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busIf, LibraryInterface* lh, QStringList physicalPorts,
-    BusInterfaceWizard* parent, VLNV& absDefVLNV, QSharedPointer<ExpressionParser> expressionParser,
-    SignalNamingPolicy namingPolicy /* = NAME */):
+    QSharedPointer<BusInterface> busIf, LibraryInterface* lh, bool editable, BusInterfaceWizard* parent):
 QWizardPage(parent),
     handler_(lh),
     component_(component),
     busIf_(busIf),
-    absDefVLNV_(absDefVLNV),
-    physicalPorts_(physicalPorts),
-    editor_(this, handler_, QSharedPointer<BusDefinition>(0)),
-    portNamesPolicy_(namingPolicy),
-    portMappings_(),
-    hasChanged_(false),
-    mappingMode_(NO_GENERATION),
-    expressionParser_(expressionParser)
+    editor_(this, handler_, nullptr),
+    editable_(editable)
 {       
     setTitle(tr("Bus Definition"));
-    setSubTitle(tr("Verify the logical signals in the bus definition."));
+    setSubTitle(tr("Verify the options in the bus definition."));
     setFinalPage(false);
 
     connect(&editor_, SIGNAL(portRenamed(QString const&, QString const&)), 
@@ -73,19 +65,11 @@ QWizardPage(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionPage::~BusInterfaceWizardBusDefinitionPage()
-//-----------------------------------------------------------------------------
-BusInterfaceWizardBusDefinitionEditorPage::~BusInterfaceWizardBusDefinitionEditorPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::nextId()
 //-----------------------------------------------------------------------------
 int BusInterfaceWizardBusDefinitionEditorPage::nextId() const
 {
-    return BusInterfaceWizard::PAGE_PORTMAPS;
+    return BusInterfaceWizard::PAGE_ABSDEFINITION;
 }
 
 //-----------------------------------------------------------------------------
@@ -93,44 +77,8 @@ int BusInterfaceWizardBusDefinitionEditorPage::nextId() const
 //-----------------------------------------------------------------------------
 void BusInterfaceWizardBusDefinitionEditorPage::initializePage()
 {   
-    VLNV abstractionReference;
-    if (busIf_->getAbstractionTypes() && busIf_->getAbstractionTypes()->size() == 1 &&
-        busIf_->getAbstractionTypes()->first()->getAbstractionRef())
-    {
-        abstractionReference = *busIf_->getAbstractionTypes()->first()->getAbstractionRef().data();
-    }
-
-    QSharedPointer<AbstractionDefinition> absDef;
-    bool newAbsDef = false;
-    if (abstractionReference.isValid())
-    {
-        QSharedPointer<Document> abstractionDocument = handler_->getModel(abstractionReference);
-        absDef = abstractionDocument.dynamicCast<AbstractionDefinition>();
-
-        newAbsDef = (absDefVLNV_.isValid() && abstractionReference == absDefVLNV_);
-    }
-
-    portMappings_.clear();
-    
-    if (newAbsDef && absDef)
-    {
-        mappingMode_ = GENERATE_ALL;
-        createLogicalPortsAndMappings(physicalPorts_, absDef);
-    }
-    else if (absDef && absDef->getPortNames(busIf_->getInterfaceMode()).size() == 1)
-    {
-        mappingMode_ = GENERATE_SINGLE;
-        QString logicalSignal = absDef->getPortNames(busIf_->getInterfaceMode()).first();
-        createLogicalMappings(physicalPorts_, logicalSignal, 
-            absDef->getPortDirection(logicalSignal, busIf_->getInterfaceMode(), busIf_->getSystem()));
-    }
-    else
-    {
-        mappingMode_ = NO_GENERATION;
-    }
-
-    editor_.setBusDef(handler_->getModel(busIf_->getBusType()).dynamicCast<BusDefinition>());
-    editor_.setProtection(!newAbsDef);   
+    editor_.setBusDef(handler_->getModel<BusDefinition>(busIf_->getBusType()));
+    editor_.setProtection(!editable_);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,54 +97,10 @@ bool BusInterfaceWizardBusDefinitionEditorPage::validatePage()
         warningDialog.exec();
         return false;
     }
-    
-    if (busIf_->getAbstractionTypes() && busIf_->getAbstractionTypes()->size() == 1 &&
-        busIf_->getAbstractionTypes()->first()->getAbstractionRef() && absDefVLNV_.isValid() &&
-        *busIf_->getAbstractionTypes()->first()->getAbstractionRef().data() == absDefVLNV_)
-    {
-        editor_.save();
-    }
-    
-    createPortMaps();
+
+    editor_.save();
 
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionEditorPage::portRenamed()
-//-----------------------------------------------------------------------------
-void BusInterfaceWizardBusDefinitionEditorPage::portRenamed(QString const& oldName, QString const& newName)
-{
-    for (QMap<QString, QString>::iterator i = portMappings_.begin(); i != portMappings_.end(); i++)
-    {
-        if (QString::compare(i.value(), oldName) == 0)
-        {
-            portMappings_.insert(i.key(), newName);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionEditorPage::portRemoved()
-//-----------------------------------------------------------------------------
-void BusInterfaceWizardBusDefinitionEditorPage::portRemoved(QString const& portName, const General::InterfaceMode mode)
-{
-    if (mode == busIf_->getInterfaceMode() || mode == General::INTERFACE_MODE_COUNT)
-    {
-        QStringList removeable;
-        for (QMap<QString, QString>::iterator i = portMappings_.begin(); i != portMappings_.end(); i++)
-        {
-            if (QString::compare(i.value(), portName) == 0 && !removeable.contains(i.key()))
-            {
-                removeable.append(i.key());
-            }
-        }
-
-        foreach(QString port, removeable)
-        {
-            portMappings_.remove(port);
-        }
-    }       
 }
 
 //-----------------------------------------------------------------------------
@@ -206,241 +110,4 @@ void BusInterfaceWizardBusDefinitionEditorPage::setupLayout()
 {
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(&editor_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionPage::createLogicalPortsAndMappings()
-//-----------------------------------------------------------------------------
-void BusInterfaceWizardBusDefinitionEditorPage::createLogicalPortsAndMappings(QStringList const& physPorts, 
-    QSharedPointer<AbstractionDefinition> absDef)
-{
-    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts = absDef->getLogicalPorts(); 
-    logicalPorts->clear();
-
-    for (QString const& port : physPorts)
-    {
-        QSharedPointer<Port> physPort = component_->getPort(port);
-        DirectionTypes::Direction portDirection = physPort->getDirection();
-        int portWidth = getPortSize(physPort);
-
-        QSharedPointer<PortAbstraction> absPort(0);
-
-        QRegularExpression indexExp("\\[(\\d+)\\]");
-        QString absPortName = physPort->name().toUpper();        
-        if (portNamesPolicy_ == DESCRIPTION)
-        {
-            absPortName = physPort->description().toUpper();
-            absPortName.indexOf(indexExp);
-            absPortName.remove(indexExp);
-            absPort = findPortByName(absPortName, logicalPorts);
-        }
-
-        if (!absPort.isNull())
-        {
-            int index = indexExp.match(absPortName).captured(1).toInt(); //!< On failed capture, index = 0.
-            int masterPortWidth =
-                expressionParser_->parseExpression(absPort->getWire()->getMasterPort()->getWidth()).toInt();
-            int physicalPortSize = index + getPortSize(physPort);
-            int newSize = qMax(masterPortWidth, physicalPortSize);
-
-            absPort->getWire()->getMasterPort()->setWidth(QString::number(newSize));
-            absPort->getWire()->getSlavePort()->setWidth(QString::number(newSize));
-        }
-        else
-        {
-            absPort = createAbsPort(absPortName, portDirection, portWidth);
-            logicalPorts->append(absPort);
-        }               
-        portMappings_.insert(port, absPortName);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionEditorPage::createLogicalMappings()
-//-----------------------------------------------------------------------------
-void BusInterfaceWizardBusDefinitionEditorPage::createLogicalMappings(QStringList const& physPorts, 
-    QString const& logicalPort, DirectionTypes::Direction logicalDirection)
-{
-    foreach(QString const& physPort, physPorts)
-    {
-        DirectionTypes::Direction physDirection = component_->getPort(physPort)->getDirection();
-        if (logicalDirection == DirectionTypes::INOUT || physDirection == DirectionTypes::INOUT ||
-            logicalDirection == physDirection )
-        {
-            portMappings_.insert(physPort, logicalPort);
-        }        
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionEditorPage::createPortMaps()
-//-----------------------------------------------------------------------------
-void BusInterfaceWizardBusDefinitionEditorPage::createPortMaps()
-{
-    QList<QSharedPointer<PortMap> > portMaps;            
-    if (mappingMode_ != NO_GENERATION && busIf_->getAbstractionTypes() &&
-        busIf_->getAbstractionTypes()->size() == 1 && busIf_->getAbstractionTypes()->first()->getAbstractionRef())
-    {
-        QSharedPointer<Document> libComp =  
-            handler_->getModel(*busIf_->getAbstractionTypes()->first()->getAbstractionRef());
-        QSharedPointer<AbstractionDefinition> absDef = libComp.dynamicCast<AbstractionDefinition>();
-        if (absDef)
-        {
-            int logicalMax = 0;
-            for (QString const& port : physicalPorts_)
-            {
-                QString logicalName = portMappings_.value(port);
-
-                // Map only to logical signals that are defined.
-                if (absDef->hasPort(logicalName, busIf_->getInterfaceMode()))
-                {
-                    QSharedPointer<Port> physPort = component_->getPort(port);
-                    int portWidth = getPortSize(physPort);
-
-                    if (portWidth < 1)
-                    {
-                        portWidth = 1;
-                    }
-
-                    // By default, map whole port aligned to logical bit 0.                                        
-                    int lowerLogical = 0;
-                    int higherLogical = portWidth - 1;
-
-                    // Use bit index in description to map to logical signal, if logical signals
-                    // are generated from the physical ports and index is found in description.
-                    QRegularExpression indexExp("\\[(\\d+)\\]");                    
-                    if ( (mappingMode_ == GENERATE_SINGLE || portNamesPolicy_ == DESCRIPTION) && 
-                        physPort->description().contains(indexExp))
-                    {
-                        lowerLogical = indexExp.match(physPort->description()).captured(1).toInt();
-                        higherLogical += lowerLogical;                       
-                    }
-                    // If all ports are mapped to a single logical port, map them in ascending bit order.
-                    else if (mappingMode_ == GENERATE_SINGLE)
-                    {
-                        lowerLogical = logicalMax;
-                        higherLogical = lowerLogical + portWidth - 1;
-                        logicalMax = lowerLogical + portWidth;
-                    }
-
-                    QString absWidth = absDef->getPort(logicalName)->getWire()->getWidth(
-                        busIf_->getInterfaceMode(), busIf_->getSystem());
-                    if (absWidth.isEmpty() || higherLogical < absWidth.toInt())
-                    {
-                        QSharedPointer<PortMap> portMap(new PortMap());
-
-                        QSharedPointer<PortMap::LogicalPort> logicalPort(new PortMap::LogicalPort());
-                        logicalPort->name_ = logicalName;
-                        logicalPort->range_ = QSharedPointer<Range>(new Range(QString::number(higherLogical), 
-                            QString::number(lowerLogical)));
-                        portMap->setLogicalPort(logicalPort);
-
-                        QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort(port));
-
-                        physicalPort->partSelect_ = 
-                            QSharedPointer<PartSelect>(new PartSelect(QString::number(portWidth - 1),
-                            QStringLiteral("0")));
-                        portMap->setPhysicalPort(physicalPort);
-                        portMaps.append(portMap);
-                    }
-                }
-            }
-        }
-    }
-
-    if (busIf_->getAbstractionTypes() && busIf_->getAbstractionTypes()->first()->getAbstractionRef())
-    {
-        QSharedPointer<QList<QSharedPointer<PortMap> > > busIfPortMaps = 
-            busIf_->getAbstractionTypes()->first()->getPortMaps();
-        busIfPortMaps->clear();
-        busIfPortMaps->append(portMaps);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionEditorPage::createAbsPort()
-//-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> BusInterfaceWizardBusDefinitionEditorPage::createAbsPort(QString const& portName, 
-    DirectionTypes::Direction portDirection, int portWidth)
-{
-    QSharedPointer<PortAbstraction> absPort(new PortAbstraction());
-    absPort->setLogicalName(portName);
-    absPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
-
-    if (busIf_->getInterfaceMode() == General::MASTER || busIf_->getInterfaceMode() == General::MIRROREDMASTER)
-    {
-        QSharedPointer<WirePort> masterPort(new WirePort());
-        masterPort->setDirection(portDirection);
-
-        QSharedPointer<WirePort> slavePort(new WirePort());
-        slavePort->setDirection(DirectionTypes::convert2Mirrored(portDirection));
-
-        absPort->getWire()->setMasterPort(masterPort);
-        absPort->getWire()->setSlavePort(slavePort);
-
-        if (portWidth > 0)
-        {    
-            masterPort->setWidth(QString::number(portWidth));
-            slavePort->setWidth(QString::number(portWidth));
-        }
-    } 
-    else if (busIf_->getInterfaceMode() == General::SLAVE || busIf_->getInterfaceMode() == General::MIRROREDSLAVE)
-    {
-        QSharedPointer<WirePort> slavePort(new WirePort());
-        slavePort->setDirection(portDirection);
-
-        QSharedPointer<WirePort> masterPort(new WirePort());
-        masterPort->setDirection(DirectionTypes::convert2Mirrored(portDirection));
-
-        absPort->getWire()->setSlavePort(slavePort);
-        absPort->getWire()->setMasterPort(masterPort);
-
-        if (portWidth > 0)
-        {
-            masterPort->setWidth(QString::number(portWidth));
-            slavePort->setWidth(QString::number(portWidth));
-        }
-    }
-    else //if(busIf_->getInterfaceMode() == General::SYSTEM || 
-         //busIf_->getInterfaceMode() == General::MIRROREDSYSTEM)
-    {
-        QSharedPointer<WirePort> systemPort(new WirePort());
-        systemPort->setDirection(portDirection);
-
-        absPort->getWire()->addSystemPort(systemPort);
-
-        if (portWidth > 0)
-        {
-            systemPort->setWidth(QString::number(portWidth));
-        }
-    }
-	
-    return absPort;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionEditorPage::findPortByName()
-//-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> BusInterfaceWizardBusDefinitionEditorPage::findPortByName(QString const& portName, 
-    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports)
-{
-    foreach (QSharedPointer<PortAbstraction> port, *ports)
-    {
-        if (QString::compare(portName, port->getLogicalName()) == 0)
-        {
-            return port;
-        }
-    }
-    return QSharedPointer<PortAbstraction>(0);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusDefinitionPage::getPortSize()
-//-----------------------------------------------------------------------------
-int BusInterfaceWizardBusDefinitionEditorPage::getPortSize(QSharedPointer<Port> targetPort) const
-{
-    int portLeftBound = expressionParser_->parseExpression(targetPort->getLeftBound()).toInt();
-    int portRightBound = expressionParser_->parseExpression(targetPort->getRightBound()).toInt();
-
-    return abs(portLeftBound - portRightBound) + 1;
 }
