@@ -15,7 +15,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QFormLayout>
 
 //-----------------------------------------------------------------------------
@@ -24,6 +24,9 @@
 DocumentNameGroupEditor::DocumentNameGroupEditor(QWidget* parent) :
     QGroupBox(parent)
 {
+    connect(&displayNameEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onDisplayNameChanged()), Qt::UniqueConnection);
+    connect(&shortDescriptionEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onShortDescriptionChanged()), Qt::UniqueConnection);
+    connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -43,6 +46,33 @@ void DocumentNameGroupEditor::setDocumentNameGroup(QSharedPointer<Document> docu
     compatibility_.setText(Document::toString(document->getRevision()));
 
     setupLayout();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentNameGroupEditor::onDisplayNameChanged()
+//-----------------------------------------------------------------------------
+void DocumentNameGroupEditor::onDisplayNameChanged()
+{
+    document_->setDisplayName(displayNameEditor_.text());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentNameGroupEditor::onShortDescriptionChanged()
+//-----------------------------------------------------------------------------
+void DocumentNameGroupEditor::onShortDescriptionChanged()
+{
+    document_->setShortDescription(shortDescriptionEditor_.text());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentNameGroupEditor::onDescriptionChanged()
+//-----------------------------------------------------------------------------
+void DocumentNameGroupEditor::onDescriptionChanged()
+{
+    document_->setDescription(descriptionEditor_.toPlainText());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

@@ -57,6 +57,18 @@ public:
      */
     void setDocumentNameGroup(QSharedPointer<Document> document, QString const& documentPath);
 
+signals:
+    
+    void contentChanged();
+
+private slots:
+
+    void onDisplayNameChanged();
+
+    void onShortDescriptionChanged();
+
+    void onDescriptionChanged();
+
 private:
 
     /*
