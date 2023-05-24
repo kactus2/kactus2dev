@@ -11,8 +11,6 @@
 
 #include "componenteditor.h"
 
-#include "editors/ComponentEditor/treeStructure/ComponentEditorTreeDelegate.h"
-
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/treeStructure/componenteditorrootitem.h>
@@ -39,6 +37,7 @@
 #include <editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorTreeDelegate.h>
 
 #include <editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
