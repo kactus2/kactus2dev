@@ -166,17 +166,8 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
         QVector<QSharedPointer<CpuRoutesContainer> > cpuRoutes = selectionDialog.getSelectedCPUs();
         if (!cpuRoutes.isEmpty())
         {
-            QVector<QSharedPointer<RenodeCpuRoutesContainer> > renodeCPURoutes;
-            for (auto cpu : cpuRoutes)
-            {
-                QSharedPointer<RenodeCpuRoutesContainer> renodeCPU = cpu.dynamicCast<RenodeCpuRoutesContainer>();
-                if (renodeCPU)
-                {
-                    renodeCPURoutes.append(renodeCPU);
-                }
-            }
-
-            if (!renodeCPURoutes.isEmpty())
+            QSharedPointer<RenodeCpuRoutesContainer> renodeCpu = cpuRoutes.first().dynamicCast<RenodeCpuRoutesContainer>();
+            if (renodeCpu)
             {
                 QString selectedView = selectionDialog.getView();
                 bool saveToFileSet = selectionDialog.saveToFileSet();
@@ -186,11 +177,13 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
                 bool writeMemoryFlag = fileSelectionGroup->writeMemory();
                 bool writePeripheralFlag = fileSelectionGroup->writePeripherals();
 
-                RenodeGenerator generator(utility->getLibraryInterface());
-                generator.generate(component, xmlFilePath, renodeCPURoutes, writeCpuFlag, writeMemoryFlag, writePeripheralFlag);
+                QString selectedCpuName = cpuEditor->getSelectedCpuName();
 
-                configManager->createConfigureFile(renodeCPURoutes, selectedView, saveToFileSet, selectedFileSet, xmlFilePath,
-                    writeCpuFlag, writeMemoryFlag, writePeripheralFlag, component);
+                RenodeGenerator generator(utility->getLibraryInterface());
+                generator.generate(component, xmlFilePath, renodeCpu, writeCpuFlag, writeMemoryFlag, writePeripheralFlag);
+
+                configManager->createConfigureFile(renodeCpu, selectedView, saveToFileSet, selectedFileSet, xmlFilePath,
+                    writeCpuFlag, writeMemoryFlag, writePeripheralFlag, selectedCpuName, component);
 
                 if (selectionDialog.saveToFileSet())
                 {
@@ -311,10 +304,11 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     if (renodeCPUs.isEmpty())
     {
         utility->printInfo(tr("Generation Failed. No CPUs found."));
+        return;
     }
 
     RenodeGenerator generator(utilityLibrary);
-    generator.generate(component, outputDirectory, renodeCPUs, true, true, true);
+    generator.generate(component, outputDirectory, renodeCPUs.first(), true, true, true);
 
     utility->printInfo(tr("Generation complete."));
 }

@@ -312,6 +312,45 @@ namespace
             }
         }
     }
+
+    //-----------------------------------------------------------------------------
+    // Function: RenodeUtilities::getConfigurationObjectForCpu()
+    //-----------------------------------------------------------------------------
+    QSharedPointer<RenodeCpuRoutesContainer> createAndConfigureCpuContainer(QJsonObject const& configurationObject,
+        QSharedPointer<SingleCpuRoutesContainer> cpuContainer, QVector<QSharedPointer<RenodeStructs::cpuPeripherals> >& peripherals,
+        QVector<QSharedPointer<RenodeStructs::cpuMemories> >& memories)
+    {
+        QSharedPointer<RenodeCpuRoutesContainer> renodeCpuContainer(new RenodeCpuRoutesContainer(*cpuContainer.data()));
+        QJsonValue multiCpuValue = configurationObject.value(RenodeConstants::CPUS);
+        if (multiCpuValue.isArray())
+        {
+            QJsonArray cpuArray = multiCpuValue.toArray();
+            if (!cpuArray.isEmpty())
+            {
+                for (auto cpuValue : cpuArray)
+                {
+                    if (cpuValue.isObject())
+                    {
+                        QJsonObject cpuObject = cpuValue.toObject();
+                        if (cpuObject.value(RenodeConstants::CPUNAME) == renodeCpuContainer->getFileName())
+                        {
+                            renodeCpuContainer->setClassName(cpuObject.value(RenodeConstants::CPUCLASS).toString(renodeCpuContainer->getClassName()));
+                            renodeCpuContainer->setTimeProvider(cpuObject.value(RenodeConstants::CPUTIME).toString(renodeCpuContainer->getTimeProvider()));
+                            renodeCpuContainer->setCpuType(cpuObject.value(RenodeConstants::CPUTYPE).toString(renodeCpuContainer->getCpuType()));
+
+                            setupPeripheralConfiguration(cpuObject, peripherals);
+                            setupMemoryConfiguration(cpuObject, memories);
+                        }
+                    }
+                }
+            }
+        }
+
+        renodeCpuContainer->setPeripherals(peripherals);
+        renodeCpuContainer->setMemories(memories);
+
+        return renodeCpuContainer;
+    }
 };
 
 //-----------------------------------------------------------------------------
@@ -393,32 +432,8 @@ QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpu
             }
         }
 
-
-        QSharedPointer<RenodeCpuRoutesContainer> renodeCPU(new RenodeCpuRoutesContainer(*defaultCPU.data()));
-
-        QJsonValue multiCpuValue = configurationObject.value(RenodeConstants::CPUS);
-        if (multiCpuValue.isArray())
-        {
-            QJsonArray cpuArray = multiCpuValue.toArray();
-            if (!cpuArray.isEmpty())
-            {
-                QJsonValue cpuValue = cpuArray.first();
-                if (cpuValue.isObject())
-                {
-                    QJsonObject cpuObject = cpuValue.toObject();
-                    renodeCPU->setClassName(cpuObject.value(RenodeConstants::CPUCLASS).toString(renodeCPU->getClassName()));
-                    renodeCPU->setTimeProvider(cpuObject.value(RenodeConstants::CPUTIME).toString(renodeCPU->getTimeProvider()));
-                    renodeCPU->setCpuType(cpuObject.value(RenodeConstants::CPUTYPE).toString(renodeCPU->getCpuType()));
-
-                    setupPeripheralConfiguration(cpuObject, peripherals);
-                    setupMemoryConfiguration(cpuObject, memories);
-                }
-            }
-        }
-
-        renodeCPU->setPeripherals(peripherals);
-        renodeCPU->setMemories(memories);
-        cpuDetails.append(renodeCPU);
+        QSharedPointer<RenodeCpuRoutesContainer> renodeCpuContainer = createAndConfigureCpuContainer(configurationObject, defaultCPU, peripherals, memories);
+        cpuDetails.append(renodeCpuContainer);
     }
 
     return cpuDetails;
