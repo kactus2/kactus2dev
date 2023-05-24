@@ -16,6 +16,9 @@
 
 #include <editors/BusDefinitionEditor/SystemGroupListEditor.h>
 
+#include <editors/common/DocumentNameGroupEditor.h>
+
+
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <QGroupBox>
@@ -33,63 +36,63 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 class BusDefGroup : public QWidget
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	/*!
+    /*!
      *  The constructor.
-	 *
+     *
      *      @param [in] libraryHandler  Interface to the library.
-	 *      @param [in] parent          The owner of this widget.
-	 */
-	BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent);
+     *      @param [in] parent          The owner of this widget.
+     */
+    BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent);
 
     /*!
      *  The destructor.
      */
     virtual ~BusDefGroup() = default;
 
-	/*!
+    /*!
      *  Set the bus definition that is being edited.
-	 *
-	 *      @param [in] busDef The bus definition
-	 */
-	void setBusDef(QSharedPointer<BusDefinition> busDef);
+     *
+     *      @param [in] busDef The bus definition
+     */
+    void setBusDef(QSharedPointer<BusDefinition> busDef);
 
 signals:
 
-	/*!
+    /*!
      *  Emitted when user changes the state of one of the elements.
      */
-	void contentChanged();
+    void contentChanged();
 
 private slots:
 
-	/*!
+    /*!
      *  Handler for state changes on direct connection check box.
      */
-	void onDirectConnectionChanged(bool checked);
+    void onDirectConnectionChanged(bool checked);
 
     /*!
      *  Handler for state changes on is broadcast check box.
      */
     void onIsBroadcastChanged(bool checked);
 
-	/*!
+    /*!
      *  Handler for state changes on is addressable check box.
      */
-	void onIsAddressableChanged(bool checked);
+    void onIsAddressableChanged(bool checked);
 
-	/*!
+    /*!
      *  Handler for changes in max masters line edit.
      */
-	void onInitiatorsChanged();
+    void onInitiatorsChanged();
 
-	/*!
+    /*!
      *  Handler for changes in max slaves line edit.
      */
-	void onTargetsChanged();
+    void onTargetsChanged();
 
     /*!
      *  Handler for changes in system group names.
@@ -107,9 +110,9 @@ private slots:
     void onExtendChanged();
 
 private:
-	//! No copying. No assignment.
-	BusDefGroup(const BusDefGroup& other);
-	BusDefGroup& operator=(const BusDefGroup& other);
+    //! No copying. No assignment.
+    BusDefGroup(const BusDefGroup& other);
+    BusDefGroup& operator=(const BusDefGroup& other);
 
     /*!
      *  Sets the widget layout.
@@ -155,31 +158,28 @@ private:
     LibraryInterface* library_;
 
     //! The bus definition to edit.
-	QSharedPointer<BusDefinition> busDef_;
+    QSharedPointer<BusDefinition> busDef_;
 
-	//! Check box to set the direct connection option.
-	QCheckBox directConnection_;
+    //! Check box to set the direct connection option.
+    QCheckBox directConnection_;
 
     //! Check box to set the broadcast option.
     QCheckBox isBroadcast_;
 
-	//! Check box to set the is addressable option.
-	QCheckBox isAddressable_;
+    //! Check box to set the is addressable option.
+    QCheckBox isAddressable_;
 
-	//! Editor to set the maximum number of initiators.
-	QLineEdit maxInitiatorsEditor_;
+    //! Editor to set the maximum number of initiators.
+    QLineEdit maxInitiatorsEditor_;
 
-	//! Editor to set the maximum number of targets.
-	QLineEdit maxTargetsEditor_;
+    //! Editor to set the maximum number of targets.
+    QLineEdit maxTargetsEditor_;
 
     //! Editor for system group names.
     SystemGroupListEditor systemGroupEditor_;
 
-    //! Editor for bus definition description.
-    QPlainTextEdit descriptionEditor_;
-
-    //! Display for the bus definition VLNV.
-    VLNVDisplayer* vlnvDisplay_;
+    //! Editor for bus definition document name group
+    DocumentNameGroupEditor documentNameGroupEditor_;
 
     //! Editor for the bus definition extension.
     VLNVEditor* extendEditor_;

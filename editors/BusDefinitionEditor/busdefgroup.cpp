@@ -16,6 +16,8 @@
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <editors/common/DocumentNameGroupEditor.h>
+
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <QVBoxLayout>
@@ -39,11 +41,9 @@ isAddressable_(tr("Addressable bus"), this),
 maxInitiatorsEditor_(this),
 maxTargetsEditor_(this),
 systemGroupEditor_(libraryHandler, this),
-descriptionEditor_(this),
-vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
+documentNameGroupEditor_(this),
 extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
 {
-    vlnvDisplay_->setTitle(QStringLiteral("Bus definition"));
     extendEditor_->setTitle(QStringLiteral("Extended bus definition"));
     extendEditor_->setMandatory(false);
 
@@ -56,21 +56,22 @@ extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
     maxInitiatorsEditor_.setPlaceholderText(tr("unbound"));
     maxTargetsEditor_.setPlaceholderText(tr("unbound"));
 #endif
+
+    documentNameGroupEditor_.setTitle("Bus definition");
+
     setupLayout();
 
-	connect(&maxInitiatorsEditor_, SIGNAL(editingFinished()), this, SLOT(onInitiatorsChanged()), Qt::UniqueConnection);
-	connect(&maxTargetsEditor_, SIGNAL(editingFinished()),	this, SLOT(onTargetsChanged()), Qt::UniqueConnection);
-	 
-	connect(&directConnection_, SIGNAL(toggled(bool)),
+    connect(&maxInitiatorsEditor_, SIGNAL(editingFinished()), this, SLOT(onInitiatorsChanged()), Qt::UniqueConnection);
+    connect(&maxTargetsEditor_, SIGNAL(editingFinished()),	this, SLOT(onTargetsChanged()), Qt::UniqueConnection);
+     
+    connect(&directConnection_, SIGNAL(toggled(bool)),
         this, SLOT(onDirectConnectionChanged(bool)), Qt::UniqueConnection);
     connect(&isBroadcast_, SIGNAL(toggled(bool)), this, SLOT(onIsBroadcastChanged(bool)), Qt::UniqueConnection);
-	connect(&isAddressable_, SIGNAL(toggled(bool)),
+    connect(&isAddressable_, SIGNAL(toggled(bool)),
         this, SLOT(onIsAddressableChanged(bool)), Qt::UniqueConnection);
 
     connect(&systemGroupEditor_, SIGNAL(contentChanged()),
         this, SLOT(onSystemNamesChanged()), Qt::UniqueConnection);
-
-    connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 
     connect(extendEditor_, SIGNAL(vlnvEdited()), this, SLOT(onExtendChanged()), Qt::UniqueConnection);
 }
@@ -80,8 +81,9 @@ extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
 //-----------------------------------------------------------------------------
 void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 {
-	busDef_ = busDef;
-    vlnvDisplay_->setVLNV(busDef_->getVlnv());
+    busDef_ = busDef;
+    documentNameGroupEditor_.setDocumentNameGroup(busDef, library_->getPath(busDef->getVlnv()));
+
     extendEditor_->setVLNV(busDef_->getExtends());
 
     if (busDef_->getExtends().isValid())
@@ -91,14 +93,13 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 
     directConnection_.setChecked(busDef_->getDirectConnection());
     isBroadcast_.setChecked(busDef_->getBroadcast().toBool());
-	isAddressable_.setChecked(busDef_->getIsAddressable());
+    isAddressable_.setChecked(busDef_->getIsAddressable());
 
     maxInitiatorsEditor_.setText(QString::fromStdString(busDef_->getMaxInitiators()));
     maxTargetsEditor_.setText(QString::fromStdString(busDef_->getMaxTargets()));
 
     systemGroupEditor_.setItems(busDef_);
 
-    descriptionEditor_.setPlainText(busDef_->getDescription());
 }
 
 //-----------------------------------------------------------------------------
@@ -106,8 +107,8 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 //-----------------------------------------------------------------------------
 void BusDefGroup::onDirectConnectionChanged(bool checked)
 {
-	busDef_->setDirectConnection(checked);
-	emit contentChanged();
+    busDef_->setDirectConnection(checked);
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -124,8 +125,8 @@ void BusDefGroup::onIsBroadcastChanged(bool checked)
 //-----------------------------------------------------------------------------
 void BusDefGroup::onIsAddressableChanged(bool checked)
 {
-	busDef_->setIsAddressable(checked);
-	emit contentChanged();
+    busDef_->setIsAddressable(checked);
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +135,7 @@ void BusDefGroup::onIsAddressableChanged(bool checked)
 void BusDefGroup::onInitiatorsChanged()
 {
     busDef_->setMaxInitiators(maxInitiatorsEditor_.text().toStdString());
-	emit contentChanged();
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -142,8 +143,8 @@ void BusDefGroup::onInitiatorsChanged()
 //-----------------------------------------------------------------------------
 void BusDefGroup::onTargetsChanged()
 {
-	busDef_->setMaxTargets(maxTargetsEditor_.text().toStdString());
-	emit contentChanged();
+    busDef_->setMaxTargets(maxTargetsEditor_.text().toStdString());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -172,8 +173,8 @@ void BusDefGroup::onSystemNamesChanged()
 //-----------------------------------------------------------------------------
 void BusDefGroup::onDescriptionChanged()
 {
-    busDef_->setDescription(descriptionEditor_.toPlainText());
-	emit contentChanged();
+    //busDef_->setDescription(descriptionEditor_.toPlainText());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -234,30 +235,29 @@ void BusDefGroup::setupLayout()
     selectionsLayout->addLayout(initiatorTargetLayout);
     selectionsLayout->addStretch();    
 
-    QGroupBox* descriptionGroup = new QGroupBox(tr("Description"), this);
-
-    QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionGroup);
-    descriptionLayout->addWidget(&descriptionEditor_);
-
     QGroupBox* systemGroupBox = new QGroupBox(tr("System group names"), this);
 
     QVBoxLayout* systemGroupLayout = new QVBoxLayout(systemGroupBox);
     systemGroupLayout->addWidget(&systemGroupEditor_);
 
     QGridLayout* topLayout = new QGridLayout(this);
-    topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
-    topLayout->addWidget(extendEditor_, 0, 1, 1, 1);
-    topLayout->addWidget(descriptionGroup, 1, 0, 1, 1);
-    topLayout->addWidget(systemGroupBox, 1, 1, 1, 1);
-    topLayout->addWidget(selectionGroup, 2, 0, 1, 1);
+
+    QWidget* rightSideContainer = new QWidget(this);
+    QVBoxLayout* containerLayout = new QVBoxLayout();
+    containerLayout->setContentsMargins(0, 0, 0, 0);
+    containerLayout->addWidget(extendEditor_);
+    containerLayout->addWidget(selectionGroup);
+    rightSideContainer->setLayout(containerLayout);
+
+    topLayout->addWidget(&documentNameGroupEditor_, 0, 0, 1, 1);
+    topLayout->addWidget(rightSideContainer, 0, 1, 1, 1);
+    topLayout->addWidget(systemGroupBox, 1, 0, 1, 1);
 
     topLayout->setColumnStretch(0, 1);
     topLayout->setColumnStretch(1, 1);
 
-    topLayout->setRowStretch(1, 1);
-
-    maxInitiatorsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
-    maxTargetsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
+    maxInitiatorsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    maxTargetsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 }
 
 //-----------------------------------------------------------------------------
@@ -269,13 +269,13 @@ void BusDefGroup::setupExtendedBus()
     if (extendedBus)
     {
         extendBusDefinition(extendedBus);
-        descriptionEditor_.setPlaceholderText(extendedBus->getDescription());
+        //descriptionEditor_.setPlaceholderText(extendedBus->getDescription());
 
         return;
     }
 
     removeBusExtension();
-    descriptionEditor_.setPlaceholderText(QString());
+    //descriptionEditor_.setPlaceholderText(QString());
 }
 
 //-----------------------------------------------------------------------------
