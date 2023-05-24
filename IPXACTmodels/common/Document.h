@@ -342,6 +342,24 @@ public:
      *      @return The document standard revision.
      */
     Document::Revision getRevision() const;
+    
+    /*!
+     *  Convert document revision to QString.
+     *      
+     *      @param [in] revision   The document revision.
+     * 
+     *      @return The document standard revision as QString.
+     */
+    static QString toString(Revision revision);
+    
+    /*!
+     *  Convert document revision to std::string.
+     *
+     *      @param [in] revision   The document revision.
+     *
+     *      @return The document standard revision as std::string.
+     */
+    static std::string toStdString(Revision revision);
 
 private:
 

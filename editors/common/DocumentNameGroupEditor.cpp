@@ -40,15 +40,7 @@ void DocumentNameGroupEditor::setDocumentNameGroup(QSharedPointer<Document> docu
     path_.setText(documentPath);
     descriptionEditor_.setPlainText(document_->getDescription());
     
-    if (auto documentStdRevision = document_->getRevision();
-        documentStdRevision == Document::Revision::Std14)
-    {
-        compatibility_.setText("1685-2014");
-    }
-    else if (documentStdRevision == Document::Revision::Std22)
-    {
-        compatibility_.setText("1685-2022");
-    }
+    compatibility_.setText(Document::toString(document->getRevision()));
 
     setupLayout();
 }

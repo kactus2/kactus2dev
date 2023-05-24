@@ -60,15 +60,12 @@ void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QShare
     }
 
     // Also write the schema location.
-    if (document->getRevision() == Document::Revision::Std14)
+    if (auto revision = document->getRevision(); revision != Document::Revision::Unknown)
     {
-        writer.writeAttribute(QStringLiteral("xsi:schemaLocation"),
-            QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd"));
-    }
-    else if (document->getRevision() == Document::Revision::Std22)
-    {
-        writer.writeAttribute(QStringLiteral("xsi:schemaLocation"),
-            QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2022 http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd"));
+        QString schemaLocation = QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/%1 http://www.accellera.org/XMLSchema/IPXACT/%1/index.xsd")
+            .arg(Document::toString(revision));
+
+        writer.writeAttribute(QStringLiteral("xsi:schemaLocation"), schemaLocation);
     }
 }
 

@@ -521,6 +521,32 @@ void Document::setLicense(QString const& license)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Document::toString()
+//-----------------------------------------------------------------------------
+QString Document::toString(Revision revision)
+{
+    if (revision == Revision::Std14)
+    {
+        return QStringLiteral("1685-2014");
+    }
+
+    if (revision == Revision::Std22)
+    {
+        return QStringLiteral("1685-2022");
+    }
+
+    return QStringLiteral("Unknown");
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::toStdString()
+//-----------------------------------------------------------------------------
+std::string Document::toStdString(Revision revision)
+{
+    return toString(revision).toStdString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Document::addDefaultNameSpaces()
 //-----------------------------------------------------------------------------
 void Document::addDefaultNameSpaces(Revision revision)
