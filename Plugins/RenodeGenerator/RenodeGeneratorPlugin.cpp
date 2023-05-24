@@ -22,7 +22,8 @@
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
-#include <Plugins/RenodeGenerator/CPUDialog/RenodeFileSelectionGroup.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeFileEditor.h>
+
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 #include <Plugins/RenodeGenerator/RenodeConfigurationManager.h>
 
@@ -154,11 +155,13 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     QString configurationFileSet = configurationObject.value(RenodeConstants::FILESET).toString("");
     bool saveToFileSetFlag = configurationObject.value(RenodeConstants::SAVETOFILESET).toBool(true);
 
-    RenodeFileSelectionGroup* fileSelectionGroup(new RenodeFileSelectionGroup(configurationObject));
+    RenodeFileEditor* fileEditor(new RenodeFileEditor(configurationObject));
     RenodeCpuEditor* cpuEditor(new RenodeCpuEditor(utility, configurationObject));
 
+    connect(cpuEditor, SIGNAL(cpuChanged(QString const&)), fileEditor, SLOT(changeFileNames(QString const&)), Qt::UniqueConnection);
+
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames, component->getFileSetNames(),
-        cpuEditor, "Renode platform", fileSelectionGroup, utility->getParentWidget(), configurationFolderPath,
+        cpuEditor, "Renode platform", fileEditor, utility->getParentWidget(), configurationFolderPath,
         saveToFileSetFlag, configurationFileSet, configurationView);
 
     if (selectionDialog.exec() == QDialog::Accepted)
@@ -173,17 +176,27 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
                 bool saveToFileSet = selectionDialog.saveToFileSet();
                 QString selectedFileSet = selectionDialog.getTargetFileSet();
                 QString xmlFilePath = selectionDialog.getTargetFolder();
-                bool writeCpuFlag = fileSelectionGroup->writeCpu();
-                bool writeMemoryFlag = fileSelectionGroup->writeMemory();
-                bool writePeripheralFlag = fileSelectionGroup->writePeripherals();
+                bool writeCpuFlag = fileEditor->writeCpu();
+                bool writeMemoryFlag = fileEditor->writeMemory();
+                bool writePeripheralFlag = fileEditor->writePeripherals();
 
                 QString selectedCpuName = cpuEditor->getSelectedCpuName();
 
+                QString cpuFileName = fileEditor->getCpuFileName();
+                QString memoryFileName = fileEditor->getmemoryFileName();
+                QString peripheralFileName = fileEditor->getPeripheralFileName();
+
                 RenodeGenerator generator(utility->getLibraryInterface());
-                generator.generate(component, xmlFilePath, renodeCpu, writeCpuFlag, writeMemoryFlag, writePeripheralFlag);
+                generator.generate(component, xmlFilePath, renodeCpu, writeCpuFlag, cpuFileName, writeMemoryFlag,
+                    memoryFileName, writePeripheralFlag, peripheralFileName);
+
+                QString cpuFileEditorText = fileEditor->getCpuEditorText();
+                QString memoryFileEditorText = fileEditor->getMemoryEditorText();
+                QString peripheralFileEditorText = fileEditor->getPeripheralEditorText();
 
                 configManager->createConfigureFile(renodeCpu, selectedView, saveToFileSet, selectedFileSet, xmlFilePath,
-                    writeCpuFlag, writeMemoryFlag, writePeripheralFlag, selectedCpuName, component);
+                    writeCpuFlag, cpuFileEditorText, writeMemoryFlag, memoryFileEditorText, writePeripheralFlag,
+                    peripheralFileEditorText, selectedCpuName, component);
 
                 if (selectionDialog.saveToFileSet())
                 {
@@ -307,8 +320,13 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
         return;
     }
 
+    QString cpuName = renodeCPUs.first()->getCpu()->name();
+    QString cpuFileName = cpuName + "_" + RenodeConstants::RENODECPUFILENAME;
+    QString memoryFileName = cpuName + "_" + RenodeConstants::RENODEMEMORYFILENAME;
+    QString peripheralFileName = cpuName + "_" + RenodeConstants::RENODEPERIPHERALFILENAME;
+
     RenodeGenerator generator(utilityLibrary);
-    generator.generate(component, outputDirectory, renodeCPUs.first(), true, true, true);
+    generator.generate(component, outputDirectory, renodeCPUs.first(), true, cpuFileName, true, memoryFileName, true, peripheralFileName);
 
     utility->printInfo(tr("Generation complete."));
 }

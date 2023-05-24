@@ -157,6 +157,7 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp" />
     <ClCompile Include="CPUDialog\RenodeCpuEditor.cpp" />
     <ClCompile Include="CPUDialog\RenodeCpuRoutesContainer.cpp" />
+    <ClCompile Include="CPUDialog\RenodeFileEditor.cpp" />
     <ClCompile Include="CPUDialog\RenodeFileSelectionGroup.cpp" />
     <ClCompile Include="CPUDialog\RenodeMemoriesEditor.cpp" />
     <ClCompile Include="CPUDialog\RenodeMemoriesModel.cpp" />
@@ -198,6 +199,7 @@
     <QtMoc Include="CPUDialog\RenodeFileSelectionGroup.h" />
     <ClInclude Include="..\common\SingleCpuRoutesContainer.h" />
     <ClInclude Include="CPUDialog\RenodeCpuRoutesContainer.h" />
+    <QtMoc Include="CPUDialog\RenodeFileEditor.h" />
     <ClInclude Include="CPUDialog\RenodeStructs.h" />
     <ClInclude Include="CPUDialog\RenodeUtilities.h" />
     <ClInclude Include="RenodeConfigurationManager.h" />

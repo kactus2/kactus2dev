@@ -37,6 +37,7 @@ HEADERS += ./RenodeConfigurationManager.h \
     ./CPUDialog/RenodeMemoriesEditor.h \
     ./CPUDialog/RenodeMemoriesModel.h \
     ./CPUDialog/RenodeFileSelectionGroup.h \
+    ./CPUDialog/RenodeFileEditor.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
     ../common/ConfigurationManager.h \
@@ -66,8 +67,9 @@ SOURCES += ./RenodeConfigurationManager.cpp \
     ../../IPXACTmodels/utilities/ComponentSearch.cpp \
     ../common/CPUDialog/CPUEditor.cpp \
     ../common/CPUDialog/CPUSelectionDialog.cpp \
-    ./CPUDialog/RenodeCpuRoutesContainer.cpp \
     ./CPUDialog/RenodeCpuEditor.cpp \
+    ./CPUDialog/RenodeCpuRoutesContainer.cpp \
+    ./CPUDialog/RenodeFileEditor.cpp \
     ./CPUDialog/RenodeFileSelectionGroup.cpp \
     ./CPUDialog/RenodeMemoriesEditor.cpp \
     ./CPUDialog/RenodeMemoriesModel.cpp \

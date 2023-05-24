@@ -212,6 +212,8 @@ void RenodeCpuEditor::setupEditorsForCpu()
 
     peripheralEditor_->setupPeripherals(renodeCPU_->getPeripherals());
     memoryEditor_->setupMemories(renodeCPU_->getMemories());
+
+    emit(cpuChanged(renodeCPU_->getCpu()->name()));
 }
 
 //-----------------------------------------------------------------------------

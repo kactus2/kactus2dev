@@ -187,6 +187,9 @@
     <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="CPUDialog\RenodeFileEditor.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
@@ -220,6 +223,9 @@
       <Filter>Header Files\CPUDialog</Filter>
     </QtMoc>
     <QtMoc Include="CPUDialog\RenodeFileSelectionGroup.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\RenodeFileEditor.h">
       <Filter>Header Files\CPUDialog</Filter>
     </QtMoc>
   </ItemGroup>

@@ -60,11 +60,20 @@ namespace RenodeConstants
     //! File name for CPU.
     const QString RENODECPUFILENAME = "cpus";
 
+    //! Identifier for CPU file name.
+    const QString RENODECPUFILEIDENTIFIER = "cpuFileName";
+
     //! File name for memory.
     const QString RENODEMEMORYFILENAME = "memory";
 
+    //! Identifier for memory file name.
+    const QString RENODEMEMORYFILEIDENTIFIER = "memoryFileName";
+
     //! File name for peripherals.
     const QString RENODEPERIPHERALFILENAME = "peripherals";
+
+    //! Identifier for peripherals file name.
+    const QString RENODEPERIPHERALFILEIDENTIFIER = "peripheralsFileName";
 
     //! Identifier for multiple CPUs.
     const QString CPUS = "CPUs";

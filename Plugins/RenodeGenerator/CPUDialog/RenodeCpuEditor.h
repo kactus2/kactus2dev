@@ -90,6 +90,15 @@ public:
     RenodeCpuEditor(const RenodeCpuEditor& other) = delete;
     RenodeCpuEditor& operator=(const RenodeCpuEditor& other) = delete;
 
+signals:
+
+    /*!
+     *  Inform of a change in CPU.
+     *
+     *      @param [in] newCpuName  Name of the new CPU.
+     */
+    void cpuChanged(QString const& newCpuName);
+
 private slots:
 
     /*!
