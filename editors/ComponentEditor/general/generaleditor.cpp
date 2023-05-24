@@ -137,7 +137,7 @@ void GeneralEditor::refresh()
         errorModel_->addErrors(errors, QString());
         errorView_->resizeColumnsToContents();
 
-        validityIcon_->setPixmap(QPixmap(":icons/common/graphics/warning.png").scaled(24, 24));
+        validityIcon_->setPixmap(QPixmap(":icons/common/graphics/exclamation--frame.png").scaled(24, 24));
         validityStatus_->setText(tr("%1 error(s) found:").arg(QString::number(errors.count())));
     }
     else

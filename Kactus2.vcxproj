@@ -705,6 +705,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorswpropertiesitem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorSystemViewItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorSystemViewsItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditortreemodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeSortProxyModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorviewitem.cpp" />
@@ -1880,6 +1881,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\SubspaceMapItem.h">
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h" />
     <QtMoc Include="editors\ConfigurationTools\ViewConfigurer.h">
     </QtMoc>

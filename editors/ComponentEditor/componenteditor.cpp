@@ -11,6 +11,8 @@
 
 #include "componenteditor.h"
 
+#include "editors/ComponentEditor/treeStructure/ComponentEditorTreeDelegate.h"
+
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/treeStructure/componenteditorrootitem.h>
@@ -147,6 +149,8 @@ parameterReferenceWindow_()
 	
     // Set source model for the proxy.
     proxy_.setSourceModel(&navigationModel_);
+
+    navigationView_.setItemDelegate(new ComponentEditorTreeDelegate(this));
 
 	// connect the view with the model (proxy) and sort.
 	navigationView_.setModel(&proxy_);

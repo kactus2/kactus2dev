@@ -122,10 +122,6 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
         {
 			text = tr("unnamed");
 		}
-		if (item->isModified())
-		{
-			text.append(QStringLiteral("*"));
-		}
 
 		return text;
 	}
@@ -135,7 +131,7 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
 	}
 	else if (role == Qt::ForegroundRole)
     {
-        if (!item->isValid())
+        if (item->parent() != rootItem_ && !item->isValid())
         {
             return KactusColors::ERROR;
         }
@@ -157,6 +153,18 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
 		}
 		return size;
     }
+	else if (role == Qt::DecorationRole)
+	{
+		if (item->parent() == rootItem_ && item->isValid() == false)
+		{
+			return QIcon(":icons/common/graphics/exclamation--frame.png");
+		}
+		return QVariant();
+	}
+	else if (role == Qt::UserRole)
+	{
+		return item->isModified();
+	}
 	// not supported role
 	else
     {
