@@ -15,6 +15,8 @@
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
+#include <IPXACTmodels/Component/Choice.h>
+
 #include <QDomDocument>
 #include <QString>
 #include <QDomNamedNodeMap>
@@ -31,8 +33,7 @@
 AbstractionDefinition::AbstractionDefinition(): 
 Document(), 
     busType_(),
-    extends_(),
-    logicalPorts_(new QList<QSharedPointer<PortAbstraction> >())
+    extends_()
 {
 
 }
@@ -297,4 +298,12 @@ QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& po
 QSharedPointer<QList<QSharedPointer<PortAbstraction> > > AbstractionDefinition::getLogicalPorts() const
 {
     return logicalPorts_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::getChoices()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Choice> > > AbstractionDefinition::getChoices() const
+{
+    return choices_;
 }
