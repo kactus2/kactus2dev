@@ -236,6 +236,7 @@ void tst_DesignConfigurationWriter::testDesignReference()
 {
     VLNV vlnv(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "TestDesignConfiguration", "0.1");
     designConfiguration_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(vlnv, Document::Revision::Std14));
+    designConfiguration_->setDescription("This is design");
 
     VLNV designReference(VLNV::DESIGN, "tuni.fi", "TestLibrary", "DesignReference", "1.1");
     designConfiguration_->setDesignRef(designReference);
@@ -262,6 +263,7 @@ void tst_DesignConfigurationWriter::testDesignReference()
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
         "\t<ipxact:designRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"DesignReference\" version=\"1.1\"/>\n"
+        "\t<ipxact:description>This is design</ipxact:description>\n"
         "</ipxact:designConfiguration>\n");
 
     compareOutputToExpected(output, expectedOutput);

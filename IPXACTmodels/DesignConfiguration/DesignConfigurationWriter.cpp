@@ -45,6 +45,11 @@ void DesignConfigurationWriter::writeDesignConfiguration(QXmlStreamWriter& write
 
     Details::writeViewConfigurations(writer, designConfiguration);
 
+    if (designConfiguration->getRevision() == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeDescription(writer, designConfiguration->getDescription());
+    }
+
     DocumentWriter::writeParameters(writer, designConfiguration);
 
     DocumentWriter::writeAssertions(writer, designConfiguration);

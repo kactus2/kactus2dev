@@ -512,6 +512,7 @@ void tst_DesignConfigurationReader::testReadViewConfigurations()
                     "</ipxact:configurableElementValues>"
                 "</ipxact:view>"
             "</ipxact:viewConfiguration>"
+            "<ipxact:description>Design description</ipxact:description>"
         "</ipxact:designConfiguration>"
         );
 
@@ -522,6 +523,7 @@ void tst_DesignConfigurationReader::testReadViewConfigurations()
         DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
+    QCOMPARE(testDesignConfiguration->getDescription(), QString("Design description"));
     QCOMPARE(testDesignConfiguration->getViewConfigurations()->size(), 1);
 
     QSharedPointer<ViewConfiguration> testViewConfiguration =
