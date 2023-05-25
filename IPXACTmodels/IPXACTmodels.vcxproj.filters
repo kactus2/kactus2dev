@@ -1477,6 +1477,12 @@
     <ClInclude Include="DesignConfiguration\validators\ViewConfigurationValidator.h">
       <Filter>Header Files\DesignConfiguration\validators</Filter>
     </ClInclude>
+    <ClInclude Include="common\NameGroupReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameGroupWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1651,12 +1657,6 @@
       <Filter>Header Files\common</Filter>
     </QtMoc>
     <QtMoc Include="common\ModuleParameterWriter.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\NameGroupReader.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\NameGroupWriter.h">
       <Filter>Header Files\common</Filter>
     </QtMoc>
     <QtMoc Include="common\ParameterReader.h">

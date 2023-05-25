@@ -14,6 +14,7 @@
 
 #include "ComponentInstance.h"
 
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 
 #include <QXmlStreamWriter>
@@ -34,7 +35,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~ComponentInstanceWriter();
+    ~ComponentInstanceWriter() final = default;
 
     /*!
      *  Write the component instance.
@@ -42,7 +43,7 @@ public:
      *      @param [in] writer  The used XML writer.
      *      @param [in] design  The selected component instance.
      */
-    void writeComponentInstance(QXmlStreamWriter& writer, QSharedPointer<ComponentInstance> instance) const;
+    void writeComponentInstance(QXmlStreamWriter& writer, QSharedPointer<ComponentInstance> instance, Document::Revision docRevision) const;
 
 private:
 
@@ -59,6 +60,8 @@ private:
      */
     void writeConfigurableVLNVReference(QXmlStreamWriter& writer,
         QSharedPointer<ConfigurableVLNVReference> VLNVreference, QString const& xmlElementName) const;
+
+    void writePowerDomainLinks(QXmlStreamWriter& writer, QSharedPointer<ComponentInstance> instance) const;
 };
 
 #endif // COMPONENTINSTANCEWRITER_H

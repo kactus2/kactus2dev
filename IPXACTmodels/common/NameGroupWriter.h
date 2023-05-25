@@ -22,22 +22,19 @@
 //-----------------------------------------------------------------------------
 //! Writer class for namegroup element.
 //-----------------------------------------------------------------------------
-class NameGroupWriter : public QObject
+class NameGroupWriter
 {
-    Q_OBJECT
 public:
 
     /*!
      *  The constructor.
-     *
-     *      @param [in] parent  The parent of this writer.
      */
-    NameGroupWriter(QObject* parent = 0);
+    NameGroupWriter();
 
     /*!
      *  The destructor.
      */
-    ~NameGroupWriter();
+    ~NameGroupWriter() = default;
 
     /*!
      *  Write the name group.
@@ -45,7 +42,7 @@ public:
      *      @param [in] writer      The used xml writer.
      *      @param [in] nameGroup   The selected name group.
      */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup) const;
+    static void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup);
 
 private:
 

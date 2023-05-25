@@ -603,7 +603,7 @@ void VhdlGenerator2::parseInstances()
 
 		// create the instance
 		QSharedPointer<VhdlComponentInstance> compInstance(new VhdlComponentInstance(this, handler_,
-            compDeclaration.data(), instance->getInstanceName(), instanceActiveView, instance->getDescription()));
+            compDeclaration.data(), instance->getInstanceName(), instanceActiveView, instance->description()));
 
         connect(compInstance.data(), SIGNAL(noticeMessage(const QString&)),
             this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);

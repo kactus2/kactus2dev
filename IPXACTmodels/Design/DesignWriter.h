@@ -34,7 +34,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~DesignWriter();
+    ~DesignWriter() final = default;
 
     /*!
      *  Write the design.
@@ -81,7 +81,7 @@ private:
      *      @param [in] currentInterconnection  The selected interconnection.
      */
     void writeSingleInterconncetion(QXmlStreamWriter& writer,
-        QSharedPointer<Interconnection> currentInterconnection) const;
+        QSharedPointer<Interconnection> currentInterconnection, Document::Revision docRevision) const;
 
     /*!
      *  Write an active interface.
@@ -89,7 +89,10 @@ private:
      *      @param [in] writer              The used XML writer.
      *      @param [in] activeInterface     The selected active interface.
      */
-    void writeActiveInterface(QXmlStreamWriter& writer, QSharedPointer<ActiveInterface> activeInterface) const;
+    void writeActiveInterface(QXmlStreamWriter& writer, QSharedPointer<ActiveInterface> activeInterface,
+        Document::Revision docRevision) const;
+
+    QString componentReferenceAttribute(Document::Revision docRevision) const;
 
     /*!
      *  Write a hier interface.
@@ -106,7 +109,7 @@ private:
      *      @param [in] monitorConnection   The selected monitor interconnection.
      */
     void writeMonitorInterconnection(QXmlStreamWriter& writer,
-        QSharedPointer<MonitorInterconnection> monitorConnection) const;
+        QSharedPointer<MonitorInterconnection> monitorConnection, Document::Revision docRevision) const;
 
     /*!
      *  Write a monitor interface.
@@ -114,7 +117,8 @@ private:
      *      @param [in] writer              The used XML writer.
      *      @param [in] monitorInterface    The selected monitor interface.
      */
-    void writeMonitorInterface(QXmlStreamWriter& writer, QSharedPointer<MonitorInterface> monitorInterface) const;
+    void writeMonitorInterface(QXmlStreamWriter& writer, QSharedPointer<MonitorInterface> monitorInterface,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write ad-hoc connections.
@@ -130,7 +134,7 @@ private:
      *      @param [in] writer              The used XML writer.
      *      @param [in] adHocConnection     The selected ad-hoc connection.
      */
-    void writeSingleAdHocConnection(QXmlStreamWriter& writer, QSharedPointer<AdHocConnection> adHocConnection) const;
+    void writeSingleAdHocConnection(QXmlStreamWriter& writer, QSharedPointer<AdHocConnection> adHocConnection, Document::Revision docRevision) const;
 
     /*!
      *  Write ad-hoc port references.
@@ -138,7 +142,7 @@ private:
      *      @param [in] writer              The used XML writer.
      *      @param [in] adHocConnection     The selected ad-hoc connection.
      */
-    void writeAdHocPortReferences(QXmlStreamWriter& writer, QSharedPointer<AdHocConnection> adHocConnection) const;
+    void writeAdHocPortReferences(QXmlStreamWriter& writer, QSharedPointer<AdHocConnection> adHocConnection, Document::Revision docRevision) const;
 
     /*!
      *  Write a port reference.
@@ -146,7 +150,7 @@ private:
      *      @param [in] writer          The used XML writer.
      *      @param [in] portRefernce    The selected port reference.
      */
-    void writePortReference(QXmlStreamWriter& writer, QSharedPointer<PortReference> portRefernce) const;
+    void writePortReference(QXmlStreamWriter& writer, QSharedPointer<PortReference> portRefernce, Document::Revision docRevision) const;
 
     /*!
      *  Write a part select.

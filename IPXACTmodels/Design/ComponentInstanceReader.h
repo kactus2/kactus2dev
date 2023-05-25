@@ -31,22 +31,26 @@ public:
     /*!
 	 *  The destructor.
 	 */
-    ~ComponentInstanceReader();
+    ~ComponentInstanceReader() = default;
 
     /*!
      *  Creates a component instance from XML definition.
      *
      *      @param [in] instanceNode    The XML description of the component instance.
+     *      @param [in] docRevision     The IP-XACT revision to comply.
      *
      *      @return The created component instance.
      */
-    QSharedPointer<ComponentInstance> createComponentInstanceFrom(QDomNode const& instanceNode) const;
+    QSharedPointer<ComponentInstance> createComponentInstanceFrom(QDomNode const& instanceNode, Document::Revision docRevision) const;
 
 private:
 
     // Disable copying.
     ComponentInstanceReader(ComponentInstanceReader const& rhs);
     ComponentInstanceReader& operator=(ComponentInstanceReader const& rhs);
+
+    void parsePowerDomainLinks(QDomNode const& instanceNode, QSharedPointer<ComponentInstance> instance) const;
+
 
     /*!
      *  Parse extensions of the instance.

@@ -613,10 +613,8 @@
     <QtMoc Include="common\ModuleParameterWriter.h">
     </QtMoc>
     <ClInclude Include="common\NameGroup.h" />
-    <QtMoc Include="common\NameGroupReader.h">
-    </QtMoc>
-    <QtMoc Include="common\NameGroupWriter.h">
-    </QtMoc>
+    <ClInclude Include="common\NameGroupReader.h" />
+    <ClInclude Include="common\NameGroupWriter.h" />
     <ClInclude Include="common\NameValuePair.h" />
     <ClInclude Include="common\Parameter.h" />
     <QtMoc Include="common\ParameterReader.h">

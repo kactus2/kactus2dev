@@ -210,8 +210,8 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
         QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(), 
             element->getComponentRef()));
 
-        instance->setDisplayName(element->getDisplayName());
-        instance->setDescription(element->getDescription()),
+        instance->setDisplayName(element->displayName());
+        instance->setDescription(element->description()),
         instance->setUuid(element->getUuid());
         instance->setImported(true);
 
@@ -413,8 +413,8 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
         // Duplicate the component instance and set its kts_hw_ref.
         QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(),
             element->getComponentRef()));
-        instance->setDisplayName(element->getDisplayName());
-        instance->setDescription(element->getDescription()); 
+        instance->setDisplayName(element->displayName());
+        instance->setDescription(element->description()); 
         instance->setUuid(element->getUuid());
 
         instance->setImported(true);

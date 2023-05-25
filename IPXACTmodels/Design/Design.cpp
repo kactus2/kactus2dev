@@ -20,8 +20,8 @@
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
 //-----------------------------------------------------------------------------
-Design::Design(const VLNV &vlnv) :
-Document(vlnv),
+Design::Design(VLNV const& vlnv, Document::Revision revision) :
+Document(vlnv, revision),
 componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
 interconnections_(new QList<QSharedPointer<Interconnection> > ()),
 monitorInterconnections_(new QList<QSharedPointer<MonitorInterconnection> > ()),
@@ -522,7 +522,7 @@ QString Design::getHWInstanceDescription(QString const& instanceName) const
     {
         if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
         {
-            return instance->getDescription();
+            return instance->description();
 		}
 	}
 

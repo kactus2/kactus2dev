@@ -412,6 +412,7 @@ CreateHelp
     <ClCompile Include="editors\common\DesignParameterReferenceTree\DesignParameterReferenceTree.cpp" />
     <ClCompile Include="editors\common\DesignWidget.cpp" />
     <ClCompile Include="editors\common\DesignWidgetFactoryImplementation.cpp" />
+    <ClCompile Include="editors\common\DocumentNameGroupEditor.cpp" />
     <ClCompile Include="editors\common\GraphicsItemLabel.cpp" />
     <ClCompile Include="editors\common\ImageExporter.cpp" />
     <ClCompile Include="editors\common\InterfaceEditor\interfaceeditor.cpp" />
@@ -1379,6 +1380,7 @@ CreateHelp
     <ClInclude Include="editors\common\DesignWidgetFactoryImplementation.h" />
     <ClInclude Include="editors\common\diagramgrid.h" />
     <ClInclude Include="editors\common\DiagramUtil.h" />
+    <QtMoc Include="editors\common\DocumentNameGroupEditor.h" />
     <ClInclude Include="editors\common\DrawMode.h" />
     <ClInclude Include="editors\common\GraphicsItemLabel.h" />
     <ClInclude Include="editors\common\ImageExporter.h" />

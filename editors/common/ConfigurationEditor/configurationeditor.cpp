@@ -205,7 +205,7 @@ void ConfigurationEditor::createAndSaveConfiguration(CreateConfigurationDialog c
     // Create a new design.
     else if (dialog.designSelection() == CreateConfigurationDialog::CREATE_EMPTY)
     {
-        QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVLNV));
+        QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
         library_->writeModelToFile(directoryPath, design);
 
         designConfiguration->setDesignRef(designVLNV);

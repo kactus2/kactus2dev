@@ -11,19 +11,12 @@
 
 #include "NameGroupWriter.h"
 
+#include "CommonItemsWriter.h"
+
 //-----------------------------------------------------------------------------
 // Function: NameGroupWriter::NameGroupWriter()
 //-----------------------------------------------------------------------------
-NameGroupWriter::NameGroupWriter(QObject* parent /* = 0 */):
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: NameGroupWriter::~NameGroupWriter()
-//-----------------------------------------------------------------------------
-NameGroupWriter::~NameGroupWriter()
+NameGroupWriter::NameGroupWriter()
 {
 
 }
@@ -31,17 +24,13 @@ NameGroupWriter::~NameGroupWriter()
 //-----------------------------------------------------------------------------
 // Function: NameGroupWriter::writeNameGroup()
 //-----------------------------------------------------------------------------
-void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup) const
+void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup)
 {
     writer.writeTextElement(QStringLiteral("ipxact:name"), nameGroup->name());
 
-    if (!nameGroup->displayName().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:displayName"), nameGroup->displayName());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:displayName"), nameGroup->displayName());
 
-    if (!nameGroup->description().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), nameGroup->description());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:shortDescription"), nameGroup->shortDescription());
+
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:description"), nameGroup->description());
 }

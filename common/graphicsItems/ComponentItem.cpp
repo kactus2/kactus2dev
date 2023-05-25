@@ -191,7 +191,7 @@ QString ComponentItem::name() const
 //-----------------------------------------------------------------------------
 QString ComponentItem::displayName() const
 {
-    return componentInstance_->getDisplayName();
+    return componentInstance_->displayName();
 }
 
 //-----------------------------------------------------------------------------
@@ -199,7 +199,7 @@ QString ComponentItem::displayName() const
 //-----------------------------------------------------------------------------
 QString ComponentItem::description() const
 {
-    return componentInstance_->getDescription();
+    return componentInstance_->description();
 }
 
 //-----------------------------------------------------------------------------

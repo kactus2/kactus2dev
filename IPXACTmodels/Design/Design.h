@@ -55,7 +55,7 @@ public:
 	 *
 	 *      @param [in] vlnv    The VLNV for the design.
 	 */
-	Design(const VLNV &vlnv);
+	Design(VLNV const& vlnv, Document::Revision revision);
 
     /*!
      *  The constructor.

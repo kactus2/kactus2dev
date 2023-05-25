@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
+#include <IPXACTmodels/common/NameGroupReader.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::ComponentInstanceReader()
 //-----------------------------------------------------------------------------
@@ -22,36 +24,60 @@ ComponentInstanceReader::ComponentInstanceReader() : CommonItemsReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceReader::ComponentInstanceReader()
-//-----------------------------------------------------------------------------
-ComponentInstanceReader::~ComponentInstanceReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::createComponentInstanceFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstance> ComponentInstanceReader::createComponentInstanceFrom(
-    QDomNode const& instanceNode) const
+    QDomNode const& instanceNode, Document::Revision docRevision) const
 {
+    QSharedPointer<ComponentInstance> newComponentInstance(new ComponentInstance());
+    NameGroupReader::parseNameGroup(instanceNode, newComponentInstance);
+
     QString instanceName = instanceNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue();
-    QString displayName = instanceNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue();
-    QString description = instanceNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue();
-    QString isPresent = instanceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+    newComponentInstance->setInstanceName(instanceName);
+
 
     QDomNode componentRefNode = instanceNode.firstChildElement(QStringLiteral("ipxact:componentRef"));
+
     QSharedPointer<ConfigurableVLNVReference> componentRef =
         parseConfigurableVLNVReference(componentRefNode, VLNV::COMPONENT);
+    newComponentInstance->setComponentRef(componentRef);
 
-    QSharedPointer<ComponentInstance> newComponentInstance (new ComponentInstance(instanceName, componentRef));
-    newComponentInstance->setIsPresent(isPresent);
-    newComponentInstance->setDisplayName(displayName);
-    newComponentInstance->setDescription(description);
+    if (docRevision == Document::Revision::Std14)
+    {
+        QString isPresent = instanceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+        newComponentInstance->setIsPresent(isPresent);
+    }
+
+    if (docRevision == Document::Revision::Std22)
+    {
+        parsePowerDomainLinks(instanceNode, newComponentInstance);
+    }
 
     parseExtensions(instanceNode, newComponentInstance);
 
     return newComponentInstance;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceReader::parsePowerDomainLinks()
+//-----------------------------------------------------------------------------
+void ComponentInstanceReader::parsePowerDomainLinks(QDomNode const& instanceNode,
+    QSharedPointer<ComponentInstance> instance) const
+{
+    QDomElement domainsNode = instanceNode.firstChildElement(QStringLiteral("ipxact:powerDomainLinks"));
+    QDomNodeList domainNodeList = domainsNode.childNodes();
+
+    const int count = domainNodeList.count();
+    for (int index = 0; index < count; ++index)
+    {
+        auto const& domainNode = domainNodeList.at(index);
+        auto externalLink = domainNode.firstChildElement(QStringLiteral("ipxact:externalPowerDomainReference")).firstChild().nodeValue();
+        auto internalLink = domainNode.firstChildElement(QStringLiteral("ipxact:internalPowerDomainReference")).firstChild().nodeValue();
+
+        auto link = QSharedPointer<ComponentInstance::PowerDomainLink>(
+            new ComponentInstance::PowerDomainLink({ externalLink.toStdString(), internalLink.toStdString() }));
+        instance->getPowerDomainLinks()->append(link);
+    }
 }
 
 //-----------------------------------------------------------------------------

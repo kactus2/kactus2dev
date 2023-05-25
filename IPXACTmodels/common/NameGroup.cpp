@@ -12,16 +12,6 @@
 #include "NameGroup.h"
 #include <IPXACTmodels/generaldeclarations.h>
 
-//-----------------------------------------------------------------------------
-// Function: NameGroup::NameGroup()
-//-----------------------------------------------------------------------------
-NameGroup::NameGroup(): 
-    name_(),
-    displayName_(),
-    description_() 
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: NameGroup::NameGroup()
@@ -35,25 +25,6 @@ NameGroup::NameGroup(QString const& name, QString const& displayName, QString co
 }
 
 //-----------------------------------------------------------------------------
-// Function: NameGroup::NameGroup()
-//-----------------------------------------------------------------------------
-NameGroup::NameGroup( const NameGroup& other ):
-    name_(other.name_),
-    displayName_(other.displayName_),
-    description_(other.description_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: NameGroup::~NameGroup()
-//-----------------------------------------------------------------------------
-NameGroup::~NameGroup()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: NameGroup::operator=()
 //-----------------------------------------------------------------------------
 NameGroup& NameGroup::operator=( const NameGroup& other )
@@ -61,6 +32,7 @@ NameGroup& NameGroup::operator=( const NameGroup& other )
     if (this != &other) {
         name_ = other.name_;
         displayName_ = other.displayName_;
+        shortDescription_ = other.shortDescription_;
         description_ = other.description_;
     }
     return *this;
@@ -96,6 +68,22 @@ QString NameGroup::displayName() const
 void NameGroup::setDisplayName(QString const& displayName)
 {
     displayName_ = displayName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: NameGroup::sortDescription()
+//-----------------------------------------------------------------------------
+QString NameGroup::shortDescription() const
+{
+    return shortDescription_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: NameGroup::sortDescription()
+//-----------------------------------------------------------------------------
+void NameGroup::setShortDescription(QString const& description)
+{
+    shortDescription_ = description;
 }
 
 //-----------------------------------------------------------------------------

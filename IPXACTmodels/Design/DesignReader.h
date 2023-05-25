@@ -36,7 +36,7 @@ public:
     /*!
 	 *  The destructor.
 	 */
-    ~DesignReader();
+    ~DesignReader() final = default;
 
     /*!
      *  Creates a design from XML definition.
@@ -100,8 +100,12 @@ private:
      *      @param [in] interfaceNode   The XML description of the active interface.
      *      @param [in] newInterface    The new interface item.
      */
-    void parseActiveInterface(QDomNode const& interfaceNode, QSharedPointer<ActiveInterface> newInterface) const;
-    
+    void parseActiveInterface(QDomNode const& interfaceNode, QSharedPointer<ActiveInterface> newInterface,
+         Document::Revision docRevision) const;
+
+    QString parseComponentReference(QDomNode const& interfaceNode, Document::Revision docRevision) const;
+
+
     /*!
      *  Reads a hierarchical interface.
      *
@@ -133,7 +137,7 @@ private:
      *      @param [in] interfaceNode   The XML description of the monitor interface.
      *      @param [in] newInterface    The new interface item.
      */
-    void parseMonitorInterface(QDomNode const& interfaceNode, QSharedPointer<MonitorInterface> newInterface) const;
+    void parseMonitorInterface(QDomNode const& interfaceNode, QSharedPointer<MonitorInterface> newInterface, Document::Revision docRevision) const;
 
     /*!
      *  Reads the ad-hoc connections.
@@ -158,7 +162,7 @@ private:
      *      @param [in] newAdHocConnection  The new ad-hoc connection item.
      */
     void parseInternalPortReferences(const QDomNodeList& internalNodes,
-        QSharedPointer<AdHocConnection> newAdHocConnection) const;
+        QSharedPointer<AdHocConnection> newAdHocConnection, Document::Revision docRevision) const;
 
     /*!
      *  Reads the external port references.
@@ -167,14 +171,18 @@ private:
      *      @param [in] newAdHocConnection  The new ad-hoc connection item.
      */
     void parseExternalPortReferences(const QDomNodeList& externalNodes,
-        QSharedPointer<AdHocConnection> newAdHocConnection) const;
+        QSharedPointer<AdHocConnection> newAdHocConnection,
+        Document::Revision docRevision) const;
 
     /*!
      *  Creates a port reference.
      *
      *      @param [in] portReferenceNode   The XML description of the port.
      */
-    QSharedPointer<PortReference> createPortReference(QDomNode const& portReferenceNode) const;
+    QSharedPointer<PortReference> createPortReference(QDomNode const& portReferenceNode,
+        Document::Revision docRevision) const;
+
+    void parsePartSelect(QDomNode const& portReferenceNode, QSharedPointer<PortReference> newPortReference) const;
 
     /*!
      *  Reads ad-hoc connection extensions.

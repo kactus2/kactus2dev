@@ -3187,6 +3187,9 @@
     <ClCompile Include="editors\AbstractionDefinitionEditor\absdefgroup.cpp">
       <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\common\DocumentNameGroupEditor.cpp">
+      <Filter>Source Files\editors\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5686,6 +5689,9 @@
     </QtMoc>
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionWirePortsDelegate.h">
       <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\common\DocumentNameGroupEditor.h">
+      <Filter>Header Files\editors\common</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

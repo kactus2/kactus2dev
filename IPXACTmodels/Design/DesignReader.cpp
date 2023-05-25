@@ -32,36 +32,30 @@ DesignReader::DesignReader(): DocumentReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignReader::~DesignReader()
-//-----------------------------------------------------------------------------
-DesignReader::~DesignReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignReader::createDesignFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> DesignReader::createDesignFrom(QDomDocument const& document) const
 {
-    QSharedPointer<Design> newDesign (new Design);
+    QDomNode designNode = document.firstChildElement();
+
+    VLNV vlnv = CommonItemsReader::createVLNVFrom(designNode, VLNV::DESIGN);
+    Document::Revision docRevision = DocumentReader::getXMLDocumentRevision(designNode);
+
+    QSharedPointer<Design> newDesign (new Design(vlnv, docRevision));
 
     parseTopComments(document, newDesign);
 
     parseXMLProcessingInstructions(document, newDesign);
 
-    QDomNode designNode = document.firstChildElement();
     parseNamespaceDeclarations(designNode, newDesign);
 
-    parseVLNVElements(designNode, newDesign, VLNV::DESIGN);
+    DocumentReader::parseDocumentNameGroup(designNode, newDesign);
 
     parseComponentInstances(designNode, newDesign);
 
     parseInterconnections(designNode, newDesign);
 
     parseAdHocConnections(designNode, newDesign);
-
-    parseDescription(designNode, newDesign);
 
     parseParameters(designNode, newDesign);
 
@@ -87,7 +81,7 @@ void DesignReader::parseComponentInstances(QDomNode const& designNode, QSharedPo
         QDomNode singleInstanceNode = instanceNodes.at(i);
 
         QSharedPointer<ComponentInstance> newComponentInstance =
-            instanceReader.createComponentInstanceFrom(singleInstanceNode);
+            instanceReader.createComponentInstanceFrom(singleInstanceNode, newDesign->getRevision());
 
         newDesign->getComponentInstances()->append(newComponentInstance);
     }
@@ -126,24 +120,24 @@ void DesignReader::parseSingleInterconnection(QDomNode const& interconnectionNod
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignReader::parseComponentInerconnection()
+// Function: DesignReader::parseComponentInterconnection()
 //-----------------------------------------------------------------------------
 void DesignReader::parseComponentInterconnection(QDomNode const& interconnectionNode,
     QSharedPointer<Design> newDesign) const
 {
-    NameGroupReader nameReader;
-    QString name = nameReader.parseName(interconnectionNode);
-    QString displayName = nameReader.parseDisplayName(interconnectionNode);
-    QString description = nameReader.parseDescription(interconnectionNode);
-    QString isPresent = interconnectionNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+    QSharedPointer<Interconnection> newInterconnection(new Interconnection());
+    NameGroupReader::parseNameGroup(interconnectionNode, newInterconnection);
 
     QSharedPointer<ActiveInterface> startInterface (new ActiveInterface);
     QDomNode startInterfaceNode = interconnectionNode.firstChildElement(QStringLiteral("ipxact:activeInterface"));
-    parseActiveInterface(startInterfaceNode, startInterface);
+    parseActiveInterface(startInterfaceNode, startInterface, newDesign->getRevision());
+    newInterconnection->setStartInterface(startInterface);
 
-    QSharedPointer<Interconnection> newInterconnection (
-        new Interconnection(name, startInterface, displayName, description));
-    newInterconnection->setIsPresent(isPresent);
+    if (newDesign->getRevision() == Document::Revision::Std14)
+    {
+        QString isPresent = interconnectionNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+        newInterconnection->setIsPresent(isPresent);
+    }
 
     QDomNodeList interfaceNodes = interconnectionNode.childNodes();
 
@@ -154,7 +148,7 @@ void DesignReader::parseComponentInterconnection(QDomNode const& interconnection
             singleInterfaceNode != startInterfaceNode)
         {
             QSharedPointer<ActiveInterface> activeInterface (new ActiveInterface());
-            parseActiveInterface(singleInterfaceNode, activeInterface);
+            parseActiveInterface(singleInterfaceNode, activeInterface, newDesign->getRevision());
 
             newInterconnection->getActiveInterfaces()->append(activeInterface);
         }
@@ -193,13 +187,11 @@ void DesignReader::parseInterconnectionExtensions(const QDomNode& interconnectio
 // Function: DesignReader::parseActiveInterface()
 //-----------------------------------------------------------------------------
 void DesignReader::parseActiveInterface(QDomNode const& interfaceNode,
-    QSharedPointer<ActiveInterface> newInterface) const
+    QSharedPointer<ActiveInterface> newInterface, Document::Revision docRevision) const
 {
     parseHierInterface(interfaceNode, newInterface);
 
-    QDomNamedNodeMap attributeMap = interfaceNode.attributes();
-
-    newInterface->setComponentReference(attributeMap.namedItem(QStringLiteral("componentRef")).nodeValue());
+    newInterface->setComponentReference(parseComponentReference(interfaceNode, docRevision));
 
     QDomNode baseExcludePortsNode = interfaceNode.firstChildElement(QStringLiteral("ipxact:excludePorts"));
     QDomNodeList excludePortNodes = baseExcludePortsNode.childNodes();
@@ -209,6 +201,26 @@ void DesignReader::parseActiveInterface(QDomNode const& interfaceNode,
         QString portName = excludePortNodes.at(i).firstChild().nodeValue();
         newInterface->getExcludePorts()->append(portName);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parseHierInterface()
+//-----------------------------------------------------------------------------
+QString DesignReader::parseComponentReference(QDomNode const& interfaceNode, Document::Revision docRevision) const
+{
+    QDomNamedNodeMap attributeMap = interfaceNode.attributes();
+
+    auto attributeName = QString();
+    if (docRevision == Document::Revision::Std14)
+    {
+        attributeName = QStringLiteral("componentRef");
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        attributeName = QStringLiteral("componentInstanceRef");
+    }
+
+    return attributeMap.namedItem(attributeName).nodeValue();;
 }
 
 //-----------------------------------------------------------------------------
@@ -262,21 +274,19 @@ void DesignReader::parseHierInterfaceExtensions(const QDomNode& interfaceNode,
 //-----------------------------------------------------------------------------
 void DesignReader::parseMonitorInterconnection(QDomNode const& monitorNode, QSharedPointer<Design> newDesign) const
 {
-    NameGroupReader nameReader;
-    QString name = nameReader.parseName(monitorNode);
-    QString displayName = nameReader.parseDisplayName(monitorNode);
-    QString description = nameReader.parseDescription(monitorNode);
-    QString isPresent = monitorNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
-
+    QSharedPointer<MonitorInterconnection> newMonitorConnection(new MonitorInterconnection());
+    NameGroupReader::parseNameGroup(monitorNode, newMonitorConnection);
+    
     QDomNode activeInterfaceNode = monitorNode.firstChildElement(QStringLiteral("ipxact:monitoredActiveInterface"));
+    QSharedPointer<MonitorInterface> monitoredActiveInterface(new MonitorInterface());
+    newMonitorConnection->setMonitoredctiveInterface(monitoredActiveInterface);
 
-    QSharedPointer<MonitorInterface> monitoredActiveInterface (new MonitorInterface());
-
-    parseMonitorInterface(activeInterfaceNode, monitoredActiveInterface);
-
-    QSharedPointer<MonitorInterconnection> newMonitorConnection (new MonitorInterconnection(name,
-        monitoredActiveInterface, displayName, description));
-    newMonitorConnection->setIsPresent(isPresent);
+    parseMonitorInterface(activeInterfaceNode, monitoredActiveInterface, newDesign->getRevision());
+    if (newDesign->getRevision() == Document::Revision::Std14)
+    {
+        QString isPresent = monitorNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+        newMonitorConnection->setIsPresent(isPresent);
+    }
 
     QDomNodeList monitorChildNodes = monitorNode.childNodes();
 
@@ -286,7 +296,7 @@ void DesignReader::parseMonitorInterconnection(QDomNode const& monitorNode, QSha
         if (monitorInterfaceNode.nodeName() == QStringLiteral("ipxact:monitorInterface"))
         {
             QSharedPointer<MonitorInterface> newMonitorInterface (new MonitorInterface());
-            parseMonitorInterface(monitorInterfaceNode, newMonitorInterface);
+            parseMonitorInterface(monitorInterfaceNode, newMonitorInterface, newDesign->getRevision());
 
             newMonitorConnection->getMonitorInterfaces()->append(newMonitorInterface);
         }
@@ -299,13 +309,13 @@ void DesignReader::parseMonitorInterconnection(QDomNode const& monitorNode, QSha
 // Function: DesignReader::parseMonitorInterface()
 //-----------------------------------------------------------------------------
 void DesignReader::parseMonitorInterface(QDomNode const& interfaceNode,
-    QSharedPointer<MonitorInterface> newInterface) const
+    QSharedPointer<MonitorInterface> newInterface, Document::Revision docRevision) const
 {
     parseHierInterface(interfaceNode, newInterface);
 
-    QDomNamedNodeMap attributeMap = interfaceNode.attributes();
+    newInterface->setComponentReference(parseComponentReference(interfaceNode, docRevision));
 
-    newInterface->setComponentReference(attributeMap.namedItem(QStringLiteral("componentRef")).nodeValue());
+    QDomNamedNodeMap attributeMap = interfaceNode.attributes();
     newInterface->setPath(attributeMap.namedItem(QStringLiteral("path")).nodeValue());
 }
 
@@ -329,23 +339,22 @@ void DesignReader::parseAdHocConnections(QDomNode const& designNode, QSharedPoin
 //-----------------------------------------------------------------------------
 void DesignReader::parseSingleAdHocConnection(const QDomNode& adHocNode, QSharedPointer<Design> newDesign) const
 {
-    QString name = adHocNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
-    QString displayName = adHocNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue();
-    QString description = adHocNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue();
-    QString isPresent = adHocNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
-    QString tiedValue = adHocNode.firstChildElement(QStringLiteral("ipxact:tiedValue")).firstChild().nodeValue();
+    QSharedPointer<AdHocConnection> newAdHocConnection(new AdHocConnection(QString()));
+    NameGroupReader::parseNameGroup(adHocNode, newAdHocConnection);
 
-    QSharedPointer<AdHocConnection> newAdHocConnection (new AdHocConnection(name, displayName, description,
-        tiedValue));
+    QString isPresent = adHocNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
     newAdHocConnection->setIsPresent(isPresent);
+
+    QString tiedValue = adHocNode.firstChildElement(QStringLiteral("ipxact:tiedValue")).firstChild().nodeValue();
+    newAdHocConnection->setTiedValue(tiedValue);
 
     QDomElement portReferencesNode = adHocNode.firstChildElement(QStringLiteral("ipxact:portReferences"));
     QDomNodeList internalReferenceNodes = portReferencesNode.elementsByTagName(QStringLiteral("ipxact:internalPortReference"));
     QDomNodeList externalReferenceNodes = portReferencesNode.elementsByTagName(QStringLiteral("ipxact:externalPortReference"));
 
-    parseInternalPortReferences(internalReferenceNodes, newAdHocConnection);
+    parseInternalPortReferences(internalReferenceNodes, newAdHocConnection, newDesign->getRevision());
 
-    parseExternalPortReferences(externalReferenceNodes, newAdHocConnection);
+    parseExternalPortReferences(externalReferenceNodes, newAdHocConnection, newDesign->getRevision());
 
     parseAdHocConnectionExtensions(adHocNode, newAdHocConnection);
 
@@ -356,15 +365,15 @@ void DesignReader::parseSingleAdHocConnection(const QDomNode& adHocNode, QShared
 // Function: DesignReader::parseInternalPortReferences()
 //-----------------------------------------------------------------------------
 void DesignReader::parseInternalPortReferences(const QDomNodeList& internalNodes,
-    QSharedPointer<AdHocConnection> newAdHocConnection) const
+    QSharedPointer<AdHocConnection> newAdHocConnection, Document::Revision docRevision) const
 {
     for (int i = 0; i < internalNodes.size(); ++i)
     {
         QDomNode internalNode = internalNodes.at(i);
-        QSharedPointer<PortReference> internalReference = createPortReference(internalNode);
+        QSharedPointer<PortReference> internalReference = createPortReference(internalNode, docRevision);
 
         QDomNamedNodeMap attributeMap = internalNode.attributes();
-        internalReference->setComponentRef(attributeMap.namedItem(QStringLiteral("componentRef")).nodeValue());
+        internalReference->setComponentRef(parseComponentReference(internalNode, docRevision));
 
         newAdHocConnection->getInternalPortReferences()->append(internalReference);
     }
@@ -374,12 +383,13 @@ void DesignReader::parseInternalPortReferences(const QDomNodeList& internalNodes
 // Function: DesignReader::parseExternalPortReferences()
 //-----------------------------------------------------------------------------
 void DesignReader::parseExternalPortReferences(const QDomNodeList& externalNodes,
-    QSharedPointer<AdHocConnection> newAdHocConnection) const
+    QSharedPointer<AdHocConnection> newAdHocConnection,
+    Document::Revision docRevision) const
 {
     for (int i = 0;i < externalNodes.size(); ++i)
     {
         QDomNode externalNode = externalNodes.at(i);
-        QSharedPointer<PortReference> externalReference = createPortReference(externalNode);
+        QSharedPointer<PortReference> externalReference = createPortReference(externalNode, docRevision);
 
         newAdHocConnection->getExternalPortReferences()->append(externalReference);
     }
@@ -388,7 +398,8 @@ void DesignReader::parseExternalPortReferences(const QDomNodeList& externalNodes
 //-----------------------------------------------------------------------------
 // Function: DesignReader::createPortReference()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortReference> DesignReader::createPortReference(QDomNode const& portReferenceNode) const
+QSharedPointer<PortReference> DesignReader::createPortReference(QDomNode const& portReferenceNode,
+    Document::Revision docRevision) const
 {
     QDomNamedNodeMap attributeMap = portReferenceNode.attributes();
 
@@ -396,9 +407,39 @@ QSharedPointer<PortReference> DesignReader::createPortReference(QDomNode const& 
 
     QSharedPointer<PortReference> newPortReference (new PortReference(portReference));
 
-    QString isPresent = portReferenceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
-    newPortReference->setIsPresent(isPresent);
+    if (docRevision == Document::Revision::Std14)
+    {
+        QString isPresent = portReferenceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+        newPortReference->setIsPresent(isPresent);
+    }
 
+    if (docRevision == Document::Revision::Std22)
+    {
+        auto subReferencesNodes = portReferenceNode.toElement().elementsByTagName(QStringLiteral("ipxact:subPortReference"));
+
+        const int nodeCount = subReferencesNodes.count();
+        for (int i = 0; i < nodeCount; ++i)
+        {
+            auto subPortNode = subReferencesNodes.at(i);
+            auto subPortReference = subPortNode.attributes().namedItem(QStringLiteral("subPortRef")).nodeValue();
+
+            QSharedPointer<PortReference> subPortItem(new PortReference(subPortReference));
+            parsePartSelect(subPortNode, subPortItem);
+
+            newPortReference->getSubPortReferences()->append(subPortItem);
+        }
+    }
+
+    parsePartSelect(portReferenceNode, newPortReference);
+
+    return newPortReference;
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignReader::parsePartSelect()
+//-----------------------------------------------------------------------------
+void DesignReader::parsePartSelect(QDomNode const& portReferenceNode, QSharedPointer<PortReference> portReference) const
+{
     QDomNode partSelectNode = portReferenceNode.firstChildElement(QStringLiteral("ipxact:partSelect"));
 
     if (!partSelectNode.isNull())
@@ -408,7 +449,7 @@ QSharedPointer<PortReference> DesignReader::createPortReference(QDomNode const& 
         QString leftRange = rangeNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
         QString rightRange = rangeNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
-        QSharedPointer<PartSelect> newPartSelect (new PartSelect(leftRange, rightRange));
+        QSharedPointer<PartSelect> newPartSelect(new PartSelect(leftRange, rightRange));
 
         QDomElement indicesNode = partSelectNode.firstChildElement(QStringLiteral("ipxact:indices"));
 
@@ -424,10 +465,8 @@ QSharedPointer<PortReference> DesignReader::createPortReference(QDomNode const& 
             }
         }
 
-        newPortReference->setPartSelect(newPartSelect);
+        portReference->setPartSelect(newPartSelect);
     }
-
-    return newPortReference;
 }
 
 //-----------------------------------------------------------------------------

@@ -159,7 +159,7 @@ std::string ComponentInstanceInterface::getDescription(std::string const& itemNa
     QSharedPointer<ComponentInstance> editedInstance = getComponentInstance(itemName);
     if (editedInstance)
     {
-        return editedInstance->getDescription().toStdString();
+        return editedInstance->description().toStdString();
     }
 
     return std::string("");

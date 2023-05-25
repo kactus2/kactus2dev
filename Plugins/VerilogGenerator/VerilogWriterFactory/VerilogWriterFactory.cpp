@@ -412,7 +412,7 @@ void VerilogWriterFactory::addWritersToTopInDesiredOrder(QSharedPointer<VerilogD
 //-----------------------------------------------------------------------------
 QSharedPointer<Writer> VerilogWriterFactory::createHeaderWriterForInstance(QSharedPointer<MetaInstance> instance) const
 {
-    QString header = instance->getComponentInstance()->getDescription();
+    QString header = instance->getComponentInstance()->description();
     if (!header.isEmpty())
     {
         header.append("\n");

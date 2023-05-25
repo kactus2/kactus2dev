@@ -19,11 +19,13 @@
 #include <QString>
 
 //-----------------------------------------------------------------------------
-// Describes either an internal or external port reference in an ad-hoc connection.
+// Describes either an internal, external or sub port reference in an ad-hoc connection.
 //
 // Internal port (ipxact:internalPortReference) references a port of a component instance.
 //
 // External port (ipxact:externalPortReference) references a port of the encompassing component.
+//
+// External port (ipxact:subPortReference) references a subport of the designated component.
 //-----------------------------------------------------------------------------
 class IPXACTMODELS_EXPORT PortReference
 {
@@ -46,7 +48,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~PortReference();
+    ~PortReference() = default;
 
     /*!
      *  Assignment operator.
@@ -97,6 +99,8 @@ public:
      */
     void setIsPresent(QString const& newIsPresent);
 
+    QSharedPointer<QList<QSharedPointer<PortReference> > > getSubPortReferences() const;
+
     /*!
      *  Get the part select.
      *
@@ -125,6 +129,10 @@ private:
 
     //! The presence.
     QString isPresent_;
+
+    //! The the subport references of internal or external ports.
+    QSharedPointer<QList<QSharedPointer<PortReference> > > subPortReferences_ =
+        QSharedPointer<QList<QSharedPointer<PortReference> > >(new QList<QSharedPointer<PortReference> >());
 
     //! The part select.
     QSharedPointer<PartSelect> partSelect_;
