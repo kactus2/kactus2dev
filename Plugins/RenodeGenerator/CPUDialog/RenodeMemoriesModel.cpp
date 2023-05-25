@@ -13,6 +13,8 @@
 
 #include <common/KactusColors.h>
 
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeColumns.h>
+
 #include <QColor>
 
 //-----------------------------------------------------------------------------

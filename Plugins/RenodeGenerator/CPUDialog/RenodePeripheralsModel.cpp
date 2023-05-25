@@ -15,6 +15,8 @@
 
 #include <QColor>
 
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeColumns.h>
+
 //-----------------------------------------------------------------------------
 // Function: RenodePeripheralsModel::RenodePeripheralsModel()
 //-----------------------------------------------------------------------------
@@ -147,7 +149,10 @@ QVariant RenodePeripheralsModel::data(QModelIndex const& index, int role) const
     }
 	else if (role == Qt::ForegroundRole)
     {
-        if (index.column() == PeripheralColumns::NAME || index.column() == PeripheralColumns::BASEADDRESS || index.column() == PeripheralColumns::SIZE)
+        if (index.column() == PeripheralColumns::NAME || index.column() == PeripheralColumns::BASEADDRESS ||
+            index.column() == PeripheralColumns::SIZE ||
+            ((index.column() == PeripheralColumns::INITABLE || index.column() == PeripheralColumns::FILEPATH) &&
+                classIsPythonPeripherals(index) == false))
         {
             return KactusColors::DISABLED_TEXT;
         }
@@ -155,6 +160,10 @@ QVariant RenodePeripheralsModel::data(QModelIndex const& index, int role) const
         {
             return KactusColors::REGULAR_TEXT;
         }
+    }
+    else if (role == Qt::BackgroundRole)
+    {
+        return backgroundColourForIndex(index);
     }
     else if (Qt::CheckStateRole == role)
     {
@@ -272,12 +281,40 @@ QVariant RenodePeripheralsModel::tooltipForIndex(QModelIndex const& index) const
     }
     else if (index.column() == PeripheralColumns::INITABLE)
     {
-        return QString("If true, the peripheral can be initialized and executes code from the isInit section");
+        return QString("If true, the peripheral can be initialized and executes code from the isInit section\nOnly applicable for class " + RenodeConstants::PYTHONPERIPHERAL);
     }
     else if (index.column() == PeripheralColumns::FILEPATH)
     {
-        return QString("Relative path to the python file for this peripheral.");
+        return QString("Relative path to the python file for this peripheral\nOnly applicable for class " + RenodeConstants::PYTHONPERIPHERAL);
     }
 
     return QVariant();
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsModel::backgroundColourForIndex()
+//-----------------------------------------------------------------------------
+QVariant RenodePeripheralsModel::backgroundColourForIndex(QModelIndex const& index) const
+{
+    if (index.column() == PeripheralColumns::INITABLE || index.column() == PeripheralColumns::FILEPATH)
+    {
+        if (classIsPythonPeripherals(index) == false)
+        {
+            return KactusColors::DISABLED_FIELD;
+        }
+    }
+    
+    return KactusColors::REGULAR_FIELD;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsModel::classIsPythonPeripherals()
+//-----------------------------------------------------------------------------
+bool RenodePeripheralsModel::classIsPythonPeripherals(QModelIndex const& index) const
+{
+    QModelIndex classIndex = index.sibling(index.row(), PeripheralColumns::CLASS);
+    QString peripheralClass = classIndex.data(Qt::DisplayRole).toString();
+    
+    return peripheralClass == RenodeConstants::PYTHONPERIPHERAL;
 }

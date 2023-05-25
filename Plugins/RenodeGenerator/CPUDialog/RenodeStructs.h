@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 08.03.2023
+// Date: 24.05.2023
 //
 // Description:
 // Utility structs for Renode generator.
@@ -12,42 +12,7 @@
 #ifndef RENODESTRUCTS_H
 #define RENODESTRUCTS_H
 
-#include <QString>
-
-//-----------------------------------------------------------------------------
-//! Columns for Renode peripherals.
-//-----------------------------------------------------------------------------
-namespace PeripheralColumns
-{
-    //! The editable columns in the peripheral editor.
-    enum columns
-    {
-        NAME = 0,
-        BASEADDRESS,
-        SIZE,
-        CLASS,
-        INITABLE,
-        FILEPATH,
-        COLUMN_COUNT
-    };
-}
-
-//-----------------------------------------------------------------------------
-//! Columns for Renode memories.
-//-----------------------------------------------------------------------------
-namespace MemoryColumns
-{
-    //! The editable columns in the memory editor.
-    enum columns
-    {
-        NAME = 0,
-        CLASS,
-        BASEADDRESS,
-        SIZE,
-        COLUMN_COUNT
-    };
-
-};
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeConstants.h>
 
 //-----------------------------------------------------------------------------
 //! Utility structs for Renode generator.
@@ -64,7 +29,7 @@ namespace RenodeStructs
         QString peripheralID_ = "";
 
         //! Type name.
-        QString className_ = "Python.PythonPeripheral";
+        QString className_ = RenodeConstants::PYTHONPERIPHERAL;
 
         //! Base address.
         QString baseAddress_ = "";
@@ -76,7 +41,7 @@ namespace RenodeStructs
         bool initable_ = true;
 
         //! Relative path to the python file for this peripheral.
-        QString filePath_ = "python_peripherals";
+        QString filePath_ = RenodeConstants::PYTHONPERIPHERALFILEPATH;
     };
 
     //! Container for renode memory data connected to a CPU.
@@ -89,7 +54,7 @@ namespace RenodeStructs
         QString memoryID_ = "";
 
         //! Class name.
-        QString className_ = "Memory.MappedMemory";
+        QString className_ = RenodeConstants::MAPPEDMEMORY;
 
         //! Base address.
         QString baseAddress_ = "";

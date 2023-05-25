@@ -19,8 +19,6 @@
 #include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/common/CPUDialog/CPUEditor.h>
 
-#include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
-
 class CpuRoutesContainer;
 class LibraryInterface;
 class Component;

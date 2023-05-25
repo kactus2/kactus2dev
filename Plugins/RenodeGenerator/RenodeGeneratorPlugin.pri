@@ -28,7 +28,7 @@ HEADERS += ./RenodeConfigurationManager.h \
     ../../editors/MemoryDesigner/MemoryItem.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
     ./CPUDialog/RenodeCpuRoutesContainer.h \
-    ./CPUDialog/RenodeStructs.h \
+    ./CPUDialog/RenodeColumns.h \
     ./CPUDialog/RenodeUtilities.h \
     ./CPUDialog/RenodePeripheralsModel.h \
     ./CPUDialog/RenodePeripheralsEditor.h \
@@ -44,7 +44,9 @@ HEADERS += ./RenodeConfigurationManager.h \
     ../common/ConnectivityGraphUtilities.h \
     ../common/CpuRoutesContainer.h \
     ../common/PluginConfigurationManager.h \
-    ../common/SingleCpuRoutesContainer.h
+    ../common/SingleCpuRoutesContainer.h \
+    ./CPUDialog/RenodeStructs.h \
+    ./CPUDialog/RenodeConstants.h
 SOURCES += ./RenodeConfigurationManager.cpp \
     ./RenodeGenerator.cpp \
     ./RenodeGeneratorPlugin.cpp \

@@ -11,7 +11,10 @@
 
 #include "RenodePeripheralsDelegate.h"
 
-#include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeColumns.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeConstants.h>
+
+#include <common/KactusColors.h>
 
 #include <QApplication>
 #include <QMouseEvent>
@@ -198,7 +201,16 @@ void RenodePeripheralsDelegate::paint(QPainter* painter, QStyleOptionViewItem co
 
     if (index.column() == PeripheralColumns::INITABLE)
     {
-        painter->fillRect(option.rect, Qt::white);
+        QColor rectangleColor = KactusColors::REGULAR_FIELD;
+
+        QModelIndex classIndex = index.sibling(index.row(), PeripheralColumns::CLASS);
+        QString peripheralClass = classIndex.data(Qt::DisplayRole).toString();
+        if (peripheralClass != RenodeConstants::PYTHONPERIPHERAL)
+        {
+            rectangleColor = KactusColors::DISABLED_FIELD;
+        }
+
+        painter->fillRect(option.rect, rectangleColor);
 
         const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
 

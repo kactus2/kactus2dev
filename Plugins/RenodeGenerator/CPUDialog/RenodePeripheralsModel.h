@@ -129,6 +129,24 @@ private:
      */
     QVariant tooltipForIndex(QModelIndex const& index) const;
 
+    /*!
+     *  Get the background color for the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return Background color of the selected index.
+     */
+    QVariant backgroundColourForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Check if the class of the indexed peripheral is python peripheral.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return True, if the indexed peripheral class is python peripheral, false otherwise.
+     */
+    bool classIsPythonPeripherals(QModelIndex const& index) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

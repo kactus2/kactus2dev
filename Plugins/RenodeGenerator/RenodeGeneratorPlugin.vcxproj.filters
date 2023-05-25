@@ -292,9 +292,6 @@
     <ClInclude Include="CPUDialog\RenodeUtilities.h">
       <Filter>Header Files\CPUDialog</Filter>
     </ClInclude>
-    <ClInclude Include="CPUDialog\RenodeStructs.h">
-      <Filter>Header Files\CPUDialog</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\ConfigurationManager.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -312,6 +309,15 @@
     </ClInclude>
     <ClInclude Include="..\common\SingleCpuRoutesContainer.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeColumns.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeStructs.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeConstants.h">
+      <Filter>Header Files\CPUDialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -192,22 +192,26 @@ void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<Renode
 
     stream << peripheral->peripheralName_ << ": " << peripheral->className_ << " @ sysbus " << peripheral->baseAddress_ << Qt::endl;
     stream << tab << "size: " << peripheral->size_ << Qt::endl;
-    stream << tab << "initable: " << QVariant(peripheral->initable_).toString() << Qt::endl;
-    stream << tab << "filename: " << fileName << Qt::endl;
 
-    QString directoryPath = renodeFilePath + "/" + peripheral->filePath_;
-    QDir pathDirectory(directoryPath);
-    if (!pathDirectory.exists())
+    if (peripheral->className_ == RenodeConstants::PYTHONPERIPHERAL)
     {
-        QDir currentDirectory(renodeFilePath);
-        currentDirectory.mkdir(peripheral->filePath_);
+        stream << tab << "initable: " << QVariant(peripheral->initable_).toString() << Qt::endl;
+        stream << tab << "filename: " << fileName << Qt::endl;
+
+        QString directoryPath = renodeFilePath + "/" + peripheral->filePath_;
+        QDir pathDirectory(directoryPath);
+        if (!pathDirectory.exists())
+        {
+            QDir currentDirectory(renodeFilePath);
+            currentDirectory.mkdir(peripheral->filePath_);
+        }
+
+        QString peripheralFilePath = renodeFilePath + "/" + fileName;
+        QFile peripheralOutputFile(peripheralFilePath);
+        peripheralOutputFile.open(QIODevice::WriteOnly);
+
+        generatedFiles_.append(peripheralFilePath);
     }
-
-    QString peripheralFilePath = renodeFilePath + "/" + fileName;
-    QFile peripheralOutputFile(peripheralFilePath);
-    peripheralOutputFile.open(QIODevice::WriteOnly);
-
-    generatedFiles_.append(peripheralFilePath);
 }
 
 //-----------------------------------------------------------------------------

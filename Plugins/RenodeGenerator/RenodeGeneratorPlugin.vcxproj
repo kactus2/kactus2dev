@@ -198,6 +198,8 @@
     <QtMoc Include="CPUDialog\RenodeMemoriesModel.h" />
     <QtMoc Include="CPUDialog\RenodeFileSelectionGroup.h" />
     <ClInclude Include="..\common\SingleCpuRoutesContainer.h" />
+    <ClInclude Include="CPUDialog\RenodeColumns.h" />
+    <ClInclude Include="CPUDialog\RenodeConstants.h" />
     <ClInclude Include="CPUDialog\RenodeCpuRoutesContainer.h" />
     <QtMoc Include="CPUDialog\RenodeFileEditor.h" />
     <ClInclude Include="CPUDialog\RenodeStructs.h" />
