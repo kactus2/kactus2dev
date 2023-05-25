@@ -99,6 +99,22 @@ void NameGroup::setDisplayName(QString const& displayName)
 }
 
 //-----------------------------------------------------------------------------
+// Function: NameGroup::shortDescription()
+//-----------------------------------------------------------------------------
+QString NameGroup::shortDescription() const
+{
+    return shortDescription_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: NameGroup::setShortDescription()
+//-----------------------------------------------------------------------------
+void NameGroup::setShortDescription(QString const& shortDescription)
+{
+    shortDescription_ = shortDescription;
+}
+
+//-----------------------------------------------------------------------------
 // Function: NameGroup::description()
 //-----------------------------------------------------------------------------
 QString NameGroup::description() const

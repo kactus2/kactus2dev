@@ -82,6 +82,20 @@ public:
     void setDisplayName(QString const& displayName);
 
     /*!
+     *  Gets the shortDescription element in the name group.
+     *
+     *      @return The shortDescription element.
+     */
+    QString shortDescription() const;
+
+    /*!
+     *  Sets the shortDescription element in the group.
+     *
+     *      @param [in] shortDescription    The short description to set.
+     */
+    void setShortDescription(QString const& shortDescription);
+
+    /*!
      *  Gets the description element in the name group.
      *
      *      @return The description element.
@@ -102,6 +116,9 @@ private:
 
     //! The displayName matches the ipxact:displayName field within nameGroup.
     QString displayName_;
+
+    //! shortDescription matches the ipxact:shortDescription field within nameGroup.
+    QString shortDescription_;
 
     //! description matches the ipxact:description field within nameGroup.
     QString description_;
