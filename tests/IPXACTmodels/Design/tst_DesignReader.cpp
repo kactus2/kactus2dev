@@ -90,9 +90,7 @@ void tst_DesignReader::testReadMinimalDesign()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesign->getVlnv().getVendor(), QString("tuni.fi"));
@@ -126,9 +124,7 @@ void tst_DesignReader::testReadMinimal2022Design()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesign->getVlnv().getVendor(), QString("tuni.fi"));
@@ -164,9 +160,7 @@ void tst_DesignReader::testReadProcessingInstructions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getXmlProcessingInstructions().count(), 1);
 
@@ -216,8 +210,7 @@ void tst_DesignReader::testReadComponentInstances()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getComponentInstances()->size(), 1);
 
@@ -285,8 +278,7 @@ void tst_DesignReader::testRead2022ComponentInstances()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesign->getComponentInstances()->size(), 1);
@@ -372,8 +364,7 @@ void tst_DesignReader::testReadComponentInstanceExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getComponentInstances()->size(), 1);
 
@@ -468,8 +459,7 @@ void tst_DesignReader::testReadInterconnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getInterconnections()->size(), 1);
     
@@ -561,8 +551,7 @@ void tst_DesignReader::testRead2022Interconnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesign->getInterconnections()->size(), 1);
@@ -645,8 +634,7 @@ void tst_DesignReader::testReadInterconnectionExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getInterconnections()->size(), 1);
 
@@ -713,8 +701,7 @@ void tst_DesignReader::testReadMonitorInterconnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getMonitorInterconnecions()->size(), 1);
 
@@ -788,8 +775,7 @@ void tst_DesignReader::testRead2022MonitorInterconnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
     
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesign->getMonitorInterconnecions()->size(), 1);
@@ -880,8 +866,7 @@ void tst_DesignReader::testReadAdHocConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
@@ -975,8 +960,7 @@ void tst_DesignReader::testRead2022AdHocConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
@@ -1076,8 +1060,7 @@ void tst_DesignReader::testRead2022AdHocSubPortReferences()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
     QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
@@ -1160,8 +1143,7 @@ void tst_DesignReader::testReadAdHocConnectionExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
 
@@ -1206,9 +1188,7 @@ void tst_DesignReader::testReadParameters()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getParameters()->size(), 1);
     QCOMPARE(testDesign->getParameters()->first()->name(), QString("designParameter"));
@@ -1246,9 +1226,7 @@ void tst_DesignReader::testReadAssertions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getAssertions()->size(), 1);
     QCOMPARE(testDesign->getAssertions()->first()->name(), QString("testAssertion"));
@@ -1283,8 +1261,7 @@ void tst_DesignReader::testReadVendorExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVendorExtensions()->last()->type(), QString("testExtension"));
@@ -1322,8 +1299,7 @@ void tst_DesignReader::testReadColumns()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1392,8 +1368,7 @@ void tst_DesignReader::testReadSWInstances()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getComponentInstances()->size(), 1);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1451,8 +1426,7 @@ void tst_DesignReader::testReadPortAdHocVisibilitiesAndPositions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1515,8 +1489,7 @@ void tst_DesignReader::testReadApiConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1571,8 +1544,7 @@ void tst_DesignReader::testReadHierApiConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1625,8 +1597,7 @@ void tst_DesignReader::testReadComConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1677,8 +1648,7 @@ void tst_DesignReader::testReadHierComConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
