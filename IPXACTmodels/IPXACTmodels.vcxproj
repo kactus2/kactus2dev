@@ -118,6 +118,8 @@
     <ClCompile Include="AbstractionDefinition\AbstractionDefinition.cpp" />
     <ClCompile Include="AbstractionDefinition\AbstractionDefinitionReader.cpp" />
     <ClCompile Include="AbstractionDefinition\AbstractionDefinitionWriter.cpp" />
+    <ClCompile Include="AbstractionDefinition\Packet.cpp" />
+    <ClCompile Include="AbstractionDefinition\PacketField.cpp" />
     <ClCompile Include="AbstractionDefinition\PortAbstraction.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalAbstraction.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalAbstractionReader.cpp" />
@@ -176,7 +178,6 @@
     <ClCompile Include="common\Protocol.cpp" />
     <ClCompile Include="common\ProtocolReader.cpp" />
     <ClCompile Include="common\ProtocolWriter.cpp" />
-    <ClCompile Include="common\Qualifier.cpp" />
     <ClCompile Include="common\Range.cpp" />
     <ClCompile Include="common\TimingConstraint.cpp" />
     <ClCompile Include="common\TransactionalTypes.cpp" />
@@ -375,6 +376,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
+    <ClInclude Include="AbstractionDefinition\Packet.h" />
+    <ClInclude Include="AbstractionDefinition\PacketField.h" />
     <ClInclude Include="common\ChoiceWriter.h" />
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="common\validators\CommonItemsValidator.h" />

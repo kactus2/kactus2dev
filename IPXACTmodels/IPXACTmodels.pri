@@ -39,6 +39,7 @@ HEADERS += ./generaldeclarations.h \
     ./kactusExtensions/ComDefinitionReader.h \
     ./kactusExtensions/validators/SystemDesignConfigurationValidator.h \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.h \
+    ./common/ChoiceWriter.h \
     ./common/TagData.h \
     ./common/AccessTypes.h \
     ./common/Array.h \
@@ -85,6 +86,7 @@ HEADERS += ./generaldeclarations.h \
     ./common/ParameterWriter.h \
     ./common/ProtocolReader.h \
     ./common/ProtocolWriter.h \
+    ./common/validators/CommonItemsValidator.h \
     ./common/validators/AssertionValidator.h \
     ./common/validators/CellSpecificationValidator.h \
     ./common/validators/ParameterValidator.h \
@@ -98,6 +100,8 @@ HEADERS += ./generaldeclarations.h \
     ./BusDefinition/BusDefinitionWriter.h \
     ./BusDefinition/validators/BusDefinitionValidator.h \
     ./AbstractionDefinition/AbstractionDefinition.h \
+    ./AbstractionDefinition/Packet.h \
+    ./AbstractionDefinition/PacketField.h \
     ./AbstractionDefinition/PortAbstraction.h \
     ./AbstractionDefinition/TransactionalAbstraction.h \
     ./AbstractionDefinition/TransactionalPort.h \
@@ -110,17 +114,6 @@ HEADERS += ./generaldeclarations.h \
     ./AbstractionDefinition/TransactionalAbstractionWriter.h \
     ./AbstractionDefinition/WireAbstractionReader.h \
     ./AbstractionDefinition/validators/AbstractionDefinitionValidator.h \
-    ./DesignConfiguration/MultipleAbstractorInstances.h \
-    ./DesignConfiguration/InterfaceRef.h \
-    ./DesignConfiguration/DesignConfigurationReader.h \
-    ./DesignConfiguration/DesignConfiguration.h \
-    ./DesignConfiguration/AbstractorInstance.h \
-    ./DesignConfiguration/ViewConfiguration.h \
-    ./DesignConfiguration/InterconnectionConfiguration.h \
-    ./DesignConfiguration/DesignConfigurationWriter.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./Design/ActiveInterface.h \
     ./Design/AdHocConnection.h \
     ./Design/ComponentInstance.h \
@@ -223,7 +216,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/RegisterReader.h \
     ./Component/RegisterWriter.h \
     ./Component/ChoiceReader.h \
-    ./common/ChoiceWriter.h \
     ./Component/OtherClockDriverReader.h \
     ./Component/OtherClockDriverWriter.h \
     ./Component/RemapStateReader.h \
@@ -266,7 +258,17 @@ HEADERS += ./generaldeclarations.h \
     ./Catalog/validators/CatalogValidator.h \
     ./utilities/BusDefinitionUtils.h \
     ./utilities/XmlUtils.h \
-    ./common/validators/CommonItemsValidator.h
+    ./DesignConfiguration/AbstractorInstance.h \
+    ./DesignConfiguration/DesignConfiguration.h \
+    ./DesignConfiguration/DesignConfigurationReader.h \
+    ./DesignConfiguration/DesignConfigurationWriter.h \
+    ./DesignConfiguration/InterconnectionConfiguration.h \
+    ./DesignConfiguration/InterfaceRef.h \
+    ./DesignConfiguration/MultipleAbstractorInstances.h \
+    ./DesignConfiguration/ViewConfiguration.h \
+    ./DesignConfiguration/validators/DesignConfigurationValidator.h \
+    ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -304,6 +306,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/BooleanValue.cpp \
     ./common/BuildModel.cpp \
     ./common/CellSpecification.cpp \
+    ./common/ChoiceWriter.cpp \
     ./common/ClockUnit.cpp \
     ./common/CommonItemsReader.cpp \
     ./common/CommonItemsWriter.cpp \
@@ -336,7 +339,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/Protocol.cpp \
     ./common/ProtocolReader.cpp \
     ./common/ProtocolWriter.cpp \
-    ./common/Qualifier.cpp \
     ./common/Range.cpp \
     ./common/TimingConstraint.cpp \
     ./common/TransactionalTypes.cpp \
@@ -344,6 +346,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/VLNV.cpp \
     ./common/validators/AssertionValidator.cpp \
     ./common/validators/CellSpecificationValidator.cpp \
+    ./common/validators/CommonItemsValidator.cpp \
     ./common/validators/namevalidator.cpp \
     ./common/validators/NMTokenValidator.cpp \
     ./common/validators/ParameterValidator.cpp \
@@ -357,6 +360,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./AbstractionDefinition/AbstractionDefinition.cpp \
     ./AbstractionDefinition/AbstractionDefinitionReader.cpp \
     ./AbstractionDefinition/AbstractionDefinitionWriter.cpp \
+    ./AbstractionDefinition/Packet.cpp \
+    ./AbstractionDefinition/PacketField.cpp \
     ./AbstractionDefinition/PortAbstraction.cpp \
     ./AbstractionDefinition/TransactionalAbstraction.cpp \
     ./AbstractionDefinition/TransactionalAbstractionReader.cpp \
@@ -367,17 +372,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./AbstractionDefinition/WireAbstractionWriter.cpp \
     ./AbstractionDefinition/WirePort.cpp \
     ./AbstractionDefinition/validators/AbstractionDefinitionValidator.cpp \
-    ./DesignConfiguration/InterconnectionConfiguration.cpp \
-    ./DesignConfiguration/DesignConfigurationWriter.cpp \
-    ./DesignConfiguration/DesignConfigurationReader.cpp \
-    ./DesignConfiguration/DesignConfiguration.cpp \
-    ./DesignConfiguration/AbstractorInstance.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
-    ./DesignConfiguration/ViewConfiguration.cpp \
-    ./DesignConfiguration/MultipleAbstractorInstances.cpp \
-    ./DesignConfiguration/InterfaceRef.cpp \
     ./Design/ActiveInterface.cpp \
     ./Design/AdHocConnection.cpp \
     ./Design/ComponentInstance.cpp \
@@ -522,5 +516,14 @@ SOURCES += ./generaldeclarations.cpp \
     ./Catalog/validators/CatalogValidator.cpp \
     ./utilities/BusDefinitionUtils.cpp \
     ./utilities/XmlUtils.cpp \
-    ./common/validators/CommonItemsValidator.cpp \
-    ./common/ChoiceWriter.cpp
+    ./DesignConfiguration/AbstractorInstance.cpp \
+    ./DesignConfiguration/DesignConfiguration.cpp \
+    ./DesignConfiguration/DesignConfigurationReader.cpp \
+    ./DesignConfiguration/DesignConfigurationWriter.cpp \
+    ./DesignConfiguration/InterconnectionConfiguration.cpp \
+    ./DesignConfiguration/InterfaceRef.cpp \
+    ./DesignConfiguration/MultipleAbstractorInstances.cpp \
+    ./DesignConfiguration/ViewConfiguration.cpp \
+    ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
+    ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp

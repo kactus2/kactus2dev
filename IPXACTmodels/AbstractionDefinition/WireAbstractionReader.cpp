@@ -83,26 +83,27 @@ void WireAbstractionReader::parseQualifier(QDomNode const& wireNode,
         
         if (isData && isAddress)
         {
-             wire->setQualifier(Qualifier::Data_Address);
+            wire->getQualifier()->isData = true;
+            wire->getQualifier()->isAddress = true;
         }
         else if (isData)
         {
-            wire->setQualifier(Qualifier::Data);
+            wire->getQualifier()->isData = true;
         }
         else if (isAddress)
         {
-            wire->setQualifier(Qualifier::Address);
+            wire->getQualifier()->isAddress = true;
         }
 
         if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isClock")).firstChild().nodeValue() ==
             QStringLiteral("true"))
         {
-            wire->setQualifier(Qualifier::Clock);
+            wire->getQualifier()->isClock = true;
         }
         else if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isReset")).firstChild().nodeValue() == 
             QStringLiteral("true"))
         {
-            wire->setQualifier(Qualifier::Reset);
+            wire->getQualifier()->isReset = true;
         }          
     }
 }

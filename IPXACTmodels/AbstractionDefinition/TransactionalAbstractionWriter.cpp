@@ -60,15 +60,15 @@ void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer
 void TransactionalAbstractionWriter::writeQualifier(QXmlStreamWriter& writer, 
     QSharedPointer<TransactionalAbstraction> transactional) const
 {
-    Qualifier qualifier = transactional->getQualifier();
-    if (qualifier.isData() || qualifier.isAddress())
+    auto qualifier = transactional->getQualifier();
+    if (qualifier->isData || qualifier->isAddress)
     {
         writer.writeStartElement(QStringLiteral("ipxact:qualifier"));
-        if (qualifier.isData())
+        if (qualifier->isData)
         {
             writer.writeTextElement(QStringLiteral("ipxact:isData"), QStringLiteral("true"));
         }
-        if (qualifier.isAddress())
+        if (qualifier->isAddress)
         {
             writer.writeTextElement(QStringLiteral("ipxact:isAddress"), QStringLiteral("true"));
         }

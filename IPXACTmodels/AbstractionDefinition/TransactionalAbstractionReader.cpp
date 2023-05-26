@@ -74,15 +74,16 @@ void TransactionalAbstractionReader::parseQualifier(QDomNode const& transactiona
         
         if (isData && isAddress)
         {
-             transactional->setQualifier(Qualifier::Data_Address);
+            transactional->getQualifier()->isAddress = true;
+            transactional->getQualifier()->isData= true;
         }
         else if (isData)
         {
-            transactional->setQualifier(Qualifier::Data);
+            transactional->getQualifier()->isData= true;
         }
         else if (isAddress)
         {
-            transactional->setQualifier(Qualifier::Address);
+            transactional->getQualifier()->isAddress = true;
         }        
     }
 }

@@ -24,7 +24,6 @@
 // Function: TransactionalAbstraction::TransactionalAbstraction()
 //-----------------------------------------------------------------------------
 TransactionalAbstraction::TransactionalAbstraction() :
-qualifier_(),
     onSystem_(new QList<QSharedPointer<TransactionalPort> >()),
     onMaster_(),
     onSlave_()
@@ -95,7 +94,7 @@ TransactionalAbstraction::~TransactionalAbstraction()
 //-----------------------------------------------------------------------------
 // Function: TransactionalAbstraction::getQualifier()
 //-----------------------------------------------------------------------------
-Qualifier TransactionalAbstraction::getQualifier() const
+QSharedPointer<Qualifier> TransactionalAbstraction::getQualifier()
 {
 	return qualifier_;
 }
@@ -103,9 +102,65 @@ Qualifier TransactionalAbstraction::getQualifier() const
 //-----------------------------------------------------------------------------
 // Function: TransactionalAbstraction::setQualifier()
 //-----------------------------------------------------------------------------
-void TransactionalAbstraction::setQualifier(Qualifier::Type qualifierType) 
+void TransactionalAbstraction::setQualifier(QString const& qualifierType)
 {
-    qualifier_.setType(qualifierType);
+    if (qualifierType == QStringLiteral("address"))
+    {
+        qualifier_->isAddress = true;
+    }
+    else if (qualifierType == QStringLiteral("data"))
+    {
+        qualifier_->isData = true;
+    }
+    else if (qualifierType == QStringLiteral("data/address"))
+    {
+        qualifier_->isAddress = true;
+        qualifier_->isData = true;
+    }
+    else if (qualifierType == QStringLiteral("reset"))
+    {
+        qualifier_->isReset = true;
+    }
+    else if (qualifierType == QStringLiteral("valid"))
+    {
+        qualifier_->isValid = true;
+    }
+    else if (qualifierType == QStringLiteral("interrupt"))
+    {
+        qualifier_->isInterrupt = true;
+    }
+    else if (qualifierType == QStringLiteral("clock enable"))
+    {
+        qualifier_->isClockEn = true;
+    }
+    else if (qualifierType == QStringLiteral("power enable"))
+    {
+        qualifier_->isPowerEn = true;
+    }
+    else if (qualifierType == QStringLiteral("opcode"))
+    {
+        qualifier_->isOpcode = true;
+    }
+    else if (qualifierType == QStringLiteral("protection"))
+    {
+        qualifier_->isProtection = true;
+    }
+    else if (qualifierType == QStringLiteral("flow control"))
+    {
+        qualifier_->isFlowControl = true;
+    }
+    else if (qualifierType == QStringLiteral("user"))
+    {
+        qualifier_->isUser = true;
+    }
+    else if (qualifierType == QStringLiteral("request"))
+    {
+        qualifier_->isRequest = true;
+    }
+    else if (qualifierType == QStringLiteral("response"))
+    {
+        qualifier_->isResponse = true;
+    }
 }
 
 //-----------------------------------------------------------------------------

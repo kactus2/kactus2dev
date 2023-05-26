@@ -67,23 +67,23 @@ void WireAbstractionWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<W
 void WireAbstractionWriter::writeQualifier(QXmlStreamWriter& writer, 
     QSharedPointer<WireAbstraction> wire) const
 {
-    Qualifier qualifier = wire->getQualifier();
-    if (qualifier.isSet())
+    auto qualifier = wire->getQualifier();
+    if (qualifier->isData || qualifier->isAddress || qualifier->isClock || qualifier->isReset)
     {
         writer.writeStartElement(QStringLiteral("ipxact:qualifier"));
-        if (qualifier.isData())
+        if (qualifier->isData)
         {
             writer.writeTextElement(QStringLiteral("ipxact:isData"), QStringLiteral("true"));
         }
-        if (qualifier.isAddress())
+        if (qualifier->isAddress)
         {
             writer.writeTextElement(QStringLiteral("ipxact:isAddress"), QStringLiteral("true"));
         }
-        if (qualifier.isClock())
+        if (qualifier->isClock)
         {
             writer.writeTextElement(QStringLiteral("ipxact:isClock"), QStringLiteral("true"));
         }
-        else if (qualifier.isReset())
+        else if (qualifier->isReset)
         {
             writer.writeTextElement(QStringLiteral("ipxact:isReset"), QStringLiteral("true"));
         }

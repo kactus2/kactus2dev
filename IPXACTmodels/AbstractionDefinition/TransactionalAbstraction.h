@@ -49,14 +49,14 @@ public:
      *
      *      @param [in] qualifierType   The qualifier to set.
      */
-    void setQualifier(Qualifier::Type qualifierType);
+    void setQualifier(QString const& qualifierType);
     
     /*!
      *  Gets the qualifier for the information the transaction carries.
      *
      *      @return The wire qualifier.
      */
-	Qualifier getQualifier() const;
+    QSharedPointer<Qualifier> getQualifier();
 
     /*!
      *  Adds a system port definition for the transaction definition.
@@ -160,7 +160,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The qualifier describing the information the transaction carries.
-	Qualifier qualifier_;
+    QSharedPointer<Qualifier> qualifier_ = QSharedPointer<Qualifier>(new Qualifier);
 
     //! The port definitions for system mode.
     QSharedPointer<QList<QSharedPointer<TransactionalPort> > > onSystem_;

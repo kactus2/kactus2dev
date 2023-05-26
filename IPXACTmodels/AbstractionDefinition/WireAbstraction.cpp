@@ -19,7 +19,6 @@
 // Function: WireAbstraction::WireAbstraction()
 //-----------------------------------------------------------------------------
 WireAbstraction::WireAbstraction():
-qualifier_(),
     defaultValue_(QStringLiteral("")),
     requiresDriver_(false),
     driverType_(General::NO_DRIVER),
@@ -128,15 +127,72 @@ QString WireAbstraction::getDefaultValue() const
 //-----------------------------------------------------------------------------
 // Function: WireAbstraction::setQualifier()
 //-----------------------------------------------------------------------------
-void WireAbstraction::setQualifier(Qualifier::Type qualifierType)
+void WireAbstraction::setQualifier(QString const& qualifierType)
 {
-    qualifier_.setType(qualifierType);
+    if (qualifierType == QStringLiteral("address"))
+    {
+        qualifier_->isAddress = true;
+    }
+    else if (qualifierType == QStringLiteral("data"))
+    {
+        qualifier_->isData = true;
+    }
+    else if (qualifierType == QStringLiteral("data/address"))
+    {
+        qualifier_->isAddress = true;
+        qualifier_->isData = true;
+    }
+    else if (qualifierType == QStringLiteral("reset"))
+    {
+        qualifier_->isReset = true;
+    }
+    else if (qualifierType == QStringLiteral("valid"))
+    {
+        qualifier_->isValid = true;
+    }
+    else if (qualifierType == QStringLiteral("interrupt"))
+    {
+        qualifier_->isInterrupt = true;
+    }
+    else if (qualifierType == QStringLiteral("clock enable"))
+    {
+        qualifier_->isClockEn= true;
+    }
+    else if (qualifierType == QStringLiteral("power enable"))
+    {
+        qualifier_->isPowerEn = true;
+    }
+    else if (qualifierType == QStringLiteral("opcode"))
+    {
+        qualifier_->isOpcode = true;
+    }
+    else if (qualifierType == QStringLiteral("protection"))
+    {
+        qualifier_->isProtection = true;
+    }
+    else if (qualifierType == QStringLiteral("flow control"))
+    {
+        qualifier_->isFlowControl = true;
+    }
+    else if (qualifierType == QStringLiteral("user"))
+    {
+        qualifier_->isUser = true;
+    }
+    else if (qualifierType == QStringLiteral("request"))
+    {
+        qualifier_->isRequest = true;
+    }
+    else if (qualifierType == QStringLiteral("response"))
+    {
+        qualifier_->isResponse = true;
+    }
+    
 }
 
 //-----------------------------------------------------------------------------
 // Function: WireAbstraction::getQualifier()
 //-----------------------------------------------------------------------------
-Qualifier WireAbstraction::getQualifier() const
+QSharedPointer<Qualifier> WireAbstraction::getQualifier()
 {
     return qualifier_;
 }

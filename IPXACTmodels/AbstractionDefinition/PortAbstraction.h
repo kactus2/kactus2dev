@@ -163,7 +163,7 @@ public:
      *
      *      @return The wire qualifier.
      */
-    Qualifier getQualifier() const;
+    QSharedPointer<Qualifier> getQualifier();
 
     /*!
      *  Sets the wire driver requirement.

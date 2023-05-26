@@ -239,7 +239,7 @@ void PortAbstraction::setDefaultValue(QString const& defaultValue)
 //-----------------------------------------------------------------------------
 // Function: PortAbstraction::getQualifier()
 //-----------------------------------------------------------------------------
-Qualifier PortAbstraction::getQualifier() const
+QSharedPointer<Qualifier> PortAbstraction::getQualifier()
 {
     if (hasWire())
     {
@@ -251,7 +251,7 @@ Qualifier PortAbstraction::getQualifier() const
     }
     else
     {
-        return Qualifier();
+        return nullptr;
     }
 }
 

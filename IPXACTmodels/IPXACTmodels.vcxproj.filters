@@ -599,9 +599,6 @@
     <ClCompile Include="common\ProtocolWriter.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\Qualifier.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\Range.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -910,6 +907,12 @@
     </ClCompile>
     <ClCompile Include="DesignConfiguration\ViewConfiguration.cpp">
       <Filter>Source Files\DesignConfiguration</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\Packet.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\PacketField.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1476,6 +1479,12 @@
     </ClInclude>
     <ClInclude Include="DesignConfiguration\validators\ViewConfigurationValidator.h">
       <Filter>Header Files\DesignConfiguration\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\Packet.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\PacketField.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

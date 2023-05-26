@@ -329,11 +329,11 @@ void tst_AbstractionDefinitionReader::testReadWirePort()
     QCOMPARE(port->hasWire(), true);
     QCOMPARE(port->getWire()->getDefaultValue(), QString("1"));
 
-    Qualifier wireQualifier = port->getQualifier();
-    QCOMPARE(wireQualifier.isData(), true);
-    QCOMPARE(wireQualifier.isAddress(), true);
-    QCOMPARE(wireQualifier.isClock(), false);
-    QCOMPARE(wireQualifier.isReset(), false);
+    auto wireQualifier = port->getQualifier();
+    QCOMPARE(wireQualifier->isData, true);
+    QCOMPARE(wireQualifier->isAddress, true);
+    QCOMPARE(wireQualifier->isClock, false);
+    QCOMPARE(wireQualifier->isReset, false);
 
     QSharedPointer<WirePort> master = port->getWire()->getMasterPort();
     QCOMPARE(master->getPresence(), PresenceTypes::REQUIRED);
@@ -512,11 +512,11 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
 
     QCOMPARE(port->hasTransactional(), true);
 
-    Qualifier tranasctionalQualifier = port->getQualifier();
-    QCOMPARE(tranasctionalQualifier.isData(), true);
-    QCOMPARE(tranasctionalQualifier.isAddress(), false);
-    QCOMPARE(tranasctionalQualifier.isClock(), false);
-    QCOMPARE(tranasctionalQualifier.isReset(), false);
+    auto tranasctionalQualifier = port->getQualifier();
+    QCOMPARE(tranasctionalQualifier->isData, true);
+    QCOMPARE(tranasctionalQualifier->isAddress, false);
+    QCOMPARE(tranasctionalQualifier->isClock, false);
+    QCOMPARE(tranasctionalQualifier->isReset, false);
 
     QSharedPointer<TransactionalAbstraction> transactional = port->getTransactional();
 
