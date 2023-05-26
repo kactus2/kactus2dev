@@ -939,8 +939,10 @@ void tst_DesignWriter::testWriteAdHocConnections()
     testExternalPortRef->setIsPresent("0");
     testExternalPortRef->setPartSelect(externalPartSelect);
 
-    QSharedPointer<AdHocConnection> testAdHocConnection (new AdHocConnection("adHoc", "displayAd", "describeAd",
-        "default"));
+    QSharedPointer<AdHocConnection> testAdHocConnection (new AdHocConnection("adHoc"));
+    testAdHocConnection->setDisplayName("displayAd");
+    testAdHocConnection->setDescription("describeAd");
+    testAdHocConnection->setTiedValue("default");
     testAdHocConnection->setIsPresent("4-3");
     testAdHocConnection->getInternalPortReferences()->append(testInternalPortRef);
     testAdHocConnection->getExternalPortReferences()->append(testExternalPortRef);
@@ -1233,7 +1235,7 @@ void tst_DesignWriter::testWriteAdHocConnectionExtensions()
 
     QSharedPointer<PortReference> testExternalPortRef (new PortReference("externalPort"));
 
-    QSharedPointer<AdHocConnection> testAdHocConnection (new AdHocConnection("adHoc", "", "", ""));
+    QSharedPointer<AdHocConnection> testAdHocConnection (new AdHocConnection("adHoc"));
     testAdHocConnection->getInternalPortReferences()->append(testInternalPortRef);
     testAdHocConnection->getExternalPortReferences()->append(testExternalPortRef);
     testAdHocConnection->setOffPage(true);

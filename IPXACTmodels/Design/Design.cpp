@@ -21,11 +21,7 @@
 // Function: Design::Design()
 //-----------------------------------------------------------------------------
 Design::Design(VLNV const& vlnv, Document::Revision revision) :
-Document(vlnv, revision),
-componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
-interconnections_(new QList<QSharedPointer<Interconnection> > ()),
-monitorInterconnections_(new QList<QSharedPointer<MonitorInterconnection> > ()),
-adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ())
+Document(vlnv, revision)
 {
 
 }
@@ -34,11 +30,7 @@ adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ())
 // Function: Design::Design()
 //-----------------------------------------------------------------------------
 Design::Design() :
-Document(),
-componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
-interconnections_(new QList<QSharedPointer<Interconnection> > ()),
-monitorInterconnections_(new QList<QSharedPointer<MonitorInterconnection> > ()),
-adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ())
+Document()
 {
 
 }
@@ -47,11 +39,7 @@ adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ())
 // Function: Design::Design()
 //-----------------------------------------------------------------------------
 Design::Design(Design const& other) :
-Document(other),
-componentInstances_(new QList<QSharedPointer<ComponentInstance> > ()),
-interconnections_(new QList<QSharedPointer<Interconnection> > ()),
-monitorInterconnections_(new QList<QSharedPointer<MonitorInterconnection> > ()),
-adHocConnections_(new QList<QSharedPointer<AdHocConnection> > ())
+Document(other)
 {
     copySharedLists(other);
 }
@@ -76,17 +64,6 @@ Design& Design::operator=( const Design& other )
 }
 
 //-----------------------------------------------------------------------------
-// Function: Design::~Design()
-//-----------------------------------------------------------------------------
-Design::~Design()
-{
-    componentInstances_.clear();
-    interconnections_.clear();
-    monitorInterconnections_.clear();
-    adHocConnections_.clear();
-}
-
-//-----------------------------------------------------------------------------
 // Function: Design::close()
 //-----------------------------------------------------------------------------
 QSharedPointer<Document> Design::clone() const
@@ -99,13 +76,13 @@ QSharedPointer<Document> Design::clone() const
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstance> Design::findComponentInstance(QString const& instanceName) const
 {
-	foreach(QSharedPointer<ComponentInstance> instance, *componentInstances_ )
-	{
-		if (instance->getInstanceName() == instanceName)
-		{
-			return instance;
-		}
-	}
+    auto it = std::find_if(componentInstances_->cbegin(), componentInstances_->cend(),
+        [&instanceName](auto const& instance) {return instance->getInstanceName() == instanceName; });
+
+    if (it != componentInstances_->cend())
+    {
+        return *it;
+    }
 
 	return QSharedPointer<ComponentInstance>();
 }
@@ -175,7 +152,7 @@ QList<VLNV> Design::getDependentVLNVs() const
 	QList<VLNV> instanceList;
 
 	// go through all component instances within the design
-    foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
+    for (auto const& instance : *componentInstances_)
     {
 		// if the pointer is valid and it is not already added to the list of
 		// component instances (two instances of same component are not added twice)
@@ -201,7 +178,7 @@ QMap<QString, bool> Design::getPortAdHocVisibilities() const
 
     QMap<QString, bool> portAdHocVisibilities;
 
-    foreach (QSharedPointer<VendorExtension> extension, portAdHocExtensions)
+    for (auto const& extension : portAdHocExtensions)
     {
         QSharedPointer<Kactus2Placeholder> portAdHocVisibility = extension.dynamicCast<Kactus2Placeholder>();
         
@@ -218,15 +195,7 @@ QMap<QString, bool> Design::getPortAdHocVisibilities() const
 //-----------------------------------------------------------------------------
 QSharedPointer<VendorExtension> Design::getAdHocPortPositions() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:adHocVisibilities"))
-        {
-            return extension;
-        }
-    }
-
-    return QSharedPointer<VendorExtension>();
+    return findVendorExtension(QStringLiteral("kactus2:adHocVisibilities"));
 }
 
 //-----------------------------------------------------------------------------
@@ -237,10 +206,10 @@ QList<QSharedPointer<ColumnDesc> > Design::getColumns() const
     QList<QSharedPointer<ColumnDesc> > columnList;
 
     QSharedPointer<Kactus2Group> columnExtensions = getLayoutExtension();
-    if (!columnExtensions.isNull())
+    if (columnExtensions != nullptr)
     {  
-        QString columnIdentifier = QStringLiteral("kactus2:column");
-        foreach (QSharedPointer<VendorExtension> extension, columnExtensions->getByType(columnIdentifier))
+        auto columnIdentifier = QStringLiteral("kactus2:column");
+        for (auto const& extension : columnExtensions->getByType(columnIdentifier))
         {
             columnList.append(extension.dynamicCast<ColumnDesc>());
         }
@@ -257,10 +226,10 @@ QList<QSharedPointer<ConnectionRoute> > Design::getRoutes() const
     QList<QSharedPointer<ConnectionRoute> > routes;
 
     QSharedPointer<Kactus2Group> routeExtensions = getRoutesExtension();
-    if (!routeExtensions.isNull())
+    if (routeExtensions != nullptr)
     {  
-        QString routeIdentifier = QStringLiteral("kactus2:route");
-        foreach (QSharedPointer<VendorExtension> extension, routeExtensions->getByType(routeIdentifier))
+        auto routeIdentifier = QStringLiteral("kactus2:route");
+        for (auto const& extension : routeExtensions->getByType(routeIdentifier))
         {
             routes.append(extension.dynamicCast<ConnectionRoute>());
         }
@@ -274,30 +243,20 @@ QList<QSharedPointer<ConnectionRoute> > Design::getRoutes() const
 //-----------------------------------------------------------------------------
 void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:adHocVisibilities"))
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
+    auto extension = findVendorExtension(QStringLiteral("kactus2:adHocVisibilities"));
+    getVendorExtensions()->removeAll(extension);
 
     if (!val.isEmpty())
     {
-        QSharedPointer<Kactus2Group> portAdHocs (new Kactus2Group(QStringLiteral("kactus2:adHocVisibilities")));
+        QSharedPointer<Kactus2Group> portAdHocs(new Kactus2Group(QStringLiteral("kactus2:adHocVisibilities")));
 
-        QMapIterator<QString, QPointF> positionIterator(val);
-
-        while (positionIterator.hasNext())
+        for (auto it = val.cbegin(); it != val.cend(); ++it)
         {
-            positionIterator.next();
+            QSharedPointer<Kactus2Placeholder> newAdHocPort(new Kactus2Placeholder(QStringLiteral("kactus2:adHocVisible")));
 
-            QSharedPointer<Kactus2Placeholder> newAdHocPort (new Kactus2Placeholder(QStringLiteral("kactus2:adHocVisible")));
-
-            newAdHocPort->setAttribute(QStringLiteral("portName"), positionIterator.key());
-            newAdHocPort->setAttribute(QStringLiteral("x"), QString::number(positionIterator.value().x()));
-            newAdHocPort->setAttribute(QStringLiteral("y"), QString::number(positionIterator.value().y()));
+            newAdHocPort->setAttribute(QStringLiteral("portName"), it.key());
+            newAdHocPort->setAttribute(QStringLiteral("x"), QString::number(it.value().x()));
+            newAdHocPort->setAttribute(QStringLiteral("y"), QString::number(it.value().y()));
 
             portAdHocs->addToGroup(newAdHocPort);
         }
@@ -321,21 +280,15 @@ void Design::setVlnv(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApiConnections)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:apiConnections"))
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
+    auto extension = findVendorExtension(QStringLiteral("kactus2:apiConnections"));
+    getVendorExtensions()->removeAll(extension);
 
     if (!newApiConnections.isEmpty())
     {
         QSharedPointer<Kactus2Group> newApiConnectionGroup(
             new Kactus2Group(QStringLiteral("kactus2:apiConnections")));
 
-        foreach (QSharedPointer<ApiInterconnection> connection, newApiConnections)
+        for (auto const& connection : newApiConnections)
         {
             newApiConnectionGroup->addToGroup(connection);
         }
@@ -349,21 +302,15 @@ void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApi
 //-----------------------------------------------------------------------------
 void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:comConnections"))
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
+    auto extension = findVendorExtension(QStringLiteral("kactus2:comConnections"));
+    getVendorExtensions()->removeAll(extension);
 
     if (!newComConnections.isEmpty())
     {
         QSharedPointer<Kactus2Group> newComConnectionGroup(
             new Kactus2Group(QStringLiteral("kactus2:comConnections")));
 
-        foreach (QSharedPointer<ComInterconnection> connection, newComConnections)
+        for (auto const& connection : newComConnections)
         {
             newComConnectionGroup->addToGroup(connection);
         }
@@ -382,7 +329,7 @@ QList<QSharedPointer<ApiInterconnection> > Design::getApiConnections() const
 
     QList<QSharedPointer<ApiInterconnection> > connectionList;
 
-    foreach (QSharedPointer<VendorExtension> extension, apiConnectionExtensions)
+    for (auto const& extension : apiConnectionExtensions)
     {
         connectionList.append(extension.dynamicCast<ApiInterconnection>());
     }
@@ -400,7 +347,7 @@ QList<QSharedPointer<ComInterconnection> > Design::getComConnections() const
 
     QList<QSharedPointer<ComInterconnection> > comConnectionList;
 
-    foreach (QSharedPointer<VendorExtension> extension, comConnectionExtensions)
+    for (auto const& extension : comConnectionExtensions)
     {
         comConnectionList.append(extension.dynamicCast<ComInterconnection>());
     }
@@ -413,15 +360,9 @@ QList<QSharedPointer<ComInterconnection> > Design::getComConnections() const
 //-----------------------------------------------------------------------------
 bool Design::hasInterconnection(QString const& instanceName, QString const& interfaceName) const 
 {
-    foreach (QSharedPointer<Interconnection> interconnection, *interconnections_)
-    {
-        if (interconnection->hasInterfaceReferencingComponent(instanceName, interfaceName))
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(interconnections_->cbegin(), interconnections_->cend(), 
+        [&instanceName, &interfaceName](auto const& interconnection)
+    {return interconnection->hasInterfaceReferencingComponent(instanceName, interfaceName); });
 }
 
 //-----------------------------------------------------------------------------
@@ -429,15 +370,10 @@ bool Design::hasInterconnection(QString const& instanceName, QString const& inte
 //-----------------------------------------------------------------------------
 VLNV Design::getHWComponentVLNV(QString const& instanceName) const 
 {
-	foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_) 
+    if (auto const instance = findComponentInstance(instanceName); instance != nullptr)
     {
-		// if instance is found
-		if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0) 
-        {
-			//return instance.getComponentRef();
-            return *instance->getComponentRef();
-		}
-	}
+        return *instance->getComponentRef();
+    }
 
 	// no instance was found
 	return VLNV();
@@ -448,17 +384,7 @@ VLNV Design::getHWComponentVLNV(QString const& instanceName) const
 //-----------------------------------------------------------------------------
 bool Design::containsHWInstance(QString const& instanceName) const
 {
-    foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
-    {
-		// if instance is found
-        if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
-        {
-			return true;
-		}
-	}
-
-	// no instance with given name was found
-	return false;
+    return findComponentInstance(instanceName) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -466,14 +392,10 @@ bool Design::containsHWInstance(QString const& instanceName) const
 //-----------------------------------------------------------------------------
 bool Design::hasConfElementValue(QString const& instanceName, QString const& confElementName) const
 {
-	foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_) 
+    if (auto const instance = findComponentInstance(instanceName); instance != nullptr)
     {
-		// when the instance is found
-        if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
-        {
-            return instance->getComponentRef()->hasConfigurableElementValue(confElementName);
-		}
-	}
+        return instance->getComponentRef()->hasConfigurableElementValue(confElementName);
+    }
 
 	// specified instance was not found
 	return false;
@@ -484,14 +406,10 @@ bool Design::hasConfElementValue(QString const& instanceName, QString const& con
 //-----------------------------------------------------------------------------
 QString Design::getConfElementValue(QString const& instanceName, QString const& confElementName) const
 {
-	foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
+    if (auto const instance = findComponentInstance(instanceName); instance != nullptr)
     {
-		// when the instance is found
-        if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
-        {
-            return instance->getComponentRef()->getSingleConfigurableElementValue(confElementName);
-		}
-	}
+        return instance->getComponentRef()->getSingleConfigurableElementValue(confElementName);
+    }
 
 	// specified instance was not found
 	return QString();
@@ -518,13 +436,10 @@ KactusAttribute::Implementation Design::getDesignImplementation() const
 //-----------------------------------------------------------------------------
 QString Design::getHWInstanceDescription(QString const& instanceName) const
 {
-	foreach (QSharedPointer<ComponentInstance> instance, *componentInstances_)
+    if (auto const instance = findComponentInstance(instanceName); instance != nullptr)
     {
-        if (instanceName.compare(instance->getInstanceName(), Qt::CaseInsensitive) == 0)
-        {
-            return instance->description();
-		}
-	}
+        return instance->description();
+    }
 
 	return QString();
 }
@@ -613,7 +528,7 @@ void Design::removeRoute(QSharedPointer<ConnectionRoute> route)
 //-----------------------------------------------------------------------------
 void Design::copySharedLists(Design const& other)
 {
-    foreach (QSharedPointer<ComponentInstance> instance, *other.componentInstances_)
+    for (auto const& instance : *other.componentInstances_)
     {
         if (instance)
         {
@@ -622,7 +537,7 @@ void Design::copySharedLists(Design const& other)
         }
     }
 
-    foreach (QSharedPointer<Interconnection> monitorConnection, *other.interconnections_)
+    for (auto const& monitorConnection : *other.interconnections_)
     {
         if (monitorConnection)
         {
@@ -631,7 +546,7 @@ void Design::copySharedLists(Design const& other)
         }
     }
 
-    foreach (QSharedPointer<MonitorInterconnection> monitorConnection, *other.monitorInterconnections_)
+    for (auto const& monitorConnection : *other.monitorInterconnections_)
     {
         if (monitorConnection)
         {
@@ -640,7 +555,7 @@ void Design::copySharedLists(Design const& other)
         }
     }
 
-    foreach (QSharedPointer<AdHocConnection> adHocConnection, *other.adHocConnections_)
+    for (auto const& adHocConnection : *other.adHocConnections_)
     {
         if (adHocConnection)
         {
@@ -655,15 +570,7 @@ void Design::copySharedLists(Design const& other)
 //-----------------------------------------------------------------------------
 QSharedPointer<Kactus2Group> Design::getLayoutExtension() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:columnLayout"))
-        {
-            return extension.dynamicCast<Kactus2Group>();
-        }
-    } 
-    
-    return QSharedPointer<Kactus2Group>();
+    return findVendorExtension(QStringLiteral("kactus2:columnLayout")).dynamicCast<Kactus2Group>();
 }
 
 //-----------------------------------------------------------------------------
@@ -671,15 +578,7 @@ QSharedPointer<Kactus2Group> Design::getLayoutExtension() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Kactus2Group> Design::getRoutesExtension() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:routes"))
-        {
-            return extension.dynamicCast<Kactus2Group>();
-        }
-    } 
-
-    return QSharedPointer<Kactus2Group>();
+    return findVendorExtension(QStringLiteral("kactus2:routes")).dynamicCast<Kactus2Group>();
 }
 
 //-----------------------------------------------------------------------------
@@ -689,7 +588,7 @@ QList<QSharedPointer<InterfaceGraphicsData> > Design::getInterfaceGraphicsData()
 {
     QList<QSharedPointer<InterfaceGraphicsData> > interfaceGrahics;
 
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (auto const& extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:interfaceGraphics"))
         {
@@ -709,7 +608,7 @@ QList<QSharedPointer<InterfaceGraphicsData> > Design::getInterfaceGraphicsData()
 //-----------------------------------------------------------------------------
 void Design::removeInterfaceGraphicsData(QString const& name)
 {
-    foreach (QSharedPointer<InterfaceGraphicsData> containedInterface, getInterfaceGraphicsData())
+    for (auto const& containedInterface : getInterfaceGraphicsData())
     {
         if (name == containedInterface->getName())
         {

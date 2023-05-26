@@ -40,7 +40,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~MonitorInterface();
+    ~MonitorInterface() final {};
 
     /*!
      *  Assignment operator.
@@ -50,17 +50,17 @@ public:
     /*!
      *  Comparison operator.
      */
-    bool operator==(const MonitorInterface& other);
+    bool operator==(const MonitorInterface& other) const;
 
     /*!
      *  The operator !=.
      */
-    bool operator!=(const MonitorInterface& other);
+    bool operator!=(const MonitorInterface& other) const;
 
     /*!
      *  The operator <.
      */
-    bool operator<(const MonitorInterface& other);
+    bool operator<(const MonitorInterface& other) const;
 
     /*!
      *  Checks if the interface referenced a given instance and a bus interface.
@@ -70,7 +70,7 @@ public:
      *
      *      @return True, if the given instance and bus interface are reference by the interface.
      */
-    bool references(QString const& instanceName, QString const& busInterfaceName);
+    bool references(QString const& instanceName, QString const& busInterfaceName) const;
 
     /*!
      *  Get the component reference.

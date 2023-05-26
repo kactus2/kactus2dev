@@ -15,7 +15,7 @@
 // Function: PortReference::PortReference()
 //-----------------------------------------------------------------------------
 PortReference::PortReference(QString const& portRef, QString const& componentRef /* = QString() */) :
-portRef_(portRef),
+    portRef_(portRef),
     componentRef_(componentRef)
 {
 

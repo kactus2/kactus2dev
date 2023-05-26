@@ -665,23 +665,3 @@ void ComponentInstance::setValueExtension(QString const& value, QString const& e
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: ComponentInstance::setPlaceholderExtension()
-//-----------------------------------------------------------------------------
-void ComponentInstance::setPlaceholderExtension(bool value, QString const& extensionType)
-{
-    auto extension = findVendorExtension(extensionType).dynamicCast<Kactus2Placeholder>();
-
-    if (value)
-    {
-        if (extension == nullptr)
-        {
-            extension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder(extensionType));
-            getVendorExtensions()->append(extension);
-        }
-    }
-    else
-    {
-        getVendorExtensions()->removeAll(extension);
-    }
-}

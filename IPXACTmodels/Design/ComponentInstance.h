@@ -346,15 +346,6 @@ private:
      */
     void setValueExtension(QString const& value, QString const& extensionType);
 
-    /*!
-     * Creates a Kactus2 vendor extension with given type, if it does not exist already.
-     * If value is false, the extension is removed.
-     *
-     *     @param [in] value            The value to set.
-     *     @param [in] extensionType    The type of the vendor extension.
-     */
-    void setPlaceholderExtension(bool value, QString const& extensionType);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

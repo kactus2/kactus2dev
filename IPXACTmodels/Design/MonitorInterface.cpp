@@ -14,10 +14,9 @@
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::MonitorInterface()
 //-----------------------------------------------------------------------------
-MonitorInterface::MonitorInterface(QString componentRef /* = QString("") */, QString busRef /* = QString("") */):
+MonitorInterface::MonitorInterface(QString componentRef, QString busRef):
 HierInterface(busRef),
-componentReference_(componentRef),
-path_()
+componentReference_(componentRef)
 {
 
 }
@@ -30,15 +29,7 @@ HierInterface(other),
 componentReference_(other.componentReference_),
 path_(other.path_)
 {
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MonitorInterface::~MonitorInterface()
-//-----------------------------------------------------------------------------
-MonitorInterface::~MonitorInterface()
-{
-
+   
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +50,7 @@ MonitorInterface& MonitorInterface::operator=(const MonitorInterface& other)
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::operator==()
 //-----------------------------------------------------------------------------
-bool MonitorInterface::operator==(const MonitorInterface& other)
+bool MonitorInterface::operator==(const MonitorInterface& other) const
 {
     return (HierInterface::operator==(other)) &&
         (componentReference_.compare(other.componentReference_, Qt::CaseInsensitive) == 0);
@@ -68,7 +59,7 @@ bool MonitorInterface::operator==(const MonitorInterface& other)
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::operator!=()
 //-----------------------------------------------------------------------------
-bool MonitorInterface::operator!=(const MonitorInterface& other)
+bool MonitorInterface::operator!=(const MonitorInterface& other) const
 {
     return !operator==(other);
 }
@@ -76,7 +67,7 @@ bool MonitorInterface::operator!=(const MonitorInterface& other)
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::operator<()
 //-----------------------------------------------------------------------------
-bool MonitorInterface::operator<(const MonitorInterface& other)
+bool MonitorInterface::operator<(const MonitorInterface& other) const
 {
     int busRefeferencecomparison = HierInterface::operator<(other);
     if (busRefeferencecomparison == 0)
@@ -92,7 +83,7 @@ bool MonitorInterface::operator<(const MonitorInterface& other)
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::references()
 //-----------------------------------------------------------------------------
-bool MonitorInterface::references(QString const& instanceName, QString const& busInterfaceName)
+bool MonitorInterface::references(QString const& instanceName, QString const& busInterfaceName) const
 {
     return instanceName == componentReference_ && busInterfaceName == getBusReference();
 }

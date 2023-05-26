@@ -75,7 +75,7 @@ public:
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~Design();
+	~Design() final = default;
 
 	/*!
 	 *  Clone this design.
@@ -351,16 +351,20 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The HW component instances.
-    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances_;
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances_ =
+        QSharedPointer<QList<QSharedPointer<ComponentInstance> > >(new QList<QSharedPointer<ComponentInstance> >());
 
     //! The interconnections.
-    QSharedPointer<QList<QSharedPointer<Interconnection> > > interconnections_;
+    QSharedPointer<QList<QSharedPointer<Interconnection> > > interconnections_ =
+        QSharedPointer<QList<QSharedPointer<Interconnection> > >(new QList<QSharedPointer<Interconnection> >());
     
     //! The monitor interconnections.
-    QSharedPointer<QList<QSharedPointer<MonitorInterconnection> > > monitorInterconnections_;
+    QSharedPointer<QList<QSharedPointer<MonitorInterconnection> > > monitorInterconnections_ =
+        QSharedPointer<QList<QSharedPointer<MonitorInterconnection> > >(new QList<QSharedPointer<MonitorInterconnection> >());
 
     //! Ad-hoc connections
-    QSharedPointer<QList<QSharedPointer<AdHocConnection> > > adHocConnections_;
+    QSharedPointer<QList<QSharedPointer<AdHocConnection> > > adHocConnections_ =
+         QSharedPointer<QList<QSharedPointer<AdHocConnection> > >(new QList<QSharedPointer<AdHocConnection> >());
 
 };
 

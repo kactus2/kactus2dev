@@ -53,7 +53,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~Interconnection();
+    ~Interconnection() override = default;
 
     /*!
      *  Assignment operator.
@@ -144,12 +144,15 @@ private:
     QSharedPointer<ActiveInterface> startInterface_;
 
     //! A list of active interfaces.
-    QSharedPointer<QList<QSharedPointer<ActiveInterface> > > activeInterfaces_;
+    QSharedPointer<QList<QSharedPointer<ActiveInterface> > > activeInterfaces_ =
+        QSharedPointer<QList<QSharedPointer<ActiveInterface> > >(new QList<QSharedPointer<ActiveInterface> >());
 
     //! A list of hier interfaces.
-    QSharedPointer<QList<QSharedPointer<HierInterface> > > hierInterfaces_;
+    QSharedPointer<QList<QSharedPointer<HierInterface> > > hierInterfaces_ =
+        QSharedPointer<QList<QSharedPointer<HierInterface> > >(new QList<QSharedPointer<HierInterface> >());
 
     //! The presence.
     QString isPresent_;
+
 };
 #endif // INTERCONNECTION_H

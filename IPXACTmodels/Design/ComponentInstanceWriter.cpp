@@ -79,7 +79,11 @@ void ComponentInstanceWriter::writeConfigurableVLNVReference(QXmlStreamWriter& w
     writer.writeEndElement(); // xmlElementName
 }
 
-void ComponentInstanceWriter::writePowerDomainLinks(QXmlStreamWriter& writer, QSharedPointer<ComponentInstance> instance) const
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceWriter::writePowerDomainLinks()
+//-----------------------------------------------------------------------------
+void ComponentInstanceWriter::writePowerDomainLinks(QXmlStreamWriter& writer, 
+    QSharedPointer<ComponentInstance> instance) const
 {
     if (instance->getPowerDomainLinks()->isEmpty())
     {

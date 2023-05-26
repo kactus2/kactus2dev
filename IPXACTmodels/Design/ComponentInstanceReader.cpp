@@ -183,10 +183,9 @@ void ComponentInstanceReader::parsePortPositions(QDomElement const& portPosition
 {
     QMap<QString, QPointF> portPositions = createMappedPositions(portPositionsElement, 
         QStringLiteral("kactus2:portPosition"), QStringLiteral("busRef"));
-    QMapIterator<QString, QPointF> portIterator(portPositions);
-    while (portIterator.hasNext())
+
+    for (auto portIterator = portPositions.cbegin(); portIterator != portPositions.cend(); ++portIterator)
     {
-        portIterator.next();
         instance->updateBusInterfacePosition(portIterator.key(), portIterator.value());
     }
 }
@@ -199,10 +198,9 @@ void ComponentInstanceReader::parseAdHocVisibilities(QDomElement const& adHocEle
 {
     QMap<QString, QPointF> adHocPositions = createMappedPositions(adHocElement,
         QStringLiteral("kactus2:adHocVisible"), QStringLiteral("portName"));
-    QMapIterator<QString, QPointF> adHocIterator(adHocPositions);
-    while (adHocIterator.hasNext())
+
+    for (auto adHocIterator = adHocPositions.cbegin(); adHocIterator != adHocPositions.cend(); ++adHocIterator)
     {
-        adHocIterator.next();
         instance->updateAdHocPortPosition(adHocIterator.key(), adHocIterator.value());
     }
 }
@@ -215,10 +213,10 @@ void ComponentInstanceReader::parseApiInterfacePositions(QDomElement const& apiE
 {
     QMap<QString, QPointF> apiInterfacePositions = createMappedPositions(apiElement,
         QStringLiteral("kactus2:apiInterfacePosition"), QStringLiteral("apiRef"));
-    QMapIterator<QString, QPointF> apiInterfaceIterator(apiInterfacePositions);
-    while (apiInterfaceIterator.hasNext())
+
+    for (auto apiInterfaceIterator = apiInterfacePositions.cbegin(); 
+        apiInterfaceIterator != apiInterfacePositions.cend(); ++apiInterfaceIterator)
     {
-        apiInterfaceIterator.next();
         instance->updateApiInterfacePosition(apiInterfaceIterator.key(), apiInterfaceIterator.value());
     }
 }
@@ -231,10 +229,10 @@ void ComponentInstanceReader::parseComInterfacePositions(QDomElement const& comE
 {
     QMap<QString, QPointF> comInterfacePositions = createMappedPositions(comElement,
         QStringLiteral("kactus2:comInterfacePosition"), QStringLiteral("comRef"));
-    QMapIterator<QString, QPointF> comInterfaceIterator(comInterfacePositions);
-    while (comInterfaceIterator.hasNext())
+
+    for (auto comInterfaceIterator = comInterfacePositions.cbegin(); 
+        comInterfaceIterator != comInterfacePositions.cend(); ++comInterfaceIterator)
     {
-        comInterfaceIterator.next();
         instance->updateComInterfacePosition(comInterfaceIterator.key(), comInterfaceIterator.value());
     }
 }
