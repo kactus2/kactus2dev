@@ -26,6 +26,7 @@
 #include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WirePort.h>
+#include <IPXACTmodels/AbstractionDefinition/Packet.h>
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
@@ -49,6 +50,7 @@ private slots:
     void testReadDescription();
 
     void testReadWirePort();
+    void testReadWirePortNewStd();
     void testReadMultipleWireSystemPorts();
     void testReadWirePortConstraints();
 
@@ -57,7 +59,10 @@ private slots:
     void testReadTransactionalWithProtocol();
     void testReadTransactionalWithCustomProtocol();
    
+    void testReadChoices();
+
     void testReadParameters();
+    void testReadParametersNewStd();
     void testReadAssertions();
     void testReadVendorExtension();
 
@@ -342,6 +347,122 @@ void tst_AbstractionDefinitionReader::testReadWirePort()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionReader::testReadWirePortNewStd()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionReader::testReadWirePortNewStd()
+{
+    QDomDocument document;
+    document.setContent(QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+        "<ipxact:vendor>TUT</ipxact:vendor>"
+        "<ipxact:library>TestLibrary</ipxact:library>"
+        "<ipxact:name>MinimalDefinition</ipxact:name>"
+        "<ipxact:version>1.0</ipxact:version>"
+        "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBus\" version=\"1.0\"/>"
+            "<ipxact:ports>"
+                "<ipxact:port>"
+                    "<ipxact:logicalName>wirePort</ipxact:logicalName>"
+                    "<ipxact:displayName>simple wire</ipxact:displayName>"
+                    "<ipxact:shortDescription>shortDesc.</ipxact:shortDescription>"
+                    "<ipxact:description>simple wire for testing</ipxact:description>"
+                    "<ipxact:match>true</ipxact:match>"
+                    "<ipxact:wire>"
+                        "<ipxact:qualifier>"
+                            "<ipxact:isFlowControl flowType=\"user\" user=\"test flow type\">true</ipxact:isFlowControl>"
+                        "</ipxact:qualifier>"
+                        "<ipxact:onInitiator>"
+                            "<ipxact:presence>required</ipxact:presence>"
+                            "<ipxact:width>widthExpression</ipxact:width>"
+                            "<ipxact:direction>inout</ipxact:direction>"
+                        "</ipxact:onInitiator>"
+                        "<ipxact:onTarget>"
+                            "<ipxact:presence>required</ipxact:presence>"
+                            "<ipxact:width>4</ipxact:width>"
+                            "<ipxact:direction>in</ipxact:direction>"
+                        "</ipxact:onTarget>"
+                        "<ipxact:defaultValue>1</ipxact:defaultValue>"
+                    "</ipxact:wire>"
+                    "<ipxact:vendorExtensions>"
+                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                    "</ipxact:vendorExtensions>"
+                    "<ipxact:packets>"
+                        "<ipxact:packet>"
+                            "<ipxact:name>testPacket</ipxact:packet>"
+                            "<ipxact:endianness>little</ipxact:endianness>"
+                            "<ipxact:packetFields>"
+                                "<ipxact:packetField>"
+                                    "<ipxact:name>testField</ipxact:name>"
+                                    "<ipxact:description>A packet field description</ipxact:description>"
+                                    "<ipxact:value>4</ipxact:value>"
+                                    "<ipxact:width>4</ipxact:width>"
+                                    "<ipxact:qualifier>"
+                                        "<ipxact:isOpcode>true</ipxact:isOpcode>"
+                                    "</ipxact:qualifier>"
+                                "</ipxact:packetField>"
+                            "</ipxact:packetFields>"
+                        "</ipxact:packet>"
+                    "</ipxact:packets>"
+                "</ipxact:port>"
+            "</ipxact:ports>"
+        "</ipxact:abstractionDefinition>"));
+
+    AbstractionDefinitionReader reader;
+    QSharedPointer<AbstractionDefinition> readAbsDef = reader.createAbstractionDefinitionFrom(document);
+
+    QCOMPARE(readAbsDef->getLogicalPorts()->size(), 1);
+
+    QSharedPointer<PortAbstraction> port = readAbsDef->getLogicalPorts()->first();
+
+    QCOMPARE(port->getLogicalName(), QString("wirePort"));
+    QCOMPARE(port->displayName(), QString("simple wire"));
+    QCOMPARE(port->description(), QString("simple wire for testing"));
+    QCOMPARE(port->shortDescription(), QString("shortDesc."));
+    QCOMPARE(port->getMatch(), true);
+    QCOMPARE(port->getVendorExtensions()->size(), 1);
+
+    QCOMPARE(port->hasWire(), true);
+    QCOMPARE(port->getWire()->getDefaultValue(), QString("1"));
+
+    auto wireQualifier = port->getQualifier();
+    QCOMPARE(wireQualifier->isFlowControl, true);
+    QCOMPARE(wireQualifier->flowType, "user");
+    QCOMPARE(wireQualifier->userFlowType, "test flow type");
+    QCOMPARE(wireQualifier->isData, false);
+    QCOMPARE(wireQualifier->isAddress, false);
+    QVERIFY(wireQualifier->userDefinedInformation.size() == 0);
+
+    auto initiator = port->getWire()->getInitiatorPort();
+    QCOMPARE(initiator->getPresence(), PresenceTypes::REQUIRED);
+    QCOMPARE(initiator->getWidth(), QString("widthExpression"));
+    QCOMPARE(initiator->getDirection(), DirectionTypes::INOUT);
+
+    auto target = port->getWire()->getTargetPort();
+    QCOMPARE(target->getPresence(), PresenceTypes::REQUIRED);
+    QCOMPARE(target->getWidth(), QString("4"));
+    QCOMPARE(target->getDirection(), DirectionTypes::IN);
+
+    auto packet = port->getPackets()->first();
+    QCOMPARE(packet->name(), QString("testPacket"));
+    QCOMPARE(packet->getEndianness(), QString("little"));
+
+    auto testPacketField = packet->getPacketFields()->first();
+    QCOMPARE(testPacketField->name(), QString("testField"));
+    QCOMPARE(testPacketField->description(), QString("A packet field description"));
+    QCOMPARE(testPacketField->getValue(), QString("4"));
+    QCOMPARE(testPacketField->getWidth(), QString("4"));
+
+    auto fieldQualifier = testPacketField->getQualifier();
+    QCOMPARE(fieldQualifier->isOpcode, true);
+    QCOMPARE(fieldQualifier->isPowerEn, false);
+    QVERIFY(fieldQualifier->powerEnLevel.size() == 0);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionReader::testReadMultipleWireSystemPorts()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionReader::testReadMultipleWireSystemPorts()
@@ -478,10 +599,10 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
     document.setContent(QString(        
         "<?xml version=\"1.0\"?>"
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
-        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-202/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestAbsDef</ipxact:name>"
@@ -490,6 +611,7 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
             "<ipxact:ports>"
                 "<ipxact:port>"
                     "<ipxact:logicalName>testPort</ipxact:logicalName>"
+                    "<ipxact:match>false</ipxact:match>"
                     "<ipxact:transactional>"
                         "<ipxact:qualifier>"
                             "<ipxact:isData>true</ipxact:isData>"
@@ -500,7 +622,17 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
                             "<ipxact:kind>tlm_port</ipxact:kind>"
                             "<ipxact:busWidth>32</ipxact:busWidth>"
                         "</ipxact:onMaster>" 
-                    "</ipxact:transactional>"        
+                    "</ipxact:transactional>"
+                    "<ipxact:transactional>"
+                        "<ipxact:qualifier>"
+                            "<ipxact:isClockEn level=\"high\">true</ipxact:isClockEn>"
+                        "</ipxact:qualifier>"
+                        "<ipxact:onInitiator>"
+                            "<ipxact:presence>required</ipxact:presence>"
+                            "<ipxact:width>widthExpression</ipxact:width>"
+                            "<ipxact:direction>inout</ipxact:direction>"
+                        "</ipxact:onInitiator>"
+                    "</ipxact:transactional>"
                 "</ipxact:port>"
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
@@ -692,6 +824,58 @@ void tst_AbstractionDefinitionReader::testReadTransactionalWithCustomProtocol()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionReader::testReadChoices()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionReader::testReadChoices()
+{
+    QDomDocument document;
+    document.setContent(QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDefinition</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:choices>"
+                "<ipxact:choice>"
+                    "<ipxact:name>bitsize</ipxact:name>"
+                    "<ipxact:enumeration text=\"32 bits\">32</ipxact:enumeration>"
+                    "<ipxact:enumeration text=\"64 bits\">64</ipxact:enumeration>"
+                "</ipxact:choice>"
+                "<ipxact:choice>"
+                    "<ipxact:name>testChoice</ipxact:name>"
+                    "<ipxact:enumeration text=\"some bits\">some</ipxact:enumeration>"
+                    "<ipxact:enumeration text=\"lots of bits\">lots</ipxact:enumeration>"
+                "</ipxact:choice>"
+            "</ipxact:choices>"
+        "</ipxact:abstractionDefinition>"));
+
+    AbstractionDefinitionReader reader;
+    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+
+    QCOMPARE(testDefinition->getChoices()->count(), 2);
+
+    auto choice1 = testDefinition->getChoices()->at(0);
+    auto choice2 = testDefinition->getChoices()->at(1);
+
+    QCOMPARE(choice1->name(), QString("bitsize"));
+    QCOMPARE(choice1->enumerations()->count(), 2);
+    QCOMPARE(choice1->enumerations()->at(0)->getValue(), QString("32"));
+    QCOMPARE(choice1->enumerations()->at(1)->getValue(), QString("64"));
+    QCOMPARE(choice1->enumerations()->at(1)->getText(), QString("64 bits"));
+    
+    QCOMPARE(choice2->name(), QString("testChocie"));
+    QCOMPARE(choice2->enumerations()->count(), 2);
+    QCOMPARE(choice2->enumerations()->at(0)->getValue(), QString("some"));
+    QCOMPARE(choice2->enumerations()->at(1)->getValue(), QString("lots"));
+    QCOMPARE(choice2->enumerations()->at(1)->getText(), QString("lots of bits"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionReader::testReadParameters()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionReader::testReadParameters()
@@ -728,6 +912,52 @@ void tst_AbstractionDefinitionReader::testReadParameters()
     QSharedPointer<Parameter> testParameter = testDefinition->getParameters()->first();
     QCOMPARE(testParameter->name(), QString("parameter1"));
     QCOMPARE(testParameter->getValue(), QString("1"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionReader::testReadParametersNewStd()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionReader::testReadParametersNewStd()
+{
+    QDomDocument document;
+    document.setContent(QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDefinition</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:parameters>"
+                "<ipxact:parameter>"
+                    "<ipxact:name>parameter1</ipxact:name>"
+                    "<ipxact:value>1</ipxact:value>"
+                    "<ipxact:vectors>"
+                        "<ipxact:vector vectorId=\"testVector\">"
+                            "<ipxact:left>3</ipxact:left>"
+                            "<ipxact:right>0</ipxact:right>"
+                        "</ipxact:vector>"
+                    "</ipxact:vectors>"
+                "</ipxact:parameter>"
+            "</ipxact:parameters>"
+        "</ipxact:abstractionDefinition>"));
+
+    AbstractionDefinitionReader reader;
+    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+
+    QCOMPARE(testDefinition->getParameters()->count(), 1);
+
+    QSharedPointer<Parameter> testParameter = testDefinition->getParameters()->first();
+    QCOMPARE(testParameter->name(), QString("parameter1"));
+    QCOMPARE(testParameter->getValue(), QString("1"));
+
+    auto testVector = testParameter->getVectors()->first();
+    QCOMPARE(testVector->getId(), QString("testVector"));
+    QCOMPARE(testVector->getLeft(), QString("3"));
+    QCOMPARE(testVector->getRight(), QString("0"));
 }
 
 //-----------------------------------------------------------------------------
