@@ -25,8 +25,8 @@
 //-----------------------------------------------------------------------------
 TransactionalAbstraction::TransactionalAbstraction() :
     onSystem_(new QList<QSharedPointer<TransactionalPort> >()),
-    onMaster_(),
-    onSlave_()
+    onInitiator_(),
+    onTarget_()
 {
 
 }
@@ -37,16 +37,16 @@ TransactionalAbstraction::TransactionalAbstraction() :
 TransactionalAbstraction::TransactionalAbstraction(TransactionalAbstraction const& other):
 qualifier_(other.qualifier_),
     onSystem_(new QList<QSharedPointer<TransactionalPort> >()),
-    onMaster_(),
-    onSlave_()
+    onInitiator_(),
+    onTarget_()
 {
-	if (other.onMaster_)
+	if (other.onInitiator_)
     {
-		onMaster_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onMaster_.data()));
+		onInitiator_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onInitiator_.data()));
 	}
-	if (other.onSlave_)
+	if (other.onTarget_)
     {
-		onSlave_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onSlave_.data()));
+		onTarget_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onTarget_.data()));
 	}
 
     Utilities::copyList(onSystem_, other.onSystem_);
@@ -61,21 +61,21 @@ TransactionalAbstraction& TransactionalAbstraction::operator=(TransactionalAbstr
     {
 	    qualifier_ = other.qualifier_;
 
-		if (other.onMaster_)
+		if (other.onInitiator_)
         {
-			onMaster_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onMaster_.data()));
+			onInitiator_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onInitiator_.data()));
 		}
 		else
         {
-			onMaster_ = QSharedPointer<TransactionalPort>();
+			onInitiator_ = QSharedPointer<TransactionalPort>();
         }
-		if (other.onSlave_)
+		if (other.onTarget_)
         {
-			onSlave_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onSlave_.data()));
+			onTarget_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onTarget_.data()));
 		}
 		else
         {
-			onSlave_ = QSharedPointer<TransactionalPort>();
+			onTarget_ = QSharedPointer<TransactionalPort>();
         }
 
         Utilities::copyList(onSystem_, other.onSystem_);
@@ -104,63 +104,7 @@ QSharedPointer<Qualifier> TransactionalAbstraction::getQualifier()
 //-----------------------------------------------------------------------------
 void TransactionalAbstraction::setQualifier(QString const& qualifierType)
 {
-    if (qualifierType == QStringLiteral("address"))
-    {
-        qualifier_->isAddress = true;
-    }
-    else if (qualifierType == QStringLiteral("data"))
-    {
-        qualifier_->isData = true;
-    }
-    else if (qualifierType == QStringLiteral("data/address"))
-    {
-        qualifier_->isAddress = true;
-        qualifier_->isData = true;
-    }
-    else if (qualifierType == QStringLiteral("reset"))
-    {
-        qualifier_->isReset = true;
-    }
-    else if (qualifierType == QStringLiteral("valid"))
-    {
-        qualifier_->isValid = true;
-    }
-    else if (qualifierType == QStringLiteral("interrupt"))
-    {
-        qualifier_->isInterrupt = true;
-    }
-    else if (qualifierType == QStringLiteral("clock enable"))
-    {
-        qualifier_->isClockEn = true;
-    }
-    else if (qualifierType == QStringLiteral("power enable"))
-    {
-        qualifier_->isPowerEn = true;
-    }
-    else if (qualifierType == QStringLiteral("opcode"))
-    {
-        qualifier_->isOpcode = true;
-    }
-    else if (qualifierType == QStringLiteral("protection"))
-    {
-        qualifier_->isProtection = true;
-    }
-    else if (qualifierType == QStringLiteral("flow control"))
-    {
-        qualifier_->isFlowControl = true;
-    }
-    else if (qualifierType == QStringLiteral("user"))
-    {
-        qualifier_->isUser = true;
-    }
-    else if (qualifierType == QStringLiteral("request"))
-    {
-        qualifier_->isRequest = true;
-    }
-    else if (qualifierType == QStringLiteral("response"))
-    {
-        qualifier_->isResponse = true;
-    }
+    qualifier_->setQualifier(qualifierType);
 }
 
 //-----------------------------------------------------------------------------
@@ -180,11 +124,59 @@ QSharedPointer<QList<QSharedPointer<TransactionalPort> > > TransactionalAbstract
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransactionalAbstraction::hasInitiatorPort()
+//-----------------------------------------------------------------------------
+bool TransactionalAbstraction::hasInitiatorPort() const
+{
+    return !onInitiator_.isNull();
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalAbstraction::setInitiatorPort()
+//-----------------------------------------------------------------------------
+void TransactionalAbstraction::setInitiatorPort(QSharedPointer<TransactionalPort> initiatorPort)
+{
+    onInitiator_ = initiatorPort;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalAbstraction::getInitiatorPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<TransactionalPort> TransactionalAbstraction::getInitiatorPort() const
+{
+    return onInitiator_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalAbstraction::hasTargetPort()
+//-----------------------------------------------------------------------------
+bool TransactionalAbstraction::hasTargetPort() const
+{
+    return !onTarget_.isNull();
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalAbstraction::setTargetPort()
+//-----------------------------------------------------------------------------
+void TransactionalAbstraction::setTargetPort(QSharedPointer<TransactionalPort> targetPort)
+{
+    onTarget_ = targetPort;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransactionalAbstraction::getTargetPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<TransactionalPort> TransactionalAbstraction::getTargetPort() const
+{
+    return onTarget_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: TransactionalAbstraction::hasMasterPort()
 //-----------------------------------------------------------------------------
 bool TransactionalAbstraction::hasMasterPort() const
 {
-    return !onMaster_.isNull();
+    return hasInitiatorPort();
 }
 
 //-----------------------------------------------------------------------------
@@ -192,7 +184,7 @@ bool TransactionalAbstraction::hasMasterPort() const
 //-----------------------------------------------------------------------------
 void TransactionalAbstraction::setMasterPort(QSharedPointer<TransactionalPort> masterPort)
 {
-	onMaster_ = masterPort;
+    setInitiatorPort(masterPort);
 }
 
 //-----------------------------------------------------------------------------
@@ -200,7 +192,7 @@ void TransactionalAbstraction::setMasterPort(QSharedPointer<TransactionalPort> m
 //-----------------------------------------------------------------------------
 QSharedPointer<TransactionalPort> TransactionalAbstraction::getMasterPort() const
 {
-    return onMaster_;
+    return getInitiatorPort();
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +200,7 @@ QSharedPointer<TransactionalPort> TransactionalAbstraction::getMasterPort() cons
 //-----------------------------------------------------------------------------
 bool TransactionalAbstraction::hasSlavePort() const
 {
-    return !onSlave_.isNull();
+    return hasTargetPort();
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +208,7 @@ bool TransactionalAbstraction::hasSlavePort() const
 //-----------------------------------------------------------------------------
 void TransactionalAbstraction::setSlavePort(QSharedPointer<TransactionalPort> slavePort)
 {
-    onSlave_ = slavePort;
+    setTargetPort(slavePort);
 }
 
 //-----------------------------------------------------------------------------
@@ -224,7 +216,7 @@ void TransactionalAbstraction::setSlavePort(QSharedPointer<TransactionalPort> sl
 //-----------------------------------------------------------------------------
 QSharedPointer<TransactionalPort> TransactionalAbstraction::getSlavePort() const
 {
-	return onSlave_;
+    return getTargetPort();
 }
 
 //-----------------------------------------------------------------------------

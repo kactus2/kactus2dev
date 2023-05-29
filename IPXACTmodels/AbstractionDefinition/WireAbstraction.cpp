@@ -22,8 +22,8 @@ WireAbstraction::WireAbstraction():
     defaultValue_(QStringLiteral("")),
     requiresDriver_(false),
     driverType_(General::NO_DRIVER),
-    onMaster_(QSharedPointer<WirePort>()), 
-    onSlave_(QSharedPointer<WirePort>()),
+    onInitiator_(QSharedPointer<WirePort>()), 
+    onTarget_(QSharedPointer<WirePort>()),
     onSystem_(new QList<QSharedPointer<WirePort> >())
 {
 
@@ -37,26 +37,26 @@ qualifier_(other.qualifier_),
     defaultValue_(other.defaultValue_),
     requiresDriver_(other.requiresDriver_),
     driverType_(other.driverType_),
-    onMaster_(),
-    onSlave_(), 
+    onInitiator_(),
+    onTarget_(), 
     onSystem_(new QList<QSharedPointer<WirePort> >())
 {
-    if (other.onMaster_)
+    if (other.onInitiator_)
     {
-        onMaster_ = QSharedPointer<WirePort>(new WirePort(*other.onMaster_.data()));
+        onInitiator_ = QSharedPointer<WirePort>(new WirePort(*other.onInitiator_.data()));
     }
     else
     {
-        onMaster_ = QSharedPointer<WirePort>();
+        onInitiator_ = QSharedPointer<WirePort>();
     }
 
-    if (other.onSlave_)
+    if (other.onTarget_)
     {
-        onSlave_ = QSharedPointer<WirePort>(new WirePort(*other.onSlave_.data()));
+        onTarget_ = QSharedPointer<WirePort>(new WirePort(*other.onTarget_.data()));
     }
     else
     {
-        onSlave_ = QSharedPointer<WirePort>();
+        onTarget_ = QSharedPointer<WirePort>();
     }   
 
     Utilities::copyList(onSystem_, other.onSystem_);
@@ -74,22 +74,22 @@ WireAbstraction& WireAbstraction::operator=(WireAbstraction const& other)
 		requiresDriver_ = other.requiresDriver_;
         driverType_ = other.driverType_;
       
-		if (other.onMaster_)
+		if (other.onInitiator_)
         {
-			onMaster_ = QSharedPointer<WirePort>(new WirePort(*other.onMaster_.data()));
+			onInitiator_ = QSharedPointer<WirePort>(new WirePort(*other.onInitiator_.data()));
 		}
 		else
         {
-			onMaster_ = QSharedPointer<WirePort>();
+			onInitiator_ = QSharedPointer<WirePort>();
         }
 
-		if (other.onSlave_)
+		if (other.onTarget_)
         {
-			onSlave_ = QSharedPointer<WirePort>(new WirePort(*other.onSlave_.data()));
+			onTarget_ = QSharedPointer<WirePort>(new WirePort(*other.onTarget_.data()));
 		}
 		else
         {
-			onSlave_ = QSharedPointer<WirePort>();
+			onTarget_ = QSharedPointer<WirePort>();
         }   
 
         Utilities::copyList(onSystem_, other.onSystem_);
@@ -129,64 +129,7 @@ QString WireAbstraction::getDefaultValue() const
 //-----------------------------------------------------------------------------
 void WireAbstraction::setQualifier(QString const& qualifierType)
 {
-    if (qualifierType == QStringLiteral("address"))
-    {
-        qualifier_->isAddress = true;
-    }
-    else if (qualifierType == QStringLiteral("data"))
-    {
-        qualifier_->isData = true;
-    }
-    else if (qualifierType == QStringLiteral("data/address"))
-    {
-        qualifier_->isAddress = true;
-        qualifier_->isData = true;
-    }
-    else if (qualifierType == QStringLiteral("reset"))
-    {
-        qualifier_->isReset = true;
-    }
-    else if (qualifierType == QStringLiteral("valid"))
-    {
-        qualifier_->isValid = true;
-    }
-    else if (qualifierType == QStringLiteral("interrupt"))
-    {
-        qualifier_->isInterrupt = true;
-    }
-    else if (qualifierType == QStringLiteral("clock enable"))
-    {
-        qualifier_->isClockEn= true;
-    }
-    else if (qualifierType == QStringLiteral("power enable"))
-    {
-        qualifier_->isPowerEn = true;
-    }
-    else if (qualifierType == QStringLiteral("opcode"))
-    {
-        qualifier_->isOpcode = true;
-    }
-    else if (qualifierType == QStringLiteral("protection"))
-    {
-        qualifier_->isProtection = true;
-    }
-    else if (qualifierType == QStringLiteral("flow control"))
-    {
-        qualifier_->isFlowControl = true;
-    }
-    else if (qualifierType == QStringLiteral("user"))
-    {
-        qualifier_->isUser = true;
-    }
-    else if (qualifierType == QStringLiteral("request"))
-    {
-        qualifier_->isRequest = true;
-    }
-    else if (qualifierType == QStringLiteral("response"))
-    {
-        qualifier_->isResponse = true;
-    }
-    
+    qualifier_->setQualifier(qualifierType);
 }
 
 //-----------------------------------------------------------------------------
@@ -233,11 +176,59 @@ QSharedPointer<WirePort> WireAbstraction::findSystemPort(QString const& groupNam
 }
 
 //-----------------------------------------------------------------------------
+// Function: WireAbstraction::hasInitiatorPort()
+//-----------------------------------------------------------------------------
+bool WireAbstraction::hasInitiatorPort() const
+{
+    return !onInitiator_.isNull();
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireAbstraction::setInitiatorPort()
+//-----------------------------------------------------------------------------
+void WireAbstraction::setInitiatorPort(QSharedPointer<WirePort> initiatorPort)
+{
+    onInitiator_ = initiatorPort;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireAbstraction::getInitiatorPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<WirePort> WireAbstraction::getInitiatorPort() const
+{
+    return onInitiator_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireAbstraction::hasTargetPort()
+//-----------------------------------------------------------------------------
+bool WireAbstraction::hasTargetPort() const
+{
+    return !onTarget_.isNull();
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireAbstraction::setTargetPort()
+//-----------------------------------------------------------------------------
+void WireAbstraction::setTargetPort(QSharedPointer<WirePort> targetPort)
+{
+    onTarget_ = targetPort;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireAbstraction::getTargetPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<WirePort> WireAbstraction::getTargetPort() const
+{
+    return onTarget_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: WireAbstraction::hasMasterPort()
 //-----------------------------------------------------------------------------
 bool WireAbstraction::hasMasterPort() const
 {
-    return !onMaster_.isNull();
+    return hasInitiatorPort();
 }
 
 //-----------------------------------------------------------------------------
@@ -245,7 +236,7 @@ bool WireAbstraction::hasMasterPort() const
 //-----------------------------------------------------------------------------
 void WireAbstraction::setMasterPort(QSharedPointer<WirePort> masterPort)
 {
-    onMaster_ = masterPort;
+    setInitiatorPort(masterPort);
 }
 
 //-----------------------------------------------------------------------------
@@ -253,7 +244,7 @@ void WireAbstraction::setMasterPort(QSharedPointer<WirePort> masterPort)
 //-----------------------------------------------------------------------------
 QSharedPointer<WirePort> WireAbstraction::getMasterPort() const
 {
-    return onMaster_;
+    return getInitiatorPort();
 }
 
 //-----------------------------------------------------------------------------
@@ -261,7 +252,7 @@ QSharedPointer<WirePort> WireAbstraction::getMasterPort() const
 //-----------------------------------------------------------------------------
 bool WireAbstraction::hasSlavePort() const
 {
-    return !onSlave_.isNull();
+    return hasTargetPort();
 }
 
 //-----------------------------------------------------------------------------
@@ -269,7 +260,7 @@ bool WireAbstraction::hasSlavePort() const
 //-----------------------------------------------------------------------------
 void WireAbstraction::setSlavePort(QSharedPointer<WirePort> slavePort)
 {
-    onSlave_ = slavePort;
+    setTargetPort(slavePort);
 }
 
 //-----------------------------------------------------------------------------
@@ -277,7 +268,7 @@ void WireAbstraction::setSlavePort(QSharedPointer<WirePort> slavePort)
 //-----------------------------------------------------------------------------
 QSharedPointer<WirePort> WireAbstraction::getSlavePort() const
 {
-    return onSlave_;
+    return getTargetPort();
 }
 
 //-----------------------------------------------------------------------------

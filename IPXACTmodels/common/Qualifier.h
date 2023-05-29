@@ -90,25 +90,96 @@ struct IPXACTMODELS_EXPORT Qualifier
     //! Flag for response qualifier.
     bool isResponse = false;
 
-    bool operator==(Qualifier const& other) const
+    void clear()
     {
-        return
-            isAddress == other.isAddress && isData == other.isData &&
-            isClock == other.isClock && isReset == other.isReset &&
-            resetLevel == other.resetLevel && isValid == other.isValid &&
-            isInterrupt == other.isInterrupt && isClockEn == other.isClockEn &&
-            clockEnLevel == other.clockEnLevel && isPowerEn == other.isPowerEn &&
-            powerEnLevel == other.powerEnLevel && powerDomainRef == other.powerDomainRef &&
-            isOpcode == other.isOpcode && isProtection == other.isProtection &&
-            isFlowControl == other.isFlowControl && flowType == other.flowType &&
-            userFlowType == other.userFlowType && isUser == other.isUser &&
-            userDefinedInformation == other.userDefinedInformation &&
-            isRequest == other.isRequest && isResponse == other.isResponse;
+        isAddress = false;
+        isData = false;
+        isClock = false;
+        isReset = false;
+        resetLevel.clear();
+        isValid = false;
+        isInterrupt = false;
+        isClockEn = false;
+        clockEnLevel.clear();
+        isPowerEn = false;
+        powerEnLevel.clear();
+        powerDomainRef.clear();
+        isOpcode = false;
+        isProtection = false;
+        isFlowControl = false;
+        flowType.clear();
+        userFlowType.clear();
+        isUser = false;
+        userDefinedInformation.clear();
+        isRequest = false;
+        isResponse = false;
     }
 
-    bool operator!=(Qualifier const& other) const
+    void setQualifier(QString const& qualifierType)
     {
-        return !operator==(other);
+        if (qualifierType == QStringLiteral("address") ||
+            qualifierType == QStringLiteral("data/address"))
+        {
+            isAddress = true;
+        }
+        else if (qualifierType == QStringLiteral("data") ||
+            qualifierType == QStringLiteral("data/address"))
+        {
+            isData = true;
+        }
+        else if (qualifierType == QStringLiteral("data/address"))
+        {
+            isAddress = true;
+            isData = true;
+        }
+        else if (qualifierType == QStringLiteral("clock"))
+        {
+            isClock = true;
+        }
+        else if (qualifierType == QStringLiteral("reset"))
+        {
+            isReset = true;
+        }
+        else if (qualifierType == QStringLiteral("valid"))
+        {
+            isValid = true;
+        }
+        else if (qualifierType == QStringLiteral("interrupt"))
+        {
+            isInterrupt = true;
+        }
+        else if (qualifierType == QStringLiteral("clock enable"))
+        {
+            isClockEn = true;
+        }
+        else if (qualifierType == QStringLiteral("power enable"))
+        {
+            isPowerEn = true;
+        }
+        else if (qualifierType == QStringLiteral("opcode"))
+        {
+            isOpcode = true;
+        }
+        else if (qualifierType == QStringLiteral("protection"))
+        {
+            isProtection = true;
+        }
+        else if (qualifierType == QStringLiteral("flow control"))
+        {
+            isFlowControl = true;
+        }
+        else if (qualifierType == QStringLiteral("user"))
+        {
+            isUser = true;
+        }
+        else if (qualifierType == QStringLiteral("request"))
+        {
+            isRequest = true;
+        }
+        else if (qualifierType == QStringLiteral("response"))
+        {
+            isResponse = true;
+        }
     }
 };
 

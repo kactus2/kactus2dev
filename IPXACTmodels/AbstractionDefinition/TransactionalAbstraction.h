@@ -82,6 +82,48 @@ public:
     QSharedPointer<TransactionalPort> findSystemPort(QString const& systemGroup) const;
 
     /*!
+     *  Checks if the transactional has a port definition for initiator mode.
+     *
+     *      @return True, if initiator mode is defined, otherwise false.
+     */
+    bool hasInitiatorPort() const;
+
+    /*!
+     *  Sets the initiator mode port definitions for the transactional.
+     *
+     *      @param [in] initiatorPort The initiator port definition for the transactional.
+     */
+    void setInitiatorPort(QSharedPointer<TransactionalPort> initiatorPort);
+
+    /*!
+     *  Gets the initiator mode port definitions for the transactional.
+     *
+     *      @return The initiator port definition for the transactional.
+     */
+    QSharedPointer<TransactionalPort> getInitiatorPort() const;
+
+    /*!
+     *  Checks if the transactional has a port definition for target mode.
+     *
+     *      @return True, if target mode is defined, otherwise false.
+     */
+    bool hasTargetPort() const;
+
+    /*!
+     *  Sets the target mode port definitions for the transactional.
+     *
+     *      @param [in] slavePort The target port definition for the transactional.
+     */
+    void setTargetPort(QSharedPointer<TransactionalPort> targetPort);
+
+    /*!
+     *  Gets the target mode port definitions for the transactional.
+     *
+     *      @return The target port definition for the transactional.
+     */
+    QSharedPointer<TransactionalPort> getTargetPort() const;
+
+    /*!
      *  Checks if the transaction definition has a port definition for master mode.
      *
      *      @return True, if master mode is defined, otherwise false.
@@ -165,11 +207,11 @@ private:
     //! The port definitions for system mode.
     QSharedPointer<QList<QSharedPointer<TransactionalPort> > > onSystem_;
 
-    //! The port definition for master mode.
-	QSharedPointer<TransactionalPort> onMaster_;
+    //! The port definition for initiator mode.
+	QSharedPointer<TransactionalPort> onInitiator_;
 
-    //! The port definition for slave mode.
-	QSharedPointer<TransactionalPort> onSlave_;
+    //! The port definition for target mode.
+	QSharedPointer<TransactionalPort> onTarget_;
 };
 
 #endif /* TRANSACTIONALABSTRACTION_H */

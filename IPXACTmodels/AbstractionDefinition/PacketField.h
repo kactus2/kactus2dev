@@ -31,6 +31,20 @@ public:
     ~PacketField() = default;
     
     /*!
+     *	Gets the packet field width.
+     *		
+     * 		@return The packet field width in bits.
+     */
+    QString getWidth() const;
+
+    /*!
+     *	Sets the packet field width.
+     *  
+     *      @param [in] width	The packet field width in bits.
+     */
+    void setWidth(QString const& width);
+
+    /*!
      *  Get the packet field value.
      *
      *      @return The packet field value.
@@ -73,6 +87,9 @@ public:
     void setQualifier(QSharedPointer<Qualifier> const& qualifier);
 
 private:
+
+    //! The packet field width in bits.
+    QString width_;
 
     //! The packet field value.
     QString value_;

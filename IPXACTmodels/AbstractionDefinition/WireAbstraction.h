@@ -89,6 +89,48 @@ public:
     QSharedPointer<WirePort> findSystemPort(QString const& groupName) const;
 
     /*!
+     *  Checks if the wire has a port definition for initiator mode.
+     *
+     *      @return True, if initiator mode is defined, otherwise false.
+     */
+    bool hasInitiatorPort() const;
+
+    /*!
+     *  Sets the initiator mode port definitions for the wire.
+     *
+     *      @param [in] initiatorPort The initiator port definition for the wire.
+     */
+    void setInitiatorPort(QSharedPointer<WirePort> initiatorPort);
+
+    /*!
+     *  Gets the initiator mode port definitions for the wire.
+     *
+     *      @return The initiator port definition for the wire.
+     */
+    QSharedPointer<WirePort> getInitiatorPort() const;
+
+    /*!
+     *  Checks if the wire has a port definition for target mode.
+     *
+     *      @return True, if target mode is defined, otherwise false.
+     */
+    bool hasTargetPort() const;
+
+    /*!
+     *  Sets the target mode port definitions for the wire.
+     *
+     *      @param [in] slavePort The target port definition for the wire.
+     */
+    void setTargetPort(QSharedPointer<WirePort> targetPort);
+
+    /*!
+     *  Gets the target mode port definitions for the wire.
+     *
+     *      @return The target port definition for the wire.
+     */
+    QSharedPointer<WirePort> getTargetPort() const;
+
+    /*!
      *  Checks if the wire has a port definition for master mode.
      *
      *      @return True, if master mode is defined, otherwise false.
@@ -203,11 +245,11 @@ private:
     //! Specifies the required driver type.
     General::DriverType driverType_;
 
-    //! The port definition for master mode.
-    QSharedPointer<WirePort> onMaster_;
+    //! The port definition for initiator mode.
+    QSharedPointer<WirePort> onInitiator_;
 
-    //! The port definition for slave mode.
-    QSharedPointer<WirePort> onSlave_;
+    //! The port definition for target mode.
+    QSharedPointer<WirePort> onTarget_;
 
     //! The port definitions for system mode.
     QSharedPointer<QList<QSharedPointer<WirePort> > > onSystem_;
