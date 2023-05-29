@@ -40,11 +40,28 @@ public:
 	 *  The destructor.
 	*/
     virtual ~Vector();
+    
+    /*!
+     *	Sets the vector id.
+     *  
+     *      @param [in] id	Description
+     */
+    void setId(QString const& id);
+
+    /*!
+     *	Gets the vector id.
+     *  
+     * 		@return The vector id as string.
+     */
+    QString getId() const;
 
 private:
 
 	// Disable assignment.
     Vector& operator=(Vector const& rhs);
+
+    //! Name for referencing the vector.
+    QString vectorId_;
 
 };
 #endif // VECTOR_H
