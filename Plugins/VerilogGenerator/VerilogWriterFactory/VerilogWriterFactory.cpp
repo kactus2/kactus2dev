@@ -269,12 +269,12 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
         if (mInstance->getPorts()->size() > 0)
         {
             QSharedPointer<CommentWriter> portWireHeaderWriter(
-                new CommentWriter(instance->getInstanceName() + " port wires:"));
+                new CommentWriter(QString::fromStdString(instance->getInstanceName()) + " port wires:"));
             portWireHeaderWriter->setIndent(4);
             document->portWireWriters_->add(portWireHeaderWriter);
 
             QSharedPointer<CommentWriter> assignmentHeaderWriter(
-                new CommentWriter(instance->getInstanceName() + " assignments:"));
+                new CommentWriter(QString::fromStdString(instance->getInstanceName()) + " assignments:"));
             assignmentHeaderWriter->setIndent(4);
             document->instanceAssignmentWriters_->add(assignmentHeaderWriter);
         }
@@ -294,7 +294,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<VerilogDocumen
             }
 
             // Determine the name for the connected element: Name of the instance plus port.
-            QString physName = VerilogSyntax::legalizeName(instance->getInstanceName() + "_" +
+            QString physName = VerilogSyntax::legalizeName(QString::fromStdString(instance->getInstanceName()) + "_" +
                 mPort->port_->name());
 
             // Create a wire for it.

@@ -156,7 +156,7 @@ private:
      */
     QSharedPointer<AdHocConnection> getTiedConnection() const;
 
-    QString getInstanceName() const;
+    std::string getInstanceName() const;
 
     /*!
      *  Create a tie off change command.

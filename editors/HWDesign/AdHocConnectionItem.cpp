@@ -165,11 +165,11 @@ bool AdHocConnectionItem::isBus() const
 //-----------------------------------------------------------------------------
 void AdHocConnectionItem::changeConnectionComponentReference(QString const& oldName, QString const& newName)
 {
-    foreach (QSharedPointer<PortReference> portReference, *adHocConnection_->getInternalPortReferences())
+    for (QSharedPointer<PortReference> portReference : *adHocConnection_->getInternalPortReferences())
     {
-        if (portReference->getComponentRef().compare(oldName) == 0)
+        if (portReference->getComponentRef().compare(oldName.toStdString()) == 0)
         {
-            portReference->setComponentRef(newName);
+            portReference->setComponentRef(newName.toStdString());
         }
     }
 }

@@ -52,12 +52,12 @@ public:
      *
      *      @param [in] propertyValue The property values.
      */
-    void setData(QMap<QString, QString> const& propertyValues);
+    void setData(QMap<std::string, std::string> const& propertyValues);
 
     /*!
      *  Returns the edited data.
      */
-    QMap<QString, QString> getData() const;
+    QMap<std::string, std::string> getData() const;
 
     /*!
      *  Disables/enables editing.

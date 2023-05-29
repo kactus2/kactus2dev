@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: Kactus2Flag::Kactus2Flag()
 //-----------------------------------------------------------------------------
-Kactus2Group::Kactus2Group(QString name):
+Kactus2Group::Kactus2Group(std::string const& name):
     name_(name),
     groupExtensions_()
 {
@@ -32,7 +32,7 @@ Kactus2Group::Kactus2Group(Kactus2Group const& other):
     name_(other.name_),
     groupExtensions_()
 {
-    foreach(QSharedPointer<VendorExtension> extension, other.groupExtensions_)
+    for (QSharedPointer<VendorExtension> const extension : other.groupExtensions_)
     {
         groupExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
     }
@@ -54,7 +54,7 @@ Kactus2Group* Kactus2Group::clone() const
 {
     Kactus2Group* cloned = new Kactus2Group(name_);
 
-    foreach(QSharedPointer<VendorExtension> extension, groupExtensions_)
+    for (QSharedPointer<VendorExtension> const extension : groupExtensions_)
     {
         cloned->groupExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
     }
@@ -65,7 +65,7 @@ Kactus2Group* Kactus2Group::clone() const
 //-----------------------------------------------------------------------------
 // Function: Kactus2Group::type()
 //-----------------------------------------------------------------------------
-QString Kactus2Group::type() const
+std::string Kactus2Group::type() const
 {
     return name_;
 }
@@ -75,9 +75,9 @@ QString Kactus2Group::type() const
 //-----------------------------------------------------------------------------
 void Kactus2Group::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement(name_);
+    writer.writeStartElement(QString::fromStdString(name_));
 
-    foreach(QSharedPointer<VendorExtension> extension, groupExtensions_)
+    for (auto const& extension : groupExtensions_)
     {
         extension->write(writer);
     }
@@ -107,11 +107,11 @@ void Kactus2Group::removeFromGroup(QSharedPointer<VendorExtension> extension)
 //-----------------------------------------------------------------------------
 // Function: Kactus2Group::getExtensionForType()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<VendorExtension> > Kactus2Group::getByType(QString const& type) const
+QList<QSharedPointer<VendorExtension> > Kactus2Group::getByType(std::string const& type) const
 {
     QList<QSharedPointer<VendorExtension> > typedExtensions;
 
-    foreach(QSharedPointer<VendorExtension> extension, groupExtensions_)
+    for (auto const& extension : groupExtensions_)
     {
         if (extension->type() == type)
         {

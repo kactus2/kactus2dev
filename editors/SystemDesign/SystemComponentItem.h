@@ -58,12 +58,12 @@ public:
      *
      *      @param [in] values The property values.
      */
-    void setPropertyValues(QMap<QString, QString> const& values);
+    void setPropertyValues(QMap<std::string, std::string> const& values);
 
     /*!
      *  Returns the property values.
      */
-    QMap<QString, QString> const& getPropertyValues() const;
+    QMap<std::string, std::string> const& getPropertyValues() const;
 
     /*!
      *  Adds a new, empty port to the component.
@@ -204,7 +204,7 @@ public:
 
 signals:
     //! Occurs when the property values have been changed.
-    void propertyValuesChanged(QMap<QString, QString> const& propertyValues);
+    void propertyValuesChanged(QMap<std::string, std::string> const& propertyValues);
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -292,7 +292,7 @@ private:
     bool connUpdateDisabled_;
 
     //! The set property values.
-    QMap<QString, QString> propertyValues_;
+    QMap<std::string, std::string> propertyValues_;
 };
 
 //-----------------------------------------------------------------------------

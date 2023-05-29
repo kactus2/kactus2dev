@@ -30,7 +30,7 @@ public:
      *
      *      @param [in] busRef  The name of the referenced bus interface.
      */
-    explicit HierInterface(QString busRef = QString());
+    explicit HierInterface(std::string busRef = std::string());
 
     /*!
      *  Copy constructor.
@@ -69,42 +69,42 @@ public:
      *
      *      @return The name of the referenced bus interface.
      */
-    QString getBusReference() const;
+    std::string getBusReference() const;
 
     /*!
      *  Set the bus interface reference.
      *
      *      @param [in] newBusReference     The name of the new bus interface reference.
      */
-    void setBusReference(QString const& newBusReference);
+    void setBusReference(std::string const& newBusReference);
 
     /*!
      *  Get the presence.
      *
      *      @return The presence.
      */
-    QString getIsPresent() const;
+    std::string getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
      *      @param [in] newIsPresent    The new presence.
      */
-    void setIsPresent(QString const& newIsPresent);
+    void setIsPresent(std::string const& newIsPresent);
 
     /*!
      *  Get the description.
      *
      *      @return The description.
      */
-    QString getDescription() const;
+    std::string getDescription() const;
 
     /*!
      *  Set the description.
      *
      *      @param [in] newDescription  The new description.
      */
-    void setDescription(QString const& newDescription);
+    void setDescription(std::string const& newDescription);
 
     /*!
      *  Set the route to this interface.
@@ -127,12 +127,12 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The name of the referenced bus interface.
-    QString busRef_;
+    std::string busRef_;
 
     //! The presence.
-    QString isPresent_;
+    std::string isPresent_;
 
     //! The description.
-    QString description_;
+    std::string description_;
 };
 #endif // HIERINTERFACE_H

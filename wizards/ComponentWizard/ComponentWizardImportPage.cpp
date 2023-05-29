@@ -52,7 +52,7 @@ editor_(new ImportEditor(component, handler, parameterFinder, expressionFormatte
 
     QLineEdit *dummy = new QLineEdit(this);
     dummy->setVisible(false);
-    registerField(InstanceData::VERILOGINSTANCES, dummy);
+    registerField(QString::fromStdString(InstanceData::VERILOGINSTANCES), dummy);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,7 +92,7 @@ bool ComponentWizardImportPage::isComplete() const
 void ComponentWizardImportPage::onComponentChange(QSharedPointer<Component> newComponent)
 {
     QVector<InstanceData::instanceData> verilogInstances = getVerilogInstancesFromComponent(newComponent);
-    setField(InstanceData::VERILOGINSTANCES, QVariant::fromValue(verilogInstances));
+    setField(QString::fromStdString(InstanceData::VERILOGINSTANCES), QVariant::fromValue(verilogInstances));
 
     emit componentChanged(newComponent);
 }
@@ -150,7 +150,7 @@ QVector<InstanceData::instanceData> ComponentWizardImportPage::getVerilogInstanc
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardImportPage::getInstanceString()
 //-----------------------------------------------------------------------------
-QString ComponentWizardImportPage::getInstanceString(QString const& stringID,
+QString ComponentWizardImportPage::getInstanceString(std::string const& stringID,
     QSharedPointer<Kactus2Group> extensionGroup) const
 {
     QList<QSharedPointer<VendorExtension> > stringExtensionList = extensionGroup->getByType(stringID);
@@ -159,7 +159,7 @@ QString ComponentWizardImportPage::getInstanceString(QString const& stringID,
         QSharedPointer<Kactus2Value> stringValue = stringExtensionList.first().dynamicCast<Kactus2Value>();
         if (stringValue)
         {
-            return stringValue->value();
+            return QString::fromStdString(stringValue->value());
         }
     }
 
@@ -169,8 +169,8 @@ QString ComponentWizardImportPage::getInstanceString(QString const& stringID,
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardImportPage::getInstanceStringPairs()
 //-----------------------------------------------------------------------------
-QVector<QPair<QString, QString> > ComponentWizardImportPage::getInstanceStringPairs(QString const& itemGroupID,
-    QString const& itemID, QSharedPointer<Kactus2Group> extensionGroup) const
+QVector<QPair<QString, QString> > ComponentWizardImportPage::getInstanceStringPairs(std::string const& itemGroupID,
+    std::string const& itemID, QSharedPointer<Kactus2Group> extensionGroup) const
 {
     QVector<QPair<QString, QString> > instanceItems;
 
@@ -187,8 +187,8 @@ QVector<QPair<QString, QString> > ComponentWizardImportPage::getInstanceStringPa
                 if (nameValueGroup)
                 {
                     QPair<QString, QString> newNameValue;
-                    newNameValue.first = getSingleValueFromGroup(InstanceData::SUBITEMNAME, nameValueGroup);
-                    newNameValue.second = getSingleValueFromGroup(InstanceData::SUBITEMVALUE, nameValueGroup);
+                    newNameValue.first = QString::fromStdString(getSingleValueFromGroup(InstanceData::SUBITEMNAME, nameValueGroup));
+                    newNameValue.second = QString::fromStdString(getSingleValueFromGroup(InstanceData::SUBITEMVALUE, nameValueGroup));
 
                     instanceItems.append(newNameValue);
                 }
@@ -202,7 +202,7 @@ QVector<QPair<QString, QString> > ComponentWizardImportPage::getInstanceStringPa
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardImportPage::getSingleValueFromGroup()
 //-----------------------------------------------------------------------------
-QString ComponentWizardImportPage::getSingleValueFromGroup(QString const& valueID,
+std::string ComponentWizardImportPage::getSingleValueFromGroup(std::string const& valueID,
     QSharedPointer<Kactus2Group> extensionGroup) const
 {
     QList<QSharedPointer<VendorExtension> > valueExtensions = extensionGroup->getByType(valueID);
@@ -215,5 +215,5 @@ QString ComponentWizardImportPage::getSingleValueFromGroup(QString const& valueI
         }
     }
 
-    return QString();
+    return std::string();
 }

@@ -30,7 +30,7 @@ public:
      *      @param [in] componentRef    The name of the referenced component instance.
      *      @param [in] busRef          The name of the referenced bus interface.
      */
-    MonitorInterface(QString componentRef = QString(), QString busRef = QString());
+    MonitorInterface(std::string componentRef = std::string(), std::string busRef = std::string());
 
     /*!
      *  Copy constructor.
@@ -70,35 +70,35 @@ public:
      *
      *      @return True, if the given instance and bus interface are reference by the interface.
      */
-    bool references(QString const& instanceName, QString const& busInterfaceName) const;
+    bool references(std::string const& instanceName, std::string const& busInterfaceName) const;
 
     /*!
      *  Get the component reference.
      *
      *      @return The name of the referenced component
      */
-    QString getComponentReference() const;
+    std::string getComponentReference() const;
 
     /*!
      *  Set the component reference.
      *
      *      @param [in] newComponentReference   The new component reference.
      */
-    void setComponentReference(QString const& newComponentReference);
+    void setComponentReference(std::string const& newComponentReference);
 
     /*!
      *  Get the path.
      *
      *      @return The path.
      */
-    QString getPath() const;
+    std::string getPath() const;
 
     /*!
      *  Set the path.
      *
      *      @param [in] newPath     The new path.
      */
-    void setPath(QString const& newPath);
+    void setPath(std::string const& newPath);
 
 private:
 
@@ -107,9 +107,9 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Component reference.
-    QString componentReference_;
+    std::string componentReference_;
 
     //! The path.
-    QString path_;
+    std::string path_;
 };
 #endif // MONITORINTERFACE_H

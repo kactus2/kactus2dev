@@ -46,9 +46,9 @@ void TagContainer::setupTags(QVector<TagData> documentTags)
 
     tags_.clear();
 
-    for (auto tag : documentTags)
+    for (auto const& tag : documentTags)
     {
-        TagLabel* newTag(new TagLabel(tag.name_, this, tag.color_));
+        TagLabel* newTag(new TagLabel(QString::fromStdString(tag.name_), this, QString::fromStdString(tag.color_)));
         connectTagLabel(newTag);
 
         tags_.append(newTag);
@@ -205,13 +205,13 @@ QVector<TagData> TagContainer::getTags() const
 {
     QVector<TagData> finishedTags;
 
-    for (auto tagWidget : tags_)
+    for (auto const& tagWidget : tags_)
     {
         TagLabel* tag = dynamic_cast<TagLabel*>(tagWidget);
         if (tag)
         {
             QColor tagColor = tag->palette().color(QPalette::Window);
-            TagData newTagData({ tag->text(), tagColor.name() });
+            TagData newTagData({ tag->text().toStdString(), tagColor.name().toStdString() });
 
             finishedTags.append(newTagData);
         }

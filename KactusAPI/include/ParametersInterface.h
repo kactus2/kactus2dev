@@ -86,7 +86,7 @@ public:
      *      @param [in] row                 Index of the new parameter.
      *      @param [in] newParameterName    New of the new parameter.
      */
-    void addParameter(int const& row, std::string const& newParameterName = std::string(""));
+    void addParameter(int const& row, std::string const& newParameterName = std::string());
 
     /*!
      *  Remove the selected parameter.

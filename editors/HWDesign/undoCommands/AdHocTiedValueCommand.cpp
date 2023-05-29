@@ -32,7 +32,7 @@ referencedPort_()
     }
     else
     {
-        setupReferencedPort(portItem->name());
+        setupReferencedPort(portItem->name().toStdString());
     }
 }
 
@@ -41,11 +41,11 @@ referencedPort_()
 //-----------------------------------------------------------------------------
 QSharedPointer<AdHocConnection> AdHocTiedValueCommand::createConnectionForTiedValue(AdHocItem* portItem)
 {
-    QString connectionName = createNameForTiedValueConnection(portItem);
+    std::string connectionName = createNameForTiedValueConnection(portItem);
 
     QSharedPointer<AdHocConnection> connection (new AdHocConnection(connectionName));
 
-    QSharedPointer<PortReference> portReference (new PortReference(portItem->name()));
+    QSharedPointer<PortReference> portReference (new PortReference(portItem->name().toStdString()));
 
     ComponentItem* containingComponent = portItem->encompassingComp();
     if (containingComponent)
@@ -66,11 +66,11 @@ QSharedPointer<AdHocConnection> AdHocTiedValueCommand::createConnectionForTiedVa
 //-----------------------------------------------------------------------------
 // Function: AdHocTiedValueCommand::createNameForTiedValueConnection()
 //-----------------------------------------------------------------------------
-QString AdHocTiedValueCommand::createNameForTiedValueConnection(AdHocItem* portItem) const
+std::string AdHocTiedValueCommand::createNameForTiedValueConnection(AdHocItem* portItem) const
 {
     ComponentItem* containingComponent = portItem->encompassingComp();
 
-    QString instanceName = "";
+    auto instanceName = std::string();
 
     if (containingComponent)
     {
@@ -78,11 +78,9 @@ QString AdHocTiedValueCommand::createNameForTiedValueConnection(AdHocItem* portI
         instanceName.append("_");
     }
 
-    QString portName = portItem->name();
+    std::string portName = portItem->name().toStdString();
 
-    QString tiedValuePart = "_to_tiedValue";
-
-    return instanceName + portName + tiedValuePart;
+    return instanceName + portName + "_to_tiedValue";
 }
 
 //-----------------------------------------------------------------------------
@@ -104,9 +102,9 @@ QSharedPointer<AdHocConnection> AdHocTiedValueCommand::getTiedValueConnection() 
 //-----------------------------------------------------------------------------
 // Function: AdHocTiedValueCommand::setupReferencedPort()
 //-----------------------------------------------------------------------------
-void AdHocTiedValueCommand::setupReferencedPort(QString const& portName)
+void AdHocTiedValueCommand::setupReferencedPort(std::string const& portName)
 {
-    foreach (QSharedPointer<PortReference> externalPort, *tiedValueConnection_->getExternalPortReferences())
+    for (QSharedPointer<PortReference> externalPort : *tiedValueConnection_->getExternalPortReferences())
     {
         if (externalPort->getPortRef().compare(portName) == 0)
         {
@@ -115,7 +113,7 @@ void AdHocTiedValueCommand::setupReferencedPort(QString const& portName)
         }
     }
 
-    foreach (QSharedPointer<PortReference> internalPort, *tiedValueConnection_->getInternalPortReferences())
+    for (QSharedPointer<PortReference> internalPort : *tiedValueConnection_->getInternalPortReferences())
     {
         if (internalPort->getPortRef().compare(portName) == 0)
         {
@@ -141,7 +139,7 @@ void AdHocTiedValueCommand::addOrRemoveTiedValueConnection()
     QSharedPointer<PartSelect> portPartSelect = referencedPort_->getPartSelect();
 
     if (containingDesign_->getAdHocConnections()->contains(tiedValueConnection_) &&
-        tiedValueConnection_->getTiedValue().isEmpty() && (!portPartSelect ||
+        tiedValueConnection_->getTiedValue().empty() && (!portPartSelect ||
         (portPartSelect && portPartSelect->getLeftRange().isEmpty() && portPartSelect->getRightRange().isEmpty())))
     {
         containingDesign_->getAdHocConnections()->removeAll(tiedValueConnection_);

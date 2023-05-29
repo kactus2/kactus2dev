@@ -598,12 +598,13 @@ void VhdlGenerator2::parseInstances()
 		// if configuration is used then get the active view for the instance
 		if (desConf_)
         {
-			instanceActiveView = QString::fromStdString(desConf_->getActiveView(instance->getInstanceName().toStdString()));
+			instanceActiveView = QString::fromStdString(desConf_->getActiveView(instance->getInstanceName()));
 		}
 
 		// create the instance
 		QSharedPointer<VhdlComponentInstance> compInstance(new VhdlComponentInstance(this, handler_,
-            compDeclaration.data(), instance->getInstanceName(), instanceActiveView, instance->description()));
+            compDeclaration.data(), QString::fromStdString(instance->getInstanceName()),
+			instanceActiveView, instance->description()));
 
         connect(compInstance.data(), SIGNAL(noticeMessage(const QString&)),
             this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
@@ -688,20 +689,22 @@ void VhdlGenerator2::parseInterconnections()
 		if (!instances_.contains(firstInterface->getComponentReference()))
         {
 			invalidInterconnection = true;
-			emit errorMessage(tr("Instance %1 was not found in component %2.").
-                arg(firstInterface->getComponentReference()).arg(component_->getVlnv().toString()));
+			emit errorMessage(tr("Instance %1 was not found in component %2.").arg(
+				QString::fromStdString(firstInterface->getComponentReference()),
+				component_->getVlnv().toString()));
 		}
 		else
         { 
 			instance1 = instances_.value(firstInterface->getComponentReference());
-			interface1 = instance1->interface(firstInterface->getBusReference());
+			interface1 = instance1->interface(QString::fromStdString(firstInterface->getBusReference()));
 		}
 
 		// if the interface is not found
 		if (!interface1)
         {
-			emit errorMessage(tr("Bus interface %1 was not found in component %2.").
-                arg(firstInterface->getBusReference()).arg(instance1->vlnv().toString()));
+			emit errorMessage(tr("Bus interface %1 was not found in component %2.").arg(
+				QString::fromStdString(firstInterface->getBusReference()),
+				instance1->vlnv().toString()));
 			invalidInterconnection = true;
 		}
 
@@ -732,19 +735,21 @@ void VhdlGenerator2::parseInstanceInterconnection(QSharedPointer<Interconnection
     if (!instances_.contains(connectionEndInterface->getComponentReference()))
     {
         invalidInterconnection = true;
-        emit errorMessage(tr("Instance %1 was not found in component %2.").
-            arg(connectionEndInterface->getComponentReference()).arg(component_->getVlnv().toString()));
+        emit errorMessage(tr("Instance %1 was not found in component %2.").arg(
+            QString::fromStdString(connectionEndInterface->getComponentReference()),
+            component_->getVlnv().toString()));
     }
     else
     {
         endInstance = instances_.value(connectionEndInterface->getComponentReference());
-        endInterface = endInstance->interface(connectionEndInterface->getBusReference());
+        endInterface = endInstance->interface(QString::fromStdString(connectionEndInterface->getBusReference()));
     }
     // if the interface is not found
     if (!endInterface)
     {
-        emit errorMessage(tr("Bus interface %1 was not found in component %2.").
-            arg(connectionEndInterface->getBusReference()).arg(endInstance->vlnv().toString()));
+        emit errorMessage(tr("Bus interface %1 was not found in component %2.").arg(
+            QString::fromStdString(connectionEndInterface->getBusReference()),
+            endInstance->vlnv().toString()));
         invalidInterconnection = true;
     }
 
@@ -764,13 +769,14 @@ void VhdlGenerator2::parseHierarchicalConnection(QSharedPointer<VhdlComponentIns
 {
     // search all hierConnections within design
     // find the top-level bus interface
-    QSharedPointer<BusInterface> topInterface = component_->getBusInterface(endInterface->getBusReference());
+    QSharedPointer<BusInterface> topInterface = component_->getBusInterface(QString::fromStdString(endInterface->getBusReference()));
 
 		// if the top level interface couldn't be found
 		if (!topInterface)
         {
-			emit errorMessage(tr("Interface %1 was not found in top component %2.").
-                arg(endInterface->getBusReference()).arg(component_->getVlnv().toString()));
+			emit errorMessage(tr("Interface %1 was not found in top component %2.").arg(
+				QString::fromStdString(endInterface->getBusReference()), 
+				component_->getVlnv().toString()));
 			return;
 		}
 
@@ -1001,7 +1007,8 @@ void VhdlGenerator2::parseAdHocConnections()
 			// if the instance is not found
 			if (!instances_.contains(portRef->getComponentRef()))
             {
-				emit errorMessage(tr("Instance %1 was not found in design.").arg(portRef->getComponentRef()));
+				emit errorMessage(tr("Instance %1 was not found in design.").arg(
+					QString::fromStdString(portRef->getComponentRef())));
 				continue;
 			}
 
@@ -1013,11 +1020,11 @@ void VhdlGenerator2::parseAdHocConnections()
             QSharedPointer<ExpressionParser> instanceParser (new IPXactSystemVerilogParser(instanceFinder));
 
 			// if the specified port is not found
-			if (!instance->hasPort(portRef->getPortRef()))
+			if (!instance->hasPort(QString::fromStdString(portRef->getPortRef())))
             {
 				emit errorMessage(tr("Port %1 was not found in instance %2 of type %3").arg(
-                    portRef->getPortRef(),
-					portRef->getComponentRef(),
+					QString::fromStdString(portRef->getPortRef()),
+						QString::fromStdString(portRef->getComponentRef()),
 					instance->vlnv().toString()));
 				continue;
 			}
@@ -1025,6 +1032,7 @@ void VhdlGenerator2::parseAdHocConnections()
             int left = 0;
             int right = 0;
 
+			auto portReference = QString::fromStdString(portRef->getPortRef());
             QSharedPointer<PartSelect> part = portRef->getPartSelect();
             if (part)
             {
@@ -1034,13 +1042,13 @@ void VhdlGenerator2::parseAdHocConnections()
             else
             {
                 left = instanceParser->parseExpression(
-                    instance->getPortPhysLeftBound(portRef->getPortRef())).toInt();
+                    instance->getPortPhysLeftBound(portReference)).toInt();
                 right = instanceParser->parseExpression(
-                    instance->getPortPhysRightBound(portRef->getPortRef())).toInt();
+                    instance->getPortPhysRightBound(portReference)).toInt();
             }
 
 			// create the port specification
-			VhdlGenerator2::PortConnection port(instance, portRef->getPortRef(), left, right);
+			VhdlGenerator2::PortConnection port(instance, QString::fromStdString(portRef->getPortRef()), left, right);
 
 			// add port to the list
 			ports.append(port);
@@ -1049,7 +1057,9 @@ void VhdlGenerator2::parseAdHocConnections()
         // Connect each external port to instance port.
         for (QSharedPointer<PortReference> portRef : *adHoc->getExternalPortReferences())
         {
-            QSharedPointer<Port> port = component_->getPort(portRef->getPortRef());
+            auto portReference = QString::fromStdString(portRef->getPortRef());
+
+            QSharedPointer<Port> port = component_->getPort(portReference);
 
             if (!port)
             {
@@ -1058,8 +1068,9 @@ void VhdlGenerator2::parseAdHocConnections()
 
             QString busInterfaceName = getContainingBusInterfaceName(component_, port->name());
 
+
             // check that the port is found 
-            VhdlPortSorter sorter(busInterfaceName, portRef->getPortRef(), port->getDirection());
+            VhdlPortSorter sorter(busInterfaceName, portReference, port->getDirection());
             QString left = QString();
             QString right = QString();
 
@@ -1079,7 +1090,7 @@ void VhdlGenerator2::parseAdHocConnections()
             }
 
             // connect each instance port to the top port
-            connectHierPort(portRef->getPortRef(), left, right, ports);
+            connectHierPort(portReference, left, right, ports);
         }
 		
 		// otherwise the connection is just between the ports of the instances
@@ -1220,14 +1231,14 @@ void VhdlGenerator2::mapPorts2Signals()
 		i != signals_.end(); ++i)
     {
 		// if the component instance can't be found
-		if (!instances_.contains(i.key().instanceName()))
+		if (!instances_.contains(i.key().instanceName().toStdString()))
         {
 			emit errorMessage(tr("Instance %1 was not found in design.").arg(i.key().instanceName()));
 			continue;
 		}
 
 		// find the instance for the end point
-		QSharedPointer<VhdlComponentInstance> instance = instances_.value(i.key().instanceName());
+		QSharedPointer<VhdlComponentInstance> instance = instances_.value(i.key().instanceName().toStdString());
 
 		// if port is scalar then don't add the bit boundaries
 		QString portLeft = i.key().portLeft();

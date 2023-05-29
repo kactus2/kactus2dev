@@ -91,7 +91,7 @@ void AdHocVisibilityEditor::setDataSource(AdHocEnabled* dataSource, QSharedPoint
 
 	dataSource_ = dataSource;
 
-    nameLabel_.setText(tr("Component: %1").arg(dataSource_->adHocIdentifier()));
+    nameLabel_.setText(tr("Component: %1").arg(QString::fromStdString(dataSource_->adHocIdentifier())));
 
     portAdHocTable_.setEnabled(!lockEditor);
 

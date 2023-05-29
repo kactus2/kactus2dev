@@ -25,6 +25,17 @@ NameGroup::NameGroup(QString const& name, QString const& displayName, QString co
 }
 
 //-----------------------------------------------------------------------------
+// Function: NameGroup::NameGroup()
+//-----------------------------------------------------------------------------
+NameGroup::NameGroup(std::string const& name, std::string const& displayName, std::string const& description) :
+    name_(QString::fromStdString(name)),
+    displayName_(QString::fromStdString(displayName)),
+    description_(QString::fromStdString(description))
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: NameGroup::operator=()
 //-----------------------------------------------------------------------------
 NameGroup& NameGroup::operator=( const NameGroup& other )
@@ -52,6 +63,14 @@ QString NameGroup::name() const
 void NameGroup::setName(QString const& name)
 {
     name_ = name;
+}
+
+//-----------------------------------------------------------------------------
+// Function: NameGroup::setName()
+//-----------------------------------------------------------------------------
+void NameGroup::setName(std::string const& name)
+{
+    name_ = QString::fromStdString(name);
 }
 
 //-----------------------------------------------------------------------------

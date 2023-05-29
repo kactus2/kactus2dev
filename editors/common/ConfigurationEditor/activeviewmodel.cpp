@@ -82,10 +82,10 @@ void ActiveViewModel::setDesign( DesignWidget* designWidget, QSharedPointer<Desi
 
 	for (int i = 0; i < instances_.size(); ++i)
     {
-		const QString instanceName = instances_.at(i)->name();
-		QString activeView = QString::fromStdString(desConf_->getActiveView(instanceName.toStdString()));
+		auto const& instanceName = instances_.at(i)->name();
+		auto const& activeView = desConf_->getActiveView(instanceName);
 		// if theres a defined active view for the instance.
-		if (activeView.isEmpty() == false)
+		if (activeView.empty() == false)
         {
 			table_.append(InstanceViewPair(instanceName, activeView));
 		}
@@ -170,11 +170,11 @@ QVariant ActiveViewModel::data(const QModelIndex& index, int role /*= Qt::Displa
     {
         if (index.column() == ActiveViewColumns::INSTANCE_NAME)
         {
-            return table_.at(index.row()).instanceName_;
+            return QString::fromStdString(table_.at(index.row()).instanceName_);
         }
         else if (index.column() == ActiveViewColumns::ACTIVE_VIEW)
         {
-            return table_.at(index.row()).viewName_;
+            return QString::fromStdString(table_.at(index.row()).viewName_);
         }
         else
         {
@@ -232,11 +232,11 @@ bool ActiveViewModel::setData(const QModelIndex& index, const QVariant& value, i
         // create a command to the undo stack
         QSharedPointer<ComponentActiveViewChangeCommand> command =
             QSharedPointer<ComponentActiveViewChangeCommand>(new ComponentActiveViewChangeCommand(
-                table_[index.row()].instanceName_, table_[index.row()].viewName_, value.toString(), this));
+                table_[index.row()].instanceName_, table_[index.row()].viewName_, value.toString().toStdString(), this));
         editProvider_->addCommand(command);
 
         // make the change
-        table_[index.row()].viewName_ = value.toString();
+        table_[index.row()].viewName_ = value.toString().toStdString();
 
         // save the new active view to the design configuration
         changeViewConfiguration(table_.at(index.row()).instanceName_, table_.at(index.row()).viewName_);
@@ -253,28 +253,27 @@ bool ActiveViewModel::setData(const QModelIndex& index, const QVariant& value, i
 //-----------------------------------------------------------------------------
 // Function: activeviewmodel::changeViewConfiguration()
 //-----------------------------------------------------------------------------
-void ActiveViewModel::changeViewConfiguration(QString const& instanceName, QString const& newViewName)
+void ActiveViewModel::changeViewConfiguration(std::string const& instanceName, std::string const& newViewName)
 {
-    if (newViewName.isEmpty())
+    if (newViewName.empty())
     {
-        desConf_->removeViewConfiguration(instanceName.toStdString());
+        desConf_->removeViewConfiguration(instanceName);
         return;
     }
     else
     {
         for(auto const& configuration : *desConf_->getViewConfigurations())
         {
-            if (auto name = QString::fromStdString(configuration->getInstanceName()); 
-				name.compare(instanceName) == 0)
+            if (auto name = configuration->getInstanceName(); name.compare(instanceName) == 0)
             {
-                configuration->setViewReference(newViewName.toStdString());
+                configuration->setViewReference(newViewName);
                 return;
             }
         }
     }
 
-    QSharedPointer<ViewConfiguration> newConfiguration (new ViewConfiguration(instanceName.toStdString()));
-    newConfiguration->setViewReference(newViewName.toStdString());
+    QSharedPointer<ViewConfiguration> newConfiguration (new ViewConfiguration(instanceName));
+    newConfiguration->setViewReference(newViewName);
     desConf_->getViewConfigurations()->append(newConfiguration);
 }
 
@@ -343,7 +342,7 @@ Qt::ItemFlags ActiveViewModel::flags(const QModelIndex& index ) const
 //-----------------------------------------------------------------------------
 // Function: activeviewmodel::renameInstance()
 //-----------------------------------------------------------------------------
-void ActiveViewModel::renameInstance(const QString& newName,  const QString& oldName)
+void ActiveViewModel::renameInstance(const std::string& newName, const std::string& oldName)
 {
 	InstanceViewPair newItem(oldName);
 	
@@ -358,13 +357,13 @@ void ActiveViewModel::renameInstance(const QString& newName,  const QString& old
 		int row = table_.indexOf(newItem);
 		
 		// remove the configuration for the old name
-		desConf_->removeViewConfiguration(table_[row].instanceName_.toStdString());
+		desConf_->removeViewConfiguration(table_[row].instanceName_);
 
 		// rename the instance
 		table_[row].instanceName_ = newName;
 
 		// save the new active view to the design configuration
-		desConf_->addViewConfiguration(table_.at(row).instanceName_.toStdString(), table_.at(row).viewName_.toStdString());
+		desConf_->addViewConfiguration(table_.at(row).instanceName_, table_.at(row).viewName_);
 
 		// inform views that data has changed
 		QModelIndex modelIndex = QAbstractTableModel::index(row, 0, QModelIndex());
@@ -392,7 +391,7 @@ void ActiveViewModel::removeInstance( ComponentItem* diaComp )
 			endRemoveRows();
 
 			// remove the configuration from the design conf
-			desConf_->removeViewConfiguration(diaComp->name().toStdString());
+			desConf_->removeViewConfiguration(diaComp->name());
 		}
 
 		if (instances_.contains(diaComp))
@@ -427,9 +426,9 @@ void ActiveViewModel::addInstance( ComponentItem* diaComp )
 	if (viewNames.size() == 1)
     {
 		// set the only view as default
-		QString viewName = viewNames.first();
+		auto viewName = viewNames.first().toStdString();
 		newItem.viewName_ = viewName;
-		desConf_->addViewConfiguration(diaComp->name().toStdString(), viewName.toStdString());
+		desConf_->addViewConfiguration(diaComp->name(), viewName);
 	}
 
 	beginInsertRows(QModelIndex(), table_.size(), table_.size());
@@ -445,7 +444,7 @@ void ActiveViewModel::addInstance( ComponentItem* diaComp )
 //-----------------------------------------------------------------------------
 // Function: activeviewmodel::setActiveView()
 //-----------------------------------------------------------------------------
-void ActiveViewModel::setActiveView( const QString& instanceName, const QString& viewName )
+void ActiveViewModel::setActiveView(std::string const& instanceName, const std::string& viewName )
 {
 	// search all component instances
 	for (int i = 0; i < table_.size(); ++i)
@@ -480,19 +479,9 @@ bool ActiveViewModel::hasConfiguration() const
 //-----------------------------------------------------------------------------
 // Function: activeviewmodel::InstanceViewPair::InstanceViewPair()
 //-----------------------------------------------------------------------------
-ActiveViewModel::InstanceViewPair::InstanceViewPair(const QString& instanceName, const QString& viewName ):
+ActiveViewModel::InstanceViewPair::InstanceViewPair(const std::string& instanceName, const std::string& viewName ):
 instanceName_(instanceName),
 viewName_(viewName)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: activeviewmodel::InstanceViewPair::InstanceViewPair()
-//-----------------------------------------------------------------------------
-ActiveViewModel::InstanceViewPair::InstanceViewPair(const QString& instanceName ):
-instanceName_(instanceName),
-viewName_()
 {
 
 }

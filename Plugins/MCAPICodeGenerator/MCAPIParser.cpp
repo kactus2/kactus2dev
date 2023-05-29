@@ -116,7 +116,7 @@ void MCAPIParser::parseTopLevel(QSharedPointer<Design> design, QSharedPointer<Co
 			}
 
             // Parse its directory as well.
-            QString subDir = "/sw_" + sysViewName + "/" + instance->getInstanceName();
+            QString subDir = "/sw_" + sysViewName + "/" + QString::fromStdString(instance->getInstanceName());
             QString dir = QFileInfo(utility_->getLibraryInterface()->getPath(designVLNV)).absolutePath() + subDir;
             nd.directory = dir;
 
@@ -129,8 +129,8 @@ void MCAPIParser::parseTopLevel(QSharedPointer<Design> design, QSharedPointer<Co
             }
 
             // Mark up the node identifier, as well as the associated domain identifier.
-            nd.nodeID = instance->getPropertyValues().value("Node ID");
-            nd.domainID = instance->getPropertyValues().value("Domain ID");
+            nd.nodeID = QString::fromStdString(instance->getPropertyValues().value("Node ID"));
+            nd.domainID = QString::fromStdString(instance->getPropertyValues().value("Domain ID"));
 
             findEndpointDefinitions(design, instance, instanceComp, nd);
                         
@@ -201,7 +201,7 @@ void MCAPIParser::checkRequiredPropertiesSet(QString componentVLNV, QSharedPoint
 {
     foreach ( QSharedPointer<ComProperty> property, *comDef->getProperties() )
     {
-        if ( property->isRequired() && comIf->getPropertyValues().value(property->name()).isEmpty() )
+        if ( property->isRequired() && comIf->getPropertyValues().value(property->name().toStdString()).empty() )
         {
             errorList.append(QObject::tr("Property %1 of COM interface '%2' is not set in component '%3'").
                 arg(property->name(),
@@ -230,7 +230,8 @@ void MCAPIParser::findEndpointDefinitions(QSharedPointer<const Design> design, Q
         if (instanceComp != 0)
         {
             // Get the interfaces.
-            QSharedPointer<ComInterface> targetInterface = instanceComp->getComInterface(conPair.second.getPortRef());
+            QSharedPointer<ComInterface> targetInterface = instanceComp->getComInterface(
+                QString::fromStdString(conPair.second.getPortRef()));
             QSharedPointer<ComInterface> ourInterface = conPair.first;
 
             // Must find it to generate.
@@ -243,13 +244,13 @@ void MCAPIParser::findEndpointDefinitions(QSharedPointer<const Design> design, Q
 
                 // The data needed for "our" endpoint.
                 EndPointData ourEnd = parseEndpoint(ourInterface);
-                ourEnd.nodeID = ourInstance->getPropertyValues().value("Node ID");
-                ourEnd.domainID = ourInstance->getPropertyValues().value("Domain ID");
+                ourEnd.nodeID = QString::fromStdString(ourInstance->getPropertyValues().value("Node ID"));
+                ourEnd.domainID = QString::fromStdString(ourInstance->getPropertyValues().value("Domain ID"));
 
                 // The data needed for "their" endpoint.
                 EndPointData theirEnd = parseEndpoint(ourInterface);
-                theirEnd.nodeID = targetInstance->getPropertyValues().value("Node ID");
-                theirEnd.domainID = targetInstance->getPropertyValues().value("Domain ID");
+                theirEnd.nodeID = QString::fromStdString(targetInstance->getPropertyValues().value("Node ID"));
+                theirEnd.domainID = QString::fromStdString(targetInstance->getPropertyValues().value("Domain ID"));
 
                 // Create the pair endpoints and append to the list
                 QPair<EndPointData, EndPointData> pair(ourEnd,theirEnd);
@@ -313,10 +314,10 @@ MCAPIParser::EndPointData MCAPIParser::parseEndpoint(QSharedPointer<ComInterface
 {
     EndPointData epd;
     epd.name = comIf->name();
-    epd.remoteName = comIf->getPropertyValues().value("remote_endpoint_name");
-    epd.portID = comIf->getPropertyValues().value("port_id");
-    epd.handleName = comIf->getPropertyValues().value("handle_name");
-    epd.scalarSize = comIf->getPropertyValues().value("scalar_size");
+    epd.remoteName = QString::fromStdString(comIf->getPropertyValues().value("remote_endpoint_name"));
+    epd.portID = QString::fromStdString(comIf->getPropertyValues().value("port_id"));
+    epd.handleName = QString::fromStdString(comIf->getPropertyValues().value("handle_name"));
+    epd.scalarSize = QString::fromStdString(comIf->getPropertyValues().value("scalar_size"));
     epd.transferType = comIf->getTransferType();
     epd.direction = comIf->getDirection();
     return epd;
@@ -328,14 +329,14 @@ MCAPIParser::EndPointData MCAPIParser::parseEndpoint(QSharedPointer<ComInterface
 void MCAPIParser::checkEndpointIdentifier(QSharedPointer<ComInterface> targetInterface,
     QSharedPointer<ComponentInstance> targetInstance)
 {
-    QString theirPortID = targetInterface->getPropertyValues().value("port_id").toUpper();
-    QString theirDomainID = targetInstance->getPropertyValues().value("Domain ID");
-    QString theirNodeID = targetInstance->getPropertyValues().value("Node ID");
+    auto theirPortID = QString::fromStdString(targetInterface->getPropertyValues().value("port_id")).toUpper();
+    auto theirDomainID = QString::fromStdString(targetInstance->getPropertyValues().value("Domain ID"));
+    auto theirNodeID = QString::fromStdString(targetInstance->getPropertyValues().value("Node ID"));
 
     if ( theirPortID.isEmpty() || theirDomainID.isEmpty() || theirNodeID.isEmpty() )
     {
         utility_->printError("Could not find whole endpoint identifier for instance "
-            + targetInstance->getInstanceName() + " interface " + targetInterface->name()
+            + QString::fromStdString(targetInstance->getInstanceName()) + " interface " + targetInterface->name()
             + " Found domain: " + theirDomainID + " node: " + theirNodeID + " port: " + theirPortID);
     }
 }
@@ -350,8 +351,8 @@ void MCAPIParser::checkTransferType(QSharedPointer<ComponentInstance> ourInstanc
     if ( ourInterface->getTransferType() != targetInterface->getTransferType() )
     {
         utility_->printError("Transfer types of connected endpoints did not match! "
-            "First instance: " + ourInstance->getInstanceName() + " first interface: "
-            + ourInterface->name() + " Second instance: " + targetInstance->getInstanceName() + 
+            "First instance: " + QString::fromStdString(ourInstance->getInstanceName()) + " first interface: "
+            + ourInterface->name() + " Second instance: " + QString::fromStdString(targetInstance->getInstanceName()) +
             " second interface " + targetInterface->name());
     }
 }
@@ -363,14 +364,15 @@ void MCAPIParser::checkScalarSize(QSharedPointer<ComponentInstance> ourInstance,
     QSharedPointer<ComInterface> ourInterface, 
     QSharedPointer<ComponentInstance> targetInstance, QSharedPointer<ComInterface> targetInterface)
 {
-    QString ourScalarSize = ourInterface->getPropertyValues().value("scalar_size");
-    QString theirScalarSize = targetInterface->getPropertyValues().value("scalar_size");
+    QString ourScalarSize = QString::fromStdString(ourInterface->getPropertyValues().value("scalar_size"));
+    QString theirScalarSize = QString::fromStdString(targetInterface->getPropertyValues().value("scalar_size"));
 
     if ( ourScalarSize != theirScalarSize )
     {
         utility_->printError("Scalar sizes of connected endpoints did not match! "
-            "First instance: " + ourInstance->getInstanceName() + " first interface: "
-            + ourInterface->name() + " Second instance: " + targetInstance->getInstanceName() + 
+            "First instance: " + QString::fromStdString(ourInstance->getInstanceName()) + " first interface: "
+            + ourInterface->name() + " Second instance: " +
+            QString::fromStdString(targetInstance->getInstanceName()) +
             " second interface " + targetInterface->name());
     }
 }

@@ -62,7 +62,7 @@ void AdHocTieOffChangeCommand::undo()
     QSharedPointer<AdHocConnection> tieOffConnection = getTiedValueConnection();
     if (tieOffConnection)
     {
-        tieOffConnection->setTiedValue(oldTieOff_);
+        tieOffConnection->setTiedValue(oldTieOff_.toStdString());
 
         changeTieOffSymbolsInConnectedPorts(oldTieOff_, parsedOldTieOff_, formattedOldTieOff_, oldBase_);
 
@@ -83,7 +83,7 @@ void AdHocTieOffChangeCommand::redo()
     QSharedPointer<AdHocConnection> tieOffConnection = getTiedValueConnection();
     if (tieOffConnection)
     {
-        tieOffConnection->setTiedValue(newTieOff_);
+        tieOffConnection->setTiedValue(newTieOff_.toStdString());
 
         changeTieOffSymbolsInConnectedPorts(newTieOff_, parsedNewTieOff_, formattedNewTieOff_, newBase_);
 
@@ -108,7 +108,7 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
 
     if (!tieOffConnection->getInternalPortReferences()->isEmpty())
     {
-        foreach (QSharedPointer<PortReference> internalReference, *tieOffConnection->getInternalPortReferences())
+        for (QSharedPointer<PortReference> internalReference : *tieOffConnection->getInternalPortReferences())
         {
             HWComponentItem* componentItem =
                 containingDiagram_->getComponentItem(internalReference->getComponentRef());
@@ -127,10 +127,10 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
 
     if (!tieOffConnection->getExternalPortReferences()->isEmpty())
     {
-        foreach (QSharedPointer<PortReference> externalReference, *tieOffConnection->getExternalPortReferences())
+        for (QSharedPointer<PortReference> externalReference : *tieOffConnection->getExternalPortReferences())
         {
             HWConnectionEndpoint* endPoint =
-                containingDiagram_->getDiagramAdHocPort(externalReference->getPortRef());
+                containingDiagram_->getDiagramAdHocPort(QString::fromStdString(externalReference->getPortRef()));
             if (endPoint)
             {
                 AdHocItem* portItem = dynamic_cast<AdHocItem*>(endPoint);

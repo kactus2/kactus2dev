@@ -334,7 +334,7 @@ private:
      *      @return Graphics data of the interface.
      */
     QSharedPointer<InterfaceGraphicsData> findOrCreateInterfaceGraphicsData(QSharedPointer<Design> design,
-        QString const& interfaceName);
+        std::string const& interfaceName);
 
     /*!
      *  Add the interface item to the layout.
@@ -412,12 +412,12 @@ private:
     /*!
      *  Returns the HW component instance with the given name.
      */
-    HWMappingItem* getHWComponent(QString const& instanceName);
+    HWMappingItem* getHWComponent(std::string const& instanceName);
 
     /*!
      *  Returns the HW component instance with the given UUID.
      */
-    HWMappingItem* getHWComponentByUUID(QString const& uuid);
+    HWMappingItem* getHWComponentByUUID(std::string const& uuid);
 
     /*!
      *  Returns the component with the given name (either HW or SW).
@@ -426,7 +426,7 @@ private:
      *
      *      @return The corresponding component, or null if not found.
      */
-    SystemComponentItem* getComponent(QString const& instanceName);
+    SystemComponentItem* getComponent(std::string const& instanceName);
 
     /*!
      *  Creates a missing port to the given component item.

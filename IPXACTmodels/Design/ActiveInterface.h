@@ -32,7 +32,7 @@ public:
      *      @param [in] componentRef    The name of the referenced component instance.
      *      @param [in] busRef          The name of the referenced bus interface.
      */
-    ActiveInterface(QString const& componentRef = QString(), QString const& busRef = QString());
+    ActiveInterface(std::string const& componentRef = std::string(), std::string const& busRef = std::string());
 
     /*!
      *  Copy constructor.
@@ -76,35 +76,35 @@ public:
      *
      *      @return True, if the given instance and bus interface are reference by the interface.
      */
-    bool references(QString const& instanceName, QString const& busInterfaceName);
+    bool references(std::string const& instanceName, std::string const& busInterfaceName);
 
     /*!
      *  Get the referenced component.
      *
      *      @return The name of the referenced component.
      */
-    QString getComponentReference() const;
+    std::string getComponentReference() const;
 
     /*!
      *  Set a new component referenced.
      *
      *      @param [in] newComponentReference   The new component reference.
      */
-    void setComponentReference(QString const& newComponentReference);
+    void setComponentReference(std::string const& newComponentReference);
 
     /*!
      *  Get a list of excluded ports.
      *
      *      @return Pointer to a list containing the excluded ports.
      */
-    QSharedPointer<QStringList> getExcludePorts() const;
+    QSharedPointer<QList<std::string> > getExcludePorts() const;
 
     /*!
      *  Set a new list of excluded ports.
      *
      *      @param [in] newExcludePorts     A new list of excluded ports.
      */
-    void setExcludePorts(QSharedPointer<QStringList> newExcludePorts);
+    void setExcludePorts(QSharedPointer<QList<std::string> > newExcludePorts);
 
 private:
 
@@ -113,10 +113,11 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The name of the referenced component.
-    QString componentRef_;
+    std::string componentRef_;
 
     //! A list of excluded ports
-    QSharedPointer<QStringList> excludePorts_ = QSharedPointer<QStringList>(new QStringList());
+    QSharedPointer<QList<std::string > > excludePorts_ =
+        QSharedPointer<QList<std::string> >(new QList<std::string>());
 
 };
 #endif // ACTIVEINTERFACE_H

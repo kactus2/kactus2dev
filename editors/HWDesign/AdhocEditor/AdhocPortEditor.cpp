@@ -170,7 +170,7 @@ QString AdhocPortEditor::getTiedValue(QSharedPointer<AdHocConnection> connection
 {
     if (connectionItem)
     {
-        return connectionItem->getTiedValue();
+        return QString::fromStdString(connectionItem->getTiedValue());
     }
 
     return QString();
@@ -181,18 +181,18 @@ QString AdhocPortEditor::getTiedValue(QSharedPointer<AdHocConnection> connection
 //-----------------------------------------------------------------------------
 QSharedPointer<AdHocConnection> AdhocPortEditor::getTiedConnection() const
 {
-    QString instanceName = getInstanceName();
+    auto instanceName = getInstanceName();
 
     QSharedPointer<Design> containingDesign = designDiagram_->getDesign();
     for (QSharedPointer<AdHocConnection> connection : *containingDesign->getAdHocConnections())
     {
-        if (!instanceName.isEmpty())
+        if (!instanceName.empty())
         {
             for (QSharedPointer<PortReference> internalReference : *connection->getInternalPortReferences())
             {
-                if (internalReference->getPortRef() == containedPortItem_->name() &&
+                if (internalReference->getPortRef() == containedPortItem_->name().toStdString() &&
                     internalReference->getComponentRef() == instanceName &&
-                    (!connection->getTiedValue().isEmpty() || internalReference->getPartSelect()))
+                    (!connection->getTiedValue().empty() || internalReference->getPartSelect()))
                 {
                     return connection;
                 }
@@ -202,8 +202,8 @@ QSharedPointer<AdHocConnection> AdhocPortEditor::getTiedConnection() const
         {
             for (QSharedPointer<PortReference> externalReference : *connection->getExternalPortReferences())
             {
-                if (externalReference->getPortRef() == containedPortItem_->name() &&
-                    (!connection->getTiedValue().isEmpty() || externalReference->getPartSelect()))
+                if (externalReference->getPortRef() == containedPortItem_->name().toStdString() &&
+                    (!connection->getTiedValue().empty() || externalReference->getPartSelect()))
                 {
                     return connection;
                 }
@@ -217,9 +217,9 @@ QSharedPointer<AdHocConnection> AdhocPortEditor::getTiedConnection() const
 //-----------------------------------------------------------------------------
 // Function: AdhocPortEditor::getInstanceName()
 //-----------------------------------------------------------------------------
-QString AdhocPortEditor::getInstanceName() const
+std::string AdhocPortEditor::getInstanceName() const
 {
-    QString instanceName;
+    std::string instanceName;
     ComponentItem* containingInstance = containedPortItem_->encompassingComp();
     if (containingInstance)
     {
@@ -407,11 +407,11 @@ void AdhocPortEditor::updateTiedValueBounds(QSharedPointer<PartSelect> portPartS
 QSharedPointer<PartSelect> AdhocPortEditor::getEndPointPartSelect(QSharedPointer<AdHocConnection> adHocConnection)
 const
 {
-    QString instanceName = getInstanceName();
+    auto instanceName = getInstanceName();
 
     if (adHocConnection)
     {
-        QString adhocPortName = containedPortItem_->name();
+        auto adhocPortName = containedPortItem_->name().toStdString();
 
         for (QSharedPointer<PortReference> internalPort : *adHocConnection->getInternalPortReferences())
         {
@@ -448,7 +448,7 @@ void AdhocPortEditor::createTieOffChangeCommand(QString const& newTiedValue)
 
     if (connection)
     {
-        oldTieOffValue = connection->getTiedValue();
+        oldTieOffValue = QString::fromStdString(connection->getTiedValue());
         parsedOldTieOff = getParsedTieOffValue(oldTieOffValue);
     }
 
@@ -548,7 +548,7 @@ void AdhocPortEditor::refreshEditors()
     QSharedPointer<AdHocConnection> connection = getTiedConnection();
     if (connection)
     {
-        tiedValue = connection->getTiedValue();
+        tiedValue = QString::fromStdString(connection->getTiedValue());
 
         QSharedPointer<PartSelect> partSelect = getEndPointPartSelect(connection);
         if (partSelect)

@@ -108,7 +108,7 @@ vector<string> ParametersInterface::getItemNames() const
 //-----------------------------------------------------------------------------
 void ParametersInterface::addParameter(int const& row, string const& newParameterName)
 {
-    QString parameterName = getUniqueName(newParameterName, "parameter");
+    auto parameterName = getUniqueName(newParameterName, "parameter");
 
     QSharedPointer<Parameter> newParameter(new Parameter());
     newParameter->setName(parameterName);

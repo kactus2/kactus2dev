@@ -136,7 +136,7 @@ void SWInterfaceItem::setName(const QString& name)
         getNameLabel()->setText(name);
     }
 
-    graphicsData_->setName(name);
+    graphicsData_->setName(name.toStdString());
 
 	updateInterface();
     endUpdateConnectionNames();
@@ -620,7 +620,7 @@ void SWInterfaceItem::initialize()
 {
     SWConnectionEndpoint::initialize();
 
-    graphicsData_->setName(name());
+    graphicsData_->setName(name().toStdString());
 
     if (graphicsData_->hasPosition())
     {

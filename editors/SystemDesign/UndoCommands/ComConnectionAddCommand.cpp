@@ -109,13 +109,14 @@ void ComConnectionAddCommand::changePortItemFromApiToCom(ConnectionEndpoint* end
     {
         QSharedPointer<ComponentInstance> containingInstance = endPoint->encompassingComp()->getComponentInstance();
 
-        QMap<QString, QPointF> apiPositions = containingInstance->getApiInterfacePositions();
+        auto apiPositions = containingInstance->getApiInterfacePositions();
 
-        if (apiPositions.contains(endPoint->name()) && apiPositions.value(endPoint->name()) == endPoint->pos())
+        auto name = endPoint->name().toStdString();
+        if (apiPositions.contains(name) && apiPositions.value(name) == endPoint->pos())
         {
-            containingInstance->removeApiInterfacePosition(endPoint->name());
+            containingInstance->removeApiInterfacePosition(name);
         }
 
-        containingInstance->updateComInterfacePosition(endPoint->name(), endPoint->pos());
+        containingInstance->updateComInterfacePosition(name, endPoint->pos());
     }
 }

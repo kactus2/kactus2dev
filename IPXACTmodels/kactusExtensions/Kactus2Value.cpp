@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: Kactus2Value::Kactus2Value()
 //-----------------------------------------------------------------------------
-Kactus2Value::Kactus2Value(QString name, QString value):
+Kactus2Value::Kactus2Value(std::string const& name, std::string const& value):
     name_(name),
     value_(value)
 {
@@ -40,7 +40,7 @@ Kactus2Value* Kactus2Value::clone() const
 //-----------------------------------------------------------------------------
 // Function: Kactus2Value::type()
 //-----------------------------------------------------------------------------
-QString Kactus2Value::type() const
+std::string Kactus2Value::type() const
 {
     return name_;
 }
@@ -50,13 +50,13 @@ QString Kactus2Value::type() const
 //-----------------------------------------------------------------------------
 void Kactus2Value::write(QXmlStreamWriter& writer) const
 {    
-    writer.writeTextElement(name_, value_);
+    writer.writeTextElement(QString::fromStdString(name_), QString::fromStdString(value_));
 }
 
 //-----------------------------------------------------------------------------
 // Function: Kactus2Value::value()
 //-----------------------------------------------------------------------------
-QString Kactus2Value::value() const
+std::string Kactus2Value::value() const
 {
     return value_;
 }
@@ -64,7 +64,7 @@ QString Kactus2Value::value() const
 //-----------------------------------------------------------------------------
 // Function: Kactus2Value::setValue()
 //-----------------------------------------------------------------------------
-void Kactus2Value::setValue(QString const& newValue)
+void Kactus2Value::setValue(std::string const& newValue)
 {
     value_ = newValue;
 }

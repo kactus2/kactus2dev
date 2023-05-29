@@ -83,14 +83,14 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 		}
 
 		// create header settings object for the CPU instance
-		SystemHeaderSaveModel::SysHeaderOptions systemHeaderOption(instance->getInstanceName(), instanceVLNV);
+		SystemHeaderSaveModel::SysHeaderOptions systemHeaderOption(QString::fromStdString(instance->getInstanceName()), instanceVLNV);
 
-		systemHeaderOption.instanceId_ = instance->getUuid();
+		systemHeaderOption.instanceId_ = QString::fromStdString(instance->getUuid());
 
-        QString activeView = QString::fromStdString(designConfiguration->getActiveView(instance->getInstanceName().toStdString()));
-		if (!activeView.isEmpty())
+        auto activeView = designConfiguration->getActiveView(instance->getInstanceName());
+		if (!activeView.empty())
         {
-			QSharedPointer<View> swView = component->getModel()->findView(activeView);
+			QSharedPointer<View> swView = component->getModel()->findView(QString::fromStdString(activeView));
             QSharedPointer<ComponentInstantiation> insta;
 
             if (swView)
@@ -259,7 +259,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
                 continue;
             }
 
-            else if (instance->getUuid() == systemHeaderOption.instanceId_)
+            else if (instance->getUuid() == systemHeaderOption.instanceId_.toStdString())
             {
                 systemHeaderOption.found_ = true;
                 matched = true;
@@ -295,7 +295,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
             QSharedPointer<const Component> instanceComponent = libComp.dynamicCast<const Component>();
             Q_ASSERT(instanceComponent);
 
-            QString activeView = QString::fromStdString(desConf->getActiveView(instance->getInstanceName().toStdString()));
+            QString activeView = QString::fromStdString(desConf->getActiveView(instance->getInstanceName()));
             if (activeView.isEmpty())
             {
                 QStringList hierViewNames = instanceComponent->getHierViews();

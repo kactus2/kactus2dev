@@ -142,12 +142,12 @@ QSharedPointer<HierInterface> ComConnectionExchangeCommand::createConnectionInte
     SWInterfaceItem* interfaceEndPoint = dynamic_cast<SWInterfaceItem*>(endPoint);
     if (portEndPoint)
     {
-        QString instanceName = portEndPoint->encompassingComp()->getComponentInstance()->getInstanceName();
-        return QSharedPointer<ActiveInterface> (new ActiveInterface(instanceName, endPoint->name()));
+        auto instanceName = portEndPoint->encompassingComp()->getComponentInstance()->getInstanceName();
+        return QSharedPointer<ActiveInterface> (new ActiveInterface(instanceName, endPoint->name().toStdString()));
     }
     else if (interfaceEndPoint)
     {
-        return QSharedPointer<HierInterface> (new HierInterface(endPoint->name()));
+        return QSharedPointer<HierInterface> (new HierInterface(endPoint->name().toStdString()));
     }
 
     return QSharedPointer<HierInterface> ();

@@ -43,8 +43,8 @@ public:
      *      @param [in] direction     The direction of the top-level interface in the design diagram.
      *      @param [in] route         The connection route.
      */
-    HierApiInterconnection(QString const& name, QString const& displayName, QString const& description,
-                      QString const& interfaceRef,
+    HierApiInterconnection(std::string const& name, std::string const& displayName, std::string const& description,
+        std::string const& interfaceRef,
                       QSharedPointer<ActiveInterface> ref,
                       QPointF const& position, QVector2D const& direction,
                       QList<QPointF> const& route);
@@ -76,38 +76,19 @@ public:
      *
      *      @return The type of the extension.
      */
-    virtual QString type() const;
+    std::string type() const final;
 
     /*!
      *  Writes the contents to an XML stream.
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
-	/*! \brief Check if the hierarchical API dependency is in valid state.
-	 *
-	 * \param errorList The string list to add the possible error messages to.
-	 * \param instanceNames The HW/SW instance names contained in the containing design.
-	 * \param parentId The identifier for the design containing the dependencies.
-	 *
-	 * \return True if the API dependency is in valid state.
-	*/
-	//bool isValid(QStringList& errorList, QStringList const& instanceNames,
-	//	QString const& parentId) const;
-
-	/*! \brief Check if the hierarchical API dependency is in valid state.
-	 *
-	 * \param instanceNames The HW/SW instance names contained in the containing design.
-	 *
-	 * \return True if the API dependency is in valid state.
-	*/
-	//bool isValid(const QStringList& instanceNames) const;
-
     /*!
      *  Sets the top-level API interface reference.
      *
      *      @param [in] interfaceRef    Name reference to an API interface in the top-level component.
      */
-    void setTopInterfaceRef(QString const& interfaceRef);
+    void setTopInterfaceRef(std::string const& interfaceRef);
 
     /*!
      *  Sets the interface reference to an API interface in a contained SW component instance.
@@ -121,7 +102,7 @@ public:
      *
      *      @return The name of the referenced API interface in the top-level component.
      */
-    QString const& getTopInterfaceRef() const;
+    std::string const& getTopInterfaceRef() const;
 
     /*!
      *  Returns the interface reference to an API interface in a contained SW component instance.
@@ -194,7 +175,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The interface reference in the top-level component.
-    QString topInterfaceRef_;
+    std::string topInterfaceRef_;
 
     //! The position of the top-level interface in the design diagram.
     QPointF position_;

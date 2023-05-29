@@ -72,7 +72,7 @@ bool ViewConfigurationValidator::hasValidName(QSharedPointer<ViewConfiguration> 
     {
         for (auto const& instance : *availableInstances_)
         {
-            if (auto instanceName = instance->getInstanceName().toStdString(); instanceName == nameInConfiguration)
+            if (auto instanceName = instance->getInstanceName(); instanceName == nameInConfiguration)
             {
                 return CommonItemsValidator::hasValidName(instanceName);
             }
@@ -116,7 +116,7 @@ void ViewConfigurationValidator::changeAvailableViews(QSharedPointer<ViewConfigu
     {
         for (auto const& instance : *availableInstances_)
         {
-            if (instance->getInstanceName().toStdString() == configuration->getInstanceName())
+            if (instance->getInstanceName() == configuration->getInstanceName())
             {
                 if (instance->getComponentRef() && instance->getComponentRef()->isValid())
                 {

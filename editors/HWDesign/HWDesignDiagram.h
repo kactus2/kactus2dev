@@ -204,7 +204,7 @@ public:
     /*!
      *  Get HWComponentItem that has the given instance name.
      */
-    HWComponentItem* getComponentItem(QString const& instanceName);
+    HWComponentItem* getComponentItem(std::string const& instanceName);
 
 	/*!
      *  Reflects the changes in the design to the top-level component.
@@ -324,7 +324,7 @@ protected:
      *      @param [in] position        Position of the new component item.
      *      @param [in] parentCommand   Parent undo command for item creation.
      */
-    HWComponentItem* createComponentItem(QSharedPointer<Component> comp, QString const& instanceName,
+    HWComponentItem* createComponentItem(QSharedPointer<Component> comp, std::string const& instanceName,
         QPointF position, QUndoCommand* parentCommand);
 
     //! Updates the dropAction and highlight according to underlying element.
@@ -411,7 +411,7 @@ protected:
      *
      *      @return The created ad hoc interface item.
      */
-    virtual AdHocItem* createAdhocItem(QString const& portName) override;
+    AdHocItem* createAdhocItem(std::string const& portName) override;
 
 private:
     // Disable copying.
@@ -428,7 +428,7 @@ private:
      *      @return The extension for hierarchical bus interface data.
      */
     QSharedPointer<InterfaceGraphicsData> findOrCreateInterfaceExtensionGroup(QSharedPointer<Design> design,
-        QString const& busInterfaceName);
+        std::string const& busInterfaceName);
 
     /*!
      *  Called when an item has been selected in the diagram.
@@ -645,10 +645,10 @@ private:
      *
      *      @return The port item on the component.
      */
-    ConnectionEndpoint* findOrCreateMissingInterface(HWComponentItem* componentItem, QString const& componentRef, 
-        QString const& busRef, QSharedPointer<Design> design);
+    ConnectionEndpoint* findOrCreateMissingInterface(HWComponentItem* componentItem, std::string const& componentRef,
+        std::string const& busRef, QSharedPointer<Design> design);
     
-    /*!
+     /*!
      *  Creates a missing port to the given component item.
      *
      *      @param [in] portName   The name of the port to create.
@@ -657,7 +657,8 @@ private:
      *
      *      @return A port item for a missing port.
      */
-    ActiveBusInterfaceItem* createMissingBusInterface(QString const& interfaceName, HWComponentItem* containingComponent,
+    ActiveBusInterfaceItem* createMissingBusInterface(std::string const& interfaceName, 
+        HWComponentItem* containingComponent,
         QSharedPointer<Design> design);
 
     /*!
@@ -697,7 +698,7 @@ private:
      *
      *      @param [in] busRef  The name of the interface.
      */
-    ConnectionEndpoint* findOrCreateHierarchicalInterface(QString const& busRef);
+    ConnectionEndpoint* findOrCreateHierarchicalInterface(std::string const& busRef);
 
     /*!
      *  Creates the hierarchical ad-hoc port items in the diagram.

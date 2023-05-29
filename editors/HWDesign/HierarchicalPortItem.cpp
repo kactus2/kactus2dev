@@ -37,14 +37,15 @@ oldColumn_(0),
 oldInterfacePositions_(),
 oldPos_()
 {
-    if (dataGroup_->getAttributeValue("portName").isEmpty())
+    if (dataGroup_->getAttributeValue(std::string("portName")).empty())
     {
-        dataGroup_->setAttribute("portName", getPort()->name());
+        dataGroup_->setAttribute("portName", getPort()->name().toStdString());
     }
-
-    if (!dataGroup_->getAttributeValue("x").isEmpty())
+    
+    if (!dataGroup_->getAttributeValue(std::string("x")).empty())
     {
-        QPointF position(dataGroup_->getAttributeValue("x").toInt(), dataGroup_->getAttributeValue("y").toInt());
+        QPointF position(std::stoi(dataGroup_->getAttributeValue(std::string("x"))),
+            std::stoi(dataGroup_->getAttributeValue(std::string("y"))));
         setPos(position);
     }
 

@@ -282,27 +282,27 @@ void GlobalHeaderSaveModel::setDesign( QSharedPointer<Component> topComp, QShare
 		
 		// create header for each master interface
 		QStringList masterInterfaces = comp->getMasterInterfaces();
-		foreach (QString interfaceName, masterInterfaces)
+		for (auto const& interfaceName : masterInterfaces)
         {
 			// if the operated interface is not connected to any other instance within the design
-			if (!design_->hasInterconnection(instance->getInstanceName(), interfaceName))
+			if (!design_->hasInterconnection(instance->getInstanceName(), interfaceName.toStdString()))
             {
 				continue;
 			}
 			
 			GlobalHeaderSaveModel::SaveFileOptions* options = new SaveFileOptions();
 
-			options->instance_ = instance->getInstanceName();
+			options->instance_ = QString::fromStdString(instance->getInstanceName());
 			options->interface_ = interfaceName;
 			options->comp_ = compVLNV;
-			options->instanceId_ = instance->getUuid();
+			options->instanceId_ = QString::fromStdString(instance->getUuid());
 
 			// the path to the directory containing the xml metadata
 			QString compPath(handler_->getDirectoryPath(topComp->getVlnv()));
 
 			// the relative path from the xml dir to the header to generate
 			QString headerPath = QString("%1/%2/%3.h").arg(
-                tr("headers"), instance->getInstanceName(), interfaceName);
+                tr("headers"), QString::fromStdString(instance->getInstanceName()), interfaceName);
 
 			// the absolute path to the header file
 			const QString fullPath = QString("%1/%2").arg(compPath, headerPath);

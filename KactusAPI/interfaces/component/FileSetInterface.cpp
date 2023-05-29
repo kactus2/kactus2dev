@@ -117,7 +117,7 @@ bool FileSetInterface::setName(std::string const& currentName, std::string const
     QSharedPointer<FileSet> editedFileSet = getFileSet(currentName);
     if (editedFileSet && nameHasChanged(newName, currentName))
     {
-        QString uniqueNewName = getUniqueName(newName, FILESET_TYPE);
+        auto uniqueNewName = getUniqueName(newName, FILESET_TYPE);
 
         editedFileSet->setName(uniqueNewName);
         return true;
@@ -277,7 +277,7 @@ bool FileSetInterface::setDependencies(std::string const& fileSetName,
 //-----------------------------------------------------------------------------
 void FileSetInterface::addFileSet(int const& row, std::string const& newFileSetName)
 {
-    QString fileSetName = getUniqueName(newFileSetName, FILESET_TYPE);
+    auto fileSetName = getUniqueName(newFileSetName, FILESET_TYPE);
 
     QSharedPointer<FileSet> newFileSet(new FileSet());
     newFileSet->setName(fileSetName);

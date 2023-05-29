@@ -67,7 +67,7 @@ void TypeDefinitionChangeCommand::redo()
 // Function: PropertyValuesChangeCommand()
 //-----------------------------------------------------------------------------
 PropertyValuesChangeCommand::PropertyValuesChangeCommand(SystemComponentItem* component, 
-                                                         QMap<QString, QString> const& newPropertyValues, 
+                                                         QMap<std::string, std::string> const& newPropertyValues,
                                                          QUndoCommand* parent):
 QUndoCommand(parent),
 component_(component),

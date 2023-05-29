@@ -252,7 +252,7 @@ bool MemoryMapInterface::setName(string const& currentName, string const& newNam
     QSharedPointer<MemoryMap> editedItem = getMemoryMap(currentName);
     if (editedItem && nameHasChanged(newName, currentName))
     {
-        QString uniqueNewName = getUniqueName(newName, MEMORYMAP_TYPE);
+        auto uniqueNewName = getUniqueName(newName, MEMORYMAP_TYPE);
 
         editedItem->setName(uniqueNewName);
         return true;

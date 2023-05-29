@@ -43,9 +43,9 @@ VendorExtension* ConnectionRoute::clone() const
 //-----------------------------------------------------------------------------
 // Function: ConnectionRoute::type()
 //-----------------------------------------------------------------------------
-QString ConnectionRoute::type() const
+std::string ConnectionRoute::type() const
 {
-    return QStringLiteral("kactus2:route");
+    return "kactus2:route";
 }
 
 //-----------------------------------------------------------------------------

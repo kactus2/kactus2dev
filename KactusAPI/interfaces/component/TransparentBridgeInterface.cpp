@@ -17,10 +17,6 @@
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 
-namespace
-{
-    QString const DEFAULT_NAME = QLatin1String("");
-};
 
 //-----------------------------------------------------------------------------
 // Function: TransparentBridgeInterface::TransparentBridgeInterface()
@@ -242,7 +238,7 @@ bool TransparentBridgeInterface::addBridge(int const& bridgeIndex, std::string c
     }
 
     QSharedPointer<TransparentBridge> newBridge(new TransparentBridge());
-    newBridge->setMasterRef(getUniqueName(bridgeName, DEFAULT_NAME.toStdString()));
+    newBridge->setMasterRef(QString::fromStdString(getUniqueName(bridgeName, std::string())));
 
     bridges_->insert(bridgeIndex, newBridge);
     return true;

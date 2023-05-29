@@ -48,12 +48,11 @@ QVariant TagCompleterModel::data(const QModelIndex &index, int role /*= Qt::Disp
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-        QString tagName = tags_.at(index.row()).name_;
-        return tagName;
+        return QString::fromStdString(tags_.at(index.row()).name_);
     }
     else if (role == Qt::DecorationRole)
     {
-        QColor tagColor(tags_.at(index.row()).color_);
+        QColor tagColor(QString::fromStdString(tags_.at(index.row()).color_));
         return tagColor;
     }
     else
@@ -82,6 +81,6 @@ void TagCompleterModel::unfilteredItemSelected(int itemIndex)
 {
     TagData indexedTag = tags_.at(itemIndex);
 
-    QColor tagColor = QColor(indexedTag.color_);
+    QColor tagColor = QColor(QString::fromStdString(indexedTag.color_));
     emit selectedColor(tagColor);
 }

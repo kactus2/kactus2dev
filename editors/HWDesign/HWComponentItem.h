@@ -73,7 +73,7 @@ public:
      *      @param [in] portName  The name of the port.
      *      @param [in] visible   The new ad-hoc visibility.
      */
-    virtual void onAdHocVisibilityChanged(QString const& portName, bool visible);
+    virtual void onAdHocVisibilityChanged(std::string const& portName, bool visible);
 
     /*!
      *  Attaches the data source to an ad-hoc editor.
@@ -85,12 +85,12 @@ public:
      */
     virtual void detach(AdHocVisibilityEditor* editor);
 
-    virtual QString adHocIdentifier() const;
+    virtual std::string adHocIdentifier() const;
 
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
+    virtual HWConnectionEndpoint* getDiagramAdHocPort(std::string const& portName);
 
     /*!
      *  Adds a new, empty bus interface to the component. This function creates automatically an empty
@@ -119,12 +119,12 @@ public:
     /*! Get the BusPortItem that corresponds to the given bus interface name
      *
      */
-    ActiveBusInterfaceItem* getBusPort(QString const& name) const;
+    ActiveBusInterfaceItem* getBusPort(std::string const& name) const;
 
     /*
      *  Returns the ad-hoc port with the given name, or null if not found.
      */
-    ActivePortItem* getAdHocPort(QString const& portName) const;
+    ActivePortItem* getAdHocPort(std::string const& portName) const;
 
 
     /*! Called when a port is being moved.
@@ -136,12 +136,12 @@ public:
     /*!
      *  Returns the bus interface positions.
      */
-    QMap<QString, QPointF> getBusInterfacePositions() const;
+    QMap<std::string, QPointF> getBusInterfacePositions() const;
 
     /*!
      *  Returns the ad-hoc port positions.
      */
-    QMap<QString, QPointF> getAdHocPortPositions() const;
+    QMap<std::string, QPointF> getAdHocPortPositions() const;
 
     /*!
      *  Marks the component as a packaged component.
@@ -167,7 +167,7 @@ public:
      *
      *      @return The created ad hoc port item.
      */
-    virtual AdHocItem* createAdhocItem(QString const& portName);
+    virtual AdHocItem* createAdhocItem(std::string const& portName);
 
 signals:
     //! Emitted when the ad-hoc visibilities have been changed.

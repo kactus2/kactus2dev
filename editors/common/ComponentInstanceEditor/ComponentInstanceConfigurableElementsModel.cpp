@@ -63,7 +63,7 @@ void ComponentInstanceConfigurableElementsModel::setParameters(QSharedPointer<Co
         instanceConfigurableElements->append(*viewConfiguration->getViewConfigurableElements());
     }
 
-    containingItemName_ = instance->getInstanceName();
+    containingItemName_ = QString::fromStdString(instance->getInstanceName());
     choices_ = component->getChoices();
     itemConfigurableElementValues_ = instanceConfigurableElements;
 

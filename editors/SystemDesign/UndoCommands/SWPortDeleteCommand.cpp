@@ -80,7 +80,7 @@ void SWPortDeleteCommand::undo()
     del_ = false;
 
     QSharedPointer<ComponentInstance> containingInstance = parent_->getComponentInstance();
-    containingInstance->updateApiInterfacePosition(port_->name(), port_->pos());
+    containingInstance->updateApiInterfacePosition(port_->name().toStdString(), port_->pos());
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -98,16 +98,17 @@ void SWPortDeleteCommand::redo()
     parent_->removePort(port_);
 
     QSharedPointer<ComponentInstance> containingInstance = parent_->getComponentInstance();
-    QMap<QString, QPointF> apiPositions = containingInstance->getApiInterfacePositions();
-    QMap<QString, QPointF> comPositions = containingInstance->getComInterfacePositions();
+    auto apiPositions = containingInstance->getApiInterfacePositions();
+    auto comPositions = containingInstance->getComInterfacePositions();
 
-    if (apiPositions.contains(port_->name()))
+    auto name = port_->name().toStdString();
+    if (apiPositions.contains(name))
     {
-        containingInstance->removeApiInterfacePosition(port_->name());
+        containingInstance->removeApiInterfacePosition(name);
     }
-    if (comPositions.contains(port_->name()))
+    if (comPositions.contains(name))
     {
-        containingInstance->removeComInterfacePosition(port_->name());
+        containingInstance->removeComInterfacePosition(name);
     }
 
     // Remove the endpoint from the scene.

@@ -137,9 +137,9 @@ ApiInterface* ApiInterface::clone() const
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::type()
 //-----------------------------------------------------------------------------
-QString ApiInterface::type() const
+std::string ApiInterface::type() const
 {
-    return QStringLiteral("kactus2:apiInterface");
+    return "kactus2:apiInterface";
 }
 
 //-----------------------------------------------------------------------------

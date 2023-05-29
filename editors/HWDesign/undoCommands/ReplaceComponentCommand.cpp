@@ -80,11 +80,11 @@ void ReplaceComponentCommand::changeConnections(HWComponentItem* oldComponentIte
 
             if (oldEndpoint->type() == ActiveBusInterfaceItem::Type)
             {
-                newEndpoint = newComponentItem->getBusPort(oldEndpoint->name());
+                newEndpoint = newComponentItem->getBusPort(oldEndpoint->name().toStdString());
             }
             else if (oldEndpoint->type() == ActivePortItem::Type)
             {
-                newEndpoint = newComponentItem->getAdHocPort(oldEndpoint->name());
+                newEndpoint = newComponentItem->getAdHocPort(oldEndpoint->name().toStdString());
             }
 
             if (newEndpoint != 0)

@@ -136,7 +136,7 @@ public:
      *      @param [in] oldName     The old component reference.
      *      @param [in] newName     The new component reference.
      */
-    virtual void changeConnectionComponentReference(QString const& oldName, QString const& newName);
+    virtual void changeConnectionComponentReference(std::string const& oldName, std::string const& newName);
 
 private:
 

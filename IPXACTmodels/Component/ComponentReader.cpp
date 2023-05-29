@@ -689,13 +689,13 @@ void ComponentReader::parseComInterfaces(QDomNode const& interfaceNode, QSharedP
         QDomElement propertiesElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:propertyValues"));
         if (!propertiesElement.isNull())
         {
-            QMap<QString, QString> newProperties;
+            QMap<std::string, std::string> newProperties;
 
             QDomNodeList propertiesNodeList = propertiesElement.childNodes();
             for (int i = 0; i < propertiesNodeList.count(); ++i)
             {
-                QString name = propertiesNodeList.at(i).toElement().attribute(QStringLiteral("name"));
-                QString value = propertiesNodeList.at(i).toElement().attribute(QStringLiteral("value"));
+                auto name = propertiesNodeList.at(i).toElement().attribute(QStringLiteral("name")).toStdString();
+                auto value = propertiesNodeList.at(i).toElement().attribute(QStringLiteral("value")).toStdString();
                 newProperties.insert(name, value);
             }
 

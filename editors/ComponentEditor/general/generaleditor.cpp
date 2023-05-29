@@ -111,7 +111,7 @@ void GeneralEditor::refresh()
         this, SLOT(onAuthorChange()), Qt::UniqueConnection);
 
     disconnect(licenseEditor_, SIGNAL(textChanged(const QString &)), this, SLOT(onAuthorChange()));
-    licenseEditor_->setText(component()->getLicense());
+    licenseEditor_->setText(QString::fromStdString(component()->getLicense()));
     connect(licenseEditor_, SIGNAL(textChanged(const QString &)),
         this, SLOT(onLicenseChange()), Qt::UniqueConnection);
 
@@ -187,7 +187,7 @@ void GeneralEditor::onAuthorChange()
 //-----------------------------------------------------------------------------
 void GeneralEditor::onLicenseChange()
 {
-    component()->setLicense(licenseEditor_->text());
+    component()->setLicense(licenseEditor_->text().toStdString());
     emit contentChanged();
 }
 

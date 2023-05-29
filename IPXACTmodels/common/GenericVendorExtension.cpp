@@ -142,9 +142,9 @@ GenericVendorExtension* GenericVendorExtension::clone() const
 //-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::type()
 //-----------------------------------------------------------------------------
-QString GenericVendorExtension::type() const
+std::string GenericVendorExtension::type() const
 {
-    return name_;
+    return name_.toStdString();
 }
 
 //-----------------------------------------------------------------------------

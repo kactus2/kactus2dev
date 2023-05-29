@@ -206,7 +206,7 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
     QDomNode versionNode = extensionNodes.firstChildElement(QStringLiteral("kactus2:version"));
     if (!versionNode.isNull())
     {
-        document->setVersion(versionNode.firstChild().nodeValue());
+        document->setVersion(versionNode.firstChild().nodeValue().toStdString());
     }
 
     QDomNode attributesNode = extensionNodes.firstChildElement(QStringLiteral("kactus2:kts_attributes"));
@@ -224,7 +224,7 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
     QDomNode licenseNode = extensionNodes.firstChildElement(QStringLiteral("kactus2:license"));
     if (!licenseNode.isNull())
     {
-        document->setLicense(licenseNode.firstChild().nodeValue());
+        document->setLicense(licenseNode.firstChild().nodeValue().toStdString());
     }
 
     parseVendorExtensions(documentNode, document);
@@ -275,7 +275,7 @@ void DocumentReader::parseTags(QDomNode const& tagsGroupNode, QSharedPointer<Doc
 
         if (!nameElement.isNull() && !colorElement.isNull())
         {
-            TagData newTag({ nameElement.text(), colorElement.text() });
+            TagData newTag({ nameElement.text().toStdString(), colorElement.text().toStdString() });
 
             documentTags.append(newTag);
         }

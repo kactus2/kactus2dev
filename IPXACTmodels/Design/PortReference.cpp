@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: PortReference::PortReference()
 //-----------------------------------------------------------------------------
-PortReference::PortReference(QString const& portRef, QString const& componentRef /* = QString() */) :
+PortReference::PortReference(std::string const& portRef, std::string const& componentRef) :
     portRef_(portRef),
     componentRef_(componentRef)
 {
@@ -66,7 +66,7 @@ PortReference& PortReference::operator=( const PortReference& other)
 //-----------------------------------------------------------------------------
 // Function: PortRef::getPortRef()
 //-----------------------------------------------------------------------------
-QString PortReference::getPortRef() const
+std::string PortReference::getPortRef() const
 {
     return portRef_;
 }
@@ -74,7 +74,7 @@ QString PortReference::getPortRef() const
 //-----------------------------------------------------------------------------
 // Function: PortRef::getComponentRef()
 //-----------------------------------------------------------------------------
-QString PortReference::getComponentRef() const
+std::string PortReference::getComponentRef() const
 {
     return componentRef_;
 }
@@ -82,7 +82,7 @@ QString PortReference::getComponentRef() const
 //-----------------------------------------------------------------------------
 // Function: PortReference::setPortRef()
 //-----------------------------------------------------------------------------
-void PortReference::setPortRef(QString const& newPortRef)
+void PortReference::setPortRef(std::string const& newPortRef)
 {
     portRef_ = newPortRef;
 }
@@ -90,7 +90,7 @@ void PortReference::setPortRef(QString const& newPortRef)
 //-----------------------------------------------------------------------------
 // Function: PortReference::setComponentRef()
 //-----------------------------------------------------------------------------
-void PortReference::setComponentRef(QString const& newComponentRef)
+void PortReference::setComponentRef(std::string const& newComponentRef)
 {
     componentRef_ = newComponentRef;
 }
@@ -98,7 +98,7 @@ void PortReference::setComponentRef(QString const& newComponentRef)
 //-----------------------------------------------------------------------------
 // Function: PortReference::getIsPresent()
 //-----------------------------------------------------------------------------
-QString PortReference::getIsPresent() const
+std::string PortReference::getIsPresent() const
 {
     return isPresent_;
 }
@@ -106,7 +106,7 @@ QString PortReference::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: PortReference::setIsPresent()
 //-----------------------------------------------------------------------------
-void PortReference::setIsPresent(QString const& newIsPresent)
+void PortReference::setIsPresent(std::string const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }

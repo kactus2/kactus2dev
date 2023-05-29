@@ -44,11 +44,11 @@ StickyNote::StickyNote(QGraphicsItem* parent):
     QGraphicsItemGroup(parent),
     Associable(),
     oldPos_(),
-    extension_(new Kactus2Group(QStringLiteral("kactus2:note"))),
+    extension_(new Kactus2Group("kactus2:note")),
     positionExtension_(new Kactus2Position(QPointF())),
-    contentExtension_(new Kactus2Value(QStringLiteral("kactus2:content"), QString())),
-    associationExtensions_(new Kactus2Group(QStringLiteral("kactus2:associations"))),
-    timestampExtension_(new Kactus2Value(QStringLiteral("kactus2:timestamp"), QString())),
+    contentExtension_(new Kactus2Value("kactus2:content", std::string())),
+    associationExtensions_(new Kactus2Group("kactus2:associations")),
+    timestampExtension_(new Kactus2Value("kactus2:timestamp", std::string())),
     textArea_(0),
     timeLabel_(0),
     associationButton_(0)
@@ -182,10 +182,10 @@ void StickyNote::setVendorExtension(QSharedPointer<Kactus2Group> extension)
 {
     extension_ = extension;
 
-    if (extension->getByType(QStringLiteral("kactus2:position")).isEmpty() == false)
+    if (extension->getByType("kactus2:position").isEmpty() == false)
     {
         positionExtension_ =
-            extension->getByType(QStringLiteral("kactus2:position")).first().dynamicCast<Kactus2Position>();
+            extension->getByType("kactus2:position").first().dynamicCast<Kactus2Position>();
         setPos(positionExtension_->position());
     }
     else
@@ -193,32 +193,32 @@ void StickyNote::setVendorExtension(QSharedPointer<Kactus2Group> extension)
         extension_->addToGroup(positionExtension_);
     }
     
-    if (extension->getByType(QStringLiteral("kactus2:content")).isEmpty() == false)
+    if (extension->getByType("kactus2:content").isEmpty() == false)
     {
         contentExtension_ =
-            extension->getByType(QStringLiteral("kactus2:content")).first().dynamicCast<Kactus2Value>();
-        setText(contentExtension_->value());
+            extension->getByType("kactus2:content").first().dynamicCast<Kactus2Value>();
+        setText(QString::fromStdString(contentExtension_->value()));
     }
     else
     {
         extension_->addToGroup(contentExtension_);
     }
 
-    if (extension->getByType(QStringLiteral("kactus2:associations")).isEmpty() == false)
+    if (extension->getByType("kactus2:associations").isEmpty() == false)
     {
         associationExtensions_ =
-            extension->getByType(QStringLiteral("kactus2:associations")).first().dynamicCast<Kactus2Group>();
+            extension->getByType("kactus2:associations").first().dynamicCast<Kactus2Group>();
      }
     else
     {
         extension_->addToGroup(associationExtensions_);
     }
 
-    if (extension->getByType(QStringLiteral("kactus2:timestamp")).isEmpty() == false)
+    if (extension->getByType("kactus2:timestamp").isEmpty() == false)
     {
         timestampExtension_ =
-            extension->getByType(QStringLiteral("kactus2:timestamp")).first().dynamicCast<Kactus2Value>();
-        setTimestamp(timestampExtension_->value());
+            extension->getByType("kactus2:timestamp").first().dynamicCast<Kactus2Value>();
+        setTimestamp(QString::fromStdString(timestampExtension_->value()));
     }
     else
     {
@@ -231,7 +231,7 @@ void StickyNote::setVendorExtension(QSharedPointer<Kactus2Group> extension)
 //-----------------------------------------------------------------------------
 void StickyNote::setText(QString const& text)
 {
-    contentExtension_->setValue(text);
+    contentExtension_->setValue(text.toStdString());
     textArea_->setPlainText(text);   
 }
 
@@ -240,7 +240,7 @@ void StickyNote::setText(QString const& text)
 //-----------------------------------------------------------------------------
 void StickyNote::setTimestamp(QString const& timestamp)
 {
-    timestampExtension_->setValue(timestamp);
+    timestampExtension_->setValue(timestamp.toStdString());
     timeLabel_->setText(timestamp);
 }
 
@@ -251,8 +251,9 @@ void StickyNote::onTextEdited()
 {
     QString timestamp = getFormattedTimestamp();
     
-    StickyNoteEditCommand* command = new StickyNoteEditCommand(this, 
-        textArea_->toPlainText(), contentExtension_->value(), timestamp, timestampExtension_->value());
+    StickyNoteEditCommand* command = new StickyNoteEditCommand(this, textArea_->toPlainText(), 
+        QString::fromStdString(contentExtension_->value()), timestamp, 
+        QString::fromStdString(timestampExtension_->value()));
     
     command->redo();
 

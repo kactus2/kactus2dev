@@ -439,7 +439,7 @@ private:
 	 *      Key = Name of the instance
 	 *      Value = Pointer to the component instance
 	 */
-	QMap<QString, QSharedPointer<VhdlComponentInstance> > instances_;
+	QMap<std::string, QSharedPointer<VhdlComponentInstance> > instances_;
 
     //! The used design validator.
     QSharedPointer<DesignValidator> designvalidator_;

@@ -103,7 +103,7 @@ bool SystemDesignConfigurationValidator::viewConfigurationReferencesHWInstance(
 {
     for (QSharedPointer<ComponentInstance> instance : *hwInstances)
     {
-        if (viewConfiguration->getInstanceName() == instance->getInstanceName().toStdString())
+        if (viewConfiguration->getInstanceName() == instance->getInstanceName())
         {
             return true;
         }

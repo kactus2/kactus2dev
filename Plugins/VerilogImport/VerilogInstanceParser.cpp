@@ -56,9 +56,9 @@ void VerilogInstanceParser::import(QString const& input, QString const& componen
 
         for (auto& instanceMatch : instanceDeclarations)
         {
-            QString instanceModuleName = instanceMatch.captured(1);
+            auto instanceModuleName = instanceMatch.captured(1).toStdString();
             QString parameterDeclarations = instanceMatch.captured(2);
-            QString instanceName = instanceMatch.captured(3);
+            auto instanceName = instanceMatch.captured(3).toStdString();
             QString connectionDeclarations = instanceMatch.captured(4);
 
             QSharedPointer<Kactus2Group> instanceExtension(new Kactus2Group(InstanceData::SINGLEINSTANCE));
@@ -73,7 +73,7 @@ void VerilogInstanceParser::import(QString const& input, QString const& componen
 
             if (!parameterDeclarations.isEmpty())
             {
-                QVector<QPair<QString, QString> > instanceParameters = getSeparatedSubItems(parameterDeclarations);
+                auto instanceParameters = getSeparatedSubItems(parameterDeclarations);
                 QSharedPointer<Kactus2Group> parameterGroup = createSubItemGroup(
                     InstanceData::PARAMETERS, InstanceData::SINGLEPARAMETER, instanceParameters);
                 if (parameterGroup)
@@ -84,7 +84,7 @@ void VerilogInstanceParser::import(QString const& input, QString const& componen
 
             if (!connectionDeclarations.isEmpty())
             {
-                QVector<QPair<QString, QString> > instanceConnections = getSeparatedSubItems(connectionDeclarations);
+                auto instanceConnections = getSeparatedSubItems(connectionDeclarations);
                 QSharedPointer<Kactus2Group> connectionGroup = createSubItemGroup(
                     InstanceData::CONNECTIONS, InstanceData::SINGLECONNECTION, instanceConnections);
                 if (connectionGroup)
@@ -197,9 +197,9 @@ bool VerilogInstanceParser::matchIsWithinComments(QRegularExpressionMatch const&
 //-----------------------------------------------------------------------------
 // Function: VerilogInstanceParser::getSeparatedSubItems()
 //-----------------------------------------------------------------------------
-QVector<QPair<QString, QString> > VerilogInstanceParser::getSeparatedSubItems(QString& subItemDeclarations) const
+QVector<QPair<std::string, std::string> > VerilogInstanceParser::getSeparatedSubItems(QString& subItemDeclarations) const
 {
-    QVector<QPair<QString, QString> > subItemReDeclarations;
+    QVector<QPair<std::string, std::string> > subItemReDeclarations;
 
     QRegularExpression subItemSeparatorExpression(QStringLiteral("((?:.(?!\\())*.)(.*)"));
 
@@ -217,9 +217,9 @@ QVector<QPair<QString, QString> > VerilogInstanceParser::getSeparatedSubItems(QS
         subItemValue.chop(1);
         subItemValue = subItemValue.simplified();
 
-        QPair<QString, QString> subItem;
-        subItem.first = subItemName;
-        subItem.second = subItemValue;
+        QPair<std::string, std::string> subItem;
+        subItem.first = subItemName.toStdString();
+        subItem.second = subItemValue.toStdString();
 
         subItemReDeclarations.append(subItem);
     }
@@ -230,8 +230,8 @@ QVector<QPair<QString, QString> > VerilogInstanceParser::getSeparatedSubItems(QS
 //-----------------------------------------------------------------------------
 // Function: VerilogInstanceParser::createSubItemGroup()
 //-----------------------------------------------------------------------------
-QSharedPointer<Kactus2Group> VerilogInstanceParser::createSubItemGroup(QString const& groupName,
-    QString const& itemType, QVector<QPair<QString, QString>> const& subItems) const
+QSharedPointer<Kactus2Group> VerilogInstanceParser::createSubItemGroup(std::string const& groupName,
+    std::string const& itemType, QVector<QPair<std::string, std::string>> const& subItems) const
 {
     if (subItems.isEmpty())
     {

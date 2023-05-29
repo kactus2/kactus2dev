@@ -75,9 +75,9 @@ ComProperty* ComProperty::clone() const
 //-----------------------------------------------------------------------------
 // Function: ComProperty::type()
 //-----------------------------------------------------------------------------
-QString ComProperty::type() const
+std::string ComProperty::type() const
 {
-    return QStringLiteral("kactus2:property");
+    return "kactus2:property";
 }
 
 //-----------------------------------------------------------------------------

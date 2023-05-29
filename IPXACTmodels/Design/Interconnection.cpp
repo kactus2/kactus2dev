@@ -16,8 +16,8 @@
 //-----------------------------------------------------------------------------
 // Function: Interconnection::Interconnection()
 //-----------------------------------------------------------------------------
-Interconnection::Interconnection(QString const name, QSharedPointer<ActiveInterface> startInterface,
-    QString const& displayName, QString const& description) :
+Interconnection::Interconnection(std::string const& name, QSharedPointer<ActiveInterface> startInterface,
+    std::string const& displayName, std::string const& description) :
 NameGroup(name, displayName, description),
 Extendable(),
 startInterface_(startInterface)
@@ -101,7 +101,7 @@ Interconnection& Interconnection::operator=( const Interconnection& other)
 //-----------------------------------------------------------------------------
 bool Interconnection::isOffPage() const
 {
-    return findVendorExtension(QStringLiteral("kactus2:offPage")) != nullptr;
+    return findVendorExtension("kactus2:offPage") != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ bool Interconnection::isOffPage() const
 //-----------------------------------------------------------------------------
 void Interconnection::setOffPage(bool offpage)
 {
-    setPlaceholderExtension(offpage, QStringLiteral("kactus2:offPage"));
+    setPlaceholderExtension(offpage, "kactus2:offPage");
 }
 
 //-----------------------------------------------------------------------------
@@ -147,7 +147,7 @@ QSharedPointer<QList<QSharedPointer<HierInterface> > > Interconnection::getHierI
 //-----------------------------------------------------------------------------
 // Function: Interconnection::getIsPresent()
 //-----------------------------------------------------------------------------
-QString Interconnection::getIsPresent() const
+std::string Interconnection::getIsPresent() const
 {
     return isPresent_;
 }
@@ -155,7 +155,7 @@ QString Interconnection::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: Interconnection::setIsPresent()
 //-----------------------------------------------------------------------------
-void Interconnection::setIsPresent(QString const& newIsPresent)
+void Interconnection::setIsPresent(std::string const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }
@@ -163,8 +163,8 @@ void Interconnection::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: Interconnection::hasInterfaceReferencing()
 //-----------------------------------------------------------------------------
-bool Interconnection::hasInterfaceReferencingComponent(QString const& instanceName, 
-    QString const& busInterfaceName) const
+bool Interconnection::hasInterfaceReferencingComponent(std::string const& instanceName,
+    std::string const& busInterfaceName) const
 {
     if (startInterface_->getComponentReference() == instanceName &&
         startInterface_->getBusReference() == busInterfaceName)
@@ -181,7 +181,8 @@ bool Interconnection::hasInterfaceReferencingComponent(QString const& instanceNa
 //-----------------------------------------------------------------------------
 // Function: Interconnection::changeInterfaceComponentReferences()
 //-----------------------------------------------------------------------------
-void Interconnection::changeInterfaceComponentReferences(QString const& oldComponent, QString const& newComponent)
+void Interconnection::changeInterfaceComponentReferences(std::string const& oldComponent, 
+    std::string const& newComponent)
 {
     if (startInterface_ && startInterface_->getComponentReference() == oldComponent)
     {

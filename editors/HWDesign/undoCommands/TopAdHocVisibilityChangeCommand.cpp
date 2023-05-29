@@ -48,16 +48,17 @@ void TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion(HWDesignD
         QSharedPointer<Design> containingDesign = diagram->getDesign();
         if (containingDesign)
         {
-            foreach (QSharedPointer<AdHocConnection> connection, *containingDesign->getAdHocConnections())
+            auto portRef = portName.toStdString();
+            for (QSharedPointer<AdHocConnection> connection : *containingDesign->getAdHocConnections())
             {
-                if (!connection->getTiedValue().isEmpty())
+                if (!connection->getTiedValue().empty())
                 {
                     if ((connection->getInternalPortReferences()->size() == 1 &&
                         connection->getExternalPortReferences()->isEmpty() &&
-                        connection->getInternalPortReferences()->first()->getPortRef() == portName) ||
+                        connection->getInternalPortReferences()->first()->getPortRef() == portRef) ||
                         (connection->getExternalPortReferences()->size() == 1 &&
                         connection->getInternalPortReferences()->isEmpty() &&
-                        connection->getExternalPortReferences()->first()->getPortRef() == portName))
+                        connection->getExternalPortReferences()->first()->getPortRef() == portRef))
                     {
                         new AdHocTieOffConnectionDeleteCommand(containingDesign, connection, this);
                     }

@@ -145,7 +145,7 @@ private:
      *
      *      @return A list parameter finder containing the configurable element values of the instance.
      */
-    QSharedPointer<ListParameterFinder> createParameterFinder(QString const& instanceID,
+    QSharedPointer<ListParameterFinder> createParameterFinder(std::string const& instanceID,
         QSharedPointer<Component> component);
 
     /*!
@@ -155,7 +155,7 @@ private:
      *
      *      @return Uuid of the instance.
      */
-    QString getInstanceID(QString const& interfaceReference) const;
+    std::string getInstanceID(std::string const& interfaceReference) const;
 
     /*!
      *  Get configurable elements from the selected instance.
@@ -164,7 +164,7 @@ private:
      *
      *      @return Map containing the configurable elements from the selected instance as ID / value pairs.
      */
-    QMap<QString, QString> getConfigurableElementsFromInstance(QString const& instanceId) const;
+    QMap<QString, QString> getConfigurableElementsFromInstance(std::string const& instanceId) const;
 
     /*!
      *  Get the connected interfaces.

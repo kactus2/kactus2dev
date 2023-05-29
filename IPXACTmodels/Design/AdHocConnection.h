@@ -36,8 +36,8 @@ public:
      *      @param [in] route           The route of the connection.
      *      @param [in] offPage         Specifies whether the connection is off page or not.
      */
-    AdHocConnection(QString name,
-        QString tiedValue = QString(),
+    AdHocConnection(std::string name,
+        std::string tiedValue = std::string(),
         QList<QPointF> const& route = QList<QPointF>(),
         bool offPage = false);
 
@@ -117,28 +117,28 @@ public:
      *
      *      @return The presence value of the connection.
      */
-    QString getIsPresent() const;
+    std::string getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
      *      @param [in] newIsPresent    The new value for presence.
      */
-    void setIsPresent(QString const& newIsPresent);
+    void setIsPresent(std::string const& newIsPresent);
 
     /*!
      *  Get the tied value of the connection.
      *
      *      @return The tied value.
      */
-    QString getTiedValue() const;
+    std::string getTiedValue() const;
 
     /*!
      *  Set the tied value.
      *
      *      @param [in] newTiedValue    The new tied value.
      */
-    void setTiedValue(QString const& newTiedValue);
+    void setTiedValue(std::string const& newTiedValue);
 
 private:
 
@@ -147,10 +147,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Defines the presence of the connection
-    QString isPresent_;
+    std::string isPresent_;
 
     //! Specifies a fixed logic value for this connection.
-    QString tiedValue_;
+    std::string tiedValue_;
 
     //! A list of port references of the component instance.
     QSharedPointer<QList<QSharedPointer<PortReference> > > internalPortReferences_ =

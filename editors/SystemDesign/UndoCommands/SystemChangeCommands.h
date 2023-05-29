@@ -87,7 +87,7 @@ public:
 	 *      @param [in] newConfElements  The new property values for the instance.
 	 *      @param [in] parent           Pointer to the owner of this command.
 	 */
-	PropertyValuesChangeCommand(SystemComponentItem* component, QMap<QString, QString> const& newPropertyValues, 
+	PropertyValuesChangeCommand(SystemComponentItem* component, QMap<std::string, std::string> const& newPropertyValues,
 		                        QUndoCommand* parent = 0);
 
 	/*!
@@ -118,10 +118,10 @@ private:
 	SystemComponentItem* component_;
 
 	//! The old property values.
-	QMap<QString, QString> oldPropertyValues_;
+	QMap<std::string, std::string> oldPropertyValues_;
 
 	//! The new property values..
-	QMap<QString, QString> newPropertyValues_;
+	QMap<std::string, std::string> newPropertyValues_;
 };
 
 //-----------------------------------------------------------------------------

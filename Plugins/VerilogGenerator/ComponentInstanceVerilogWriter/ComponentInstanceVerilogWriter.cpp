@@ -63,7 +63,8 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::formattedInstanceName() const
 {
-    QString instanceName = VerilogSyntax::legalizeName(instance_->getComponentInstance()->getInstanceName());
+    QString instanceName = VerilogSyntax::legalizeName(
+        QString::fromStdString(instance_->getComponentInstance()->getInstanceName()));
 
     if (!instance_->getParameters()->isEmpty())
     {
@@ -239,7 +240,8 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
         return getInOutAssignment(mPort);
     }
 
-    return VerilogSyntax::legalizeName(instance_->getComponentInstance()->getInstanceName() + "_"
+    return VerilogSyntax::legalizeName(
+        QString::fromStdString(instance_->getComponentInstance()->getInstanceName()) + "_"
         + mPort->port_->name());
 }
 

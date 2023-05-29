@@ -70,7 +70,7 @@ public:
      *
      *      @return The com interface type.
      */
-    virtual QString type() const;
+    std::string type() const final;
 
     /*!
      *  Writes the contents of the COM interface to an XML stream.
@@ -116,7 +116,7 @@ public:
      *
      *      @param [in] values The property values.
      */
-    void setPropertyValues(QMap<QString, QString> const& values);
+    void setPropertyValues(QMap<std::string, std::string> const& values);
 
     /*!
      *  Sets the default position in the parent component's graphical representation.
@@ -143,7 +143,7 @@ public:
     /*!
      *  Returns the property values.
      */
-    QMap<QString, QString> const& getPropertyValues() const;
+    QMap<std::string, std::string> const& getPropertyValues() const;
 
     /*!
      *  Returns the default position in the parent component's graphical representation.
@@ -199,7 +199,7 @@ private:
     DirectionTypes::Direction dir_;    
 
     //! The set property values.
-    QMap<QString, QString> propertyValues_;
+    QMap<std::string, std::string> propertyValues_;
 
 	//! Reference to the implementation driver.
 	 VLNV comImplementation_;

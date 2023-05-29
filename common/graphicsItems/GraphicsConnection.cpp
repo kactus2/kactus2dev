@@ -662,13 +662,13 @@ QString GraphicsConnection::createDefaultName() const
     QString startComponentName = QString();
     if (start->encompassingComp() != 0)
     {
-        startComponentName = start->encompassingComp()->name() + "_";
+        startComponentName = QString::fromStdString(start->encompassingComp()->name()) + "_";
     }
 
     QString endComponentName = QString();
     if (end->encompassingComp() != 0)
     {
-        endComponentName = end->encompassingComp()->name() + "_";
+        endComponentName = QString::fromStdString(end->encompassingComp()->name()) + "_";
     }
 
     return startComponentName + start->name() + "_to_" + endComponentName + end->name();
@@ -1578,7 +1578,7 @@ QPointF GraphicsConnection::findClosestPoint(QList<QPointF> const& sourcePoints,
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::changeConnectionComponentReference()
 //-----------------------------------------------------------------------------
-void GraphicsConnection::changeConnectionComponentReference(QString const&, QString const& )
+void GraphicsConnection::changeConnectionComponentReference(std::string const&, std::string const& )
 {
     return;
 }

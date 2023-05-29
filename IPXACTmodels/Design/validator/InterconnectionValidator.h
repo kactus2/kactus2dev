@@ -73,7 +73,7 @@ public:
      *
      *      @return True, if the name is valid, otherwise false.
      */
-    bool hasValidName(QString const& name) const;
+    bool hasValidName(std::string const& name) const;
 
     /*!
      *  Check if the isPresent is valid.
@@ -82,7 +82,7 @@ public:
      *
      *      @return True, if the isPresent is valid, otherwise false.
      */
-    bool hasValidIsPresent(QString const& isPresent) const;
+    bool hasValidIsPresent(std::string const& isPresent) const;
 
     /*!
      *  Check if the start interface is valid.
@@ -164,8 +164,8 @@ private:
      *
      *      @return True, if the component / bus interface reference pair is unique, otherwise false.
      */
-    bool referenceCombinationIsUnique(QMap<QString, QString> referenceCombinations,
-        QString const& componentReference, QString const& busReference) const;
+    bool referenceCombinationIsUnique(QMap<std::string, std::string> referenceCombinations,
+        std::string const& componentReference, std::string const& busReference) const;
 
     /*!
      *  Check if an active interface is valid.
@@ -183,7 +183,7 @@ private:
      *
      *      @return The referenced component instance.
      */
-    QSharedPointer<ComponentInstance> getReferencedComponentInstance(QString const& instanceReference) const;
+    QSharedPointer<ComponentInstance> getReferencedComponentInstance(std::string const& instanceReference) const;
 
     /*!
      *  Get the component referenced by the component instance.
@@ -202,7 +202,7 @@ private:
      *
      *      @return True, if the bus interface reference is valid, otherwise false.
      */
-    bool busReferenceIsValid(QSharedPointer<const Component> component, QString const& busReference) const;
+    bool busReferenceIsValid(QSharedPointer<const Component> component, std::string const& busReference) const;
 
     /*!
      *  Check if the exclude ports of an active interface are valid.
@@ -223,7 +223,7 @@ private:
      *
      *      @return True, if the exclude port is valid, otherwise false.
      */
-    bool singleExcludePortIsValid(QString const& portReference, 
+    bool singleExcludePortIsValid(std::string const& portReference,
         QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const;
 
     /*!
@@ -243,7 +243,7 @@ private:
      *      @param [in] element     The name of the containing element.
      *      @param [in] context     Context to help locate the errors.
      */
-    void findErrorsInName(QVector<QString>& errors, QString const& name, QString const& element,
+    void findErrorsInName(QVector<QString>& errors, std::string const& name, QString const& element,
         QString const& context) const;
 
     /*!
@@ -254,7 +254,7 @@ private:
      *      @param [in] innerContext    The item context to help locate the errors.
      *      @param [in] context         Context to help locate the errors.
      */
-    void findErrorsInIsPresent(QVector<QString>& errors, QString const& isPresent, QString const& innerContext,
+    void findErrorsInIsPresent(QVector<QString>& errors, std::string const& isPresent, QString const& innerContext,
         QString const& context) const;
 
     /*!
@@ -289,7 +289,7 @@ private:
      *      @param [in] innerContext        The item context to help locate the errors.
      *      @param [in] context             Context to help locate the errors.
      */
-    void findErrorsInComponentReference(QVector<QString>& errors, QString const& componentReference,
+    void findErrorsInComponentReference(QVector<QString>& errors, std::string const& componentReference,
         QSharedPointer<ComponentInstance> referencedInstance, QString const& elementName,
         QString const& innerContext, QString const& context) const;
 
@@ -303,7 +303,7 @@ private:
      *      @param [in] innerContext            The item context to help locate the errors.
      *      @param [in] context                 Context to help locate the errors.
      */
-    void findErrorsInBusReference(QVector<QString>& errors, QString const& busReference,
+    void findErrorsInBusReference(QVector<QString>& errors, std::string const& busReference,
         QSharedPointer<const Component> referencedComponent, QString const& elementName, QString const& innerContext,
         QString const& context) const;
 

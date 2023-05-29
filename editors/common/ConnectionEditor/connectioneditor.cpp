@@ -450,7 +450,7 @@ QString ConnectionEditor::getActiveViewForEndPoint(ConnectionEndpoint* endPoint)
         {
             QSharedPointer<DesignConfiguration> configuration = diagram_->getDesignConfiguration();
             QSharedPointer<ComponentInstance> instance = endPoint->encompassingComp()->getComponentInstance();
-            activeView = QString::fromStdString(configuration->getActiveView(instance->getInstanceName().toStdString()));
+            activeView = QString::fromStdString(configuration->getActiveView(instance->getInstanceName()));
         }
     }
 
@@ -465,7 +465,7 @@ void ConnectionEditor::setTableHeaders()
     ComponentItem* componentItem1 = connection_->endpoint1()->encompassingComp();
     if (componentItem1)
     {
-        portWidget_.horizontalHeaderItem(0)->setText(componentItem1->name());
+        portWidget_.horizontalHeaderItem(0)->setText(QString::fromStdString(componentItem1->name()));
     }
     else // if was the interface of a top component
     {
@@ -476,7 +476,7 @@ void ConnectionEditor::setTableHeaders()
     ComponentItem* componentItem2 = connection_->endpoint2()->encompassingComp();
     if (componentItem2)
     {
-        portWidget_.horizontalHeaderItem(1)->setText(componentItem2->name());
+        portWidget_.horizontalHeaderItem(1)->setText(QString::fromStdString(componentItem2->name()));
     }
     else // if was the interface of a top component
     {

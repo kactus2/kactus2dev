@@ -353,9 +353,9 @@ bool PortAbstractionInterface::setName(std::string const& currentName, std::stri
     QSharedPointer<PortAbstraction> editedPort = getPort(currentName);
     if (editedPort && nameHasChanged(newName, currentName))
     {
-        QString uniqueNewName(getUniqueName(newName, DEFAULT_NAME));
+        auto uniqueNewName(getUniqueName(newName, DEFAULT_NAME));
 
-        editedPort->setLogicalName(uniqueNewName);
+        editedPort->setLogicalName(QString::fromStdString(uniqueNewName));
         return true;
     }
     else
@@ -1388,12 +1388,12 @@ bool PortAbstractionInterface::setPayloadExtension(int const& portIndex, std::st
 //-----------------------------------------------------------------------------
 void PortAbstractionInterface::addWirePort(std::string const& newPortName)
 {
-    QString uniqueNewName(getUniqueName(newPortName, DEFAULT_NAME));
+    auto uniqueNewName(getUniqueName(newPortName, DEFAULT_NAME));
 
     QSharedPointer<PortAbstractionInterface::SignalRow> newPort(
         new PortAbstractionInterface::SignalRow(true, false));
     newPort->abstraction_ = QSharedPointer<PortAbstraction>(new PortAbstraction());
-    newPort->abstraction_->setLogicalName(uniqueNewName);
+    newPort->abstraction_->setLogicalName(QString::fromStdString(uniqueNewName));
     newPort->abstraction_->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
     newPort->wire_ = QSharedPointer<WirePort>(new WirePort());    
     
@@ -1406,12 +1406,12 @@ void PortAbstractionInterface::addWirePort(std::string const& newPortName)
 //-----------------------------------------------------------------------------
 void PortAbstractionInterface::addTransactionalPort(std::string const& newPortName)
 {
-    QString uniqueNewName = getUniqueName(newPortName, DEFAULT_NAME);
+    auto uniqueNewName = getUniqueName(newPortName, DEFAULT_NAME);
 
     QSharedPointer<PortAbstractionInterface::SignalRow> newPort(
         new PortAbstractionInterface::SignalRow(false, true));
     newPort->abstraction_ = QSharedPointer<PortAbstraction>(new PortAbstraction());
-    newPort->abstraction_->setLogicalName(uniqueNewName);
+    newPort->abstraction_->setLogicalName(QString::fromStdString(uniqueNewName));
     newPort->abstraction_->setTransactional(
         QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction()));
     newPort->transactional_ = QSharedPointer<TransactionalPort>(new TransactionalPort());

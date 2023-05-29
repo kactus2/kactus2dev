@@ -173,7 +173,7 @@ bool InterconnectionConfigurationValidator::interfaceReferenceComponentReference
         return std::any_of(availableComponentInstances_->cbegin(), availableComponentInstances_->cend(),
             [&componentRef](auto const& instance)
         {
-            return instance->getInstanceName().toStdString() == componentRef;
+            return instance->getInstanceName() == componentRef;
         });
     }
 
@@ -211,7 +211,7 @@ void InterconnectionConfigurationValidator::changeAvailableBusInterfaces(
     {
         for (QSharedPointer<ComponentInstance> instance : *availableComponentInstances_)
         {
-            if (instance->getInstanceName().toStdString() == interfaceReference->getComponentRef())
+            if (instance->getInstanceName() == interfaceReference->getComponentRef())
             {
                 if (instance->getComponentRef() && instance->getComponentRef()->isValid())
                 {

@@ -70,8 +70,8 @@ imported_()
         {
             QDomNode activeInterfaceNode = apiInterfaceNodes.at(connectionIndex);
             QDomNamedNodeMap activeAttributes = activeInterfaceNode.attributes();
-            QString componentReference = activeAttributes.namedItem(QStringLiteral("componentRef")).nodeValue();
-            QString apiReference = activeAttributes.namedItem(QStringLiteral("apiRef")).nodeValue();
+            auto componentReference = activeAttributes.namedItem(QStringLiteral("componentRef")).nodeValue().toStdString();
+            auto apiReference = activeAttributes.namedItem(QStringLiteral("apiRef")).nodeValue().toStdString();
 
             QSharedPointer<ActiveInterface> apiInterface(new ActiveInterface(componentReference, apiReference));
             setInterface(apiInterface);
@@ -81,7 +81,7 @@ imported_()
             apiConnectionElement.firstChildElement(QStringLiteral("kactus2:hierApiInterface"));
         if (!hierInterfaceElement.isNull())
         {
-            QString apiReference = hierInterfaceElement.attribute(QStringLiteral("apiRef"));
+            auto apiReference = hierInterfaceElement.attribute(QStringLiteral("apiRef")).toStdString();
             QSharedPointer<HierInterface> hierarchicalInterface (new HierInterface(apiReference));
             setInterface(hierarchicalInterface);
         }
@@ -110,9 +110,9 @@ ApiInterconnection* ApiInterconnection::clone() const
 //-----------------------------------------------------------------------------
 // Function: ApiInterconnection::type()
 //-----------------------------------------------------------------------------
-QString ApiInterconnection::type() const
+std::string ApiInterconnection::type() const
 {
-    return QStringLiteral("kactus2:apiConnection");
+    return "kactus2:apiConnection";
 }
 
 //-----------------------------------------------------------------------------
@@ -133,8 +133,9 @@ void ApiInterconnection::write(QXmlStreamWriter& writer) const
     }
 
     writer.writeEmptyElement(QStringLiteral("kactus2:activeApiInterface"));
-    writer.writeAttribute(QStringLiteral("componentRef"), getStartInterface()->getComponentReference());
-    writer.writeAttribute(QStringLiteral("apiRef"), getStartInterface()->getBusReference());
+    writer.writeAttribute(QStringLiteral("componentRef"), 
+        QString::fromStdString(getStartInterface()->getComponentReference()));
+    writer.writeAttribute(QStringLiteral("apiRef"), QString::fromStdString(getStartInterface()->getBusReference()));
 
     writeEndInterface(writer);
 
@@ -155,14 +156,15 @@ void ApiInterconnection::writeEndInterface(QXmlStreamWriter& writer) const
     if (activeEndInterface)
     {
         writer.writeEmptyElement(QStringLiteral("kactus2:activeApiInterface"));
-        writer.writeAttribute(QStringLiteral("componentRef"), activeEndInterface->getComponentReference());
+        writer.writeAttribute(QStringLiteral("componentRef"), 
+            QString::fromStdString(activeEndInterface->getComponentReference()));
     }
     else
     {
         writer.writeEmptyElement(QStringLiteral("kactus2:hierApiInterface"));
     }
 
-    writer.writeAttribute(QStringLiteral("apiRef"), getEndInterface()->getBusReference());
+    writer.writeAttribute(QStringLiteral("apiRef"), QString::fromStdString(getEndInterface()->getBusReference()));
 }
 
 //-----------------------------------------------------------------------------

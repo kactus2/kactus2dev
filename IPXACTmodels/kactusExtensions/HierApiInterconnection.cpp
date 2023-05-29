@@ -15,10 +15,7 @@
 // Function: HierApiInterconnection::HierApiInterconnection ()
 //-----------------------------------------------------------------------------
 HierApiInterconnection::HierApiInterconnection() :
-Interconnection(),
-topInterfaceRef_(),
-position_(),
-direction_()
+Interconnection()
 {
 
 }
@@ -26,8 +23,8 @@ direction_()
 //-----------------------------------------------------------------------------
 // Function: HierApiInterconnection::HierApiInterconnection()
 //-----------------------------------------------------------------------------
-HierApiInterconnection::HierApiInterconnection(QString const& name, QString const& displayName,
-    QString const& description, QString const& interfaceRef, QSharedPointer<ActiveInterface> ref,
+HierApiInterconnection::HierApiInterconnection(std::string const& name, std::string const& displayName,
+    std::string const& description, std::string const& interfaceRef, QSharedPointer<ActiveInterface> ref,
     QPointF const& position, QVector2D const& direction, QList<QPointF> const& route) :
 Interconnection(name, ref, displayName, description),
 topInterfaceRef_(interfaceRef),
@@ -53,22 +50,19 @@ direction_(rhs.position_)
 // Function: HierApiInterconnection::HierApiInterconnection()
 //-----------------------------------------------------------------------------
 HierApiInterconnection::HierApiInterconnection(QDomNode& connectionNode) :
-Interconnection(),
-topInterfaceRef_(),
-position_(),
-direction_()
+Interconnection()
 {
-    setName(connectionNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue());
+    setName(connectionNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue().toStdString());
     setDisplayName(connectionNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
     setDescription(connectionNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
 
     QDomNamedNodeMap connectionAttributes = connectionNode.attributes();
-    setTopInterfaceRef(connectionAttributes.namedItem(QStringLiteral("interfaceRef")).nodeValue());
+    setTopInterfaceRef(connectionAttributes.namedItem(QStringLiteral("interfaceRef")).nodeValue().toStdString());
 
     QDomElement apiInterfaceElement = connectionNode.firstChildElement(QStringLiteral("kactus2:activeApiInterface"));
     QDomNamedNodeMap interfaceAttributes = apiInterfaceElement.attributes();
-    QString interfaceComponentRef = interfaceAttributes.namedItem(QStringLiteral("componentRef")).nodeValue();
-    QString interfaceApiRef = interfaceAttributes.namedItem(QStringLiteral("apiRef")).nodeValue();
+    auto interfaceComponentRef = interfaceAttributes.namedItem(QStringLiteral("componentRef")).nodeValue().toStdString();
+    auto interfaceApiRef = interfaceAttributes.namedItem(QStringLiteral("apiRef")).nodeValue().toStdString();
     QSharedPointer<ActiveInterface> newApiInterface(new ActiveInterface(interfaceComponentRef, interfaceApiRef));
     setInterface(newApiInterface);
 
@@ -124,9 +118,9 @@ HierApiInterconnection* HierApiInterconnection::clone() const
 //-----------------------------------------------------------------------------
 // Function: HierApiInterconnection::type()
 //-----------------------------------------------------------------------------
-QString HierApiInterconnection::type() const
+std::string HierApiInterconnection::type() const
 {
-    return QStringLiteral("kactus2:hierApiDependency");
+    return "kactus2:hierApiDependency";
 }
 
 //-----------------------------------------------------------------------------
@@ -135,15 +129,16 @@ QString HierApiInterconnection::type() const
 void HierApiInterconnection::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement(QStringLiteral("kactus2:hierApiDependency"));
-    writer.writeAttribute(QStringLiteral("interfaceRef"), getTopInterfaceRef());
+    writer.writeAttribute(QStringLiteral("interfaceRef"), QString::fromStdString(getTopInterfaceRef()));
 
     writer.writeTextElement(QStringLiteral("ipxact:name"), name());
     writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
     writer.writeTextElement(QStringLiteral("ipxact:description"), description());
 
     writer.writeEmptyElement(QStringLiteral("kactus2:activeApiInterface"));
-    writer.writeAttribute(QStringLiteral("componentRef"), getInterface()->getComponentReference());
-    writer.writeAttribute(QStringLiteral("apiRef"), getInterface()->getBusReference());
+    writer.writeAttribute(QStringLiteral("componentRef"), 
+        QString::fromStdString(getInterface()->getComponentReference()));
+    writer.writeAttribute(QStringLiteral("apiRef"), QString::fromStdString(getInterface()->getBusReference()));
     
     writePosition(writer);
     writeVectorDirection(writer);
@@ -161,7 +156,7 @@ void HierApiInterconnection::write(QXmlStreamWriter& writer) const
             writer.writeAttribute(QStringLiteral("kactus2:offPage"), QStringLiteral("false"));
         }
 
-        foreach (QPointF const& point, getRoute())
+        for (QPointF const& point : getRoute())
         {
             writer.writeEmptyElement(QStringLiteral("kactus2:position"));
             writer.writeAttribute(QStringLiteral("x"), QString::number(int(point.x())));
@@ -177,7 +172,7 @@ void HierApiInterconnection::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: HierApiInterconnection::setTopInterfaceRef()
 //-----------------------------------------------------------------------------
-void HierApiInterconnection::setTopInterfaceRef(QString const& interfaceRef)
+void HierApiInterconnection::setTopInterfaceRef(std::string const& interfaceRef)
 {
     topInterfaceRef_ = interfaceRef;
 }
@@ -193,7 +188,7 @@ void HierApiInterconnection::setInterface(QSharedPointer<ActiveInterface> ref)
 //-----------------------------------------------------------------------------
 // Function: HierApiInterconnection::getTopInterfaceRef()
 //-----------------------------------------------------------------------------
-QString const& HierApiInterconnection::getTopInterfaceRef() const
+std::string const& HierApiInterconnection::getTopInterfaceRef() const
 {
     return topInterfaceRef_;
 }

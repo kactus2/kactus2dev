@@ -69,8 +69,8 @@ void Extendable::copyVendorExtensions(Extendable const& other)
 //-----------------------------------------------------------------------------
 // Function: Extendable::getGroupedExtensionsByType()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<VendorExtension> > Extendable::getGroupedExtensionsByType(QString const& groupName,
-    QString const& extensionType) const
+QList<QSharedPointer<VendorExtension> > Extendable::getGroupedExtensionsByType(std::string const& groupName,
+    std::string const& extensionType) const
 {
     auto extension = findVendorExtension(groupName);
 
@@ -86,7 +86,7 @@ QList<QSharedPointer<VendorExtension> > Extendable::getGroupedExtensionsByType(Q
 //-----------------------------------------------------------------------------
 // Function: Extendable::setPlaceholderExtension()
 //-----------------------------------------------------------------------------
-void Extendable::setPlaceholderExtension(bool value, QString const& extensionType)
+void Extendable::setPlaceholderExtension(bool value, std::string const& extensionType)
 {
     auto extension = findVendorExtension(extensionType).dynamicCast<Kactus2Placeholder>();
 
@@ -107,7 +107,7 @@ void Extendable::setPlaceholderExtension(bool value, QString const& extensionTyp
 //-----------------------------------------------------------------------------
 // Function: Extendable::findVendorExtension()
 //-----------------------------------------------------------------------------
-QSharedPointer<VendorExtension> Extendable::findVendorExtension(QString const& type) const
+QSharedPointer<VendorExtension> Extendable::findVendorExtension(std::string const& type) const
 {
     auto it = std::find_if(vendorExtensions_->cbegin(), vendorExtensions_->cend(), 
         [type](auto& extension) {return extension->type() == type;  });

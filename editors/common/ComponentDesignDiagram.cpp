@@ -133,13 +133,13 @@ void ComponentDesignDiagram::onSelectionChanged()
 
     // If the old selection was an off-page connector, hide its connections.
     // Also hide the previously selected connection if it was an off-page connection.
-    foreach (QGraphicsItem* oldSelection, previouslySelectedItems_)
+    for (QGraphicsItem* oldSelection : previouslySelectedItems_)
     {
         if (oldSelection->type() == offpageConnectorType())
         {
             ConnectionEndpoint* connector = dynamic_cast<ConnectionEndpoint*>(oldSelection);
 
-            foreach (GraphicsConnection* connection, connector->getConnections())
+            for (GraphicsConnection* connection : connector->getConnections())
             {
                 if (connection != selectedItem)
                 {
@@ -170,7 +170,7 @@ void ComponentDesignDiagram::onSelectionChanged()
     {
         ConnectionEndpoint* connector = dynamic_cast<ConnectionEndpoint*>(selectedItem);
 
-        foreach (GraphicsConnection* connection, connector->getConnections())
+        for (GraphicsConnection* connection : connector->getConnections())
         {
             connection->show();
         }
@@ -189,7 +189,9 @@ void ComponentDesignDiagram::onSelectionChanged()
 void ComponentDesignDiagram::raiseSelectedConnectionToFront()
 {
     if (selectedItems().isEmpty())
+    {
         return;
+    }
 
     QGraphicsItem* selectedItem = selectedItems().first();
     if (selectedItem->type() == connectionType())
@@ -243,7 +245,7 @@ void ComponentDesignDiagram::onOpenAutoConnector()
 
         if (!autoConnections.isEmpty())
         {
-            for (auto connectionItem : autoConnections)
+            for (auto const& connectionItem : autoConnections)
             {
                 ConnectionEndpoint* startPointItem = getEndPointForItem(connectionItem.first);
                 ConnectionEndpoint* endPointItem = getEndPointForItem(connectionItem.second);
@@ -270,7 +272,7 @@ QString ComponentDesignDiagram::getVisibleNameForComponentItem(ComponentItem* it
     }
     else
     {
-        return item->name();
+        return QString::fromStdString(item->name());
     }
 }
 
@@ -584,7 +586,7 @@ void ComponentDesignDiagram::setupAutoconnectText(ComponentItem* componentItem)
 {
     if (openAutoConnector_.isEnabled())
     {
-        QString targetName = "";
+        QString targetName;
 
         if (selectedItems().count() == 1)
         {
@@ -607,7 +609,7 @@ void ComponentDesignDiagram::setupAutoconnectText(ComponentItem* componentItem)
                 targetName = connectionTarget->displayName();
                 if (targetName.isEmpty())
                 {
-                    targetName = connectionTarget->name();
+                    targetName = QString::fromStdString(connectionTarget->name());
                 }
             }
         }
@@ -698,7 +700,7 @@ void ComponentDesignDiagram::openComponentItem(ComponentItem* comp)
         if (comp->componentModel()->hasViews())
         {
             emit noticeMessage(tr("No active view was selected for instance %1, "
-                "opening component editor.").arg(comp->name()));
+                "opening component editor.").arg(QString::fromStdString(comp->name())));
         }
 
         openInComponentEditor(comp);
@@ -707,7 +709,7 @@ void ComponentDesignDiagram::openComponentItem(ComponentItem* comp)
     else
     {
         emit noticeMessage(tr("No active view was selected for instance %1, "
-            "opening the only hierarchical view of the component.").arg(comp->name()));
+            "opening the only hierarchical view of the component.").arg(QString::fromStdString(comp->name())));
 
         openDesignForComponent(comp, hierViews.first());
     }
@@ -727,7 +729,7 @@ void ComponentDesignDiagram::openInComponentEditor(ComponentItem* comp)
 QString ComponentDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 {
     QString activeViewName;
-    std::string instanceName = compItem->name().toStdString();
+    std::string instanceName = compItem->name();
 
     QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
     if (designConf && designConf->hasActiveView(instanceName)) 
@@ -1258,8 +1260,8 @@ void ComponentDesignDiagram::endComponentReplaceDrag(QPointF const& endpoint)
         }
 
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("Component instance '%1' is about to be switched in place with '%2'. Continue and replace?").
-            arg(destinationComponent->name(), sourceComp_->name()),
+            tr("Component instance '%1' is about to be switched in place with '%2'. Continue and replace?").arg(
+                QString::fromStdString(destinationComponent->name()), QString::fromStdString(sourceComp_->name())),
             QMessageBox::Yes | QMessageBox::No, getParent());
 
         if (msgBox.exec() == QMessageBox::Yes)

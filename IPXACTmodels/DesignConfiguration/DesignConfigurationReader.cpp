@@ -359,8 +359,9 @@ void DesignConfigurationReader::Details::parseInstanceConfigurableElementValues(
 
         if (!instanceElement.isNull())
         {
-            QString instanceUUID = instanceElement.firstChildElement(QStringLiteral("kactus2:uuid")).firstChild().nodeValue();
-            QMap<QString, QString> configurableElementValues;
+            auto instanceUUID = 
+                instanceElement.firstChildElement(QStringLiteral("kactus2:uuid")).firstChild().nodeValue().toStdString();
+            QMap<std::string, std::string> configurableElementValues;
 
             QDomNodeList elementNodes = instanceElement.elementsByTagName(QStringLiteral("kactus2:configurableElementValue"));
             for (int elementIndex = 0; elementIndex < elementNodes.count(); ++elementIndex)
@@ -368,8 +369,8 @@ void DesignConfigurationReader::Details::parseInstanceConfigurableElementValues(
                 QDomNode singleElementNode = elementNodes.at(elementIndex);
                 QDomNamedNodeMap elementAttributes = singleElementNode.attributes();
 
-                QString referenceID = elementAttributes.namedItem(QStringLiteral("referenceId")).nodeValue();
-                QString configuredValue = elementAttributes.namedItem(QStringLiteral("value")).nodeValue();
+                auto referenceID = elementAttributes.namedItem(QStringLiteral("referenceId")).nodeValue().toStdString();
+                auto configuredValue = elementAttributes.namedItem(QStringLiteral("value")).nodeValue().toStdString();
                 configurableElementValues.insert(referenceID, configuredValue);
             }
 
@@ -384,7 +385,7 @@ void DesignConfigurationReader::Details::parseInstanceConfigurableElementValues(
 void DesignConfigurationReader::Details::parseViewOverrides(QDomElement const& viewOverridesNode,
     QSharedPointer<DesignConfiguration> newDesignConfiguration)
 {
-    QMap<QString, QString> newViewOverrides;
+    QMap<std::string, std::string> newViewOverrides;
 
     QDomNodeList viewOverrideList = viewOverridesNode.elementsByTagName(QStringLiteral("kactus2:instanceView"));
     for (int overrideIndex = 0; overrideIndex < viewOverrideList.count(); ++overrideIndex)
@@ -392,8 +393,8 @@ void DesignConfigurationReader::Details::parseViewOverrides(QDomElement const& v
         QDomNode viewOverride = viewOverrideList.at(overrideIndex);
 
         QDomNamedNodeMap overrideAttributes = viewOverride.attributes();
-        QString instanceID = overrideAttributes.namedItem(QStringLiteral("id")).nodeValue();
-        QString viewName = overrideAttributes.namedItem(QStringLiteral("viewName")).nodeValue();
+        auto instanceID = overrideAttributes.namedItem(QStringLiteral("id")).nodeValue().toStdString();
+        auto viewName = overrideAttributes.namedItem(QStringLiteral("viewName")).nodeValue().toStdString();
 
         newViewOverrides.insert(instanceID, viewName);
     }

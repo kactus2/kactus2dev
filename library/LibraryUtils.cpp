@@ -83,7 +83,7 @@ int getConnectionIndex(QList<Interconnection> const& connections, QString const&
 //-----------------------------------------------------------------------------
 // Function: getInstanceIndex()
 //-----------------------------------------------------------------------------
-int getInstanceIndex(QList<QSharedPointer<ComponentInstance> > instances, QString const& instanceName)
+int getInstanceIndex(QList<QSharedPointer<ComponentInstance> > instances, std::string const& instanceName)
 {
     // Search for a match in the list.
     for (int i = 0; i < instances.size(); ++i)
@@ -100,7 +100,7 @@ int getInstanceIndex(QList<QSharedPointer<ComponentInstance> > instances, QStrin
 //-----------------------------------------------------------------------------
 // Function: getInstanceIndexByUUID()
 //-----------------------------------------------------------------------------
-int getInstanceIndexByUUID(QList<QSharedPointer<ComponentInstance> > instances, QString const& uuid)
+int getInstanceIndexByUUID(QList<QSharedPointer<ComponentInstance> > instances, std::string const& uuid)
 {
     // Search for a match in the list.
     for (int i = 0; i < instances.size(); ++i)
@@ -118,8 +118,8 @@ int getInstanceIndexByUUID(QList<QSharedPointer<ComponentInstance> > instances, 
 //-----------------------------------------------------------------------------
 // Function: getInstanceIndex()
 //-----------------------------------------------------------------------------
-int getInstanceIndex(QList<QSharedPointer<ComponentInstance> > instances, QString const& importRef,
-                     QString const& mapping)
+int getInstanceIndex(QList<QSharedPointer<ComponentInstance> > instances, std::string const& importRef,
+    std::string const& mapping)
 {
     // Search for a match in the list.
     for (int i = 0; i < instances.size(); ++i)
@@ -152,7 +152,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
     }
 
     // Go through all component instances and search for programmable elements.
-    foreach (QSharedPointer<ComponentInstance> instance, *compDesign->getComponentInstances())
+    for (auto const& instance : *compDesign->getComponentInstances())
     {
         if (!instance->isDraft())
         {
@@ -168,12 +168,12 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
                     QSharedPointer<ComponentInstance> copy(new ComponentInstance(*instance));
 
                     // Determine a unique name for the instance->
-                    QString instanceName = instance->getInstanceName();
+                    auto instanceName = instance->getInstanceName();
                     int runningNumber = 1;
 
                     while (getInstanceIndex(elements, instanceName) != -1)
                     {
-                        instanceName = instance->getInstanceName() + "_" + QString::number(runningNumber);
+                        instanceName = instance->getInstanceName() + "_" + std::to_string(runningNumber);
                     }
 
                     copy->setInstanceName(instanceName);
@@ -185,7 +185,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
 
                     if (designConf != 0)
                     {
-                        view = QString::fromStdString(designConf->getActiveView(instance->getInstanceName().toStdString()));
+                        view = QString::fromStdString(designConf->getActiveView(instance->getInstanceName()));
                     }
 
                     // Otherwise parse the hierarchical components recursively.
@@ -293,13 +293,13 @@ void generateSystemDesignV2(LibraryInterface* lh, VLNV const& designVLNV, Design
 //-----------------------------------------------------------------------------
 int getMatchingApiDependency(QList<QSharedPointer<ApiInterconnection> > apiDependencies,
                              QList<QSharedPointer<ComponentInstance> > swInstances,
-                             QSharedPointer<ApiInterconnection> dependency, QString const& mapping) 
+                             QSharedPointer<ApiInterconnection> dependency, std::string const& mapping)
 {
     int index = -1;
 
     // Retrieve the full names for the connected components in the system design.
-    QString startComponentReference = dependency->getStartInterface()->getComponentReference();
-    QString startApiReference = dependency->getStartInterface()->getBusReference();
+    auto startComponentReference = dependency->getStartInterface()->getComponentReference();
+    auto startApiReference = dependency->getStartInterface()->getBusReference();
     int instanceIndex1 = getInstanceIndex(swInstances, startComponentReference, mapping);
 
     if (instanceIndex1 == -1)
@@ -309,8 +309,8 @@ int getMatchingApiDependency(QList<QSharedPointer<ApiInterconnection> > apiDepen
     
     int instanceIndex2 = -1;
 
-    QString endComponentReference = "";
-    QString endApiReference = dependency->getEndInterface()->getBusReference();
+    std::string endComponentReference = "";
+    auto endApiReference = dependency->getEndInterface()->getBusReference();
     QSharedPointer<ActiveInterface> activeEndInterface =
         dependency->getEndInterface().dynamicCast<ActiveInterface>();
     if (activeEndInterface)
@@ -449,7 +449,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
     }
 
     // 4. PHASE: Parse SW designs from active SW views to retrieve the imported SW instances.
-    foreach (QSharedPointer<ComponentInstance> hwInstance, *hwInstances)
+    for (auto const& hwInstance : *hwInstances)
     {
         QSharedPointer<Document const> libComp = lh->getModelReadOnly(*hwInstance->getComponentRef());
         QSharedPointer<Component const> component = libComp.staticCast<Component const>();
@@ -458,7 +458,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
 
         if (designConf != 0)
         {
-            viewName = QString::fromStdString(designConf->getActiveView(hwInstance->getInstanceName().toStdString()));
+            viewName = QString::fromStdString(designConf->getActiveView(hwInstance->getInstanceName()));
         }
 
         if (component != 0)
@@ -473,7 +473,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                 continue;
             }
 
-            foreach (QSharedPointer<ComponentInstance> swInstance, *swDesign->getComponentInstances())
+            for (auto swInstance : *swDesign->getComponentInstances())
             {
                 QSharedPointer<ConfigurableVLNVReference> ref = swInstance->getComponentRef();
 
@@ -504,7 +504,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                     swInstance->setPosition(QPointF());
                     swInstance->setImportRef(swInstance->getInstanceName());
                     swInstance->setMapping(hwInstance->getUuid());
-                    swInstance->setDisplayName(swInstance->getInstanceName());
+                    swInstance->setDisplayName(QString::fromStdString(swInstance->getInstanceName()));
                     swInstance->setInstanceName(hwInstance->getInstanceName() + "_" + swInstance->getInstanceName());
                     swInstances.append(swInstance);
                 }
@@ -522,9 +522,9 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                 }
                 else
                 {
-                    dependency->setName(hwInstance->getInstanceName() + "_" + dependency->name());
+                    dependency->setName(hwInstance->getInstanceName() + "_" + dependency->name().toStdString());
                     QSharedPointer<ActiveInterface> startInterface = dependency->getStartInterface();
-                    QString startInterfaceComponentRef = hwInstance->getInstanceName() + "_" +
+                    auto startInterfaceComponentRef = hwInstance->getInstanceName() + "_" +
                         startInterface->getComponentReference();
 
                     QSharedPointer<ActiveInterface> newStartInterface (
@@ -535,7 +535,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                         dependency->getEndInterface().dynamicCast<ActiveInterface>();
                     if (activeEndInterface)
                     {
-                        QString endInterfaceComponentRef =
+                        auto endInterfaceComponentRef =
                             hwInstance->getInstanceName() + "_" + activeEndInterface->getComponentReference();
 
                         QSharedPointer<ActiveInterface> newEndInterface (

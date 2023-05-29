@@ -36,7 +36,7 @@ QGraphicsRectItem(parent),
     libInterface_(libInterface),
     component_(component), 
     componentInstance_(instance),
-    nameLabel_(new QGraphicsTextItem(instance->getInstanceName(), this))
+    nameLabel_(new QGraphicsTextItem(QString::fromStdString(instance->getInstanceName()), this))
 {
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
@@ -75,7 +75,7 @@ void ComponentItem::updateComponent()
     }
     else
     {
-        updateNameLabel(name());
+        updateNameLabel(QString::fromStdString(name()));
     }
 
     VLNV vlnv = component_->getVlnv();
@@ -93,7 +93,7 @@ void ComponentItem::updateComponent()
         toolTipText += "Unpackaged component. No VLNV assigned!";
     }
 
-    toolTipText += "<br><br><b>Instance name:</b> " + name();
+    toolTipText += "<br><br><b>Instance name:</b> " + QString::fromStdString(name());
 
     if (!description().isEmpty())
     {
@@ -135,9 +135,9 @@ qreal ComponentItem::getWidth()
 //-----------------------------------------------------------------------------
 void ComponentItem::setName(QString const& newName)
 {
-    QString oldName = name();
+    QString oldName = QString::fromStdString(name());
 
-    componentInstance_->setInstanceName(newName);
+    componentInstance_->setInstanceName(newName.toStdString());
 
     if (displayName().isEmpty())
     {
@@ -162,7 +162,7 @@ void ComponentItem::setDisplayName(QString const& displayName)
     }
     else
     {
-        updateNameLabel(name());
+        updateNameLabel(QString::fromStdString(name()));
     }
 
     emit displayNameChanged(displayName);
@@ -181,7 +181,7 @@ void ComponentItem::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: ComponentItem::name()
 //-----------------------------------------------------------------------------
-QString ComponentItem::name() const
+std::string ComponentItem::name() const
 {
     return componentInstance_->getInstanceName();
 }
@@ -283,7 +283,7 @@ IGraphicsItemStack* ComponentItem::getParentStack()
 //-----------------------------------------------------------------------------
 // Function: ComponentItem::getUuid()
 //-----------------------------------------------------------------------------
-QString ComponentItem::getUuid() const
+std::string ComponentItem::getUuid() const
 {
 	return componentInstance_->getUuid();
 }

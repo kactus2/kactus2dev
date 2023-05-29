@@ -62,8 +62,8 @@ protected:
      *
      *      @return A list of extensions belonging to a group.
      */
-    QList<QSharedPointer<VendorExtension> > getGroupedExtensionsByType(QString const& groupName,
-        QString const& extensionType) const;
+    QList<QSharedPointer<VendorExtension> > getGroupedExtensionsByType(std::string const& groupName,
+        std::string const& extensionType) const;
 
     /*!
      * Creates a Kactus2 vendor extension with given type, if it does not exist already.
@@ -72,7 +72,7 @@ protected:
      *     @param [in] value            The value to set.
      *     @param [in] extensionType    The type of the vendor extension.
      */
-    void setPlaceholderExtension(bool value, QString const& extensionType);
+    void setPlaceholderExtension(bool value, std::string const& extensionType);
 
     /*!
      *  Find a vendor extension by given type.
@@ -81,7 +81,7 @@ protected:
      *
      *      @return The first found extension with the given type.
      */
-    QSharedPointer<VendorExtension> findVendorExtension(QString const& type) const;
+    QSharedPointer<VendorExtension> findVendorExtension(std::string const& type) const;
 
 private:
 

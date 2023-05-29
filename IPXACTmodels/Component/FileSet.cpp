@@ -472,10 +472,10 @@ QString FileSet::getFileSetId() const
 {
     for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
-        if (extension->type() == QLatin1String("kactus2:fileSetId"))
+        if (extension->type() == "kactus2:fileSetId")
         {
             QSharedPointer<Kactus2Value> idExtension = extension.dynamicCast<Kactus2Value>();
-            return idExtension->value();
+            return QString::fromStdString(idExtension->value());
         }
     }
 
@@ -489,7 +489,7 @@ void FileSet::setFileSetId( const QString& id )
 {
     for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
-        if (extension->type() == QLatin1String("kactus2:fileSetId"))
+        if (extension->type() == "kactus2:fileSetId")
         {
             getVendorExtensions()->removeAll(extension);
         }
@@ -497,7 +497,7 @@ void FileSet::setFileSetId( const QString& id )
 
     if (!id.isEmpty())
     {
-        QSharedPointer<Kactus2Value> idExtension (new Kactus2Value(QStringLiteral("kactus2:fileSetId"), id));
+        QSharedPointer<Kactus2Value> idExtension (new Kactus2Value("kactus2:fileSetId", id.toStdString()));
         getVendorExtensions()->append(idExtension);
     }
 }

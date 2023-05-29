@@ -455,20 +455,20 @@ void QuartusGenerator::readDesign(QSharedPointer<const Design> design,
 
         QSharedPointer<View> view;
 
-        if (desConf && desConf->hasActiveView(instance->getInstanceName().toStdString()))
+        if (desConf && desConf->hasActiveView(instance->getInstanceName()))
         {
-            QMap<QString, QString> viewOverrides = desConf->getKactus2ViewOverrides();
+            QMap<std::string, std::string> viewOverrides = desConf->getKactus2ViewOverrides();
 
-            QString viewName = viewOverrides.value(instance->getUuid(), 
-                QString::fromStdString(desConf->getActiveView(instance->getInstanceName().toStdString())));
+            auto viewName = viewOverrides.value(instance->getUuid(), desConf->getActiveView(instance->getInstanceName()));
 
-            view = Search::findByName(viewName, *component->getViews());
+            view = Search::findByName(QString::fromStdString(viewName), *component->getViews());
         }
         // if design configuration is not used or view was not found
         else
         {
             utility_->printInfo(tr("No active view selected for instance %1 of component %2.").arg(
-                instance->getInstanceName(), vlnv.toString()));
+               QString::fromStdString(instance->getInstanceName()),
+                vlnv.toString()));
         }
 
         parseFiles(component, view);

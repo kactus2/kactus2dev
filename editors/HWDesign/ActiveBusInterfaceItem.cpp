@@ -60,8 +60,8 @@ void ActiveBusInterfaceItem::updateName(QString const& previousName, QString con
 {
     if (previousName.compare(newName) != 0)
     {
-        encompassingComp()->getComponentInstance()->removeBusInterfacePosition(previousName);
-        encompassingComp()->getComponentInstance()->updateBusInterfacePosition(newName, pos());
+        encompassingComp()->getComponentInstance()->removeBusInterfacePosition(previousName.toStdString());
+        encompassingComp()->getComponentInstance()->updateBusInterfacePosition(newName.toStdString(), pos());
     }
 }
 

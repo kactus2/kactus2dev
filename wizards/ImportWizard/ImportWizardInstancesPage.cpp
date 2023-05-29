@@ -40,7 +40,7 @@ void ImportWizardInstancesPage::initializePage()
 {
     QWizardPage::initializePage();
 
-    QVariant instancesVariant = field(InstanceData::VERILOGINSTANCES);
+    QVariant instancesVariant = field(QString::fromStdString(InstanceData::VERILOGINSTANCES));
     if (instancesVariant.canConvert<QVector<InstanceData::instanceData> >())
     {
         QVector<InstanceData::instanceData> instances =

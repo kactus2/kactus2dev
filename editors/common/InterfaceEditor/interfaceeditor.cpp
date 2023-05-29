@@ -329,7 +329,7 @@ void InterfaceEditor::setBusInterface()
     QString activeView = activeTopView_;
     if (interface_->encompassingComp() && containingConfiguration_)
     {
-        activeView = QString::fromStdString(containingConfiguration_->getActiveView(interface_->encompassingComp()->name().toStdString()));
+        activeView = QString::fromStdString(containingConfiguration_->getActiveView(interface_->encompassingComp()->name()));
     }
 
     VLNV absVLNV;
@@ -412,7 +412,7 @@ QList<QSharedPointer<ActiveInterface> > InterfaceEditor::getActiveInterfaces() c
 bool InterfaceEditor::activeInterfaceReferencesBusInterface(QSharedPointer<ActiveInterface> currentInterface) const
 {
     return currentInterface->getComponentReference().compare(interface_->encompassingComp()->name()) == 0 &&
-        currentInterface->getBusReference().compare(interface_->name()) == 0;
+        currentInterface->getBusReference().compare(interface_->name().toStdString()) == 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -430,7 +430,7 @@ QList<QSharedPointer<HierInterface> > InterfaceEditor::getDesignInterfaces() con
 
             for (QSharedPointer<HierInterface> currentHierInterface : *connection->getHierInterfaces())
             {
-                if (currentHierInterface->getBusReference().compare(interface_->name()) == 0)
+                if (currentHierInterface->getBusReference().compare(interface_->name().toStdString()) == 0)
                 {
                     interfaces.append(currentHierInterface);
                 }

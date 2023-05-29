@@ -38,7 +38,7 @@ public:
      *      @param [in] portRef         The name of the referenced port.
      *      @param [in] componentRef    The name of the referenced component.
      */
-    PortReference(QString const& portRef, QString const& componentRef = QString());
+    PortReference(std::string const& portRef, std::string const& componentRef = std::string());
 
     /*!
      *  Copy constructor.
@@ -60,7 +60,7 @@ public:
      *
      *      @return The referenced port.
      */
-    QString getPortRef() const;
+    std::string getPortRef() const;
 
     /*!
      *  Gets the name of the referenced component instance.     
@@ -69,35 +69,35 @@ public:
      *
      *      @remark Only for internal port references.
      */
-    QString getComponentRef() const;
+    std::string getComponentRef() const;
 
     /*!
      *  Set port reference.
      *
      *      @param [in] newPortRef  The new port reference.
      */
-    void setPortRef(QString const& newPortRef);
+    void setPortRef(std::string const& newPortRef);
 
     /*!
      *  Set the component reference.
      *
      *      @param [in] newComponentRef     The new component reference.
      */
-    void setComponentRef(QString const& newComponentRef);
+    void setComponentRef(std::string const& newComponentRef);
 
     /*!
      *  Get the presence.
      *
      *      @return The presence.
      */
-    QString getIsPresent() const;
+    std::string getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
      *      @param [in] newIsPresent    The new presence.
      */
-    void setIsPresent(QString const& newIsPresent);
+    void setIsPresent(std::string const& newIsPresent);
 
     QSharedPointer<QList<QSharedPointer<PortReference> > > getSubPortReferences() const;
 
@@ -122,13 +122,13 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The name of the referenced port.
-    QString portRef_;
+    std::string portRef_;
 
     //! The name of the referenced component instance.
-    QString componentRef_;
+    std::string componentRef_;
 
     //! The presence.
-    QString isPresent_;
+    std::string isPresent_;
 
     //! The the subport references of internal or external ports.
     QSharedPointer<QList<QSharedPointer<PortReference> > > subPortReferences_ =

@@ -28,7 +28,7 @@ public:
 	 *
 	 *      @param [in] name   The name of the placeholder.
 	 */
-    Kactus2Group(QString name);
+    Kactus2Group(std::string const& name);
 
     //! Copy constructor.
     Kactus2Group(Kactus2Group const& other);
@@ -50,7 +50,7 @@ public:
      *
      *      @return A type identifier of the vendor extension.
      */
-    virtual QString type() const;
+    std::string type() const final;
 
     /*!
      *  Writes the vendor extension to XML.
@@ -80,7 +80,7 @@ public:
      *
      *      @return The vendor extensions with the given type.
      */
-    QList<QSharedPointer<VendorExtension> > getByType(QString const& type) const;
+    QList<QSharedPointer<VendorExtension> > getByType(std::string const& type) const;
 
 private:
 	//! Disable assignment.
@@ -91,7 +91,7 @@ private:
 	//-----------------------------------------------------------------------------
 
     //! Name of the group.
-    QString name_;
+    std::string name_;
 
     //! The extensions composing the group.
     QList<QSharedPointer<VendorExtension> > groupExtensions_;

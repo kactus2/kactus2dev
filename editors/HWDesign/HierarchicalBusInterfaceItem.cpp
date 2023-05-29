@@ -52,7 +52,7 @@ oldColumn_(0)
     setTypeLocked(busIf != 0 && busIf->getInterfaceMode() != General::INTERFACE_MODE_COUNT);
     setPolygon(getDirectionOutShape());
 
-    dataGroup_->setName(busIf->name());
+    dataGroup_->setName(busIf->name().toStdString());
 
     if (dataGroup_->hasPosition())
     {
@@ -86,7 +86,7 @@ HierarchicalBusInterfaceItem::~HierarchicalBusInterfaceItem()
 //-----------------------------------------------------------------------------
 void HierarchicalBusInterfaceItem::updateName(QString const&, QString const& newName)
 {
-    dataGroup_->setName(newName);
+    dataGroup_->setName(newName.toStdString());
 }
 
 //-----------------------------------------------------------------------------

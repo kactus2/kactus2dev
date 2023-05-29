@@ -140,7 +140,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
     if (designConfiguration)
     {
         instanceViewName = 
-            QString::fromStdString(designConfiguration->getActiveView(componentItem->name().toStdString()));
+            QString::fromStdString(designConfiguration->getActiveView(componentItem->name()));
     }
 
     activeViewLabel_->parentWidget()->show();
@@ -152,7 +152,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
     vlnvDisplayer_->setVLNV(componentItem->componentModel()->getVlnv());
 	vlnvDisplayer_->show();
 
-	nameGroup_->setName(componentItem->name());
+	nameGroup_->setName(QString::fromStdString(componentItem->name()));
 	nameGroup_->setDisplayName(componentItem->displayName());
 
     disconnect(nameGroup_, SIGNAL(descriptionChanged()),
@@ -209,7 +209,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
         if (designConfiguration)
         {
             QSharedPointer<ViewConfiguration> matchingViewConfiguration =
-                designConfiguration->getViewConfiguration(componentItem->getComponentInstance()->getInstanceName().toStdString());
+                designConfiguration->getViewConfiguration(componentItem->getComponentInstance()->getInstanceName());
 
             // Show the component's configurable elements in case of HW.
             configurableElements_->setComponent(componentItem->componentModel(), componentItem->getComponentInstance(),
@@ -302,7 +302,7 @@ void ComponentInstanceEditor::onNameChanged()
 {
     if (component_)
     {
-        QString newName = nameGroup_->name();
+        auto newName = nameGroup_->name().toStdString();
 
         QSharedPointer<ComponentChangeNameCommand> cmd(
             new ComponentChangeNameCommand(component_, newName, containingDesign_));

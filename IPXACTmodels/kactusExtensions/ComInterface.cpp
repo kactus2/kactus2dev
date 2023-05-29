@@ -124,9 +124,9 @@ ComInterface* ComInterface::clone() const
 //-----------------------------------------------------------------------------
 // Function: ComInterface::type()
 //-----------------------------------------------------------------------------
-QString ComInterface::type() const
+std::string ComInterface::type() const
 {
-    return QStringLiteral("kactus2:comInterface");
+    return "kactus2:comInterface";
 }
 
 //-----------------------------------------------------------------------------
@@ -160,15 +160,15 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     writer.writeStartElement(QStringLiteral("kactus2:propertyValues"));
 
     // Write property values.
-    QMapIterator<QString, QString> iter(propertyValues_);
+    QMapIterator<std::string, std::string> iter(propertyValues_);
 
     while (iter.hasNext())
     {
         iter.next();
 
         writer.writeEmptyElement(QStringLiteral("kactus2:propertyValue"));
-        writer.writeAttribute(QStringLiteral("name"), iter.key());
-        writer.writeAttribute(QStringLiteral("value"), iter.value());
+        writer.writeAttribute(QStringLiteral("name"), QString::fromStdString(iter.key()));
+        writer.writeAttribute(QStringLiteral("value"), QString::fromStdString(iter.value()));
     }
 
     writer.writeEndElement(); // kactus2:propertyValues
@@ -208,13 +208,13 @@ bool ComInterface::isValid(QStringList& errorList, QString const& parentId) cons
     }
 
     // Check for property values having no name.
-    QMapIterator<QString, QString> iter(propertyValues_);
+    QMapIterator<std::string, std::string> iter(propertyValues_);
 
     while (iter.hasNext())
     {
         iter.next();
 
-        if (iter.key().isEmpty())
+        if (iter.key().empty())
         {
             errorList.append(QObject::tr("No name specified for a property value in %1").arg(thisId));
             valid = false;
@@ -245,13 +245,13 @@ bool ComInterface::isValid() const
     }
 
     // Check for property values having no name.
-    QMapIterator<QString, QString> iter(propertyValues_);
+    QMapIterator<std::string, std::string> iter(propertyValues_);
 
     while (iter.hasNext())
     {
         iter.next();
 
-        if (iter.key().isEmpty())
+        if (iter.key().empty())
         {
             return false;
         }
@@ -275,7 +275,7 @@ void ComInterface::setComType(VLNV const& vlnv, QList< QSharedPointer<ComPropert
 	{
 		foreach (QSharedPointer<ComProperty const> prop, *properties)
 		{
-			propertyValues_[prop->name()] = prop->getDefaultValue();
+			propertyValues_[prop->name().toStdString()] = prop->getDefaultValue().toStdString();
 		}
 	}
 }
@@ -299,7 +299,7 @@ void ComInterface::setDirection(DirectionTypes::Direction dir)
 //-----------------------------------------------------------------------------
 // Function: ComInterface::setPropertyValues()
 //-----------------------------------------------------------------------------
-void ComInterface::setPropertyValues(QMap<QString, QString> const& values)
+void ComInterface::setPropertyValues(QMap<std::string, std::string> const& values)
 {
     propertyValues_ = values;
 }
@@ -331,7 +331,7 @@ DirectionTypes::Direction ComInterface::getDirection() const
 //-----------------------------------------------------------------------------
 // Function: ComInterface::getPropertyValues()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> const& ComInterface::getPropertyValues() const
+QMap<std::string, std::string> const& ComInterface::getPropertyValues() const
 {
     return propertyValues_;
 }
@@ -362,8 +362,8 @@ void ComInterface::parsePropertyValues(QDomNode& node)
 
         if (propNode.nodeName() == QLatin1String("kactus2:propertyValue"))
         {
-            QString name = propNode.attributes().namedItem(QStringLiteral("name")).nodeValue();
-            QString value = propNode.attributes().namedItem(QStringLiteral("value")).nodeValue();
+            auto name = propNode.attributes().namedItem(QStringLiteral("name")).nodeValue().toStdString();
+            auto value = propNode.attributes().namedItem(QStringLiteral("value")).nodeValue().toStdString();
 
             propertyValues_.insert(name, value);
         }

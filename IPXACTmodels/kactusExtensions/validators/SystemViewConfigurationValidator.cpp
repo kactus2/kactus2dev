@@ -66,7 +66,7 @@ void SystemViewConfigurationValidator::changeAvailableSystemViews(QSharedPointer
     {
         for (QSharedPointer<ComponentInstance> instance : *getAvailableInstances())
         {
-            if (instance->getInstanceName().toStdString() == configuration->getInstanceName())
+            if (instance->getInstanceName() == configuration->getInstanceName())
             {
                 if (instance->getComponentRef() && instance->getComponentRef()->isValid())
                 {

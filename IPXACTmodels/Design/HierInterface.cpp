@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: HierInterface::HierInterface()
 //-----------------------------------------------------------------------------
-HierInterface::HierInterface(QString busRef) :
+HierInterface::HierInterface(std::string busRef) :
 Extendable(),
 busRef_(busRef)
 {
@@ -55,7 +55,7 @@ HierInterface& HierInterface::operator=(const HierInterface& other)
 //-----------------------------------------------------------------------------
 bool HierInterface::operator==(const HierInterface& other) const
 {
-    return (busRef_.compare(other.busRef_, Qt::CaseInsensitive) == 0);
+    return busRef_.compare(other.busRef_) == 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ bool HierInterface::operator!=(const HierInterface& other) const
 //-----------------------------------------------------------------------------
 bool HierInterface::operator<(const HierInterface& other) const
 {
-    int busResult = busRef_.compare(other.busRef_, Qt::CaseInsensitive);
+    int busResult = busRef_.compare(other.busRef_);
 
     return busResult < 0;
 }
@@ -79,7 +79,7 @@ bool HierInterface::operator<(const HierInterface& other) const
 //-----------------------------------------------------------------------------
 // Function: HierInterface::getBusReference()
 //-----------------------------------------------------------------------------
-QString HierInterface::getBusReference() const
+std::string HierInterface::getBusReference() const
 {
     return busRef_;
 }
@@ -87,7 +87,7 @@ QString HierInterface::getBusReference() const
 //-----------------------------------------------------------------------------
 // Function: HierInterface::setBusReference()
 //-----------------------------------------------------------------------------
-void HierInterface::setBusReference(QString const& newBusReference)
+void HierInterface::setBusReference(std::string const& newBusReference)
 {
     busRef_ = newBusReference;
 }
@@ -95,7 +95,7 @@ void HierInterface::setBusReference(QString const& newBusReference)
 //-----------------------------------------------------------------------------
 // Function: HierInterface::getIsPresent()
 //-----------------------------------------------------------------------------
-QString HierInterface::getIsPresent() const
+std::string HierInterface::getIsPresent() const
 {
     return isPresent_;
 }
@@ -103,7 +103,7 @@ QString HierInterface::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: HierInterface::setIsPresent()
 //-----------------------------------------------------------------------------
-void HierInterface::setIsPresent(QString const& newIsPresent)
+void HierInterface::setIsPresent(std::string const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }
@@ -111,7 +111,7 @@ void HierInterface::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: HierInterface::getDescription()
 //-----------------------------------------------------------------------------
-QString HierInterface::getDescription() const
+std::string HierInterface::getDescription() const
 {
     return description_;
 }
@@ -119,7 +119,7 @@ QString HierInterface::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: HierInterface::setDescription()
 //-----------------------------------------------------------------------------
-void HierInterface::setDescription(QString const& newDescription)
+void HierInterface::setDescription(std::string const& newDescription)
 {
     description_ = newDescription;
 }
@@ -129,19 +129,18 @@ void HierInterface::setDescription(QString const& newDescription)
 //-----------------------------------------------------------------------------
 void HierInterface::setRoute(QList<QPointF> newRoute)
 {
-    auto extension = findVendorExtension(QStringLiteral("kactus2:route"));
+    auto extension = findVendorExtension("kactus2:route");
     getVendorExtensions()->removeAll(extension);
 
     if (!newRoute.isEmpty())
     {
-        QSharedPointer<Kactus2Group> routeGroup (new Kactus2Group(QStringLiteral("kactus2:route")));
+        QSharedPointer<Kactus2Group> routeGroup (new Kactus2Group("kactus2:route"));
 
         for (QPointF const& position : newRoute)
         {
-            QSharedPointer<Kactus2Placeholder> newPosition(
-                new Kactus2Placeholder(QStringLiteral("kactus2:position")));
-            newPosition->setAttribute(QStringLiteral("x"), QString::number(int(position.x())));
-            newPosition->setAttribute(QStringLiteral("y"), QString::number(int(position.y())));
+            QSharedPointer<Kactus2Placeholder> newPosition(new Kactus2Placeholder("kactus2:position"));
+            newPosition->setAttribute(std::string("x"), std::to_string(int(position.x())));
+            newPosition->setAttribute(std::string("y"), std::to_string(int(position.y())));
 
             routeGroup->addToGroup(newPosition);
         }
@@ -156,7 +155,7 @@ void HierInterface::setRoute(QList<QPointF> newRoute)
 QList<QPointF> HierInterface::getRoute() const
 {
     QList<QSharedPointer<VendorExtension> > routeExtension = 
-        getGroupedExtensionsByType(QStringLiteral("kactus2:route"), QStringLiteral("kactus2:position"));
+        getGroupedExtensionsByType("kactus2:route", "kactus2:position");
 
     QList<QPointF> route;
 
@@ -165,8 +164,8 @@ QList<QPointF> HierInterface::getRoute() const
         for (QSharedPointer<VendorExtension> extension : routeExtension)
         {
             QSharedPointer<Kactus2Placeholder> position = extension.dynamicCast<Kactus2Placeholder>();
-            int positionX = position->getAttributeValue(QStringLiteral("x")).toInt();
-            int positionY = position->getAttributeValue(QStringLiteral("y")).toInt();
+            int positionX = std::stoi(position->getAttributeValue(QStringLiteral("x")));
+            int positionY = std::stoi(position->getAttributeValue(QStringLiteral("y")));
 
             route.append(QPointF(positionX, positionY));
         }

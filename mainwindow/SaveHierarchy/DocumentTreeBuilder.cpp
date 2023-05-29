@@ -160,12 +160,12 @@ QObject* DocumentTreeBuilder::createFromDesign(VLNV const& designRef) const
         designNode->setProperty("implementation", "HW");
     }
 
-    foreach (QSharedPointer<ComponentInstance> hwInstance, *design->getComponentInstances())
+    for (QSharedPointer<ComponentInstance> hwInstance : *design->getComponentInstances())
     {
         QObject* instanceNode = createFrom(*hwInstance->getComponentRef());
         instanceNode->setParent(designNode);
 
-        instanceNode->setProperty("instanceName", hwInstance->getInstanceName());
+        instanceNode->setProperty("instanceName", QString::fromStdString(hwInstance->getInstanceName()));
     }
 
     return designNode;

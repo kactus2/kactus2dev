@@ -90,7 +90,7 @@ public:
      *
      *      @return The type of the api interface.
      */
-    virtual QString type() const;
+    std::string type() const final;
 
     /*!
      *  Writes the contents of the API interface to an XML stream.

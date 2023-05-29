@@ -119,7 +119,7 @@ void ComponentPreviewBox::updatePreview()
         {
 
             QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
-            componentInstance->setInstanceName(component_->getVlnv().getName());
+            componentInstance->setInstanceName(component_->getVlnv().getName().toStdString());
             componentInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
                 new ConfigurableVLNVReference(component_->getVlnv())));
 
@@ -128,7 +128,7 @@ void ComponentPreviewBox::updatePreview()
         else if (component_->getImplementation() == KactusAttribute::SW)
 		{
 			QSharedPointer<ComponentInstance> swInstance(new ComponentInstance());
-			swInstance->setInstanceName(component_->getVlnv().getName());
+			swInstance->setInstanceName(component_->getVlnv().getName().toStdString());
 			swInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
 				new ConfigurableVLNVReference(component_->getVlnv())));
 

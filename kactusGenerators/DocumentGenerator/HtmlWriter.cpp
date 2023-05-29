@@ -686,12 +686,12 @@ void HtmlWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design
     for (auto const& instance : *design->getComponentInstances())
     {
         QStringList rowCells(QStringList()
-            << instance->getInstanceName()
+            << QString::fromStdString(instance->getInstanceName())
             << "<a href=\"" + instance->getComponentRef()->toString(":") + "\">"
                 + instance->getComponentRef()->toString(" - ") + "</a>"
             << getComponentInstanceConfigurableElements(instance, design)
             << (configuration && configuration->getDesignRef() == design->getVlnv()
-                ? QString::fromStdString(configuration->getActiveView(instance->getInstanceName().toStdString()))
+                ? QString::fromStdString(configuration->getActiveView(instance->getInstanceName()))
                 : QStringLiteral(""))
         );
 

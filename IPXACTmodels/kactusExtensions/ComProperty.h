@@ -57,7 +57,7 @@ public:
      *
      *      @return The type of this extension.
      */
-    virtual QString type() const;
+    std::string type() const final;
 
     /*!
      *  Writes the contents of the property to an XML stream.

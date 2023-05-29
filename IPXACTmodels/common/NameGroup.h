@@ -36,6 +36,16 @@ public:
 	*/
 	NameGroup(QString const& name, QString const& displayName = QString(), QString const& description = QString());
 
+
+    /*! The constructor
+     *
+     *      @param [in] name            The initial name.
+     *      @param [in] displayName     The initial displayName.
+     *      @param [in] description     The initial description.
+    */
+    NameGroup(std::string const& name, std::string const& displayName = std::string(), 
+        std::string const& description = std::string());
+
 	/*! The copy constructor
 	 *
 	 *      @param [in] other    Reference to the NameGroup to copy.
@@ -66,6 +76,13 @@ public:
      *      @param [in] name   The name to set.     
      */
     void setName(QString const& name);
+
+    /*!
+     *  Sets the name element in the group.
+     *
+     *      @param [in] name   The name to set.
+     */
+    void setName(std::string const& name);
 
     /*!
      *  Gets the displayName element in the name group.

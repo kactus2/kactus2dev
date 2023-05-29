@@ -149,7 +149,7 @@ bool RegisterInterface::setName(string const& currentName, string const& newName
     QSharedPointer<Register> editedRegister = getRegister(currentName);
     if (editedRegister && nameHasChanged(newName, currentName))
     {
-        QString uniqueNewName = getUniqueName(newName, REGISTER_TYPE);
+        auto uniqueNewName = getUniqueName(newName, REGISTER_TYPE);
 
         editedRegister->setName(uniqueNewName);
         return true;
@@ -638,7 +638,7 @@ void RegisterInterface::setAddressUnitBits(int const& newAddressUnitbits)
 //-----------------------------------------------------------------------------
 void RegisterInterface::addRegister(int const& row, int const& dataIndex, std::string const& newRegisterName)
 {
-    QString registerName = getUniqueName(newRegisterName, REGISTER_TYPE);
+    auto registerName = getUniqueName(newRegisterName, REGISTER_TYPE);
 
     auto lastRegister = std::max_element(registerData_->cbegin(), registerData_->cend(),
         [this](QSharedPointer<RegisterBase> const& a, QSharedPointer<RegisterBase> const& b)
@@ -667,6 +667,7 @@ void RegisterInterface::addRegister(int const& row, int const& dataIndex, std::s
             lastRegRange = parseExpressionToDecimal(regFile->getRange()).toInt();
         }
     }
+
 
     qreal offsetIncrease = qMax(quint64(0), lastRegRange * qMax(quint64(1), lastRegDimension));
 

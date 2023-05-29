@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: InterfaceGraphicsData::InterfaceGraphicsData()
 //-----------------------------------------------------------------------------
-InterfaceGraphicsData::InterfaceGraphicsData(QString const& name, QPointF position, QVector2D direction):
+InterfaceGraphicsData::InterfaceGraphicsData(std::string const& name, QPointF position, QVector2D direction):
 name_(name),
 positionExtension_(new Kactus2Position(position)),
 direction_(direction)
@@ -46,7 +46,7 @@ direction_()
     QDomElement nameElement = node.firstChildElement(QStringLiteral("kactus2:name"));
     if (!nameElement.isNull())
     {
-        setName(nameElement.nodeValue());
+        setName(nameElement.nodeValue().toStdString());
     }
 
     QDomElement positionElement = node.firstChildElement(QStringLiteral("kactus2:position"));
@@ -106,9 +106,9 @@ InterfaceGraphicsData& InterfaceGraphicsData::operator=(InterfaceGraphicsData co
 //-----------------------------------------------------------------------------
 // Function: InterfaceGraphicsData::type()
 //-----------------------------------------------------------------------------
-QString InterfaceGraphicsData::type() const
+std::string InterfaceGraphicsData::type() const
 {
-    return QStringLiteral("kactus2:interfaceGraphics");
+    return "kactus2:interfaceGraphics";
 }
 
 //-----------------------------------------------------------------------------
@@ -116,9 +116,9 @@ QString InterfaceGraphicsData::type() const
 //-----------------------------------------------------------------------------
 void InterfaceGraphicsData::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement(type());
+    writer.writeStartElement(QString::fromStdString(type()));
 
-    writer.writeTextElement(QStringLiteral("kactus2:name"), name_);
+    writer.writeTextElement(QStringLiteral("kactus2:name"), QString::fromStdString(name_));
 
     positionExtension_->write(writer);
 
@@ -132,7 +132,7 @@ void InterfaceGraphicsData::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: InterfaceGraphicsData::setName()
 //-----------------------------------------------------------------------------
-void InterfaceGraphicsData::setName(QString const& newName)
+void InterfaceGraphicsData::setName(std::string const& newName)
 {
     name_ = newName;
 }
@@ -140,7 +140,7 @@ void InterfaceGraphicsData::setName(QString const& newName)
 //-----------------------------------------------------------------------------
 // Function: InterfaceGraphicsData::getName()
 //-----------------------------------------------------------------------------
-QString InterfaceGraphicsData::getName() const
+std::string InterfaceGraphicsData::getName() const
 {
     return name_;
 }

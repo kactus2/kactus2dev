@@ -132,7 +132,7 @@ public slots:
 	 *      @param [in] newName     The new name of the instance.
 	 *      @param [in] oldName     The old name of the instance.
 	 */
-	void renameInstance(const QString& newName, const QString& oldName);
+	void renameInstance(const std::string& newName, const std::string& oldName);
 
 	/*!
      *  Remove the instance from the model.
@@ -149,7 +149,7 @@ public slots:
 	 *      @param [in] instanceName    Identifies the component instance by name.
 	 *      @param [in] viewName        The new view name to be set for instance.
 	 */
-	void setActiveView(const QString& instanceName, const QString& viewName);
+	void setActiveView(const std::string& instanceName, const std::string& viewName);
 
 	/*!
      *  Add a new component instance to the model.
@@ -170,10 +170,10 @@ private:
 	struct InstanceViewPair
     {
 		//! The name of the component instance.
-		QString instanceName_;
+		std::string instanceName_;
 
 		//! The name of the active view for the component instance.
-		QString viewName_;
+		std::string viewName_;
 
 		/*!
          *  The struct constructor
@@ -181,14 +181,7 @@ private:
 		 *      @param [in] instanceName    The name for the component instance.
 		 *      @param [in] viewName        The name of the active view.
 		 */
-		InstanceViewPair(const QString& instanceName, const QString& viewName);
-
-		/*!
-         *  The struct constructor
-		 *
-		 *      @param [in] instanceName    The name for the component instance.
-		 */
-		InstanceViewPair(const QString& instanceName);
+		InstanceViewPair(const std::string& instanceName, const std::string& viewName = std::string());
 
 		/*!
          *  Operator ==
@@ -215,7 +208,7 @@ private:
      *      @param [in] instanceName    The name of the selected component instance.
      *      @param [in] newViewName     The new active view.
      */
-    void changeViewConfiguration(QString const& instanceName, QString const& newViewName);
+    void changeViewConfiguration(std::string const& instanceName, std::string const& newViewName);
 
     //-----------------------------------------------------------------------------
     // Data.

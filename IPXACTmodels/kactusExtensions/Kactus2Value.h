@@ -28,12 +28,18 @@ public:
      *      @param [in] name        Corresponds name of XML element.
      *      @param [in] value       Corresponds the value of XML element.
 	 */
-    Kactus2Value(QString name, QString value);
+    Kactus2Value(std::string const& name, std::string const& value);
 
 	/*!
 	 *  The destructor.
 	*/
 	virtual ~Kactus2Value();
+
+    //! Disable copying.
+    Kactus2Value(Kactus2Value const& other) = delete;
+
+    // Disable assignment.
+    Kactus2Value& operator=(Kactus2Value const& rhs) = delete;
 
     /*!
      *  Clones the vendor extension.
@@ -47,7 +53,7 @@ public:
      *
      *      @return A type identifier of the vendor extension.
      */
-    virtual QString type() const;
+    std::string type() const final;
 
     /*!
      *  Writes the vendor extension to XML.
@@ -61,31 +67,27 @@ public:
      *
      *      @return The stored value.
      */
-    QString value() const;
+    std::string value() const;
 
     /*!
      *  Sets the value of the vendor extension.
      *
      *      @param [in] newValue   The value to set.
      */
-    void setValue(QString const& newValue);
+    void setValue(std::string const& newValue);
 
 private:
-    //! Disable copying.
-    Kactus2Value(Kactus2Value const& other);
 
-	// Disable assignment.
-	Kactus2Value& operator=(Kactus2Value const& rhs);
     
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------
 
     //! The name identifier of the vendor extension.
-    QString name_;
+    std::string name_;
 
     //! The value of the vendor extension.
-    QString value_;
+    std::string value_;
 
 };
 #endif // KACTUS2VALUE_H

@@ -47,7 +47,11 @@ public:
 
 	//! The destructor.
 	~AdHocConnectionValidator();
-    
+
+    // Disable copying.
+    AdHocConnectionValidator(AdHocConnectionValidator const& rhs) = delete;
+    AdHocConnectionValidator& operator=(AdHocConnectionValidator const& rhs) = delete;
+
     /*!
      *  Change the used component instances.
      *
@@ -80,7 +84,7 @@ public:
      *
      *      @return True, if the isPresent is valid, otherwise false.
      */
-    bool hasValidIsPresent(QString const& isPresent) const;
+    bool hasValidIsPresent(std::string const& isPresent) const;
 
     /*!
      *  Check if the tied value is valid.
@@ -112,9 +116,6 @@ public:
 
 private:
 
-	// Disable copying.
-	AdHocConnectionValidator(AdHocConnectionValidator const& rhs);
-	AdHocConnectionValidator& operator=(AdHocConnectionValidator const& rhs);
 
     /*!
      *  Check if an internal port reference is valid.
@@ -124,7 +125,7 @@ private:
      *
      *      @return True, if the internal port reference is valid, otherwise false.
      */
-    bool internalPortReferenceIsValid(QSharedPointer<PortReference> portReference, QString const& tiedValue) const;
+    bool internalPortReferenceIsValid(QSharedPointer<PortReference> portReference, std::string const& tiedValue) const;
 
     /*!
      *  Get the referenced component instance.
@@ -133,7 +134,7 @@ private:
      *
      *      @return The referenced component instance, or a null pointer if the component instance is not found.
      */
-    QSharedPointer<ComponentInstance> getReferencedComponentInstance(QString const& instanceReference) const;
+    QSharedPointer<ComponentInstance> getReferencedComponentInstance(std::string const& instanceReference) const;
 
     /*!
      *  Get the component referenced by the component instance.
@@ -163,7 +164,7 @@ private:
      *
      *      @return True, if the port default value is valid, otherwise false.
      */
-    bool tiedValueIsValidWithReferencedPort(QString const& tiedValue, QSharedPointer<Port> referencedPort) const;
+    bool tiedValueIsValidWithReferencedPort(std::string const& tiedValue, QSharedPointer<Port> referencedPort) const;
 
     /*!
      *  Check if the external port reference is valid.
@@ -210,7 +211,7 @@ private:
      *      @param [in] innerContext    Context information of the ad hoc connection.
      *      @param [in] context         Context to help locate the errors.
      */
-    void findErrorsInIsPresent(QVector<QString>& errors, QString const& isPresent, QString const& innerContext,
+    void findErrorsInIsPresent(QVector<QString>& errors, std::string const& isPresent, QString const& innerContext,
         QString const& context) const;
 
     /*!
@@ -245,7 +246,7 @@ private:
      *      @param [in] context         Context to help locate the errors.
      */
     void findErrorsInInternalPortReference(QVector<QString>& errors, QSharedPointer<PortReference> internalPort,
-        QString const& tiedValue, QString const& elementName, QString const& innerContext, QString const& context)
+        std::string const& tiedValue, QString const& elementName, QString const& innerContext, QString const& context)
         const;
 
     /*!

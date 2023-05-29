@@ -218,7 +218,7 @@ void tst_DesignValidator::testHasValidVLNV_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testComponentInstanceHasValidName()
 {
-    QFETCH(QString, name);
+    QFETCH(std::string, name);
     QFETCH(bool, isValid);
 
     QSharedPointer<ComponentInstance> testInstance (new ComponentInstance());
@@ -234,7 +234,7 @@ void tst_DesignValidator::testComponentInstanceHasValidName()
         validator->findErrorsIn(foundErrors, testInstance, "test");
 
         QString expectedError = QObject::tr("Invalid instance name '%1' set for component instance within %2")
-            .arg(name).arg("test");
+            .arg(QString::fromStdString(name)).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -248,13 +248,13 @@ void tst_DesignValidator::testComponentInstanceHasValidName()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testComponentInstanceHasValidName_data()
 {
-    QTest::addColumn<QString>("name");
+    QTest::addColumn<std::string>("name");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Name test is valid") << "test" << true;
-    QTest::newRow("Empty name is invalid") << "" << false;
-    QTest::newRow("Name consisting of only white spaces is invalid") << "    " << false;
-    QTest::newRow("Name consisting of characters and white spaces is valid") << "  test  " << true;
+    QTest::newRow("Name test is valid") << std::string("test") << true;
+    QTest::newRow("Empty name is invalid") << std::string() << false;
+    QTest::newRow("Name consisting of only white spaces is invalid") << std::string("    ") << false;
+    QTest::newRow("Name consisting of characters and white spaces is valid") << std::string("  test  ") << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -262,7 +262,7 @@ void tst_DesignValidator::testComponentInstanceHasValidName_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testComponentInstanceHasValidIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<ComponentInstance> testInstance (new ComponentInstance());
@@ -279,7 +279,7 @@ void tst_DesignValidator::testComponentInstanceHasValidIsPresent()
         validator->findErrorsIn(foundErrors, testInstance, "test");
 
         QString expectedError = QObject::tr("Invalid isPresent set for component instance %1 within %2")
-            .arg(testInstance->getInstanceName()).arg("test");
+            .arg(QString::fromStdString(testInstance->getInstanceName())).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -293,16 +293,16 @@ void tst_DesignValidator::testComponentInstanceHasValidIsPresent()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testComponentInstanceHasValidIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
+    QTest::addColumn<std::string>("isPresent");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    QTest::newRow("IsPresent 1 is valid") << std::string("1") << true;
+    QTest::newRow("IsPresent 1*3-3 is valid") << std::string("1*3-3") << true;
+    QTest::newRow("IsPresent 2*100 is invalid") << std::string("2*100") << false;
+    QTest::newRow("IsPresent -14 is invalid") << std::string("-14") << false;
+    QTest::newRow("Real number isPresent  0.12 is invalid") << std::string("0.12") << false;
+    QTest::newRow("Text as isPresent is invalid") << std::string("test") << false;
+    QTest::newRow("String as isPresent is invalid") << std::string("\"test\"") << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -346,39 +346,40 @@ void tst_DesignValidator::testComponentInstanceHasValidComponentReference()
         QVector<QString> foundErrors;
         validator->findErrorsIn(foundErrors, testInstance, "test");
 
+        auto instanceName = QString::fromStdString(testInstance->getInstanceName());
         QString expectedError = QObject::tr("The type of the vlnv is invalid within component reference in "
-            "component instance %1").arg(testInstance->getInstanceName());
+            "component instance %1").arg(instanceName);
 
         if (!referenceExists)
         {
             expectedError = QObject::tr("No component reference given in component instance %1 within %2")
-                .arg(testInstance->getInstanceName()).arg("test");
+                .arg(instanceName).arg("test");
         }
         else if (vendor.isEmpty())
         {
             expectedError = QObject::tr("No vendor specified for vlnv within component reference in component "
-                "instance %1").arg(testInstance->getInstanceName());
+                "instance %1").arg(instanceName);
         }
         else if (library.isEmpty())
         {
             expectedError = QObject::tr("No library specified for vlnv within component reference in component "
-                "instance %1").arg(testInstance->getInstanceName());
+                "instance %1").arg(instanceName);
         }
         else if (name.isEmpty())
         {
             expectedError = QObject::tr("No name specified for vlnv within component reference in component "
-                "instance %1").arg(testInstance->getInstanceName());
+                "instance %1").arg(instanceName);
         }
         else if (version.isEmpty())
         {
             expectedError = QObject::tr("No version specified for vlnv within component reference in component "
-                "instance %1").arg(testInstance->getInstanceName());
+                "instance %1").arg(instanceName);
         }
         else if (!addToLibrary)
         {
             expectedError = QObject::tr("Component reference %1 in component instance %2 within %3 was not found "
                 "in the library")
-                .arg(testInstance->getComponentRef()->toString()).arg(testInstance->getInstanceName()).arg("test");
+                .arg(testInstance->getComponentRef()->toString()).arg(instanceName).arg("test");
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -425,7 +426,7 @@ void tst_DesignValidator::testComponentInstanceHasValidComponentReference_data()
 void tst_DesignValidator::testHasValidComponentInstances()
 {
     QFETCH(bool, instanceExists);
-    QFETCH(QString, name);
+    QFETCH(std::string, name);
     QFETCH(bool, componentReferenceExists);
     QFETCH(bool, copyInstance);
     QFETCH(bool, isValid);
@@ -448,13 +449,13 @@ void tst_DesignValidator::testHasValidComponentInstances()
         if (componentReferenceExists)
         {
             testInstance->setComponentRef(componentVLNV);
-            QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> testComponent (new Component(*componentVLNV));
             mockLibrary->addComponent(testComponent);
         }
 
         if (copyInstance)
         {
-            QSharedPointer<ComponentInstance> otherInstance (new ComponentInstance(*testInstance.data()));
+            QSharedPointer<ComponentInstance> otherInstance (new ComponentInstance(*testInstance));
             testDesign->getComponentInstances()->append(otherInstance);
         }
     }
@@ -468,18 +469,19 @@ void tst_DesignValidator::testHasValidComponentInstances()
         QVector<QString> foundErrors;
         validator->findErrorsIn(foundErrors, testDesign);
 
+        auto instanceName = QString::fromStdString(name);
         QString expectedError = QObject::tr("Component instance name '%1' within design %2 is not unique.")
-            .arg(testInstance->getInstanceName()).arg(testDesign->getVlnv().toString());
+            .arg(instanceName).arg(testDesign->getVlnv().toString());
 
-        if (name.isEmpty())
+        if (name.empty())
         {
             expectedError = QObject::tr("Invalid instance name '%1' set for component instance within design %2")
-                .arg(testInstance->getInstanceName()).arg(testDesign->getVlnv().toString());
+                .arg(instanceName).arg(testDesign->getVlnv().toString());
         }
         else if (!componentReferenceExists)
         {
             expectedError = QObject::tr("No component reference given in component instance %1 within design %2")
-                .arg(testInstance->getInstanceName()).arg(testDesign->getVlnv().toString());
+                .arg(instanceName).arg(testDesign->getVlnv().toString());
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -495,21 +497,21 @@ void tst_DesignValidator::testHasValidComponentInstances()
 void tst_DesignValidator::testHasValidComponentInstances_data()
 {
     QTest::addColumn<bool>("instanceExists");
-    QTest::addColumn<QString>("name");
+    QTest::addColumn<std::string>("name");
     QTest::addColumn<bool>("componentReferenceExists");
     QTest::addColumn<bool>("copyInstance");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Design without component instances is valid") << false << "" << false << false << true;
+    QTest::newRow("Design without component instances is valid") << false << std::string() << false << false << true;
     QTest::newRow("Component instance with name and component reference is valid") <<
-        true << "Genos" << true << false << true;
+        true << std::string("Genos") << true << false << true;
 
     QTest::newRow("Component instance without name is not valid") <<
-        true << "" << true << false << false; 
+        true << std::string() << true << false << false;
     QTest::newRow("Component instance without component reference is not valid") <<
-        true << "Genos" << false << false << false;
+        true << std::string("Genos") << false << false << false;
     QTest::newRow("Component instances with non-unique name is not valid") <<
-        true << "Genos" << true << true << false;
+        true << std::string("Genos") << true << true << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -517,7 +519,7 @@ void tst_DesignValidator::testHasValidComponentInstances_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testInterconnectionHasValidName()
 {
-    QFETCH(QString, name);
+    QFETCH(std::string, name);
     QFETCH(bool, isValid);
 
     QSharedPointer<Interconnection> testInterconnection (new Interconnection());
@@ -525,7 +527,7 @@ void tst_DesignValidator::testInterconnectionHasValidName()
 
     QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(0);
 
-    QCOMPARE(validator->hasValidName(testInterconnection->name()), isValid);
+    QCOMPARE(validator->hasValidName(testInterconnection->name().toStdString()), isValid);
 
     if (!isValid)
     {
@@ -533,7 +535,7 @@ void tst_DesignValidator::testInterconnectionHasValidName()
         validator->findErrorsInInterconnection(foundErrors, testInterconnection, "test");
 
         QString expectedError = QObject::tr("Invalid name '%1' set for interconnection within %2")
-            .arg(name).arg("test");
+            .arg(QString::fromStdString(name)).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -547,13 +549,7 @@ void tst_DesignValidator::testInterconnectionHasValidName()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testInterconnectionHasValidName_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("Name test is valid") << "test" << true;
-    QTest::newRow("Empty name is invalid") << "" << false;
-    QTest::newRow("Name consisting of only white spaces is invalid") << "    " << false;
-    QTest::newRow("Name consisting of characters and white spaces is valid") << "  test  " << true;
+    testComponentInstanceHasValidName_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -561,11 +557,11 @@ void tst_DesignValidator::testInterconnectionHasValidName_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testInterconnectionHasValidIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<Interconnection> testConnection (new Interconnection());
-    testConnection->setName("Yatagarasu");
+    testConnection->setName(std::string("Yatagarasu"));
     testConnection->setIsPresent(isPresent);
 
     QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(0);
@@ -592,16 +588,16 @@ void tst_DesignValidator::testInterconnectionHasValidIsPresent()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testInterconnectionHasValidIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
+    QTest::addColumn<std::string>("isPresent");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    QTest::newRow("IsPresent 1 is valid") << std::string("1") << true;
+    QTest::newRow("IsPresent 1*3-3 is valid") << std::string("1*3-3") << true;
+    QTest::newRow("IsPresent 2*100 is invalid") << std::string("2*100") << false;
+    QTest::newRow("IsPresent -14 is invalid") << std::string("-14") << false;
+    QTest::newRow("Real number isPresent  0.12 is invalid") << std::string("0.12") << false;
+    QTest::newRow("Text as isPresent is invalid") << std::string("test") << false;
+    QTest::newRow("String as isPresent is invalid") << std::string("\"test\"") << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -610,9 +606,9 @@ void tst_DesignValidator::testInterconnectionHasValidIsPresent_data()
 void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid()
 {
     QFETCH(bool, startInterfaceExists);
-    QFETCH(QString, componentReference);
+    QFETCH(std::string, componentReference);
     QFETCH(bool, componentExists);
-    QFETCH(QString, busReference);
+    QFETCH(std::string, busReference);
     QFETCH(bool, busInterfaceExists);
     QFETCH(bool, isValid);
 
@@ -622,7 +618,7 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid()
         new QList<QSharedPointer<ComponentInstance> > ());
 
     QSharedPointer<Interconnection> testConnection (new Interconnection());
-    testConnection->setName("Balduran");
+    testConnection->setName(std::string("Balduran"));
 
     if (startInterfaceExists)
     {
@@ -636,13 +632,13 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid()
 
             QSharedPointer<ComponentInstance> componentInstance (
                 new ComponentInstance(componentReference, componentVLNV));
-            if (componentReference.isEmpty())
+            if (componentReference.empty())
             {
                 componentInstance->setInstanceName("Baiken");
             }
             containedInstances->append(componentInstance);
 
-            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV));
             mockLibrary->addComponent(referencedComponent);
 
             if (busInterfaceExists)
@@ -676,9 +672,9 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid()
         {
             expectedError = QObject::tr("Component instance '%1' referenced by the active interface in "
                 "interconnection '%2' within %3 was not found")
-                .arg(componentReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(componentReference)).arg(testConnection->name()).arg("test");
         }
-        else if (busReference.isEmpty())
+        else if (busReference.empty())
         {
             expectedError = QObject::tr("No bus reference set for active interface in interconnection '%1' within "
                 "%2").arg(testConnection->name()).arg("test");
@@ -687,7 +683,7 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid()
         {
             expectedError = QObject::tr("Bus interface '%1' referenced by the active interface in interconnection "
                 "'%2' within %3 was not found")
-                .arg(busReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(busReference)).arg(testConnection->name()).arg("test");
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -703,25 +699,25 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid()
 void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid_data()
 {
     QTest::addColumn<bool>("startInterfaceExists");
-    QTest::addColumn<QString>("componentReference");
+    QTest::addColumn<std::string>("componentReference");
     QTest::addColumn<bool>("componentExists");
-    QTest::addColumn<QString>("busReference");
+    QTest::addColumn<std::string>("busReference");
     QTest::addColumn<bool>("busInterfaceExists");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Active interface with component reference and bus reference is valid") <<
-        true << "Saitama" << true << "Genos" << true << true;
+        true << std::string("Saitama") << true << std::string("Genos") << true << true;
 
     QTest::newRow("Active interface without component reference is not valid") <<
-        true << "" << true << "Genos" << true << false;
+        true << std::string() << true << std::string("Genos") << true << false;
     QTest::newRow("Active interface with component reference to non-existing component is not valid") <<
-        true << "Saitama" << false << "Genos" << true << false;
+        true << std::string("Saitama") << false << std::string("Genos") << true << false;
     QTest::newRow("Active interface without bus reference is not valid") <<
-        true << "Saitama" << true << "" << true << false;
+        true << std::string("Saitama") << true << std::string() << true << false;
     QTest::newRow("Active interface with bus reference to non-existing bus interface is not valid") <<
-        true << "Saitama" << true << "Genos" << false << false;
+        true << std::string("Saitama") << true << std::string("Genos") << false << false;
     QTest::newRow("Interconnection without active interface is not valid") <<
-        false << "" << false << "" << false << false;
+        false << std::string() << false << std::string() << false << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -729,7 +725,7 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<ActiveInterface> testInterface (new ActiveInterface("Saitama", "Genos"));
@@ -761,16 +757,7 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidIsPresent()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    testInterconnectionHasValidIsPresent_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -778,7 +765,7 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidIsPresent_da
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidExcludePorts()
 {
-    QFETCH(QString, portName);
+    QFETCH(std::string, portName);
     QFETCH(bool, portExists);
     QFETCH(bool, isValid);
 
@@ -803,14 +790,14 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidExcludePorts
     LibraryMock mockLibrary (this);
     mockLibrary.addComponent(testComponent);
 
-    if (!portName.isEmpty())
+    if (!portName.empty())
     {
         testInterface->getExcludePorts()->append(portName);
 
         if (portExists)
         {
             QSharedPointer<PortMap::LogicalPort> testPort (new PortMap::LogicalPort());
-            testPort->name_ = portName;
+            testPort->name_ = QString::fromStdString(portName);
 
             QSharedPointer<PortMap> testMap (new PortMap());
             testMap->setLogicalPort(testPort);
@@ -850,15 +837,15 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidExcludePorts
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidExcludePorts_data()
 {
-    QTest::addColumn<QString>("portName");
+    QTest::addColumn<std::string>("portName");
     QTest::addColumn<bool>("portExists");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Active interface without an exclude port is valid") << "" << false << true;
+    QTest::newRow("Active interface without an exclude port is valid") << std::string() << false << true;
     QTest::newRow("Active interface exclude port referencing existing logical port is valid") <<
-        "One" << true << true;
+        std::string("One") << true << true;
     QTest::newRow("Active interface exclude port referencing non-existing logical port is not valid") <<
-        "One" << false << false;
+        std::string("One") << false << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -872,7 +859,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
     QFETCH(bool, isValid);
 
     QSharedPointer<Interconnection> testConnection (new Interconnection());
-    testConnection->setName("Gygax");
+    testConnection->setName(std::string("Gygax"));
 
     LibraryMock mockLibrary (this);
 
@@ -901,7 +888,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
     {
         QSharedPointer<ConfigurableVLNVReference> componentVLNV (
             new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Man", "Saitama")));
-        QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+        QSharedPointer<Component> testComponent (new Component(*componentVLNV));
 
         QSharedPointer<ComponentInstance> testInstance (
             new ComponentInstance(testInterface->getComponentReference(), componentVLNV));
@@ -918,7 +905,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
 
         if (copyInterface)
         {
-            QSharedPointer<ActiveInterface> otherInterface (new ActiveInterface(*testInterface.data()));
+            QSharedPointer<ActiveInterface> otherInterface (new ActiveInterface(*testInterface));
             testConnection->getActiveInterfaces()->append(otherInterface);
         }
     }
@@ -930,7 +917,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
 
         if (copyInterface)
         {
-            QSharedPointer<HierInterface> otherInterface (new HierInterface(*hierInterface.data()));
+            QSharedPointer<HierInterface> otherInterface (new HierInterface(*hierInterface));
             testConnection->getHierInterfaces()->append(otherInterface);
         }
     }
@@ -952,14 +939,16 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
         {
             expectedError = QObject::tr("Component reference '%1' and bus reference '%2' pair is not unique in "
                 "active interfaces of interconnection '%3' within %4.")
-                .arg(testInterface->getComponentReference()).arg(testInterface->getBusReference())
+                .arg(QString::fromStdString(testInterface->getComponentReference()))
+                .arg(QString::fromStdString(testInterface->getBusReference()))
                 .arg(testConnection->name()).arg("test");
         }
         else if (copyInterface && createHierInterface)
         {
             expectedError = QObject::tr("Bus reference '%1' is not unique in hierarchical interfaces of "
                 "interconnection '%2' within %3.")
-                .arg(hierInterface->getBusReference()).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(hierInterface->getBusReference()))
+                .arg(testConnection->name()).arg("test");
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -1009,7 +998,7 @@ void tst_DesignValidator::testHasValidInterconnections()
     LibraryMock* mockLibrary (new LibraryMock(this));
 
     QSharedPointer<Interconnection> testConnection (new Interconnection());
-    testConnection->setName("testConnection");
+    testConnection->setName(std::string("testConnection"));
 
     if (createInterconnection)
     {
@@ -1106,14 +1095,14 @@ void tst_DesignValidator::testHasValidInterconnections_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testMonitorInterconnectionHasValidName()
 {
-    QFETCH(QString, name);
+    QFETCH(std::string, name);
     QFETCH(bool, isValid);
 
     QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection(name));    
 
     QSharedPointer<InterconnectionValidator> validator = createInterconnectionValidator(0);
 
-    QCOMPARE(validator->hasValidName(testConnection->name()), isValid);
+    QCOMPARE(validator->hasValidName(testConnection->name().toStdString()), isValid);
 
     if (!isValid)
     {
@@ -1121,7 +1110,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidName()
         validator->findErrorsInMonitorInterconnection(foundErrors, testConnection, "test");
 
         QString expectedError = QObject::tr("Invalid name '%1' set for monitor interconnection within %2")
-            .arg(name).arg("test");
+            .arg(QString::fromStdString(name)).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -1135,13 +1124,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidName()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testMonitorInterconnectionHasValidName_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("Name test is valid") << "test" << true;
-    QTest::newRow("Empty name is invalid") << "" << false;
-    QTest::newRow("Name consisting of only white spaces is invalid") << "    " << false;
-    QTest::newRow("Name consisting of characters and white spaces is valid") << "  test  " << true;
+    testComponentInstanceHasValidName_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -1149,7 +1132,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidName_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testMonitorInterconnectionHasValidIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<MonitorInterconnection> testConnection (new MonitorInterconnection("Yatagarasu"));
@@ -1179,16 +1162,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidIsPresent()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testMonitorInterconnectionHasValidIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    testComponentInstanceHasValidIsPresent_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -1197,9 +1171,9 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidIsPresent_data()
 void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInterface()
 {
     QFETCH(bool, startInterfaceExists);
-    QFETCH(QString, componentReference);
+    QFETCH(std::string, componentReference);
     QFETCH(bool, instanceExists);
-    QFETCH(QString, busReference);
+    QFETCH(std::string, busReference);
     QFETCH(bool, busInterfaceExists);
     QFETCH(bool, isValid);
 
@@ -1222,7 +1196,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInter
 
             QSharedPointer<ComponentInstance> componentInstance (
                 new ComponentInstance(componentReference, componentVLNV));
-            if (componentReference.isEmpty())
+            if (componentReference.empty())
             {
                 componentInstance->setInstanceName("Baiken");
             }
@@ -1235,9 +1209,9 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInter
             {
                 QSharedPointer<BusInterface> testBus (new BusInterface());
                 testBus->setName(busReference);
-                if (busReference.isEmpty())
+                if (busReference.empty())
                 {
-                    testBus->setName("TKL");
+                    testBus->setName(std::string("TKL"));
                 }
                 referencedComponent->getBusInterfaces()->append(testBus);
             }
@@ -1266,9 +1240,9 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInter
         {
             expectedError = QObject::tr("Component instance '%1' referenced by the monitored active interface in "
                 "monitor interconnection '%2' within %3 was not found")
-                .arg(componentReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(componentReference)).arg(testConnection->name()).arg("test");
         }
-        else if (busReference.isEmpty())
+        else if (busReference.empty())
         {
             expectedError = QObject::tr("No bus reference set for monitored active interface in monitor "
                 "interconnection '%1' within %2").arg(testConnection->name()).arg("test");
@@ -1277,7 +1251,8 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInter
         {
             expectedError = QObject::tr("Bus interface '%1' referenced by the monitored active interface in "
                 "monitor interconnection '%2' within %3 was not found")
-                .arg(busReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(busReference))
+                .arg(testConnection->name()).arg("test");
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -1293,25 +1268,25 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInter
 void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInterface_data()
 {
     QTest::addColumn<bool>("startInterfaceExists");
-    QTest::addColumn<QString>("componentReference");
+    QTest::addColumn<std::string>("componentReference");
     QTest::addColumn<bool>("instanceExists");
-    QTest::addColumn<QString>("busReference");
+    QTest::addColumn<std::string>("busReference");
     QTest::addColumn<bool>("busInterfaceExists");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Monitored active interface with component and bus references to existing elements is valid") <<
-        true << "Space" << true << "Dandy" << true << true;
+        true << std::string("Space") << true << std::string("Dandy") << true << true;
 
     QTest::newRow("Monitor interconnection without monitored active interface is not valid") <<
-        false << "" << false << "" << false << false;
+        false << std::string() << false << std::string() << false << false;
     QTest::newRow("Monitored active interface without component instance reference is not valid") <<
-        true << "" << true << "Dandy" << true << false;
+        true << std::string() << true << std::string("Dandy") << true << false;
     QTest::newRow("Monitored active interface referencing non-existing component instance is not valid") <<
-        true << "Space" << false << "Dandy" << true << false;
+        true << std::string("Space") << false << std::string("Dandy") << true << false;
     QTest::newRow("Monitored active interface without bus reference is not valid") <<
-        true << "Space" << true << "" << true << false;
+        true << std::string("Space") << true << std::string() << true << false;
     QTest::newRow("Monitored active interface referencing non-existing bus interface is not valid") <<
-        true << "Space" << true << "Dandy" << false << false;
+        true << std::string("Space") << true << std::string("Dandy") << false << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1320,9 +1295,9 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInter
 void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces()
 {
     QFETCH(bool, monitorInterfaceExists);
-    QFETCH(QString, componentReference);
+    QFETCH(std::string, componentReference);
     QFETCH(bool, instanceExists);
-    QFETCH(QString, busReference);
+    QFETCH(std::string, busReference);
     QFETCH(bool, busInterfaceExists);
     QFETCH(bool, copyInterface);
     QFETCH(bool, isValid);
@@ -1346,7 +1321,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces()
 
             QSharedPointer<ComponentInstance> componentInstance (
                 new ComponentInstance(componentReference, componentVLNV));
-            if (componentReference.isEmpty())
+            if (componentReference.empty())
             {
                 componentInstance->setInstanceName("Baiken");
             }
@@ -1359,9 +1334,9 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces()
             {
                 QSharedPointer<BusInterface> testBus (new BusInterface());
                 testBus->setName(busReference);
-                if (busReference.isEmpty())
+                if (busReference.empty())
                 {
-                    testBus->setName("TKL");
+                    testBus->setName(std::string("TKL"));
                 }
                 referencedComponent->getBusInterfaces()->append(testBus);
             }
@@ -1396,9 +1371,10 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces()
         {
             expectedError = QObject::tr("Component instance '%1' referenced by the monitor interface in monitor "
                 "interconnection '%2' within %3 was not found")
-                .arg(componentReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(componentReference))
+                .arg(testConnection->name()).arg("test");
         }
-        else if (busReference.isEmpty())
+        else if (busReference.empty())
         {
             expectedError = QObject::tr("No bus reference set for monitor interface in monitor interconnection "
                 "'%1' within %2").arg(testConnection->name()).arg("test");
@@ -1407,13 +1383,15 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces()
         {
             expectedError = QObject::tr("Bus interface '%1' referenced by the monitor interface in monitor "
                 "interconnection '%2' within %3 was not found")
-                .arg(busReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(busReference))
+                .arg(testConnection->name()).arg("test");
         }
         else if (copyInterface)
         {
             expectedError = QObject::tr("Component reference '%1' and bus reference '%2' pair is not unique in "
                 "monitor interfaces of monitor interconnection '%3' within %4.")
-                .arg(testInterface->getComponentReference()).arg(testInterface->getBusReference())
+                .arg(QString::fromStdString(testInterface->getComponentReference()))
+                .arg(QString::fromStdString(testInterface->getBusReference()))
                 .arg(testConnection->name()).arg("test");
         }
 
@@ -1430,29 +1408,29 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces()
 void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces_data()
 {
     QTest::addColumn<bool>("monitorInterfaceExists");
-    QTest::addColumn<QString>("componentReference");
+    QTest::addColumn<std::string>("componentReference");
     QTest::addColumn<bool>("instanceExists");
-    QTest::addColumn<QString>("busReference");
+    QTest::addColumn<std::string>("busReference");
     QTest::addColumn<bool>("busInterfaceExists");
     QTest::addColumn<bool>("copyInterface");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Monitor interface with component and bus references to existing elements is valid") <<
-        true << "Space" << true << "Dandy" << true << false << true;
+        true << std::string("Space") << true << std::string("Dandy") << true << false << true;
 
     QTest::newRow("Monitor interconnection without monitor interface is not valid") <<
-        false << "" << false << "" << false << false << false;
+        false << std::string() << false << std::string() << false << false << false;
     QTest::newRow("Monitor interface without component instance reference is not valid") <<
-        true << "" << true << "Dandy" << true << false << false;
+        true << std::string() << true << std::string("Dandy") << true << false << false;
     QTest::newRow("Monitor interface referencing non-existing component instance is not valid") <<
-        true << "Space" << false << "Dandy" << true << false << false;
+        true << std::string("Space") << false << std::string("Dandy") << true << false << false;
     QTest::newRow("Monitor interface without bus reference is not valid") <<
-        true << "Space" << true << "" << true << false << false;
+        true << std::string("Space") << true << std::string() << true << false << false;
     QTest::newRow("Monitor interface referencing non-existing bus interface is not valid") <<
-        true << "Space" << true << "Dandy" << false << false << false;
+        true << std::string("Space") << true << std::string("Dandy") << false << false << false;
 
     QTest::newRow("Monitor interface referencing non-unique component / bus reference pair is not valid") <<
-        true << "Space" << true << "Dandy" << true << true << false;
+        true << std::string("Space") << true << std::string("Dandy") << true << true << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1583,7 +1561,7 @@ void tst_DesignValidator::testHasValidMonitorInterconnections_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidName()
 {
-    QFETCH(QString, name);
+    QFETCH(std::string, name);
     QFETCH(bool, isValid);
 
     QSharedPointer<AdHocConnection> testConnection (new AdHocConnection(name));
@@ -1598,7 +1576,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidName()
         validator->findErrorsIn(foundErrors, testConnection, "test");
 
         QString expectedError = QObject::tr("Invalid name '%1' set for ad hoc connection within %2")
-            .arg(name).arg("test");
+            .arg(QString::fromStdString(name)).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -1612,13 +1590,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidName()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidName_data()
 {
-    QTest::addColumn<QString>("name");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("Name test is valid") << "test" << true;
-    QTest::newRow("Empty name is invalid") << "" << false;
-    QTest::newRow("Name consisting of only white spaces is invalid") << "    " << false;
-    QTest::newRow("Name consisting of characters and white spaces is valid") << "  test  " << true;
+    testComponentInstanceHasValidName_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -1626,7 +1598,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidName_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidIsPresent()
 {
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<AdHocConnection> testConnection (new AdHocConnection("Yatagarasu"));
@@ -1656,16 +1628,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidIsPresent()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidIsPresent_data()
 {
-    QTest::addColumn<QString>("isPresent");
-    QTest::addColumn<bool>("isValid");
-
-    QTest::newRow("IsPresent 1 is valid") << "1" << true;
-    QTest::newRow("IsPresent 1*3-3 is valid") << "1*3-3" << true;
-    QTest::newRow("IsPresent 2*100 is invalid") << "2*100" << false;
-    QTest::newRow("IsPresent -14 is invalid") << "-14" << false;
-    QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
-    QTest::newRow("Text as isPresent is invalid") << "test" << false;
-    QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+    testComponentInstanceHasValidIsPresent_data();
 }
 
 //-----------------------------------------------------------------------------
@@ -1673,7 +1636,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidIsPresent_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidTiedValue()
 {
-    QFETCH(QString, tiedValue);
+    QFETCH(std::string, tiedValue);
     QFETCH(bool, isValid);
 
     QSharedPointer<AdHocConnection> testConnection (new AdHocConnection("Yatagarasu"));
@@ -1703,18 +1666,18 @@ void tst_DesignValidator::testAdHocConnectionHasValidTiedValue()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidTiedValue_data()
 {
-    QTest::addColumn<QString>("tiedValue");
+    QTest::addColumn<std::string>("tiedValue");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Tied value default is valid") << "default" << true;
-    QTest::newRow("Tied value open is valid") << "open" << true;
-    QTest::newRow("Numerical tied value is valid") << "1" << true;
-    QTest::newRow("Hexadecimal tied value is valid") << "'h01" << true;
-    QTest::newRow("Empty tied value is valid") << "" << true;
+    QTest::newRow("Tied value default is valid") << std::string("default") << true;
+    QTest::newRow("Tied value open is valid") << std::string("open") << true;
+    QTest::newRow("Numerical tied value is valid") << std::string("1") << true;
+    QTest::newRow("Hexadecimal tied value is valid") << std::string("'h01") << true;
+    QTest::newRow("Empty tied value is valid") << std::string() << true;
 
-    QTest::newRow("Tied value of text is not valid") << "text" << false;
-    QTest::newRow("Tied value of only white spaces is not valid") << "    " << false;
-    QTest::newRow("Tied value consisting of characters and white spaces is not valid") << "  test  " << false;
+    QTest::newRow("Tied value of text is not valid") << std::string("text") << false;
+    QTest::newRow("Tied value of only white spaces is not valid") << std::string("    ") << false;
+    QTest::newRow("Tied value consisting of characters and white spaces is not valid") << std::string("  test  ") << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1722,10 +1685,10 @@ void tst_DesignValidator::testAdHocConnectionHasValidTiedValue_data()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference()
 {
-    QFETCH(QString, tiedValue);
-    QFETCH(QString, componentReference);
+    QFETCH(std::string, tiedValue);
+    QFETCH(std::string, componentReference);
     QFETCH(bool, instanceExists);
-    QFETCH(QString, portReference);
+    QFETCH(std::string, portReference);
     QFETCH(bool, portExists);
     QFETCH(bool, portHasDefault);
     QFETCH(bool, isValid);
@@ -1749,7 +1712,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference()
         mockLibrary->addComponent(testComponent);
 
         QSharedPointer<ComponentInstance> testInstance(new ComponentInstance(componentReference, componentVLNV));
-        if (componentReference.isEmpty())
+        if (componentReference.empty())
         {
             testInstance->setInstanceName("testInstance");
         }
@@ -1757,7 +1720,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference()
 
         if (portExists)
         {
-            QSharedPointer<Port> testPort (new Port(portReference));
+            QSharedPointer<Port> testPort (new Port(QString::fromStdString(portReference)));
             testComponent->getPorts()->append(testPort);
 
             if (portHasDefault)
@@ -1784,9 +1747,10 @@ void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference()
         {
             expectedError = QObject::tr("Component instance %1 referenced by internal port reference in ad hoc "
                 "connection %2 within %3 was not found")
-                .arg(componentReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(componentReference))
+                .arg(testConnection->name()).arg("test");
         }
-        else if (portReference.isEmpty())
+        else if (portReference.empty())
         {
             expectedError = QObject::tr("No port reference set for internal port reference in ad hoc connection "
                 "%1 within %2").arg(testConnection->name()).arg("test");
@@ -1795,14 +1759,16 @@ void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference()
         {
             expectedError = QObject::tr("Port '%1' referenced by the internal port reference  in ad hoc "
                 "connection %2 within %3 was not found")
-                .arg(portReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(portReference))
+                .arg(testConnection->name()).arg("test");
         }
-        else if (!portHasDefault && instanceExists && !componentReference.isEmpty() && !portReference.isEmpty() &&
+        else if (!portHasDefault && instanceExists && !componentReference.empty() && !portReference.empty() &&
             portExists)
         {
             expectedError = QObject::tr("No default value found for port '%1' referenced by internal port "
                 "reference in ad hoc connection %2 within %3")
-                .arg(portReference).arg(testConnection->name()).arg("test");
+                .arg(QString::fromStdString(portReference))
+                .arg(testConnection->name()).arg("test");
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -1817,29 +1783,29 @@ void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference_data()
 {
-    QTest::addColumn<QString>("tiedValue");
-    QTest::addColumn<QString>("componentReference");
+    QTest::addColumn<std::string>("tiedValue");
+    QTest::addColumn<std::string>("componentReference");
     QTest::addColumn<bool>("instanceExists");
-    QTest::addColumn<QString>("portReference");
+    QTest::addColumn<std::string>("portReference");
     QTest::addColumn<bool>("portExists");
     QTest::addColumn<bool>("portHasDefault");
     QTest::addColumn<bool>("isValid");
 
     QTest::newRow("Internal port reference referencing existing component and port is valid") <<
-        "" << "Space" << true << "Dandy" << true << false << true;
+        std::string() << std::string("Space") << true << std::string("Dandy") << true << false << true;
     QTest::newRow("Tied value default and internal port referenced port with default value is valid") << 
-        "default" << "Space" << true << "Dandy" << true << true << true;
+        std::string("default") << std::string("Space") << true << std::string("Dandy") << true << true << true;
 
     QTest::newRow("Tied value default and internal port referenced port without default value is not valid") << 
-        "default" << "Space" << true << "Dandy" << true << false << false;
+        std::string("default") << std::string("Space") << true << std::string("Dandy") << true << false << false;
     QTest::newRow("Internal port reference without component reference is not valid") <<
-        "" << "" << true << "Dandy" << true << false << false;
+        std::string() << std::string() << true << std::string("Dandy") << true << false << false;
     QTest::newRow("Internal port reference referencing non-existing component instance is not valid") <<
-        "" << "Space" << false << "Dandy" << true << false << false;
+        std::string() << std::string("Space") << false << std::string("Dandy") << true << false << false;
     QTest::newRow("Internal port reference without port reference is not valid") <<
-        "open" << "Space" << true << "" << true << false << false;
+        std::string("open") << std::string("Space") << true << std::string() << true << false << false;
     QTest::newRow("Internal port reference referencing non-existing port is not valid") <<
-        "1" << "Space" << true << "Dandy" << false << false << false;
+        std::string("1") << std::string("Space") << true << std::string("Dandy") << false << false << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1847,8 +1813,8 @@ void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference_data(
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidExternalPortReference()
 {
-    QFETCH(QString, portReference);
-    QFETCH(QString, isPresent);
+    QFETCH(std::string, portReference);
+    QFETCH(std::string, isPresent);
     QFETCH(bool, isValid);
 
     QSharedPointer<AdHocConnection> testConnection (new AdHocConnection("Yatagarasu"));
@@ -1869,7 +1835,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidExternalPortReference()
         QString expectedError = QObject::tr("Invalid isPresent set for external port reference within ad hoc "
             "connection %1").arg(testConnection->name());
 
-        if (portReference.isEmpty())
+        if (portReference.empty())
         {
             expectedError = QObject::tr("No port reference set for external port reference in ad hoc "
                 "connection %1 within %2").arg(testConnection->name()).arg("test");
@@ -1887,20 +1853,20 @@ void tst_DesignValidator::testAdHocConnectionHasValidExternalPortReference()
 //-----------------------------------------------------------------------------
 void tst_DesignValidator::testAdHocConnectionHasValidExternalPortReference_data()
 {
-    QTest::addColumn<QString>("portReference");
-    QTest::addColumn<QString>("isPresent");
+    QTest::addColumn<std::string>("portReference");
+    QTest::addColumn<std::string>("isPresent");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("External port reference with port reference is valid") << "Baldurs" << "" << true;
-    QTest::newRow("External port without port reference is not valid") << "" << "" << false;
+    QTest::newRow("External port reference with port reference is valid") << std::string("Baldurs") << std::string() << true;
+    QTest::newRow("External port without port reference is not valid") << std::string() << std::string() << false;
 
-    QTest::newRow("Port reference with isPresent 1 is valid") << "Baldurs" << "1" << true;
-    QTest::newRow("Port reference with isPresent 1*3-3 is valid") << "Baldurs" <<  "1*3-3" << true;
-    QTest::newRow("Port reference with isPresent 2*100 is invalid") << "Baldurs" << "2*100" << false;
-    QTest::newRow("Port reference with isPresent -14 is invalid") << "Baldurs" << "-14" << false;
-    QTest::newRow("Port reference with real number isPresent  0.12 is invalid") << "Baldurs" << "0.12" << false;
-    QTest::newRow("Port reference with text as isPresent is invalid") << "Baldurs" << "test" << false;
-    QTest::newRow("Port reference with string as isPresent is invalid") << "Baldurs" << "\"test\"" << false;
+    QTest::newRow("Port reference with isPresent 1 is valid") << std::string("Baldurs") << std::string("1") << true;
+    QTest::newRow("Port reference with isPresent 1*3-3 is valid") << std::string("Baldurs") << std::string("1*3-3") << true;
+    QTest::newRow("Port reference with isPresent 2*100 is invalid") << std::string("Baldurs") << std::string("2*100") << false;
+    QTest::newRow("Port reference with isPresent -14 is invalid") << std::string("Baldurs") << std::string("-14") << false;
+    QTest::newRow("Port reference with real number isPresent  0.12 is invalid") << std::string("Baldurs") << std::string("0.12") << false;
+    QTest::newRow("Port reference with text as isPresent is invalid") << std::string("Baldurs") << std::string("test") << false;
+    QTest::newRow("Port reference with string as isPresent is invalid") << std::string("Baldurs") << std::string("\"test\"") << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -2036,7 +2002,7 @@ void tst_DesignValidator::testHasValidAdHocConnections()
                 new ComponentInstance(testReference->getComponentRef(), componentVLNV));
             testDesign->getComponentInstances()->append(testInstance);
 
-            QSharedPointer<Port> referencedPort (new Port(testReference->getPortRef()));
+            QSharedPointer<Port> referencedPort (new Port(QString::fromStdString(testReference->getPortRef())));
             testComponent->getPorts()->append(referencedPort);
 
             testConnection->getInternalPortReferences()->append(testReference);

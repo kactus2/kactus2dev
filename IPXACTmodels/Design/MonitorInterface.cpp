@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::MonitorInterface()
 //-----------------------------------------------------------------------------
-MonitorInterface::MonitorInterface(QString componentRef, QString busRef):
+MonitorInterface::MonitorInterface(std::string componentRef, std::string busRef):
 HierInterface(busRef),
 componentReference_(componentRef)
 {
@@ -53,7 +53,7 @@ MonitorInterface& MonitorInterface::operator=(const MonitorInterface& other)
 bool MonitorInterface::operator==(const MonitorInterface& other) const
 {
     return (HierInterface::operator==(other)) &&
-        (componentReference_.compare(other.componentReference_, Qt::CaseInsensitive) == 0);
+        (componentReference_.compare(other.componentReference_) == 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ bool MonitorInterface::operator<(const MonitorInterface& other) const
     int busRefeferencecomparison = HierInterface::operator<(other);
     if (busRefeferencecomparison == 0)
     {
-        return componentReference_.compare(other.componentReference_, Qt::CaseInsensitive) < 0;
+        return componentReference_.compare(other.componentReference_) < 0;
     }
     else
     {
@@ -83,7 +83,7 @@ bool MonitorInterface::operator<(const MonitorInterface& other) const
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::references()
 //-----------------------------------------------------------------------------
-bool MonitorInterface::references(QString const& instanceName, QString const& busInterfaceName) const
+bool MonitorInterface::references(std::string const& instanceName, std::string const& busInterfaceName) const
 {
     return instanceName == componentReference_ && busInterfaceName == getBusReference();
 }
@@ -91,7 +91,7 @@ bool MonitorInterface::references(QString const& instanceName, QString const& bu
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::getComponentReference()
 //-----------------------------------------------------------------------------
-QString MonitorInterface::getComponentReference() const
+std::string MonitorInterface::getComponentReference() const
 {
     return componentReference_;
 }
@@ -99,7 +99,7 @@ QString MonitorInterface::getComponentReference() const
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::setComponentReference()
 //-----------------------------------------------------------------------------
-void MonitorInterface::setComponentReference(QString const& newComponentReference)
+void MonitorInterface::setComponentReference(std::string const& newComponentReference)
 {
     componentReference_ = newComponentReference;
 }
@@ -107,7 +107,7 @@ void MonitorInterface::setComponentReference(QString const& newComponentReferenc
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::getPath()
 //-----------------------------------------------------------------------------
-QString MonitorInterface::getPath() const
+std::string MonitorInterface::getPath() const
 {
     return path_;
 }
@@ -115,7 +115,7 @@ QString MonitorInterface::getPath() const
 //-----------------------------------------------------------------------------
 // Function: MonitorInterface::setPath()
 //-----------------------------------------------------------------------------
-void MonitorInterface::setPath(QString const& newPath)
+void MonitorInterface::setPath(std::string const& newPath)
 {
     path_ = newPath;
 }

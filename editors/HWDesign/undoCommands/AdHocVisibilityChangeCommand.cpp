@@ -34,7 +34,7 @@ pos_(),
 newVisibility_(newVisibility),
 adhocPort_()
 {
-    HWConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName);
+    HWConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName.toStdString());
 
     if (port)
     {
@@ -44,12 +44,12 @@ adhocPort_()
         {
             pos_ = port->scenePos();
 
-            foreach (GraphicsConnection* connection, adhocPort_->getConnections())
+            for (GraphicsConnection* connection : adhocPort_->getConnections())
             {
                 createConnectionDeleteCommand(connection);
             }
 
-            foreach (GraphicsConnection* connection, adhocPort_->getOffPageConnector()->getConnections())
+            for (GraphicsConnection* connection : adhocPort_->getOffPageConnector()->getConnections())
             {
                 createConnectionDeleteCommand(connection);
             }
@@ -57,7 +57,7 @@ adhocPort_()
     }
     else
     {
-        adhocPort_ = dataSource_->createAdhocItem(portName);
+        adhocPort_ = dataSource_->createAdhocItem(portName.toStdString());
     }
 }
 

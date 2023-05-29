@@ -28,7 +28,7 @@ public:
 	 *
 	 *      @param [in] name   The name of the placeholder.
 	 */
-    Kactus2Placeholder(QString name);
+    Kactus2Placeholder(std::string const& name);
 
     //! Copy constructor.
     Kactus2Placeholder(Kactus2Placeholder const& other);
@@ -50,7 +50,7 @@ public:
      *
      *      @return A type identifier of the vendor extension.
      */
-    virtual QString type() const;
+    std::string type() const final;
 
     /*!
      *  Writes the vendor extension to XML.
@@ -66,6 +66,7 @@ public:
      *      @param [in] attributeValue  The value to set.
      */
     void setAttribute(QString const& attributeName, QString const& attributeValue);
+    void setAttribute(std::string const& attributeName, std::string const& attributeValue);
 
     /*!
      *  Gets the value of a given attribute.
@@ -74,7 +75,8 @@ public:
      *
      *      @return The value of the attribute or empty string if the given attribute is not found.
      */
-    QString getAttributeValue(QString const& attributeName);
+    std::string getAttributeValue(QString const& attributeName);
+    std::string getAttributeValue(std::string const& attributeName);
 
 private:
 	//! Disable assignment.
@@ -85,10 +87,10 @@ private:
 	//-----------------------------------------------------------------------------
 
     //! Name of the placeholder extension.
-    QString name_;
+    std::string name_;
 
     //! The attributes of the extension.
-    QMap<QString, QString> attributes_;
+    QMap<std::string, std::string > attributes_;
 
 };
 #endif // KACTUS2PLACEHOLDER_H

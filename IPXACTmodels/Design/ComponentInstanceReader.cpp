@@ -24,7 +24,8 @@ QSharedPointer<ComponentInstance> ComponentInstanceReader::createComponentInstan
     QSharedPointer<ComponentInstance> newComponentInstance(new ComponentInstance());
     NameGroupReader::parseNameGroup(instanceNode, newComponentInstance);
 
-    QString instanceName = instanceNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue();
+    auto instanceName = 
+        instanceNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue().toStdString();
     newComponentInstance->setInstanceName(instanceName);
 
     QDomNode componentRefNode = instanceNode.firstChildElement(QStringLiteral("ipxact:componentRef"));
@@ -35,7 +36,8 @@ QSharedPointer<ComponentInstance> ComponentInstanceReader::createComponentInstan
 
     if (docRevision == Document::Revision::Std14)
     {
-        QString isPresent = instanceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+        auto isPresent = 
+            instanceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue().toStdString();
         newComponentInstance->setIsPresent(isPresent);
     }
 
@@ -83,7 +85,7 @@ void ComponentInstanceReader::Details::parseExtensions(const QDomNode& component
     QDomElement uuidElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:uuid"));
     if (!uuidElement.isNull())
     {
-        instance->setUuid(uuidElement.firstChild().nodeValue());
+        instance->setUuid(uuidElement.firstChild().nodeValue().toStdString());
     }
 
     QDomElement draftNode = extensionsNode.firstChildElement(QStringLiteral("kactus2:draft"));
@@ -153,9 +155,9 @@ void ComponentInstanceReader::Details::parseImport(QDomElement const& importElem
 {
     if (!importElement.isNull())
     {
-        QString importReference = importElement.attribute(QStringLiteral("importRef"));
+        auto importReference = importElement.attribute(QStringLiteral("importRef")).toStdString();
 
-        if (!importReference.isEmpty())
+        if (!importReference.empty())
         {
             instance->setImportRef(importReference);
         }
@@ -177,7 +179,7 @@ void ComponentInstanceReader::Details::parsePortPositions(QDomElement const& por
 
     for (auto portIterator = portPositions.cbegin(); portIterator != portPositions.cend(); ++portIterator)
     {
-        instance->updateBusInterfacePosition(portIterator.key(), portIterator.value());
+        instance->updateBusInterfacePosition(portIterator.key().toStdString(), portIterator.value());
     }
 }
 
@@ -192,7 +194,7 @@ void ComponentInstanceReader::Details::parseAdHocVisibilities(QDomElement const&
 
     for (auto adHocIterator = adHocPositions.cbegin(); adHocIterator != adHocPositions.cend(); ++adHocIterator)
     {
-        instance->updateAdHocPortPosition(adHocIterator.key(), adHocIterator.value());
+        instance->updateAdHocPortPosition(adHocIterator.key().toStdString(), adHocIterator.value());
     }
 }
 
@@ -208,7 +210,7 @@ void ComponentInstanceReader::Details::parseApiInterfacePositions(QDomElement co
     for (auto apiInterfaceIterator = apiInterfacePositions.cbegin(); 
         apiInterfaceIterator != apiInterfacePositions.cend(); ++apiInterfaceIterator)
     {
-        instance->updateApiInterfacePosition(apiInterfaceIterator.key(), apiInterfaceIterator.value());
+        instance->updateApiInterfacePosition(apiInterfaceIterator.key().toStdString(), apiInterfaceIterator.value());
     }
 }
 
@@ -224,7 +226,7 @@ void ComponentInstanceReader::Details::parseComInterfacePositions(QDomElement co
     for (auto comInterfaceIterator = comInterfacePositions.cbegin(); 
         comInterfaceIterator != comInterfacePositions.cend(); ++comInterfaceIterator)
     {
-        instance->updateComInterfacePosition(comInterfaceIterator.key(), comInterfaceIterator.value());
+        instance->updateComInterfacePosition(comInterfaceIterator.key().toStdString(), comInterfaceIterator.value());
     }
 }
 
@@ -235,16 +237,17 @@ void ComponentInstanceReader::Details::parsePropertyValues(QDomElement const& pr
     QSharedPointer<ComponentInstance> instance)
 {
     QDomNodeList propertyValueNodes = propertyElement.elementsByTagName(QStringLiteral("kactus2:propertyValue"));
-    QMap<QString, QString> newPropertyValues;
+    QMap<std::string, std::string> newPropertyValues;
 
-    for (int propertyIndex = 0; propertyIndex < propertyValueNodes.count(); ++propertyIndex)
+    const int COUNT = propertyValueNodes.count();
+    for (int propertyIndex = 0; propertyIndex < COUNT; ++propertyIndex)
     {
         QDomNode propertyNode = propertyValueNodes.at(propertyIndex);
         QDomNamedNodeMap propertyAttributes = propertyNode.attributes();
 
-        QString propertyName = propertyAttributes.namedItem(QStringLiteral("name")).firstChild().nodeValue();
-        QString propertyValue = propertyAttributes.namedItem(QStringLiteral("value")).firstChild().nodeValue();
-        newPropertyValues.insert(propertyName, propertyValue);
+        auto name = propertyAttributes.namedItem(QStringLiteral("name")).firstChild().nodeValue().toStdString();
+        auto value = propertyAttributes.namedItem(QStringLiteral("value")).firstChild().nodeValue().toStdString();
+        newPropertyValues.insert(name, value);
     }
 
     instance->setPropertyValues(newPropertyValues);
@@ -259,20 +262,21 @@ QMap<QString, QPointF> ComponentInstanceReader::Details::createMappedPositions(Q
     QMap<QString, QPointF> positionMap;
 
     QDomNodeList positionNodeList = positionElement.elementsByTagName(itemIdentifier);
-    for (int positionIndex = 0; positionIndex < positionNodeList.count(); ++positionIndex)
+    const int COUNT = positionNodeList.count();
+    for (int positionIndex = 0; positionIndex < COUNT; ++positionIndex)
     {
         QDomNode singlePositionNode = positionNodeList.at(positionIndex);
-        QDomElement positionElement = singlePositionNode.toElement();
+        QDomElement element = singlePositionNode.toElement();
 
-        QString interfaceReference = positionElement.attribute(referenceIdentifier);
+        QString interfaceReference = element.attribute(referenceIdentifier);
 
-        if (!positionElement.hasAttribute(QStringLiteral("x")))
+        if (!element.hasAttribute(QStringLiteral("x")))
         {
-            positionElement = positionElement.firstChildElement(QStringLiteral("kactus2:position"));
+            element = element.firstChildElement(QStringLiteral("kactus2:position"));
         }
 
-        int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
-        int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
+        int positionX = element.attribute(QStringLiteral("x")).toInt();
+        int positionY = element.attribute(QStringLiteral("y")).toInt();
 
         positionMap.insert(interfaceReference, QPointF(positionX, positionY));
     }
@@ -288,9 +292,9 @@ void ComponentInstanceReader::Details::parseFileSetRef(QDomElement const& fileSe
 {
     if (!fileSetRefElement.isNull())
     {
-        QString fileSetReference = fileSetRefElement.firstChild().nodeValue();
+        auto fileSetReference = fileSetRefElement.firstChild().nodeValue().toStdString();
 
-        if (!fileSetReference.isEmpty())
+        if (!fileSetReference.empty())
         {
             instance->setFileSetRef(fileSetReference);
         }
@@ -305,9 +309,9 @@ void ComponentInstanceReader::Details::parseMapping(QDomElement const& mappingEl
 {
     if (!mappingElement.isNull())
     {
-        QString mapping = mappingElement.attribute(QStringLiteral("hwRef"));
+        auto mapping = mappingElement.attribute(QStringLiteral("hwRef")).toStdString();
 
-        if (!mapping.isEmpty())
+        if (!mapping.empty())
         {
             instance->setMapping(mapping);
         }

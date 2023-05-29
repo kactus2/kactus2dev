@@ -286,7 +286,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
 
                 if (dependentParam->getContentSource() != "Name")
                 {
-                    value = comIf->getPropertyValues().value(dependentParam->getContentSource(), "");
+                    value = QString::fromStdString(comIf->getPropertyValues().value(dependentParam->getContentSource().toStdString(), std::string()));
                 }
 
                 if (value == params.at(index) &&
@@ -304,7 +304,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
                     }
                     else
                     {
-                        identifier = comIf->getPropertyValues().value(apiParam->getContentSource(), "");
+                        identifier = QString::fromStdString(comIf->getPropertyValues().value(apiParam->getContentSource().toStdString(), ""));
                     }
 
                     if (apiParam->getType().contains('*'))
@@ -337,7 +337,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
                 }
                 else
                 {
-                    identifier = comIf->getPropertyValues().value(apiParam->getContentSource(), "");
+                    identifier = QString::fromStdString(comIf->getPropertyValues().value(apiParam->getContentSource().toStdString(), std::string()));
                 }
 
                 if (apiParam->getType().contains('*'))

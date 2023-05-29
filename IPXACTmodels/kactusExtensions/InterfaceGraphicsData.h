@@ -39,7 +39,7 @@ public:
      *      @param [in] position    Position of the interface.
      *      @param [in] direction   Direction of the interface.
      */
-    InterfaceGraphicsData(QString const& name, QPointF position = QPointF(), QVector2D direction = QVector2D());
+    InterfaceGraphicsData(std::string const& name, QPointF position = QPointF(), QVector2D direction = QVector2D());
 
     /*!
      *  Copy constructor.
@@ -75,7 +75,7 @@ public:
      *
      *      @return The type of the interface graphics data.
      */
-    virtual QString type() const;
+    std::string type() const final;
 
     /*!
      *  Writes the contents of the interface graphics data to an XML stream.
@@ -87,14 +87,14 @@ public:
      *
      *      @param [in] newName     The new name.
      */
-    void setName(QString const& newName);
+    void setName(std::string const& newName);
 
     /*!
      *  Get the name.
      *
      *      @return The name of the interface.
      */
-    QString getName() const;
+    std::string getName() const;
 
     /*!
      *  Set the position for the interface.
@@ -145,7 +145,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The name of the interface graphics data.
-    QString name_;
+    std::string name_;
 
     //! Extension containing the position of the interface.
     QSharedPointer<Kactus2Position> positionExtension_;

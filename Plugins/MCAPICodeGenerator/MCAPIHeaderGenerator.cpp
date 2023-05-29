@@ -142,16 +142,16 @@ void MCAPIHeaderGenerator::addGeneratedMCAPIToFileset(QString directory, QShared
     QString fileSetName;
 
     // Check if the software instance has and existing fileSet reference. 
-    if ( instance->getFileSetRef().isEmpty() )
+    if ( instance->getFileSetRef().empty() )
     {
         // If not, make a new one.
-        fileSetName = NameGenerationPolicy::instanceFilesetName( sysViewName, instance->getInstanceName() );
-        instance->setFileSetRef( fileSetName );
+        fileSetName = NameGenerationPolicy::instanceFilesetName( sysViewName, QString::fromStdString(instance->getInstanceName()) );
+        instance->setFileSetRef( fileSetName.toStdString() );
     }
     else
     {
         // If there is pre-existing reference, use it.
-        fileSetName = instance->getFileSetRef();
+        fileSetName = QString::fromStdString(instance->getFileSetRef());
     }
 
     // Obtain the the fileSet by name and set it as a source file group.

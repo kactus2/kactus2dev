@@ -48,7 +48,7 @@ designInstantiation_(designInstantiation),
 designConf_(designConf), 
 topInstance_(topInstance),
 parameters_(new QList<QSharedPointer<Parameter> >()),
-instances_(new QMap<QString,QSharedPointer<MetaInstance> >),
+instances_(new QMap<std::string,QSharedPointer<MetaInstance> >),
 interconnections_(new QList<QSharedPointer<MetaInterconnection> >),
 adHocWires_(new QList<QSharedPointer<MetaWire> >)
 {
@@ -209,7 +209,8 @@ void MetaDesign::findInstances()
         if (!component)
         {
             messages_->showError(QObject::tr("Design %1: Component of instance %2 was not found: %3")
-                .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
+                .arg(design_->getVlnv().toString(), 
+                    QString::fromStdString(instance->getInstanceName()), instanceVLNV.toString()));
             continue;   
         }
 
@@ -218,7 +219,7 @@ void MetaDesign::findInstances()
         if (designConf_)
         {
             activeView = ComponentSearch::findView(component,
-                QString::fromStdString(designConf_->getActiveView(instance->getInstanceName().toStdString())));
+                QString::fromStdString(designConf_->getActiveView(instance->getInstanceName())));
         }
 
         // No chosen active view -> If there is only one in the component, use it.
@@ -232,7 +233,9 @@ void MetaDesign::findInstances()
             {
                 messages_->showError(QObject::tr("Design %1: Instance %2 did not have specified active view, "
                     "and its component %3 has multiple possible views, so no active view was chosen.")
-                    .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
+                    .arg(design_->getVlnv().toString(), 
+                        QString::fromStdString(instance->getInstanceName()),
+                        instanceVLNV.toString()));
             }
         }
 
@@ -313,7 +316,7 @@ void MetaDesign::parseInstances()
         if (designConf_)
         {
             QSharedPointer<ViewConfiguration> viewConfig = designConf_->getViewConfiguration(
-                mInstance->getComponentInstance()->getInstanceName().toStdString());
+                mInstance->getComponentInstance()->getInstanceName());
 
             if (viewConfig)
             {
@@ -352,17 +355,19 @@ void MetaDesign::parseInterconnections()
             {
                 messages_->showError(QObject::tr("Design %1: Instance %2 referred by interconnection %3"
                     " does not exist.").arg(design_->getVlnv().toString(),
-                    connectionInterface->getComponentReference(), connection->name()));
+                        QString::fromStdString(connectionInterface->getComponentReference()),
+                        connection->name()));
                 continue;
             }
 
             QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->value(
-                connectionInterface->getBusReference());
+                QString::fromStdString(connectionInterface->getBusReference()));
             if (!mInterface)
             {
                 messages_->showError(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3"
                     " does not exist within component %4.")
-                    .arg(design_->getVlnv().toString(), connectionInterface->getBusReference(),
+                    .arg(design_->getVlnv().toString(), 
+                        QString::fromStdString(connectionInterface->getBusReference()),
                     connection->name(), mInstance->getComponent()->getVlnv().toString()));
                 continue;
             }
@@ -375,13 +380,13 @@ void MetaDesign::parseInterconnections()
         for (QSharedPointer<HierInterface> hierInterface : *connection->getHierInterfaces())
         {
             QSharedPointer<MetaInterface> mInterface = topInstance_->getInterfaces()->value(
-                hierInterface->getBusReference());
+                QString::fromStdString(hierInterface->getBusReference()));
 
             if (!mInterface)
             {
                 messages_->showError(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3"
                     " does not exist within component %4.").arg(design_->getVlnv().toString(),
-                        hierInterface->getBusReference(), connection->name(),
+                        QString::fromStdString(hierInterface->getBusReference()), connection->name(),
                     topInstance_->getComponent()->getVlnv().toString()));
                 continue;
             }
@@ -643,14 +648,14 @@ void MetaDesign::parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
     QString wireName,
     QSharedPointer<PartSelect> partSelect)
 {
-    QString defaultValue;
-    if (connection->getTiedValue().compare(QLatin1String("open")) == 0)
+    std::string defaultValue;
+    if (connection->getTiedValue().compare("open") == 0)
     {
         //defaultValue = "";
     }
-    else if (connection->getTiedValue().compare(QLatin1String("default")) == 0)
+    else if (connection->getTiedValue().compare("default") == 0)
     {
-        defaultValue = mPort->defaultValue_;
+        defaultValue = mPort->defaultValue_.toStdString();
     }
     else
     {
@@ -660,7 +665,7 @@ void MetaDesign::parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
     // No wire or default value means no assignment.
     if (!mWire)
     {
-        if (defaultValue.isEmpty() )
+        if (defaultValue.empty() )
         {
             messages_->showError(
                 QObject::tr("Design %1: Ad-hoc connection %2 needs either more ports or a tie-off.").arg(
@@ -678,7 +683,7 @@ void MetaDesign::parseAdHocAssignmentForPort(QSharedPointer<MetaPort> mPort,
 
     // Associate the port assignments with the wire.
     assignment->wire_ = mWire;
-    assignment->defaultValue_ = defaultValue;
+    assignment->defaultValue_ = QString::fromStdString(defaultValue);
     assignment->invert_ = false;
 
     // Map the port assignment to the port using the name of the wire.
@@ -731,14 +736,15 @@ void MetaDesign::findHierarchicalPortsInAdHoc(QSharedPointer<AdHocConnection> co
 {
     for (QSharedPointer<PortReference> portRef : *connection->getExternalPortReferences())
     {
-        QSharedPointer<MetaPort> mPort = topInstance_->getPorts()->value(portRef->getPortRef());
+        QSharedPointer<MetaPort> mPort = topInstance_->getPorts()->value(
+            QString::fromStdString(portRef->getPortRef()));
 
         if (!mPort)
         {
             messages_->showError(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3"
                 " does not exist within component %4.")
                 .arg(design_->getVlnv().toString(),
-                portRef->getPortRef(),
+                    QString::fromStdString(portRef->getPortRef()),
                 connection->name(),
                 topInstance_->getComponent()->getVlnv().toString()));
             continue;
@@ -764,17 +770,20 @@ void MetaDesign::findPortsInAdHoc(QSharedPointer<AdHocConnection> connection,
         {
             messages_->showError(
                 QObject::tr("Design %1: Instance %2 referred by ad-hoc connection %3 does not exist.")
-                .arg(design_->getVlnv().toString(), portRef->getComponentRef(), connection->name()));
+                .arg(design_->getVlnv().toString(),
+                    QString::fromStdString(portRef->getComponentRef()), connection->name()));
             continue;
         }
 
         // The port must be found within the ad-hoc ports recognized for the instance.
-        QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value(portRef->getPortRef());
+        QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value(QString::fromStdString(portRef->getPortRef()));
         if (!mPort)
         {
             messages_->showError(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3 does"
                 " not exist within component %4.")
-                .arg(design_->getVlnv().toString(), portRef->getPortRef(), connection->name(),
+                .arg(design_->getVlnv().toString(), 
+                    QString::fromStdString(portRef->getPortRef()),
+                    connection->name(),
                 mInstance->getComponent()->getVlnv().toString()));
             continue;
         }

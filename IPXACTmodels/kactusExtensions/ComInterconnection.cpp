@@ -62,8 +62,8 @@ Interconnection()
         {
             QDomNode activeInterfaceNode = interfaceList.at(interfaceIndex);
             QDomNamedNodeMap startInterfaceAttributes = activeInterfaceNode.attributes();
-            QString componentReference = startInterfaceAttributes.namedItem(QStringLiteral("componentRef")).nodeValue();
-            QString comReference = startInterfaceAttributes.namedItem(QStringLiteral("comRef")).nodeValue();
+            auto componentReference = startInterfaceAttributes.namedItem(QStringLiteral("componentRef")).nodeValue().toStdString();
+            auto comReference = startInterfaceAttributes.namedItem(QStringLiteral("comRef")).nodeValue().toStdString();
 
             QSharedPointer<ActiveInterface> comInterface (new ActiveInterface(componentReference, comReference));
             setInterface(comInterface);
@@ -72,7 +72,7 @@ Interconnection()
         QDomElement hierInterfaceElement = connectionElement.firstChildElement(QStringLiteral("kactus2:hierComInterface"));
         if (!hierInterfaceElement.isNull())
         {
-            QString comReference = hierInterfaceElement.attribute(QStringLiteral("comRef"));
+            auto comReference = hierInterfaceElement.attribute(QStringLiteral("comRef")).toStdString();
             QSharedPointer<HierInterface> hierarchicalInterface (new HierInterface(comReference));
             setInterface(hierarchicalInterface);
         }
@@ -98,9 +98,9 @@ ComInterconnection* ComInterconnection::clone() const
 //-----------------------------------------------------------------------------
 // Function: ComInterconnection::type()
 //-----------------------------------------------------------------------------
-QString ComInterconnection::type() const
+std::string ComInterconnection::type() const
 {
-    return QStringLiteral("kactus2:comConnection");
+    return "kactus2:comConnection";
 }
 
 //-----------------------------------------------------------------------------
@@ -121,8 +121,10 @@ void ComInterconnection::write(QXmlStreamWriter& writer) const
     }
 
     writer.writeEmptyElement(QStringLiteral("kactus2:activeComInterface"));
-    writer.writeAttribute(QStringLiteral("componentRef"), getStartInterface()->getComponentReference());
-    writer.writeAttribute(QStringLiteral("comRef"), getStartInterface()->getBusReference());
+    writer.writeAttribute(QStringLiteral("componentRef"),
+        QString::fromStdString(getStartInterface()->getComponentReference()));
+    writer.writeAttribute(QStringLiteral("comRef"), 
+        QString::fromStdString(getStartInterface()->getBusReference()));
 
     writeEndInterface(writer);
 
@@ -138,14 +140,15 @@ void ComInterconnection::writeEndInterface(QXmlStreamWriter& writer) const
     if (activeEndInterface)
     {
         writer.writeEmptyElement(QStringLiteral("kactus2:activeComInterface"));
-        writer.writeAttribute(QStringLiteral("componentRef"), activeEndInterface->getComponentReference());
+        writer.writeAttribute(QStringLiteral("componentRef"), 
+            QString::fromStdString(activeEndInterface->getComponentReference()));
     }
     else
     {
         writer.writeEmptyElement(QStringLiteral("kactus2:hierComInterface"));
     }
 
-    writer.writeAttribute(QStringLiteral("comRef"), getEndInterface()->getBusReference());
+    writer.writeAttribute(QStringLiteral("comRef"), QString::fromStdString(getEndInterface()->getBusReference()));
 }
 
 //-----------------------------------------------------------------------------

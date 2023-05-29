@@ -79,11 +79,11 @@ bool AdHocConnectionValidator::hasValidName(QSharedPointer<AdHocConnection> conn
 //-----------------------------------------------------------------------------
 // Function: AdHocConnectionValidator::hasValidIsPresent()
 //-----------------------------------------------------------------------------
-bool AdHocConnectionValidator::hasValidIsPresent(QString const& isPresent) const
+bool AdHocConnectionValidator::hasValidIsPresent(std::string const& isPresent) const
 {
-    if (!isPresent.isEmpty())
+    if (!isPresent.empty())
     {
-        QString solvedValue = parser_->parseExpression(isPresent);
+        QString solvedValue = parser_->parseExpression(QString::fromStdString(isPresent));
 
         bool toIntOk = true;
         int intValue = solvedValue.toInt(&toIntOk);
@@ -102,14 +102,13 @@ bool AdHocConnectionValidator::hasValidIsPresent(QString const& isPresent) const
 //-----------------------------------------------------------------------------
 bool AdHocConnectionValidator::hasValidTiedValue(QSharedPointer<AdHocConnection> connection) const
 {
-    if (!connection->getTiedValue().isEmpty())
+    if (!connection->getTiedValue().empty())
     {
-        QString tiedValue = connection->getTiedValue();
+        auto tiedValue = connection->getTiedValue();
         bool toInt = true;
-        parser_->parseExpression(tiedValue).toInt(&toInt);
+        parser_->parseExpression(QString::fromStdString(tiedValue)).toInt(&toInt);
 
-        return toInt || tiedValue.compare(QLatin1String("default"), Qt::CaseInsensitive) == 0 ||
-            tiedValue.compare(QLatin1String("open"), Qt::CaseInsensitive) == 0;
+        return toInt || tiedValue.compare("default") == 0 || tiedValue.compare("open") == 0;
     }
 
     return true;
@@ -147,9 +146,9 @@ bool AdHocConnectionValidator::hasValidPortReferences(QSharedPointer<AdHocConnec
 // Function: AdHocConnectionValidator::internalPortReferenceIsValid()
 //-----------------------------------------------------------------------------
 bool AdHocConnectionValidator::internalPortReferenceIsValid(QSharedPointer<PortReference> portReference,
-    QString const& tiedValue) const
+    std::string const& tiedValue) const
 {
-    if (portReference->getComponentRef().isEmpty())
+    if (portReference->getComponentRef().empty())
     {
         return false;
     }
@@ -178,10 +177,10 @@ bool AdHocConnectionValidator::internalPortReferenceIsValid(QSharedPointer<PortR
 // Function: AdHocConnectionValidator::getReferencedComponentInstance()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstance> AdHocConnectionValidator::getReferencedComponentInstance(
-    QString const& instanceReference) const
+    std::string const& instanceReference) const
 {
     QSharedPointer<ComponentInstance> foundInstance = nullptr;
-    if (instanceReference.isEmpty() || availableComponentInstances_->isEmpty())
+    if (instanceReference.empty() || availableComponentInstances_->isEmpty())
     {
         return foundInstance;
     }
@@ -222,13 +221,13 @@ QSharedPointer<Port> AdHocConnectionValidator::getReferencedPort(QSharedPointer<
 {
     QSharedPointer<Port> foundPort = nullptr;
 
-    if (portReference->getPortRef().isEmpty())
+    if (portReference->getPortRef().empty())
     {
         return foundPort;
     }
 
     auto it = std::find_if(component->getPorts()->cbegin(), component->getPorts()->cend(),
-        [&portReference](auto const& currentPort) { return currentPort->name() == portReference->getPortRef(); });
+        [&portReference](auto const& currentPort) { return currentPort->name().toStdString() == portReference->getPortRef(); });
 
     if (it != component->getPorts()->cend())
     {
@@ -241,10 +240,10 @@ QSharedPointer<Port> AdHocConnectionValidator::getReferencedPort(QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: AdHocConnectionValidator::tiedValueIsValidWithReferencedPort()
 //-----------------------------------------------------------------------------
-bool AdHocConnectionValidator::tiedValueIsValidWithReferencedPort(QString const& tiedValue,
+bool AdHocConnectionValidator::tiedValueIsValidWithReferencedPort(std::string const& tiedValue,
     QSharedPointer<Port> referencedPort) const
 {
-    return (tiedValue != QLatin1String("default") || referencedPort->getDefaultValue().isEmpty() == false);
+    return (tiedValue != "default" || referencedPort->getDefaultValue().isEmpty() == false);
 }
 
 //-----------------------------------------------------------------------------
@@ -252,7 +251,7 @@ bool AdHocConnectionValidator::tiedValueIsValidWithReferencedPort(QString const&
 //-----------------------------------------------------------------------------
 bool AdHocConnectionValidator::externalPortReferenceIsValid(QSharedPointer<PortReference> externalPort) const
 {
-    if (!externalPort->getPortRef().isEmpty())
+    if (!externalPort->getPortRef().empty())
     {
         return hasValidIsPresent(externalPort->getIsPresent()) &&
             portReferencePartSelectIsValid(externalPort->getPartSelect());
@@ -331,7 +330,7 @@ void AdHocConnectionValidator::findErrorsInName(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 // Function: AdHocConnectionValidator::findErrorsInIsPresent()
 //-----------------------------------------------------------------------------
-void AdHocConnectionValidator::findErrorsInIsPresent(QVector<QString>& errors, QString const& isPresent,
+void AdHocConnectionValidator::findErrorsInIsPresent(QVector<QString>& errors, std::string const& isPresent,
     QString const& innerContext, QString const& context) const
 {
     if (!hasValidIsPresent(isPresent))
@@ -384,30 +383,30 @@ void AdHocConnectionValidator::findErrorsInPortReferences(QVector<QString>& erro
 // Function: AdHocConnectionValidator::findErrorsInInternalPortReference()
 //-----------------------------------------------------------------------------
 void AdHocConnectionValidator::findErrorsInInternalPortReference(QVector<QString>& errors,
-    QSharedPointer<PortReference> internalPort, QString const& tiedValue, QString const& elementName,
+    QSharedPointer<PortReference> internalPort, std::string const& tiedValue, QString const& elementName,
     QString const& innerContext, QString const& context) const
 {
     QSharedPointer<ComponentInstance> referencedInstance =
         getReferencedComponentInstance(internalPort->getComponentRef());
 
-    if (internalPort->getComponentRef().isEmpty())
+    if (internalPort->getComponentRef().empty())
     {
-        errors.append(QObject::tr("No component reference set for internal port reference in %1 within %2")
-            .arg(innerContext).arg(context));
+        errors.append(QObject::tr("No component reference set for internal port reference in %1 within %2").arg(
+            innerContext, context));
     }
     else if (!referencedInstance)
     {
         errors.append(QObject::tr("Component instance %1 referenced by internal port reference in %2 within %3 "
             "was not found")
-            .arg(internalPort->getComponentRef()).arg(innerContext).arg(context));
+            .arg(QString::fromStdString(internalPort->getComponentRef()), innerContext, context));
     }
 
     QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
 
-    if (internalPort->getPortRef().isEmpty())
+    if (internalPort->getPortRef().empty())
     {
-        errors.append(QObject::tr("No port reference set for internal port reference in %1 within %2")
-            .arg(innerContext).arg(context));
+        errors.append(QObject::tr("No port reference set for internal port reference in %1 within %2").arg(
+            innerContext, context));
     }
     else if (referencedComponent)
     {
@@ -417,15 +416,15 @@ void AdHocConnectionValidator::findErrorsInInternalPortReference(QVector<QString
             if (!tiedValueIsValidWithReferencedPort(tiedValue, referencedComponentPort))
             {
                 errors.append(QObject::tr("No default value found for port '%1' referenced by internal port "
-                    "reference in %2 within %3")
-                    .arg(internalPort->getPortRef()).arg(innerContext).arg(context));
+                    "reference in %2 within %3").arg(
+                        QString::fromStdString(internalPort->getPortRef()), innerContext, context));
             }
         }
         else
         {
             errors.append(QObject::tr("Port '%1' referenced by the internal port reference  in %2 within %3 was "
-                "not found")
-                .arg(internalPort->getPortRef()).arg(innerContext).arg(context));
+                "not found").arg(
+                    QString::fromStdString(internalPort->getPortRef()), innerContext, context));
         }
     }
 
@@ -440,7 +439,7 @@ void AdHocConnectionValidator::findErrorsInExternalPortReference(QVector<QString
     QSharedPointer<PortReference> externalPort, QString const& elementName, QString const& innerContext,
     QString const& context) const
 {
-    if (externalPort->getPortRef().isEmpty())
+    if (externalPort->getPortRef().empty())
     {
         errors.append(QObject::tr("No port reference set for external port reference in %1 within %2")
             .arg(innerContext).arg(context));

@@ -610,14 +610,14 @@ public:
      *
      *      @param [in] newPortName     Name of the new port.
      */
-    virtual void addWirePort(std::string const& newPortName = std::string("")) override final;
+    virtual void addWirePort(std::string const& newPortName = std::string()) final;
 
     /*!
      *  Add a port abstraction containing transactional.
      *
      *      @param [in] newPortName     Name of the new port.
      */
-    virtual void addTransactionalPort(std::string const& newPortName = std::string("")) override final;
+    virtual void addTransactionalPort(std::string const& newPortName = std::string()) final;
     
     /*!
      *  Add a wire signal with the selected interface mode to the selected port abstraction.

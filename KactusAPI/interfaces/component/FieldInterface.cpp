@@ -128,7 +128,7 @@ bool FieldInterface::setName(string const& currentName, string const& newName)
     QSharedPointer<Field> editedField = getField(currentName);
     if (editedField && nameHasChanged(newName, currentName))
     {
-        QString uniqueNewName = getUniqueName(newName, FIELD_TYPE);
+        auto uniqueNewName = getUniqueName(newName, FIELD_TYPE);
 
         editedField->setName(uniqueNewName);
         return true;
@@ -814,7 +814,7 @@ QSharedPointer<Field> FieldInterface::getField(string const& fieldName) const
 //-----------------------------------------------------------------------------
 void FieldInterface::addField(int const& row, string const& newFieldName)
 {
-    QString fieldName = getUniqueName(newFieldName, FIELD_TYPE);
+    auto fieldName = getUniqueName(newFieldName, FIELD_TYPE);
 
     QSharedPointer<Field> newField(new Field());
     newField->setName(fieldName);

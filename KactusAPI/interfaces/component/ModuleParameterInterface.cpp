@@ -107,7 +107,7 @@ std::vector<std::string> ModuleParameterInterface::getItemNames() const
 //-----------------------------------------------------------------------------
 void ModuleParameterInterface::addModuleParameter(int const& row, std::string const& newParameterName)
 {
-    QString parameterName = getUniqueName(newParameterName, "parameter");
+    auto parameterName = getUniqueName(newParameterName, "parameter");
 
     QSharedPointer<ModuleParameter> newParameter(new ModuleParameter());
     newParameter->setName(parameterName);
