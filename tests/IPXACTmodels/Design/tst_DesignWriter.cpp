@@ -103,8 +103,7 @@ void tst_DesignWriter::testWriteSimpleDesign()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     //compareOutputToExpected(output, expectedOutput);
     QCOMPARE(output, expectedOutput);
@@ -129,7 +128,7 @@ void tst_DesignWriter::testWriteSimpleDesign()
         "</ipxact:design>\n"
         ;
 
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -170,8 +169,7 @@ void tst_DesignWriter::testWriteSimple2022Design()
         "</ipxact:design>\n"
     );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -210,8 +208,7 @@ void tst_DesignWriter::testWriteProcessingInstructions()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QCOMPARE(output, expectedOutput);
 }
@@ -281,8 +278,7 @@ void tst_DesignWriter::testWriteComponentInstances()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -367,8 +363,7 @@ void tst_DesignWriter::testWrite2022ComponentInstances()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -485,8 +480,7 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -577,8 +571,7 @@ void tst_DesignWriter::testWriteInterconnections()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -668,8 +661,7 @@ void tst_DesignWriter::testWrite2022Interconnections()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -736,8 +728,7 @@ void tst_DesignWriter::testWriteInterconnectionExtensions()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -819,8 +810,7 @@ void tst_DesignWriter::testWriteMonitorInterconnections()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -899,8 +889,7 @@ void tst_DesignWriter::testWrite2022MonitorInterconnections()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -1002,8 +991,7 @@ void tst_DesignWriter::testWriteAdHocConnections()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -1101,8 +1089,7 @@ void tst_DesignWriter::testWrite2022AdHocConnections()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -1211,8 +1198,7 @@ void tst_DesignWriter::testWrite2022SubPortReferences()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -1281,8 +1267,7 @@ void tst_DesignWriter::testWriteAdHocConnectionExtensions()
         "</ipxact:design>\n"
         );
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     compareOutputToExpected(output, expectedOutput);
 }
@@ -1308,8 +1293,7 @@ void tst_DesignWriter::testWriteParameters()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -1357,8 +1341,7 @@ void tst_DesignWriter::testWriteAssertions()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -1410,8 +1393,7 @@ void tst_DesignWriter::testWriteVendorExtensions()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -1458,8 +1440,7 @@ void tst_DesignWriter::testWriteColumns()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -1490,7 +1471,7 @@ void tst_DesignWriter::testWriteColumns()
 
     testDesign->removeColumn(otherColumn);
 
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     expectedOutput =
         "<?xml version=\"1.0\"?>\n"
@@ -1519,14 +1500,14 @@ void tst_DesignWriter::testWriteColumns()
 
     QSharedPointer<Design> otherDesign (new Design(*testDesign.data()));
 
-    designWriter.writeDesign(xmlStreamWriter, otherDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, otherDesign);
     compareOutputToExpected(output, expectedOutput);
 
     output.clear();
     QSharedPointer<Design> newDesign (new Design());
     newDesign = otherDesign;
 
-    designWriter.writeDesign(xmlStreamWriter, otherDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, otherDesign);
     compareOutputToExpected(output, expectedOutput);
 }
 
@@ -1552,8 +1533,7 @@ void tst_DesignWriter::testWritePortAdHocVisibilitiesAndPositions()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -1609,8 +1589,7 @@ void tst_DesignWriter::testWriteApiDependencies()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -1670,8 +1649,7 @@ void tst_DesignWriter::testWriteHierApiDependencies()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -1727,8 +1705,7 @@ void tst_DesignWriter::testWriteComConnections()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -1785,8 +1762,7 @@ void tst_DesignWriter::testWriteHierComConnections()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    DesignWriter designWriter;
-    designWriter.writeDesign(xmlStreamWriter, testDesign);
+    DesignWriter::writeDesign(xmlStreamWriter, testDesign);
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"

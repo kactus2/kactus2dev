@@ -80,17 +80,26 @@ namespace DesignReader
          */
         void parseInterconnectionExtensions(const QDomNode& interconnectionNode,
             QSharedPointer<Interconnection> interconnection);
+
         /*!
          *  Reads an active interface.
          *
          *      @param [in] interfaceNode   The XML description of the active interface.
          *      @param [in] newInterface    The new interface item.
+         *      @param [in] docRevision     The applied IP-XACT standard revision.
          */
         void parseActiveInterface(QDomNode const& interfaceNode, QSharedPointer<ActiveInterface> newInterface,
             Document::Revision docRevision);
 
-        QString parseComponentReference(QDomNode const& interfaceNode, Document::Revision docRevision);
-
+        /*!
+         * Reads a component reference for active interface, monitor interface and ad-hoc connection.
+         *
+         *     @param [in] interfaceNode  <Description>
+         *     @param [in] docRevision  <Description>
+         *
+         *     @return The read component reference.
+         */
+         QString parseComponentReference(QDomNode const& interfaceNode, Document::Revision docRevision);
 
         /*!
          *  Reads a hierarchical interface.
@@ -122,6 +131,7 @@ namespace DesignReader
          *
          *      @param [in] interfaceNode   The XML description of the monitor interface.
          *      @param [in] newInterface    The new interface item.
+         *      @param [in] docRevision     The applied IP-XACT standard revision.
          */
         void parseMonitorInterface(QDomNode const& interfaceNode, QSharedPointer<MonitorInterface> newInterface,
             Document::Revision docRevision);
@@ -147,6 +157,7 @@ namespace DesignReader
          *
          *      @param [in] internalNodes       XML description of the internal port references.
          *      @param [in] newAdHocConnection  The new ad-hoc connection item.
+         *      @param [in] docRevision         The applied IP-XACT standard revision.
          */
         void parseInternalPortReferences(const QDomNodeList& internalNodes,
             QSharedPointer<AdHocConnection> newAdHocConnection, Document::Revision docRevision);
@@ -156,6 +167,7 @@ namespace DesignReader
          *
          *      @param [in] externalNodes       XML description of the external port references.
          *      @param [in] newAdHocConnection  The new ad-hoc connection item.
+         *      @param [in] docRevision         The applied IP-XACT standard revision.
          */
         void parseExternalPortReferences(const QDomNodeList& externalNodes,
             QSharedPointer<AdHocConnection> newAdHocConnection,
@@ -165,11 +177,20 @@ namespace DesignReader
          *  Creates a port reference.
          *
          *      @param [in] portReferenceNode   The XML description of the port.
+         *      @param [in] docRevision         The applied IP-XACT standard revision.
          */
         QSharedPointer<PortReference> createPortReference(QDomNode const& portReferenceNode,
             Document::Revision docRevision);
 
-        void parsePartSelect(QDomNode const& portReferenceNode, QSharedPointer<PortReference> newPortReference);
+        /*!
+         * Reads a part select.
+         *
+         *     @param [in] portReferenceNode    The XML description of the port reference containing the part select.
+         *     @param [in] newPortReference     The port reference item.
+         *
+         *     @return 
+         */
+         void parsePartSelect(QDomNode const& portReferenceNode, QSharedPointer<PortReference> portReference);
 
         /*!
          *  Reads ad-hoc connection extensions.
@@ -196,7 +217,15 @@ namespace DesignReader
          */
         void parseColumnLayout(QDomNode const& columnNode, QSharedPointer<Design> design);
 
-        void parseRoutes(QDomElement const& routesElement, QSharedPointer<Design> design);
+        /*!
+         * Reads the route for a connection (Kactus2 extension).
+         *
+         *     @param [in] routesElement    The XML description of the route.
+         *     @param [in] design           The new design item.
+         *
+         *     @return 
+         */
+         void parseRoutes(QDomElement const& routesElement, QSharedPointer<Design> design);
 
         /*!
          *  Reads the software instances (Kactus2 extension).

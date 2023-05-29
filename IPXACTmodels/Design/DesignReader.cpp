@@ -429,7 +429,8 @@ QSharedPointer<PortReference> DesignReader::Details::createPortReference(QDomNod
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parsePartSelect()
 //-----------------------------------------------------------------------------
-void DesignReader::Details::parsePartSelect(QDomNode const& portReferenceNode, QSharedPointer<PortReference> portReference)
+void DesignReader::Details::parsePartSelect(QDomNode const& portReferenceNode,
+    QSharedPointer<PortReference> portReference)
 {
     QDomNode partSelectNode = portReferenceNode.firstChildElement(QStringLiteral("ipxact:partSelect"));
 

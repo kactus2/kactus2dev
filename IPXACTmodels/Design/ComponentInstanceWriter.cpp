@@ -6,24 +6,16 @@
 // Date: 02.09.2015
 //
 // Description:
-// Writer class for IP-XACT component instance element.
+// Writer for IP-XACT component instance element.
 //-----------------------------------------------------------------------------
 
 #include "ComponentInstanceWriter.h"
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceWriter::ComponentInstanceWriter()
-//-----------------------------------------------------------------------------
-ComponentInstanceWriter::ComponentInstanceWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstanceWriter::writeComponentInstance()
 //-----------------------------------------------------------------------------
 void ComponentInstanceWriter::writeComponentInstance(QXmlStreamWriter& writer,
-    QSharedPointer<ComponentInstance> instance, Document::Revision docRevision) const
+    QSharedPointer<ComponentInstance> instance, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:componentInstance"));
     writer.writeTextElement(QStringLiteral("ipxact:instanceName"), instance->name());
@@ -39,14 +31,14 @@ void ComponentInstanceWriter::writeComponentInstance(QXmlStreamWriter& writer,
 
     CommonItemsWriter::writeIsPresent(writer, instance->getIsPresent());
 
-    writeConfigurableVLNVReference(writer, instance->getComponentRef(), QStringLiteral("ipxact:componentRef"));
+    Details::writeConfigurableVLNVReference(writer, instance->getComponentRef(), QStringLiteral("ipxact:componentRef"));
 
     if (docRevision == Document::Revision::Std22)
     {
-        writePowerDomainLinks(writer, instance);
+        Details::writePowerDomainLinks(writer, instance);
     }
 
-    writeVendorExtensions(writer, instance);
+    CommonItemsWriter::writeVendorExtensions(writer, instance);
 
     writer.writeEndElement(); // ipxact:componentInstance
 }
@@ -54,12 +46,12 @@ void ComponentInstanceWriter::writeComponentInstance(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceWriter::writeConfigurableVLNVReference()
 //-----------------------------------------------------------------------------
-void ComponentInstanceWriter::writeConfigurableVLNVReference(QXmlStreamWriter& writer,
-    QSharedPointer<ConfigurableVLNVReference> VLNVreference, QString const& xmlElementName) const
+void ComponentInstanceWriter::Details::writeConfigurableVLNVReference(QXmlStreamWriter& writer,
+    QSharedPointer<ConfigurableVLNVReference> VLNVreference, QString const& xmlElementName)
 {
     writer.writeStartElement(xmlElementName);
 
-    writeVLNVAttributes(writer, *VLNVreference);
+    CommonItemsWriter::writeVLNVAttributes(writer, *VLNVreference);
 
     if (!VLNVreference->getConfigurableElementValues()->isEmpty())
     {
@@ -82,8 +74,8 @@ void ComponentInstanceWriter::writeConfigurableVLNVReference(QXmlStreamWriter& w
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceWriter::writePowerDomainLinks()
 //-----------------------------------------------------------------------------
-void ComponentInstanceWriter::writePowerDomainLinks(QXmlStreamWriter& writer, 
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceWriter::Details::writePowerDomainLinks(QXmlStreamWriter& writer,
+    QSharedPointer<ComponentInstance> instance)
 {
     if (instance->getPowerDomainLinks()->isEmpty())
     {
