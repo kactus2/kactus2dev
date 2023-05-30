@@ -128,7 +128,7 @@ void tst_AbstractionDefinitionReader::testReadDocumentNameGroupAndMandatoryField
             "<ipxact:name>MinimalDefinition</ipxact:name>"
             "<ipxact:version>1.0</ipxact:version>"
             "<ipxact:displayName>testDisplayName</ipxact:displayName>"
-            "<ipxact:shortDescription>testShortDesc.</ipxact:shortDescription>"
+            "<ipxact:shortDescription>testShortDescription</ipxact:shortDescription>"
             "<ipxact:description>testDescription</ipxact:description>"
             "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBus\" version=\"2.0\"/>"
         "</ipxact:abstractionDefinition>"));
@@ -601,7 +601,7 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-202/ "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
             "<ipxact:vendor>TUT</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
@@ -614,24 +614,14 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
                     "<ipxact:match>false</ipxact:match>"
                     "<ipxact:transactional>"
                         "<ipxact:qualifier>"
-                            "<ipxact:isData>true</ipxact:isData>"
-                        "</ipxact:qualifier>"        
-                        "<ipxact:onMaster>"
+                            "<ipxact:isClockEn level=\"high\">true</ipxact:isClockEn>"
+                        "</ipxact:qualifier>"
+                        "<ipxact:onInitiator>"
                             "<ipxact:presence>optional</ipxact:presence>"
                             "<ipxact:initiative>requires</ipxact:initiative>"
                             "<ipxact:kind>tlm_port</ipxact:kind>"
                             "<ipxact:busWidth>32</ipxact:busWidth>"
-                        "</ipxact:onMaster>" 
-                    "</ipxact:transactional>"
-                    "<ipxact:transactional>"
-                        "<ipxact:qualifier>"
-                            "<ipxact:isClockEn level=\"high\">true</ipxact:isClockEn>"
-                        "</ipxact:qualifier>"
-                        "<ipxact:onInitiator>"
-                            "<ipxact:presence>required</ipxact:presence>"
-                            "<ipxact:width>widthExpression</ipxact:width>"
-                            "<ipxact:direction>inout</ipxact:direction>"
-                        "</ipxact:onInitiator>"
+                        "</ipxact:onInitiator>" 
                     "</ipxact:transactional>"
                 "</ipxact:port>"
             "</ipxact:ports>"
@@ -644,21 +634,22 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
 
     QCOMPARE(port->hasTransactional(), true);
 
-    auto tranasctionalQualifier = port->getQualifier();
-    QCOMPARE(tranasctionalQualifier->isData, true);
-    QCOMPARE(tranasctionalQualifier->isAddress, false);
-    QCOMPARE(tranasctionalQualifier->isClock, false);
-    QCOMPARE(tranasctionalQualifier->isReset, false);
+    auto transactionalQualifier = port->getQualifier();
+    QCOMPARE(transactionalQualifier->isData, false);
+    QCOMPARE(transactionalQualifier->isAddress, false);
+    QCOMPARE(transactionalQualifier->isClockEn, true);
+    QCOMPARE(transactionalQualifier->isReset, false);
+    QCOMPARE(transactionalQualifier->clockEnLevel, QStringLiteral("high"));
 
     QSharedPointer<TransactionalAbstraction> transactional = port->getTransactional();
 
-    QCOMPARE(transactional->hasMasterPort(), true);
+    QCOMPARE(transactional->hasInitiatorPort(), true);
 
-    QSharedPointer<TransactionalPort> masterPort = transactional->getMasterPort();
-    QCOMPARE(masterPort->getPresence(), PresenceTypes::OPTIONAL);
-    QCOMPARE(masterPort->getInitiative(), QString("requires"));
-    QCOMPARE(masterPort->getKind(), QString("tlm_port"));
-    QCOMPARE(masterPort->getBusWidth(), QString("32"));
+    QSharedPointer<TransactionalPort> initiatorPort = transactional->getInitiatorPort();
+    QCOMPARE(initiatorPort->getPresence(), PresenceTypes::OPTIONAL);
+    QCOMPARE(initiatorPort->getInitiative(), QString("requires"));
+    QCOMPARE(initiatorPort->getKind(), QString("tlm_port"));
+    QCOMPARE(initiatorPort->getBusWidth(), QString("32"));
 }
 
 //-----------------------------------------------------------------------------
