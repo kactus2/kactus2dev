@@ -6,7 +6,7 @@
 // Date: 18.08.2015
 //
 // Description:
-// Reader class for ipxact:wire within abstraction definition.
+// Reader for ipxact:wire within abstraction definition.
 //-----------------------------------------------------------------------------
 
 #include "WireAbstractionReader.h"
@@ -14,40 +14,27 @@
 #include <IPXACTmodels/common/CellSpecification.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
+
 #include <IPXACTmodels/common/TimingConstraint.h>
 #include "WireAbstraction.h"
 #include "WirePort.h"
 
 //-----------------------------------------------------------------------------
-// Function: WireAbstractionReader::WireAbstractionReader()
-//-----------------------------------------------------------------------------
-WireAbstractionReader::WireAbstractionReader(QObject* parent) : QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: WireAbstractionReader::~WireAbstractionReader()
-//-----------------------------------------------------------------------------
-WireAbstractionReader::~WireAbstractionReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::createWireAbstractionFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<WireAbstraction> WireAbstractionReader::createWireAbstractionFrom(QDomNode const& wireNode) const
+QSharedPointer<WireAbstraction> WireAbstractionReader::createWireAbstractionFrom(QDomNode const& wireNode,
+    Document::Revision revision)
 {
     QSharedPointer<WireAbstraction> wire(new WireAbstraction());
 
-    parseQualifier(wireNode, wire);
+    Details::parseQualifier(wireNode, wire);
 
-    parseSystems(wireNode, wire);
+    Details::parseSystems(wireNode, wire);
 
-    parseMaster(wireNode, wire);
+    Details::parseInitiator(wireNode, wire, revision);
 
-    parseSlave(wireNode, wire);
+    Details::parseTarget(wireNode, wire, revision);
 
     wire->setDefaultValue(wireNode.firstChildElement(QStringLiteral("ipxact:defaultValue")).firstChild().nodeValue());
 
@@ -59,6 +46,7 @@ QSharedPointer<WireAbstraction> WireAbstractionReader::createWireAbstractionFrom
         {
             wire->setDriverType(General::str2DriverType(driverNode.attribute(QStringLiteral("driverType")),
                 General::ANY));
+            wire->setRequiresDriver(true);
         }
     }
 
@@ -68,51 +56,21 @@ QSharedPointer<WireAbstraction> WireAbstractionReader::createWireAbstractionFrom
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::parseQualifier()
 //-----------------------------------------------------------------------------
-void WireAbstractionReader::parseQualifier(QDomNode const& wireNode, 
-    QSharedPointer<WireAbstraction> wire) const
+void WireAbstractionReader::Details::parseQualifier(QDomNode const& wireNode,
+    QSharedPointer<WireAbstraction> wire)
 {
     QDomNode qualifierNode = wireNode.firstChildElement(QStringLiteral("ipxact:qualifier"));
 
-    if (!qualifierNode.isNull())
-    {
-        Qualifier readQualifier;
-        bool isData = qualifierNode.firstChildElement(QStringLiteral("ipxact:isData")).firstChild().nodeValue() ==
-            QStringLiteral("true");
-        bool isAddress = qualifierNode.firstChildElement(
-            QStringLiteral("ipxact:isAddress")).firstChild().nodeValue() == QStringLiteral("true");
-        
-        if (isData && isAddress)
-        {
-            wire->getQualifier()->isData = true;
-            wire->getQualifier()->isAddress = true;
-        }
-        else if (isData)
-        {
-            wire->getQualifier()->isData = true;
-        }
-        else if (isAddress)
-        {
-            wire->getQualifier()->isAddress = true;
-        }
+    auto qualifier = wire->getQualifier();
 
-        if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isClock")).firstChild().nodeValue() ==
-            QStringLiteral("true"))
-        {
-            wire->getQualifier()->isClock = true;
-        }
-        else if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isReset")).firstChild().nodeValue() == 
-            QStringLiteral("true"))
-        {
-            wire->getQualifier()->isReset = true;
-        }          
-    }
+    CommonItemsReader::parseQualifier(qualifierNode, qualifier);
 }
 
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::parseSystems()
 //-----------------------------------------------------------------------------
-void WireAbstractionReader::parseSystems(QDomNode const& wireNode, 
-    QSharedPointer<WireAbstraction> wire) const
+void WireAbstractionReader::Details::parseSystems(QDomNode const& wireNode, 
+    QSharedPointer<WireAbstraction> wire)
 {
     QDomNodeList systemNodes = wireNode.toElement().elementsByTagName(QStringLiteral("ipxact:onSystem"));
 
@@ -129,7 +87,7 @@ void WireAbstractionReader::parseSystems(QDomNode const& wireNode,
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::parseWirePort()
 //-----------------------------------------------------------------------------
-QSharedPointer<WirePort> WireAbstractionReader::parseWirePort(QDomNode const& wirePortNode) const
+QSharedPointer<WirePort> WireAbstractionReader::Details::parseWirePort(QDomNode const& wirePortNode)
 {
     QSharedPointer<WirePort> wirePort(new WirePort());
 
@@ -137,7 +95,12 @@ QSharedPointer<WirePort> WireAbstractionReader::parseWirePort(QDomNode const& wi
     wirePort->setPresence(PresenceTypes::str2Presence(presenceNode.firstChild().nodeValue(),
         PresenceTypes::UNKNOWN));
 
-    wirePort->setWidth(wirePortNode.firstChildElement(QStringLiteral("ipxact:width")).firstChild().nodeValue());
+    auto widthElement = wirePortNode.firstChildElement(QStringLiteral("ipxact:width")).firstChild();
+
+    wirePort->setWidth(widthElement.nodeValue());
+
+    wirePort->setAllBits(
+        widthElement.attributes().namedItem(QStringLiteral("allBits")).nodeValue() == QStringLiteral("true"));
 
     QDomNode directionNode = wirePortNode.firstChildElement(QStringLiteral("ipxact:direction"));
     wirePort->setDirection(DirectionTypes::str2Direction(directionNode.firstChild().nodeValue(),
@@ -153,7 +116,7 @@ QSharedPointer<WirePort> WireAbstractionReader::parseWirePort(QDomNode const& wi
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::parseConstraints()
 //-----------------------------------------------------------------------------
-void WireAbstractionReader::parseConstraints(QDomNode const& wirePortNode, QSharedPointer<WirePort> wirePort) const
+void WireAbstractionReader::Details::parseConstraints(QDomNode const& wirePortNode, QSharedPointer<WirePort> wirePort)
 {
     QDomNode constraintsNode = wirePortNode.firstChildElement(QStringLiteral("ipxact:modeConstraints"));
     if (!constraintsNode.isNull())
@@ -181,7 +144,7 @@ void WireAbstractionReader::parseConstraints(QDomNode const& wirePortNode, QShar
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::parseTimingConstraint()
 //-----------------------------------------------------------------------------
-QSharedPointer<TimingConstraint> WireAbstractionReader::parseTimingConstraint(QDomElement const& timingNode) const
+QSharedPointer<TimingConstraint> WireAbstractionReader::Details::parseTimingConstraint(QDomElement const& timingNode)
 {
     QSharedPointer<TimingConstraint> timingConstraint(new TimingConstraint());
 
@@ -215,7 +178,7 @@ QSharedPointer<TimingConstraint> WireAbstractionReader::parseTimingConstraint(QD
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::parseCellSpecification()
 //-----------------------------------------------------------------------------
-QSharedPointer<CellSpecification> WireAbstractionReader::parseCellSpecification(QDomElement const& cellNode) const
+QSharedPointer<CellSpecification> WireAbstractionReader::Details::parseCellSpecification(QDomElement const& cellNode)
 {
     QSharedPointer<CellSpecification> cellSpecification(new CellSpecification());
 
@@ -260,8 +223,8 @@ QSharedPointer<CellSpecification> WireAbstractionReader::parseCellSpecification(
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionReader::parseMirroredConstraints()
 //-----------------------------------------------------------------------------
-void WireAbstractionReader::parseMirroredConstraints(QDomNode const& wirePortNode,
-    QSharedPointer<WirePort> wirePort) const
+void WireAbstractionReader::Details::parseMirroredConstraints(QDomNode const& wirePortNode,
+    QSharedPointer<WirePort> wirePort)
 {
     QDomNode constraintsNode = wirePortNode.firstChildElement(QStringLiteral("ipxact:mirroredModeConstraints"));
     if (!constraintsNode.isNull())
@@ -287,13 +250,16 @@ void WireAbstractionReader::parseMirroredConstraints(QDomNode const& wirePortNod
 }
 
 //-----------------------------------------------------------------------------
-// Function: WireAbstractionReader::parseMaster()
+// Function: WireAbstractionReader::parseInitiator()
 //-----------------------------------------------------------------------------
-void WireAbstractionReader::parseMaster(QDomNode const& wireNode, 
-    QSharedPointer<WireAbstraction> wire) const
+void WireAbstractionReader::Details::parseInitiator(QDomNode const& wireNode, 
+    QSharedPointer<WireAbstraction> wire, Document::Revision revision)
 {
-    QDomNode masterNode = wireNode.firstChildElement(QStringLiteral("ipxact:onMaster"));
+    QString elementName = revision == Document::Revision::Std22
+        ? QStringLiteral("ipxact:onInitiator")
+        : QStringLiteral("ipxact:onMaster");
 
+    QDomNode masterNode = wireNode.firstChildElement(elementName);
     if (!masterNode.isNull())
     {
         QSharedPointer<WirePort> master = parseWirePort(masterNode);
@@ -302,12 +268,17 @@ void WireAbstractionReader::parseMaster(QDomNode const& wireNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: WireAbstractionReader::parseSlave()
+// Function: WireAbstractionReader::parseTarget()
 //-----------------------------------------------------------------------------
-void WireAbstractionReader::parseSlave(QDomNode const& wireNode, QSharedPointer<WireAbstraction> wire) const
+void WireAbstractionReader::Details::parseTarget(QDomNode const& wireNode, QSharedPointer<WireAbstraction> wire,
+    Document::Revision revision)
 {
-    QDomNode slaveNode = wireNode.firstChildElement(QStringLiteral("ipxact:onSlave"));
 
+    QString elementName = revision == Document::Revision::Std22
+        ? QStringLiteral("ipxact:onTarget")
+        : QStringLiteral("ipxact:onSlave");
+
+    QDomNode slaveNode = wireNode.firstChildElement(elementName);
     if (!slaveNode.isNull())
     {
         QSharedPointer<WirePort> slave = parseWirePort(slaveNode);

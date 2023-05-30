@@ -6,7 +6,7 @@
 // Date: 24.08.2015
 //
 // Description:
-// Reader class for ipxact:transactional within abstraction definition.
+// Reader for ipxact:transactional within abstraction definition.
 //-----------------------------------------------------------------------------
 
 #include "TransactionalAbstractionReader.h"
@@ -18,81 +18,48 @@
 
 #include <IPXACTmodels/common/PresenceTypes.h>
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
+
 #include "TransactionalAbstraction.h"
 #include "TransactionalPort.h"
-
-//-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::TransactionalAbstractionReader()
-//-----------------------------------------------------------------------------
-TransactionalAbstractionReader::TransactionalAbstractionReader(QObject* parent) : QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::~TransactionalAbstractionReader()
-//-----------------------------------------------------------------------------
-TransactionalAbstractionReader::~TransactionalAbstractionReader()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalAbstractionReader::createTransactionalAbstractionFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<TransactionalAbstraction> TransactionalAbstractionReader::createTransactionalAbstractionFrom(
-    QDomNode const& transactionalNode) const
+    QDomNode const& transactionalNode, Document::Revision revision)
 {
     QSharedPointer<TransactionalAbstraction> transactional(new TransactionalAbstraction());
 
-    parseQualifier(transactionalNode, transactional);
+    Details::parseQualifier(transactionalNode, transactional);
  
-    parseSystems(transactionalNode, transactional);
+    Details::parseSystems(transactionalNode, transactional);
  
-    parseMaster(transactionalNode, transactional);
+    Details::parseInitiator(transactionalNode, transactional, revision);
 
-    parseSlave(transactionalNode, transactional);
+    Details::parseTarget(transactionalNode, transactional, revision);
 
     return transactional;
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::parseQualifier()
+// Function: TransactionalAbstractionReader::Details::parseQualifier()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionReader::parseQualifier(QDomNode const& transactionalNode, 
-    QSharedPointer<TransactionalAbstraction> transactional) const
+void TransactionalAbstractionReader::Details::parseQualifier(QDomNode const& transactionalNode, 
+    QSharedPointer<TransactionalAbstraction> transactional)
 {
     QDomNode qualifierNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:qualifier"));
 
-    if (!qualifierNode.isNull())
-    {
-        Qualifier readQualifier;
-        bool isData = qualifierNode.firstChildElement(QStringLiteral("ipxact:isData")).firstChild().nodeValue() ==
-            QStringLiteral("true");
-        bool isAddress = qualifierNode.firstChildElement(
-            QStringLiteral("ipxact:isAddress")).firstChild().nodeValue() == QStringLiteral("true");
-        
-        if (isData && isAddress)
-        {
-            transactional->getQualifier()->isAddress = true;
-            transactional->getQualifier()->isData= true;
-        }
-        else if (isData)
-        {
-            transactional->getQualifier()->isData= true;
-        }
-        else if (isAddress)
-        {
-            transactional->getQualifier()->isAddress = true;
-        }        
-    }
+    auto qualifier = transactional->getQualifier();
+
+    CommonItemsReader::parseQualifier(qualifierNode, qualifier);
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::parseSystems()
+// Function: TransactionalAbstractionReader::Details::parseSystems()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionReader::parseSystems(QDomNode const& transactionalNode, 
-    QSharedPointer<TransactionalAbstraction> transactional) const
+void TransactionalAbstractionReader::Details::parseSystems(QDomNode const& transactionalNode, 
+    QSharedPointer<TransactionalAbstraction> transactional)
 {
     QDomNodeList systemNodes = transactionalNode.toElement().elementsByTagName(QStringLiteral("ipxact:onSystem"));
 
@@ -107,9 +74,9 @@ void TransactionalAbstractionReader::parseSystems(QDomNode const& transactionalN
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::parseTransactionalPort()
+// Function: TransactionalAbstractionReader::Details::parseTransactionalPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<TransactionalPort> TransactionalAbstractionReader::parseTransactionalPort(QDomNode const& portNode) const
+QSharedPointer<TransactionalPort> TransactionalAbstractionReader::Details::parseTransactionalPort(QDomNode const& portNode)
 {
     QSharedPointer<TransactionalPort> transactionalPort(new TransactionalPort());
 
@@ -129,10 +96,10 @@ QSharedPointer<TransactionalPort> TransactionalAbstractionReader::parseTransacti
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::parseProtocol()
+// Function: TransactionalAbstractionReader::Details::parseProtocol()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionReader::parseProtocol(QDomNode const& portNode,
-    QSharedPointer<TransactionalPort> transactionalPort) const
+void TransactionalAbstractionReader::Details::parseProtocol(QDomNode const& portNode,
+    QSharedPointer<TransactionalPort> transactionalPort)
 {
     QDomNode protocolNode = portNode.firstChildElement(QStringLiteral("ipxact:protocol"));
 
@@ -144,31 +111,39 @@ void TransactionalAbstractionReader::parseProtocol(QDomNode const& portNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::parseMaster()
+// Function: TransactionalAbstractionReader::Details::parseInitiator()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionReader::parseMaster(QDomNode const& transactionalNode, 
-    QSharedPointer<TransactionalAbstraction> transactional) const
+void TransactionalAbstractionReader::Details::parseInitiator(QDomNode const& transactionalNode, 
+    QSharedPointer<TransactionalAbstraction> transactional, Document::Revision revision)
 {
-    QDomNode masterNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:onMaster"));
+    QString elementName = revision == Document::Revision::Std22
+        ? QStringLiteral("ipxact:onInitiator")
+        : QStringLiteral("ipxact:onMaster");
 
-    if (!masterNode.isNull())
+    QDomNode initiatorNode = transactionalNode.firstChildElement(elementName);
+
+    if (!initiatorNode.isNull())
     {
-        QSharedPointer<TransactionalPort> master = parseTransactionalPort(masterNode);
+        QSharedPointer<TransactionalPort> master = parseTransactionalPort(initiatorNode);
         transactional->setMasterPort(master);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionReader::parseSlave()
+// Function: TransactionalAbstractionReader::Details::parseTarget()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionReader::parseSlave(QDomNode const& transactionalNode, 
-    QSharedPointer<TransactionalAbstraction> transactional) const
+void TransactionalAbstractionReader::Details::parseTarget(QDomNode const& transactionalNode, 
+    QSharedPointer<TransactionalAbstraction> transactional, Document::Revision revision)
 {
-    QDomNode slaveNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:onSlave"));
+    QString elementName = revision == Document::Revision::Std22
+        ? QStringLiteral("ipxact:onTarget")
+        : QStringLiteral("ipxact:onSalve");
 
-    if (!slaveNode.isNull())
+    QDomNode targetNode = transactionalNode.firstChildElement(elementName);
+
+    if (!targetNode.isNull())
     {
-        QSharedPointer<TransactionalPort> slave = parseTransactionalPort(slaveNode);
+        QSharedPointer<TransactionalPort> slave = parseTransactionalPort(targetNode);
         transactional->setSlavePort(slave);
     }
 }

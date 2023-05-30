@@ -205,7 +205,7 @@ private:
     QString isPresent_;
 
     //! Determines if ports in a connection must be present on both sides of a connection.
-    bool match_;
+    bool match_ = false;
 
     //! Definitions for wire type port.
 	QSharedPointer<WireAbstraction> wire_;

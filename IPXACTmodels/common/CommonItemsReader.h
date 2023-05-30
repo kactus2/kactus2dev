@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
+#include <IPXACTmodels/common/Qualifier.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 
@@ -114,6 +115,14 @@ public:
      *      @return [out]               A list of choices.
      */
     static QSharedPointer<QList<QSharedPointer<Choice> > > parseChoices(QDomNode const& itemNode);
+
+    /*!
+     *  Parses a qualifier.
+     *
+     *      @param [in] qualifierNode       XML description of the IP-XACT element.
+     *      @param [in] qualifier           The qualifier to read to.
+     */
+    static void parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier);
 
 private:
 

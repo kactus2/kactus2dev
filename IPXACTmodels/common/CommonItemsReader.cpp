@@ -188,3 +188,112 @@ QSharedPointer<QList<QSharedPointer<Choice> > > CommonItemsReader::parseChoices(
 
     return parsedChoices;
 }
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parseQualifier()
+//-----------------------------------------------------------------------------
+void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier)
+{
+    if (qualifierNode.isNull())
+    {
+        return;
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isAddress")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isAddress = true;
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isData")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isData = true;
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isClock")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isClock = true;
+    }
+
+    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isReset"));
+        node.firstChild().nodeValue() == QStringLiteral("true"))
+    {
+        qualifier->isReset = true;
+        qualifier->resetLevel = node.attributes().namedItem(QStringLiteral("level")).nodeValue();
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isValid")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isValid = true;
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isInterrupt")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isInterrupt = true;
+    }
+
+    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isClockEn"));
+        node.firstChild().nodeValue() == QStringLiteral("true"))
+    {
+        qualifier->isClockEn = true;
+        qualifier->clockEnLevel = node.attributes().namedItem(QStringLiteral("level")).nodeValue();
+    }
+
+    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isPowerEn"));
+        node.firstChild().nodeValue() == QStringLiteral("true"))
+    {
+        qualifier->isPowerEn = true;
+        qualifier->powerEnLevel = node.attributes().namedItem(QStringLiteral("level")).nodeValue();
+        qualifier->powerDomainRef = node.attributes().namedItem(QStringLiteral("powerDomainRef")).nodeValue();
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isOpcode")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isOpcode = true;
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isProtection")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isProtection = true;
+    }
+
+    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isFlowControl"));
+        node.firstChild().nodeValue() == QStringLiteral("true"))
+    {
+        qualifier->isFlowControl = true;
+        auto attributes = node.attributes();
+
+        auto flowType = attributes.namedItem(QStringLiteral("flowType")).nodeValue();
+        qualifier->flowType = flowType;
+
+        if (flowType == QStringLiteral("user"))
+        {
+            qualifier->userFlowType = attributes.namedItem(QStringLiteral("user")).nodeValue();
+        }
+    }
+
+    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isUser"));
+        node.firstChild().nodeValue() == QStringLiteral("true"))
+    {
+        qualifier->isUser = true;
+        qualifier->userDefinedInformation = node.attributes().namedItem(QStringLiteral("user")).nodeValue();
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isRequest")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isRequest = true;
+    }
+
+    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isResponse")).firstChild().nodeValue()
+        == QStringLiteral("true"))
+    {
+        qualifier->isResponse = true;
+    }
+}

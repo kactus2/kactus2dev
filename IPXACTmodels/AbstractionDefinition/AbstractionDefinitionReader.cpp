@@ -40,25 +40,27 @@ AbstractionDefinitionReader::~AbstractionDefinitionReader()
 QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstractionDefinitionFrom(
     QDomNode const& document) const
 {
-    QSharedPointer<AbstractionDefinition> abstractionDefinion(new AbstractionDefinition());
+    QDomNode definitionNode = document.firstChildElement(QStringLiteral("ipxact:abstractionDefinition"));
+    Document::Revision docRevision = DocumentReader::getXMLDocumentRevision(definitionNode);
+
+    VLNV vlnv = CommonItemsReader::createVLNVFrom(definitionNode, VLNV::ABSTRACTIONDEFINITION);
+
+    QSharedPointer<AbstractionDefinition> abstractionDefinion(new AbstractionDefinition(vlnv, docRevision));
 
     parseTopComments(document, abstractionDefinion);
 
     parseXMLProcessingInstructions(document, abstractionDefinion);
 
-    QDomNode definitionNode = document.firstChildElement(QStringLiteral("ipxact:abstractionDefinition"));
     parseNamespaceDeclarations(definitionNode, abstractionDefinion);
 
-    parseVLNVElements(definitionNode, abstractionDefinion, VLNV::ABSTRACTIONDEFINITION);
+    parseDocumentNameGroup(definitionNode, abstractionDefinion);
 
     parseBusType(definitionNode, abstractionDefinion);
 
     parseExtends(definitionNode, abstractionDefinion);
 
-    parsePorts(definitionNode, abstractionDefinion);
-
-    parseDescription(definitionNode, abstractionDefinion);
-
+    parsePorts(definitionNode, abstractionDefinion, docRevision);
+    
     parseParameters(definitionNode, abstractionDefinion);
 
     parseAssertions(definitionNode, abstractionDefinion);
@@ -95,7 +97,7 @@ void AbstractionDefinitionReader::parseExtends(QDomNode const& definitionNode,
 // Function: AbstractionDefinitionReader::parsePorts()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionReader::parsePorts(QDomNode definitionNode, 
-    QSharedPointer<AbstractionDefinition> abstractionDefinion) const
+    QSharedPointer<AbstractionDefinition> abstractionDefinion, Document::Revision revision) const
 {
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts = abstractionDefinion->getLogicalPorts();
 
@@ -104,7 +106,7 @@ void AbstractionDefinitionReader::parsePorts(QDomNode definitionNode,
     int portCount = portNodes.count();
     for (int i = 0; i < portCount; i++)
     {
-        QSharedPointer<PortAbstraction> port = parsePort(portNodes.at(i));
+        QSharedPointer<PortAbstraction> port = parsePort(portNodes.at(i), revision);
         logicalPorts->append(port);
     }
 }
@@ -112,7 +114,8 @@ void AbstractionDefinitionReader::parsePorts(QDomNode definitionNode,
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionReader::parsePort()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode const& portNode) const
+QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode const& portNode,
+    Document::Revision revision) const
 {
     QSharedPointer<PortAbstraction> port(new PortAbstraction());
 
@@ -120,10 +123,12 @@ QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode 
     port->setLogicalName(portNode.firstChildElement(QStringLiteral("ipxact:logicalName")).firstChild().nodeValue());
     port->setDisplayName(portNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
     port->setDescription(portNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
+    port->setShortDescription(portNode.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue());
+    port->setMatch(portNode.firstChildElement(QStringLiteral("ipxact:match")).firstChild().nodeValue() == QStringLiteral("true"));
 
-    parseWire(portNode, port);
+    parseWire(portNode, port, revision);
 
-    parseTransactional(portNode, port);
+    parseTransactional(portNode, port, revision);
 
     parseVendorExtensions(portNode, port);
 
@@ -133,14 +138,14 @@ QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode 
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionReader::parseWire()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionReader::parseWire(QDomNode const& portNode, QSharedPointer<PortAbstraction> port) const
+void AbstractionDefinitionReader::parseWire(QDomNode const& portNode, QSharedPointer<PortAbstraction> port,
+    Document::Revision revision) const
 {
     QDomNode wireNode = portNode.firstChildElement(QStringLiteral("ipxact:wire"));
 
     if (!wireNode.isNull())
     {
-        WireAbstractionReader wireReader;
-        QSharedPointer<WireAbstraction> wire = wireReader.createWireAbstractionFrom(wireNode);
+        QSharedPointer<WireAbstraction> wire = WireAbstractionReader::createWireAbstractionFrom(wireNode, revision);
 
         port->setWire(wire);
     }
@@ -150,15 +155,14 @@ void AbstractionDefinitionReader::parseWire(QDomNode const& portNode, QSharedPoi
 // Function: AbstractionDefinitionReader::parseTransactional()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionReader::parseTransactional(QDomNode const& portNode, 
-    QSharedPointer<PortAbstraction> port) const
+    QSharedPointer<PortAbstraction> port, Document::Revision revision) const
 {
     QDomNode transactionalNode = portNode.firstChildElement(QStringLiteral("ipxact:transactional"));
 
     if (!transactionalNode.isNull())
     {
-        TransactionalAbstractionReader transactionalReader;
         QSharedPointer<TransactionalAbstraction> transactional =
-            transactionalReader.createTransactionalAbstractionFrom(transactionalNode);
+            TransactionalAbstractionReader::createTransactionalAbstractionFrom(transactionalNode, revision);
 
         port->setTransactional(transactional);
     }

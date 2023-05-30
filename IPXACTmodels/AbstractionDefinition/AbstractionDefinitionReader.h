@@ -75,7 +75,8 @@ private:
      *      @param [in]     definitionNode          The XML description of the abstraction definition.
      *      @param [in/out] abstractionDefinion     The abstraction definition to insert the ports into.
      */
-    void parsePorts(QDomNode definitionNode, QSharedPointer<AbstractionDefinition> abstractionDefinion) const;
+    void parsePorts(QDomNode definitionNode, QSharedPointer<AbstractionDefinition> abstractionDefinion,
+        Document::Revision revision) const;
                                 
     /*!
      *  Read a logical ports from XML to an abstraction definition.
@@ -84,7 +85,7 @@ private:
      *
      *      @return The read logical port.
      */
-    QSharedPointer<PortAbstraction> parsePort(QDomNode const& portNode) const;
+    QSharedPointer<PortAbstraction> parsePort(QDomNode const& portNode, Document::Revision revision) const;
 
     /*!
      *  Reads the wire description from XML to a logical port definition.
@@ -92,7 +93,7 @@ private:
      *      @param [in]     portNode    The XML description of the logical port.
      *      @param [in/out] port        The logical port definition to insert the wire into.
      */
-    void parseWire(QDomNode const& portNode, QSharedPointer<PortAbstraction> port) const;
+    void parseWire(QDomNode const& portNode, QSharedPointer<PortAbstraction> port, Document::Revision revision) const;
     
     /*!
      *  Reads the transactional description from XML to a logical port definition.
@@ -100,7 +101,8 @@ private:
      *      @param [in]     portNode    The XML description of the logical port.
      *      @param [in/out] port        The logical port definition to insert the transactional into.
      */
-    void parseTransactional(QDomNode const& portNode, QSharedPointer<PortAbstraction> port) const;
+    void parseTransactional(QDomNode const& portNode, QSharedPointer<PortAbstraction> port, 
+        Document::Revision revision) const;
 };
 
 #endif // ABSTRACTIONDEFINITIONREADER_H
