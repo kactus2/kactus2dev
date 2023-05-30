@@ -31,11 +31,18 @@
 // Function: AbstractionDefinition::AbstractionDefinition()
 //-----------------------------------------------------------------------------
 AbstractionDefinition::AbstractionDefinition(): 
-Document(), 
-    busType_(),
-    extends_()
+Document()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::AbstractionDefinition()
+//-----------------------------------------------------------------------------
+AbstractionDefinition::AbstractionDefinition(VLNV const& vlnv, Document::Revision revision):
+Document(revision)
+{
+    setVlnv(vlnv);
 }
 
 //-----------------------------------------------------------------------------

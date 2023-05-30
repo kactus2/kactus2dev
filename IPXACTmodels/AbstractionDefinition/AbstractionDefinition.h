@@ -35,6 +35,8 @@ public:
 	//! The default constructor.
 	AbstractionDefinition();
 
+    AbstractionDefinition(VLNV const& vlnv, Document::Revision revision);
+
 	//! Copy constructor.
 	AbstractionDefinition(AbstractionDefinition const& other);
 
@@ -55,7 +57,7 @@ public:
 	*
 	*      @param [in] vlnv     The vlnv to set
 	*/
-	virtual void setVlnv(const VLNV& vlnv);
+	void setVlnv(const VLNV& vlnv) final;
 
 	/*! Get the vlnv tag of the bus definition that this abstraction definition details.
 	 * 
