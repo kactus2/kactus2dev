@@ -38,7 +38,7 @@ QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomN
     Details::parseIsAddressable(busNode, busDefinition);
     
     Details::parseExtends(busNode, busDefinition);
-    
+
     Details::parseMaximumInitiators(busNode, busDefinition);
     
     Details::parseMaximumTargets(busNode, busDefinition);
@@ -114,7 +114,11 @@ void BusDefinitionReader::Details::parseExtends(QDomNode const& busNode, QShared
 void BusDefinitionReader::Details::parseMaximumInitiators(QDomNode const& busNode,
     QSharedPointer<BusDefinition> busDefinition)
 {
-    QDomNode maximumInitiatorsNode = busNode.firstChildElement(QStringLiteral("ipxact:maxMasters"));
+    QString elementName = busDefinition->getRevision() == Document::Revision::Std22
+        ? QStringLiteral("ipxact:maxInitiators")
+        : QStringLiteral("ipxact:maxMasters");
+
+    QDomNode maximumInitiatorsNode = busNode.firstChildElement(elementName);
     if (!maximumInitiatorsNode.isNull())
     {
         busDefinition->setMaxMasters(maximumInitiatorsNode.firstChild().nodeValue().toStdString());
@@ -127,10 +131,14 @@ void BusDefinitionReader::Details::parseMaximumInitiators(QDomNode const& busNod
 void BusDefinitionReader::Details::parseMaximumTargets(QDomNode const& busNode,
     QSharedPointer<BusDefinition> busDefinition)
 {
-    QDomNode maximumTargetsNode = busNode.firstChildElement(QStringLiteral("ipxact:maxSlaves"));
+    QString elementName = busDefinition->getRevision() == Document::Revision::Std22
+        ? QStringLiteral("ipxact:maxTargets")
+        : QStringLiteral("ipxact:maxSlaves");
+
+    QDomNode maximumTargetsNode = busNode.firstChildElement(elementName);
     if (!maximumTargetsNode.isNull())
     {
-        busDefinition->setMaxSlaves(maximumTargetsNode.firstChild().nodeValue().toStdString());
+        busDefinition->setMaxTargets(maximumTargetsNode.firstChild().nodeValue().toStdString());
     }
 }
 

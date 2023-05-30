@@ -41,7 +41,7 @@ public:
 	//! The default constructor.
 	BusDefinition();
 
-	BusDefinition(VLNV vlnv, Document::Revision revision);
+	BusDefinition(VLNV const& vlnv, Document::Revision revision);
 
 	//! Copy constructor.
 	BusDefinition(BusDefinition const& other);
@@ -63,7 +63,7 @@ public:
 	*
 	*      @param [in] vlnv     The vlnv to set
 	*/
-	virtual void setVlnv(const VLNV& vlnv);
+	void setVlnv(const VLNV& vlnv) final;
 
 	/*! Sets the bus to support/not support direct master-slave connections.
 	 *

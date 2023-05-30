@@ -33,7 +33,7 @@ Document()
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::BusDefinition()
 //-----------------------------------------------------------------------------
-BusDefinition::BusDefinition(VLNV vlnv, Document::Revision revision):
+BusDefinition::BusDefinition(VLNV const& vlnv, Document::Revision revision):
 Document(revision)
 {
 	setVlnv(vlnv);

@@ -38,6 +38,7 @@ private slots:
     void testReadExtends();
     void testReadBroadcastAndDescription();
     void testReadMaximumMasterAndMaximumSlave();
+    void testReadMaximumInitiatorAndMaximumTarget();
     void testReadSystemGroupNames();
 
     void testReadChoices();
@@ -275,6 +276,35 @@ void tst_BusDefinitionReader::testReadMaximumMasterAndMaximumSlave()
 
     QCOMPARE(testBus->getMaxMasters(), std::string("1"));
     QCOMPARE(testBus->getMaxSlaves(), std::string("8-1"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusDefinitionReader::testReadMaximumInitiatorAndMaximumTarget()
+//-----------------------------------------------------------------------------
+void tst_BusDefinitionReader::testReadMaximumInitiatorAndMaximumTarget()
+{
+    QDomDocument document;
+    document.setContent(QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+        "<ipxact:vendor>TUT</ipxact:vendor>"
+        "<ipxact:library>TestLibrary</ipxact:library>"
+        "<ipxact:name>TestBus</ipxact:name>"
+        "<ipxact:version>1.0</ipxact:version>"
+        "<ipxact:directConnection>true</ipxact:directConnection>"
+        "<ipxact:isAddressable>true</ipxact:isAddressable>"
+        "<ipxact:maxInitiators>1</ipxact:maxInitiators>"
+        "<ipxact:maxTargets>8-1</ipxact:maxTargets>"
+        "</ipxact:busDefinition>"));
+
+    QSharedPointer<BusDefinition> testBus = BusDefinitionReader::createBusDefinitionFrom(document);
+
+    QCOMPARE(testBus->getMaxInitiators(), std::string("1"));
+    QCOMPARE(testBus->getMaxTargets(), std::string("8-1"));
 }
 
 //-----------------------------------------------------------------------------
