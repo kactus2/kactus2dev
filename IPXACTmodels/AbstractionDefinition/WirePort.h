@@ -82,6 +82,20 @@ public:
     QString getWidth() const;
 
     /*!
+     *	Sets the allBits attribute for wire port width.
+     *  
+     *      @param [in] allBits	Flag for setting allBits.
+     */
+    void setAllBits(bool allBits);
+
+    /*!
+     *	Gets the allBits attribute value of the wire port.
+     *		
+     * 		@return True, if allBits is set, otherwise false.
+     */
+    bool getAllBits() const;
+
+    /*!
      *  Sets a direction restriction for the port.
      *
      *      @param [in] direction   The required direction.
@@ -196,6 +210,9 @@ private:
 
     //! Number of bits required for the port.
     QString width_;
+
+    //! If false, any number of bits can be mapped. If true, all width bits shall be mapped.
+    bool allBits_ = false;
 
     //! The direction restriction for the port.
     DirectionTypes::Direction direction_;

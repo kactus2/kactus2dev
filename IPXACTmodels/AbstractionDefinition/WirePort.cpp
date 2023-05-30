@@ -138,6 +138,22 @@ QString WirePort::getWidth() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: WirePort::setAllBits()
+//-----------------------------------------------------------------------------
+void WirePort::setAllBits(bool allBits)
+{
+    allBits_ = allBits;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WirePort::getAllBits()
+//-----------------------------------------------------------------------------
+bool WirePort::getAllBits() const
+{
+    return allBits_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: WirePort::setDirection()
 //-----------------------------------------------------------------------------
 void WirePort::setDirection(DirectionTypes::Direction direction)
