@@ -32,7 +32,7 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~SystemDesignWidget();
+    ~SystemDesignWidget() final = default;
 
     /*!
      *  Sets the system identified with the given VLNV as the currently edited one.

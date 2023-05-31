@@ -194,7 +194,7 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~HWDesignDiagram();
+	~HWDesignDiagram() final = default;
 
     /*!
      *  Set the IP-XACT document that is viewed in HWDesignDiagram.
