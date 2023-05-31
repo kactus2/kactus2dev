@@ -1284,9 +1284,6 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
             }
 
             HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance);
-            item->setImported(instance->isImported());
-            item->setImportRef(QString::fromStdString(instance->getImportRef()));
-            item->setPropertyValues(instance->getPropertyValues());
 
             connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -1350,11 +1347,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
-        item->setImported(instance->isImported());
-        item->setImportRef(QString::fromStdString(instance->getImportRef()));
         item->setPos(instance->getPosition());
-        item->setPropertyValues(instance->getPropertyValues());
-        item->setFileSetRef(QString::fromStdString(instance->getFileSetRef()));
 
         if (instance->isDraft())
         {
@@ -1857,11 +1850,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         nameMappings.insert(instance->getInstanceName(), instanceName);
 
         SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance);
-        item->setImported(instance->isImported());
-        item->setImportRef(QString::fromStdString(instance->getImportRef()));
         item->setPos(stack->mapStackFromScene(guidePos));
-        item->setPropertyValues(instance->getPropertyValues());
-        item->setFileSetRef(QString::fromStdString(instance->getFileSetRef()));
 
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));

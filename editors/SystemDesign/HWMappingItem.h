@@ -17,6 +17,7 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/layouts/IVGraphicsLayout.h>
+#include <common/layouts/VStackedLayout.h>
 
 class SWComponentItem;
 
@@ -45,7 +46,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~HWMappingItem();
+    ~HWMappingItem() final;
+
+    // Disable copying.
+    HWMappingItem(HWMappingItem const& rhs) = delete;
+    HWMappingItem& operator=(HWMappingItem const& rhs) = delete;
 
     /*!
      *  Returns the underlying HW linked with this component.
@@ -145,37 +150,30 @@ protected:
     qreal getComponentStackHeight() const;
 
 private:
-    // Disable copying.
-    HWMappingItem(HWMappingItem const& rhs);
-    HWMappingItem& operator=(HWMappingItem const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     // Constants.
-    enum
-    {
-        MIN_HEIGHT = 100,
-        TOP_MARGIN = 40,
-        BOTTOM_MARGIN = 20,
-        SPACING = 10,
-    };
+    const int MIN_HEIGHT = 100;
+    const int TOP_MARGIN = 40;
 
-	// Width of the HWMappingItem.
-    static const int WIDTH = COMPONENTWIDTH + 20;
+    const int WIDTH = COMPONENTWIDTH + 20;
 
     //! The old column from where the mouse drag event began.
-    IGraphicsItemStack* oldStack_;
+    IGraphicsItemStack* oldStack_= nullptr;
 
     //! The layout for components.
-    QSharedPointer< IVGraphicsLayout<ComponentItem> > layout_;
+    QSharedPointer< IVGraphicsLayout<ComponentItem> > layout_ =
+        QSharedPointer< IVGraphicsLayout<ComponentItem> >(new VStackedLayout<ComponentItem>(SPACING));
 
     //! The mapped SW components.
     QList<ComponentItem*> swComponents_;
 
     //! The mapping component's old position before mouse move.
     QPointF oldPos_;
+
 };
 
 //-----------------------------------------------------------------------------

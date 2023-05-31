@@ -12,15 +12,19 @@
 #ifndef COMPONENTITEM_H
 #define COMPONENTITEM_H
 
+#include "ConnectionEndpoint.h"
+
 #include <editors/common/diagramgrid.h>
 #include <editors/common/Association/Associable.h>
+
+#include <common/layouts/IVGraphicsLayout.h>
+#include <common/layouts/VCollisionLayout.h>
 
 #include <QGraphicsRectItem>
 #include <QSharedPointer>
 
 class Component;
 class ComponentInstance;
-class ConnectionEndpoint;
 class LibraryInterface;
 class IGraphicsItemStack;
 
@@ -52,7 +56,11 @@ public:
 	/*!
      *  Destructor.
      */
-	virtual ~ComponentItem();
+	~ComponentItem() override;
+
+    // Disable copying.
+    ComponentItem(ComponentItem const& rhs) = delete;
+    ComponentItem& operator=(ComponentItem const& rhs) = delete;
 
     /*!
      *  Updates the component item to reflect the current state of the component model.
@@ -194,6 +202,7 @@ signals:
 	void destroyed(ComponentItem* comp);
 
 protected:
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
     /*!
@@ -206,28 +215,76 @@ protected:
      *
      *      @param [in] text The text to display in the label.
      */
-    virtual void updateNameLabel(QString const& text);
+    virtual void updateNameLabel();
+
+
+    /*!
+     *  Adds an interface item to component side determined by the item position.
+     *
+     *      @param [in] port   The interface item to add.
+     */
+    void addPortToSideByPosition(ConnectionEndpoint* port);
+
+    /*!
+     *  Adds an interface item to the component side with less ports.
+     *
+     *      @param [in] port   The interface item to add.
+     */
+    void addPortToSideWithLessPorts(ConnectionEndpoint* port);
+
+    /*!
+     *  Adds a bus interface on the left side of the component item.
+     *
+     *      @param [in] port   The port to add.
+     */
+    void addPortToLeft(ConnectionEndpoint* port);
+
+    /*!
+     *  Adds a bus interface on the right side of the component item.
+     *
+     *      @param [in] port   The port to add.
+     */
+    void addPortToRight(ConnectionEndpoint* port);
+
+
+    /*!
+     *  Check and resize the port labels to better match with the component width.
+     *
+     *      @param [in] port       The port that is compared to the other stack.
+     *      @param [in] otherSide  The stack containing the ports of the other side.
+     */
+    void checkPortLabelSize(ConnectionEndpoint* port, QList<ConnectionEndpoint*> const& otherSide);
+
+    const int SPACING = GridSize;
+    const int MIN_Y_PLACEMENT = 3 * GridSize;
+    const int BOTTOM_MARGIN = 2 * GridSize;
+
+
+    //! The layout for ports.
+    QSharedPointer< IVGraphicsLayout<ConnectionEndpoint> > portLayout_ =
+        QSharedPointer< IVGraphicsLayout<ConnectionEndpoint> >(new VCollisionLayout<ConnectionEndpoint>(SPACING));
+
+    //! The left and right port stacks.
+    QList<ConnectionEndpoint*> leftPorts_;
+    QList<ConnectionEndpoint*> rightPorts_;
 
 private:
-    // Disable copying.
-    ComponentItem(ComponentItem const& rhs);
-    ComponentItem& operator=(ComponentItem const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The library interface.
-    LibraryInterface* libInterface_;
+    LibraryInterface* libInterface_ = nullptr;
 
     //! The component model.
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component> component_ = nullptr;
 
     //! The component instance.
-    QSharedPointer<ComponentInstance> componentInstance_;
+    QSharedPointer<ComponentInstance> componentInstance_ = nullptr;
 
     //! The name label.
-    QGraphicsTextItem* nameLabel_;
+    QGraphicsTextItem* nameLabel_= new QGraphicsTextItem(this);
 
 };
 
