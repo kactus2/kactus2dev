@@ -95,8 +95,7 @@ void tst_AbstractionDefinitionReader::testReadVLNVAndMandatoryFields()
             "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBus\" version=\"2.0\"/>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> definition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> definition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
    
     VLNV readVLNV = definition->getVlnv();
     QCOMPARE(readVLNV.getVendor(), QString("TUT"));
@@ -133,8 +132,7 @@ void tst_AbstractionDefinitionReader::testReadDocumentNameGroupAndMandatoryField
             "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBus\" version=\"2.0\"/>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> definition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> definition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     VLNV readVLNV = definition->getVlnv();
     QCOMPARE(readVLNV.getVendor(), QString("TUT"));
@@ -177,8 +175,7 @@ void tst_AbstractionDefinitionReader::testReadTopComments()
             "</ipxact:abstractionDefinition>"
         "<!--Comment not to include-->"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> definition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> definition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(definition->getTopComments().size(), 2);
     QCOMPARE(definition->getTopComments().first(), QString("Commented line 1"));   
@@ -208,8 +205,7 @@ void tst_AbstractionDefinitionReader::testProcessingInstructionsAreParsed()
         "</ipxact:abstractionDefinition>"
         ));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> definition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> definition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(definition->getXmlProcessingInstructions().count(), 1);
 
@@ -238,8 +234,7 @@ void tst_AbstractionDefinitionReader::testReadExtends()
             "<ipxact:extends vendor=\"TUT\" library=\"TestLibrary\" name=\"extended\" version=\"1.0\"/>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader busReader;
-    QSharedPointer<AbstractionDefinition> testBus = busReader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testBus = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     VLNV extendedBus = testBus->getExtends();
     QCOMPARE(extendedBus.getVendor(), QString("TUT"));
@@ -269,8 +264,7 @@ void tst_AbstractionDefinitionReader::testReadDescription()
             "<ipxact:description>Abstraction definition description.</ipxact:description>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader busReader;
-    QSharedPointer<AbstractionDefinition> testBus = busReader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testBus = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(testBus->getDescription(), QString("Abstraction definition description."));
 }
@@ -318,8 +312,7 @@ void tst_AbstractionDefinitionReader::testReadWirePort()
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> readAbsDef = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> readAbsDef = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(readAbsDef->getLogicalPorts()->size(), 1);
 
@@ -411,8 +404,7 @@ void tst_AbstractionDefinitionReader::testReadWirePortNewStd()
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> readAbsDef = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> readAbsDef = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(readAbsDef->getLogicalPorts()->size(), 1);
 
@@ -503,8 +495,7 @@ void tst_AbstractionDefinitionReader::testReadMultipleWireSystemPorts()
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> readAbsDef = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> readAbsDef = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QSharedPointer<PortAbstraction> port = readAbsDef->getLogicalPorts()->first();
 
@@ -565,8 +556,7 @@ void tst_AbstractionDefinitionReader::testReadWirePortConstraints()
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> readAbsDef = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> readAbsDef = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(readAbsDef->getLogicalPorts()->size(), 1);
 
@@ -627,8 +617,7 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QSharedPointer<PortAbstraction> port = testDefinition->getLogicalPorts()->first();
 
@@ -687,8 +676,7 @@ void tst_AbstractionDefinitionReader::testReadMultipleTransactionalSystemPorts()
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QSharedPointer<PortAbstraction> port = testDefinition->getLogicalPorts()->first();
 
@@ -741,8 +729,7 @@ void tst_AbstractionDefinitionReader::testReadTransactionalWithProtocol()
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QSharedPointer<PortAbstraction> port = testDefinition->getLogicalPorts()->first();
 
@@ -796,8 +783,7 @@ void tst_AbstractionDefinitionReader::testReadTransactionalWithCustomProtocol()
             "</ipxact:ports>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QSharedPointer<PortAbstraction> port = testDefinition->getLogicalPorts()->first();
 
@@ -845,8 +831,7 @@ void tst_AbstractionDefinitionReader::testReadChoices()
             "</ipxact:choices>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(testDefinition->getChoices()->count(), 2);
 
@@ -895,8 +880,7 @@ void tst_AbstractionDefinitionReader::testReadParameters()
             "</ipxact:parameters>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(testDefinition->getParameters()->count(), 2);
     
@@ -936,8 +920,7 @@ void tst_AbstractionDefinitionReader::testReadParametersNewStd()
             "</ipxact:parameters>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> testDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> testDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(testDefinition->getParameters()->count(), 1);
 
@@ -978,8 +961,7 @@ void tst_AbstractionDefinitionReader::testReadAssertions()
             "</ipxact:assertions>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> TestDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> TestDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(TestDefinition->getAssertions()->count(), 1);
 
@@ -1013,8 +995,7 @@ void tst_AbstractionDefinitionReader::testReadVendorExtension()
             "</ipxact:vendorExtensions>"
         "</ipxact:abstractionDefinition>"));
 
-    AbstractionDefinitionReader reader;
-    QSharedPointer<AbstractionDefinition> TestDefinition = reader.createAbstractionDefinitionFrom(document);
+    QSharedPointer<AbstractionDefinition> TestDefinition = AbstractionDefinitionReader::createAbstractionDefinitionFrom(document);
 
     QCOMPARE(TestDefinition->getVendorExtensions()->count(), 2);
     QCOMPARE(TestDefinition->getVersion(), QString("3.0.0"));

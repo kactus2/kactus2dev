@@ -6,7 +6,7 @@
 // Date: 14.08.2015
 //
 // Description:
-// Reader class for ipxact:abstractionDefinition.
+// Reader for ipxact:abstractionDefinition.
 //-----------------------------------------------------------------------------
 
 #include "AbstractionDefinitionReader.h"
@@ -20,26 +20,10 @@
 #include "PacketReader.h"
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::AbstractionDefinitionReader()
-//-----------------------------------------------------------------------------
-AbstractionDefinitionReader::AbstractionDefinitionReader() : DocumentReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::~AbstractionDefinitionReader()
-//-----------------------------------------------------------------------------
-AbstractionDefinitionReader::~AbstractionDefinitionReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionReader::createAbstractionDefinitionFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstractionDefinitionFrom(
-    QDomNode const& document) const
+    QDomNode const& document)
 {
     QDomNode definitionNode = document.firstChildElement(QStringLiteral("ipxact:abstractionDefinition"));
     Document::Revision docRevision = DocumentReader::getXMLDocumentRevision(definitionNode);
@@ -48,59 +32,59 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
 
     QSharedPointer<AbstractionDefinition> abstractionDefinion(new AbstractionDefinition(vlnv, docRevision));
 
-    parseTopComments(document, abstractionDefinion);
+    DocumentReader::parseTopComments(document, abstractionDefinion);
 
-    parseXMLProcessingInstructions(document, abstractionDefinion);
+    DocumentReader::parseXMLProcessingInstructions(document, abstractionDefinion);
 
-    parseNamespaceDeclarations(definitionNode, abstractionDefinion);
+    DocumentReader::parseNamespaceDeclarations(definitionNode, abstractionDefinion);
 
-    parseDocumentNameGroup(definitionNode, abstractionDefinion);
+    DocumentReader::parseDocumentNameGroup(definitionNode, abstractionDefinion);
 
-    parseBusType(definitionNode, abstractionDefinion);
+    Details::parseBusType(definitionNode, abstractionDefinion);
 
-    parseExtends(definitionNode, abstractionDefinion);
+    Details::parseExtends(definitionNode, abstractionDefinion);
 
-    parsePorts(definitionNode, abstractionDefinion, docRevision);
+    Details::parsePorts(definitionNode, abstractionDefinion, docRevision);
     
-    parseChoices(definitionNode, abstractionDefinion);
+    Details::parseChoices(definitionNode, abstractionDefinion);
 
-    parseParameters(definitionNode, abstractionDefinion);
+    DocumentReader::parseParameters(definitionNode, abstractionDefinion);
 
-    parseAssertions(definitionNode, abstractionDefinion);
+    DocumentReader::parseAssertions(definitionNode, abstractionDefinion);
 
-    parseKactusAndVendorExtensions(definitionNode, abstractionDefinion);
+    DocumentReader::parseKactusAndVendorExtensions(definitionNode, abstractionDefinion);
 
     return abstractionDefinion;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::parseBusType()
+// Function: AbstractionDefinitionReader::Details::parseBusType()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionReader::parseBusType(QDomNode const& definitionNode, 
-    QSharedPointer<AbstractionDefinition> abstractionDefinion) const
+void AbstractionDefinitionReader::Details::parseBusType(QDomNode const& definitionNode, 
+    QSharedPointer<AbstractionDefinition> abstractionDefinion)
 {
     QDomNode extendsNode = definitionNode.firstChildElement(QStringLiteral("ipxact:busType"));
-    abstractionDefinion->setBusType(parseVLNVAttributes(extendsNode, VLNV::BUSDEFINITION));
+    abstractionDefinion->setBusType(DocumentReader::parseVLNVAttributes(extendsNode, VLNV::BUSDEFINITION));
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::parseExtends()
+// Function: AbstractionDefinitionReader::Details::parseExtends()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionReader::parseExtends(QDomNode const& definitionNode, 
-    QSharedPointer<AbstractionDefinition> abstractionDefinion) const
+void AbstractionDefinitionReader::Details::parseExtends(QDomNode const& definitionNode, 
+    QSharedPointer<AbstractionDefinition> abstractionDefinion)
 {
     QDomNode extendsNode = definitionNode.firstChildElement(QStringLiteral("ipxact:extends"));
     if (!extendsNode.isNull())
     {
-        abstractionDefinion->setExtends(parseVLNVAttributes(extendsNode, VLNV::ABSTRACTIONDEFINITION));
+        abstractionDefinion->setExtends(DocumentReader::parseVLNVAttributes(extendsNode, VLNV::ABSTRACTIONDEFINITION));
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::parsePorts()
+// Function: AbstractionDefinitionReader::Details::parsePorts()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionReader::parsePorts(QDomNode definitionNode, 
-    QSharedPointer<AbstractionDefinition> abstractionDefinion, Document::Revision revision) const
+void AbstractionDefinitionReader::Details::parsePorts(QDomNode definitionNode, 
+    QSharedPointer<AbstractionDefinition> abstractionDefinion, Document::Revision revision)
 {
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts = abstractionDefinion->getLogicalPorts();
 
@@ -115,10 +99,10 @@ void AbstractionDefinitionReader::parsePorts(QDomNode definitionNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::parsePort()
+// Function: AbstractionDefinitionReader::Details::parsePort()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode const& portNode,
-    Document::Revision revision) const
+QSharedPointer<PortAbstraction> AbstractionDefinitionReader::Details::parsePort(QDomNode const& portNode,
+    Document::Revision revision)
 {
     QSharedPointer<PortAbstraction> port(new PortAbstraction());
 
@@ -135,16 +119,16 @@ QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode 
 
     parsePackets(portNode, port);
 
-    parseVendorExtensions(portNode, port);
+    CommonItemsReader::parseVendorExtensions(portNode, port);
 
     return port;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::parsePackets()
+// Function: AbstractionDefinitionReader::Details::parsePackets()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionReader::parsePackets(QDomNode const& portNode, QSharedPointer<PortAbstraction> port)
-    const
+void AbstractionDefinitionReader::Details::parsePackets(QDomNode const& portNode, QSharedPointer<PortAbstraction> port)
+   
 {
     auto packetsNode = portNode.firstChildElement(QStringLiteral("ipxact:packets"));
 
@@ -169,10 +153,10 @@ void AbstractionDefinitionReader::parsePackets(QDomNode const& portNode, QShared
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::parseWire()
+// Function: AbstractionDefinitionReader::Details::parseWire()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionReader::parseWire(QDomNode const& portNode, QSharedPointer<PortAbstraction> port,
-    Document::Revision revision) const
+void AbstractionDefinitionReader::Details::parseWire(QDomNode const& portNode, QSharedPointer<PortAbstraction> port,
+    Document::Revision revision)
 {
     QDomNode wireNode = portNode.firstChildElement(QStringLiteral("ipxact:wire"));
 
@@ -185,10 +169,10 @@ void AbstractionDefinitionReader::parseWire(QDomNode const& portNode, QSharedPoi
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::parseTransactional()
+// Function: AbstractionDefinitionReader::Details::parseTransactional()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionReader::parseTransactional(QDomNode const& portNode, 
-    QSharedPointer<PortAbstraction> port, Document::Revision revision) const
+void AbstractionDefinitionReader::Details::parseTransactional(QDomNode const& portNode, 
+    QSharedPointer<PortAbstraction> port, Document::Revision revision)
 {
     QDomNode transactionalNode = portNode.firstChildElement(QStringLiteral("ipxact:transactional"));
 
@@ -202,10 +186,10 @@ void AbstractionDefinitionReader::parseTransactional(QDomNode const& portNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionReader::parseChoices()
+// Function: AbstractionDefinitionReader::Details::parseChoices()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionReader::parseChoices(QDomNode const& definitionNode,
-    QSharedPointer<AbstractionDefinition> definition) const
+void AbstractionDefinitionReader::Details::parseChoices(QDomNode const& definitionNode,
+    QSharedPointer<AbstractionDefinition> definition)
 {
     auto parsedChoices = CommonItemsReader::parseChoices(definitionNode);
 

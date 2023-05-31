@@ -71,8 +71,7 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     // Create correct type of object.
     if (toCreate == VLNV::ABSTRACTIONDEFINITION)
     {
-        AbstractionDefinitionReader reader;
-        return reader.createAbstractionDefinitionFrom(doc);
+        return AbstractionDefinitionReader::createAbstractionDefinitionFrom(doc);
     }
     else if (toCreate == VLNV::BUSDEFINITION)
     {
