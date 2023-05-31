@@ -14,13 +14,14 @@
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
+#include <editors/common/GraphicsItemLabel.h>
+
 #include <QVector2D>
 #include <QSharedPointer>
 
 class VLNV;
 class OffPageConnectorItem;
 class Component;
-class GraphicsItemLabel;
 
 //-----------------------------------------------------------------------------
 //! Common interface for SW connection endpoints.
@@ -38,13 +39,17 @@ public:
      *      @param [in] parent      The parent graphics item.
      *      @param [in] dir         The initial direction for the endpoint.
      */
-    SWConnectionEndpoint(QSharedPointer<Component> component, QString const& name = QString(""),
+    SWConnectionEndpoint(QSharedPointer<Component> component, QString const& name = QString(),
         QGraphicsItem* parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
     /*!
      *  Destructor.
      */
-    virtual ~SWConnectionEndpoint();
+    ~SWConnectionEndpoint() override = default;
+
+    // Disable copying.
+    SWConnectionEndpoint(SWConnectionEndpoint const& rhs) = delete;
+    SWConnectionEndpoint& operator=(SWConnectionEndpoint const& rhs) = delete;
 
     /*!
      *  Sets the COM/API type. The type of the VLNV determines the type of the endpoint.
@@ -130,28 +135,25 @@ protected:
     virtual void initialize();
 
 private:
-    // Disable copying.
-    SWConnectionEndpoint(SWConnectionEndpoint const& rhs);
-    SWConnectionEndpoint& operator=(SWConnectionEndpoint const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The type of the end point.
-    ConnectionEndpoint::EndpointType type_;
+    ConnectionEndpoint::EndpointType type_ = ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED;
 
     //! The name label.
-    GraphicsItemLabel* nameLabel_;
+    GraphicsItemLabel* nameLabel_ = new GraphicsItemLabel(QString(), this);
 
     //! The off page connector item.
-    OffPageConnectorItem* offPageConnector_;
+    OffPageConnectorItem* offPageConnector_ = nullptr;
 
     //! Component item containing this end point item.
-    ComponentItem* parentItem_;
+    ComponentItem* parentItem_= nullptr;
 
     //! Component containing this item.
-    QSharedPointer<Component> containingComponent_;
+    QSharedPointer<Component> containingComponent_= nullptr;
 };
 
 //-----------------------------------------------------------------------------

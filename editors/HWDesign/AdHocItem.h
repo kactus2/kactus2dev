@@ -44,7 +44,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~AdHocItem();
+	~AdHocItem() override = default;
+
+    // Disable copying.
+    AdHocItem(AdHocItem const& rhs) = delete;
+    AdHocItem& operator=(AdHocItem const& rhs) = delete;
 
     /*!
      *  Check if the ad hoc port is valid or not.
@@ -153,7 +157,7 @@ protected:
      *
      *      @return Polygon containing the shape of the item.
      */
-    QPolygonF getPortShape();
+    QPolygonF getPortShape() const;
 
     /*!
      *  Get the tie off label of the item.
@@ -226,13 +230,14 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The port contained within the item.
-    QSharedPointer<Port> port_;
+    QSharedPointer<Port> port_ = nullptr;
 
     //! The tie off label.
-    GraphicsItemLabel* tieOffLabel_;
+    GraphicsItemLabel* tieOffLabel_ = nullptr;
 
     //! The path connecting the tie off label to this item.
-    QGraphicsItem* tieOffPath_;
+    QGraphicsItem* tieOffPath_ = nullptr;
+
 };
 
 //-----------------------------------------------------------------------------

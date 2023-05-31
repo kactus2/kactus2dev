@@ -52,18 +52,9 @@ AdHocConnectionItem::AdHocConnectionItem(ConnectionEndpoint* endpoint1, Connecti
 AdHocConnectionItem::AdHocConnectionItem(QPointF const& p1, QVector2D const& dir1,
     QPointF const& p2, QVector2D const& dir2,
     DesignDiagram* parent):
-GraphicsConnection(p1, dir1, p2, dir2, parent),
-    adHocConnection_(),
-    route_()
+GraphicsConnection(p1, dir1, p2, dir2, parent)
 {
     setLineWidth(1);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::~AdHocConnectionItem()
-//-----------------------------------------------------------------------------
-AdHocConnectionItem::~AdHocConnectionItem()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -125,12 +116,7 @@ QSharedPointer<ConnectionRoute> AdHocConnectionItem::getRouteExtension() const
 //-----------------------------------------------------------------------------
 bool AdHocConnectionItem::connectEnds()
 {
-    if (!GraphicsConnection::connectEnds())
-    {
-        return false;
-    }
-
-    return true;
+    return GraphicsConnection::connectEnds();
 }
 
 //-----------------------------------------------------------------------------

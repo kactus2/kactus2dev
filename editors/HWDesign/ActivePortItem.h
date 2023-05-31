@@ -45,7 +45,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~ActivePortItem();
+	~ActivePortItem() final = default;
+
+    // Disable copying.
+    ActivePortItem(ActivePortItem const& rhs) = delete;
+    ActivePortItem& operator=(ActivePortItem const& rhs) = delete;
 
 	/*!
 	 *  Get the type of this graphics item.

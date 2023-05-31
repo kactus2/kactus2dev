@@ -13,7 +13,6 @@
 
 #include <editors/common/diagramgrid.h>
 #include <editors/common/DesignDiagram.h>
-#include <editors/common/GraphicsItemLabel.h>
 
 #include <editors/HWDesign/HWComponentItem.h>
 #include <editors/HWDesign/OffPageConnectorItem.h>
@@ -30,12 +29,9 @@
 // Function: HWConnectionEndpont::HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
 HWConnectionEndpoint::HWConnectionEndpoint(QString const& name, QSharedPointer<Component> containingComponent,
-    QGraphicsItem* parent, QVector2D const& dir):
-ConnectionEndpoint(parent),
-containingComponent_(containingComponent),
-parentComponentItem_(0),
-nameLabel_(new GraphicsItemLabel(name, this)),
-offPageConnector_()
+    QGraphicsItem* parent, QVector2D const& dir) :
+    ConnectionEndpoint(parent),
+    containingComponent_(containingComponent)
 {
     setDirection(dir);
 
@@ -43,6 +39,7 @@ offPageConnector_()
     font.setPointSize(8);
     nameLabel_->setFont(font);
     nameLabel_->setFlag(ItemStacksBehindParent);
+    nameLabel_->setText(name);
 
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -56,7 +53,7 @@ offPageConnector_()
 
     if (parent)
     {
-        HWComponentItem* parentHW = dynamic_cast<HWComponentItem*>(parent);
+        auto parentHW = dynamic_cast<HWComponentItem*>(parent);
         if (parentHW)
         {
             parentComponentItem_ = parentHW;
@@ -64,12 +61,6 @@ offPageConnector_()
     }
 }
 
-//-----------------------------------------------------------------------------
-// Function: HWConnectionEndpont::~HWConnectionEndpoint()
-//-----------------------------------------------------------------------------
-HWConnectionEndpoint::~HWConnectionEndpoint()
-{
-}
 
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndPoint::HWConnectionEndpoint()
@@ -167,8 +158,8 @@ ConnectionEndpoint* HWConnectionEndpoint::getOffPageConnector()
 //-----------------------------------------------------------------------------
 bool HWConnectionEndpoint::sceneIsLocked() const
 {
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram != 0 && diagram->isProtected())
+    auto diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram != nullptr && diagram->isProtected())
     {
         return true;
     }
@@ -194,5 +185,5 @@ void HWConnectionEndpoint::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void HWConnectionEndpoint::setName(QString const& /*name*/)
 {
-
+    // Intentionally empty.
 }

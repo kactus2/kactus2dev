@@ -33,7 +33,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~GraphicsItemLabel();
+    ~GraphicsItemLabel() override = default;
 
     /*!
      *  Set a new text string for the label.

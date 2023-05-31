@@ -61,7 +61,7 @@ public:
     /*!
      *  Destructor.
      */
-	virtual ~SWPortItem();
+	~SWPortItem() final = default;
 
     /*!
      *  Called when creating of a connection for this port has begun.
@@ -277,10 +277,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The COM interface, or null if not set.
-    QSharedPointer<ComInterface> comInterface_;
+    QSharedPointer<ComInterface> comInterface_ = nullptr;
 
     //! The API interface, or null if not set.
-    QSharedPointer<ApiInterface> apiInterface_;
+    QSharedPointer<ApiInterface> apiInterface_ = nullptr;
 
     //! The position of the port before mouse move.
     QPointF oldPos_;

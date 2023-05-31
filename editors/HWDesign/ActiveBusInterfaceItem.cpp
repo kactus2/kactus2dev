@@ -43,14 +43,7 @@ BusInterfaceEndPoint(busIf, parent->componentModel(), library, parent)
 {
     Q_ASSERT_X(busIf, "ActiveBusInterfaceItem constructor", "Null BusInterface pointer given as parameter");
 
-    updateInterface();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ActiveBusInterfaceItem::~ActiveBusInterfaceItem()
-//-----------------------------------------------------------------------------
-ActiveBusInterfaceItem::~ActiveBusInterfaceItem()
-{
+    ActiveBusInterfaceItem::updateInterface();
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +66,7 @@ void ActiveBusInterfaceItem::createMoveCommandForClashedItem(ConnectionEndpoint*
 {
     if (endPoint)
     {
-        HWConnectionEndpoint* hwEndPoint = dynamic_cast<HWConnectionEndpoint*>(endPoint);
+        auto hwEndPoint = dynamic_cast<HWConnectionEndpoint*>(endPoint);
         if (hwEndPoint && endPoint->pos() != endPointPosition)
         {
             new PortMoveCommand(hwEndPoint, endPointPosition, diagram, parentCommand.data());
@@ -240,10 +233,7 @@ QVariant ActiveBusInterfaceItem::itemChange(GraphicsItemChange change, QVariant 
     }
     else if (change == ItemScenePositionHasChanged)
     {
-        foreach (GraphicsConnection* interconnection, getConnections())
-        {
-            interconnection->updatePosition();
-        }
+        updateConnectionPositions();
     }
 
     return QGraphicsItem::itemChange(change, value);

@@ -38,17 +38,12 @@
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QString const& name, QSharedPointer<Component> containingComponent, QGraphicsItem *parent):
 SWConnectionEndpoint(containingComponent, name, parent),
-comInterface_(),
-apiInterface_(),
-oldPos_(),
-oldPortPositions_(),
-stubLine_(0, 0, 0, -GridSize, this),
-stubLineDefaultPen_()
+stubLine_(0, 0, 0, -GridSize, this)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
-    setTemporary(true);
-    initialize();
+    SWPortItem::setTemporary(true);
+    SWPortItem::initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -57,17 +52,13 @@ stubLineDefaultPen_()
 SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QSharedPointer<Component> containingComponent,
     QGraphicsItem *parent):
 SWConnectionEndpoint(containingComponent, QString(apiIf->name()), parent),
-comInterface_(),
 apiInterface_(apiIf),
-oldPos_(),
-oldPortPositions_(),
-stubLine_(0, 0, 0, -GridSize, this),
-stubLineDefaultPen_()
+stubLine_(0, 0, 0, -GridSize, this)
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
     setTypeLocked(true);
-    initialize();
+    SWPortItem::initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,24 +68,14 @@ SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QSharedPointer<Compon
     QGraphicsItem *parent):
 SWConnectionEndpoint(containingComponent, QString(comIf->name()), parent),
 comInterface_(comIf),
-apiInterface_(),
-oldPos_(),
-oldPortPositions_(),
-stubLine_(0, 0, 0, -GridSize, this),
-stubLineDefaultPen_()
+stubLine_(0, 0, 0, -GridSize, this)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
     setTypeLocked(true);
-    initialize();
+    SWPortItem::initialize();
 }
 
-//-----------------------------------------------------------------------------
-// Function: SWPortItem::~SWPortItem()
-//-----------------------------------------------------------------------------
-SWPortItem::~SWPortItem()
-{
-}
 
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::name()
@@ -485,7 +466,7 @@ void SWPortItem::removeConnection(GraphicsConnection* connection)
         }
     }
 
-    if (getConnections().size() == 0)
+    if (getConnections().isEmpty())
     {
         stubLine_.setVisible(false);
     }
@@ -506,11 +487,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
         QPointF pos = value.toPointF();
         QRectF parentRect = static_cast<SystemComponentItem*>(parentItem())->rect();
 
-        /*if (pos.y() - parentRect.bottom() >= -35.0 && qAbs(pos.x()) < 50.0)
-        {
-        pos.setY(parentRect.bottom());
-        }
-        else*/ if (pos.x() < 0)
+        if (pos.x() < 0)
         {
             pos.setX(parentRect.left());
         }
@@ -539,14 +516,11 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
         if (!static_cast<SystemComponentItem*>(parentItem())->isConnectionUpdateDisabled())
         {
             // Update the connections.
-            foreach (GraphicsConnection* connection, getConnections())
-            {
-                connection->updatePosition();
-            }
+            updateConnectionPositions();
         }
 
         // Update the stub length if the parent's parent is a HW mapping item.
-        HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(parentItem()->parentItem());
+        auto mappingItem = dynamic_cast<HWMappingItem*>(parentItem()->parentItem());
 
         if (mappingItem != 0)
         {
@@ -582,9 +556,9 @@ bool SWPortItem::isDirectionFixed() const
 void SWPortItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     // Discard mouse move if the diagram is protected.
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    auto diagram = dynamic_cast<DesignDiagram*>(scene());
 
-    if (diagram != 0 && diagram->isProtected())
+    if (diagram != nullptr && diagram->isProtected())
     {
         return;
     }
@@ -602,25 +576,16 @@ void SWPortItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     oldPos_ = pos();
 
     // Save old port positions for all ports in the parent component.
-    foreach (QGraphicsItem* item, parentItem()->childItems())
+    for (QGraphicsItem* item : parentItem()->childItems())
     {
-        if (dynamic_cast<SWPortItem*>(item) != 0 && item != this)
+        if (dynamic_cast<SWPortItem*>(item) != nullptr && item != this)
         {
-            SWPortItem* port = static_cast<SWPortItem*>(item);
+            auto port = static_cast<SWPortItem*>(item);
             oldPortPositions_.insert(port, port->pos());
         }
     }
 
-    // Begin the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-        if (conn != 0)
-        {
-            conn->beginUpdatePosition();
-        }
-    }
+    beginUpdateConnectionPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -630,9 +595,9 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     SWConnectionEndpoint::mouseReleaseEvent(event);
 
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    auto diagram = dynamic_cast<DesignDiagram*>(scene());
 
-    if (diagram == 0)
+    if (diagram == nullptr)
     {
         // Update the default position in case the graphics are located in other scene than the designer.
         if (comInterface_ != 0)
@@ -680,15 +645,7 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     oldPortPositions_.clear();
     
     // End the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-        if (conn != 0)
-        {
-            conn->endUpdatePosition(cmd.data());
-        }
-    }
+    endUpdateConnectionPositions(cmd.data());
 
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())
@@ -797,7 +754,7 @@ void SWPortItem::setSelectionHighlight(bool on)
 void SWPortItem::setTypeDefinition(VLNV const& type)
 {
     // Disconnect existing connections before setting the type.
-    foreach(GraphicsConnection* conn, getConnections())
+    for (GraphicsConnection* conn : getConnections())
     {
         if (conn->endpoint1() != this)
         {
@@ -869,7 +826,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
     if (getType() != ENDPOINT_TYPE_UNDEFINED)
     {
         // Undefined endpoints of the connections can now be defined.
-        foreach(GraphicsConnection* conn, getConnections())
+        for (GraphicsConnection* conn : getConnections())
         {
             if (conn->endpoint1() != this)
             {
@@ -884,7 +841,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         }
     }
 
-    foreach(GraphicsConnection* conn, getConnections())
+    for (GraphicsConnection* conn : getConnections())
     {
         conn->validate();
     }
@@ -924,7 +881,7 @@ bool SWPortItem::isExclusive() const
 bool SWPortItem::hasInvalidConnections()
 {
     // Check if there are no other invalid connections.
-    foreach (GraphicsConnection* otherConn, getConnections())
+    for (GraphicsConnection* otherConn : getConnections())
     {
         if (otherConn->isInvalid())
         {
@@ -998,14 +955,7 @@ void SWPortItem::shortenNameLabel( qreal width )
 //-----------------------------------------------------------------------------
 bool SWPortItem::isCom() const
 {
-    if (comInterface_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return comInterface_ != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -1013,12 +963,5 @@ bool SWPortItem::isCom() const
 //-----------------------------------------------------------------------------
 bool SWPortItem::isApi() const
 {
-    if (apiInterface_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return apiInterface_ != nullptr;
 }

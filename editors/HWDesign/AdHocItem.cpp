@@ -28,10 +28,8 @@ const int TIEOFFITEM_DISTANCE = 20;
 //-----------------------------------------------------------------------------
 AdHocItem::AdHocItem(QSharedPointer<Port> port, QSharedPointer<Component> containingComponent,
     QGraphicsItem* parent, QVector2D const& dir):
-HWConnectionEndpoint(port->name(), containingComponent, parent, dir),
-port_(port),
-tieOffLabel_(0),
-tieOffPath_(0)
+    HWConnectionEndpoint(port->name(), containingComponent, parent, dir),
+    port_(port)
 {
     Q_ASSERT_X(port, "AdHocPortItem constructor", "Null Port pointer given as parameter");
 }
@@ -39,7 +37,7 @@ tieOffPath_(0)
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::getPortShape()
 //-----------------------------------------------------------------------------
-QPolygonF AdHocItem::getPortShape()
+QPolygonF AdHocItem::getPortShape() const
 {
     int squareSize = GridSize - 4;
 
@@ -116,14 +114,6 @@ QPolygonF AdHocItem::getOutPortShape(const int squareSize) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocItem::~AdHocItem()
-//-----------------------------------------------------------------------------
-AdHocItem::~AdHocItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AdHocItem::updateEndPointGraphics()
 //-----------------------------------------------------------------------------
 void AdHocItem::updateEndPointGraphics()
@@ -169,7 +159,7 @@ QString AdHocItem::description() const
     }
     else
     {
-        return QString("");
+        return QString();
     }
 }
 
@@ -208,7 +198,7 @@ bool AdHocItem::isExclusive() const
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterface> AdHocItem::getBusInterface() const
 {
-    return QSharedPointer<BusInterface>();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -285,7 +275,7 @@ void AdHocItem::createTieOffLabel()
 //-----------------------------------------------------------------------------
 void AdHocItem::createTieOffPath()
 {
-    if (tieOffPath_ == 0)
+    if (tieOffPath_ == nullptr)
     {
         QPainterPath pathToTieOff;
         pathToTieOff.addRect(0, -TIEOFFITEM_DISTANCE, 1, TIEOFFITEM_DISTANCE);
@@ -299,7 +289,7 @@ void AdHocItem::createTieOffPath()
 //-----------------------------------------------------------------------------
 void AdHocItem::setTieOffLabelPosition()
 {
-    if (tieOffLabel_ != 0)
+    if (tieOffLabel_ != nullptr)
     {
         qreal labelHeight = tieOffLabel_->boundingRect().height();
         qreal labelWidth = tieOffLabel_->boundingRect().width();
@@ -320,16 +310,16 @@ void AdHocItem::setTieOffLabelPosition()
 //-----------------------------------------------------------------------------
 void AdHocItem::removeTieOffItem()
 {
-    if (tieOffPath_ != 0)
+    if (tieOffPath_ != nullptr)
     {
         delete tieOffPath_;
-        tieOffPath_ = 0;
+        tieOffPath_ = nullptr;
     }
 
-    if (tieOffLabel_ != 0)
+    if (tieOffLabel_ != nullptr)
     {
         delete tieOffLabel_;
-        tieOffLabel_ = 0;
+        tieOffLabel_ = nullptr;
     }
 }
 
@@ -358,12 +348,5 @@ void AdHocItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     saveOldPortPositions();
 
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-        if (conn != 0)
-        {
-            conn->beginUpdatePosition();
-        }
-    }
+    beginUpdateConnectionPositions();
 }

@@ -55,7 +55,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~HierarchicalBusInterfaceItem();
+	~HierarchicalBusInterfaceItem() final = default;
+
+    // Disable copying.
+    HierarchicalBusInterfaceItem(HierarchicalBusInterfaceItem const& rhs) = delete;
+    HierarchicalBusInterfaceItem& operator=(HierarchicalBusInterfaceItem const& rhs) = delete;
 
     /*!
      *  Get the graphics item type of this item.
@@ -165,10 +169,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The data extension for the item.
-    QSharedPointer<InterfaceGraphicsData> dataGroup_;
+    QSharedPointer<InterfaceGraphicsData> dataGroup_ = nullptr;
 
     //! The old column from where the mouse drag event began.
-    HWColumn* oldColumn_;
+    HWColumn* oldColumn_ = nullptr;
 };
 
 #endif // HIERARCHICALBUSINTERFACEITEM_H

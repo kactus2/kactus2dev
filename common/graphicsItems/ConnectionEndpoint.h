@@ -20,6 +20,7 @@
 #include <QVector2D>
 #include <QSharedPointer>
 #include <QGraphicsPolygonItem>
+#include <QUndoCommand>
 
 class ApiInterface;
 class Component;
@@ -69,7 +70,12 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ConnectionEndpoint();
+    ~ConnectionEndpoint() override;
+
+
+    // Disable copying.
+    ConnectionEndpoint(ConnectionEndpoint const& rhs) = delete;
+    ConnectionEndpoint& operator=(ConnectionEndpoint const& rhs) = delete;
 
     /*!
      *  Sets the highlighting mode.
@@ -114,6 +120,16 @@ public:
      */
     bool isConnected() const;
 
+
+    /*!
+     *  Update the connection positions of the associated end points.
+     */
+    void beginUpdateConnectionPositions() const;
+
+    void endUpdateConnectionPositions(QUndoCommand* parentCommand) const;
+
+    void updateConnectionPositions() const;
+    
     /*!
      *  Called when a connection between this and another endpoint is done.
      *
@@ -165,7 +181,7 @@ public:
     /*!
 	 *	Returns the draw direction of the endpoint.
 	 */
-	virtual QVector2D getDirection() const;
+	QVector2D getDirection() const;
 
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
@@ -351,9 +367,6 @@ protected:
     void endUpdateConnectionNames();
 
 private:
-    // Disable copying.
-    ConnectionEndpoint(ConnectionEndpoint const& rhs);
-    ConnectionEndpoint& operator=(ConnectionEndpoint const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -366,10 +379,10 @@ private:
     QList<GraphicsConnection*> connections_;
 
     //! Boolean flag for determining if the endpoint is temporary or not.
-    bool temporary_;
+    bool temporary_ = false;
 
     //! Boolean flag for determining if the endpoint is typed or not (non-typed).
-    bool typeLocked_;
+    bool typeLocked_ = true;
 
     //! Connection update list.
     QList<GraphicsConnection*> connUpdateList_;

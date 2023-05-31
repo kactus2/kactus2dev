@@ -47,7 +47,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~OffPageConnectorItem();
+	~OffPageConnectorItem() final = default;
+
+    // Disable copying.
+    OffPageConnectorItem(OffPageConnectorItem const& rhs) = delete;
+    OffPageConnectorItem& operator=(OffPageConnectorItem const& rhs) = delete;
 
     /*! 
      *  Updates the graphics to match the IP-XACT bus interface.
@@ -251,16 +255,13 @@ protected:
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
 private:
-    // Disable copying.
-    OffPageConnectorItem(OffPageConnectorItem const& rhs);
-    OffPageConnectorItem& operator=(OffPageConnectorItem const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The parent diagram connection endpoint.
-    ConnectionEndpoint* parent_;
+    ConnectionEndpoint* parent_ = nullptr;
 };
 
 //-----------------------------------------------------------------------------

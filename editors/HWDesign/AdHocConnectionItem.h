@@ -39,7 +39,11 @@ public:
         QSharedPointer<AdHocConnection> adhocConnection, QSharedPointer<ConnectionRoute> route,
         DesignDiagram* parent);
 
-    virtual ~AdHocConnectionItem();
+    virtual ~AdHocConnectionItem() = default;
+
+    // Disable copying.
+    AdHocConnectionItem(AdHocConnectionItem const& rhs) = delete;
+    AdHocConnectionItem& operator=(AdHocConnectionItem const& rhs) = delete;
 
     virtual void setName(QString const& name);
 
@@ -98,9 +102,9 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    QSharedPointer<AdHocConnection> adHocConnection_;
+    QSharedPointer<AdHocConnection> adHocConnection_ = nullptr;
 
-    QSharedPointer<ConnectionRoute> route_;
+    QSharedPointer<ConnectionRoute> route_ = nullptr;
 };
 
 #endif // ADHOCCONNECTIONITEM_H
