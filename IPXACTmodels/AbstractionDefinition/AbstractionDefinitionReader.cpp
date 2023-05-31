@@ -17,6 +17,7 @@
 #include "WireAbstraction.h"
 #include "WireAbstractionReader.h"
 #include "TransactionalAbstractionReader.h"
+#include "PacketReader.h"
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionReader::AbstractionDefinitionReader()
@@ -130,9 +131,39 @@ QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode 
 
     parseTransactional(portNode, port, revision);
 
+    parsePackets(portNode, port);
+
     parseVendorExtensions(portNode, port);
 
     return port;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionReader::parsePackets()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionReader::parsePackets(QDomNode const& portNode, QSharedPointer<PortAbstraction> port)
+    const
+{
+    auto packetsNode = portNode.firstChildElement(QStringLiteral("ipxact:packets"));
+
+    if (packetsNode.isNull())
+    {
+        return;
+    }
+
+    QSharedPointer<QList<QSharedPointer<Packet> > > portPackets(new QList<QSharedPointer<Packet> >());
+
+    auto packetNodes = packetsNode.elementsByTagName(QStringLiteral("ipxact:packet"));
+
+    for (int i = 0; i < packetNodes.count(); ++i)
+    {
+        auto packetNode = packetNodes.at(i);
+        auto packet = PacketReader::createPacketFrom(packetNode);
+
+        portPackets->append(packet);
+    }
+
+    port->setPackets(portPackets);
 }
 
 //-----------------------------------------------------------------------------

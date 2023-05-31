@@ -392,7 +392,7 @@ void tst_AbstractionDefinitionReader::testReadWirePortNewStd()
                     "</ipxact:vendorExtensions>"
                     "<ipxact:packets>"
                         "<ipxact:packet>"
-                            "<ipxact:name>testPacket</ipxact:packet>"
+                            "<ipxact:name>testPacket</ipxact:name>"
                             "<ipxact:endianness>little</ipxact:endianness>"
                             "<ipxact:packetFields>"
                                 "<ipxact:packetField>"

@@ -86,6 +86,14 @@ private:
      *      @return The read logical port.
      */
     QSharedPointer<PortAbstraction> parsePort(QDomNode const& portNode, Document::Revision revision) const;
+    
+    /*!
+     *	Reads port packets from XML.
+     *  
+     *      @param [in] portNode	The XML description of the logical port.
+     *      @param [in/out] port	The logical port definition to insert the packets into.
+     */
+    void parsePackets(QDomNode const& portNode, QSharedPointer<PortAbstraction> port) const;
 
     /*!
      *  Reads the wire description from XML to a logical port definition.

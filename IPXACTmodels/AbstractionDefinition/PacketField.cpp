@@ -40,7 +40,7 @@ void PacketField::setWidth(QString const& width)
 //-----------------------------------------------------------------------------
 QString PacketField::getValue() const
 {
-    return QString();
+    return value_;
 }
 
 //-----------------------------------------------------------------------------
