@@ -28,6 +28,9 @@
 #include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
 #include <IPXACTmodels/AbstractionDefinition/WirePort.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/Packet.h>
+
+#include <IPXACTmodels/Component/Choice.h>
 
 class tst_AbstractionDefinitionWriter : public QObject
 {
@@ -42,8 +45,12 @@ private slots:
     void testProcessingInstructionsAreWritten();
     void testWriteExtendingAbstractionDefinition();
 
+    void testWriteDocumentNameGroupNoPorts();
+
     void testWriteSimpleWirePort();
+    void testWriteWirePortWithPackets();
     void testWriteWirePortForAllModes();
+    void testWriteWirePortForInitiatorTarget();
     void testWriteMultipleSystemWirePorts();
 
     void testWireConstraints();
@@ -52,6 +59,8 @@ private slots:
     void testWriteSimpleTransactionalPort();
     void testWriteTransactionalPortForAllModes();
     void testWriteTransactionalPortWithProtocol();
+
+    void testWriteChoices();
 
     void testWriteParameters();
     void testWriteAssertions();
@@ -73,7 +82,7 @@ void tst_AbstractionDefinitionWriter::testWriteAbstractionDefinitionWithoutPorts
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "MinimalAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(vlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(vlnv);
     abstractionDefinition->setBusType(targetBus);
     abstractionDefinition->setDescription("This is a description");
@@ -108,7 +117,7 @@ void tst_AbstractionDefinitionWriter::testTopCommentsAreWritten()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "MinimalAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(vlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(vlnv);
     abstractionDefinition->setBusType(targetBus);
     abstractionDefinition->setTopComments("Commented section");
@@ -143,7 +152,7 @@ void tst_AbstractionDefinitionWriter::testProcessingInstructionsAreWritten()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "MinimalAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(vlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(vlnv);
     abstractionDefinition->setBusType(targetBus);
     abstractionDefinition->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\"");
@@ -180,7 +189,7 @@ void tst_AbstractionDefinitionWriter::testWriteExtendingAbstractionDefinition()
     VLNV extendedVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "extended", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "extending", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
     abstractionDefinition->setExtends(extendedVlnv);
@@ -210,12 +219,53 @@ void tst_AbstractionDefinitionWriter::testWriteExtendingAbstractionDefinition()
 //-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
 //-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionWriter::testWriteDocumentNameGroupNoPorts()
+{
+    VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
+
+    VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(
+        new AbstractionDefinition(vlnv,Document::Revision::Std22));
+    abstractionDefinition->setBusType(targetBus);
+
+    abstractionDefinition->setDisplayName("A test absdef");
+    abstractionDefinition->setShortDescription("shortDescription");
+    abstractionDefinition->setDescription("A longet description of the test abs def");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    AbstractionDefinitionWriter busWriter;
+
+    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<?xml-stylesheet href=\"style.css\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestAbsDef</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:displayName>A test absdef</ipxact:displayName>"
+            "<ipxact:shortDescription>shortDescription</ipxact:shortDescription>"
+            "<ipxact:description>A longer description of the test abs def</ipxact:description>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+        "</ipxact:abstractionDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
+//-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
 {
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
     
@@ -226,7 +276,7 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
     testPort->setIsPresent("1");
     
     testPort->setDefaultValue("0");
-    testPort->getWire()->setQualifier(Qualifier::Data);
+    testPort->getWire()->setQualifier(QStringLiteral("data"));
 
     QDomDocument document;
     QDomElement extensionNode = document.createElement("kactus2:testExtension");
@@ -279,6 +329,120 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinition::testWriteSimplePortWithPackets()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
+{
+    VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
+
+    VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(
+        new AbstractionDefinition(extendingVlnv, Document::Revision::Std22));
+    abstractionDefinition->setBusType(targetBus);
+
+    QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+    testPort->setName("testPort");
+    testPort->setDisplayName("test wire port");
+    testPort->setDescription("This is a description for testPort");
+
+    testPort->setDefaultValue("0");
+    testPort->getWire()->setQualifier(QStringLiteral("data"));
+    testPort->getWire()->setQualifier(QStringLiteral("address"));
+
+    QDomDocument document;
+    QDomElement extensionNode = document.createElement("kactus2:testExtension");
+    extensionNode.setAttribute("vendorAttribute", "extension");
+    extensionNode.appendChild(document.createTextNode("testValue"));
+
+    QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
+    testPort->getVendorExtensions()->append(testExtension);
+
+    QSharedPointer<Packet> testPacket(new Packet());
+
+    QSharedPointer<PacketField> testPacketField(new PacketField());
+    testPacketField->setName("testField");
+    testPacketField->setDisplayName("A test field");
+    testPacketField->setShortDescription("shortDescription");
+    testPacketField->setDescription("A longer description for the test field");
+
+    testPacketField->setEndianness("little");
+    testPacketField->setWidth("16");
+    testPacketField->setValue("8");
+
+    QSharedPointer<Qualifier> fieldQualifier(new Qualifier());
+    fieldQualifier->isFlowControl = true;
+    fieldQualifier->flowType = QStringLiteral("user");
+    fieldQualifier->userFlowType = QStringLiteral("user flow type");
+    testPacketField->setQualifier(fieldQualifier);
+
+    QDomDocument document2;
+    QDomElement extensionNodePacket = document2.createElement("kactus2:packetTestExtension");
+    extensionNodePacket.setAttribute("vendorAttribute", "packet_extension");
+    extensionNodePacket.appendChild(document2.createTextNode("testValue1"));
+
+    QSharedPointer<GenericVendorExtension> testPacketExtension(new GenericVendorExtension(extensionNodePacket));
+    testPacket->getVendorExtensions()->append(testPacketExtension);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    AbstractionDefinitionWriter busWriter;
+
+    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestAbsDef</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+            "<ipxact:ports>"
+                "<ipxact:port>"
+                    "<ipxact:logicalName>testPort</ipxact:logicalName>"
+                    "<ipxact:displayName>test wire port</ipxact:displayName>"
+                    "<ipxact:description>This is a description for testPort</ipxact:description>"
+                    "<ipxact:wire>"
+                        "<ipxact:qualifier>"
+                            "<ipxact:isData>true</ipxact:isData>"
+                            "<ipxact:isAddress>true</ipxact:isAddress>"
+                        "</ipxact:qualifier>"
+                        "<ipxact:defaultValue>0</ipxact:defaultValue>"
+                    "</ipxact:wire>"
+                    "<ipxact:packets>"
+                        "<ipxact:packet>"
+                            "<ipxact:packetFields>"
+                                "<ipxact:packetField>"
+                                    "<ipxact:name>testField</ipxact:name>"
+                                    "<ipxact:displayName>A test field</ipxact:displayName>"
+                                    "<ipxact:shortDescription>shortDescription</ipxact:shortDescription>"
+                                    "<ipxact:description>A longer description for the test field</ipxact:description>"
+                                    "<ipxact:width>16</ipxact:width>"
+                                    "<ipxact:value>8</ipxact:value>"
+                                    "<ipxact:endianness>little</ipxact:endianness>"
+                                    "<ipxact:qualifier>"
+                                        "<ipxact:isFlowControl flowType=\"user\" user=\"user flow type\">true</ipxact:isFlowControl>"
+                                    "</ipxact:qualifier>"
+                                "</ipxact:packetField>"
+                            "</ipxact:packetFields>"
+                            "<ipxact:vendorExtensions>"
+                                "<kactus2:packetTestExtension vendorAttribute=\"packet_extension\">testValue1</kactus2:packetTestExtension>"
+                            "</ipxact:vendorExtensions>"
+                        "</ipxact:packet>"
+                    "</ipxact:packets>"
+                    "<ipxact:vendorExtensions>"
+                        "<kactus2:testExtension vendorAttribute=\"extension\">testValue</kactus2:testExtension>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:port>"
+            "</ipxact:ports>"
+        "</ipxact:abstractionDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteWirePortForAllModes()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionWriter::testWriteWirePortForAllModes()
@@ -286,7 +450,7 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForAllModes()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -294,7 +458,7 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForAllModes()
     testPort->setName("reset");
     
     QSharedPointer<WireAbstraction> wire(new WireAbstraction());
-    wire->setQualifier(Qualifier::Reset);
+    wire->setQualifier(QStringLiteral("reset"));
     wire->setRequiresDriver(true);
     wire->setDriverType(General::SINGLESHOT);
     testPort->setWire(wire);
@@ -369,6 +533,84 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForAllModes()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinition::testWriteWirePortForInitiatorTarget()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionWriter::testWriteWirePortForInitiatorTarget()
+{
+    VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
+
+    VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(
+        new AbstractionDefinition(extendingVlnv, Document::Revision::Std22));
+    abstractionDefinition->setBusType(targetBus);
+
+    QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+    testPort->setName("reset");
+    
+    QSharedPointer<WireAbstraction> wire(new WireAbstraction());
+    wire->setQualifier(QStringLiteral("reset"));
+    wire->setRequiresDriver(true);
+    wire->setDriverType(General::SINGLESHOT);
+    testPort->setWire(wire);
+
+    QSharedPointer<WirePort> initiatorPort(new WirePort);
+    initiatorPort->setPresence(PresenceTypes::OPTIONAL);
+    initiatorPort->setWidth("expression");
+    initiatorPort->setDirection(DirectionTypes::IN);
+    initiatorPort->setAllBits(true);
+
+    QSharedPointer<WirePort> targetPort(new WirePort);
+    targetPort->setPresence(PresenceTypes::ILLEGAL);
+    targetPort->setDirection(DirectionTypes::OUT);
+
+    testPort->getWire()->setInitiatorPort(initiatorPort);
+    testPort->getWire()->setTargetPort(targetPort);
+
+    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports = abstractionDefinition->getLogicalPorts();
+    ports->append(testPort);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    AbstractionDefinitionWriter busWriter;
+
+    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestAbsDef</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+            "<ipxact:ports>"
+                "<ipxact:port>"                
+                    "<ipxact:logicalName>reset</ipxact:logicalName>"
+                    "<ipxact:wire>"
+                        "<ipxact:qualifier>"
+                            "<ipxact:isReset>true</ipxact:isReset>"
+                        "</ipxact:qualifier>"
+                        "<ipxact:onInitiator>"
+                            "<ipxact:presence>optional</ipxact:presence>"
+                            "<ipxact:width allBits=\"true\">expression</ipxact:width>"
+                            "<ipxact:direction>in</ipxact:direction>"
+                        "</ipxact:onInitiator>"
+                        "<ipxact:onTarget>"
+                            "<ipxact:presence>illegal</ipxact:presence>"
+                            "<ipxact:direction>out</ipxact:direction>"
+                        "</ipxact:onTarget>"
+                        "<ipxact:requiresDriver driverType=\"singleShot\">true</ipxact:requiresDriver>"
+                    "</ipxact:wire>"
+                "</ipxact:port>"
+            "</ipxact:ports>"
+        "</ipxact:abstractionDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteMultipleSystemWirePorts()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionWriter::testWriteMultipleSystemWirePorts()
@@ -376,7 +618,7 @@ void tst_AbstractionDefinitionWriter::testWriteMultipleSystemWirePorts()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -452,7 +694,7 @@ void tst_AbstractionDefinitionWriter::testWireConstraints()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -533,7 +775,7 @@ void tst_AbstractionDefinitionWriter::testWireMirroredConstraints()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -614,7 +856,7 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleTransactionalPort()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -622,7 +864,7 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleTransactionalPort()
     testPort->setName("testPort");
 
     testPort->setTransactional(QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction()));
-    testPort->getTransactional()->setQualifier(Qualifier::Data);
+    testPort->getTransactional()->setQualifier(QStringLiteral("data"));
     
     abstractionDefinition->getLogicalPorts()->append(testPort);
 
@@ -665,7 +907,7 @@ void tst_AbstractionDefinitionWriter::testWriteTransactionalPortForAllModes()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -755,7 +997,7 @@ void tst_AbstractionDefinitionWriter::testWriteTransactionalPortWithProtocol()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV extendingVlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestAbsDef", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(extendingVlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(extendingVlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -828,6 +1070,62 @@ void tst_AbstractionDefinitionWriter::testWriteTransactionalPortWithProtocol()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinition::testWriteChoices()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionWriter::testWriteChoices()
+{
+    VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
+
+    VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(
+        new AbstractionDefinition(vlnv, Document::Revision::Std22));
+    abstractionDefinition->setBusType(targetBus);
+
+    QSharedPointer<Choice> testChoice(new Choice);
+    testChoice->setName("testChoice");
+    
+    QSharedPointer<Enumeration> testEnumeration1(new Enumeration());
+    testEnumeration1->setHelp("test enumeration 1");
+    testEnumeration1->setValue("enumeration1");
+    
+    QSharedPointer<Enumeration> testEnumeration2(new Enumeration());
+    testEnumeration2->setText("enum2");
+    testEnumeration2->setValue("enumeration2");
+
+    testChoice->enumerations()->append(testEnumeration1);
+    testChoice->enumerations()->append(testEnumeration2);
+
+    abstractionDefinition->getChoices()->append(testChoice);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    AbstractionDefinitionWriter busWriter;
+
+    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestBus</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+            "<ipxact:choices>"
+                "<ipxact:choice>"
+                    "<ipxact:name>testChoice</ipxact:name>"
+                    "<ipxact:enumeration help=\"test enumeration 1\">enumeration1</ipxact:enumeration>"
+                    "<ipxact:enumeration text=\"enum2\">enumeration2</ipxact:enumeration>"
+                "</ipxact:choice>"
+            "</ipxact:choices>"
+        "</ipxact:abstractionDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinition::testWriteParameters()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionWriter::testWriteParameters()
@@ -835,7 +1133,7 @@ void tst_AbstractionDefinitionWriter::testWriteParameters()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(vlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(vlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -892,7 +1190,7 @@ void tst_AbstractionDefinitionWriter::testWriteAssertions()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(vlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(vlnv);
     abstractionDefinition->setBusType(targetBus);
 
@@ -950,7 +1248,7 @@ void tst_AbstractionDefinitionWriter::testVendorExtensions()
     VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
 
     VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "TestBus", "1.0");
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(vlnv, Document::Revision::Std14));
     abstractionDefinition->setVlnv(vlnv);
     abstractionDefinition->setBusType(targetBus);
     abstractionDefinition->setVersion("3.0.0");
