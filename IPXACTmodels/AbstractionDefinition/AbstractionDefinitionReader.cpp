@@ -62,6 +62,8 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
 
     parsePorts(definitionNode, abstractionDefinion, docRevision);
     
+    parseChoices(definitionNode, abstractionDefinion);
+
     parseParameters(definitionNode, abstractionDefinion);
 
     parseAssertions(definitionNode, abstractionDefinion);
@@ -197,4 +199,15 @@ void AbstractionDefinitionReader::parseTransactional(QDomNode const& portNode,
 
         port->setTransactional(transactional);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionReader::parseChoices()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionReader::parseChoices(QDomNode const& definitionNode,
+    QSharedPointer<AbstractionDefinition> definition) const
+{
+    auto parsedChoices = CommonItemsReader::parseChoices(definitionNode);
+
+    definition->setChoices(parsedChoices);
 }

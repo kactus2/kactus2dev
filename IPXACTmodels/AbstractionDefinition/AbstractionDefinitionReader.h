@@ -111,6 +111,8 @@ private:
      */
     void parseTransactional(QDomNode const& portNode, QSharedPointer<PortAbstraction> port, 
         Document::Revision revision) const;
+
+    void parseChoices(QDomNode const& definitionNode, QSharedPointer<AbstractionDefinition> definition) const;
 };
 
 #endif // ABSTRACTIONDEFINITIONREADER_H

@@ -157,6 +157,13 @@ public:
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > getLogicalPorts() const;
 
     /*!
+     *	Sets the choices of the abstraction definition.
+     *  
+     *      @param [in] choices	Description
+     */
+    void setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices);
+
+    /*!
      *  Gets the choices of the abstraction description.
      *
      *      @return The choices.

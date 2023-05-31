@@ -859,7 +859,7 @@ void tst_AbstractionDefinitionReader::testReadChoices()
     QCOMPARE(choice1->enumerations()->at(1)->getValue(), QString("64"));
     QCOMPARE(choice1->enumerations()->at(1)->getText(), QString("64 bits"));
     
-    QCOMPARE(choice2->name(), QString("testChocie"));
+    QCOMPARE(choice2->name(), QString("testChoice"));
     QCOMPARE(choice2->enumerations()->count(), 2);
     QCOMPARE(choice2->enumerations()->at(0)->getValue(), QString("some"));
     QCOMPARE(choice2->enumerations()->at(1)->getValue(), QString("lots"));

@@ -112,7 +112,7 @@ public:
      *  Parses choices.
      *
      *      @param [in] itemNode        XML description of the IP-XACT element.
-     *      @return [out]               A list of choices.
+     *      @return A list of choices.
      */
     static QSharedPointer<QList<QSharedPointer<Choice> > > parseChoices(QDomNode const& itemNode);
 

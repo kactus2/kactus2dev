@@ -308,6 +308,14 @@ QSharedPointer<QList<QSharedPointer<PortAbstraction> > > AbstractionDefinition::
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::setChoices()
+//-----------------------------------------------------------------------------
+void AbstractionDefinition::setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices)
+{
+    choices_ = choices;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::getChoices()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Choice> > > AbstractionDefinition::getChoices() const
