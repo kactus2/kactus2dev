@@ -162,7 +162,7 @@ void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointe
 {
     QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(documentNode);
 
-    foreach (QSharedPointer<Parameter> parameter, *newParameters)
+    for (auto parameter : *newParameters)
     {
         document->getParameters()->append(parameter);
     }

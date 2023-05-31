@@ -101,7 +101,11 @@ void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer
             QString left = vectorNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
             QString right = vectorNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
-            vectors->append(QSharedPointer<Vector>(new Vector(left, right)));
+            auto vectorId = vectorNode.attributes().namedItem(QStringLiteral("vectorId")).nodeValue();
+            auto parsedVector = QSharedPointer<Vector>(new Vector(left, right));
+            parsedVector->setId(vectorId);
+
+            vectors->append(parsedVector);
         }
     }
 }
