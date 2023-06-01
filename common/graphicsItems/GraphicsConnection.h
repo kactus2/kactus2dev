@@ -16,6 +16,8 @@
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
+#include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
+
 #include <QGraphicsPathItem>
 #include <QGraphicsTextItem>
 #include <QUndoCommand>
@@ -44,9 +46,7 @@ public:
      *  Constructor.
      */
     GraphicsConnection(ConnectionEndpoint *endpoint1, ConnectionEndpoint *endpoint2,
-                       bool autoConnect, QString const& name, 
-                       QString const& displayName,
-                       QString const& description,
+                       QSharedPointer<ConnectionRoute> route, bool autoConnect,
                        DesignDiagram* parent);
 
     /*!
@@ -60,6 +60,17 @@ public:
      *  Destructor.
      */
     virtual ~GraphicsConnection();
+
+    // Disable copying.
+    GraphicsConnection(GraphicsConnection const& rhs) = delete;
+    GraphicsConnection& operator=(GraphicsConnection const& rhs) = delete;
+
+    /*!
+     *  Get the type of this connection.
+     *
+     *      @return HW connection.
+     */
+    virtual int type() const = 0;
 
     /*!
      *  Sets the routing mode.
@@ -114,14 +125,16 @@ public:
     /*!
      *  Toggles the connection between normal and off-page.
      */
-    virtual void toggleOffPage();
+    void toggleOffPage();
+
+    bool isOffPage() const;
 
     /*!
      *  Sets the routing of the connection.
      *
      *      @param [in] path The route to set.
      */
-    virtual void setRoute(QList<QPointF> path);
+    void setRoute(QList<QPointF> path);
 
     /*!
      *  Returns the route of this connection.
@@ -169,7 +182,7 @@ public:
 	 *
      *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(QString const& description);
+	virtual void setDescription(QString const& /*description*/) {};
 
     /*!
      *  Sets the imported state.
@@ -181,12 +194,12 @@ public:
     /*!
      *  Returns the name of this connection
      */
-    virtual QString name() const;
+    virtual QString name() const { return QString(); };
 
 	/*!
      *  Returns the description of the connection.
 	 */
-	virtual QString description() const;
+	virtual QString description() const { return QString(); };
 
     /*!
      *  Returns true if the connection is an imported one.
@@ -212,6 +225,13 @@ public:
      *  Returns the used routing mode.
      */
     RoutingMode getRoutingMode() const;
+
+    /*!
+     *  Get the route of the connection.
+     *
+     *      @return The connection route.
+     */
+    QSharedPointer<ConnectionRoute> getRouteExtension() const;
 
     /*!
      *  Returns true if the connection is invalid.
@@ -494,19 +514,13 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The parent diagram.
-    DesignDiagram* parent_;
-
-    //! The name of the connection.
-    QString name_;
-
-    //! The description of the connection.
-    QString description_;
+    DesignDiagram* parent_ = nullptr;
 
     //! The first endpoint.
-    ConnectionEndpoint* endpoint1_;
+    ConnectionEndpoint* endpoint1_ = nullptr;
 
     //! The second endpoint.
-    ConnectionEndpoint* endpoint2_;
+    ConnectionEndpoint* endpoint2_ = nullptr;
 
     //! The route path points.
     QList<QPointF> pathPoints_;
@@ -515,25 +529,28 @@ private:
     QList<QLineF> pathLines_;
 
     //! The index of the segment that is currently selected.
-    int selected_;
+    int selected_ = -1;
 
     //! The type of selection.
-    SelectionType selectionType_;
+    SelectionType selectionType_ = NONE;
 
     //! The old route for creating undo commands.
     QList<QPointF> oldRoute_;
 
     //! The routing mode.
-    RoutingMode routingMode_;
+    RoutingMode routingMode_ = ROUTING_MODE_NORMAL;
+
+    //! The route of the interconnection.
+    QSharedPointer<ConnectionRoute> route_ = QSharedPointer<ConnectionRoute>(new ConnectionRoute(QString()));
 
     //! If true, the connection is an imported one.
-    bool imported_;
+    bool imported_ = false;
 
     //! The default color.
-    bool invalid_;
+    bool invalid_ = false;
 
     //! If true, connection is being moved.
-    bool positionUpdateInProcess_;
+    bool positionUpdateInProcess_ = false;
 };
 
 //-----------------------------------------------------------------------------

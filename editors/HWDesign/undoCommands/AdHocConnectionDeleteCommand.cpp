@@ -62,7 +62,7 @@ void AdHocConnectionDeleteCommand::undo()
     diagram_->addItem(adHocConnection_);
     diagram_->clearSelection();
 
-    diagram_->getDesign()->getAdHocConnections()->append(adHocConnection_->getAdHocConnection());
+    diagram_->getDesign()->getAdHocConnections()->append(adHocConnection_->getInterconnection());
     diagram_->getDesign()->addRoute(adHocConnection_->getRouteExtension());
 
     adHocConnection_->connectEnds();
@@ -80,7 +80,7 @@ void AdHocConnectionDeleteCommand::redo()
     adHocConnection_->setSelected(false);
     adHocConnection_->disconnectEnds();
 
-    diagram_->getDesign()->getAdHocConnections()->removeOne(adHocConnection_->getAdHocConnection());
+    diagram_->getDesign()->getAdHocConnections()->removeOne(adHocConnection_->getInterconnection());
     diagram_->getDesign()->removeRoute(adHocConnection_->getRouteExtension());
 
     // Remove the item from the scene.

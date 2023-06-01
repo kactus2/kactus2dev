@@ -1140,6 +1140,7 @@ CreateHelp
       </Command>
     </CustomBuild>
     <ClInclude Include="common\expressions\utilities.h" />
+    <ClInclude Include="common\graphicsItems\ConnectionItem.h" />
     <ClInclude Include="common\graphicsItems\GraphicsColumnAddCommand.h" />
     <CustomBuild Include="common\graphicsItems\GraphicsColumnConstants.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
@@ -2847,6 +2848,7 @@ CreateHelp
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
+    <None Include="common\graphicsItems\ConnectionItem.inl" />
     <None Include="wizards\common\IPXactElementComparator.inl" />
     <None Include="wizards\common\ListComparator.inl" />
   </ItemGroup>

@@ -57,7 +57,7 @@ void ApiConnectionAddCommand::undo()
     connection_->disconnectEnds();
 
     QList<QSharedPointer<ApiInterconnection> > apiInterconnections = containingDesign_->getApiConnections();
-    apiInterconnections.removeAll(connection_->getApiInterconnection());
+    apiInterconnections.removeAll(connection_->getInterconnection());
     containingDesign_->setApiConnections(apiInterconnections);
 
     containingDesign_->removeRoute(connection_->getRouteExtension());
@@ -90,7 +90,7 @@ void ApiConnectionAddCommand::redo()
         }
 
         QList<QSharedPointer<ApiInterconnection> > apiInterconnections = containingDesign_->getApiConnections();
-        apiInterconnections.append(connection_->getApiInterconnection());
+        apiInterconnections.append(connection_->getInterconnection());
         containingDesign_->setApiConnections(apiInterconnections);
 
         containingDesign_->addRoute(connection_->getRouteExtension());

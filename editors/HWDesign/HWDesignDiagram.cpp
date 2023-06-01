@@ -3147,7 +3147,7 @@ void HWDesignDiagram::createConnectionBetweenEndPoints(ConnectionEndpoint* start
             AdHocConnectionItem* adhocItem = dynamic_cast<AdHocConnectionItem*>(newConnection);
             addItem(adhocItem);
 
-            getDesign()->getAdHocConnections()->append(adhocItem->getAdHocConnection());
+            getDesign()->getAdHocConnections()->append(adhocItem->getInterconnection());
             getDesign()->addRoute(adhocItem->getRouteExtension());
         }
         else if (startPoint->isBus() && endPoint->isBus())

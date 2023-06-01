@@ -56,7 +56,7 @@ void AdHocConnectionAddCommand::undo()
     scene_->removeItem(connection_);
     del_ = true;
 
-    design_->getAdHocConnections()->removeAll(connection_->getAdHocConnection());
+    design_->getAdHocConnections()->removeAll(connection_->getInterconnection());
     design_->removeRoute(connection_->getRouteExtension());
     
     // Execute child commands.
@@ -76,7 +76,7 @@ void AdHocConnectionAddCommand::redo()
         scene_->addItem(connection_);
     }
 
-    design_->getAdHocConnections()->append(connection_->getAdHocConnection());
+    design_->getAdHocConnections()->append(connection_->getInterconnection());
     design_->addRoute(connection_->getRouteExtension());
 
     connection_->connectEnds();

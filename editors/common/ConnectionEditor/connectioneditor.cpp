@@ -240,7 +240,7 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     else if (endpoint1->isAdHoc())
     {
         AdHocConnectionItem* adHoc = static_cast<AdHocConnectionItem*>(connection_);
-        adHocBoundsModel_.setConnection(adHoc->getAdHocConnection(), diagram->getEditProvider());
+        adHocBoundsModel_.setConnection(adHoc->getInterconnection(), diagram->getEditProvider());
         adHocBoundsTable_.resizeRowsToContents();
     }
 

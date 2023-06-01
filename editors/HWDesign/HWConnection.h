@@ -16,17 +16,18 @@
 #include <QGraphicsTextItem>
 #include <QUndoCommand>
 
-#include <common/graphicsItems/GraphicsConnection.h>
+#include <common/graphicsItems/ConnectionItem.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-class Interconnection;
+#include <IPXACTmodels/Design/Interconnection.h>
+
 class ConnectionRoute;
 class ActiveInterface;
 
 //-----------------------------------------------------------------------------
 //! HWConnection represents graphically an IP-XACT interconnection
 //-----------------------------------------------------------------------------
-class HWConnection : public GraphicsConnection
+class HWConnection : public ConnectionItem<Interconnection>
 {
     Q_OBJECT
 
@@ -61,94 +62,17 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~HWConnection();
-
-    /*!
-     *  Set the name for the connection item.
-     *
-     *      @param [in] name    The new connection item name.
-     */
-    virtual void setName(QString const& name);
-
-    /*!
-     *  Get the name of the connection item.
-     *
-     *      @return The name of the connection item.
-     */
-    virtual QString name() const;
-
-    /*!
-     *  Set the description for the connection item.
-     *
-     *      @param [in] description     The new description.
-     */
-    virtual void setDescription(QString const& description);
-
-    /*!
-     *  Get the description for the connection item.
-     *
-     *      @return The description of the connection item.
-     */
-    virtual QString description() const;
-        
-    /*!
-     *  Get the contained interconnection.
-     *
-     *      @return The interconnection contained within this item.
-     */
-    QSharedPointer<Interconnection> getInterconnection();
-
-    /*!
-     *  Get the route of the connection.
-     *
-     *      @return The connection route.
-     */
-    QSharedPointer<ConnectionRoute> getRouteExtension() const;
-
-    /*!
-     *  Toggles the connection between normal and off-page.
-     */
-    virtual void toggleOffPage();
-
-    /*!
-     *  Set the routing of the interconnection
-     *
-     *      @param [in] path    List of points for the path.
-     */
-    virtual void setRoute(QList<QPointF> path);
-
-    /*!
-     *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
-     *  connection).
-     */
-    bool isBus() const;
+    virtual ~HWConnection() = default;
 
     /*!
      *  Get the type of this connection.
      *
      *      @return HW connection.
      */
-    int type() const { return Type; }
+    int type() const final { return Type; }
 
-    /*!
-     *  Change the component reference of a contained interface.
-     *
-     *      @param [in] oldName     The old component reference.
-     *      @param [in] newName     The new component reference.
-     */
-    virtual void changeConnectionComponentReference(std::string const& oldName, std::string const& newName);
+    bool isBus() const;
 
-private:
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The contained interconnection.
-    QSharedPointer<Interconnection> interconnection_;
-
-    //! The route of the interconnection.
-    QSharedPointer<ConnectionRoute> route_;
 };
 
 #endif // HWCONNECTION_H

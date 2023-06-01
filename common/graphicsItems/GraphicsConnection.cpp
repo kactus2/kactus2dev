@@ -32,27 +32,15 @@
 // Function: GraphicsConnection::GraphicsConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
-                                       bool autoConnect, QString const& name, 
-                                       QString const& /*displayName*/,
-                                       QString const& description, DesignDiagram* parent):
-QGraphicsPathItem(), 
+    QSharedPointer<ConnectionRoute> route, bool autoConnect, DesignDiagram* parent) :
+    QGraphicsPathItem(),
     Associable(),
-      parent_(parent),
-      name_(name), 
-      description_(description),
-      endpoint1_(endpoint1),
-      endpoint2_(endpoint2), 
-      pathPoints_(), 
-      pathLines_(),
-      selected_(-1), 
-      selectionType_(NONE),
-      routingMode_(ROUTING_MODE_NORMAL),
-      imported_(false),
-      invalid_(false),
-      positionUpdateInProcess_(false)
+    parent_(parent),
+    endpoint1_(endpoint1),
+    endpoint2_(endpoint2),
+    route_(route)
 {
     setItemSettings();
-    createRoute(endpoint1_, endpoint2_);
 
     if (autoConnect)
     {
@@ -64,11 +52,13 @@ QGraphicsPathItem(),
         endpoint1_->addConnection(this);
         endpoint2_->addConnection(this);
 
-        if (name_.isEmpty())
+        if (route_->name().isEmpty())
         {
-            name_ = createDefaultName();
+            route_->setName(createDefaultName());
         }
     }
+
+    setRoute(route_->getRoute());
 
     setDefaultColor();
 }
@@ -78,19 +68,8 @@ QGraphicsPathItem(),
 //-----------------------------------------------------------------------------
 GraphicsConnection::GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
                                        QPointF const& p2, QVector2D const& dir2,
-                                       DesignDiagram* parent)
-    : QGraphicsPathItem(),
-      parent_(parent),
-      name_(),
-      description_(),
-      endpoint1_(0), 
-      endpoint2_(0),
-      pathPoints_(),
-      selected_(-1),
-      selectionType_(NONE),
-      routingMode_(ROUTING_MODE_NORMAL),
-      imported_(false),
-      invalid_(false)
+                                       DesignDiagram* parent):
+    QGraphicsPathItem(), parent_(parent)
 {
     setItemSettings();
     pathPoints_ = DefaultRouting::createRoute(p1, p2, dir1, dir2);
@@ -123,13 +102,13 @@ bool GraphicsConnection::connectEnds()
 
     // Find the new end points.
     endpoint1_ = DiagramUtil::snapToItem<ConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
-    Q_ASSERT(endpoint1_ != 0);
+    Q_ASSERT(endpoint1_ != nullptr);
 
     endpoint2_ = DiagramUtil::snapToItem<ConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
-    Q_ASSERT(endpoint2_ != 0);
+    Q_ASSERT(endpoint2_ != nullptr);
 
     // Swap the end points in a way that the first one at least has an encompassing component.
-    if (endpoint1_->encompassingComp() == 0 && endpoint2_->encompassingComp() != 0)
+    if (endpoint1_->encompassingComp() == nullptr && endpoint2_->encompassingComp() != nullptr)
     {
         std::swap(endpoint1_, endpoint2_);
 
@@ -143,15 +122,15 @@ bool GraphicsConnection::connectEnds()
     // Make the connections and check for errors.
     if (!endpoint1_->onConnect(endpoint2_))
     {
-        endpoint1_ = 0;
+        endpoint1_ = nullptr;
         return false;
     }
 
     if (!endpoint2_->onConnect(endpoint1_))
     {
         endpoint1_->onDisconnect();
-        endpoint1_ = 0;
-        endpoint2_ = 0;
+        endpoint1_ = nullptr;
+        endpoint2_ = nullptr;
         return false;
     }
 
@@ -163,8 +142,8 @@ bool GraphicsConnection::connectEnds()
     setRoute(pathPoints_);
 
     updatePosition();
-    name_ = createDefaultName();
-    setName(name_);
+
+    route_->setName(createDefaultName());
 
     return true;
 }
@@ -188,17 +167,10 @@ void GraphicsConnection::setRoute(QList<QPointF> path)
     pathPoints_ = path;
     pathLines_ = pointsToLines(pathPoints_);
 
+    route_->setRoute(path);
+
     paintConnectionPath();
     positionUpdated();
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: GraphicsConnection::name()
-//-----------------------------------------------------------------------------
-QString GraphicsConnection::name() const
-{
-    return name_;
 }
 
 //-----------------------------------------------------------------------------
@@ -206,24 +178,7 @@ QString GraphicsConnection::name() const
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setName(QString const& name)
 {
-    name_ = name;
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: GraphicsConnection::description()
-//-----------------------------------------------------------------------------
-QString GraphicsConnection::description() const
-{
-    return description_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: GraphicsConnection::setDescription()
-//-----------------------------------------------------------------------------
-void GraphicsConnection::setDescription(QString const& description)
-{
-    description_ = description;
+    route_->setName(name);
     emit contentChanged();
 }
 
@@ -512,12 +467,10 @@ void GraphicsConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (selectionType_ == END)
     {
-        ConnectionEndpoint* endpoint1 =
-            DiagramUtil::snapToItem<ConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
-        ConnectionEndpoint* endpoint2 =
-            DiagramUtil::snapToItem<ConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
+        auto endpoint1 = DiagramUtil::snapToItem<ConnectionEndpoint>(pathPoints_.first(), scene(), GridSize);
+        auto endpoint2 = DiagramUtil::snapToItem<ConnectionEndpoint>(pathPoints_.last(), scene(), GridSize);
 
-        if (endpoint1 != 0 && endpoint2 != 0 &&
+        if (endpoint1 != nullptr && endpoint2 != nullptr &&
             endpoint1->canConnect(endpoint2) && endpoint2->canConnect(endpoint1))
         {
             connectEnds();
@@ -654,19 +607,19 @@ QString GraphicsConnection::createDefaultName() const
     ConnectionEndpoint* start = endpoint1_;
     ConnectionEndpoint* end = endpoint2_;
 
-    if (start->encompassingComp() == 0 && end->encompassingComp() != 0)
+    if (start->encompassingComp() == nullptr && end->encompassingComp() != nullptr)
     {
         std::swap(start, end);
     }
 
     QString startComponentName = QString();
-    if (start->encompassingComp() != 0)
+    if (start->encompassingComp() != nullptr)
     {
         startComponentName = QString::fromStdString(start->encompassingComp()->name()) + "_";
     }
 
     QString endComponentName = QString();
-    if (end->encompassingComp() != 0)
+    if (end->encompassingComp() != nullptr)
     {
         endComponentName = QString::fromStdString(end->encompassingComp()->name()) + "_";
     }
@@ -694,8 +647,8 @@ void GraphicsConnection::disconnectEnds()
         endpoint2_->setSelectionHighlight(false);
     }
 
-    endpoint1_ = 0;
-    endpoint2_ = 0;
+    endpoint1_ = nullptr;
+    endpoint2_ = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -708,12 +661,12 @@ QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVarian
         bool selected = value.toBool();
         setDefaultColor();
 
-        if (endpoint1_ != 0)
+        if (endpoint1_ != nullptr)
         {
             endpoint1_->setSelectionHighlight(selected);
         }
 
-        if (endpoint2_ != 0)
+        if (endpoint2_ != nullptr)
         {
             endpoint2_->setSelectionHighlight(selected);
         }
@@ -753,7 +706,7 @@ QUndoCommand* GraphicsConnection::endUpdatePosition(QUndoCommand* parent)
     }
     else
     {
-        return 0;
+        return nullptr;
     }
 }
 
@@ -814,11 +767,11 @@ void GraphicsConnection::setDefaultColor()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
 {
-    foreach (QGraphicsItem* item, scene()->items())
+    for (QGraphicsItem* item : scene()->items())
     {
         if (item->isVisible() && item != this)
         {
-            GraphicsConnection* connection = dynamic_cast<GraphicsConnection*>(item);
+            auto connection = dynamic_cast<GraphicsConnection*>(item);
             if (connection && collidesWithItem(item))
             {
                 drawOverlapWithConnection(painter, connection);
@@ -838,11 +791,11 @@ void GraphicsConnection::drawOverlapWithConnection(QPainter* painter, GraphicsCo
 {
     QList<QLineF> connectionLines = pointsToLines(connection->route());
 
-    foreach (QLineF const& pathLine, pathLines_)
+    for (QLineF const& pathLine : pathLines_)
     {                
         if (!qFuzzyIsNull(pathLine.dy())) //<! Discard horizontal segments of this connection line.
         {
-            foreach (QLineF const& connectionLine, connectionLines)
+            for (QLineF const& connectionLine : connectionLines)
             {             
                 if (!qFuzzyIsNull(connectionLine.dx())) //<! Discard vertical segments of the intersecting line.
                 {
@@ -927,7 +880,7 @@ void GraphicsConnection::drawUndercrossing(QPainter* painter, QLineF const& path
 //-----------------------------------------------------------------------------
 void GraphicsConnection::drawOverlapWithComponent(QPainter* painter, QGraphicsItem* item)
 {
-    ComponentItem* comp = static_cast<ComponentItem*>(item);
+    auto comp = static_cast<ComponentItem*>(item);
     QRectF componentRect = comp->rect();
 
     // Create the line objects for each edge of the diagram component rectangle.
@@ -937,7 +890,7 @@ void GraphicsConnection::drawOverlapWithComponent(QPainter* painter, QGraphicsIt
     QLineF bottomEdge(comp->mapToScene(componentRect.bottomLeft()),
         comp->mapToScene(componentRect.bottomRight()));
 
-    foreach (QLineF const& pathLine, pathLines_)
+    for (QLineF const& pathLine : pathLines_)
     {                
         // Check for intersections with the component rectangle's edges.
         QPointF leftPoint;
@@ -1021,7 +974,7 @@ void GraphicsConnection::setLineWidth(int width)
 //-----------------------------------------------------------------------------
 ConnectionEndpoint::EndpointType GraphicsConnection::getConnectionType() const
 {
-    if (endpoint1() == 0 && endpoint2() == 0)
+    if (endpoint1() == nullptr && endpoint2() == nullptr)
     {
         return ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED;
     }
@@ -1042,6 +995,14 @@ ConnectionEndpoint::EndpointType GraphicsConnection::getConnectionType() const
 GraphicsConnection::RoutingMode GraphicsConnection::getRoutingMode() const
 {
     return routingMode_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnection::getRouteExtension()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConnectionRoute> GraphicsConnection::getRouteExtension() const
+{
+    return route_;
 }
 
 //-----------------------------------------------------------------------------
@@ -1076,7 +1037,7 @@ void GraphicsConnection::validate()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
 {
-    if (endpoint1_ != 0)
+    if (endpoint1_ != nullptr)
     {
         // Disconnect from the previous endpoint.
         endpoint1_->removeConnection(this);
@@ -1100,7 +1061,7 @@ void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
 {
-    if (endpoint2_ != 0)
+    if (endpoint2_ != nullptr)
     {
         // Disconnect from the previous endpoint.
         endpoint2_->removeConnection(this);
@@ -1132,7 +1093,7 @@ bool GraphicsConnection::isInvalid() const
 //-----------------------------------------------------------------------------
 bool GraphicsConnection::hasDefaultName() const
 {
-    return (createDefaultName() == name_);
+    return (createDefaultName() == route_->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -1140,6 +1101,8 @@ bool GraphicsConnection::hasDefaultName() const
 //-----------------------------------------------------------------------------
 void GraphicsConnection::toggleOffPage()
 {
+    route_->setOffpage(!route_->isOffpage());
+
     // Determine the new end points for the connection.
     ConnectionEndpoint* endpoint1 = endpoint1_;
     ConnectionEndpoint* endpoint2 = endpoint2_;
@@ -1167,6 +1130,14 @@ void GraphicsConnection::toggleOffPage()
     endpoint2_->addConnection(this);
 
     updatePosition();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::isOffPage()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::isOffPage() const
+{
+    return route_->isOffpage();
 }
 
 //-----------------------------------------------------------------------------
@@ -1221,9 +1192,9 @@ void GraphicsConnection::fixOverlap()
 void GraphicsConnection::createSegmentBounds(QList<SegmentBound>& verticalBounds,
                                              QList<SegmentBound>& horizontalBounds)
 {
-    foreach (QGraphicsItem* item, scene()->items())
+    for (QGraphicsItem* item : scene()->items())
     {
-        GraphicsConnection const* conn = dynamic_cast<GraphicsConnection const*>(item);
+        auto const conn = dynamic_cast<GraphicsConnection const*>(item);
 
         // If the connections share an endpoint, discard it from the segment bounds.
         if (conn != 0 && conn != this &&
@@ -1562,7 +1533,7 @@ QPointF GraphicsConnection::findClosestPoint(QList<QPointF> const& sourcePoints,
     QPointF closest = sourcePoints.first();
     qreal shortestDistance = QLineF(closest, destination).length();
 
-    foreach(QPointF const& candidate, sourcePoints)
+    for (QPointF const& candidate : sourcePoints)
     {
         qreal distance = QLineF(candidate, destination).length();
         if (distance < shortestDistance)

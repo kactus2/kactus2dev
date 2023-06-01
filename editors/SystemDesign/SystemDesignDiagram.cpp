@@ -1925,8 +1925,9 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             port2 = port2->getOffPageConnector();
         }
 
-        GraphicsConnection* connection = new GraphicsConnection(port1, port2, true,
-            dependency->name(), dependency->displayName(), dependency->description(), this);
+        QSharedPointer<ConnectionRoute> apiRoute = getInterconnectionRoute(dependency->name());
+
+        auto connection = new ApiGraphicsConnection(port1, port2, dependency, apiRoute, true, this);
         connection->setImported(dependency->isImported());
 
         if (dependency->isOffPage())
@@ -2005,8 +2006,9 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             port2 = port2->getOffPageConnector();
         }
 
-        GraphicsConnection* connection = new GraphicsConnection(
-            port1, port2, true, conn->name(), conn->displayName(), conn->description(), this);
+        QSharedPointer<ConnectionRoute> comRoute = getInterconnectionRoute(conn->name());
+
+        auto connection = new ComGraphicsConnection(port1, port2, conn, comRoute, true, this);
 
         if (conn->isOffPage())
         {

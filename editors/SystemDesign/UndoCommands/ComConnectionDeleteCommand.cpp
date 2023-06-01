@@ -57,7 +57,7 @@ void ComConnectionDeleteCommand::undo()
 
     if (connection_->connectEnds())
     {
-        QSharedPointer<ComInterconnection> comInterconnection = connection_->getComInterconnection();
+        QSharedPointer<ComInterconnection> comInterconnection = connection_->getInterconnection();
         QList<QSharedPointer<ComInterconnection> > containedComs = containingDesign_->getComConnections();
         containedComs.append(comInterconnection);
         
@@ -79,7 +79,7 @@ void ComConnectionDeleteCommand::redo()
 
     connection_->disconnectEnds();
 
-    QSharedPointer<ComInterconnection> comInterconnection = connection_->getComInterconnection();
+    QSharedPointer<ComInterconnection> comInterconnection = connection_->getInterconnection();
     QList<QSharedPointer<ComInterconnection> > containedComs = containingDesign_->getComConnections();
     containedComs.removeAll(comInterconnection);
     containingDesign_->setComConnections(containedComs);

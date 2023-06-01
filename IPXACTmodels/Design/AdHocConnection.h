@@ -140,6 +140,14 @@ public:
      */
     void setTiedValue(std::string const& newTiedValue);
 
+    /*!
+     *  Change the component reference of contained interfaces.
+     *
+     *      @param [in] oldName     The old component reference.
+     *      @param [in] newName     The new component reference.
+     */
+    void changeInterfaceComponentReferences(std::string const& oldName, std::string const& newName);
+
 private:
 
     //-----------------------------------------------------------------------------

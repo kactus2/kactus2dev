@@ -57,7 +57,7 @@ void ApiConnectionDeleteCommand::undo()
 
     if (connection_->connectEnds())
     {
-        QSharedPointer<ApiInterconnection> apiConnection = connection_->getApiInterconnection();
+        QSharedPointer<ApiInterconnection> apiConnection = connection_->getInterconnection();
         QList<QSharedPointer<ApiInterconnection> > containedApis = containingDesign_->getApiConnections();
         containedApis.append(apiConnection);
 
@@ -79,7 +79,7 @@ void ApiConnectionDeleteCommand::redo()
 
     connection_->disconnectEnds();
 
-    QSharedPointer<ApiInterconnection> removedConnection = connection_->getApiInterconnection();
+    QSharedPointer<ApiInterconnection> removedConnection = connection_->getInterconnection();
     QList<QSharedPointer<ApiInterconnection> > containedApis = containingDesign_->getApiConnections();
     containedApis.removeAll(removedConnection);
     containingDesign_->setApiConnections(containedApis);

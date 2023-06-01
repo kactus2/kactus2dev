@@ -203,3 +203,17 @@ void AdHocConnection::setTiedValue(std::string const& newTiedValue)
 {
     tiedValue_ = newTiedValue;
 }
+
+//-----------------------------------------------------------------------------
+// Function: AdHocConnection::changeInterfaceComponentReferences()
+//-----------------------------------------------------------------------------
+void AdHocConnection::changeInterfaceComponentReferences(std::string const& oldName, std::string const& newName)
+{
+    for (QSharedPointer<PortReference> portReference : *internalPortReferences_)
+    {
+        if (portReference->getComponentRef().compare(oldName) == 0)
+        {
+            portReference->setComponentRef(newName);
+        }
+    }
+}
