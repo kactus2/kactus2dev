@@ -12,6 +12,8 @@
 #ifndef WIREABSTRACTIONWRITER_H
 #define WIREABSTRACTIONWRITER_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
@@ -38,8 +40,10 @@ public:
      *
      *      @param [in] writer      The XML writer to use.
      *      @param [in] wire        The wire to write.
+     *      @param [in] revision    The document standard revision to use.
      */
-    void writeWire(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wire) const;
+    void writeWire(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wire,
+        Document::Revision revision) const;
 
 private:
     
@@ -140,20 +144,22 @@ private:
     void writeMirroredModeConstraints(QXmlStreamWriter& writer, QSharedPointer<WirePort> wirePort) const;
 
     /*!
-     *  Writes the master port for the given wire qualifier into XML.
+     *  Writes the initiator port for the given wire qualifier into XML.
      *
      *      @param [in] writer      The XML writer to use.
-     *      @param [in] wire        The wire whose master port to write.
+     *      @param [in] wire        The wire whose initiator port to write.
      */
-    void writerMaster(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wirePort) const;
+    void writeInitiator(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wirePort, 
+        QString const& elementName) const;
             
     /*!
-     *  Writes the slave port for the given wire qualifier into XML.
+     *  Writes the target port for the given wire qualifier into XML.
      *
      *      @param [in] writer      The XML writer to use.
-     *      @param [in] wire        The wire whose slave port to write.
+     *      @param [in] wire        The wire whose target port to write.
      */
-    void writerSlave(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wirePort) const;
+    void writeTarget(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wirePort,
+        QString const& elementName) const;
    
 };
 

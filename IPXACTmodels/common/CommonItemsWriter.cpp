@@ -19,9 +19,9 @@
 #include <IPXACTmodels/Component/Choice.h>
 
 #include <IPXACTmodels/common/Assertion.h>
+#include <IPXACTmodels/common/Qualifier.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
-#include <IPXACTmodels/common/NameGroupWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::CommonItemsWriter()
@@ -224,3 +224,124 @@ void CommonItemsWriter::writeNonEmptyElement(QXmlStreamWriter& writer, QString c
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writeQualifier()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<Qualifier> qualifier)
+{
+    if (!qualifier->isSet())
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:qualifier"));
+
+    if (qualifier->hasType(Qualifier::Address))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isAddress"), QStringLiteral("true"));
+    }
+    if (qualifier->hasType(Qualifier::Data))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isData"), QStringLiteral("true"));
+    }
+    if (qualifier->hasType(Qualifier::Clock))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isClock"), QStringLiteral("true"));
+    }
+    if (qualifier->hasType(Qualifier::Reset))
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:isReset"));
+
+        if (auto level = qualifier->getResetLevel(); !level.isEmpty())
+        {
+            writer.writeAttribute(QStringLiteral("level"), level);
+        }
+        writer.writeCharacters(QStringLiteral("true"));
+        
+        writer.writeEndElement();
+    }
+    if (qualifier->hasType(Qualifier::ClockEnable))
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:isClockEn"));
+
+        if (auto level = qualifier->getClockEnableLevel(); !level.isEmpty())
+        {
+            writer.writeAttribute(QStringLiteral("level"), level);
+        }
+        writer.writeCharacters(QStringLiteral("true"));
+
+        writer.writeEndElement();
+    }
+    if (qualifier->hasType(Qualifier::PowerEnable))
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:isPowerEn"));
+
+        if (auto const& level = qualifier->getPowerEnableLevel(); !level.isEmpty())
+        {
+            writer.writeAttribute(QStringLiteral("level"), level);
+        }
+
+        if (auto const& reference = qualifier->getPowerDomainRef(); !reference.isEmpty())
+        {
+            writer.writeAttribute(QStringLiteral("powerDomainRef"), reference);
+        }
+
+        writer.writeCharacters(QStringLiteral("true"));
+
+        writer.writeEndElement();
+    }
+    if (qualifier->hasType(Qualifier::Opcode))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isOpcode"), QStringLiteral("true"));
+    }
+    if (qualifier->hasType(Qualifier::Protection))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isProtection"), QStringLiteral("true"));
+    }
+    if (qualifier->hasType(Qualifier::FlowControl))
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:isFlowControl"));
+        
+        auto const& type = qualifier->getFlowType();
+        if (!type.isEmpty())
+        {
+            writer.writeAttribute(QStringLiteral("flowType"), type);
+        }
+
+        if (type == QStringLiteral("user"))
+        {
+            if (auto const& userType = qualifier->getUserFlowType(); !userType.isEmpty())
+            {
+                writer.writeAttribute(QStringLiteral("user"), userType);
+            }
+        }
+
+        writer.writeCharacters(QStringLiteral("true"));
+
+        writer.writeEndElement();
+    }
+    if (qualifier->hasType(Qualifier::User))
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:isUser"));
+
+        if (auto const& userDefined = qualifier->getUserDefined();
+            !userDefined.isEmpty())
+        {
+            writer.writeAttribute(QStringLiteral("user"), userDefined);
+        }
+
+        writer.writeCharacters(QStringLiteral("true"));
+
+        writer.writeEndElement();
+    }
+    if (qualifier->hasType(Qualifier::Request))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isRequest"), QStringLiteral("true"));
+    }
+    if (qualifier->hasType(Qualifier::Response))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isResponse"), QStringLiteral("true"));
+    }
+
+    writer.writeEndElement(); // ipxact:qualifier
+}

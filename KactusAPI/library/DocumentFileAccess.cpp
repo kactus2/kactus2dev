@@ -132,9 +132,8 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
     VLNV::IPXactType documentType = model->getVlnv().getType();
     if (documentType == VLNV::ABSTRACTIONDEFINITION)
     {
-        AbstractionDefinitionWriter writer;
         QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
-        writer.writeAbstractionDefinition(xmlWriter, absDef);
+        AbstractionDefinitionWriter::writeAbstractionDefinition(xmlWriter, absDef);
     }
 
     else if (documentType == VLNV::BUSDEFINITION)

@@ -12,6 +12,8 @@
 #ifndef TRANSACTIONALABSTRACTIONWRITER_H
 #define TRANSACTIONALABSTRACTIONWRITER_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
@@ -40,8 +42,10 @@ public:
      *
      *      @param [in] writer          The XML writer to use.
      *      @param [in] transactional   The transactional to write.
+     *      @param [in] revision    The document standard revision to use.
      */
-    void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const;
+    void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional,
+        Document::Revision revision) const;
 
 private:
 
@@ -119,16 +123,20 @@ private:
      *
      *      @param [in] writer      The XML writer to use.
      *      @param [in] wire        The transactional whose master port to write.
+     *      @param [in] elementName     The XML element name to use.
      */
-    void writeMaster(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const;
+    void writeMaster(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional,
+        QString const& elementName) const;
 
     /*!
      *  Writes the slave port for the given transactional into XML.
      *
-     *      @param [in] writer      The XML writer to use.
-     *      @param [in] wire        The transactional whose slave port to write.
+     *      @param [in] writer          The XML writer to use.
+     *      @param [in] wire            The transactional whose slave port to write.
+     *      @param [in] elementName     The XML element name to use.
      */
-    void writeSlave(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional) const;
+    void writeSlave(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional,
+        QString const& elementName) const;
 
 };
 

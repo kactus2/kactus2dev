@@ -6,7 +6,7 @@
 // Date: 10.08.2015
 //
 // Description:
-// Writer class for IP-XACT AbstractionDefinition element.
+// Writer for IP-XACT AbstractionDefinition element.
 //-----------------------------------------------------------------------------
 
 #include "AbstractionDefinitionWriter.h"
@@ -16,106 +16,93 @@
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstractionWriter.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstractionWriter.h>
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::AbstractionDefinitionWriter()
-//-----------------------------------------------------------------------------
-AbstractionDefinitionWriter::AbstractionDefinitionWriter(): DocumentWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::~AbstractionDefinitionWriter()
-//-----------------------------------------------------------------------------
-AbstractionDefinitionWriter::~AbstractionDefinitionWriter()
-{
-
-}
+#include <IPXACTmodels/AbstractionDefinition/PacketWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionWriter::writeAbstractionDefinition()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionWriter::writeAbstractionDefinition(QXmlStreamWriter& writer, 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition) const
+    QSharedPointer<AbstractionDefinition> abstractionDefinition)
 {
     writer.writeStartDocument();
     
-    writeTopComments(writer, abstractionDefinition);
+    DocumentWriter::writeTopComments(writer, abstractionDefinition);
 
-    writeXmlProcessingInstructions(writer, abstractionDefinition);
+    DocumentWriter::writeXmlProcessingInstructions(writer, abstractionDefinition);
 
     writer.writeStartElement(QStringLiteral("ipxact:abstractionDefinition"));
-    writeNamespaceDeclarations(writer, abstractionDefinition);
+    DocumentWriter::writeNamespaceDeclarations(writer, abstractionDefinition);
 
-    writeVLNVElements(writer, abstractionDefinition->getVlnv());
+    DocumentWriter::writeDocumentNameGroup(writer, abstractionDefinition);
 
-    writeBusType(writer, abstractionDefinition);
+    Details::writeBusType(writer, abstractionDefinition);
 
-    writeExtends(writer, abstractionDefinition);
+    Details::writeExtends(writer, abstractionDefinition);
 
-    writePorts(writer, abstractionDefinition);
+    Details::writePorts(writer, abstractionDefinition);
 
-    writeDescription(writer, abstractionDefinition->getDescription());
+    Details::writeDescription(writer, abstractionDefinition);
 
-    writeParameters(writer, abstractionDefinition);
+    Details::writeChoices(writer, abstractionDefinition);
 
-    writeAssertions(writer, abstractionDefinition);
+    DocumentWriter::writeParameters(writer, abstractionDefinition);
 
-    writeVendorExtensions(writer, abstractionDefinition);
+    DocumentWriter::writeAssertions(writer, abstractionDefinition);
+
+    CommonItemsWriter::writeVendorExtensions(writer, abstractionDefinition);
 
     writer.writeEndElement(); // "ipxact:abstractionDefinition"
     writer.writeEndDocument();
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::writeBusType()
+// Function: AbstractionDefinitionWriter::Details::writeBusType()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionWriter::writeBusType(QXmlStreamWriter& writer,
-    QSharedPointer<AbstractionDefinition> abstractionDefinition) const
+void AbstractionDefinitionWriter::Details::writeBusType(QXmlStreamWriter& writer,
+    QSharedPointer<AbstractionDefinition> abstractionDefinition)
 {
         writer.writeStartElement(QStringLiteral("ipxact:busType"));
-        writeVLNVAttributes(writer, abstractionDefinition->getBusType());
+        CommonItemsWriter::writeVLNVAttributes(writer, abstractionDefinition->getBusType());
         writer.writeEndElement();
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::writeExtends()
+// Function: AbstractionDefinitionWriter::Details::writeExtends()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionWriter::writeExtends(QXmlStreamWriter& writer,
-    QSharedPointer<AbstractionDefinition> abstractionDefinition) const
+void AbstractionDefinitionWriter::Details::writeExtends(QXmlStreamWriter& writer,
+    QSharedPointer<AbstractionDefinition> abstractionDefinition)
 {
     if (!abstractionDefinition->getExtends().isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:extends"));
-        writeVLNVAttributes(writer, abstractionDefinition->getExtends());
+        CommonItemsWriter::writeVLNVAttributes(writer, abstractionDefinition->getExtends());
         writer.writeEndElement();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::writePorts()
+// Function: AbstractionDefinitionWriter::Details::writePorts()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionWriter::writePorts(QXmlStreamWriter& writer, 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition) const
+void AbstractionDefinitionWriter::Details::writePorts(QXmlStreamWriter& writer, 
+    QSharedPointer<AbstractionDefinition> abstractionDefinition)
 {
     QList<QSharedPointer<PortAbstraction> > logicalPorts = *abstractionDefinition->getLogicalPorts(); 
     if (!logicalPorts.isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:ports"));
-        foreach (QSharedPointer<PortAbstraction> logicalPort, logicalPorts)
+        for (auto logicalPort : logicalPorts)
         {
-            writePort(writer, logicalPort);
+            writePort(writer, logicalPort, abstractionDefinition->getRevision());
         }
         writer.writeEndElement();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::writePort()
+// Function: AbstractionDefinitionWriter::Details::writePort()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionWriter::writePort(QXmlStreamWriter& writer,
-    QSharedPointer<PortAbstraction> logicalPort) const
+void AbstractionDefinitionWriter::Details::writePort(QXmlStreamWriter& writer,
+    QSharedPointer<PortAbstraction> logicalPort, Document::Revision revision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:port"));
 
@@ -131,41 +118,103 @@ void AbstractionDefinitionWriter::writePort(QXmlStreamWriter& writer,
         writer.writeTextElement(QStringLiteral("ipxact:displayName"), logicalPort->displayName());
     }
 
+    if (!logicalPort->shortDescription().isEmpty())
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:shortDescription"), logicalPort->shortDescription());
+    }
+
     if (!logicalPort->description().isEmpty())
     {
         writer.writeTextElement(QStringLiteral("ipxact:description"), logicalPort->description());
     }
 
-    writeWire(writer, logicalPort);
+    if (logicalPort->getMatch())
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:match"), QStringLiteral("true"));
+    }
 
-    writeTransactional(writer, logicalPort);
+    writeWire(writer, logicalPort, revision);
 
-    writeVendorExtensions(writer, logicalPort);
+    writeTransactional(writer, logicalPort, revision);
+
+    writePackets(writer, logicalPort);
+
+    CommonItemsWriter::writeVendorExtensions(writer, logicalPort);
 
     writer.writeEndElement();
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::writeWire()
+// Function: AbstractionDefinitionWriter::Details::writeWire()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionWriter::writeWire(QXmlStreamWriter& writer, 
-    QSharedPointer<PortAbstraction> logicalPort) const
+void AbstractionDefinitionWriter::Details::writeWire(QXmlStreamWriter& writer, 
+    QSharedPointer<PortAbstraction> logicalPort, Document::Revision revision)
 {
     if (logicalPort->hasWire())
     {
         WireAbstractionWriter wireWriter;
-        wireWriter.writeWire(writer, logicalPort->getWire());
+        wireWriter.writeWire(writer, logicalPort->getWire(), revision);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionDefinitionWriter::writeTransactional()
+// Function: AbstractionDefinitionWriter::Details::writeTransactional()
 //-----------------------------------------------------------------------------
-void AbstractionDefinitionWriter::writeTransactional(QXmlStreamWriter& writer, QSharedPointer<PortAbstraction> logicalPort) const
+void AbstractionDefinitionWriter::Details::writeTransactional(QXmlStreamWriter& writer,
+    QSharedPointer<PortAbstraction> logicalPort, Document::Revision revision)
 {
     if (logicalPort->hasTransactional())
     {
         TransactionalAbstractionWriter transactionalWriter;
-        transactionalWriter.writeTransactional(writer, logicalPort->getTransactional());
+        transactionalWriter.writeTransactional(writer, logicalPort->getTransactional(), revision);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionWriter::Details::writePackets()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionWriter::Details::writePackets(QXmlStreamWriter& writer,
+    QSharedPointer<PortAbstraction> logicalPort)
+{
+    auto packets = logicalPort->getPackets();
+
+    if (packets->isEmpty())
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:packets"));
+
+    for (auto const& packet : *packets)
+    {
+        PacketWriter::writePacket(writer, packet);
+    }
+
+    writer.writeEndElement();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionWriter::Details::writeDescription()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionWriter::Details::writeDescription(QXmlStreamWriter& writer, QSharedPointer<AbstractionDefinition> abstractionDefinition)
+{
+    if (abstractionDefinition->getRevision() == Document::Revision::Std22)
+    {
+        return;
+    }
+
+    CommonItemsWriter::writeDescription(writer, abstractionDefinition->getDescription());
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionWriter::Details::writeChoices()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionWriter::Details::writeChoices(QXmlStreamWriter& writer, QSharedPointer<AbstractionDefinition> abstractionDefinition)
+{
+    if (abstractionDefinition->getRevision() != Document::Revision::Std22)
+    {
+        return;
+    }
+
+    CommonItemsWriter::writeChoices(writer, abstractionDefinition->getChoices());
 }

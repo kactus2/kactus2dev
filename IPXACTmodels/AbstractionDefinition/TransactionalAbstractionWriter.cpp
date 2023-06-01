@@ -39,7 +39,7 @@ TransactionalAbstractionWriter::~TransactionalAbstractionWriter()
 // Function: TransactionalAbstractionWriter::writeTransactional()
 //-----------------------------------------------------------------------------
 void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalAbstraction> transactional) const
+    QSharedPointer<TransactionalAbstraction> transactional, Document::Revision revision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:transactional"));
 
@@ -47,9 +47,17 @@ void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer
 
     writeSystem(writer, transactional);
 
-    writeMaster(writer, transactional);
+    QString initiatorElementName = revision == Document::Revision::Std22
+        ? QStringLiteral("ipxact:onInitiator")
+        : QStringLiteral("ipxact:onMaster");
 
-    writeSlave(writer, transactional);
+    QString targetElementName = revision == Document::Revision::Std22
+        ? QStringLiteral("ipxact:onTarget")
+        : QStringLiteral("ipxact:onSlave");
+
+    writeMaster(writer, transactional, initiatorElementName);
+
+    writeSlave(writer, transactional, targetElementName);
 
     writer.writeEndElement();
 }
@@ -61,14 +69,14 @@ void TransactionalAbstractionWriter::writeQualifier(QXmlStreamWriter& writer,
     QSharedPointer<TransactionalAbstraction> transactional) const
 {
     auto qualifier = transactional->getQualifier();
-    if (qualifier->isData || qualifier->isAddress)
+    if (qualifier->hasType(Qualifier::Data) || qualifier->hasType(Qualifier::Address))
     {
         writer.writeStartElement(QStringLiteral("ipxact:qualifier"));
-        if (qualifier->isData)
+        if (qualifier->hasType(Qualifier::Data))
         {
             writer.writeTextElement(QStringLiteral("ipxact:isData"), QStringLiteral("true"));
         }
-        if (qualifier->isAddress)
+        if (qualifier->hasType(Qualifier::Address))
         {
             writer.writeTextElement(QStringLiteral("ipxact:isAddress"), QStringLiteral("true"));
         }
@@ -201,11 +209,11 @@ void TransactionalAbstractionWriter::writeVendorExtensions(QXmlStreamWriter& wri
 // Function: TransactionalAbstractionWriter::writeMaster()
 //-----------------------------------------------------------------------------
 void TransactionalAbstractionWriter::writeMaster(QXmlStreamWriter& writer,
-    QSharedPointer<TransactionalAbstraction> transactional) const
+    QSharedPointer<TransactionalAbstraction> transactional, QString const& elementName) const
 {
    if (transactional->hasMasterPort())
    {
-       writer.writeStartElement(QStringLiteral("ipxact:onMaster"));
+       writer.writeStartElement(elementName);
        writeTransactionalPort(writer, transactional->getMasterPort());
        writer.writeEndElement();
    }
@@ -215,11 +223,11 @@ void TransactionalAbstractionWriter::writeMaster(QXmlStreamWriter& writer,
 // Function: TransactionalAbstractionWriter::writeSlave()
 //-----------------------------------------------------------------------------
 void TransactionalAbstractionWriter::writeSlave(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalAbstraction> transactional) const
+    QSharedPointer<TransactionalAbstraction> transactional, QString const& elementName) const
 {
     if (transactional->hasSlavePort())
     {
-        writer.writeStartElement(QStringLiteral("ipxact:onSlave"));
+        writer.writeStartElement(elementName);
         writeTransactionalPort(writer, transactional->getSlavePort());
         writer.writeEndElement();
     }

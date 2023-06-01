@@ -10,12 +10,12 @@
 //-----------------------------------------------------------------------------
 
 #include "WireAbstractionWriter.h"
-
-#include <IPXACTmodels/common/TimingConstraint.h>
 #include "WireAbstraction.h"
 #include "WirePort.h"
 
+#include <IPXACTmodels/common/TimingConstraint.h>
 #include <IPXACTmodels/common/CellSpecification.h>
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionWriter::WireAbstractionWriter()
@@ -36,16 +36,25 @@ WireAbstractionWriter::~WireAbstractionWriter()
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionWriter::writeWire()
 //-----------------------------------------------------------------------------
-void WireAbstractionWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wire) const
+void WireAbstractionWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wire,
+    Document::Revision revision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:wire"));
 
     writeQualifier(writer, wire);
 
-    writeSystem(writer, wire);
-    writerMaster(writer, wire);
-    writerSlave(writer, wire);
+    QString initiatorElementName = revision == Document::Revision::Std22
+        ? QStringLiteral("ipxact:onInitiator")
+        : QStringLiteral("ipxact:onMaster");
 
+    QString targetElementName = revision == Document::Revision::Std22
+        ? QStringLiteral("ipxact:onTarget")
+        : QStringLiteral("ipxact:onSlave");
+
+    writeSystem(writer, wire);
+    writeInitiator(writer, wire, initiatorElementName);
+    writeTarget(writer, wire, targetElementName);
+    
     if (!wire->getDefaultValue().isEmpty())
     {
         writer.writeTextElement(QStringLiteral("ipxact:defaultValue"), wire->getDefaultValue());
@@ -68,27 +77,8 @@ void WireAbstractionWriter::writeQualifier(QXmlStreamWriter& writer,
     QSharedPointer<WireAbstraction> wire) const
 {
     auto qualifier = wire->getQualifier();
-    if (qualifier->isData || qualifier->isAddress || qualifier->isClock || qualifier->isReset)
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:qualifier"));
-        if (qualifier->isData)
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:isData"), QStringLiteral("true"));
-        }
-        if (qualifier->isAddress)
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:isAddress"), QStringLiteral("true"));
-        }
-        if (qualifier->isClock)
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:isClock"), QStringLiteral("true"));
-        }
-        else if (qualifier->isReset)
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:isReset"), QStringLiteral("true"));
-        }
-        writer.writeEndElement();
-    }
+    
+    CommonItemsWriter::writeQualifier(writer, qualifier);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,7 +138,17 @@ void WireAbstractionWriter::writeWidth(QXmlStreamWriter& writer, QSharedPointer<
 {
     if (!wirePort->getWidth().isEmpty())
     {
-        writer.writeTextElement(QStringLiteral("ipxact:width"), wirePort->getWidth());
+
+        writer.writeStartElement(QStringLiteral("ipxact:width"));
+
+        if (wirePort->getAllBits())
+        {
+            writer.writeAttribute(QStringLiteral("allBits"), QStringLiteral("true"));
+        }
+
+        writer.writeCharacters(wirePort->getWidth());
+
+        writer.writeEndElement();
     }
 }
 
@@ -323,28 +323,28 @@ void WireAbstractionWriter::writeMirroredModeConstraints(QXmlStreamWriter& write
 }
 
 //-----------------------------------------------------------------------------
-// Function: WireAbstractionWriter::writerMaster()
+// Function: WireAbstractionWriter::writeInitiator()
 //-----------------------------------------------------------------------------
-void WireAbstractionWriter::writerMaster(QXmlStreamWriter& writer,
-    QSharedPointer<WireAbstraction> wirePort) const
+void WireAbstractionWriter::writeInitiator(QXmlStreamWriter& writer,
+    QSharedPointer<WireAbstraction> wirePort, QString const& elementName) const
 {
     if (wirePort->hasMasterPort())
     {
-        writer.writeStartElement(QStringLiteral("ipxact:onMaster"));
+        writer.writeStartElement(elementName);
         writeWirePort(writer, wirePort->getMasterPort());
         writer.writeEndElement();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: WireAbstractionWriter::writerSlave()
+// Function: WireAbstractionWriter::writeTarget()
 //-----------------------------------------------------------------------------
-void WireAbstractionWriter::writerSlave(QXmlStreamWriter& writer,
-    QSharedPointer<WireAbstraction> wirePort) const
+void WireAbstractionWriter::writeTarget(QXmlStreamWriter& writer,
+    QSharedPointer<WireAbstraction> wirePort, QString const& elementName) const
 {
     if (wirePort->hasSlavePort())
     {
-        writer.writeStartElement(QStringLiteral("ipxact:onSlave"));
+        writer.writeStartElement(elementName);
         writeWirePort(writer, wirePort->getSlavePort());
         writer.writeEndElement();
     }

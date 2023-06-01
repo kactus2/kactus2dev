@@ -22,6 +22,8 @@ class Parameter;
 class Choice;
 class Assertion;
 class ConfigurableElementValue;
+class Qualifier;
+class NameGroup;
 
 //-----------------------------------------------------------------------------
 //! Writer class for common IP-XACT elements: VLNV, parameters, assertions, vendor extensions and presence.
@@ -152,6 +154,8 @@ public:
     static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, QString const& value);
 
     static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, std::string const& value);
+
+    static void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<Qualifier> qualifier);
 
 private:
 

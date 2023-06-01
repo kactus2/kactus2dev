@@ -56,7 +56,7 @@ void PacketField::setValue(QString const& value)
 //-----------------------------------------------------------------------------
 QString PacketField::getEndianness() const
 {
-    return QString();
+    return endianness_;
 }
 
 //-----------------------------------------------------------------------------

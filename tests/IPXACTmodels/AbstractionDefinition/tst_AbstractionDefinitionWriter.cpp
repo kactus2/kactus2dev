@@ -89,9 +89,8 @@ void tst_AbstractionDefinitionWriter::testWriteAbstractionDefinitionWithoutPorts
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter absDefWriter;
-
-    absDefWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -124,9 +123,8 @@ void tst_AbstractionDefinitionWriter::testTopCommentsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter absDefWriter;
-
-    absDefWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -159,9 +157,8 @@ void tst_AbstractionDefinitionWriter::testProcessingInstructionsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter absDefWriter;
-
-    absDefWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -196,9 +193,8 @@ void tst_AbstractionDefinitionWriter::testWriteExtendingAbstractionDefinition()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -230,17 +226,15 @@ void tst_AbstractionDefinitionWriter::testWriteDocumentNameGroupNoPorts()
 
     abstractionDefinition->setDisplayName("A test absdef");
     abstractionDefinition->setShortDescription("shortDescription");
-    abstractionDefinition->setDescription("A longet description of the test abs def");
+    abstractionDefinition->setDescription("A longer description of the test abs def");
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
-        "<?xml-stylesheet href=\"style.css\"?>"
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
@@ -276,7 +270,10 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
     testPort->setIsPresent("1");
     
     testPort->setDefaultValue("0");
-    testPort->getWire()->setQualifier(QStringLiteral("data"));
+
+    QSharedPointer<Qualifier> testQualifier(new Qualifier());
+    testQualifier->setType(Qualifier::Data);
+    testPort->getWire()->setQualifier(testQualifier);
 
     QDomDocument document;
     QDomElement extensionNode = document.createElement("kactus2:testExtension");
@@ -292,9 +289,8 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -346,8 +342,12 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
     testPort->setDescription("This is a description for testPort");
 
     testPort->setDefaultValue("0");
-    testPort->getWire()->setQualifier(QStringLiteral("data"));
-    testPort->getWire()->setQualifier(QStringLiteral("address"));
+
+    QSharedPointer<Qualifier> qualifier1(new Qualifier());
+    qualifier1->setType(Qualifier::Data);
+    qualifier1->setType(Qualifier::Address);
+
+    testPort->getWire()->setQualifier(qualifier1);
 
     QDomDocument document;
     QDomElement extensionNode = document.createElement("kactus2:testExtension");
@@ -358,6 +358,8 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
     testPort->getVendorExtensions()->append(testExtension);
 
     QSharedPointer<Packet> testPacket(new Packet());
+    testPacket->setName("testPacket");
+    testPacket->setDescription("A test packet description");
 
     QSharedPointer<PacketField> testPacketField(new PacketField());
     testPacketField->setName("testField");
@@ -370,9 +372,9 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
     testPacketField->setValue("8");
 
     QSharedPointer<Qualifier> fieldQualifier(new Qualifier());
-    fieldQualifier->isFlowControl = true;
-    fieldQualifier->flowType = QStringLiteral("user");
-    fieldQualifier->userFlowType = QStringLiteral("user flow type");
+    fieldQualifier->setType(Qualifier::FlowControl);
+    fieldQualifier->setFlowType(QStringLiteral("user"));
+    fieldQualifier->setUserFlowType("user flow type");
     testPacketField->setQualifier(fieldQualifier);
 
     QDomDocument document2;
@@ -382,12 +384,15 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
 
     QSharedPointer<GenericVendorExtension> testPacketExtension(new GenericVendorExtension(extensionNodePacket));
     testPacket->getVendorExtensions()->append(testPacketExtension);
+    
+    testPacket->getPacketFields()->append(testPacketField);
+    testPort->getPackets()->append(testPacket);
+    abstractionDefinition->getLogicalPorts()->append(testPort);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -408,13 +413,15 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
                     "<ipxact:description>This is a description for testPort</ipxact:description>"
                     "<ipxact:wire>"
                         "<ipxact:qualifier>"
-                            "<ipxact:isData>true</ipxact:isData>"
                             "<ipxact:isAddress>true</ipxact:isAddress>"
+                            "<ipxact:isData>true</ipxact:isData>"
                         "</ipxact:qualifier>"
                         "<ipxact:defaultValue>0</ipxact:defaultValue>"
                     "</ipxact:wire>"
                     "<ipxact:packets>"
                         "<ipxact:packet>"
+                            "<ipxact:name>testPacket</ipxact:name>"
+                            "<ipxact:description>A test packet description</ipxact:description>"
                             "<ipxact:packetFields>"
                                 "<ipxact:packetField>"
                                     "<ipxact:name>testField</ipxact:name>"
@@ -458,7 +465,9 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForAllModes()
     testPort->setName("reset");
     
     QSharedPointer<WireAbstraction> wire(new WireAbstraction());
-    wire->setQualifier(QStringLiteral("reset"));
+    QSharedPointer<Qualifier> qualifier(new Qualifier());
+    qualifier->setType(Qualifier::Reset);
+    wire->setQualifier(qualifier);
     wire->setRequiresDriver(true);
     wire->setDriverType(General::SINGLESHOT);
     testPort->setWire(wire);
@@ -487,9 +496,8 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForAllModes()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -548,7 +556,9 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForInitiatorTarget()
     testPort->setName("reset");
     
     QSharedPointer<WireAbstraction> wire(new WireAbstraction());
-    wire->setQualifier(QStringLiteral("reset"));
+    QSharedPointer<Qualifier> qualifier(new Qualifier());
+    qualifier->setType(Qualifier::Reset);
+    wire->setQualifier(qualifier);
     wire->setRequiresDriver(true);
     wire->setDriverType(General::SINGLESHOT);
     testPort->setWire(wire);
@@ -571,9 +581,8 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForInitiatorTarget()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -648,9 +657,8 @@ void tst_AbstractionDefinitionWriter::testWriteMultipleSystemWirePorts()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -726,9 +734,8 @@ void tst_AbstractionDefinitionWriter::testWireConstraints()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -807,9 +814,8 @@ void tst_AbstractionDefinitionWriter::testWireMirroredConstraints()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -864,15 +870,16 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleTransactionalPort()
     testPort->setName("testPort");
 
     testPort->setTransactional(QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction()));
-    testPort->getTransactional()->setQualifier(QStringLiteral("data"));
+    QSharedPointer<Qualifier> testQualifier(new Qualifier());
+    testQualifier->setType(Qualifier::Data);
+    testPort->getTransactional()->setQualifier(testQualifier);
     
     abstractionDefinition->getLogicalPorts()->append(testPort);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -944,9 +951,8 @@ void tst_AbstractionDefinitionWriter::testWriteTransactionalPortForAllModes()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -1030,9 +1036,8 @@ void tst_AbstractionDefinitionWriter::testWriteTransactionalPortWithProtocol()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -1099,9 +1104,8 @@ void tst_AbstractionDefinitionWriter::testWriteChoices()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -1153,9 +1157,8 @@ void tst_AbstractionDefinitionWriter::testWriteParameters()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -1209,9 +1212,8 @@ void tst_AbstractionDefinitionWriter::testWriteAssertions()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -1264,9 +1266,8 @@ void tst_AbstractionDefinitionWriter::testVendorExtensions()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    AbstractionDefinitionWriter busWriter;
-
-    busWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+    
+    AbstractionDefinitionWriter::writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
