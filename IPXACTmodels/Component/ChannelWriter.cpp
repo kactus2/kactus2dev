@@ -55,8 +55,7 @@ void ChannelWriter::writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channe
 //-----------------------------------------------------------------------------
 void ChannelWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const
 {
-	NameGroupWriter nameGroupWriter;
-	nameGroupWriter.writeNameGroup(writer, channel);
+	NameGroupWriter::writeNameGroup(writer, channel);
 }
 
 //-----------------------------------------------------------------------------

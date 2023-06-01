@@ -91,8 +91,7 @@ void RegisterWriter::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Regi
 //-----------------------------------------------------------------------------
 void RegisterWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData) const
 {
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, registerData);
+    NameGroupWriter::writeNameGroup(writer, registerData);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,8 +189,7 @@ void RegisterWriter::writeSingleAlternateRegister(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:alternateRegister"));
 
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, alternateRegister);
+    NameGroupWriter::writeNameGroup(writer, alternateRegister);
 
     writeIsPresent(writer, alternateRegister->getIsPresent());
 

@@ -71,8 +71,7 @@ void ParameterWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<P
 //-----------------------------------------------------------------------------
 void ParameterWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
 {
-    NameGroupWriter nameWriter;
-    nameWriter.writeNameGroup(writer, parameter);
+    NameGroupWriter::writeNameGroup(writer, parameter);
 }
 
 //-----------------------------------------------------------------------------

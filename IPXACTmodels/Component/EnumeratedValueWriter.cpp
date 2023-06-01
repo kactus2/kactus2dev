@@ -68,8 +68,7 @@ void EnumeratedValueWriter::writeUsage(QXmlStreamWriter& writer, QSharedPointer<
 void EnumeratedValueWriter::writeNameGroup(QXmlStreamWriter& writer,
     QSharedPointer<EnumeratedValue> enumeratedValue) const
 {
-    NameGroupWriter namegroupWriter;
-    namegroupWriter.writeNameGroup(writer, enumeratedValue);
+    NameGroupWriter::writeNameGroup(writer, enumeratedValue);
 }
 
 //-----------------------------------------------------------------------------

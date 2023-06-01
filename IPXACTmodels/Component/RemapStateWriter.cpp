@@ -51,8 +51,7 @@ void RemapStateWriter::writeRemapState(QXmlStreamWriter& writer, QSharedPointer<
 //-----------------------------------------------------------------------------
 void RemapStateWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState) const
 {
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, remapState);
+    NameGroupWriter::writeNameGroup(writer, remapState);
 }
 
 //-----------------------------------------------------------------------------

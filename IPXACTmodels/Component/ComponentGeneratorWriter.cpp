@@ -41,8 +41,7 @@ void ComponentGeneratorWriter::writeComponentGenerator(QXmlStreamWriter& writer,
 	writeAttributes(writer, componentGenerator);
 
 	// Write name group.
-	NameGroupWriter nameGroupWriter;
-	nameGroupWriter.writeNameGroup(writer, componentGenerator);
+    NameGroupWriter::writeNameGroup(writer, componentGenerator);
 
     if (!componentGenerator->getPhase().isEmpty())
     {

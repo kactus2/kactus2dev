@@ -39,8 +39,7 @@ void AddressSpaceWriter::writeAddressSpace(QXmlStreamWriter& writer, QSharedPoin
 {
 	writer.writeStartElement(QStringLiteral("ipxact:addressSpace"));
 
-    NameGroupWriter nameGroupWriter;
-	nameGroupWriter.writeNameGroup(writer, addressSpace);
+    NameGroupWriter::writeNameGroup(writer, addressSpace);
 
 	writeIsPresent(writer, addressSpace->getIsPresent());
 	
@@ -93,8 +92,7 @@ void AddressSpaceWriter::writeSingleSegment(QXmlStreamWriter& writer, QSharedPoi
 {
     writer.writeStartElement(QStringLiteral("ipxact:segment"));
 
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, segment);
+    NameGroupWriter::writeNameGroup(writer, segment);
 
     writeIsPresent(writer, segment->getIsPresent());
 

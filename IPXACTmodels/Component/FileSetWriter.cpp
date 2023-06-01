@@ -39,8 +39,7 @@ void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSe
 {
     writer.writeStartElement(QStringLiteral("ipxact:fileSet"));
 
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, fileSet);
+    NameGroupWriter::writeNameGroup(writer, fileSet);
 
     writeGroups(writer, fileSet->getGroups());
 
@@ -175,8 +174,7 @@ void FileSetWriter::writeFunctionArguments(QXmlStreamWriter& writer,
     {
         writer.writeStartElement(QStringLiteral("ipxact:argument"));
 
-        NameGroupWriter nameGroupWriter;
-        nameGroupWriter.writeNameGroup(writer, singleArgument);
+        NameGroupWriter::writeNameGroup(writer, singleArgument);
 
         writer.writeTextElement(QStringLiteral("ipxact:value"), singleArgument->getValue());
 

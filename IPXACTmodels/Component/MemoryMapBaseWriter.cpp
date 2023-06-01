@@ -51,8 +51,7 @@ void MemoryMapBaseWriter::writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPo
 //-----------------------------------------------------------------------------
 void MemoryMapBaseWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const
 {
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, MemoryMapBase);
+    NameGroupWriter::writeNameGroup(writer, MemoryMapBase);
 }
 
 //-----------------------------------------------------------------------------

@@ -56,8 +56,7 @@ void CPUWriter::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) cons
 //-----------------------------------------------------------------------------
 void CPUWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const
 {
-	NameGroupWriter nameGroupWriter;
-	nameGroupWriter.writeNameGroup(writer, cpu);
+    NameGroupWriter::writeNameGroup(writer, cpu);
 }
 
 //-----------------------------------------------------------------------------

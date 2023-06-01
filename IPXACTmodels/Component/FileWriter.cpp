@@ -231,13 +231,11 @@ void FileWriter::writeDefines(QXmlStreamWriter& writer, QSharedPointer<File> fil
 {
     if (!file->getDefines()->isEmpty())
     {
-        NameGroupWriter nameGroupWriter;
-
         foreach (QSharedPointer<NameValuePair> define, *file->getDefines())
         {
             writer.writeStartElement(QStringLiteral("ipxact:define"));
 
-            nameGroupWriter.writeNameGroup(writer, define);
+            NameGroupWriter::writeNameGroup(writer, define);
 
             writer.writeTextElement(QStringLiteral("ipxact:value"), define->getValue());
 

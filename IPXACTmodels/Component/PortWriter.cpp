@@ -39,8 +39,7 @@ void PortWriter::writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port) 
 {
     writer.writeStartElement(QStringLiteral("ipxact:port"));
 
-    NameGroupWriter nameWriter;
-    nameWriter.writeNameGroup(writer, port);
+    NameGroupWriter::writeNameGroup(writer, port);
 
     writeIsPresent(writer, port->getIsPresent());
 

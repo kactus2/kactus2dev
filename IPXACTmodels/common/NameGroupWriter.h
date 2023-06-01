@@ -6,7 +6,7 @@
 // Date: 05.08.2015
 //
 // Description:
-// Writer class for namegroup element.
+// Writer for namegroup element.
 //-----------------------------------------------------------------------------
 
 #ifndef NAMEGROUPWRITER_H
@@ -20,38 +20,17 @@
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! Writer class for namegroup element.
+//! Writer for namegroup element.
 //-----------------------------------------------------------------------------
-class NameGroupWriter : public QObject
+namespace NameGroupWriter
 {
-    Q_OBJECT
-public:
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The parent of this writer.
-     */
-    NameGroupWriter(QObject* parent = 0);
-
-    /*!
-     *  The destructor.
-     */
-    ~NameGroupWriter();
-
     /*!
      *  Write the name group.
      *
      *      @param [in] writer      The used xml writer.
      *      @param [in] nameGroup   The selected name group.
      */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup) const;
-
-private:
-
-    // Disable copying.
-    NameGroupWriter(NameGroupWriter const& rhs);
-    NameGroupWriter& operator=(NameGroupWriter const& rhs);
-};
+    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup);
+}
 
 #endif // NAMEGROUPWRITER_H

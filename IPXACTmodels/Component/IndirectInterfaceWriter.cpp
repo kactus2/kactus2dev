@@ -65,8 +65,7 @@ void IndirectInterfaceWriter::writeIndirectInterface(QXmlStreamWriter& writer,
 void IndirectInterfaceWriter::writeNameGroup(QXmlStreamWriter& writer, 
     QSharedPointer<IndirectInterface> indirectInterface) const
 {
-    NameGroupWriter nameWriter;
-    nameWriter.writeNameGroup(writer, indirectInterface);
+    NameGroupWriter::writeNameGroup(writer, indirectInterface);
 }
 
 //-----------------------------------------------------------------------------

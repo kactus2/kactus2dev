@@ -104,12 +104,11 @@ void DocumentWriter::writeAssertions(QXmlStreamWriter& writer, QSharedPointer<Do
     {
         writer.writeStartElement(QStringLiteral("ipxact:assertions"));
 
-        NameGroupWriter nameGroupWriter;
         for (auto const& assertion : *document->getAssertions())
         {
             writer.writeStartElement(QStringLiteral("ipxact:assertion"));
 
-            nameGroupWriter.writeNameGroup(writer, assertion);
+            NameGroupWriter::writeNameGroup(writer, assertion);
             writer.writeTextElement(QStringLiteral("ipxact:assert"), assertion->getAssert());
 
             writer.writeEndElement(); // ipxact:assertion

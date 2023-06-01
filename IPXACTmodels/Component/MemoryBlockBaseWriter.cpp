@@ -30,8 +30,7 @@ CommonItemsWriter()
 void MemoryBlockBaseWriter::writeNameGroup(QXmlStreamWriter& writer,
     QSharedPointer<MemoryBlockBase> memoryBlock) const
 {
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, memoryBlock);
+    NameGroupWriter::writeNameGroup(writer, memoryBlock);
 }
 
 //-----------------------------------------------------------------------------

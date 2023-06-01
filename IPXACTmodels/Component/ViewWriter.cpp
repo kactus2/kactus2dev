@@ -53,8 +53,7 @@ void ViewWriter::writeView(QXmlStreamWriter& writer, QSharedPointer<View> view) 
 //-----------------------------------------------------------------------------
 void ViewWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<View> view) const
 {
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, view);
+    NameGroupWriter::writeNameGroup(writer, view);
 }
 
 //-----------------------------------------------------------------------------

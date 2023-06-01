@@ -122,8 +122,7 @@ void DesignWriter::writeSingleInterconncetion(
 {
     writer.writeStartElement(QStringLiteral("ipxact:interconnection"));
 
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, currentInterconnection);
+    NameGroupWriter::writeNameGroup(writer, currentInterconnection);
 
     writeIsPresent(writer, currentInterconnection->getIsPresent());
 
@@ -208,8 +207,7 @@ void DesignWriter::writeMonitorInterconnection(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:monitorInterconnection"));
 
-    NameGroupWriter monitorNamegroupWriter;
-    monitorNamegroupWriter.writeNameGroup(writer, monitorConnection);
+    NameGroupWriter::writeNameGroup(writer, monitorConnection);
 
     writeIsPresent(writer, monitorConnection->getIsPresent());
 
@@ -281,8 +279,8 @@ void DesignWriter::writeSingleAdHocConnection(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:adHocConnection"));
 
-    NameGroupWriter adHocNameWriter;
-    adHocNameWriter.writeNameGroup(writer, adHocConnection);
+    
+    NameGroupWriter::writeNameGroup(writer, adHocConnection);
 
     writeIsPresent(writer, adHocConnection->getIsPresent());
 

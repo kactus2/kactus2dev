@@ -39,8 +39,7 @@ void InstantiationsWriter::writeDesignInstantiation(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:designInstantiation"));
 
-    NameGroupWriter nameWriter;
-    nameWriter.writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation);
 
     writeReference(writer, instantiation->getDesignReference(), QStringLiteral("ipxact:designRef"));
 
@@ -74,8 +73,7 @@ void InstantiationsWriter::writeDesignConfigurationInstantiation(QXmlStreamWrite
 {
     writer.writeStartElement(QStringLiteral("ipxact:designConfigurationInstantiation"));
 
-    NameGroupWriter nameWriter;
-    nameWriter.writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation);
 
     writeLanguage(writer, instantiation->getLanguage(), instantiation->isLangugageStrict());
 
@@ -116,8 +114,7 @@ void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:componentInstantiation"));
 
-    NameGroupWriter nameWriter;
-    nameWriter.writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation);
 
     writeLanguage(writer, instantiation->getLanguage(), instantiation->isLanguageStrict());
 

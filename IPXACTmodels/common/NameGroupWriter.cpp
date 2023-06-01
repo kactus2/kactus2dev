@@ -6,32 +6,15 @@
 // Date: 05.08.2015
 //
 // Description:
-// Writer class for namegroup element.
+// Writer for namegroup element.
 //-----------------------------------------------------------------------------
 
 #include "NameGroupWriter.h"
 
 //-----------------------------------------------------------------------------
-// Function: NameGroupWriter::NameGroupWriter()
-//-----------------------------------------------------------------------------
-NameGroupWriter::NameGroupWriter(QObject* parent /* = 0 */):
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: NameGroupWriter::~NameGroupWriter()
-//-----------------------------------------------------------------------------
-NameGroupWriter::~NameGroupWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: NameGroupWriter::writeNameGroup()
 //-----------------------------------------------------------------------------
-void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup) const
+void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup)
 {
     writer.writeTextElement(QStringLiteral("ipxact:name"), nameGroup->name());
 
@@ -39,7 +22,10 @@ void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Na
     {
         writer.writeTextElement(QStringLiteral("ipxact:displayName"), nameGroup->displayName());
     }
-
+    if (!nameGroup->shortDescription().isEmpty())
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:shortDescription"), nameGroup->shortDescription());
+    }
     if (!nameGroup->description().isEmpty())
     {
         writer.writeTextElement(QStringLiteral("ipxact:description"), nameGroup->description());

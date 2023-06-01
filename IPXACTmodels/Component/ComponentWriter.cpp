@@ -419,13 +419,11 @@ void ComponentWriter::writeResetTypes(QXmlStreamWriter& writer, QSharedPointer<C
     {
         writer.writeStartElement(QStringLiteral("ipxact:resetTypes"));
 
-        NameGroupWriter nameGroupWriter;
-
         foreach(QSharedPointer<ResetType> resetType, *component->getResetTypes())
         {
             writer.writeStartElement(QStringLiteral("ipxact:resetType"));
 
-            nameGroupWriter.writeNameGroup(writer, resetType);
+            NameGroupWriter::writeNameGroup(writer, resetType);
             writeVendorExtensions(writer, resetType);
 
             writer.writeEndElement(); // ipxact:resetType

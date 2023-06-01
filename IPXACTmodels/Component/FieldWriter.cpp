@@ -93,8 +93,7 @@ void FieldWriter::writeID(QXmlStreamWriter& writer, QString const& fieldID) cons
 //-----------------------------------------------------------------------------
 void FieldWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
 {
-    NameGroupWriter nameGroupWriter;
-    nameGroupWriter.writeNameGroup(writer, field);
+    NameGroupWriter::writeNameGroup(writer, field);
 }
 
 //-----------------------------------------------------------------------------

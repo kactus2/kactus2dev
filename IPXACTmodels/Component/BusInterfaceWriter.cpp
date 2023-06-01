@@ -75,8 +75,7 @@ void BusInterfaceWriter::writebusinterface(QXmlStreamWriter& writer, QSharedPoin
 //-----------------------------------------------------------------------------
 void BusInterfaceWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const
 {
-	NameGroupWriter nameGroupWriter;
-	nameGroupWriter.writeNameGroup(writer, businterface);
+    NameGroupWriter::writeNameGroup(writer, businterface);
 }
 
 //-----------------------------------------------------------------------------
