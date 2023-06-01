@@ -47,9 +47,9 @@ public:
     /*!
      *  Sets a qualifier for the information the transaction carries.
      *
-     *      @param [in] qualifierType   The qualifier to set.
+     *      @param [in] qualifier   The qualifier to set.
      */
-    void setQualifier(QString const& qualifierType);
+    void setQualifier(QSharedPointer<Qualifier> qualifier);
     
     /*!
      *  Gets the qualifier for the information the transaction carries.

@@ -102,9 +102,9 @@ QSharedPointer<Qualifier> TransactionalAbstraction::getQualifier()
 //-----------------------------------------------------------------------------
 // Function: TransactionalAbstraction::setQualifier()
 //-----------------------------------------------------------------------------
-void TransactionalAbstraction::setQualifier(QString const& qualifierType)
+void TransactionalAbstraction::setQualifier(QSharedPointer<Qualifier> qualifier)
 {
-    qualifier_->setQualifier(qualifierType);
+    qualifier_ = qualifier;
 }
 
 //-----------------------------------------------------------------------------

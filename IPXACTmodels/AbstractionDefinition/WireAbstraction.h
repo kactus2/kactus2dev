@@ -56,9 +56,9 @@ public:
     /*!
      *  Sets a qualifier for the information the wire carries.
      *
-     *      @param [in] qualifierType   The qualifier to set.
+     *      @param [in] qualifier   The qualifier to set.
      */
-    void setQualifier(QString const& qualifierType);
+    void setQualifier(QSharedPointer<Qualifier> qualifier);
     
     /*!
      *  Gets the qualifier for the information the wire carries.
@@ -234,7 +234,7 @@ public:
 private:
 
     //! The qualifier describing the information the wire carries.
-    QSharedPointer<Qualifier> qualifier_ = QSharedPointer<Qualifier>(new Qualifier);
+    QSharedPointer<Qualifier> qualifier_ = QSharedPointer<Qualifier>(new Qualifier());
 
     //! The default value for the wire.
     QString defaultValue_;

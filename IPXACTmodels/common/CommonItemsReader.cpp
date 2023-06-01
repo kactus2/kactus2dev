@@ -202,98 +202,111 @@ void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPoi
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isAddress")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isAddress = true;
+        qualifier->setType(Qualifier::Address);
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isData")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isData = true;
+        qualifier->setType(Qualifier::Data);
+
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isClock")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isClock = true;
+        qualifier->setType(Qualifier::Clock);
+
     }
 
     if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isReset"));
         node.firstChild().nodeValue() == QStringLiteral("true"))
     {
-        qualifier->isReset = true;
-        qualifier->resetLevel = node.attributes().namedItem(QStringLiteral("level")).nodeValue();
+        qualifier->setType(Qualifier::Reset);
+
+        qualifier->setResetLevel(node.attributes().namedItem(QStringLiteral("level")).nodeValue());
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isValid")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isValid = true;
+        qualifier->setType(Qualifier::Valid);
+
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isInterrupt")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isInterrupt = true;
+        qualifier->setType(Qualifier::Interrupt);
+
     }
 
     if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isClockEn"));
         node.firstChild().nodeValue() == QStringLiteral("true"))
     {
-        qualifier->isClockEn = true;
-        qualifier->clockEnLevel = node.attributes().namedItem(QStringLiteral("level")).nodeValue();
+        qualifier->setType(Qualifier::ClockEnable);
+
+        qualifier->setClockEnableLevel(node.attributes().namedItem(QStringLiteral("level")).nodeValue());
     }
 
     if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isPowerEn"));
         node.firstChild().nodeValue() == QStringLiteral("true"))
     {
-        qualifier->isPowerEn = true;
-        qualifier->powerEnLevel = node.attributes().namedItem(QStringLiteral("level")).nodeValue();
-        qualifier->powerDomainRef = node.attributes().namedItem(QStringLiteral("powerDomainRef")).nodeValue();
+        qualifier->setType(Qualifier::PowerEnable);
+
+        qualifier->setPowerEnableLevel(node.attributes().namedItem(QStringLiteral("level")).nodeValue());
+        qualifier->setPowerDomainRef(node.attributes().namedItem(QStringLiteral("powerDomainRef")).nodeValue());
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isOpcode")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isOpcode = true;
+        qualifier->setType(Qualifier::Opcode);
+
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isProtection")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isProtection = true;
+        qualifier->setType(Qualifier::Protection);
+
     }
 
     if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isFlowControl"));
         node.firstChild().nodeValue() == QStringLiteral("true"))
     {
-        qualifier->isFlowControl = true;
+        qualifier->setType(Qualifier::FlowControl);
+
         auto attributes = node.attributes();
 
         auto flowType = attributes.namedItem(QStringLiteral("flowType")).nodeValue();
-        qualifier->flowType = flowType;
+        qualifier->setFlowType(flowType);
 
         if (flowType == QStringLiteral("user"))
         {
-            qualifier->userFlowType = attributes.namedItem(QStringLiteral("user")).nodeValue();
+            qualifier->setUserFlowType(attributes.namedItem(QStringLiteral("user")).nodeValue());
         }
     }
 
     if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isUser"));
         node.firstChild().nodeValue() == QStringLiteral("true"))
     {
-        qualifier->isUser = true;
-        qualifier->userDefinedInformation = node.attributes().namedItem(QStringLiteral("user")).nodeValue();
+        qualifier->setType(Qualifier::User);
+
+        qualifier->setUserDefined(node.attributes().namedItem(QStringLiteral("user")).nodeValue());
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isRequest")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isRequest = true;
+        qualifier->setType(Qualifier::Request);
+
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isResponse")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
-        qualifier->isResponse = true;
+        qualifier->setType(Qualifier::Response);
+
     }
 }

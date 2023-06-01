@@ -127,9 +127,9 @@ QString WireAbstraction::getDefaultValue() const
 //-----------------------------------------------------------------------------
 // Function: WireAbstraction::setQualifier()
 //-----------------------------------------------------------------------------
-void WireAbstraction::setQualifier(QString const& qualifierType)
+void WireAbstraction::setQualifier(QSharedPointer<Qualifier> qualifier)
 {
-    qualifier_->setQualifier(qualifierType);
+    qualifier_ = qualifier;
 }
 
 //-----------------------------------------------------------------------------
