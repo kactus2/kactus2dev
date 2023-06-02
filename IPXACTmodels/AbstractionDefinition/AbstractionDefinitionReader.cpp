@@ -30,31 +30,31 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
 
     VLNV vlnv = CommonItemsReader::createVLNVFrom(definitionNode, VLNV::ABSTRACTIONDEFINITION);
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinion(new AbstractionDefinition(vlnv, docRevision));
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(vlnv, docRevision));
 
-    DocumentReader::parseTopComments(document, abstractionDefinion);
+    DocumentReader::parseTopComments(document, abstractionDefinition);
 
-    DocumentReader::parseXMLProcessingInstructions(document, abstractionDefinion);
+    DocumentReader::parseXMLProcessingInstructions(document, abstractionDefinition);
 
-    DocumentReader::parseNamespaceDeclarations(definitionNode, abstractionDefinion);
+    DocumentReader::parseNamespaceDeclarations(definitionNode, abstractionDefinition);
 
-    DocumentReader::parseDocumentNameGroup(definitionNode, abstractionDefinion);
+    DocumentReader::parseDocumentNameGroup(definitionNode, abstractionDefinition);
 
-    Details::parseBusType(definitionNode, abstractionDefinion);
+    Details::parseBusType(definitionNode, abstractionDefinition);
 
-    Details::parseExtends(definitionNode, abstractionDefinion);
+    Details::parseExtends(definitionNode, abstractionDefinition);
 
-    Details::parsePorts(definitionNode, abstractionDefinion, docRevision);
+    Details::parsePorts(definitionNode, abstractionDefinition, docRevision);
     
-    Details::parseChoices(definitionNode, abstractionDefinion);
+    Details::parseChoices(definitionNode, abstractionDefinition);
 
-    DocumentReader::parseParameters(definitionNode, abstractionDefinion);
+    DocumentReader::parseParameters(definitionNode, abstractionDefinition);
 
-    DocumentReader::parseAssertions(definitionNode, abstractionDefinion);
+    DocumentReader::parseAssertions(definitionNode, abstractionDefinition);
 
-    DocumentReader::parseKactusAndVendorExtensions(definitionNode, abstractionDefinion);
+    DocumentReader::parseKactusAndVendorExtensions(definitionNode, abstractionDefinition);
 
-    return abstractionDefinion;
+    return abstractionDefinition;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,18 +106,23 @@ QSharedPointer<PortAbstraction> AbstractionDefinitionReader::Details::parsePort(
 {
     QSharedPointer<PortAbstraction> port(new PortAbstraction());
 
-    port->setIsPresent(portNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
     port->setLogicalName(portNode.firstChildElement(QStringLiteral("ipxact:logicalName")).firstChild().nodeValue());
     port->setDisplayName(portNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
     port->setDescription(portNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
-    port->setShortDescription(portNode.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue());
-    port->setMatch(portNode.firstChildElement(QStringLiteral("ipxact:match")).firstChild().nodeValue() == QStringLiteral("true"));
+
+    if (revision == Document::Revision::Std22)
+    {
+        port->setShortDescription(portNode.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue());
+        port->setMatch(portNode.firstChildElement(QStringLiteral("ipxact:match")).firstChild().nodeValue() == QStringLiteral("true"));
+        parsePackets(portNode, port);
+    }
+    else
+    {
+        port->setIsPresent(portNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+    }
 
     parseWire(portNode, port, revision);
-
     parseTransactional(portNode, port, revision);
-
-    parsePackets(portNode, port);
 
     CommonItemsReader::parseVendorExtensions(portNode, port);
 
@@ -191,6 +196,11 @@ void AbstractionDefinitionReader::Details::parseTransactional(QDomNode const& po
 void AbstractionDefinitionReader::Details::parseChoices(QDomNode const& definitionNode,
     QSharedPointer<AbstractionDefinition> definition)
 {
+    if (definition->getRevision() != Document::Revision::Std22)
+    {
+        return;
+    }
+
     auto parsedChoices = CommonItemsReader::parseChoices(definitionNode);
 
     definition->setChoices(parsedChoices);

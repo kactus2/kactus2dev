@@ -58,7 +58,7 @@ VLNV CommonItemsReader::parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXa
 // Function: CommonItemsReader::parseAndCreateParameters()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Parameter> > > CommonItemsReader::parseAndCreateParameters(
-    QDomNode const& itemNode)
+    QDomNode const& itemNode, Document::Revision revision)
 {
     QDomNodeList parameterNodeList = itemNode.firstChildElement(QStringLiteral("ipxact:parameters")).childNodes();
     
@@ -70,7 +70,7 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > CommonItemsReader::parseAndCr
         int parameterCount = parameterNodeList.count();
         for (int parameterIndex = 0;parameterIndex < parameterCount; parameterIndex++)
         {
-            newParameters->append(parameterReader.createParameterFrom(parameterNodeList.at(parameterIndex)));
+            newParameters->append(parameterReader.createParameterFrom(parameterNodeList.at(parameterIndex), revision));
         }
     }
     return newParameters;
@@ -192,12 +192,15 @@ QSharedPointer<QList<QSharedPointer<Choice> > > CommonItemsReader::parseChoices(
 //-----------------------------------------------------------------------------
 // Function: CommonItemsReader::parseQualifier()
 //-----------------------------------------------------------------------------
-void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier)
+void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier,
+    Document::Revision revision)
 {
     if (qualifierNode.isNull())
     {
         return;
     }
+
+    bool isStd22 = revision == Document::Revision::Std22;
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isAddress")).firstChild().nodeValue()
         == QStringLiteral("true"))
@@ -223,22 +226,28 @@ void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPoi
         node.firstChild().nodeValue() == QStringLiteral("true"))
     {
         qualifier->setType(Qualifier::Reset);
+        
+        if (isStd22)
+        {
+            qualifier->setResetLevel(node.attributes().namedItem(QStringLiteral("level")).nodeValue());
+        }
+    }
 
-        qualifier->setResetLevel(node.attributes().namedItem(QStringLiteral("level")).nodeValue());
+    if (!isStd22)
+    {
+        return;
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isValid")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
         qualifier->setType(Qualifier::Valid);
-
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isInterrupt")).firstChild().nodeValue()
         == QStringLiteral("true"))
     {
         qualifier->setType(Qualifier::Interrupt);
-
     }
 
     if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isClockEn"));

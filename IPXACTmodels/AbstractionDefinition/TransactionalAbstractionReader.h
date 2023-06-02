@@ -44,8 +44,10 @@ namespace TransactionalAbstractionReader
          *
          *      @param [in]     transactionalNode    The XML description of the transactional.
          *      @param [in/out] transactional        The transactional definition to insert the qualifier into.
+         *      @param [in]     revision             The standard revision of the XML document being read.
          */
-        void parseQualifier(QDomNode const& transactionalNode, QSharedPointer<TransactionalAbstraction> transactional);
+        void parseQualifier(QDomNode const& transactionalNode, QSharedPointer<TransactionalAbstraction> transactional,
+            Document::Revision revision);
 
         /*!
          *  Reads the system ports from XML to a transactional.

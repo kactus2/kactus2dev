@@ -45,25 +45,29 @@ namespace WireAbstractionReader
          *
          *      @param [in]     wireNode    The XML description of the wire.
          *      @param [in/out] wire        The wire definition to insert the qualifier into.
+         *      @param [in]     revision    The standard revision of the XML document being read.
          */
-        void parseQualifier(QDomNode const& wireNode, QSharedPointer<WireAbstraction> wire);
+        void parseQualifier(QDomNode const& wireNode, QSharedPointer<WireAbstraction> wire,
+            Document::Revision revision);
                                    
         /*!
          *  Reads the system ports from XML to a wire.
          *
          *      @param [in]     wireNode    The XML description of the wire.
          *      @param [in/out] wire        The wire definition to insert the system ports into.
+         *      @param [in]     revision    The standard revision of the XML document being read.
          */
-        void parseSystems(QDomNode const& wireNode, QSharedPointer<WireAbstraction> wire);
+        void parseSystems(QDomNode const& wireNode, QSharedPointer<WireAbstraction> wire, Document::Revision revision);
                                    
         /*!
          *  Creates a wirePort for a wire from XML description.
          *
          *      @param [in]     wirePortNode    The XML description of the wirePort.
+         *      @param [in]     revision    The standard revision of the XML document being read.
          *
          *      @return The created wirePort.
          */
-        QSharedPointer<WirePort> parseWirePort(QDomNode const& wirePortNode);
+        QSharedPointer<WirePort> parseWirePort(QDomNode const& wirePortNode, Document::Revision revision);
 
         /*!
          *  Reads the constraints for a wirePort from XML to a wire.

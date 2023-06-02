@@ -15,6 +15,8 @@
 #include <QObject>
 #include <QDomNode>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 class Parameter;
@@ -38,10 +40,12 @@ public:
      *  Creates a parameter from XML description.
      *
      *      @param [in] parameterNode   The XML description of the parameter.
+     *      @param [in] revision    The standard revision of the XML document being read.
      *
      *      @return The created parameter.
      */
-    QSharedPointer<Parameter> createParameterFrom(QDomNode const& parameterNode) const;
+    QSharedPointer<Parameter> createParameterFrom(QDomNode const& parameterNode,
+        Document::Revision revision = Document::Revision::Std14) const;
 
 protected:
 
@@ -66,8 +70,10 @@ protected:
      *
      *      @param [in] parameterNode   The XML description of the parameter.
      *      @param [in/out] parameter   The parameter to insert the vectors into.
+     *      @param [in] revision        The standard revision of the XML document being read.
      */
-    void parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
+    void parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter,
+        Document::Revision revision = Document::Revision::Std14) const;
       
     /*!
      *  Reads the arrays from XML to a parameter.

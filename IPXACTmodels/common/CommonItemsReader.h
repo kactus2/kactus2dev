@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/Qualifier.h>
@@ -64,11 +65,11 @@ public:
      *  Parses and creates parameters from XML.
      *
      *      @param [in] itemNode    XML description of item containing the parameters.
-     *
+     *      @param [in] revision    The standard revision of the XML document being read.
      *      @return A list of new parameters.
      */
     static QSharedPointer<QList<QSharedPointer<Parameter> > > parseAndCreateParameters
-        (QDomNode const& itemNode);
+        (QDomNode const& itemNode, Document::Revision revision = Document::Revision::Std14);
 
     /*!
      *  Parses the vendor extensions from XML to a document.
@@ -121,8 +122,11 @@ public:
      *
      *      @param [in] qualifierNode       XML description of the IP-XACT element.
      *      @param [in] qualifier           The qualifier to read to.
+     *      @param [in] revision            The standard revision of the XML document being read.
+
      */
-    static void parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier);
+    static void parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier,
+        Document::Revision revision);
 
 private:
 

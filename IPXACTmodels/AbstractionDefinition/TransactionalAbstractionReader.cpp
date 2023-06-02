@@ -31,7 +31,7 @@ QSharedPointer<TransactionalAbstraction> TransactionalAbstractionReader::createT
 {
     QSharedPointer<TransactionalAbstraction> transactional(new TransactionalAbstraction());
 
-    Details::parseQualifier(transactionalNode, transactional);
+    Details::parseQualifier(transactionalNode, transactional, revision);
  
     Details::parseSystems(transactionalNode, transactional);
  
@@ -46,13 +46,13 @@ QSharedPointer<TransactionalAbstraction> TransactionalAbstractionReader::createT
 // Function: TransactionalAbstractionReader::Details::parseQualifier()
 //-----------------------------------------------------------------------------
 void TransactionalAbstractionReader::Details::parseQualifier(QDomNode const& transactionalNode, 
-    QSharedPointer<TransactionalAbstraction> transactional)
+    QSharedPointer<TransactionalAbstraction> transactional, Document::Revision revision)
 {
     QDomNode qualifierNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:qualifier"));
 
     auto qualifier = transactional->getQualifier();
 
-    CommonItemsReader::parseQualifier(qualifierNode, qualifier);
+    CommonItemsReader::parseQualifier(qualifierNode, qualifier, revision);
 }
 
 //-----------------------------------------------------------------------------

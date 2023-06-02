@@ -86,7 +86,7 @@ void PacketReader::Details::parseSinglePacketField(QDomNode const& fieldNode, QS
 
     QSharedPointer<Qualifier> fieldQualifier(new Qualifier());
     CommonItemsReader::parseQualifier(
-        fieldNode.firstChildElement(QStringLiteral("ipxact:qualifier")), fieldQualifier);
+        fieldNode.firstChildElement(QStringLiteral("ipxact:qualifier")), fieldQualifier, Document::Revision::Std22);
 
     parsedPacketField->setQualifier(fieldQualifier);
 

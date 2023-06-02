@@ -34,14 +34,15 @@ ParameterReader::~ParameterReader()
 //-----------------------------------------------------------------------------
 // Function: ParameterReader::createParameterFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ParameterReader::createParameterFrom(QDomNode const& parameterNode) const
+QSharedPointer<Parameter> ParameterReader::createParameterFrom(QDomNode const& parameterNode,
+    Document::Revision revision) const
 {
     QSharedPointer<Parameter> parameter(new Parameter());
     parseAttributes(parameterNode, parameter);
 
     parseNameGroup(parameterNode, parameter);
 
-    parseVectors(parameterNode, parameter);
+    parseVectors(parameterNode, parameter, revision);
 
     parseArrays(parameterNode, parameter);
 
@@ -85,7 +86,8 @@ void ParameterReader::parseNameGroup(QDomNode const& parameterNode, QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: ParameterReader::parseVectors()
 //-----------------------------------------------------------------------------
-void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
+void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter,
+    Document::Revision revision) const
 {
     QDomNode vectorsNode = parameterNode.firstChildElement(QStringLiteral("ipxact:vectors"));
 
@@ -101,9 +103,13 @@ void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer
             QString left = vectorNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
             QString right = vectorNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
-            auto vectorId = vectorNode.attributes().namedItem(QStringLiteral("vectorId")).nodeValue();
             auto parsedVector = QSharedPointer<Vector>(new Vector(left, right));
-            parsedVector->setId(vectorId);
+            
+            if (revision == Document::Revision::Std22)
+            {
+                auto vectorId = vectorNode.attributes().namedItem(QStringLiteral("vectorId")).nodeValue();
+                parsedVector->setId(vectorId);
+            }
 
             vectors->append(parsedVector);
         }

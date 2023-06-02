@@ -160,7 +160,8 @@ void DocumentReader::parseDescription(QDomNode const& documentNode, QSharedPoint
 //-----------------------------------------------------------------------------
 void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointer<Document> document)
 {
-    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(documentNode);
+    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(
+        documentNode, document->getRevision());
 
     for (auto parameter : *newParameters)
     {
