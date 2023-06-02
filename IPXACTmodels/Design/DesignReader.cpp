@@ -590,7 +590,7 @@ void DesignReader::Details::parseRoutes(QDomElement const& routesElement, QShare
         QDomElement routeNode = routeList.at(i).toElement();
 
         QString connectionName = routeNode.attribute(QStringLiteral("kactus2:connRef"));
-        QSharedPointer<ConnectionRoute> route(new ConnectionRoute(connectionName));
+        QSharedPointer<ConnectionRoute> route(new ConnectionRoute(connectionName.toStdString()));
 
         bool offpage = routeNode.attribute(QStringLiteral("kactus2:offPage")) == QLatin1String("true");
         route->setOffpage(offpage);

@@ -32,7 +32,7 @@ referencedPort_()
     }
     else
     {
-        setupReferencedPort(portItem->name().toStdString());
+        setupReferencedPort(portItem->name());
     }
 }
 
@@ -45,7 +45,7 @@ QSharedPointer<AdHocConnection> AdHocTiedValueCommand::createConnectionForTiedVa
 
     QSharedPointer<AdHocConnection> connection (new AdHocConnection(connectionName));
 
-    QSharedPointer<PortReference> portReference (new PortReference(portItem->name().toStdString()));
+    QSharedPointer<PortReference> portReference (new PortReference(portItem->name()));
 
     ComponentItem* containingComponent = portItem->encompassingComp();
     if (containingComponent)
@@ -78,9 +78,7 @@ std::string AdHocTiedValueCommand::createNameForTiedValueConnection(AdHocItem* p
         instanceName.append("_");
     }
 
-    std::string portName = portItem->name().toStdString();
-
-    return instanceName + portName + "_to_tiedValue";
+    return instanceName + portItem->name() + "_to_tiedValue";
 }
 
 //-----------------------------------------------------------------------------

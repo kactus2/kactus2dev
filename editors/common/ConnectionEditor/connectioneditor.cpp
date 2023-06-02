@@ -245,16 +245,18 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     }
 
 	// set the names of the connected instances
-	connectedInstances_.setText(QString("%1 - %2").arg(endpoint1->name()).arg(endpoint2->name()));
+	connectedInstances_.setText(QString("%1 - %2").arg(
+        QString::fromStdString(endpoint1->name()),
+        QString::fromStdString(endpoint2->name())));
 
 	// set text for the name editor, signal must be disconnected when name is set to avoid loops 
 	disconnect(&nameEdit_, SIGNAL(editingFinished()), this, SLOT(onNameOrDescriptionChanged()));
-	nameEdit_.setText(connection->name());
+	nameEdit_.setText(QString::fromStdString(connection->name()));
 	connect(&nameEdit_, SIGNAL(editingFinished()), this, SLOT(onNameOrDescriptionChanged()), Qt::UniqueConnection);
 
 	// display the current description of the interface.
 	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onNameOrDescriptionChanged()));
-	descriptionEdit_.setPlainText(connection->description());
+	descriptionEdit_.setPlainText(QString::fromStdString(connection->description()));
 	connect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onNameOrDescriptionChanged()), Qt::UniqueConnection);
 
 	connect(connection, SIGNAL(destroyed(GraphicsConnection*)),	this, SLOT(clear()), Qt::UniqueConnection);
@@ -305,8 +307,8 @@ void ConnectionEditor::onNameOrDescriptionChanged()
 
 	disconnect(connection_, SIGNAL(contentChanged()), this, SLOT(refresh()));	
 
-	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(connection_, nameEdit_.text(), 
-        descriptionEdit_.toPlainText()));
+	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(connection_, nameEdit_.text().toStdString(), 
+        descriptionEdit_.toPlainText().toStdString()));
 
 	diagram_->getEditProvider()->addCommand(cmd);
     cmd->redo();
@@ -326,7 +328,7 @@ VLNV ConnectionEditor::findAbstractionVLNV(ConnectionEndpoint* endPoint,
     VLNV definition;
     if (abstraction && abstraction->getAbstractionRef())
     {
-        definition = *abstraction->getAbstractionRef().data();
+        definition = VLNV(*abstraction->getAbstractionRef());
     }
 
     return definition;

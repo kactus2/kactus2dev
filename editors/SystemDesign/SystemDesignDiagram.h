@@ -50,7 +50,7 @@ public:
     //-----------------------------------------------------------------------------
 	struct PortCopyData
 	{
-        QString name;                              //!< The name of the interface.
+        std::string name;                              //!< The name of the interface.
         // Only one of these is valid at one time.
 		QSharedPointer<ApiInterface> apiInterface; //!< API interface.
 		QSharedPointer<ComInterface> comInterface; //!< COM interface.
@@ -369,7 +369,7 @@ private:
      *
      *      @return The SW interface item matching the selected interface name.
      */
-    SWInterfaceItem* getSWInterfaceItem(QString const& interfaceName) const;
+    SWInterfaceItem* getSWInterfaceItem(std::string_view interfaceName) const;
 
     /*!
      *  Create a dummy interface.
@@ -379,7 +379,7 @@ private:
      *
      *      @return The created dummy interface.
      */
-    ConnectionEndpoint* createDummyInterface(QString const& itemType, QString const& interfaceReference);
+    ConnectionEndpoint* createDummyInterface(QString const& itemType, std::string_view interfaceReference);
 
     /*!
      *  Find or create a SW port item.
@@ -392,7 +392,7 @@ private:
      *      @return The found SW port item.
      */
     ConnectionEndpoint* findOrCreateSWPortItem(SystemComponentItem* containingItem,
-        QString const& interfaceReference, SWConnectionEndpoint::EndpointType type,
+        std::string_view interfaceReference, SWConnectionEndpoint::EndpointType type,
         QSharedPointer<Design> containingDesign);
 
     /*!
@@ -407,7 +407,7 @@ private:
      *
      *      @return The route used by the selected interconnection.
      */
-    QSharedPointer<ConnectionRoute> getInterconnectionRoute(QString const& interconnectionName) const;
+    QSharedPointer<ConnectionRoute> getInterconnectionRoute(std::string_view interconnectionName) const;
 
     /*!
      *  Returns the HW component instance with the given name.
@@ -436,7 +436,7 @@ private:
      *      @param [in] component  The parent component.
      *      @param [in] design     The design containing related information.
      */
-    SWPortItem* createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
+    SWPortItem* createMissingPort(std::string_view portName, ConnectionEndpoint::EndpointType type,
                                   SystemComponentItem* component, QSharedPointer<Design> design);
 
     /*!

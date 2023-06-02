@@ -136,15 +136,15 @@ QPolygonF BusInterfaceEndPoint::getInterfaceShapeWithInitiative(TransactionalTyp
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::name()
 //-----------------------------------------------------------------------------
-QString BusInterfaceEndPoint::name() const
+std::string BusInterfaceEndPoint::name() const
 {
-    return busInterface_->name();
+    return busInterface_->nameStd();
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::setName()
 //-----------------------------------------------------------------------------
-void BusInterfaceEndPoint::setName(QString const& name)
+void BusInterfaceEndPoint::setName(std::string_view name)
 {
     beginUpdateConnectionNames();
 
@@ -152,7 +152,7 @@ void BusInterfaceEndPoint::setName(QString const& name)
 
     busInterface_->setName(name);
 
-    updateName(previousName, name);
+    updateName(previousName.toStdString(), name);
 
     updateInterface();
     emit contentChanged();
@@ -171,22 +171,22 @@ void BusInterfaceEndPoint::setBusInterface(QSharedPointer<BusInterface> newBus)
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::description()
 //-----------------------------------------------------------------------------
-QString BusInterfaceEndPoint::description() const
+std::string BusInterfaceEndPoint::description() const
 {
     if (busInterface_)
     {
-        return busInterface_->description();
+        return busInterface_->descriptionStd();
     }
     else
     {
-        return QString();
+        return std::string();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::setDescription()
 //-----------------------------------------------------------------------------
-void BusInterfaceEndPoint::setDescription(QString const& description)
+void BusInterfaceEndPoint::setDescription(std::string_view description)
 {
     if (busInterface_)
     {

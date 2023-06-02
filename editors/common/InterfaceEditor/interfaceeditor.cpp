@@ -217,7 +217,8 @@ void InterfaceEditor::onInterfaceNameChanged(QString const& newName)
 	
     disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));	
 
-	QSharedPointer<QUndoCommand> cmd(new EndpointNameChangeCommand(interface_, newName, getDesignInterfaces()));
+	QSharedPointer<QUndoCommand> cmd(new EndpointNameChangeCommand(
+        interface_, newName.toStdString(), getDesignInterfaces()));
 	editProvider_->addCommand(cmd);
     cmd->redo();
 	
@@ -247,7 +248,8 @@ void InterfaceEditor::onDescriptionChanged()
 
 	disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
-	QSharedPointer<QUndoCommand> cmd(new EndpointDescChangeCommand(interface_, interfaceDescription));
+	QSharedPointer<QUndoCommand> cmd(new EndpointDescChangeCommand(
+        interface_, interfaceDescription.toStdString()));
 	editProvider_->addCommand(cmd);
     cmd->redo();
 
@@ -364,12 +366,12 @@ void InterfaceEditor::setNameAndDescription(QLineEdit* nameEditor, QPlainTextEdi
 {
     // Set text for the name editor, signal must be disconnected when name is set to avoid loops.
     disconnect(nameEditor, SIGNAL(textEdited(QString const&)), this, SLOT(onInterfaceNameChanged(QString const&)));
-    nameEditor->setText(interface_->name());
+    nameEditor->setText(QString::fromStdString(interface_->name()));
     connect(nameEditor, SIGNAL(textEdited(QString const&)), this, SLOT(onInterfaceNameChanged(QString const&)),
         Qt::UniqueConnection);
 
     disconnect(descriptionEditor, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
-    descriptionEditor->setPlainText(interface_->description());
+    descriptionEditor->setPlainText(QString::fromStdString(interface_->description()));
     connect(descriptionEditor, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
 
@@ -412,7 +414,7 @@ QList<QSharedPointer<ActiveInterface> > InterfaceEditor::getActiveInterfaces() c
 bool InterfaceEditor::activeInterfaceReferencesBusInterface(QSharedPointer<ActiveInterface> currentInterface) const
 {
     return currentInterface->getComponentReference().compare(interface_->encompassingComp()->name()) == 0 &&
-        currentInterface->getBusReference().compare(interface_->name().toStdString()) == 0;
+        currentInterface->getBusReference().compare(interface_->name()) == 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -430,7 +432,7 @@ QList<QSharedPointer<HierInterface> > InterfaceEditor::getDesignInterfaces() con
 
             for (QSharedPointer<HierInterface> currentHierInterface : *connection->getHierInterfaces())
             {
-                if (currentHierInterface->getBusReference().compare(interface_->name().toStdString()) == 0)
+                if (currentHierInterface->getBusReference().compare(interface_->name()) == 0)
                 {
                     interfaces.append(currentHierInterface);
                 }

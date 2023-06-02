@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: InterfaceGraphicsData::InterfaceGraphicsData()
 //-----------------------------------------------------------------------------
-InterfaceGraphicsData::InterfaceGraphicsData(std::string const& name, QPointF position, QVector2D direction):
+InterfaceGraphicsData::InterfaceGraphicsData(std::string_view name, QPointF position, QVector2D direction):
 name_(name),
 positionExtension_(new Kactus2Position(position)),
 direction_(direction)
@@ -132,7 +132,7 @@ void InterfaceGraphicsData::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: InterfaceGraphicsData::setName()
 //-----------------------------------------------------------------------------
-void InterfaceGraphicsData::setName(std::string const& newName)
+void InterfaceGraphicsData::setName(std::string_view newName)
 {
     name_ = newName;
 }

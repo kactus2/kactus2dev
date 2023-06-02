@@ -75,7 +75,7 @@ public:
      *      @param [in] portName  The name of the port.
      *      @param [in] visible   The new ad-hoc visibility.
      */
-    virtual void onAdHocVisibilityChanged(std::string const& portName, bool visible);
+    virtual void onAdHocVisibilityChanged(std::string_view portName, bool visible);
 
     /*!
      *  Attaches the data source to an ad-hoc editor.
@@ -97,7 +97,7 @@ public:
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual HWConnectionEndpoint* getDiagramAdHocPort(std::string const& portName);
+    virtual HWConnectionEndpoint* getDiagramAdHocPort(std::string_view portName);
 
     /*!
      *  Create an ad hoc port item with the selected name.
@@ -106,7 +106,7 @@ public:
      *
      *      @return 0. Child items should create their own items where desired.
      */
-    virtual AdHocItem* createAdhocItem(std::string const& portName);
+    virtual AdHocItem* createAdhocItem(std::string_view portName);
 
     /*!
      *  Change the visibility of an ad hoc port item.

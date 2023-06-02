@@ -111,7 +111,7 @@ void ComConnectionAddCommand::changePortItemFromApiToCom(ConnectionEndpoint* end
 
         auto apiPositions = containingInstance->getApiInterfacePositions();
 
-        auto name = endPoint->name().toStdString();
+        auto name = endPoint->name();
         if (apiPositions.contains(name) && apiPositions.value(name) == endPoint->pos())
         {
             containingInstance->removeApiInterfacePosition(name);

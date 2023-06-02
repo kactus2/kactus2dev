@@ -190,7 +190,7 @@ QSharedPointer<AdHocConnection> AdhocPortEditor::getTiedConnection() const
         {
             for (QSharedPointer<PortReference> internalReference : *connection->getInternalPortReferences())
             {
-                if (internalReference->getPortRef() == containedPortItem_->name().toStdString() &&
+                if (internalReference->getPortRef() == containedPortItem_->name() &&
                     internalReference->getComponentRef() == instanceName &&
                     (!connection->getTiedValue().empty() || internalReference->getPartSelect()))
                 {
@@ -202,7 +202,7 @@ QSharedPointer<AdHocConnection> AdhocPortEditor::getTiedConnection() const
         {
             for (QSharedPointer<PortReference> externalReference : *connection->getExternalPortReferences())
             {
-                if (externalReference->getPortRef() == containedPortItem_->name().toStdString() &&
+                if (externalReference->getPortRef() == containedPortItem_->name() &&
                     (!connection->getTiedValue().empty() || externalReference->getPartSelect()))
                 {
                     return connection;
@@ -242,7 +242,8 @@ void AdhocPortEditor::setTiedValueEditorToolTip(QString const& tiedValue)
 
         if (parsedTieOff.isEmpty() && QString::compare(tiedValue, "default", Qt::CaseInsensitive) == 0)
         {
-            newToolTip = QObject::tr("No default value defined for port ") + containedPortItem_->name();
+            newToolTip = QObject::tr("No default value defined for port ") + 
+                QString::fromStdString(containedPortItem_->name());
         }
         else
         {
@@ -411,7 +412,7 @@ const
 
     if (adHocConnection)
     {
-        auto adhocPortName = containedPortItem_->name().toStdString();
+        auto adhocPortName = containedPortItem_->name();
 
         for (QSharedPointer<PortReference> internalPort : *adHocConnection->getInternalPortReferences())
         {

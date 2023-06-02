@@ -67,7 +67,7 @@ public:
     /*! 
      *  Returns the name of the parent bus interface.
      */
-    virtual QString name() const;
+    virtual std::string name() const;
 
 	/*!
 	 *  Set the name of the parent bus interface.
@@ -75,21 +75,21 @@ public:
      *      @param [in] name The name to set for the port.
 	 *
 	*/
-	virtual void setName(const QString& name);
+	virtual void setName(std::string_view name);
 
 	/*! 
      *  Get the description of the port.
 	 *
      *      @return QString containing the description.
 	 */
-	virtual QString description() const;
+	virtual std::string description() const;
 
 	/*!
 	 *  Set the description for the port.
      *
 	 *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(const QString& description);
+	virtual void setDescription(std::string_view description);
 
     /*!
      *  Attaches the endpoint to a connection.

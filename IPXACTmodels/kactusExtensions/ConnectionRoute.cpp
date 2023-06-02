@@ -16,10 +16,8 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectionRoute::ConnectionRoute()
 //-----------------------------------------------------------------------------
-ConnectionRoute::ConnectionRoute(QString const& connectionName) :
-name_(connectionName),
-    offpage_(false),
-    route_()
+ConnectionRoute::ConnectionRoute(std::string_view connectionName) :
+name_(connectionName)
 {
 
 }
@@ -28,6 +26,17 @@ name_(connectionName),
 // Function: ConnectionRoute::~ConnectionRoute()
 //-----------------------------------------------------------------------------
 ConnectionRoute::~ConnectionRoute()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionRoute::ConnectionRoute()
+//-----------------------------------------------------------------------------
+ConnectionRoute::ConnectionRoute(ConnectionRoute const& other) :
+    name_(other.name_),
+    offpage_(other.offpage_),
+    route_(other.route_)
 {
 
 }
@@ -55,7 +64,7 @@ void ConnectionRoute::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement(QStringLiteral("kactus2:route"));
     
-    writer.writeAttribute(QStringLiteral("kactus2:connRef"), name());
+    writer.writeAttribute(QStringLiteral("kactus2:connRef"), QString::fromStdString(name()));
     if (isOffpage())
     {
         writer.writeAttribute(QStringLiteral("kactus2:offPage"), QStringLiteral("true"));
@@ -65,7 +74,7 @@ void ConnectionRoute::write(QXmlStreamWriter& writer) const
         writer.writeAttribute(QStringLiteral("kactus2:offPage"), QStringLiteral("false"));
     }
 
-    foreach (QPointF routePoint, route_)
+    for (auto const& routePoint : route_)
     {
         writer.writeEmptyElement(QStringLiteral("kactus2:position"));
         writer.writeAttribute(QStringLiteral("x"), QString::number(routePoint.x()));
@@ -78,7 +87,7 @@ void ConnectionRoute::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: ConnectionRoute::setName()
 //-----------------------------------------------------------------------------
-void ConnectionRoute::setName(QString const& name)
+void ConnectionRoute::setName(std::string_view name)
 {
     name_ = name;
 }
@@ -86,7 +95,7 @@ void ConnectionRoute::setName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: ConnectionRoute::name()
 //-----------------------------------------------------------------------------
-QString ConnectionRoute::name() const
+std::string ConnectionRoute::name() const
 {
     return name_;
 }
@@ -129,15 +138,4 @@ void ConnectionRoute::setRoute(QList<QPointF> const& route)
 QList<QPointF> ConnectionRoute::getRoute() const
 {
     return route_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConnectionRoute::ConnectionRoute()
-//-----------------------------------------------------------------------------
-ConnectionRoute::ConnectionRoute(ConnectionRoute const& other):
-name_(other.name_),
-    offpage_(other.offpage_),
-    route_(other.route_)
-{
-
 }

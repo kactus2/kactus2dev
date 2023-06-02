@@ -84,7 +84,7 @@ bool AdHocEnabled::isPortAdHocVisible(std::string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::onAdHocVisibilityChanged()
 //-----------------------------------------------------------------------------
-void AdHocEnabled::onAdHocVisibilityChanged(std::string const&, bool)
+void AdHocEnabled::onAdHocVisibilityChanged(std::string_view, bool)
 {
     // Default implementation is empty.
 }
@@ -109,7 +109,7 @@ QSharedPointer<QList<QSharedPointer<Port> > > AdHocEnabled::getPorts() const
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(std::string const&)
+HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(std::string_view)
 {
     return nullptr;
 }
@@ -117,7 +117,7 @@ HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(std::string const&)
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::createAdhocItem()
 //-----------------------------------------------------------------------------
-AdHocItem* AdHocEnabled::createAdhocItem(std::string const&)
+AdHocItem* AdHocEnabled::createAdhocItem(std::string_view)
 {
     return nullptr;
 }
@@ -128,12 +128,12 @@ AdHocItem* AdHocEnabled::createAdhocItem(std::string const&)
 void AdHocEnabled::changeAdhocVisibility(AdHocItem* portItem, bool newVisibility)
 {
     // Check if the visibility has changed.
-    if (portAdHocVisibilities_.value(portItem->name().toStdString()) != newVisibility || portItem->getPort()->isAdHocVisible())
+    if (portAdHocVisibilities_.value(portItem->name()) != newVisibility || portItem->getPort()->isAdHocVisible())
     {
-        if (!portAdHocVisibilities_.contains(portItem->name().toStdString()) || !portItem->getPort()->isAdHocVisible())
+        if (!portAdHocVisibilities_.contains(portItem->name()) || !portItem->getPort()->isAdHocVisible())
         {
             // Update the value and call onAdHocVisiblityChanged().
-            portAdHocVisibilities_.insert(portItem->name().toStdString(), newVisibility);
+            portAdHocVisibilities_.insert(portItem->name(), newVisibility);
         }
 
         if (newVisibility == true)

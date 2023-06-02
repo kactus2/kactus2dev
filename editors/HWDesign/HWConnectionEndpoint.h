@@ -85,7 +85,7 @@ public:
      *
      *      @param [in] name    The selected name.
      */
-    virtual void setName(QString const& name);
+    virtual void setName(std::string_view name);
 
     /*!
      *  Get the off page connector item.

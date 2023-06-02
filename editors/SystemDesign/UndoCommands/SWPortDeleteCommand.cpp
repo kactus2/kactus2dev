@@ -80,7 +80,7 @@ void SWPortDeleteCommand::undo()
     del_ = false;
 
     QSharedPointer<ComponentInstance> containingInstance = parent_->getComponentInstance();
-    containingInstance->updateApiInterfacePosition(port_->name().toStdString(), port_->pos());
+    containingInstance->updateApiInterfacePosition(port_->name(), port_->pos());
 
     // Execute child commands.
     QUndoCommand::undo();
@@ -101,7 +101,7 @@ void SWPortDeleteCommand::redo()
     auto apiPositions = containingInstance->getApiInterfacePositions();
     auto comPositions = containingInstance->getComInterfacePositions();
 
-    auto name = port_->name().toStdString();
+    auto name = port_->name();
     if (apiPositions.contains(name))
     {
         containingInstance->removeApiInterfacePosition(name);

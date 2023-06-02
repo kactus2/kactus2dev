@@ -25,8 +25,10 @@
 //-----------------------------------------------------------------------------
 // Function: TopAdHocVisibilityChangeCommand::TopAdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
-TopAdHocVisibilityChangeCommand::TopAdHocVisibilityChangeCommand(HWDesignDiagram* diagram, QString const& portName,
-    bool newVisibility, QUndoCommand* parent):
+TopAdHocVisibilityChangeCommand::TopAdHocVisibilityChangeCommand(HWDesignDiagram* diagram, 
+    std::string_view portName,
+    bool newVisibility, 
+    QUndoCommand* parent):
 AdHocVisibilityChangeCommand(diagram, portName, newVisibility, parent)
 {
     setupTieOffConnectionForDeletion(diagram, portName);
@@ -41,24 +43,23 @@ AdHocVisibilityChangeCommand(diagram, portName, newVisibility, parent)
 // Function: TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion()
 //-----------------------------------------------------------------------------
 void TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion(HWDesignDiagram* diagram,
-    QString const& portName)
+    std::string_view portName)
 {
     if (diagram && diagram->getDesign())
     {
         QSharedPointer<Design> containingDesign = diagram->getDesign();
         if (containingDesign)
         {
-            auto portRef = portName.toStdString();
             for (QSharedPointer<AdHocConnection> connection : *containingDesign->getAdHocConnections())
             {
                 if (!connection->getTiedValue().empty())
                 {
                     if ((connection->getInternalPortReferences()->size() == 1 &&
                         connection->getExternalPortReferences()->isEmpty() &&
-                        connection->getInternalPortReferences()->first()->getPortRef() == portRef) ||
+                        connection->getInternalPortReferences()->first()->getPortRef() == portName) ||
                         (connection->getExternalPortReferences()->size() == 1 &&
                         connection->getInternalPortReferences()->isEmpty() &&
-                        connection->getExternalPortReferences()->first()->getPortRef() == portRef))
+                        connection->getExternalPortReferences()->first()->getPortRef() == portName))
                     {
                         new AdHocTieOffConnectionDeleteCommand(containingDesign, connection, this);
                     }
@@ -74,7 +75,7 @@ void TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion(HWDesignD
 void TopAdHocVisibilityChangeCommand::setupColumnAddition(HWDesignDiagram* diagram)
 {
     GraphicsColumnLayout* diagramLayout = diagram->getLayout().data();
-    foreach (GraphicsColumn* column, diagramLayout->getColumns())
+    for  (GraphicsColumn* column : diagramLayout->getColumns())
     {
         if (column->getColumnDesc()->getAllowedItems() & ColumnTypes::INTERFACE)
         {
@@ -88,12 +89,4 @@ void TopAdHocVisibilityChangeCommand::setupColumnAddition(HWDesignDiagram* diagr
     HWColumn* newColumn(new HWColumn(newColumnDescription, diagramLayout));
 
     new HWColumnAddCommand(diagramLayout, newColumn, diagram, this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: TopAdHocVisibilityChangeCommand::~TopAdHocVisibilityChangeCommand()
-//-----------------------------------------------------------------------------
-TopAdHocVisibilityChangeCommand::~TopAdHocVisibilityChangeCommand()
-{
-
 }

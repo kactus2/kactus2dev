@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
-SWPortItem::SWPortItem(QString const& name, QSharedPointer<Component> containingComponent, QGraphicsItem *parent):
+SWPortItem::SWPortItem(std::string_view name, QSharedPointer<Component> containingComponent, QGraphicsItem *parent):
 SWConnectionEndpoint(containingComponent, name, parent),
 stubLine_(0, 0, 0, -GridSize, this)
 {
@@ -51,7 +51,7 @@ stubLine_(0, 0, 0, -GridSize, this)
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QSharedPointer<Component> containingComponent,
     QGraphicsItem *parent):
-SWConnectionEndpoint(containingComponent, QString(apiIf->name()), parent),
+SWConnectionEndpoint(containingComponent, apiIf->nameStd(), parent),
 apiInterface_(apiIf),
 stubLine_(0, 0, 0, -GridSize, this)
 {
@@ -66,7 +66,7 @@ stubLine_(0, 0, 0, -GridSize, this)
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QSharedPointer<Component> containingComponent,
     QGraphicsItem *parent):
-SWConnectionEndpoint(containingComponent, QString(comIf->name()), parent),
+SWConnectionEndpoint(containingComponent, comIf->nameStd(), parent),
 comInterface_(comIf),
 stubLine_(0, 0, 0, -GridSize, this)
 {
@@ -80,28 +80,29 @@ stubLine_(0, 0, 0, -GridSize, this)
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::name()
 //-----------------------------------------------------------------------------
-QString SWPortItem::name() const
+std::string SWPortItem::name() const
 {
     if (isCom())
     {
-        return comInterface_->name();
+        return comInterface_->nameStd();
     }
     else if (isApi())
     {
-        return apiInterface_->name();
+        return apiInterface_->nameStd();
     }
     else
     {
-        return getNameLabel()->getText();
+        return getNameLabel()->getText().toStdString();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void SWPortItem::setName(const QString& name)
+void SWPortItem::setName(std::string_view name)
 {
     beginUpdateConnectionNames();
+
 
     if (isCom())
     {
@@ -113,7 +114,7 @@ void SWPortItem::setName(const QString& name)
     }
     else
     {
-        getNameLabel()->setText(name);
+        getNameLabel()->setText(QString::fromStdString(std::string(name)));
     }
 
 	updateInterface();
@@ -658,26 +659,26 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::description()
 //-----------------------------------------------------------------------------
-QString SWPortItem::description() const
+std::string SWPortItem::description() const
 {
 	if (isCom())
     {
-	    return comInterface_->description();
+	    return comInterface_->descriptionStd();
     }
     else if (isApi())
     {
-        return apiInterface_->description();
+        return apiInterface_->descriptionStd();
     }
     else
     {
-        return QString();
+        return std::string();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::setDescription()
 //-----------------------------------------------------------------------------
-void SWPortItem::setDescription(QString const& description)
+void SWPortItem::setDescription(std::string_view description)
 {
 	if (isCom())
     {
@@ -935,7 +936,7 @@ qreal SWPortItem::getNameLength()
 {
     QFont font = getNameLabel()->font();
 
-	return NamelabelWidth::getTextLength( name(), font);
+	return NamelabelWidth::getTextLength(QString::fromStdString(name()), font);
 }
 
 //-----------------------------------------------------------------------------
@@ -944,7 +945,7 @@ qreal SWPortItem::getNameLength()
 void SWPortItem::shortenNameLabel( qreal width )
 {
     QFont font = getNameLabel()->font();
-	QString nameLabelText = NamelabelWidth::setNameLabel( name(), font, width);
+	QString nameLabelText = NamelabelWidth::setNameLabel(QString::fromStdString(name()), font, width);
     getNameLabel()->setText(nameLabelText);
 
 	setLabelPosition();

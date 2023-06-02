@@ -43,8 +43,8 @@ public:
      *      @param [in] displayName     The initial displayName.
      *      @param [in] description     The initial description.
     */
-    NameGroup(std::string const& name, std::string const& displayName = std::string(), 
-        std::string const& description = std::string());
+    NameGroup(std::string_view name, std::string_view displayName = std::string(), 
+        std::string_view description = std::string());
 
 	/*! The copy constructor
 	 *
@@ -71,6 +71,13 @@ public:
     QString name() const;
 
     /*!
+     *  Gets the name element in the name group.
+     *
+     *      @return The name element.
+     */
+    std::string nameStd() const;
+
+    /*!
      *  Sets the name element in the group.
      *
      *      @param [in] name   The name to set.     
@@ -82,7 +89,7 @@ public:
      *
      *      @param [in] name   The name to set.
      */
-    void setName(std::string const& name);
+    void setName(std::string_view name);
 
     /*!
      *  Gets the displayName element in the name group.
@@ -92,11 +99,20 @@ public:
     QString displayName() const;
 
     /*!
+     *  Gets the displayName element in the name group.
+     *
+     *      @return The displayName element.
+     */
+    std::string displayNameStd() const;
+
+    /*!
      *  Sets the displayName element in the group.
      *
      *      @param [in] displayName   The display name to set.     
      */
     void setDisplayName(QString const& displayName);
+
+    void setDisplayName(std::string_view displayName);
 
     /*!
      *  Gets the short description element in the name group.
@@ -106,12 +122,20 @@ public:
     QString shortDescription() const;
 
     /*!
+     *  Gets the displayName element in the name group.
+     *
+     *      @return The displayName element.
+     */
+    std::string shortDescriptionStd() const;
+
+    /*!
      *  Sets the short description element in the group.
      *
      *      @param [in] description   The description to set.
      */
     void setShortDescription(QString const& description);
 
+    void setShortDescription(std::string_view description);
     /*!
      *  Gets the description element in the name group.
      *
@@ -120,25 +144,34 @@ public:
     QString description() const;
 
     /*!
+     *  Gets the description element in the name group.
+     *
+     *      @return The description element.
+     */
+    std::string descriptionStd() const;
+
+    /*!
      *  Sets the description element in the group.
      *
      *      @param [in] description   The description to set.     
      */
     void setDescription(QString const& description);
 
+    void setDescription(std::string_view description);
+
 private:
 
     //! The name matches the ipxact:name field within nameGroup.
-    QString name_;
+    std::string name_;
 
     //! The displayName matches the ipxact:displayName field within nameGroup.
-    QString displayName_;
+    std::string displayName_;
 
     //! The shortDescription matches the ipxact:shortDescription field within nameGroup.
-    QString shortDescription_;
+    std::string shortDescription_;
 
     //! description matches the ipxact:description field within nameGroup.
-    QString description_;
+    std::string description_;
 };
 
 #endif /* NAMEGROUP_H */

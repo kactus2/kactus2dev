@@ -44,7 +44,7 @@ del_(true)
     // Create child commands for removing interconnections.
     QList<GraphicsConnection*> connections;
 
-    foreach (QGraphicsItem* item, column->childItems())
+    for (QGraphicsItem* item : column->childItems())
     {
         if (item->type() == HWComponentItem::Type)
         {
@@ -56,7 +56,7 @@ del_(true)
         {
             HWConnectionEndpoint* endpoint = static_cast<HWConnectionEndpoint*>(item);
 
-            foreach (GraphicsConnection* connection, endpoint->getConnections())
+            for (GraphicsConnection* connection : endpoint->getConnections())
             {
                 if (!connections.contains(connection))
                 {
@@ -67,7 +67,7 @@ del_(true)
 
             if (endpoint->getOffPageConnector() != 0)
             {
-                foreach (GraphicsConnection* connection, endpoint->getOffPageConnector()->getConnections())
+                for (GraphicsConnection* connection : endpoint->getOffPageConnector()->getConnections())
                 {
                     if (!connections.contains(connection))
                     {

@@ -143,11 +143,11 @@ QSharedPointer<HierInterface> ComConnectionExchangeCommand::createConnectionInte
     if (portEndPoint)
     {
         auto instanceName = portEndPoint->encompassingComp()->getComponentInstance()->getInstanceName();
-        return QSharedPointer<ActiveInterface> (new ActiveInterface(instanceName, endPoint->name().toStdString()));
+        return QSharedPointer<ActiveInterface> (new ActiveInterface(instanceName, endPoint->name()));
     }
     else if (interfaceEndPoint)
     {
-        return QSharedPointer<HierInterface> (new HierInterface(endPoint->name().toStdString()));
+        return QSharedPointer<HierInterface> (new HierInterface(endPoint->name()));
     }
 
     return QSharedPointer<HierInterface> ();

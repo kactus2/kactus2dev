@@ -52,7 +52,7 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
         endpoint1_->addConnection(this);
         endpoint2_->addConnection(this);
 
-        if (route_->name().isEmpty())
+        if (route_->name().empty())
         {
             route_->setName(createDefaultName());
         }
@@ -176,7 +176,7 @@ void GraphicsConnection::setRoute(QList<QPointF> path)
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::setName()
 //-----------------------------------------------------------------------------
-void GraphicsConnection::setName(QString const& name)
+void GraphicsConnection::setName(std::string const& name)
 {
     route_->setName(name);
     emit contentChanged();
@@ -598,7 +598,7 @@ void GraphicsConnection::paintConnectionPath()
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::updateName()
 //-----------------------------------------------------------------------------
-QString GraphicsConnection::createDefaultName() const
+std::string GraphicsConnection::createDefaultName() const
 {
     Q_ASSERT(endpoint1_ != 0);
     Q_ASSERT(endpoint2_ != 0);
@@ -612,16 +612,16 @@ QString GraphicsConnection::createDefaultName() const
         std::swap(start, end);
     }
 
-    QString startComponentName = QString();
+    std::string startComponentName = std::string();
     if (start->encompassingComp() != nullptr)
     {
-        startComponentName = QString::fromStdString(start->encompassingComp()->name()) + "_";
+        startComponentName = start->encompassingComp()->name() + "_";
     }
 
-    QString endComponentName = QString();
+    std::string endComponentName = std::string();
     if (end->encompassingComp() != nullptr)
     {
-        endComponentName = QString::fromStdString(end->encompassingComp()->name()) + "_";
+        endComponentName = end->encompassingComp()->name() + "_";
     }
 
     return startComponentName + start->name() + "_to_" + endComponentName + end->name();

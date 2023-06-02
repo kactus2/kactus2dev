@@ -39,7 +39,7 @@ public:
      *      @param [in] position    Position of the interface.
      *      @param [in] direction   Direction of the interface.
      */
-    InterfaceGraphicsData(std::string const& name, QPointF position = QPointF(), QVector2D direction = QVector2D());
+    InterfaceGraphicsData(std::string_view name, QPointF position = QPointF(), QVector2D direction = QVector2D());
 
     /*!
      *  Copy constructor.
@@ -87,7 +87,7 @@ public:
      *
      *      @param [in] newName     The new name.
      */
-    void setName(std::string const& newName);
+    void setName(std::string_view newName);
 
     /*!
      *  Get the name.

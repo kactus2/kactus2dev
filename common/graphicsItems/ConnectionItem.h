@@ -48,28 +48,28 @@ public:
      *
      *      @param [in] name    The new connection item name.
      */
-    void setName(QString const& name) final;
+    void setName(std::string const& name) final;
 
     /*!
      *  Get the name of the connection item.
      *
      *      @return The name of the connection item.
      */
-    QString name() const final;
+    std::string name() const final;
 
     /*!
      *  Set the description for the connection item.
      *
      *      @param [in] description     The new description.
      */
-    void setDescription(QString const& description) final;
+    void setDescription(std::string const& description) final;
 
     /*!
      *  Get the description for the connection item.
      *
      *      @return The description of the connection item.
      */
-    QString description() const final;
+    std::string description() const final;
 
     /*!
      *  Get the contained interconnection.

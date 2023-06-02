@@ -36,7 +36,7 @@ public:
      *      @param [in] containingComponent     Component containing the item.
      *      @param [in] parent                  The parent item.
      */
-    SWPortItem(QString const& name, QSharedPointer<Component> containingComponent, QGraphicsItem *parent);
+    SWPortItem(std::string_view name, QSharedPointer<Component> containingComponent, QGraphicsItem *parent);
 
     /*!
      *  Constructor which creates a graphics item for an API interface.
@@ -125,26 +125,26 @@ public:
     /*!
      *  Returns the name of this port.
      */
-    virtual QString name() const;
+    virtual std::string name() const;
 
 	/*!
      *  Sets the name for the port.
 	 *
 	 *      @param [in] name The name to set for the port.
 	 */
-	virtual void setName(const QString& name);
+	virtual void setName(std::string_view name);
 
 	/*!
      *  Returns the description of the port.
 	 */
-	virtual QString description() const;
+	virtual std::string description() const;
 
 	/*! 
      *  Sets the description for the port.
 	 *
 	 *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(const QString& description);
+	virtual void setDescription(std::string_view description);
 
     /*!
      *  Called when a connection between this and another end point is done.

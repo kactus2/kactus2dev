@@ -130,7 +130,7 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
         for (QSharedPointer<PortReference> externalReference : *tieOffConnection->getExternalPortReferences())
         {
             HWConnectionEndpoint* endPoint =
-                containingDiagram_->getDiagramAdHocPort(QString::fromStdString(externalReference->getPortRef()));
+                containingDiagram_->getDiagramAdHocPort(externalReference->getPortRef());
             if (endPoint)
             {
                 AdHocItem* portItem = dynamic_cast<AdHocItem*>(endPoint);

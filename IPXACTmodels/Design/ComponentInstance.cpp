@@ -239,7 +239,7 @@ void ComponentInstance::setPropertyValues(QMap<std::string, std::string> const& 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::updateBusInterfacePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::updateBusInterfacePosition(std::string const& name, QPointF const& pos)
+void ComponentInstance::updateBusInterfacePosition(std::string_view name, QPointF const& pos)
 {
     updatePositionsMap(name, pos, "kactus2:portPositions", "kactus2:portPosition", "busRef");
 }
@@ -247,7 +247,7 @@ void ComponentInstance::updateBusInterfacePosition(std::string const& name, QPoi
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::removeBusInterfacePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::removeBusInterfacePosition(std::string const& interfaceName)
+void ComponentInstance::removeBusInterfacePosition(std::string_view interfaceName)
 {
     removePosition(interfaceName, "kactus2:portPositions", "kactus2:portPosition", "busRef");
 }
@@ -527,7 +527,7 @@ void ComponentInstance::hideAdHocPort(std::string const& portName)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::updatePositionsMap()
 //-----------------------------------------------------------------------------
-void ComponentInstance::updatePositionsMap(std::string const& newReferenceName, QPointF const& newPosition,
+void ComponentInstance::updatePositionsMap(std::string_view newReferenceName, QPointF const& newPosition,
     std::string const& groupIdentifier, std::string const& itemIdentifier, std::string const& referenceIdentifier) const
 {
     if (newReferenceName.empty() || newPosition.isNull())
@@ -556,7 +556,7 @@ void ComponentInstance::updatePositionsMap(std::string const& newReferenceName, 
     else
     {
         positionExtension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder(itemIdentifier));
-        positionExtension->setAttribute(referenceIdentifier, newReferenceName);
+        positionExtension->setAttribute(referenceIdentifier, std::string(newReferenceName));
 
         portGroup->addToGroup(positionExtension);
     }
@@ -568,7 +568,7 @@ void ComponentInstance::updatePositionsMap(std::string const& newReferenceName, 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::removePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::removePosition(std::string const& interfaceName, std::string const& groupIdentifier,
+void ComponentInstance::removePosition(std::string_view interfaceName, std::string const& groupIdentifier,
     std::string const& itemIdentifier, std::string const& referenceIdentifier)
 {
     if (interfaceName.empty())

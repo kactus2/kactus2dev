@@ -37,7 +37,7 @@ template <typename T> ConnectionItem<T>::ConnectionItem(QPointF const& p1, QVect
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::setName()
 //-----------------------------------------------------------------------------
-template <typename T> void ConnectionItem<T>::setName(QString const& name)
+template <typename T> void ConnectionItem<T>::setName(std::string const& name)
 {
     GraphicsConnection::setName(name);
     interconnection_->setName(name);
@@ -48,15 +48,15 @@ template <typename T> void ConnectionItem<T>::setName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::name()
 //-----------------------------------------------------------------------------
-template <typename T> QString ConnectionItem<T>::name() const
+template <typename T> std::string ConnectionItem<T>::name() const
 {
-    return interconnection_->name();
+    return interconnection_->nameStd();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::setDescription()
 //-----------------------------------------------------------------------------
-template <typename T> void ConnectionItem<T>::setDescription(QString const& description)
+template <typename T> void ConnectionItem<T>::setDescription(std::string const& description)
 {
     interconnection_->setDescription(description);
 
@@ -66,9 +66,9 @@ template <typename T> void ConnectionItem<T>::setDescription(QString const& desc
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::description()
 //-----------------------------------------------------------------------------
-template <typename T> QString ConnectionItem<T>::description() const
+template <typename T> std::string ConnectionItem<T>::description() const
 {
-    return interconnection_->description();
+    return interconnection_->descriptionStd();
 }
 
 //-----------------------------------------------------------------------------

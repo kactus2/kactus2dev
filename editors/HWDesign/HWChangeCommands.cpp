@@ -366,14 +366,14 @@ void EndpointChangeCommand::redo()
 // Function: EndpointNameChangeCommand::EndpointNameChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointNameChangeCommand::EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
-                                                     QString const& newName,
-                                                     QList<QSharedPointer<HierInterface> > activeIntefaces,
-                                                     QUndoCommand* parent)
-    : QUndoCommand(parent), 
-       endpoint_(endpoint),
-       oldName_(endpoint->name()), 
-       newName_(newName),
-       activeIntefaces_(activeIntefaces)
+    std::string_view newName,
+    QList<QSharedPointer<HierInterface> > activeIntefaces,
+    QUndoCommand* parent) :
+    QUndoCommand(parent),
+    endpoint_(endpoint),
+    oldName_(endpoint->name()),
+    newName_(newName),
+    activeIntefaces_(activeIntefaces)
 {
 }
 
@@ -394,7 +394,7 @@ void EndpointNameChangeCommand::undo()
     endpoint_->setName(oldName_);
     for (QSharedPointer<HierInterface> interface : activeIntefaces_)
     {
-        interface->setBusReference(oldName_.toStdString());
+        interface->setBusReference(oldName_);
     }
 }
 
@@ -408,7 +408,7 @@ void EndpointNameChangeCommand::redo()
     endpoint_->setName(newName_);
     for (QSharedPointer<HierInterface> interface : activeIntefaces_)
     {
-        interface->setBusReference(newName_.toStdString());
+        interface->setBusReference(newName_);
     }
 }
 
@@ -416,7 +416,7 @@ void EndpointNameChangeCommand::redo()
 // Function: EndpointDescChangeCommand::EndpointDescChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointDescChangeCommand::EndpointDescChangeCommand(ConnectionEndpoint* endpoint, 
-                                                     QString const& newDescription,
+    std::string_view newDescription,
                                                      QUndoCommand* parent)
     : QUndoCommand(parent), 
       endpoint_(endpoint),

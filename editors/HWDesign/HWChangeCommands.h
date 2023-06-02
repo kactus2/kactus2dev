@@ -395,7 +395,7 @@ public:
      *      @param [in] parent    The parent command.
      */
     EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
-        QString const& newName,
+        std::string_view newName,
         QList<QSharedPointer<HierInterface> > activeIntefaces,
         QUndoCommand* parent = 0);
 
@@ -427,10 +427,10 @@ private:
     ConnectionEndpoint* endpoint_;
 
     //! The endpoint's old name.
-    QString oldName_;
+    std::string oldName_;
 
     //! The endpoint's new name.
-    QString newName_;
+    std::string newName_;
 
     //! The interfaces affected by the name change.
     QList<QSharedPointer<HierInterface> > activeIntefaces_;
@@ -449,7 +449,7 @@ public:
      *      @param [in] newDescription  The endpoint's new description.
      *      @param [in] parent          The parent command.
      */
-	EndpointDescChangeCommand(ConnectionEndpoint* endpoint, QString const& newDescription,
+	EndpointDescChangeCommand(ConnectionEndpoint* endpoint, std::string_view newDescription,
                               QUndoCommand* parent = 0);
 
     /*!
@@ -480,10 +480,10 @@ private:
     ConnectionEndpoint* endpoint_;
 
     //! The endpoint's old description.
-    QString oldDescription_;
+    std::string oldDescription_;
 
     //! The endpoint's new description.
-    QString newDescription_;
+    std::string newDescription_;
 };
 
 //-----------------------------------------------------------------------------

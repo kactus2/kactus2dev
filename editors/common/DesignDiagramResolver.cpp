@@ -90,13 +90,13 @@ void DesignDiagramResolver::resolveAdhocTieOff(QString const& tieOff, AdHocItem*
 //-----------------------------------------------------------------------------
 // Function: DesignDiagramResolver::getParsedTieOffValue()
 //-----------------------------------------------------------------------------
-QString DesignDiagramResolver::getParsedTieOffValue(QString const& tieOffValue, QString const& portName,
+QString DesignDiagramResolver::getParsedTieOffValue(QString const& tieOffValue, std::string const& portName,
     QSharedPointer<Component const> ownerComponent) const
 {
     QString parsedTieOff;
     if (QString::compare(tieOffValue, "default", Qt::CaseInsensitive) == 0)
     {
-        QSharedPointer<Port> adhocPort = ownerComponent->getPort(portName);
+        QSharedPointer<Port> adhocPort = ownerComponent->getPort(QString::fromStdString(portName));
         QString portDefaultValue = adhocPort->getDefaultValue();
         parsedTieOff = expressionParser_->parseExpression(portDefaultValue);
     }

@@ -33,7 +33,7 @@ public:
      *      @param [in] newVisiblity  The new ad-hoc visibility of the port.
      *      @param [in] parent        The parent undo command.
      */
-    AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName, bool newVisibility,
+    AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, std::string_view portName, bool newVisibility,
         QUndoCommand* parent = 0);
 
     /*!
@@ -78,7 +78,7 @@ private:
     AdHocEnabled* dataSource_;
 
     //! The name of the port.
-    QString portName_;
+    std::string portName_;
 
     //! The saved port position.
     QPointF pos_;

@@ -300,7 +300,7 @@ void HWDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::onAdHocVisibilityChanged()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool visible)
+void HWDesignDiagram::onAdHocVisibilityChanged(std::string_view portName, bool visible)
 {
     QSharedPointer<VendorExtension> adhocExtension = getDesign()->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
@@ -318,7 +318,7 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
 
         HierarchicalPortItem* adHocIf;
 
-        QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(portName);
+        QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(QString::fromStdString(std::string(portName)));
         if (adhocPort)
         {
             adHocIf = new HierarchicalPortItem(getEditedComponent(), adhocPort, adhocData, 0);
@@ -344,7 +344,7 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
         for (QSharedPointer<VendorExtension> extension : adhocGroup->getByType("kactus2:adHocVisible"))
         {
             QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
-            if (portExtension->getAttributeValue(std::string("portName")) == portName.toStdString())
+            if (portExtension->getAttributeValue(std::string("portName")) == portName)
             {
                 adhocGroup->removeFromGroup(portExtension);
             }
@@ -360,7 +360,7 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(QString const& portName)
+HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(std::string_view portName)
 {
     for (QGraphicsItem* item : items())
     {
@@ -1290,34 +1290,32 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
         
         if (startPoint->isHierarchical())
         {
-            QSharedPointer<PortReference> startReference(new PortReference(startPoint->getPort()->name().toStdString()));
+            QSharedPointer<PortReference> startReference(new PortReference(startPoint->getPort()->nameStd()));
             adHocConnection->getExternalPortReferences()->append(startReference);
         }
         else
         {
-            QSharedPointer<PortReference> startReference(new PortReference(startPoint->getPort()->name().toStdString(),
+            QSharedPointer<PortReference> startReference(new PortReference(startPoint->getPort()->nameStd(),
                 startPoint->encompassingComp()->name()));
             adHocConnection->getInternalPortReferences()->append(startReference);
         }
         
         if (endPoint->isHierarchical())
         {
-            QSharedPointer<PortReference> endReference(new PortReference(endPoint->name().toStdString()));
+            QSharedPointer<PortReference> endReference(new PortReference(endPoint->name()));
             adHocConnection->getExternalPortReferences()->append(endReference);
         }
         else
         {
-            QSharedPointer<PortReference> endReference(new PortReference(endPoint->name().toStdString(),
+            QSharedPointer<PortReference> endReference(new PortReference(endPoint->name(),
                 endPoint->encompassingComp()->name()));
             adHocConnection->getInternalPortReferences()->append(endReference);
         }
 
         connection = new AdHocConnectionItem(startPoint, endPoint, adHocConnection, route, this);   
 
-        QString connectionName = connection->createDefaultName();
-        adHocConnection->setName(connectionName);
-        route->setName(connectionName);
-        connection->setLineWidth(1);
+        auto connectionName = connection->createDefaultName();
+        connection->setName(connectionName);
     }
     else
     {
@@ -1325,25 +1323,25 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
 
         if (startPoint->isHierarchical())
         {
-            QSharedPointer<HierInterface> startInterface(new HierInterface(startPoint->name().toStdString()));
+            QSharedPointer<HierInterface> startInterface(new HierInterface(startPoint->name()));
             interconnection->getHierInterfaces()->append(startInterface);
         }
         else
         {
             QSharedPointer<ActiveInterface> startInterface(
-                new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name().toStdString()));
+                new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
             interconnection->setStartInterface(startInterface);
         }
 
         if (endPoint->isHierarchical())
         {
-            QSharedPointer<HierInterface> endInterface(new HierInterface(endPoint->name().toStdString()));
+            QSharedPointer<HierInterface> endInterface(new HierInterface(endPoint->name()));
             interconnection->getHierInterfaces()->append(endInterface);
         }
         else
         {
             QSharedPointer<ActiveInterface> endInterface(
-                new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name().toStdString()));
+                new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
             if (startPoint->isHierarchical())
             {
                 interconnection->setStartInterface(endInterface);
@@ -1356,9 +1354,8 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
 
         connection = new HWConnection(startPoint, endPoint, interconnection, route, this);  
 
-        QString connectionName = connection->createDefaultName();
-        interconnection->setName(connectionName);
-        route->setName(connectionName);
+        auto connectionName = connection->createDefaultName();
+        connection->setName(connectionName);
     }
     
     return connection;
@@ -1460,7 +1457,7 @@ bool HWDesignDiagram::copyDefinitions(ConnectionEndpoint* definedPoint, Connecti
 bool HWDesignDiagram::hasDefaultName(ConnectionEndpoint const* connectionPoint) const
 {
     QRegularExpression defaultInterfaceName("bus(_\\d+)?");
-    return defaultInterfaceName.match(connectionPoint->name()).hasMatch();
+    return defaultInterfaceName.match(QString::fromStdString(connectionPoint->name())).hasMatch();
 }
 
 //-----------------------------------------------------------------------------
@@ -1469,10 +1466,10 @@ bool HWDesignDiagram::hasDefaultName(ConnectionEndpoint const* connectionPoint) 
 void HWDesignDiagram::copyInterfaceName(ConnectionEndpoint* sourceInterface,
     ConnectionEndpoint* targetInterface, HWConnection* definingConnection, QUndoCommand* parentCommand)
 {
-    QString previousName = targetInterface->name();
+    auto previousName = targetInterface->name();
     
     QStringList reservedNames = getTopLevelInterfaceNames();
-    QString interfaceName = generateUniqueName(sourceInterface->name(), reservedNames);
+    auto interfaceName = generateUniqueName(QString::fromStdString(sourceInterface->name()), reservedNames).toStdString();
        
     QList<QSharedPointer<HierInterface> > affectedInterfaces = findInterfacesByName(previousName, definingConnection->getInterconnection());
 
@@ -1484,15 +1481,14 @@ void HWDesignDiagram::copyInterfaceName(ConnectionEndpoint* sourceInterface,
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::findInterfacesByName()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<HierInterface> > HWDesignDiagram::findInterfacesByName(QString const& previousName, 
+QList<QSharedPointer<HierInterface> > HWDesignDiagram::findInterfacesByName(std::string_view previousName,
      QSharedPointer<Interconnection> connection) const
 {
     QList<QSharedPointer<HierInterface> > foundInterfaces;
 
-    auto name = previousName.toStdString();
     for (QSharedPointer<HierInterface> designInterface : *connection->getHierInterfaces())
     {
-        if (designInterface->getBusReference().compare(name) == 0)
+        if (designInterface->getBusReference().compare(previousName) == 0)
         {
             foundInterfaces.append(designInterface);
         }
@@ -2108,7 +2104,7 @@ void HWDesignDiagram::createInterconnectionBetweenComponents(QSharedPointer<Inte
     ConnectionEndpoint* endPort = findOrCreateMissingInterface(endComponent, 
         endComponentRef, endInterface->getBusReference(), design);
 
-    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(interconnection->name());
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(interconnection->name().toStdString());
 
     if (route->isOffpage())
     {
@@ -2140,7 +2136,7 @@ void HWDesignDiagram::createInterconnectionBetweenComponents(QSharedPointer<Inte
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::findOrCreateRouteForInterconnection()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectionRoute> HWDesignDiagram::findOrCreateRouteForInterconnection(QString const& interconnectionName)
+QSharedPointer<ConnectionRoute> HWDesignDiagram::findOrCreateRouteForInterconnection(std::string_view interconnectionName)
 {
     for (QSharedPointer<ConnectionRoute> knownRoute : getDesign()->getRoutes())
     {
@@ -2246,7 +2242,7 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
     ConnectionEndpoint* componentPort = findOrCreateMissingInterface(comp, startInterface->getComponentReference(), 
         startInterface->getBusReference(), design);
     
-    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(connection->name());
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(connection->name().toStdString());
 
     if (route->isOffpage())
     {
@@ -2336,16 +2332,16 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
     for (QSharedPointer<VendorExtension> positionExtension : adhocGroup->getByType("kactus2:adHocVisible"))
     {
         QSharedPointer<Kactus2Placeholder> adHocExtension = positionExtension.dynamicCast<Kactus2Placeholder>();
-        QString portName = QString::fromStdString(adHocExtension->getAttributeValue(std::string("portName")));
+        auto portName = adHocExtension->getAttributeValue(std::string("portName"));
 
-        QSharedPointer<Port> adHocPort = getEditedComponent()->getPort(portName);
+        QSharedPointer<Port> adHocPort = getEditedComponent()->getPort(QString::fromStdString(portName));
 
         HierarchicalPortItem* adHocIf;
 
         if (adHocPort)
         {
             adHocIf = new HierarchicalPortItem(getEditedComponent(), adHocPort, adHocExtension, 0);
-            visiblePortNames.append(portName);
+            visiblePortNames.append(QString::fromStdString(portName));
         }
         else
         {
@@ -2384,10 +2380,11 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createMissingHierarchicalAdHocPort()
 //-----------------------------------------------------------------------------
-HierarchicalPortItem* HWDesignDiagram::createMissingHierarchicalAdHocPort(QString const& portName,
+HierarchicalPortItem* HWDesignDiagram::createMissingHierarchicalAdHocPort(std::string_view portName,
     QSharedPointer<Kactus2Placeholder> adHocExtension, QGraphicsItem* parentItem)
 {
-    QSharedPointer<Port> missingPort (new Port(portName));
+    QSharedPointer<Port> missingPort (new Port());
+    missingPort->setName(portName);
 
     HierarchicalPortItem* missingInterface =
         new HierarchicalPortItem(getEditedComponent(), missingPort, adHocExtension, parentItem);
@@ -2439,8 +2436,7 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
         }
 
         setPortAdHocVisible(externalPort->getPortRef(), true);
-        ConnectionEndpoint* topPortItem = getDiagramAdHocPort(
-            QString::fromStdString(externalPort->getPortRef()));
+        ConnectionEndpoint* topPortItem = getDiagramAdHocPort(externalPort->getPortRef());
 
         for (int j = i + 1; j < EXTERNAL_PORT_COUNT; j++)
         {
@@ -2525,7 +2521,7 @@ void HWDesignDiagram::createAdHocTieOffConnection(QSharedPointer<AdHocConnection
 
     for (QSharedPointer<PortReference> externalPort : *connection->getExternalPortReferences())
     {
-        HWConnectionEndpoint* topAdHocPort = getDiagramAdHocPort(QString::fromStdString(externalPort->getPortRef()));
+        HWConnectionEndpoint* topAdHocPort = getDiagramAdHocPort(externalPort->getPortRef());
 
         AdHocItem* topPort;
         if (topAdHocPort)
@@ -2555,7 +2551,7 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
 
     if (secondaryPort->getComponentRef().empty())
     {
-        secondaryPortItem = getDiagramAdHocPort(QString::fromStdString(secondaryPort->getPortRef()));
+        secondaryPortItem = getDiagramAdHocPort(secondaryPort->getPortRef());
     }
     else
     {
@@ -2567,7 +2563,7 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
         return;
     }
 
-    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(adHocConnection->name());
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(adHocConnection->nameStd());
 
     if (route->isOffpage())
     {
@@ -2805,7 +2801,7 @@ void HWDesignDiagram::createComponentPasteCommand(ComponentCollectionCopyData co
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createAdhocItem()
 //-----------------------------------------------------------------------------
-AdHocItem* HWDesignDiagram::createAdhocItem(std::string const& portName)
+AdHocItem* HWDesignDiagram::createAdhocItem(std::string_view portName)
 {
     QSharedPointer<VendorExtension> adhocExtension = getDesign()->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
@@ -2821,15 +2817,14 @@ AdHocItem* HWDesignDiagram::createAdhocItem(std::string const& portName)
 
     HierarchicalPortItem* adHocIf;
 
-    auto name = QString::fromStdString(portName);
-    QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(name);
+    QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(QString::fromStdString(std::string(portName)));
     if (adhocPort)
     {
         adHocIf = new HierarchicalPortItem(getEditedComponent(), adhocPort, adhocData, nullptr);
     }
     else
     {
-        adHocIf = createMissingHierarchicalAdHocPort(name, adhocData, nullptr);
+        adHocIf = createMissingHierarchicalAdHocPort(portName, adhocData, nullptr);
     }
 
     return adHocIf;
@@ -2868,7 +2863,7 @@ void HWDesignDiagram::showAdhocPort(AdHocItem* portItem)
     for (QSharedPointer<VendorExtension> extension : adhocGroup->getByType("kactus2:adHocVisible"))
     {
         QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
-        if (portExtension->getAttributeValue(std::string("portName")) == portItem->name().toStdString())
+        if (portExtension->getAttributeValue(std::string("portName")) == portItem->name())
         {
             return;
         }
@@ -2904,7 +2899,7 @@ void HWDesignDiagram::hideAdhocPort(AdHocItem* portItem)
         for (QSharedPointer<VendorExtension> extension : adhocGroup->getByType("kactus2:adHocVisible"))
         {
             QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
-            if (portExtension->getAttributeValue(std::string("portName")) == interfaceItem->name().toStdString())
+            if (portExtension->getAttributeValue(std::string("portName")) == interfaceItem->name())
             {
                 adhocGroup->removeFromGroup(portExtension);
             }
@@ -2949,7 +2944,7 @@ QStringList HWDesignDiagram::getTopLevelInterfaceNames() const
         if (item->type() == HierarchicalBusInterfaceItem::Type)
         {
             HierarchicalBusInterfaceItem* interface = static_cast<HierarchicalBusInterfaceItem*>(item);
-            existingNames.append(interface->name());
+            existingNames.append(QString::fromStdString(interface->name()));
         }
     }
 
@@ -3056,7 +3051,7 @@ ConnectionEndpoint* HWDesignDiagram::getEndPointForItem(AutoConnectorItem* conne
 ConnectionEndpoint* HWDesignDiagram::getEndPointFromComponentItem(AutoConnectorItem* connectorItem)
 {
     HWComponentItem* containingItem = getComponentItem(connectorItem->getContainingItem().toStdString());
-    QString itemName = connectorItem->getName();
+    auto itemName = connectorItem->getName().toStdString();
     if (connectorItem->getItemType() == AutoConnectorItem::PORT)
     {
         for (auto const& endpoint : containingItem->getEndpoints())
@@ -3067,9 +3062,10 @@ ConnectionEndpoint* HWDesignDiagram::getEndPointFromComponentItem(AutoConnectorI
             }
         }
 
+        QString name = connectorItem->getName();
         for (auto const& port : *containingItem->componentModel()->getPorts())
         {
-            if (port->name() == itemName)
+            if (port->name() == name)
             {
                 AdHocVisibilityChangeCommand* newVisibilityCommand =
                     new AdHocVisibilityChangeCommand(containingItem, itemName, true);
@@ -3077,7 +3073,7 @@ ConnectionEndpoint* HWDesignDiagram::getEndPointFromComponentItem(AutoConnectorI
 
                 for (auto const& endpoint : containingItem->getEndpoints())
                 {
-                    if (endpoint->isAdHoc() && endpoint->getPort()->name() == itemName)
+                    if (endpoint->isAdHoc() && endpoint->getPort()->name() == name)
                     {
                         return endpoint;
                     }
@@ -3104,11 +3100,11 @@ ConnectionEndpoint* HWDesignDiagram::getEndPointFromComponentItem(AutoConnectorI
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* HWDesignDiagram::getEndPointForTopComponentItem(AutoConnectorItem* connectorItem)
 {
-    QString itemName = connectorItem->getName();
+    auto itemName = connectorItem->getName().toStdString();
     if (connectorItem->getItemType() == AutoConnectorItem::PORT)
     {
         HWConnectionEndpoint* portEndPoint = getDiagramAdHocPort(itemName);
-        if (!portEndPoint && getEditedComponent()->hasPort(itemName))
+        if (!portEndPoint && getEditedComponent()->hasPort(connectorItem->getName()))
         {
             TopAdHocVisibilityChangeCommand* adHocCommand =
                 new TopAdHocVisibilityChangeCommand(this, itemName, true);
@@ -3120,7 +3116,7 @@ ConnectionEndpoint* HWDesignDiagram::getEndPointForTopComponentItem(AutoConnecto
     }
     else
     {
-        return findOrCreateHierarchicalInterface(itemName.toStdString());
+        return findOrCreateHierarchicalInterface(itemName);
     }
 
     return nullptr;

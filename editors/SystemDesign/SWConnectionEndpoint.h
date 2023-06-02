@@ -39,7 +39,7 @@ public:
      *      @param [in] parent      The parent graphics item.
      *      @param [in] dir         The initial direction for the endpoint.
      */
-    SWConnectionEndpoint(QSharedPointer<Component> component, QString const& name = QString(),
+    SWConnectionEndpoint(QSharedPointer<Component> component, std::string_view name = std::string(),
         QGraphicsItem* parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
     /*!

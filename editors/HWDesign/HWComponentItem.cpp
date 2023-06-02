@@ -262,7 +262,7 @@ void HWComponentItem::removePort(HWConnectionEndpoint* port)
     if (port->type() == ActiveBusInterfaceItem::Type)
     {
         componentModel()->getBusInterfaces()->removeOne(port->getBusInterface());
-        getComponentInstance()->removeBusInterfacePosition(port->name().toStdString());
+        getComponentInstance()->removeBusInterfacePosition(port->name());
     }
 }
 
@@ -276,7 +276,7 @@ ActiveBusInterfaceItem* HWComponentItem::getBusPort(std::string const& name) con
         if (item->type() == ActiveBusInterfaceItem::Type)
         {
             ActiveBusInterfaceItem* busPort = qgraphicsitem_cast<ActiveBusInterfaceItem*>(item);
-            if (busPort->name().toStdString() == name)
+            if (busPort->name() == name)
             {
                 return busPort;
             }
@@ -297,7 +297,7 @@ ActivePortItem* HWComponentItem::getAdHocPort(std::string const& portName) const
 
     for (auto const& endpoint : allInterfaces)
     {
-        if (dynamic_cast<ActivePortItem*>(endpoint) != nullptr && endpoint->name().toStdString() == portName)
+        if (dynamic_cast<ActivePortItem*>(endpoint) != nullptr && endpoint->name() == portName)
         {
             return static_cast<ActivePortItem*>(endpoint);
         }
@@ -332,11 +332,11 @@ void HWComponentItem::onMovePort(ConnectionEndpoint* port)
 
     if (port->isBus())
     {
-        getComponentInstance()->updateBusInterfacePosition(port->name().toStdString(), port->pos());
+        getComponentInstance()->updateBusInterfacePosition(port->name(), port->pos());
     }
     else
     {
-        getComponentInstance()->updateAdHocPortPosition(port->name().toStdString(), port->pos());
+        getComponentInstance()->updateAdHocPortPosition(port->name(), port->pos());
     }
 
     updateSize();
@@ -542,7 +542,7 @@ void HWComponentItem::positionAdHocPortTerminals()
 
     for (QSharedPointer<Port> adhocPort : *componentModel()->getPorts())
     {
-        if (adhocPort->isAdHocVisible() && !instancePositions.contains(adhocPort->name().toStdString()))
+        if (adhocPort->isAdHocVisible() && !instancePositions.contains(adhocPort->nameStd()))
         {
             ActivePortItem* adhocItem (new ActivePortItem(adhocPort, this));
 
@@ -582,7 +582,7 @@ void HWComponentItem::showAdhocPort(AdHocItem* portItem)
     auto adhocPortItem = dynamic_cast<ActivePortItem*>(portItem);
     if (adhocPortItem)
     {
-        getComponentInstance()->updateAdHocPortPosition(adhocPortItem->name().toStdString(), adhocPortItem->pos());
+        getComponentInstance()->updateAdHocPortPosition(adhocPortItem->name(), adhocPortItem->pos());
 
         updateSize();
 
@@ -600,7 +600,7 @@ void HWComponentItem::hideAdhocPort(AdHocItem* portItem)
     {
         removePort(adhocPortItem);
 
-        getComponentInstance()->hideAdHocPort(adhocPortItem->name().toStdString());
+        getComponentInstance()->hideAdHocPort(adhocPortItem->name());
 
         emit adHocVisibilitiesChanged();
     }

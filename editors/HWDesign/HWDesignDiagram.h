@@ -231,12 +231,12 @@ public:
      *      @param [in] portName  The name of the port.
      *      @param [in] visible   The new ad-hoc visibility.
      */
-    virtual void onAdHocVisibilityChanged(QString const& portName, bool visible);
+    virtual void onAdHocVisibilityChanged(std::string_view portName, bool visible);
 
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
+    virtual HWConnectionEndpoint* getDiagramAdHocPort(std::string_view portName);
 
 public slots:
 
@@ -411,7 +411,7 @@ protected:
      *
      *      @return The created ad hoc interface item.
      */
-    AdHocItem* createAdhocItem(std::string const& portName) override;
+    AdHocItem* createAdhocItem(std::string_view portName) override;
 
 private:
     // Disable copying.
@@ -507,7 +507,7 @@ private:
      *
      *      @return The hierInterfaces with the given name.
      */
-    QList<QSharedPointer<HierInterface> > findInterfacesByName(QString const& previousName, 
+    QList<QSharedPointer<HierInterface> > findInterfacesByName(std::string_view previousName,
         QSharedPointer<Interconnection> connection) const;
     
     /*!
@@ -682,7 +682,7 @@ private:
      *
      *      @param [in] interconnectionName     The name of the interconnection.
      */
-    QSharedPointer<ConnectionRoute> findOrCreateRouteForInterconnection(QString const& interconnectionName);
+    QSharedPointer<ConnectionRoute> findOrCreateRouteForInterconnection(std::string_view interconnectionName);
 
     /*!
      *  Creates a graphics item for hierarchical interconnection and adds it to the diagram.
@@ -716,7 +716,7 @@ private:
      *
      *      @return The interface item for the missing interface.
      */
-    HierarchicalPortItem* createMissingHierarchicalAdHocPort(QString const& portName,
+    HierarchicalPortItem* createMissingHierarchicalAdHocPort(std::string_view portName,
         QSharedPointer<Kactus2Placeholder> adHocExtension, QGraphicsItem* parentItem = (QGraphicsItem*)0);
 
     /*!

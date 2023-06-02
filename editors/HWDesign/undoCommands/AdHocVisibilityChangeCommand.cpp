@@ -25,16 +25,15 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
-AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
+AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, std::string_view portName,
                                                            bool newVisibility, QUndoCommand* parent):
 QUndoCommand(parent),
 dataSource_(dataSource),
 portName_(portName),
-pos_(),
 newVisibility_(newVisibility),
 adhocPort_()
 {
-    HWConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName.toStdString());
+    HWConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName);
 
     if (port)
     {
@@ -57,7 +56,7 @@ adhocPort_()
     }
     else
     {
-        adhocPort_ = dataSource_->createAdhocItem(portName.toStdString());
+        adhocPort_ = dataSource_->createAdhocItem(portName);
     }
 }
 

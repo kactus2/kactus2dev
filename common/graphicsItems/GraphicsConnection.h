@@ -154,7 +154,7 @@ public:
     /*!
      *  Updates the name of the connection according to the default formatting.
      */
-    QString createDefaultName() const;
+    std::string createDefaultName() const;
 
     /*!
      *  Begins the position update of the connection.
@@ -175,14 +175,14 @@ public:
 	 *
 	 *      @param [in] name The name to set for the connection.
 	 */
-	virtual void setName(QString const& name);
+	virtual void setName(std::string const& name);
 
     /*!
      *  Sets the description for the connection.
 	 *
      *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(QString const& /*description*/) {};
+	virtual void setDescription(std::string const& /*description*/) {};
 
     /*!
      *  Sets the imported state.
@@ -194,12 +194,12 @@ public:
     /*!
      *  Returns the name of this connection
      */
-    virtual QString name() const { return QString(); };
+    virtual std::string name() const { return std::string(); };
 
 	/*!
      *  Returns the description of the connection.
 	 */
-	virtual QString description() const { return QString(); };
+	virtual std::string description() const { return std::string(); };
 
     /*!
      *  Returns true if the connection is an imported one.
@@ -541,7 +541,7 @@ private:
     RoutingMode routingMode_ = ROUTING_MODE_NORMAL;
 
     //! The route of the interconnection.
-    QSharedPointer<ConnectionRoute> route_ = QSharedPointer<ConnectionRoute>(new ConnectionRoute(QString()));
+    QSharedPointer<ConnectionRoute> route_ = QSharedPointer<ConnectionRoute>(new ConnectionRoute(std::string()));
 
     //! If true, the connection is an imported one.
     bool imported_ = false;

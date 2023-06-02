@@ -76,9 +76,9 @@ dataGroup_(dataGroup)
 //-----------------------------------------------------------------------------
 // Function: HierarchicalBusInterfaceItem::updateName()
 //-----------------------------------------------------------------------------
-void HierarchicalBusInterfaceItem::updateName(QString const&, QString const& newName)
+void HierarchicalBusInterfaceItem::updateName(std::string_view, std::string_view newName)
 {
-    dataGroup_->setName(newName.toStdString());
+    dataGroup_->setName(newName);
 }
 
 //-----------------------------------------------------------------------------

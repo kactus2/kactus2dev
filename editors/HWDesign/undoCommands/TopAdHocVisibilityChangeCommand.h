@@ -32,13 +32,13 @@ public:
      *      @param [in] newVisiblity  The new ad-hoc visibility of the port.
      *      @param [in] parent        The parent undo command.
      */
-    TopAdHocVisibilityChangeCommand(HWDesignDiagram* dataSource, QString const& portName, bool newVisibility,
-        QUndoCommand* parent = 0);
+    TopAdHocVisibilityChangeCommand(HWDesignDiagram* dataSource, std::string_view portName, bool newVisibility,
+        QUndoCommand* parent = nullptr);
 
     /*!
      *  Destructor.
      */
-    ~TopAdHocVisibilityChangeCommand();
+    ~TopAdHocVisibilityChangeCommand() = default;
 
 private:
 
@@ -52,7 +52,7 @@ private:
      *      @param [in] diagram     Design diagram containing the ad hoc port.
      *      @param [in] portName    Name of the selected port item.
      */
-    void setupTieOffConnectionForDeletion(HWDesignDiagram* diagram, QString const& portName);
+    void setupTieOffConnectionForDeletion(HWDesignDiagram* diagram, std::string_view portName);
 
     /*!
      *  Setup the addition of an ad hoc port column.

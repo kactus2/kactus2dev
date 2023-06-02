@@ -150,14 +150,14 @@ public:
      *      @param [in] name The name of the bus interface.
      *      @param [in] pos  The local position of the bus interface.
      */
-    void updateBusInterfacePosition(std::string const& name, QPointF const& pos);
+    void updateBusInterfacePosition(std::string_view name, QPointF const& pos);
 
     /*!
      *  Remove bus interface position.
      *
      *      @param [in] interfaceName    Name of the removed bus interface.
      */
-    void removeBusInterfacePosition(std::string const& interfaceName);
+    void removeBusInterfacePosition(std::string_view interfaceName);
 
     /*!
      *  Updates the position of the ad-hoc port with the given name.
@@ -321,11 +321,11 @@ private:
      *      @param [in] itemIdentifier          The identifier for the item.
      *      @param [in] referenceIdentifier     The identifier for the reference.
      */
-    void updatePositionsMap(std::string const& newReferenceName, QPointF const& newPosition,
+    void updatePositionsMap(std::string_view newReferenceName, QPointF const& newPosition,
         std::string const& groupIdentifier, std::string const& itemIdentifier, 
         std::string const& referenceIdentifier) const;
  
-    void removePosition(std::string const& interfaceName, std::string const& groupIdentifier, 
+    void removePosition(std::string_view interfaceName, std::string const& groupIdentifier, 
         std::string const& itemIdentifier, std::string const& referenceIdentifier);
 
     /*!

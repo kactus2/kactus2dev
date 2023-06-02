@@ -53,23 +53,16 @@ void ConnectionMoveCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ConnectionChangeCommand()
 //-----------------------------------------------------------------------------
-ConnectionChangeCommand::ConnectionChangeCommand(GraphicsConnection* connection, 
-                                                 QString const& newName, 
-                                                 QString const& newDescription,
-                                                 QUndoCommand* parent /*= 0*/ )
-    : QUndoCommand(parent),
-      connection_(connection),
-      newName_(newName),
-      newDescription_(newDescription),
-      oldName_(connection->name()),
-      oldDescription_(connection->description())
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~ConnectionChangeCommand()
-//-----------------------------------------------------------------------------
-ConnectionChangeCommand::~ConnectionChangeCommand()
+ConnectionChangeCommand::ConnectionChangeCommand(
+    GraphicsConnection* connection, 
+    std::string const& newName,
+    std::string const& newDescription,
+    QUndoCommand* parent ) : QUndoCommand(parent),
+    connection_(connection),
+    newName_(newName),
+    newDescription_(newDescription),
+    oldName_(connection->name()),
+    oldDescription_(connection->description())
 {
 }
 
