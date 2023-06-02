@@ -57,6 +57,18 @@ public:
      */
     void setDocumentNameGroup(QSharedPointer<Document> document, QString const& documentPath);
 
+signals:
+    
+    void contentChanged();
+
+private slots:
+
+    void onDisplayNameChanged();
+
+    void onShortDescriptionChanged();
+
+    void onDescriptionChanged();
+
 private:
 
     /*
@@ -90,6 +102,15 @@ private:
 
     //! The label to display the document path.
     QLabel path_;
+
+    //! The label to display "Path:".
+    QLabel pathTitleLabel_ = QLabel(QStringLiteral("Path:"));
+
+    //! The label to display "Display name:".
+    QLabel displayNameTitleLabel_ = QLabel(QStringLiteral("Display name:"));
+    
+    //! The label to display "Short description:".
+    QLabel shortDescriptionTitleLabel_ = QLabel(QStringLiteral("Short description:"));
 
     //! The label to display IP-XACT standard version compatibility.
     QLabel compatibility_;

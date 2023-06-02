@@ -137,6 +137,20 @@ public:
 
     void setShortDescription(std::string_view description);
     /*!
+     *  Gets the shortDescription element in the name group.
+     *
+     *      @return The shortDescription element.
+     */
+    QString shortDescription() const;
+
+    /*!
+     *  Sets the shortDescription element in the group.
+     *
+     *      @param [in] shortDescription    The short description to set.
+     */
+    void setShortDescription(QString const& shortDescription);
+
+    /*!
      *  Gets the description element in the name group.
      *
      *      @return The description element.
@@ -169,6 +183,9 @@ private:
 
     //! The shortDescription matches the ipxact:shortDescription field within nameGroup.
     std::string shortDescription_;
+
+    //! shortDescription matches the ipxact:shortDescription field within nameGroup.
+    QString shortDescription_;
 
     //! description matches the ipxact:description field within nameGroup.
     std::string description_;

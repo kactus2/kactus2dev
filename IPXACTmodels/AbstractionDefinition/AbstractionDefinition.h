@@ -23,6 +23,7 @@
 #include <QSharedPointer>
 
 class PortAbstraction;
+class Choice;
 
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:abstractionDefinition element.
@@ -153,16 +154,28 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > getLogicalPorts() const;
 
+    /*!
+     *  Gets the choices of the abstraction description.
+     *
+     *      @return The choices.
+     */
+    QSharedPointer<QList<QSharedPointer<Choice> > > getChoices() const;
+
 private:
 
     //! Specifies the bus definition this abstraction definition details.
     VLNV busType_;
 
-	//! Specifies if this definition is an extension from another bus.
+	//! Specifies if this definition is an extension from another abstraction definition.
 	VLNV extends_;
 
     //! The logical ports defined in the abstraction definition.
-    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts_;
+    QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts_ =
+        QSharedPointer<QList<QSharedPointer<PortAbstraction > > >(new QList<QSharedPointer<PortAbstraction> >);
+
+    //! The choices of the abstraction definition.
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_ =
+        QSharedPointer<QList<QSharedPointer<Choice> > >(new QList<QSharedPointer<Choice> >);
 };
 
 #endif // ABSTRACTIONDEFINITION_H

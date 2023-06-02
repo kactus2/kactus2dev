@@ -26,6 +26,7 @@
 class TransactionalAbstraction;
 class VendorExtension;
 class WireAbstraction;
+class Packet;
 
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:port element within abstraction definition.
@@ -76,6 +77,20 @@ public:
     QString isPresent() const;
 
     /*!
+     *  Sets the port match.
+     *
+     *      @param [in] match   The match flag.
+     */
+    void setMatch(bool match);
+
+    /*!
+     *  Gets the port match.
+     *
+     *      @return True, if port has to be present on both sides of a connection.
+     */
+    bool getMatch() const;
+
+    /*!
      *  Checks if the port has wire definition.
      *
      *      @return True, if the port is a wire definition, otherwise false.
@@ -116,6 +131,20 @@ public:
 	 *      @return The transactional definition.
 	 */
     QSharedPointer<TransactionalAbstraction> getTransactional() const;
+
+    /*!
+     *  Sets the packets of the port.
+     *
+     *      @param [in] packets     The packets to set.
+     */
+    void setPackets(QSharedPointer<QList<QSharedPointer<Packet> > > packets);
+
+    /*!
+     *  Gets the packets of the port.
+     *
+     *      @return The port packets.
+     */
+    QSharedPointer<QList<QSharedPointer<Packet> > > getPackets() const;
 
 	/*!  Get the default value of the wire port.
 	 *
@@ -175,11 +204,18 @@ private:
     //! Condition for port existence.
     QString isPresent_;
 
+    //! Determines if ports in a connection must be present on both sides of a connection.
+    bool match_;
+
     //! Definitions for wire type port.
 	QSharedPointer<WireAbstraction> wire_;
 
     //! Definitions for transactional type port.
     QSharedPointer<TransactionalAbstraction> transactional_;
+
+    //! The packets element within port.
+    QSharedPointer<QList<QSharedPointer<Packet> > > packets_ =
+        QSharedPointer<QList<QSharedPointer<Packet> > >(new QList<QSharedPointer<Packet> >());
 };
 
 #endif /* PORTABSTRACTION_H_ */

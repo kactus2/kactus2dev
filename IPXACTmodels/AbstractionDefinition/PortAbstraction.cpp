@@ -131,6 +131,22 @@ QString PortAbstraction::isPresent() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstraction::setMatch()
+//-----------------------------------------------------------------------------
+void PortAbstraction::setMatch(bool match)
+{
+    match_ = match;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::getMatch()
+//-----------------------------------------------------------------------------
+bool PortAbstraction::getMatch() const
+{
+    return match_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstraction::hasWire()
 //-----------------------------------------------------------------------------
 bool PortAbstraction::hasWire() const
@@ -176,6 +192,22 @@ void PortAbstraction::setTransactional(QSharedPointer<TransactionalAbstraction> 
 QSharedPointer<TransactionalAbstraction> PortAbstraction::getTransactional() const
 {
     return transactional_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::setPackets()
+//-----------------------------------------------------------------------------
+void PortAbstraction::setPackets(QSharedPointer<QList<QSharedPointer<Packet> > > packets)
+{
+    packets_ = packets;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::getPackets()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Packet>>> PortAbstraction::getPackets() const
+{
+    return packets_;
 }
 
 //-----------------------------------------------------------------------------

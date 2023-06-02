@@ -40,7 +40,8 @@ public:
     tst_AbstractionDefinitionReader();
 
 private slots:
-    void testReadVLNAndMandatoryFields();
+    void testReadVLNVAndMandatoryFields();
+    void testReadDocumentNameGroupAndMandatoryFields();
     void testReadTopComments();
     void testProcessingInstructionsAreParsed();
 
@@ -71,9 +72,9 @@ tst_AbstractionDefinitionReader::tst_AbstractionDefinitionReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_AbstractionDefinitionReader::testReadVLNAndMandatoryFields()
+// Function: tst_AbstractionDefinitionReader::testReadVLNVAndMandatoryFields()
 //-----------------------------------------------------------------------------
-void tst_AbstractionDefinitionReader::testReadVLNAndMandatoryFields()
+void tst_AbstractionDefinitionReader::testReadVLNVAndMandatoryFields()
 {
     QDomDocument document;
     document.setContent(QString(        
@@ -98,6 +99,49 @@ void tst_AbstractionDefinitionReader::testReadVLNAndMandatoryFields()
     QCOMPARE(readVLNV.getName(), QString("MinimalDefinition"));
     QCOMPARE(readVLNV.getVersion(), QString("1.0"));
     
+    VLNV busType = definition->getBusType();
+    QCOMPARE(busType.getVendor(), QString("TUT"));
+    QCOMPARE(busType.getLibrary(), QString("TestLibrary"));
+    QCOMPARE(busType.getName(), QString("TargetBus"));
+    QCOMPARE(busType.getVersion(), QString("2.0"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionReader::testReadDocumentNameGroupAndMandatoryFields()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionReader::testReadDocumentNameGroupAndMandatoryFields()
+{
+    QDomDocument document;
+    document.setContent(QString(
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>MinimalDefinition</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:displayName>testDisplayName</ipxact:displayName>"
+            "<ipxact:shortDescription>testShortDesc.</ipxact:shortDescription>"
+            "<ipxact:description>testDescription</ipxact:description>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBus\" version=\"2.0\"/>"
+        "</ipxact:abstractionDefinition>"));
+
+    AbstractionDefinitionReader reader;
+    QSharedPointer<AbstractionDefinition> definition = reader.createAbstractionDefinitionFrom(document);
+
+    VLNV readVLNV = definition->getVlnv();
+    QCOMPARE(readVLNV.getVendor(), QString("TUT"));
+    QCOMPARE(readVLNV.getLibrary(), QString("TestLibrary"));
+    QCOMPARE(readVLNV.getName(), QString("MinimalDefinition"));
+    QCOMPARE(readVLNV.getVersion(), QString("1.0"));
+    
+    QCOMPARE(definition->getDisplayName(), QString("testDisplayName"));
+    QCOMPARE(definition->getShortDescription(), QString("testShortDescription"));
+    QCOMPARE(definition->getDescription(), QString("testDescription"));
+    QCOMPARE(definition->toString(definition->getRevision()), QString("1685-2022"));
+
     VLNV busType = definition->getBusType();
     QCOMPARE(busType.getVendor(), QString("TUT"));
     QCOMPARE(busType.getLibrary(), QString("TestLibrary"));

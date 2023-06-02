@@ -73,6 +73,8 @@ extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
     connect(&systemGroupEditor_, SIGNAL(contentChanged()),
         this, SLOT(onSystemNamesChanged()), Qt::UniqueConnection);
 
+    connect(&documentNameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
     connect(extendEditor_, SIGNAL(vlnvEdited()), this, SLOT(onExtendChanged()), Qt::UniqueConnection);
 }
 

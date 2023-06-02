@@ -15,7 +15,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QFormLayout>
 
 //-----------------------------------------------------------------------------
@@ -24,6 +24,10 @@
 DocumentNameGroupEditor::DocumentNameGroupEditor(QWidget* parent) :
     QGroupBox(parent)
 {
+    connect(&displayNameEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onDisplayNameChanged()), Qt::UniqueConnection);
+    connect(&shortDescriptionEditor_, SIGNAL(textEdited(QString const&)), this, SLOT(onShortDescriptionChanged()), Qt::UniqueConnection);
+    connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -37,12 +41,58 @@ void DocumentNameGroupEditor::setDocumentNameGroup(QSharedPointer<Document> docu
     displayNameEditor_.setText(document_->getDisplayName());
     shortDescriptionEditor_.setText(document_->getShortDescription());
 
-    path_.setText(documentPath);
+    if (!documentPath.isEmpty())
+    {
+        pathTitleLabel_.show();
+        path_.setText(documentPath);
+    }
+    else
+    {
+        pathTitleLabel_.hide();
+        path_.hide();
+    }
+
+    bool showStd22Fields = true;
+    if (document_->getRevision() != Document::Revision::Std22)
+    {
+        showStd22Fields = false;
+    }
+
+    displayNameEditor_.setVisible(showStd22Fields);
+    shortDescriptionEditor_.setVisible(showStd22Fields);
+    displayNameTitleLabel_.setVisible(showStd22Fields);
+    shortDescriptionTitleLabel_.setVisible(showStd22Fields);
+
     descriptionEditor_.setPlainText(document_->getDescription());
     
-    compatibility_.setText(Document::toString(document->getRevision()));
+    compatibility_.setText(Document::toString(document_->getRevision()));
+}
 
-    setupLayout();
+//-----------------------------------------------------------------------------
+// Function: DocumentNameGroupEditor::onDisplayNameChanged()
+//-----------------------------------------------------------------------------
+void DocumentNameGroupEditor::onDisplayNameChanged()
+{
+    document_->setDisplayName(displayNameEditor_.text());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentNameGroupEditor::onShortDescriptionChanged()
+//-----------------------------------------------------------------------------
+void DocumentNameGroupEditor::onShortDescriptionChanged()
+{
+    document_->setShortDescription(shortDescriptionEditor_.text());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentNameGroupEditor::onDescriptionChanged()
+//-----------------------------------------------------------------------------
+void DocumentNameGroupEditor::onDescriptionChanged()
+{
+    document_->setDescription(descriptionEditor_.toPlainText());
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -90,15 +140,9 @@ void DocumentNameGroupEditor::setupLayout()
     docNameGroupInfoLayout->addRow(QStringLiteral("Version:"), &version_);
     docNameGroupInfoLayout->addRow(QStringLiteral("Compatibility:"), &compatibility_);
 
-    if (!path_.text().isEmpty()) {
-        docNameGroupInfoLayout->addRow(QStringLiteral("Path:"), &path_);
-    }
-
-    if (document_->getRevision() == Document::Revision::Std22)
-    {
-        docNameGroupInfoLayout->addRow(QStringLiteral("Display name:"), &displayNameEditor_);
-        docNameGroupInfoLayout->addRow(QStringLiteral("Short Description:"), &shortDescriptionEditor_);
-    }
+    docNameGroupInfoLayout->addRow(&pathTitleLabel_, &path_);
+    docNameGroupInfoLayout->addRow(&displayNameTitleLabel_, &displayNameEditor_);
+    docNameGroupInfoLayout->addRow(&shortDescriptionTitleLabel_, &shortDescriptionEditor_);
     
     QWidget* docNameGroupInfo = new QWidget(this);
     docNameGroupInfo->setLayout(docNameGroupInfoLayout);

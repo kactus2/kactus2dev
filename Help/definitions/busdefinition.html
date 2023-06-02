@@ -7,7 +7,22 @@
     <p>
         Bus definitions are used to define bus connections in HW designs. Each bus interface of a component
         must refer to a bus definition and connected bus interfaces must refer to the same bus definition.
+    
+    <p>
+        <b>Display name</b> is a short descriptive text for the bus definition. Can be used as an
+        identifier in GUI applications, for instance.
+    </p>
+    
+    <p>
+        <b>Short description</b> is a compact description of the bus definition.
+    </p>
 
+    <p>
+        <b>Description</b> is a text that describes further details, such as the purpose of the bus
+        and link to the specification.
+    </p>
+    
+    
     <p>
         <b>Allow direct connections</b> defines if a bus interface can be directly connected to
         a non-mirrored bus interface. If unselected, a bus interface can be connected only to
@@ -26,13 +41,13 @@
     </p>
 
     <p>
-        <b>Max masters on bus</b> defines the maximum number of master bus interfaces connected to
-        the bus. If unspecified, the number of masters is unbound.
+        <b>Max initiators on bus</b> defines the maximum number of initiator bus interfaces connected to
+        the bus. If unspecified, the number of initiators is unbound.
     </p>
 
     <p>
-        <b>Max slaves on bus</b> defines the maximum number of slaves bus interfaces connected to
-        the bus. If unspecified, the number of slaves is unbound.
+        <b>Max targets on bus</b> defines the maximum number of target bus interfaces connected to
+        the bus. If unspecified, the number of targets is unbound.
     </p>
 
     <p>
@@ -41,10 +56,6 @@
         matching system group name.
     </p>
 
-    <p>
-        <b>Description</b> is a text that describes further details, such as the purpose of the bus
-        and link to the specification.
-    </p>
     <p>
         <b>Extended bus definition</b> allows the creation of a family of interconnectable bus definitions.
         The following values of the bus interface are set to match the extended bus interface:
