@@ -61,6 +61,13 @@ public:
     void setQualifier(QSharedPointer<Qualifier> qualifier);
     
     /*!
+     *  Add a qualifier type for the information the wire carries.
+     *
+     *      @param [in] qualifierType   The qualifier type to add.
+     */
+    void addQualifier(Qualifier::Type qualifierType);
+    
+    /*!
      *  Gets the qualifier for the information the wire carries.
      *
      *      @return The wire qualifier.

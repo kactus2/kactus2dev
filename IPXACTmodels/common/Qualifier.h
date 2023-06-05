@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QString>
+#include <QMap>
 
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:qualifier group.
@@ -42,11 +43,17 @@ public:
         Any
     };
 
+    static const QMap<Qualifier::Type, QString> QUALIFIER_TYPE_STRING;
+
     Qualifier();
+
+    Qualifier(Qualifier const& other);
 
     ~Qualifier() = default;
 
     bool isSet() const;
+
+    void clear();
 
     bool hasType(Type type) const;
 
@@ -82,7 +89,13 @@ public:
 
     QString getUserDefined() const;
 
+    bool operator==(Qualifier const& other);
+
+    bool operator!=(Qualifier const& other);
+
     static QString typeToString(Type type);
+    
+    static Type stringToType(QString const& typeString);
 
     static QString typeToXMLElementName(Type type);
 

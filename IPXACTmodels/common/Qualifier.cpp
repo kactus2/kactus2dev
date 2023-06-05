@@ -11,10 +11,44 @@
 
 #include "Qualifier.h"
 
+const QMap<Qualifier::Type, QString> Qualifier::QUALIFIER_TYPE_STRING =
+{
+    {Qualifier::Type::Address, QStringLiteral("address")},
+    {Qualifier::Type::Data, QStringLiteral("data")},
+    {Qualifier::Type::Clock, QStringLiteral("clock")},
+    {Qualifier::Type::Reset, QStringLiteral("reset")},
+    {Qualifier::Type::Valid, QStringLiteral("valid")},
+    {Qualifier::Type::Interrupt, QStringLiteral("interrupt")},
+    {Qualifier::Type::ClockEnable, QStringLiteral("clock enable")},
+    {Qualifier::Type::PowerEnable, QStringLiteral("power enable")},
+    {Qualifier::Type::Opcode, QStringLiteral("opcode")},
+    {Qualifier::Type::Protection, QStringLiteral("protection")},
+    {Qualifier::Type::FlowControl, QStringLiteral("flow control")},
+    {Qualifier::Type::User, QStringLiteral("user")},
+    {Qualifier::Type::Request, QStringLiteral("request")},
+    {Qualifier::Type::Response, QStringLiteral("response")}
+};
+
 //-----------------------------------------------------------------------------
 // Function: Qualifier::Qualifier()
 //-----------------------------------------------------------------------------
 Qualifier::Qualifier()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::Qualifier()
+//-----------------------------------------------------------------------------
+Qualifier::Qualifier(Qualifier const& other) :
+    types_(new QList<Type>(*other.types_)),
+    resetLevel_(other.resetLevel_),
+    clockEnableLevel_(other.clockEnableLevel_),
+    powerEnableLevel_(other.powerEnableLevel_),
+    powerDomainRef_(other.powerDomainRef_),
+    flowType_(other.flowType_),
+    userFlowType_(other.userFlowType_),
+    userDefined_(other.userDefined_)
 {
 
 }
@@ -25,6 +59,21 @@ Qualifier::Qualifier()
 bool Qualifier::isSet() const
 {
     return !types_->isEmpty();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::clear()
+//-----------------------------------------------------------------------------
+void Qualifier::clear()
+{
+    types_->clear();
+    resetLevel_.clear();
+    clockEnableLevel_.clear();
+    powerEnableLevel_.clear();
+    powerDomainRef_.clear();
+    flowType_.clear();
+    userFlowType_.clear();
+    userDefined_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -167,43 +216,49 @@ QString Qualifier::getUserDefined() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Qualifier::operator==()
+//-----------------------------------------------------------------------------
+bool Qualifier::operator==(Qualifier const& other)
+{
+    return (*types_ == *other.types_ &&
+        resetLevel_ == other.resetLevel_ &&
+        clockEnableLevel_ == other.clockEnableLevel_ &&
+        powerEnableLevel_ == other.powerEnableLevel_ &&
+        powerDomainRef_ == other.powerDomainRef_ &&
+        flowType_ == other.flowType_ &&
+        userFlowType_ == other.userFlowType_ &&
+        userDefined_ == other.userDefined_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::operator!=()
+//-----------------------------------------------------------------------------
+bool Qualifier::operator!=(Qualifier const& other)
+{
+    return !(*this == other);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Qualifier::typeToString()
 //-----------------------------------------------------------------------------
 QString Qualifier::typeToString(Type type)
 {
-    switch (type)
+    return QUALIFIER_TYPE_STRING.value(type, QStringLiteral(""));
+}
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::stringToType()
+//-----------------------------------------------------------------------------
+Qualifier::Type Qualifier::stringToType(QString const& typeString)
+{
+    for (auto i = QUALIFIER_TYPE_STRING.cbegin(), end = QUALIFIER_TYPE_STRING.cend(); i != end; ++i)
     {
-    case Type::Address:
-        return QStringLiteral("address");
-    case Type::Data:
-        return QStringLiteral("data");
-    case Type::Clock:
-        return QStringLiteral("clock");
-    case Type::Reset:
-        return QStringLiteral("reset");
-    case Type::Valid:
-        return QStringLiteral("valid");
-    case Type::Interrupt:
-        return QStringLiteral("interrupt");
-    case Type::ClockEnable:
-        return QStringLiteral("clock enable");
-    case Type::PowerEnable:
-        return QStringLiteral("power enable");
-    case Type::Opcode:
-        return QStringLiteral("opcode");
-    case Type::Protection:
-        return QStringLiteral("protection");
-    case Type::FlowControl:
-        return QStringLiteral("flow control");
-    case Type::User:
-        return QStringLiteral("user");
-    case Type::Request:
-        return QStringLiteral("request");
-    case Type::Response:
-        return QStringLiteral("response");
-    default:
-        return QString();
+        if (i.value() == typeString)
+        {
+            return i.key();
+        }
     }
+    return Type::Any;
 }
 
 //-----------------------------------------------------------------------------

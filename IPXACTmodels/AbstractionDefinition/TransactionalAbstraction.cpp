@@ -108,6 +108,14 @@ void TransactionalAbstraction::setQualifier(QSharedPointer<Qualifier> qualifier)
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransactionalAbstraction::addQualifier()
+//-----------------------------------------------------------------------------
+void TransactionalAbstraction::addQualifier(Qualifier::Type qualifierType)
+{
+    qualifier_->setType(qualifierType);
+}
+
+//-----------------------------------------------------------------------------
 // Function: TransactionalAbstraction::addSystemPort()
 //-----------------------------------------------------------------------------
 void TransactionalAbstraction::addSystemPort(QSharedPointer<TransactionalPort> systemPort)

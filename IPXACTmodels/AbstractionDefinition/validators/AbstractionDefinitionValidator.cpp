@@ -74,7 +74,7 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
 	}
 
 	// Any parameters must be valid.
-	foreach (QSharedPointer<Parameter> parameter, *abstractionDefinition->getParameters())
+	for (auto const& parameter : *abstractionDefinition->getParameters())
 	{
 		if (!parameterValidator_.hasValidValue(parameter))
 		{
@@ -92,7 +92,7 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
 	QVector<QString> logicalNames;
 
 	// Validate each logical port.
-	foreach (QSharedPointer<PortAbstraction> portAbstraction, *abstractionDefinition->getLogicalPorts())
+	for (auto const& portAbstraction : *abstractionDefinition->getLogicalPorts())
 	{
         // Logical name must unique within the abstraction definition.
         if (logicalNames.contains(portAbstraction->getLogicalName()))
@@ -100,7 +100,7 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
             return false;
         }
 
-		if (!isValidPortAbstraction(portAbstraction, abstractionDefinition->getLogicalPorts(), busDefinition))
+		if (!isValidPortAbstraction(portAbstraction, abstractionDefinition, busDefinition))
 		{
 			return false;
 		}
@@ -138,9 +138,9 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
     findErrorsInExtend(errors, context, abstractionDefinition);
     
     // Any parameters must be valid.
-	foreach (QSharedPointer<Parameter> currentPara, *abstractionDefinition->getParameters())
+	for (auto const& currentPara : *abstractionDefinition->getParameters())
 	{
-		parameterValidator_.findErrorsIn(errors, currentPara, context);
+		parameterValidator_.findErrorsIn(errors, currentPara, context, abstractionDefinition->getRevision());
 	}
 
 	// Must have at least one logical port.
@@ -153,7 +153,7 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 	QVector<QString> logicalNames;
 
 	// Validate each logical port.
-	foreach (QSharedPointer<PortAbstraction> port, *abstractionDefinition->getLogicalPorts())
+	for (auto const& port : *abstractionDefinition->getLogicalPorts())
     {	
         // Logical name must unique within the abstraction definition.
         if (logicalNames.contains(port->getLogicalName()))
@@ -162,7 +162,7 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
                context));
         }
 
-		findErrorsInPortAbstraction(errors, port, abstractionDefinition->getLogicalPorts(), busDefinition);
+		findErrorsInPortAbstraction(errors, port, abstractionDefinition, busDefinition);
 
         logicalNames.append(port->getLogicalName());
 	}
@@ -172,7 +172,7 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 // Function: AbstractionDefinitionValidator::isValidPortAbstraction()
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortAbstraction> port,
-    QSharedPointer<QList<QSharedPointer<PortAbstraction>>> ports,
+    QSharedPointer<AbstractionDefinition > abstractionDefinition,
     QSharedPointer<const BusDefinition> busDefinition) const
 {
 	// The name must be non-empty.
@@ -189,6 +189,11 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 		return false;
 	}
 
+    if (abstractionDefinition->getRevision() != Document::Revision::Std22 && port->getMatch())
+    {
+        return false;
+    }
+
 	QSharedPointer<WireAbstraction> wire = port->getWire();
 	QSharedPointer<TransactionalAbstraction> transactional = port->getTransactional();
 
@@ -200,6 +205,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 
     QStringList systemGroups = BusDefinitionUtils::getSystemGroups(busDefinition, library_);
 
+    auto ports = abstractionDefinition->getLogicalPorts();
 	if (wire)
 	{
 		// Default value must be valid expression if defined.
@@ -268,7 +274,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 // Function: AbstractionDefinitionValidator::findErrorsInPortAbstraction()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString>& errors,
-    QSharedPointer<PortAbstraction> port, QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports,
+    QSharedPointer<PortAbstraction> port, QSharedPointer<AbstractionDefinition> abstractionDefinition,
     QSharedPointer<const BusDefinition> busDefinition) const
 {
 	// The name must be non-empty.
@@ -285,6 +291,12 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
 		errors.append(QObject::tr("The presence '%1' of port %2 is invalid.")
 			.arg(port->isPresent(), port->getLogicalName()));
 	}
+
+    if (abstractionDefinition->getRevision() != Document::Revision::Std22 && port->getMatch())
+    {
+        errors.append(QObject::tr("Port match is set for port %1 in abstraction definition not using IP-XACT"
+            " standard revision 2022.").arg(port->getLogicalName()));
+    }
 
 	QSharedPointer<WireAbstraction> wire = port->getWire();
 	QSharedPointer<TransactionalAbstraction> transactional = port->getTransactional();
@@ -311,6 +323,7 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
         busDefinitionIdentifier = busDefinition->getVlnv().toString();
     }
 
+    auto ports = abstractionDefinition->getLogicalPorts();
 	if (wire)
 	{
 		// Default value must be valid expression if defined.
@@ -667,7 +680,7 @@ bool AbstractionDefinitionValidator::hasValidExtendPorts(QSharedPointer<Abstract
         {
             QSharedPointer<PortAbstraction> extendPort = getMatchingExtendPort(portAbstraction, extendAbstraction);
             if (extendPort &&
-                (portAbstraction->getQualifier() != extendPort->getQualifier() ||
+                (*portAbstraction->getQualifier() != *extendPort->getQualifier() ||
                 ((portAbstraction->hasWire() && !extendWirePortIsValid(portAbstraction, extendPort)) ||
                 (portAbstraction->hasTransactional() &&
                     !extendTransactionalPortAbstractionIsValid(portAbstraction, extendPort)))))
@@ -950,7 +963,7 @@ void AbstractionDefinitionValidator::findErrorsInExtendPorts(QVector<QString>& e
             QSharedPointer<PortAbstraction> extendPort = getMatchingExtendPort(portAbstraction, extendAbstraction);
             if (extendPort)
             {
-                if (portAbstraction->getQualifier() != extendPort->getQualifier())
+                if (*portAbstraction->getQualifier() != *extendPort->getQualifier())
                 {
                     errors.append(QObject::tr("The qualifier of extended port %1 in %2 cannot be edited")
                         .arg(extendPort->name(), context));

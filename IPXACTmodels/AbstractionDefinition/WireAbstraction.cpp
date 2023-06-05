@@ -33,7 +33,7 @@ WireAbstraction::WireAbstraction():
 // Function: WireAbstraction::WireAbstraction()
 //-----------------------------------------------------------------------------
 WireAbstraction::WireAbstraction(WireAbstraction const& other):
-qualifier_(other.qualifier_),
+qualifier_(new Qualifier(*other.qualifier_)),
     defaultValue_(other.defaultValue_),
     requiresDriver_(other.requiresDriver_),
     driverType_(other.driverType_),
@@ -130,6 +130,14 @@ QString WireAbstraction::getDefaultValue() const
 void WireAbstraction::setQualifier(QSharedPointer<Qualifier> qualifier)
 {
     qualifier_ = qualifier;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireAbstraction::addQualifier()
+//-----------------------------------------------------------------------------
+void WireAbstraction::addQualifier(Qualifier::Type qualifierType)
+{
+    qualifier_->setType(qualifierType);
 }
 
 //-----------------------------------------------------------------------------

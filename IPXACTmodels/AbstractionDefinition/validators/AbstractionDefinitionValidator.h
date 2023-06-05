@@ -73,25 +73,25 @@ private:
 	/*!
 	 *  Validates the given PortAbstraction.
 	 *
-	 *      @param [in] port			The PortAbstraction to validate.		
-	 *      @param [in] ports			Collection of ports within the abstraction definition.
-     *      @param [in] busDefinition   The bus definition used by the abstraction definition.
+	 *      @param [in] port			        The PortAbstraction to validate.		
+	 *      @param [in] abstractionDefinition   The abstraction definition being validated.
+     *      @param [in] busDefinition           The bus definition used by the abstraction definition.
 	 */
     bool isValidPortAbstraction(QSharedPointer<PortAbstraction> port,
-        QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports,
+        QSharedPointer<AbstractionDefinition > abstractionDefinition,
         QSharedPointer<const BusDefinition> busDefinition) const;
 
 	/*!
 	*   Finds possible errors in a PortAbstraction and creates a list of them.
 	 *
-	 *      @param [in] errors			List of found errors.
-	 *      @param [in] port			The PortAbstraction whose errors to find.
-	 *      @param [in] ports			Collection of ports within the abstraction definition.
-     *      @param [in] busDefinition   Bus definition used by the abstraction definition.
+	 *      @param [in] errors			        List of found errors.
+	 *      @param [in] port			        The PortAbstraction whose errors to find.
+	 *      @param [in] abstractionDefinition   The abstraction definition.
+     *      @param [in] busDefinition           Bus definition used by the abstraction definition.
 	 */
 	void findErrorsInPortAbstraction(QVector<QString>& errors,
 		QSharedPointer<PortAbstraction> port, 
-        QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports,
+        QSharedPointer<AbstractionDefinition> abstractionDefinition,
         QSharedPointer<const BusDefinition> busDefinition) const;
 
 	/*!
