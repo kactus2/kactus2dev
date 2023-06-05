@@ -608,27 +608,21 @@
       </Command>
     </CustomBuild>
     <ClInclude Include="common\ModuleParameter.h" />
-    <QtMoc Include="common\ModuleParameterReader.h">
-    </QtMoc>
-    <QtMoc Include="common\ModuleParameterWriter.h">
-    </QtMoc>
+    <ClInclude Include="common\ModuleParameterReader.h" />
+    <ClInclude Include="common\ModuleParameterWriter.h" />
     <ClInclude Include="common\NameGroup.h" />
     <ClInclude Include="common\NameGroupReader.h" />
     <ClInclude Include="common\NameGroupWriter.h" />
     <ClInclude Include="common\NameValuePair.h" />
     <ClInclude Include="common\Parameter.h" />
-    <QtMoc Include="common\ParameterReader.h">
-    </QtMoc>
-    <QtMoc Include="common\ParameterWriter.h">
-    </QtMoc>
+    <ClInclude Include="common\ParameterReader.h" />
+    <ClInclude Include="common\ParameterWriter.h" />
     <ClInclude Include="common\PartSelect.h" />
     <ClInclude Include="common\PortAlignment.h" />
     <ClInclude Include="common\PresenceTypes.h" />
     <ClInclude Include="common\Protocol.h" />
-    <QtMoc Include="common\ProtocolReader.h">
-    </QtMoc>
-    <QtMoc Include="common\ProtocolWriter.h">
-    </QtMoc>
+    <ClInclude Include="common\ProtocolReader.h" />
+    <ClInclude Include="common\ProtocolWriter.h" />
     <ClInclude Include="common\Qualifier.h" />
     <ClInclude Include="common\Range.h" />
     <ClInclude Include="common\TimingConstraint.h" />

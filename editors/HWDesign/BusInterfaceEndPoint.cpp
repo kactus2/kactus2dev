@@ -60,7 +60,7 @@ void BusInterfaceEndPoint::updateEndPointGraphics()
     TransactionalTypes::Initiative initiative =
         InterfaceGraphics::getInterfaceInitiative(busInterface_, getOwnerComponent());
 
-    if (direction == DirectionTypes::DIRECTION_INVALID && initiative != TransactionalTypes::INITIATIVE_INVALID)
+    if (direction == DirectionTypes::DIRECTION_INVALID && initiative != TransactionalTypes::Initiative::INITIATIVE_INVALID)
     {
         shape = getInterfaceShapeWithInitiative(initiative);
     }
@@ -119,11 +119,11 @@ QPolygonF BusInterfaceEndPoint::getInterfaceShapeWithDirection(DirectionTypes::D
 //-----------------------------------------------------------------------------
 QPolygonF BusInterfaceEndPoint::getInterfaceShapeWithInitiative(TransactionalTypes::Initiative initiative) const
 {
-    if (initiative == TransactionalTypes::PROVIDES)
+    if (initiative == TransactionalTypes::Initiative::PROVIDES)
     {
         return getInitiativeProvidesShape();
     }
-    else if (initiative == TransactionalTypes::REQUIRES)
+    else if (initiative == TransactionalTypes::Initiative::REQUIRES)
     {
         return getInitiativeRequiresShape();
     }

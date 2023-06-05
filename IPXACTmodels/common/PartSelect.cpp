@@ -28,7 +28,7 @@ PartSelect::PartSelect(const PartSelect& other):
 range_(other.getLeftRange(), other.getRightRange()),
 indices_(new QStringList())
 {
-    foreach (QString index, *other.indices_)
+    for (QString const& index : *other.indices_)
     {
         indices_->append(index);
     }
@@ -53,7 +53,7 @@ PartSelect& PartSelect::operator=(const PartSelect& other)
         setRightRange(other.getRightRange());
 
         indices_->clear();
-        foreach (QString index, *other.indices_)
+        for (QString const& index : *other.indices_)
         {
             indices_->append(index);
         }

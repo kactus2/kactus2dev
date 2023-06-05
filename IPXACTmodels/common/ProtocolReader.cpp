@@ -11,14 +11,14 @@
 
 #include "ProtocolReader.h"
 #include "Protocol.h"
+#include "CommonItemsReader.h"
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: ProtocolReader::ProtocolReader()
 //-----------------------------------------------------------------------------
-ProtocolReader::ProtocolReader(QObject* parent) :
-QObject(parent)
+ProtocolReader::ProtocolReader()
 {
 
 }
@@ -61,24 +61,9 @@ QSharedPointer<Protocol> ProtocolReader::createProtocolFrom(QDomNode const& prot
         protocol->setPayloadExtension(payloadNode.firstChildElement(
             QStringLiteral("ipxact:extension")).firstChild().nodeValue(), mandatoryExtension);
 
-        parseVendorExtensions(payloadNode, protocol);
+        CommonItemsReader::parseVendorExtensions(payloadNode, protocol);
     }
 
     return protocol;
 }
 
-
-//-----------------------------------------------------------------------------
-// Function: ProtocolReader::parseVendorExtensions()
-//-----------------------------------------------------------------------------
-void ProtocolReader::parseVendorExtensions(QDomNode const& payloadNode, QSharedPointer<Protocol> protocol) const
-{
-    QDomNodeList extensionNodes = payloadNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions")).childNodes();
-
-    int extensionCount = extensionNodes.count();
-    for (int i = 0; i < extensionCount; i++)
-    {
-        QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNodes.at(i)));
-        protocol->getVendorExtensions()->append(extension);
-    }
-}

@@ -19,7 +19,7 @@
 
 namespace
 {
-    const static QMap<QString, VLNV::IPXactType> types =
+    const QMap<QString, VLNV::IPXactType> types =
     {
         { QStringLiteral("ipxact:abstractionDefinition"), VLNV::ABSTRACTIONDEFINITION },
         { QStringLiteral("ipxact:abstractor"), VLNV::ABSTRACTOR },
@@ -31,8 +31,7 @@ namespace
         { QStringLiteral("ipxact:generatorChain"), VLNV::GENERATORCHAIN },
         { QStringLiteral("kactus2:comDefinition"), VLNV::COMDEFINITION },
         { QStringLiteral("kactus2:apiDefinition"), VLNV::APIDEFINITION },
-        { QStringLiteral("invalid"), VLNV::INVALID },
-        { QStringLiteral("component"), VLNV::COMPONENT }
+        { QStringLiteral("invalid"), VLNV::INVALID }
 
     };
 }
@@ -40,8 +39,9 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
-VLNV::VLNV(): vendor_(), library_(), name_(), version_(), type_(VLNV::INVALID)
+VLNV::VLNV()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -52,8 +52,7 @@ VLNV::VLNV(QString const& type,
     vendor_(vendor),
     library_(library),
     name_(name),
-    version_(version),
-    type_(INVALID)
+    version_(version)
 {
 	type_ = string2Type(type);
 }
@@ -74,11 +73,7 @@ VLNV::VLNV(IPXactType const& type,
 //-----------------------------------------------------------------------------
 // Function: VLNV::VLNV()
 //-----------------------------------------------------------------------------
-VLNV::VLNV(IPXactType const& type, QString const& parseStr, QString const& separator): 
-vendor_(), 
-    library_(),
-    name_(), 
-    version_(),
+VLNV::VLNV(IPXactType const& type, QString const& parseStr, QString const& separator):
     type_(type)
 {
     QStringList vlnvFields = parseStr.split(separator);

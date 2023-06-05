@@ -28,7 +28,7 @@ namespace FileTypes
     const unsigned int FILE_TYPE_COUNT = 33;
 
 	//! The file types specified in the IP-Xact
-	const QString FILE_TYPES[FILE_TYPE_COUNT] = {
+	const QStringList FILE_TYPES = {
 		QLatin1String("asmSource"),
 		QLatin1String("cSource"),
 		QLatin1String("cppSource"),
@@ -60,8 +60,7 @@ namespace FileTypes
 		QLatin1String("verilogBinaryLibrary"),
 		QLatin1String("executableHdl"),
 		QLatin1String("unelaboratedHdl"),
-		QLatin1String("SDC"),
-		QLatin1String("unknown")
+		QLatin1String("SDC")
 	};
 
 	/*!

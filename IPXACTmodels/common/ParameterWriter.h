@@ -24,16 +24,19 @@ class VendorExtension;
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ParameterWriter : public QObject
+class IPXACTMODELS_EXPORT ParameterWriter
 {
-    Q_OBJECT
 public:
 
 	//! The constructor.
-	ParameterWriter(QObject* parent = 0);
+	ParameterWriter();
 
 	//! The destructor.
-	~ParameterWriter();
+	virtual ~ParameterWriter();
+
+    // Disable copying.
+    ParameterWriter(ParameterWriter const& rhs) = delete;
+    ParameterWriter& operator=(ParameterWriter const& rhs) = delete;
 
     /*!
      *  Writes the given parameter into xml.
@@ -84,20 +87,6 @@ protected:
      *      @param [in] parameter   The parameter whose value to write.
      */
     void writeValue(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
-           
-    /*!
-     *  Writes the vendor extensions of a given parameter into xml.
-     *
-     *      @param [in] writer      The xml writer to use.
-     *      @param [in] parameter   The parameter whose vendor extensions to write.
-     */
-    void writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
-
-private:
-
-    // Disable copying.
-    ParameterWriter(ParameterWriter const& rhs);
-    ParameterWriter& operator=(ParameterWriter const& rhs);
 };
 
 #endif // PARAMETERWRITER_H

@@ -11,6 +11,7 @@
 
 #include "ParameterReader.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
@@ -18,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterReader::ParameterReader()
 //-----------------------------------------------------------------------------
-ParameterReader::ParameterReader(QObject *parent) : QObject(parent)
+ParameterReader::ParameterReader()
 {
     
 }
@@ -47,7 +48,7 @@ QSharedPointer<Parameter> ParameterReader::createParameterFrom(QDomNode const& p
 
     parseValue(parameterNode, parameter);
 
-    parseVendorExtensions(parameterNode, parameter);
+    CommonItemsReader::parseVendorExtensions(parameterNode, parameter);
 
     return parameter;
 }
@@ -78,8 +79,7 @@ void ParameterReader::parseAttributes(QDomNode const& parameterNode, QSharedPoin
 //-----------------------------------------------------------------------------
 void ParameterReader::parseNameGroup(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
 {
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(parameterNode, parameter);
+     NameGroupReader::parseNameGroup(parameterNode, parameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,25 +144,5 @@ void ParameterReader::parseValue(QDomNode const& parameterNode, QSharedPointer<P
         QString attributeValue = valueAttributes.item(j).nodeValue();
 
         parameter->setValueAttribute(attributeName, attributeValue);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterReader::parseVendorExtensions()
-//-----------------------------------------------------------------------------
-void ParameterReader::parseVendorExtensions(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
-{
-    QDomNode extensionsNode = parameterNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
-
-    if (extensionsNode.hasChildNodes())
-    {
-        QSharedPointer<QList<QSharedPointer<VendorExtension> > > extensions = parameter->getVendorExtensions();
-
-        int arrayCount = extensionsNode.childNodes().size();
-        for (int i = 0; i < arrayCount; i++)
-        {
-            QDomNode extensionNode = extensionsNode.childNodes().at(i);
-            extensions->append(QSharedPointer<VendorExtension>(new GenericVendorExtension(extensionNode)));
-        }
     }
 }

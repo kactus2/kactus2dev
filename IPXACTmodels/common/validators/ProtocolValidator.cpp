@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ProtocolValidator.h"
+#include "CommonItemsValidator.h"
 
 #include <QRegularExpression>
 
@@ -74,12 +75,5 @@ void ProtocolValidator::findErrorsIn(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 bool ProtocolValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression(QStringLiteral("^\\s*$"));
-
-	if (name.isEmpty() ||  whiteSpaceExpression.match(name).hasMatch())
-	{
-		return false;
-	}
-
-	return true;
+    return CommonItemsValidator::hasValidName(name);
 }
