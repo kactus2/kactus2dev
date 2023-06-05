@@ -47,28 +47,28 @@ public:
      *
      *      @return The isPresent value.
      */
-    std::string getIsPresent() const;
+    QString getIsPresent() const;
 
     /*!
      *  Set the isPresent value.
      *
      *      @param [in] newIsPresent    The new value for the isPresent.
      */
-    void setIsPresent(std::string const& newIsPresent);
+    void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the referenced interconnection.
      *
      *      @return The name of the referenced interconnection.
      */
-    std::string getInterconnectionReference() const;
+    QString getInterconnectionReference() const;
 
     /*!
      *  Set the referenced interconnection.
      *
      *      @param [in] newInterconnecionReference  The name of the referenced interconnection.
      */
-    void setInterconnectionReference(std::string const& newInterconnecionReference);
+    void setInterconnectionReference(QString const& newInterconnecionReference);
 
     /*!
      *  Get a list of multipleAbstractorInstances.
@@ -95,10 +95,10 @@ public:
 private:
 
     //! Defines whether the element is present in the document (default 1).
-    std::string isPresent_;
+    QString isPresent_;
 
     //! A reference to the name of a design interconnection.
-    std::string interconnectionRef_;
+    QString interconnectionRef_;
 
     //! List of multiple abstractor elements.
     QSharedPointer<QList<QSharedPointer<MultipleAbstractorInstances> > > abstractorInstances_ =

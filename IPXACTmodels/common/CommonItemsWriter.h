@@ -36,6 +36,10 @@ public:
 	//! The destructor.
     virtual ~CommonItemsWriter() = default;
 
+    // Disable copying.
+    CommonItemsWriter(CommonItemsWriter const& rhs) = delete;
+    CommonItemsWriter& operator=(CommonItemsWriter const& rhs) = delete;
+
     /*!
      *  Writes the given VLNV as separate elements into XML.
      *
@@ -66,23 +70,7 @@ public:
      *      @param [in] writer      The used XML writer.
      *      @param [in] VLNV        The VLNV to write.
      */
-    static void writeDisplayName(QXmlStreamWriter& writer, std::string const& displayName);
-
-    /*!
-     *  Writes the description for the current element into XML.
-     *
-     *      @param [in] writer      The used XML writer.
-     *      @param [in] VLNV        The VLNV to write.
-     */
     static void writeDescription(QXmlStreamWriter& writer, QString const& description);
-
-    /*!
-     *  Writes the description for the current element into XML.
-     *
-     *      @param [in] writer      The used XML writer.
-     *      @param [in] VLNV        The VLNV to write.
-     */
-    static void writeDescription(QXmlStreamWriter& writer, std::string const& description);
 
     /*!
      *  Writes the short description for the current element into XML.
@@ -97,14 +85,6 @@ public:
      *
      *      @param [in] writer      The used XML writer.
      *      @param [in] VLNV        The VLNV to write.
-     */
-    static void writeShortDescription(QXmlStreamWriter& writer, std::string const& shortDescription);
-
-    /*!
-     *  Writes the choices of given element into XML.
-     *
-     *      @param [in] writer      The used XML writer.
-     *      @param [in] choices     The choices of the element.
      */
     static void writeChoices(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Choice> > > choices);
 
@@ -133,14 +113,6 @@ public:
     static void writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent);
 
     /*!
-     *  Write the isPresent element.
-     *
-     *      @param [in] writer      The XML writer to use.
-     *      @param [in] isPresent   The value for the isPresent element.
-     */
-    static void writeIsPresent(QXmlStreamWriter& writer, std::string const& isPresent);
-
-    /*!
      *  Write the configurable element values.
      *
      *      @param [in] writer                  The XML writer to use.
@@ -149,15 +121,16 @@ public:
     static void writeConfigurableElementValues(QXmlStreamWriter& writer,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElements);
 
-    static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, QString const& value);
-
-    static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, std::string const& value);
-
-private:
-
-	// Disable copying.
-    CommonItemsWriter(CommonItemsWriter const& rhs);
-    CommonItemsWriter& operator=(CommonItemsWriter const& rhs);
+    /*!
+     * Writes an XML element, if the provided value is not empty.
+     *
+     *     @param [in] writer        The XML writer to use.
+     *     @param [in] elementName   The name of the element.
+     *     @param [in] value         The value of the element.
+     *
+     *     @return 
+     */
+     static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, QString const& value);
 
 };
 

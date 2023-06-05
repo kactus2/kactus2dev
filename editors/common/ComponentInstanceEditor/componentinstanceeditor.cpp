@@ -139,8 +139,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 
     if (designConfiguration)
     {
-        instanceViewName = 
-            QString::fromStdString(designConfiguration->getActiveView(componentItem->name()));
+        instanceViewName = designConfiguration->getActiveView(componentItem->name());
     }
 
     activeViewLabel_->parentWidget()->show();
@@ -152,6 +151,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
     vlnvDisplayer_->setVLNV(componentItem->componentModel()->getVlnv());
 	vlnvDisplayer_->show();
 
+	nameGroup_->setName(componentItem->name());
 	nameGroup_->setName(QString::fromStdString(componentItem->name()));
 	nameGroup_->setDisplayName(componentItem->displayName());
 
@@ -302,7 +302,7 @@ void ComponentInstanceEditor::onNameChanged()
 {
     if (component_)
     {
-        auto newName = nameGroup_->name().toStdString();
+        auto newName = nameGroup_->name();
 
         QSharedPointer<ComponentChangeNameCommand> cmd(
             new ComponentChangeNameCommand(component_, newName, containingDesign_));

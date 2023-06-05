@@ -118,11 +118,11 @@ void DesignConfigurationReader::Details::parseInterconnectionConfigurations(QDom
         if (docRevision == Document::Revision::Std14)
         {
             newInterconnectionConfiguration->setIsPresent(
-                interconnectionConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue().toStdString());
+                interconnectionConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
         }
 
         newInterconnectionConfiguration->setInterconnectionReference(interconnectionConfigurationNode.
-            firstChildElement(QStringLiteral("ipxact:interconnectionRef")).firstChild().nodeValue().toStdString());
+            firstChildElement(QStringLiteral("ipxact:interconnectionRef")).firstChild().nodeValue());
 
         parseMultipleAbstractors(interconnectionConfigurationNode, newInterconnectionConfiguration, docRevision);
         
@@ -155,7 +155,7 @@ void DesignConfigurationReader::Details::parseMultipleAbstractors(QDomNode const
         if (docRevision == Document::Revision::Std14)
         {
             newMultipleAbstractors->setIsPresent(
-                multipleAbstractorNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue().toStdString());
+                multipleAbstractorNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
         }
 
         parseInterfaceReferences(multipleAbstractorNode, newMultipleAbstractors, docRevision);
@@ -182,13 +182,13 @@ void DesignConfigurationReader::Details::parseInterfaceReferences(QDomNode const
 
         QSharedPointer<InterfaceRef> newInterfaceRef (new InterfaceRef());
 
-        newInterfaceRef->setComponentRef(attributeMap.namedItem(QStringLiteral("componentRef")).nodeValue().toStdString());
-        newInterfaceRef->setBusRef(attributeMap.namedItem(QStringLiteral("busRef")).nodeValue().toStdString());
+        newInterfaceRef->setComponentRef(attributeMap.namedItem(QStringLiteral("componentRef")).nodeValue());
+        newInterfaceRef->setBusRef(attributeMap.namedItem(QStringLiteral("busRef")).nodeValue());
         
         if (docRevision == Document::Revision::Std14)
         {
             newInterfaceRef->setIsPresent(
-                singleInterfaceRefNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue().toStdString());
+                singleInterfaceRefNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
         }
 
         if (docRevision == Document::Revision::Std22)
@@ -215,20 +215,20 @@ void DesignConfigurationReader::Details::parseAbstractorInstances(QDomNode const
         QSharedPointer<AbstractorInstance> newAbstractorInstance (new AbstractorInstance());
 
         newAbstractorInstance->setInstanceName(
-            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue().toStdString());
+            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue());
         newAbstractorInstance->setDisplayName(
-            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue().toStdString());
+            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
 
         if (docRevision == Document::Revision::Std22)
         {
             newAbstractorInstance->setShortDescription(
-                singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue().toStdString());
+                singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue());
         }
 
         newAbstractorInstance->setDescription(
-            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue().toStdString());
+            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
         newAbstractorInstance->setViewName(
-            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:viewName")).firstChild().nodeValue().toStdString());
+            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:viewName")).firstChild().nodeValue());
 
         QDomNode abstractorReferenceNode
             = singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:abstractorRef"));
@@ -285,19 +285,19 @@ void DesignConfigurationReader::Details::parseViewConfigurations(QDomDocument co
         QSharedPointer<ViewConfiguration> newViewConfiguration (new ViewConfiguration());
 
         newViewConfiguration->setInstanceName(
-            singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue().toStdString());
+            singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue());
 
         if (docRevision == Document::Revision::Std14)
         {
             newViewConfiguration->setIsPresent(
-                singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue().toStdString());
+                singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
         }
 
         QDomNode viewNode = singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:view"));
         
         QDomNamedNodeMap attributeMap = viewNode.attributes();
 
-        newViewConfiguration->setViewReference(attributeMap.namedItem(QStringLiteral("viewRef")).nodeValue().toStdString());
+        newViewConfiguration->setViewReference(attributeMap.namedItem(QStringLiteral("viewRef")).nodeValue());
 
         QDomNode multipleConfigurableElementsNode = viewNode.firstChildElement(QStringLiteral("ipxact:configurableElementValues"));
 

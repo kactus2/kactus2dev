@@ -122,7 +122,7 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<DesignInstantiation>
             QString activeView;
             if (designConfiguration)
             {
-                activeView = QString::fromStdString(designConfiguration->getActiveView(componentInstance->getInstanceName()));
+                activeView = designConfiguration->getActiveView(componentInstance->getInstanceName());
             }
 
             QSharedPointer<ConnectivityComponent> instanceNode = createInstanceData(componentInstance, 
@@ -132,7 +132,7 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<DesignInstantiation>
                 createInterfacesForInstance(instancedComponent, instanceNode, graph);
 
             createInteralConnectionsAndDesigns(instancedComponent, instanceNode,
-                QString::fromStdString(componentInstance->getInstanceName()), activeView, instanceInterfaces, graph);
+                componentInstance->getInstanceName(), activeView, instanceInterfaces, graph);
 
             interfacesInDesign += instanceInterfaces;
 
@@ -159,8 +159,8 @@ QSharedPointer<ConnectivityComponent> ConnectivityGraphFactory::createInstanceDa
     if (instance)
     {
         newInstance =
-            QSharedPointer<ConnectivityComponent>(new ConnectivityComponent(QString::fromStdString(instance->getInstanceName())));
-        newInstance->setInstanceUuid(QString::fromStdString(instance->getUuid()));
+            QSharedPointer<ConnectivityComponent>(new ConnectivityComponent(instance->getInstanceName()));
+        newInstance->setInstanceUuid(instance->getUuid());
         newInstance->setVlnv(instance->getComponentRef()->toString());
     }
     else
@@ -911,20 +911,19 @@ void ConnectivityGraphFactory::createConnectionsForInterconnection(
     QSharedPointer<ActiveInterface> start = interconnection->getStartInterface();
 
     QSharedPointer<ConnectivityInterface> startInterface =
-        getInterface(QString::fromStdString(start->getBusReference()), 
-            QString::fromStdString(start->getComponentReference()), designInterfaces);
+        getInterface(start->getBusReference(), start->getComponentReference(), designInterfaces);
 
     for (QSharedPointer<HierInterface> hierInterface : *interconnection->getHierInterfaces())
     {
-        QSharedPointer<ConnectivityInterface> target = getTopInterface(QString::fromStdString(hierInterface->getBusReference()), topInterfaces);
+        QSharedPointer<ConnectivityInterface> target = getTopInterface(hierInterface->getBusReference(), topInterfaces);
 
         createConnectionData(interconnection->name(), startInterface, target, graph);
     }
 
     for (QSharedPointer<ActiveInterface> activeInterface : *interconnection->getActiveInterfaces())
     {                
-        QSharedPointer<ConnectivityInterface> target = getInterface(QString::fromStdString(activeInterface->getBusReference()),
-            QString::fromStdString(activeInterface->getComponentReference()), designInterfaces);
+        QSharedPointer<ConnectivityInterface> target = getInterface(activeInterface->getBusReference(),
+            activeInterface->getComponentReference(), designInterfaces);
 
         createConnectionData(interconnection->name(), startInterface, target, graph);
     }

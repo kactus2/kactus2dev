@@ -61,8 +61,8 @@ bool SystemDesignConfigurationValidator::hasValidViewConfigurations(
             getViewConfigurationValidator()->changeComponentInstances(hwInstances);
             systemViewConfigurationValidator_->changeComponentInstances(hwInstances);
 
-            QVector<std::string> instanceNames;
-            for (QSharedPointer<ViewConfiguration> viewConfiguration :
+            QVector<QString> instanceNames;
+            foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
                 *designConfiguration->getViewConfigurations())
             {
 				if ( instanceNames.contains(viewConfiguration->getInstanceName() ) )
@@ -135,17 +135,16 @@ void SystemDesignConfigurationValidator::findErrorsInViewConfigurations(QVector<
                 systemViewConfigurationValidator_->changeComponentInstances(hwInstances);
             }
 
-            QVector<std::string> instanceNames;
-            QVector<std::string> duplicateNames;
-            for (QSharedPointer<ViewConfiguration> viewConfiguration :
+            QVector<QString> instanceNames;
+            QVector<QString> duplicateNames;
+            foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
                 *designConfiguration->getViewConfigurations())
             {
-                auto instanceName = viewConfiguration->getInstanceName();
-                if (instanceNames.contains(instanceName) &&
-                    !duplicateNames.contains(instanceName))
+                if (instanceNames.contains(viewConfiguration->getInstanceName()) &&
+                    !duplicateNames.contains(viewConfiguration->getInstanceName()))
                 {
                     errors.append(QObject::tr("View configuration name '%1' within %2 is not unique.")
-                        .arg(QString::fromStdString(instanceName), context));
+                        .arg(viewConfiguration->getInstanceName()).arg(context));
                     duplicateNames.append(viewConfiguration->getInstanceName());
                 }
                 else

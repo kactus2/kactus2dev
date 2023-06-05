@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <QString>
 #include <QMap>
 
 //-----------------------------------------------------------------------------
@@ -33,7 +34,7 @@ public:
     /*!
      *  Copy constructor.
      */
-    InterfaceRef(const InterfaceRef& other) = default;
+    InterfaceRef(const InterfaceRef& other);
 
     /*!
      *  The destructor.
@@ -45,53 +46,53 @@ public:
      *
      *      @return The value of isPresent.
      */
-    std::string getIsPresent() const;
+    QString getIsPresent() const;
 
     /*!
      *  Set the value for isPresent.
      *
      *      @param [in] newIsPresent    The new value for isPresent.
      */
-    void setIsPresent(std::string const& newIsPresent);
+    void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the name of the referenced component.
      *
      *      @return The name of the referenced component.
      */
-    std::string getComponentRef() const;
+    QString getComponentRef() const;
 
     /*!
      *  Set the referenced component.
      *
      *      @param [in] newComponentRef     The name of the referenced component.
      */
-    void setComponentRef(std::string const& newComponentRef);
+    void setComponentRef(QString const& newComponentRef);
 
     /*!
      *  Get the name of the referenced bus interface.
      *
      *      @return The name of the referenced bus interface.
      */
-    std::string getBusRef() const;
+    QString getBusRef() const;
 
     /*!
      *  Set the referenced bus interface.
      *
      *      @param [in] newBusRef   The name of the referenced bus interface.
      */
-    void setBusRef(std::string const& newBusRef);
+    void setBusRef(QString const& newBusRef);
 
 private:
 
     //! The name of the referenced component.
-    std::string componentRef_;
+    QString componentRef_;
     
     //! The name of the referenced bus interface.
-    std::string busRef_;
+    QString busRef_;
 
     //! Defines the presenced of the element
-    std::string isPresent_;
+    QString isPresent_;
 };
 
 #endif // INTERFACEREF_H

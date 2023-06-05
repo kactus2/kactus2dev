@@ -240,23 +240,21 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     else if (endpoint1->isAdHoc())
     {
         AdHocConnectionItem* adHoc = static_cast<AdHocConnectionItem*>(connection_);
-        adHocBoundsModel_.setConnection(adHoc->getInterconnection(), diagram->getEditProvider());
+        adHocBoundsModel_.setConnection(adHoc->getAdHocConnection(), diagram->getEditProvider());
         adHocBoundsTable_.resizeRowsToContents();
     }
 
 	// set the names of the connected instances
-	connectedInstances_.setText(QString("%1 - %2").arg(
-        QString::fromStdString(endpoint1->name()),
-        QString::fromStdString(endpoint2->name())));
+	connectedInstances_.setText(QString("%1 - %2").arg(endpoint1->name(), endpoint2->name()));
 
 	// set text for the name editor, signal must be disconnected when name is set to avoid loops 
 	disconnect(&nameEdit_, SIGNAL(editingFinished()), this, SLOT(onNameOrDescriptionChanged()));
-	nameEdit_.setText(QString::fromStdString(connection->name()));
+	nameEdit_.setText(connection->name());
 	connect(&nameEdit_, SIGNAL(editingFinished()), this, SLOT(onNameOrDescriptionChanged()), Qt::UniqueConnection);
 
 	// display the current description of the interface.
 	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onNameOrDescriptionChanged()));
-	descriptionEdit_.setPlainText(QString::fromStdString(connection->description()));
+	descriptionEdit_.setPlainText(connection->description());
 	connect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onNameOrDescriptionChanged()), Qt::UniqueConnection);
 
 	connect(connection, SIGNAL(destroyed(GraphicsConnection*)),	this, SLOT(clear()), Qt::UniqueConnection);
@@ -307,8 +305,8 @@ void ConnectionEditor::onNameOrDescriptionChanged()
 
 	disconnect(connection_, SIGNAL(contentChanged()), this, SLOT(refresh()));	
 
-	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(connection_, nameEdit_.text().toStdString(), 
-        descriptionEdit_.toPlainText().toStdString()));
+	QSharedPointer<QUndoCommand> cmd(new ConnectionChangeCommand(connection_, nameEdit_.text(), 
+        descriptionEdit_.toPlainText()));
 
 	diagram_->getEditProvider()->addCommand(cmd);
     cmd->redo();
@@ -452,7 +450,7 @@ QString ConnectionEditor::getActiveViewForEndPoint(ConnectionEndpoint* endPoint)
         {
             QSharedPointer<DesignConfiguration> configuration = diagram_->getDesignConfiguration();
             QSharedPointer<ComponentInstance> instance = endPoint->encompassingComp()->getComponentInstance();
-            activeView = QString::fromStdString(configuration->getActiveView(instance->getInstanceName()));
+            activeView = configuration->getActiveView(instance->getInstanceName());
         }
     }
 
@@ -467,7 +465,7 @@ void ConnectionEditor::setTableHeaders()
     ComponentItem* componentItem1 = connection_->endpoint1()->encompassingComp();
     if (componentItem1)
     {
-        portWidget_.horizontalHeaderItem(0)->setText(QString::fromStdString(componentItem1->name()));
+        portWidget_.horizontalHeaderItem(0)->setText(componentItem1->name());
     }
     else // if was the interface of a top component
     {

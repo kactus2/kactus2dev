@@ -158,11 +158,11 @@ void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDe
             VLNV componentReference = *currentInstance->getComponentRef();
             QSharedPointer<Component> component = libraryHandler_->getModel(componentReference).dynamicCast<Component>();
 
-            QString instanceViewName = QString::fromStdString(currentDesignConfiguration->getActiveView(currentInstance->getInstanceName()));
+            QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance->getInstanceName());
 
             QTreeWidgetItem* instanceItem (new QTreeWidgetItem(parentItem));
             instanceItem->setText(ViewConfigurerColumns::ITEM_VLNV, componentReference.toString(":"));
-            instanceItem->setText(ViewConfigurerColumns::INSTANCE_NAME, QString::fromStdString(currentInstance->getInstanceName()));
+            instanceItem->setText(ViewConfigurerColumns::INSTANCE_NAME, currentInstance->getInstanceName());
 
             if (instanceViewName.isEmpty())
             {
@@ -173,7 +173,7 @@ void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDe
             }
 
             instanceItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, instanceViewName);
-            instanceItem->setText(ViewConfigurerColumns::INSTANCE_ID, QString::fromStdString(currentInstance->getUuid()));
+            instanceItem->setText(ViewConfigurerColumns::INSTANCE_ID, currentInstance->getUuid());
 
             instanceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 
@@ -247,7 +247,7 @@ void ViewConfigurer::modifyTreeWithExistingViewGroup()
 {
     if(selectedDesignConfiguration_)
     {
-        QMap<std::string, std::string> viewOverrides = selectedDesignConfiguration_->getKactus2ViewOverrides();
+        auto viewOverrides = selectedDesignConfiguration_->getKactus2ViewOverrides();
 
         if (!viewOverrides.isEmpty())
         {
@@ -264,11 +264,8 @@ void ViewConfigurer::modifyTreeWithExistingViewGroup()
 //-----------------------------------------------------------------------------
 // Function: ViewConfigurer::parseExistingInstanceView()
 //-----------------------------------------------------------------------------
-void ViewConfigurer::parseExistingInstanceView(QTreeWidgetItem* currentTreeItem, 
-    QMap<std::string, std::string> const& viewOverrides)
 {
-    QString treeItemOverrideView = QString::fromStdString(
-        viewOverrides.value(currentTreeItem->text(ViewConfigurerColumns::INSTANCE_ID).toStdString()));
+    QString treeItemOverrideView = viewOverrides.value(currentTreeItem->text(ViewConfigurerColumns::INSTANCE_ID));
 
     if (!treeItemOverrideView.isEmpty())
     {
@@ -426,7 +423,7 @@ void ViewConfigurer::saveAndCloseConfigurer()
 {
     if(selectedDesignConfiguration_)
     {
-        QMap<std::string, std::string> viewOverrides;
+        QMap<QString, QString> viewOverrides;
         for (int treetopIndex = 0; treetopIndex < viewsTree_->topLevelItemCount(); ++treetopIndex)
         {
             QTreeWidgetItem* topItem = viewsTree_->topLevelItem(treetopIndex);
@@ -447,7 +444,7 @@ void ViewConfigurer::saveAndCloseConfigurer()
 //-----------------------------------------------------------------------------
 // Function: ViewConfigurer::parseChildTreeItem()
 //-----------------------------------------------------------------------------
-void ViewConfigurer::parseChildTreeItem(QTreeWidgetItem* treeItem, QMap<std::string, std::string>& viewOverrides)
+void ViewConfigurer::parseChildTreeItem(QTreeWidgetItem* treeItem, QMap<QString, QString>& viewOverrides)
 {
     QString treeItemID = treeItem->text(ViewConfigurerColumns::INSTANCE_ID);
     QString treeItemView = treeItem->text(ViewConfigurerColumns::INSTANCE_VIEW);
@@ -455,7 +452,7 @@ void ViewConfigurer::parseChildTreeItem(QTreeWidgetItem* treeItem, QMap<std::str
     if (treeItemView != ViewConfigurerColumns::NOVIEWTEXT &&
         treeItemView != ViewConfigurerColumns::CYCLICCOMPONENTTEXT)
     {
-        viewOverrides.insert(treeItemID.toStdString(), treeItemView.toStdString());
+        viewOverrides.insert(treeItemID, treeItemView);
 
         for (int itemChildIndex = 0; itemChildIndex < treeItem->childCount(); ++itemChildIndex)
         {
@@ -471,7 +468,7 @@ void ViewConfigurer::clearViewOverrides()
 {
     if(selectedDesignConfiguration_)
     {
-        selectedDesignConfiguration_->setKactus2ViewOverrides(QMap<std::string, std::string> ());
+        selectedDesignConfiguration_->setKactus2ViewOverrides(QMap<QString, QString> ());
         libraryHandler_->writeModelToFile(selectedDesignConfiguration_);
 
         for (int treeTopIndex = 0; treeTopIndex < viewsTree_->topLevelItemCount(); ++treeTopIndex)

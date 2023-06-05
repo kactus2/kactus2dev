@@ -272,7 +272,7 @@ QString ComponentDesignDiagram::getVisibleNameForComponentItem(ComponentItem* it
     }
     else
     {
-        return QString::fromStdString(item->name());
+        return item->name();
     }
 }
 
@@ -609,7 +609,7 @@ void ComponentDesignDiagram::setupAutoconnectText(ComponentItem* componentItem)
                 targetName = connectionTarget->displayName();
                 if (targetName.isEmpty())
                 {
-                    targetName = QString::fromStdString(connectionTarget->name());
+                    targetName = connectionTarget->name();
                 }
             }
         }
@@ -700,7 +700,7 @@ void ComponentDesignDiagram::openComponentItem(ComponentItem* comp)
         if (comp->componentModel()->hasViews())
         {
             emit noticeMessage(tr("No active view was selected for instance %1, "
-                "opening component editor.").arg(QString::fromStdString(comp->name())));
+                "opening component editor.").arg(comp->name()));
         }
 
         openInComponentEditor(comp);
@@ -709,7 +709,7 @@ void ComponentDesignDiagram::openComponentItem(ComponentItem* comp)
     else
     {
         emit noticeMessage(tr("No active view was selected for instance %1, "
-            "opening the only hierarchical view of the component.").arg(QString::fromStdString(comp->name())));
+            "opening the only hierarchical view of the component.").arg(comp->name()));
 
         openDesignForComponent(comp, hierViews.first());
     }
@@ -729,11 +729,13 @@ void ComponentDesignDiagram::openInComponentEditor(ComponentItem* comp)
 QString ComponentDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 {
     QString activeViewName;
-    std::string instanceName = compItem->name();
+
+
 
     if (QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();  designConf != nullptr)
     {
-        activeViewName = QString::fromStdString(designConf->getActiveView(instanceName));
+
+        activeViewName = designConf->getActiveView(compItem->name());
     }
 
     return activeViewName;
@@ -1254,8 +1256,8 @@ void ComponentDesignDiagram::endComponentReplaceDrag(QPointF const& endpoint)
         }
 
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("Component instance '%1' is about to be switched in place with '%2'. Continue and replace?").arg(
-                QString::fromStdString(destinationComponent->name()), QString::fromStdString(sourceComp_->name())),
+            tr("Component instance '%1' is about to be switched in place with '%2'. Continue and replace?").
+            arg(destinationComponent->name(), sourceComp_->name()),
             QMessageBox::Yes | QMessageBox::No, getParent());
 
         if (msgBox.exec() == QMessageBox::Yes)

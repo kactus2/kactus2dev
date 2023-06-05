@@ -16,22 +16,22 @@
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfigurationValidator::hasValidName()
 //-----------------------------------------------------------------------------
-bool CommonItemsValidator::hasValidName(std::string_view name)
+bool CommonItemsValidator::hasValidName(QString const& name)
 {
-    return (name.empty() == false && std::all_of(name.begin(), name.end(), isspace) == false);
+    return (name.isEmpty() == false && name.trimmed().isEmpty() == false);
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfigurationValidator::hasValidIsPresent()
 //-----------------------------------------------------------------------------
-bool CommonItemsValidator::hasValidIsPresent(std::string const& isPresent, QSharedPointer<ExpressionParser> parser)
+bool CommonItemsValidator::hasValidIsPresent(QString const& isPresent, QSharedPointer<ExpressionParser> parser)
 {
-    if (isPresent.empty() == true)
+    if (isPresent.isEmpty())
     {
         return true;
     }
 
-    QString solvedValue = parser->parseExpression(QString::fromStdString(isPresent));
+    QString solvedValue = parser->parseExpression(isPresent);
 
     bool toIntOk = true;
     int intValue = solvedValue.toInt(&toIntOk);

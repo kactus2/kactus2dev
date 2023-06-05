@@ -217,8 +217,7 @@ void InterfaceEditor::onInterfaceNameChanged(QString const& newName)
 	
     disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));	
 
-	QSharedPointer<QUndoCommand> cmd(new EndpointNameChangeCommand(
-        interface_, newName.toStdString(), getDesignInterfaces()));
+	QSharedPointer<QUndoCommand> cmd(new EndpointNameChangeCommand(interface_, newName, getDesignInterfaces()));
 	editProvider_->addCommand(cmd);
     cmd->redo();
 	
@@ -248,8 +247,7 @@ void InterfaceEditor::onDescriptionChanged()
 
 	disconnect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()));
 
-	QSharedPointer<QUndoCommand> cmd(new EndpointDescChangeCommand(
-        interface_, interfaceDescription.toStdString()));
+	QSharedPointer<QUndoCommand> cmd(new EndpointDescChangeCommand(interface_, interfaceDescription));
 	editProvider_->addCommand(cmd);
     cmd->redo();
 
@@ -331,7 +329,7 @@ void InterfaceEditor::setBusInterface()
     QString activeView = activeTopView_;
     if (interface_->encompassingComp() && containingConfiguration_)
     {
-        activeView = QString::fromStdString(containingConfiguration_->getActiveView(interface_->encompassingComp()->name()));
+        activeView = containingConfiguration_->getActiveView(interface_->encompassingComp()->name());
     }
 
     VLNV absVLNV;
@@ -366,12 +364,12 @@ void InterfaceEditor::setNameAndDescription(QLineEdit* nameEditor, QPlainTextEdi
 {
     // Set text for the name editor, signal must be disconnected when name is set to avoid loops.
     disconnect(nameEditor, SIGNAL(textEdited(QString const&)), this, SLOT(onInterfaceNameChanged(QString const&)));
-    nameEditor->setText(QString::fromStdString(interface_->name()));
+    nameEditor->setText(interface_->name());
     connect(nameEditor, SIGNAL(textEdited(QString const&)), this, SLOT(onInterfaceNameChanged(QString const&)),
         Qt::UniqueConnection);
 
     disconnect(descriptionEditor, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
-    descriptionEditor->setPlainText(QString::fromStdString(interface_->description()));
+    descriptionEditor->setPlainText(interface_->description());
     connect(descriptionEditor, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
 

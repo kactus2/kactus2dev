@@ -120,12 +120,12 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > ComponentInstanceConfigurable
 {
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters (new QList<QSharedPointer<Parameter> > ());
 
-    if (viewConfiguration && viewConfiguration->getViewReference().empty() == false)
+    if (viewConfiguration && !viewConfiguration->getViewReference().isEmpty())
     {
-        auto const& referencedView = viewConfiguration->getViewReference();
+        QString referencedView = viewConfiguration->getViewReference();
         for (QSharedPointer<View> view : *component->getViews())
         {
-            if (view->name().toStdString() == referencedView)
+            if (view->name() == referencedView)
             {
                 QString referencedComponentInstantiation = view->getComponentInstantiationRef();
                 if (!referencedComponentInstantiation.isEmpty())
