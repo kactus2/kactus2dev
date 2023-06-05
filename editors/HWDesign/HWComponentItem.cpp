@@ -97,20 +97,17 @@ void HWComponentItem::updateComponent()
     {
         setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
     }
-    else if (getLibraryInterface()->contains(componentModel()->getVlnv()))
+    else if (getLibraryInterface()->contains(componentModel()->getVlnv()) == false)
     {
-        if (componentModel()->isBus())
-        {
-            setBrush(QBrush(KactusColors::HW_BUS_COMPONENT));
-        }
-        else
-        {
-            setBrush(QBrush(KactusColors::HW_COMPONENT));
-        }
+        setBrush(QBrush(KactusColors::MISSING_COMPONENT));
+    }
+    else if (componentModel()->isBus())
+    {
+        setBrush(QBrush(KactusColors::HW_BUS_COMPONENT));
     }
     else
     {
-        setBrush(QBrush(KactusColors::MISSING_COMPONENT));
+        setBrush(QBrush(KactusColors::HW_COMPONENT));
     }
 
     // Show a hierarchy icon if the component is a hierarchical one.
@@ -159,7 +156,6 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
 
     emit adHocVisibilitiesChanged();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::attach()
@@ -282,7 +278,7 @@ ActiveBusInterfaceItem* HWComponentItem::getBusPort(QString const& name) const
         }
     }
 
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -372,10 +368,7 @@ void HWComponentItem::setPackaged()
 //-----------------------------------------------------------------------------
 void HWComponentItem::setDraft()
 {
-    if (!isDraft())
-    {
-        getComponentInstance()->setDraft(true);
-    }
+    getComponentInstance()->setDraft(true);
 
     updateComponent();
 }
@@ -402,7 +395,7 @@ void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // Begin the position update for all connections.
     for (QGraphicsItem *item : scene()->items())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+        auto conn = dynamic_cast<GraphicsConnection*>(item);
 
         if (conn != nullptr)
         {
@@ -417,8 +410,7 @@ void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void HWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     // Discard movement if the diagram is protected.
-    auto diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram == nullptr || diagram->isProtected())
+    if (auto diagram = dynamic_cast<DesignDiagram*>(scene()); diagram == nullptr || diagram->isProtected())
     {
         return;
     }
@@ -455,7 +447,7 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // End the position update for all connections.
         for (QGraphicsItem *item : scene()->items())
         {
-            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+            auto conn = dynamic_cast<GraphicsConnection*>(item);
 
             if (conn != nullptr)
             {
@@ -525,7 +517,7 @@ void HWComponentItem::positionAdHocPortTerminals()
 
     for(auto it = instancePositions.cbegin(); it != instancePositions.cend(); ++it)
     {
-        auto portName = it.key();
+        auto const& portName = it.key();
 
         QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
         if (!adhocPort)
@@ -543,7 +535,7 @@ void HWComponentItem::positionAdHocPortTerminals()
     {
         if (adhocPort->isAdHocVisible() && !instancePositions.contains(adhocPort->name()))
         {
-            ActivePortItem* adhocItem (new ActivePortItem(adhocPort, this));
+            auto adhocItem (new ActivePortItem(adhocPort, this));
 
             addPortToSideWithLessPorts(adhocItem);
         }

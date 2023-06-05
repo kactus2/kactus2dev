@@ -44,12 +44,12 @@ ComponentItem(QRectF(), libInterface, instance, component, parent)
 //-----------------------------------------------------------------------------
 void SystemComponentItem::positionAPIInterfaceTerminals()
 {
-    QMap<QString, QPointF> apiInterfacePositions = getComponentInstance()->getApiInterfacePositions();
+    auto apiInterfacePositions = getComponentInstance()->getApiInterfacePositions();
 
     if (!getComponentInstance()->isDraft())
     {
         // Create graphics items for API interfaces.
-        foreach (QSharedPointer<ApiInterface> apiIf, componentModel()->getApiInterfaces())
+        for (QSharedPointer<ApiInterface> apiIf : componentModel()->getApiInterfaces())
         {
             auto port = new SWPortItem(apiIf, componentModel(), this);
 
@@ -91,7 +91,7 @@ void SystemComponentItem::positionAPIInterfaceTerminals()
 //-----------------------------------------------------------------------------
 void SystemComponentItem::positionCOMInterfaceTerminals()
 {
-    QMap<QString, QPointF> comInterfacePositions = getComponentInstance()->getComInterfacePositions();
+    auto comInterfacePositions = getComponentInstance()->getComInterfacePositions();
 
     if (!getComponentInstance()->isDraft())
     {
@@ -407,7 +407,7 @@ void SystemComponentItem::setPropertyValues(QMap<QString, QString> const& values
 //-----------------------------------------------------------------------------
 // Function: SystemComponentItem::getPropertyValues()
 //-----------------------------------------------------------------------------
-QMap<QString, QString> const SystemComponentItem::getPropertyValues() const
+QMap<QString, QString> SystemComponentItem::getPropertyValues() const
 {
     return getComponentInstance()->getPropertyValues();
 }

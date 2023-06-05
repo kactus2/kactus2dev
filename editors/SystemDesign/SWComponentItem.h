@@ -129,26 +129,23 @@ private:
     //-----------------------------------------------------------------------------
 
     // Constants.
-    enum
-    {
-        MIN_HEIGHT = 60
-    };
+    const int MIN_HEIGHT = 60;
 
     //! The old stack from where the mouse drag event began.
-    IGraphicsItemStack* oldStack_;
+    IGraphicsItemStack* oldStack_ = nullptr;
 
     //! The mapping component's old position before mouse move.
     QPointF oldPos_;
     QPointF oldStackPos_;
 
-    QGraphicsPixmapItem* hierIcon_;
-    QGraphicsPixmapItem* importedIcon_;
+    QGraphicsPixmapItem* hierIcon_ = nullptr;
+    QGraphicsPixmapItem* importedIcon_ = nullptr;
 
     //! The file set reference. Empty string if no reference.
     QString fileSetRef_;
 
     //! If true, the component instance is a draft.
-    bool isDraft_;
+    bool isDraft_ = false;
 };
 
 //-----------------------------------------------------------------------------

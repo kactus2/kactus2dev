@@ -256,7 +256,7 @@ QList<ConnectionEndpoint*> ComponentItem::getEndpoints() const
     {
         auto endpoint = dynamic_cast<ConnectionEndpoint*>(item);
 
-        if (endpoint != 0)
+        if (endpoint != nullptr)
         {
             endpoints.append(endpoint);
         }

@@ -67,7 +67,7 @@ public:
     /*!
      *  Returns the property values.
      */
-    QMap<QString, QString> const getPropertyValues() const;
+    QMap<QString, QString> getPropertyValues() const;
 
     /*!
      *  Adds a new, empty port to the component.

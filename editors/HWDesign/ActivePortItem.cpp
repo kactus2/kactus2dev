@@ -111,7 +111,7 @@ QVariant ActivePortItem::itemChange(GraphicsItemChange change, QVariant const& v
     else if (change == ItemRotationHasChanged)
     {
         getNameLabel()->setRotation(-rotation());
-        if (getTieOffLabel() != 0)
+        if (getTieOffLabel() != nullptr)
         {
             getTieOffLabel()->setRotation(-rotation());
         }
@@ -151,7 +151,7 @@ void ActivePortItem::saveOldPortPositions()
     // Save old port positions for all ports in the parent component.
     for (QGraphicsItem* item : parentItem()->childItems())
     {
-        if (dynamic_cast<ConnectionEndpoint*>(item) != 0 && item != this)
+        if (dynamic_cast<ConnectionEndpoint*>(item) != nullptr && item != this)
         {
             auto port = static_cast<ConnectionEndpoint*>(item);
             oldPortPositions_.insert(port, port->pos());

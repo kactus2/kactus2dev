@@ -217,7 +217,7 @@ public:
 	 *  
 	 *      @param [in] width   The width of the shortened name.
 	 */
-	virtual void shortenNameLabel( qreal width );
+	void shortenNameLabel( qreal width ) final;
 
     /*!
      *  Returns true if the endpoint is a COM interface endpoint.
