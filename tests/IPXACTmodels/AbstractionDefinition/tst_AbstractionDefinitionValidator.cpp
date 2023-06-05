@@ -20,7 +20,7 @@
 #include <IPXACTmodels/common/TimingConstraint.h>
 #include <IPXACTmodels/common/CellSpecification.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -44,7 +44,11 @@ private slots:
     void testExtendedPortsNonEditableParameters();
 
 	void paraFail();
+	void paraPassStd22();
 	void portFail();
+
+	void portMatchOnlyInStd22();
+
 	void wireFail();
 	void noDublicatePorts();
 	void invalidWirePort();
@@ -91,10 +95,10 @@ library_(new LibraryMock(this)), expressionParser_(new SystemVerilogExpressionPa
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::baseCase()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+	VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(vlnv, Document::Revision::Std14));
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -128,10 +132,10 @@ void tst_AbstractionDefinitionValidator::vlnvFail()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::busFail()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
-	AbstractionDefinitionValidator validator(library_, expressionParser_);
+    VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(vlnv, Document::Revision::Std14));
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(VLNV(VLNV::BUSDEFINITION,"vendor","library","bogus","version"));
 	abs->getLogicalPorts()->append(port_);
 
@@ -147,10 +151,10 @@ void tst_AbstractionDefinitionValidator::busFail()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::extendFail()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
-	AbstractionDefinitionValidator validator(library_, expressionParser_);
+    VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(vlnv, Document::Revision::Std14));
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -171,20 +175,18 @@ void tst_AbstractionDefinitionValidator::extendFail()
 void tst_AbstractionDefinitionValidator::extendedBusType()
 {
     VLNV extendBusVLNV(VLNV::BUSDEFINITION, "vendor", "library", "extend_test_bus_def", "version");
-    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition);
-    extendBusDef->setVlnv(extendBusVLNV);
+    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition(extendBusVLNV, Document::Revision::Std14));
 
     VLNV busVLNV(VLNV::BUSDEFINITION, "vendor", "library", "test_bus_def", "version");
-    QSharedPointer<BusDefinition> busDef(new BusDefinition);
-    busDef->setVlnv(busVLNV);
+    QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, Document::Revision::Std14));
 
     VLNV extendAbsVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "bogus", "version");
-    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition());
-    extendAbs->setVlnv(extendAbsVLNV);
+    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition(extendAbsVLNV, Document::Revision::Std14));
     extendAbs->setBusType(extendBusVLNV);
 
-    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
-    abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+
     abs->setBusType(busVLNV);
     abs->getLogicalPorts()->append(port_);
     abs->setExtends(extendAbsVLNV);
@@ -218,22 +220,19 @@ void tst_AbstractionDefinitionValidator::extendedBusType()
 void tst_AbstractionDefinitionValidator::getPortsFromExtendAbstraction()
 {
     VLNV extendBusVLNV(VLNV::BUSDEFINITION, "vendor", "library", "extend_test_bus_def", "version");
-    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition);
-    extendBusDef->setVlnv(extendBusVLNV);
+    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition(extendBusVLNV, Document::Revision::Std14));
 
     VLNV busVLNV(VLNV::BUSDEFINITION, "vendor", "library", "test_bus_def", "version");
-    QSharedPointer<BusDefinition> busDef(new BusDefinition);
-    busDef->setVlnv(busVLNV);
+	QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, Document::Revision::Std14));
     busDef->setExtends(extendBusVLNV);
 
     VLNV extendAbsVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "bogus", "version");
-    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition());
-    extendAbs->setVlnv(extendAbsVLNV);
+    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition(extendAbsVLNV, Document::Revision::Std14));
     extendAbs->setBusType(extendBusVLNV);
     extendAbs->getLogicalPorts()->append(port_);
 
-    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
-    abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
     abs->setBusType(busVLNV);
     abs->setExtends(extendAbsVLNV);
 
@@ -263,14 +262,11 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     QStringList extendBusDefSystemGroups("system");
 
     VLNV extendBusVLNV(VLNV::BUSDEFINITION, "vendor", "library", "extend_test_bus_def", "version");
-    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition);
-    extendBusDef->setVlnv(extendBusVLNV);
+    QSharedPointer<BusDefinition> extendBusDef(new BusDefinition(extendBusVLNV, Document::Revision::Std14));
     extendBusDef->setSystemGroupNames(extendBusDefSystemGroups);
 
-
     VLNV busVLNV(VLNV::BUSDEFINITION, "vendor", "library", "test_bus_def", "version");
-    QSharedPointer<BusDefinition> busDef(new BusDefinition);
-    busDef->setVlnv(busVLNV);
+    QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, Document::Revision::Std14));
     busDef->setExtends(extendBusVLNV);
 
     QSharedPointer<WirePort> wirePort(new WirePort());
@@ -282,7 +278,7 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     QSharedPointer<WireAbstraction> extendWire(new WireAbstraction());
     extendWire->getSystemPorts()->append(wirePort);
     extendWire->setDefaultValue("0");
-    extendWire->setQualifier(Qualifier::Data);
+    extendWire->addQualifier(Qualifier::Data);
 
     QSharedPointer<PortAbstraction> extendWirePort(new PortAbstraction());
     extendWirePort->setName("ExtendWire");
@@ -304,7 +300,7 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     transactionalPort->setProtocol(transactionalProtocol);
 
     QSharedPointer<TransactionalAbstraction> extendTransactional(new TransactionalAbstraction());
-    extendTransactional->setQualifier(Qualifier::Data);
+    extendTransactional->addQualifier(Qualifier::Data);
     extendTransactional->getSystemPorts()->append(transactionalPort);
 
     QSharedPointer<PortAbstraction> extendTransactionalPort(new PortAbstraction());
@@ -313,14 +309,13 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     extendTransactionalPort->setTransactional(extendTransactional);
 
     VLNV extendAbsVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "bogus", "version");
-    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition());
-    extendAbs->setVlnv(extendAbsVLNV);
+    QSharedPointer<AbstractionDefinition> extendAbs(new AbstractionDefinition(extendAbsVLNV, Document::Revision::Std14));
     extendAbs->setBusType(extendBusVLNV);
     extendAbs->getLogicalPorts()->append(extendWirePort);
     extendAbs->getLogicalPorts()->append(extendTransactionalPort);
 
-    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
-    abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
     abs->setBusType(busVLNV);
     abs->setExtends(extendAbsVLNV);
 
@@ -343,7 +338,7 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     QVERIFY(validator.validate(abs));
 
     wirePort->setDirection(DirectionTypes::OUT);
-    extendWire->setQualifier(Qualifier::Address);
+    extendWire->addQualifier(Qualifier::Address);
     extendWirePort->setDescription("newExtendWireDescription");
     transactionalPort->setInitiative("provides");
     transactionalPort->setKind("tlm_socket");
@@ -358,7 +353,7 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     QVERIFY(validator.validate(extendAbs));
     QVERIFY(validator.validate(abs) == false);
 
-    QCOMPARE(errorList.size(), 10);
+    QCOMPARE(errorList.size(), 9);
 }
 
 //-----------------------------------------------------------------------------
@@ -366,10 +361,9 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::paraFail()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+	VLNV vlnv = VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(vlnv, Document::Revision::Std14));
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
-
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -378,14 +372,46 @@ void tst_AbstractionDefinitionValidator::paraFail()
 	parameter->setType("bit");
 	parameter->setValue("{'b11, 'b00}");
 	parameter->setValueId("parameterid");
+	parameter->setVectorLeft("4");
+	parameter->setVectorRight("0");
+	parameter->setVectorId("testId"); // VectorId is Std22 only
 
 	abs->getParameters()->append(parameter);
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, abs);
 
-	QCOMPARE(errorList.size(), 1);
+	QCOMPARE(errorList.size(), 2);
 	QVERIFY(!validator.validate(abs));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::paraPassStd22()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::paraPassStd22()
+{
+    VLNV vlnv = VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(vlnv, Document::Revision::Std22));
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+    abs->setBusType(testBusDefVlnv_);
+    abs->getLogicalPorts()->append(port_);
+
+    QSharedPointer<Parameter> parameter(new Parameter());
+    parameter->setName("param");
+    parameter->setType("bit");
+    parameter->setValue("16");
+    parameter->setValueId("parameterid");
+    parameter->setVectorLeft("4");
+    parameter->setVectorRight("0");
+    parameter->setVectorId("testId");
+
+    abs->getParameters()->append(parameter);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abs);
+
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abs));
 }
 
 //-----------------------------------------------------------------------------
@@ -393,10 +419,10 @@ void tst_AbstractionDefinitionValidator::paraFail()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::portFail()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -412,14 +438,60 @@ void tst_AbstractionDefinitionValidator::portFail()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::portMatchOnlyInStd22()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::portMatchOnlyInStd22()
+{
+    VLNV absVLNV14(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs14(new AbstractionDefinition(absVLNV14, Document::Revision::Std14));
+    
+    VLNV absVLNV22(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs22(new AbstractionDefinition(absVLNV22, Document::Revision::Std22));
+    
+	VLNV busVLNV22(VLNV::BUSDEFINITION, "vendor", "library", "extend_test_bus_def", "version");
+    QSharedPointer<BusDefinition> busDef22(new BusDefinition(busVLNV22, Document::Revision::Std22));
+	abs22->setBusType(busVLNV22);
+    abs14->setBusType(testBusDefVlnv_);
+
+	AbstractionDefinitionValidator validator(library_, expressionParser_);
+	
+    QSharedPointer<PortAbstraction> port14(new PortAbstraction(*port_));
+	port14->setMatch(true);
+
+    QSharedPointer<WireAbstraction> wire14(new WireAbstraction);
+    port14->setWire(wire14);
+	
+	QSharedPointer<PortAbstraction> port22(new PortAbstraction(*port14));
+	port22->setLogicalName("other_name"); //name must be unique within absDef
+
+    QSharedPointer<WireAbstraction> wire22(new WireAbstraction);
+    port22->setWire(wire22);
+
+	abs14->getLogicalPorts()->append(port14);
+	abs22->getLogicalPorts()->append(port22);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abs14);
+
+    QCOMPARE(errorList.size(), 1);
+    QVERIFY(!validator.validate(abs14));
+	errorList.clear();
+
+    validator.findErrorsIn(errorList, abs22);
+
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abs22));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_AbstractionDefinitionValidator::noDublicatePorts()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::noDublicatePorts()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -446,10 +518,11 @@ void tst_AbstractionDefinitionValidator::noDublicatePorts()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::wireFail()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -472,10 +545,11 @@ void tst_AbstractionDefinitionValidator::wireFail()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::invalidWirePort()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -503,10 +577,11 @@ void tst_AbstractionDefinitionValidator::invalidWirePort()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::invalidTransactionalPort()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+	
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -535,10 +610,11 @@ void tst_AbstractionDefinitionValidator::invalidTransactionalPort()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::invalidTimingConstraint()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -572,10 +648,11 @@ void tst_AbstractionDefinitionValidator::invalidTimingConstraint()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::invalidCellSpec()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+	
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -609,10 +686,11 @@ void tst_AbstractionDefinitionValidator::invalidCellSpec()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::wirePortSuccessful()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -651,10 +729,11 @@ void tst_AbstractionDefinitionValidator::wirePortSuccessful()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::transactionalSuccessful()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+	
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-	abs->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION,"vendor","library","name","version"));
 	abs->setBusType(testBusDefVlnv_);
 	abs->getLogicalPorts()->append(port_);
 
@@ -683,10 +762,11 @@ void tst_AbstractionDefinitionValidator::transactionalSuccessful()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::systemWirePortHasGroup()
 {
-    QSharedPointer<AbstractionDefinition> abstraction(new AbstractionDefinition);
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abstraction(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+
     AbstractionDefinitionValidator validator(library_, expressionParser_);
 
-    abstraction->setVlnv(VLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version"));
     abstraction->setBusType(testBusDefVlnv_);
     
     QSharedPointer<PortAbstraction>systemPort(new PortAbstraction);
