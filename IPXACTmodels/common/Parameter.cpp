@@ -381,6 +381,30 @@ void Parameter::setVectorRight(QString const& rightExpression)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Parameter::setVectorId()
+//-----------------------------------------------------------------------------
+void Parameter::setVectorId(QString const& id)
+{
+    if (!vectors_->isEmpty())
+    {
+        vectors_->first()->setId(id);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Parameter::getVectorId()
+//-----------------------------------------------------------------------------
+QString Parameter::getVectorId() const
+{
+    if (!vectors_->isEmpty())
+    {
+        return vectors_->first()->getId();
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Parameter::getArrays()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Array> > > Parameter::getArrays() const

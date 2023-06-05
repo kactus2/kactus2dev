@@ -49,8 +49,8 @@ tst_BusDefinitionValidator::tst_BusDefinitionValidator()
 //-----------------------------------------------------------------------------
 void tst_BusDefinitionValidator::baseCase()
 {
-	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka"));
+    VLNV vlnv(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
 
     QSharedPointer<Parameter> parameter(new Parameter());
     parameter->setName("param");
@@ -90,8 +90,8 @@ void tst_BusDefinitionValidator::failVLNV()
 //-----------------------------------------------------------------------------
 void tst_BusDefinitionValidator::failParameter()
 {
-	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka"));
+    VLNV vlnv(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
 
     QSharedPointer<Parameter> parameter (new Parameter());
     parameter->setName("param");
@@ -115,8 +115,8 @@ void tst_BusDefinitionValidator::failParameter()
 //-----------------------------------------------------------------------------
 void tst_BusDefinitionValidator::maxFail()
 {
-	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka"));
+    VLNV vlnv(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->setMaxMasters("ghhhk,");
     busDefinition->setMaxSlaves("jii oku");
 
@@ -134,8 +134,8 @@ void tst_BusDefinitionValidator::maxFail()
 //-----------------------------------------------------------------------------
 void tst_BusDefinitionValidator::maxPass()
 {
-	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION,"vendori","kurjasto","jaska","eka"));
+    VLNV vlnv(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->setMaxMasters("1337");
     busDefinition->setMaxSlaves("5");
 
@@ -153,8 +153,8 @@ void tst_BusDefinitionValidator::maxPass()
 //-----------------------------------------------------------------------------
 void tst_BusDefinitionValidator::testEmptyMaximumMastersAndSlaves()
 {
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendor", "library", "name", "version"));
+    VLNV vlnv(VLNV::BUSDEFINITION, "vendori", "kurjasto", "jaska", "eka");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std14));
     busDefinition->setMaxMasters("");
     busDefinition->setMaxSlaves("");
 
@@ -172,8 +172,8 @@ void tst_BusDefinitionValidator::testEmptyMaximumMastersAndSlaves()
 //-----------------------------------------------------------------------------
 void tst_BusDefinitionValidator::testFailChoices()
 {
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendor", "library", "name", "version"));
+    VLNV vlnv(VLNV::BUSDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std22));
 
     // Invalid enumeration.
     QSharedPointer<Choice> testChoice(new Choice());
@@ -205,9 +205,9 @@ void tst_BusDefinitionValidator::testFailChoices()
 //-----------------------------------------------------------------------------
 void tst_BusDefinitionValidator::testValidChoices()
 {
-    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
-    busDefinition->setVlnv(VLNV(VLNV::BUSDEFINITION, "vendor", "library", "name", "version"));
-    
+    VLNV vlnv(VLNV::BUSDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition(vlnv, Document::Revision::Std22));
+
     QSharedPointer<Choice> testChoice(new Choice());
     testChoice->setName("TestChoice");
 

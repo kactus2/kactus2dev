@@ -13,6 +13,7 @@
 #define SYSTEMVERILOGVALIDATOR_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QRegularExpressionValidator>
 #include <QString>
@@ -56,10 +57,12 @@ public:
      *  Validates the given parameter.
      *
      *      @param [in] parameter           The parameter to validate.
-     *
+     *      @param [in] revision            The standard revision of the element being checked.
+     * 
      *      @return True, if the parameter is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<const Parameter> parameter) const;
+    virtual bool validate(QSharedPointer<const Parameter> parameter,
+        Document::Revision revision = Document::Revision::Std14) const;
 
     /*!
      *  Check if the parameter has a valid name.
@@ -184,7 +187,8 @@ public:
      *      @param [in] parameter   The parameter whose errors to find.
      *      @param [in] context     Context to help locate the errors.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context)
+    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context,
+        Document::Revision revision = Document::Revision::Std14)
         const;
 
     /*!
@@ -201,10 +205,21 @@ public:
      *  Check if the given parameter vector is valid.
      *
      *      @param [in] parameter   The parameter being examined.
-     *
+     *      @param [in] revision    The standard revision of the element being checked.
+     * 
      *      @return True, if the vector is valid, false otherwise.
      */
-    virtual bool hasValidVector(QSharedPointer<const Parameter> parameter) const;
+    virtual bool hasValidVector(QSharedPointer<const Parameter> parameter,
+        Document::Revision revision = Document::Revision::Std14) const; 
+
+    /*!
+     *	Check if any vector of the parameter has a vector ID.
+     *  
+     *      @param [in] parameter	The parameter to check.
+     *		
+     * 		@return True, if vector id is set, otherwise false.
+     */
+    bool vectorIdExists(QSharedPointer<const Parameter> parameter) const;
 
 protected:
              
@@ -325,8 +340,8 @@ protected:
      *      @param [in] parameter   The parameter whose errors to find.
      *      @param [in] context     Context to help locate the errors.
      */
-    void findErrorsInVector(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context)
-        const;
+    void findErrorsInVector(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context, 
+        Document::Revision revision) const;
 
 private:
 

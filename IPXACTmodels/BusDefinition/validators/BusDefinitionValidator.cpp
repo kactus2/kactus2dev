@@ -56,16 +56,16 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
         return false;
     }
     
-    bool validMasters = false;
-    expressionParser_->parseExpression(QString::fromStdString(busDefinition->getMaxMasters()), &validMasters);
-    if (validMasters == false)
+    bool validInitiators = false;
+    expressionParser_->parseExpression(QString::fromStdString(busDefinition->getMaxInitiators()), &validInitiators);
+    if (validInitiators == false)
 	{
 		return false;
 	}
     
-    bool validSlaves = false;
-    expressionParser_->parseExpression(QString::fromStdString(busDefinition->getMaxSlaves()), &validSlaves);
-    if (validSlaves == false)
+    bool validTargets = false;
+    expressionParser_->parseExpression(QString::fromStdString(busDefinition->getMaxSlaves()), &validTargets);
+    if (validTargets == false)
 	{
 		return false;
 	}
@@ -78,11 +78,31 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
 		}
 	}
 
-    for (auto const& currentChoice : *busDefinition->getChoices())
+    if (busDefinition->getRevision() != Document::Revision::Std22)
     {
-        if (!choiceValidator_->validate(currentChoice))
+        if (!busDefinition->getChoices()->isEmpty())
         {
             return false;
+        }
+
+        if (!busDefinition->getShortDescription().isEmpty())
+        {
+            return false;
+        }
+
+        if (!busDefinition->getDisplayName().isEmpty())
+        {
+            return false;
+        }
+    }
+    else
+    {
+        for (auto const& currentChoice : *busDefinition->getChoices())
+        {
+            if (!choiceValidator_->validate(currentChoice))
+            {
+                return false;
+            }
         }
     }
 
@@ -138,6 +158,12 @@ void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
     for (auto const& currentParameter : *busDefinition->getParameters())
     {
         parameterValidator_->findErrorsIn(errors, currentParameter, context);
+    }
+
+    if (!busDefinition->getChoices()->isEmpty()
+        && busDefinition->getRevision() != Document::Revision::Std22)
+    {
+        errors.append(QObject::tr("Choices within %1 not supported by standard revision.").arg(context));
     }
 
     for (auto const& currentChoice : *busDefinition->getChoices())

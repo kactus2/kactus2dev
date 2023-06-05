@@ -257,9 +257,23 @@ public:
     /*!
      *  Sets the right index of the parameter vector.
      *
-     *      @param [in] leftExpression   The left index to set.
+     *      @param [in] leftExpression   The right index to set.
      */
     void setVectorRight(QString const& rightExpression);
+
+    /*!
+     *	Sets the vector id.
+     *  
+     *      @param [in] id	The id to set.
+     */
+    void setVectorId(QString const& id);
+
+    /*!
+     *	Gets the vector id.
+     *  
+     * 		@return The vector id.
+     */
+    QString getVectorId() const;
     
     /*!
      *  Gets the arrays for the parameter.
