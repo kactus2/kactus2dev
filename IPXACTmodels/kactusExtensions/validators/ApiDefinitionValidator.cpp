@@ -49,39 +49,35 @@ bool ApiDefinitionValidator::validate(QSharedPointer<const ApiDefinition> apiDef
 	// Check for multiple definitions of same data type.
 	QStringList dataTypeNames;
 
-	foreach (QString const& dataType, *apiDefinition->getDataTypes())
-	{
-		if (dataTypeNames.contains(dataType))
-		{
-			return false;
-		}
-		else
-		{
-			dataTypeNames.push_back(dataType);
-		}
-	}
+    for (QString const& dataType : *apiDefinition->getDataTypes())
+    {
+        if (dataTypeNames.contains(dataType))
+        {
+            return false;
+        }
 
-	// Validate the functions.
-	QStringList funcNames;
+        dataTypeNames.push_back(dataType);
+    }
 
-	foreach (QSharedPointer<ApiFunction> func, *apiDefinition->getFunctions())
-	{
-		if (funcNames.contains(func->name()))
-		{
-			return false;
-		}
-		else
-		{
-			funcNames.append(func->name());
-		}
+    // Validate the functions.
+    QStringList funcNames;
 
-		if (!func->validate())
-		{
-			return false;
-		}
-	}
+    for (QSharedPointer<ApiFunction> func : *apiDefinition->getFunctions())
+    {
+        if (funcNames.contains(func->name()))
+        {
+            return false;
+        }
 
-	return true;
+        funcNames.append(func->name());
+
+        if (!func->validate())
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +102,7 @@ void ApiDefinitionValidator::findErrorsIn(QVector<QString>& errorList,
 	// Check for multiple definitions of same data type.
 	QStringList dataTypeNames;
 
-	foreach (QString const& dataType, *apiDefinition->getDataTypes())
+	for (QString const& dataType : *apiDefinition->getDataTypes())
 	{
 		if (dataTypeNames.contains(dataType))
 		{
@@ -122,7 +118,7 @@ void ApiDefinitionValidator::findErrorsIn(QVector<QString>& errorList,
 	// Validate the functions.
 	QStringList funcNames;
 
-	foreach (QSharedPointer<ApiFunction> func, *apiDefinition->getFunctions())
+	for (QSharedPointer<ApiFunction> func : *apiDefinition->getFunctions())
 	{
 		if (funcNames.contains(func->name()))
 		{

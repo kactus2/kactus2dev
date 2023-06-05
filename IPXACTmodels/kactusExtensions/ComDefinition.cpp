@@ -33,9 +33,9 @@ ComDefinition::ComDefinition(ComDefinition const& rhs) : Document(rhs),
     properties_(new QList<QSharedPointer<ComProperty> >)
 {
     // Make deep copies of the properties.
-    foreach (QSharedPointer<ComProperty> property, *rhs.properties_)
+    for (QSharedPointer<ComProperty> property : *rhs.properties_)
     {
-        properties_->append(QSharedPointer<ComProperty>(new ComProperty(*property.data())));
+        properties_->append(QSharedPointer<ComProperty>(new ComProperty(*property)));
     }
 }
 
@@ -111,7 +111,7 @@ void ComDefinition::addProperty(QSharedPointer<ComProperty> prop)
 //-----------------------------------------------------------------------------
 void ComDefinition::removeProperty(QString const& name)
 {
-    foreach (QSharedPointer<ComProperty> property, *properties_)
+    for (QSharedPointer<ComProperty> property : *properties_)
     {
         if (property->name() == name)
         {

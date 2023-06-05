@@ -42,39 +42,35 @@ bool ComDefinitionValidator::validate(QSharedPointer<const ComDefinition> comDef
 	// Check for multiple definitions of same transfer type.
 	QStringList transferTypeNames;
 
-	foreach (QString const& transferType, *comDefinition->getTransferTypes())
+	for (QString const& transferType : *comDefinition->getTransferTypes())
 	{
 		if (transferTypeNames.contains(transferType))
-		{
-			return false;
-		}
-		else
-		{
-			transferTypeNames.push_back(transferType);
-		}
-	}
+        {
+            return false;
+        }
 
-	// Validate the properties.
-	QStringList propertyNames;
+        transferTypeNames.push_back(transferType);
+    }
 
-	foreach (QSharedPointer<ComProperty> prop, *comDefinition->getProperties())
+    // Validate the properties.
+    QStringList propertyNames;
+
+	for (QSharedPointer<ComProperty> prop : *comDefinition->getProperties())
 	{
-		if (propertyNames.contains(prop->name()))
-		{
-			return false;
-		}
-		else
-		{
-			propertyNames.append(prop->name());
-		}
+        if (propertyNames.contains(prop->name()))
+        {
+            return false;
+        }
 
-		if (!prop->validate())
-		{
-			return false;
-		}
-	}
+        propertyNames.append(prop->name());
 
-	return true;
+        if (!prop->validate())
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -92,32 +88,28 @@ void ComDefinitionValidator::findErrorsIn(QVector<QString>& errorList,
 
 	// Check for multiple definitions of same data type.
 	QStringList dataTypeNames;
-	foreach (QString const& dataType, *comDefinition->getTransferTypes())
-	{
-		if (dataTypeNames.contains(dataType))
-		{
-			errorList.append(QObject::tr("Data type '%1' defined multiple times in '%2'").arg(dataType, 
-				thisIdentifier));
-		}
-		else
-		{
-			dataTypeNames.push_back(dataType);
-		}
-	}
+    for (QString const& dataType : *comDefinition->getTransferTypes())
+    {
+        if (dataTypeNames.contains(dataType))
+        {
+            errorList.append(QObject::tr("Data type '%1' defined multiple times in '%2'").arg(dataType,
+                thisIdentifier));
+        }
 
-	// Validate the properties.
-	QStringList propertyNames;
-	foreach (QSharedPointer<ComProperty> comProperty, *comDefinition->getProperties())
-	{
-		if (propertyNames.contains(comProperty->name()))
-		{
-			errorList.append(QObject::tr("Property '%1' defined multiple times in %2").arg(comProperty->name(),
-				thisIdentifier));
-		}
-		else
-		{
-			propertyNames.append(comProperty->name());
-		}
+        dataTypeNames.push_back(dataType);
+    }
+
+    // Validate the properties.
+    QStringList propertyNames;
+    for (QSharedPointer<ComProperty> comProperty : *comDefinition->getProperties())
+    {
+        if (propertyNames.contains(comProperty->name()))
+        {
+            errorList.append(QObject::tr("Property '%1' defined multiple times in %2").arg(comProperty->name(),
+                thisIdentifier));
+        }
+
+        propertyNames.append(comProperty->name());
 
 		comProperty->findErrors(errorList, thisIdentifier);
 	}

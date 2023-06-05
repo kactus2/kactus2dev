@@ -13,6 +13,7 @@
 #include "ComInterface.h"
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComInterface::ComInterface()
@@ -138,14 +139,9 @@ void ComInterface::write(QXmlStreamWriter& writer) const
 
     writer.writeTextElement(QStringLiteral("ipxact:name"), name());
 
-    if (!displayName().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
-    }
-    if (!description().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), description());
-    }
+    CommonItemsWriter::writeDisplayName(writer, displayName());
+
+    CommonItemsWriter::writeDescription(writer, description());
 
     // Write communication type, data type and communication direction.
     writer.writeEmptyElement(QStringLiteral("kactus2:comType"));
@@ -273,7 +269,7 @@ void ComInterface::setComType(VLNV const& vlnv, QList< QSharedPointer<ComPropert
 
 	if ( properties != NULL )
 	{
-		foreach (QSharedPointer<ComProperty const> prop, *properties)
+		for (QSharedPointer<ComProperty const> prop : *properties)
 		{
 			propertyValues_[prop->name()] = prop->getDefaultValue();
 		}

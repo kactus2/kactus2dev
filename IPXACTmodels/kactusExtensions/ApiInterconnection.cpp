@@ -11,6 +11,8 @@
 
 #include "ApiInterconnection.h"
 
+#include <IPXACTmodels/common/CommonItemsWriter.h>
+
 //-----------------------------------------------------------------------------
 // Function: ApiInterconnection::ApiInterconnection()
 //-----------------------------------------------------------------------------
@@ -123,14 +125,10 @@ void ApiInterconnection::write(QXmlStreamWriter& writer) const
     writer.writeStartElement(QStringLiteral("kactus2:apiConnection"));
 
     writer.writeTextElement(QStringLiteral("ipxact:name"), name());
-    if (!displayName().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
-    }
-    if (!description().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), description());
-    }
+
+    CommonItemsWriter::writeDisplayName(writer, displayName());
+
+    CommonItemsWriter::writeDescription(writer, description());
 
     writer.writeEmptyElement(QStringLiteral("kactus2:activeApiInterface"));
     writer.writeAttribute(QStringLiteral("componentRef"), getStartInterface()->getComponentReference());

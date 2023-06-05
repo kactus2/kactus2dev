@@ -11,6 +11,8 @@
 
 #include "ComInterconnection.h"
 
+#include <IPXACTmodels/common/CommonItemsWriter.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComInterconnection::ComInterconnection()
 //-----------------------------------------------------------------------------
@@ -111,14 +113,10 @@ void ComInterconnection::write(QXmlStreamWriter& writer) const
     writer.writeStartElement(QStringLiteral("kactus2:comConnection"));
 
     writer.writeTextElement(QStringLiteral("ipxact:name"), name());
-    if (!displayName().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
-    }
-    if (!description().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), description());
-    }
+
+    CommonItemsWriter::writeDisplayName(writer, displayName());
+
+    CommonItemsWriter::writeDescription(writer, description());
 
     writer.writeEmptyElement(QStringLiteral("kactus2:activeComInterface"));
     writer.writeAttribute(QStringLiteral("componentRef"), getStartInterface()->getComponentReference());

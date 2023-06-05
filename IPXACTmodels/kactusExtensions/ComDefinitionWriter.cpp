@@ -47,15 +47,12 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
 	writer.writeTextElement(QStringLiteral("ipxact:name"), comDefinition->getVlnv().getName());
 	writer.writeTextElement(QStringLiteral("ipxact:version"), comDefinition->getVlnv().getVersion());
 
-	if (!comDefinition->getDescription().isEmpty())
-	{
-		writer.writeTextElement(QStringLiteral("ipxact:description"), comDefinition->getDescription());
-	}
+    CommonItemsWriter::writeDescription(writer, comDefinition->getDescription());
 
     // Write data types.
     writer.writeStartElement(QStringLiteral("kactus2:transferTypes"));
 
-    foreach (QString const& type, *comDefinition->getTransferTypes())
+    for (QString const& type : *comDefinition->getTransferTypes())
     {
         writer.writeEmptyElement(QStringLiteral("kactus2:transferType"));
         writer.writeAttribute(QStringLiteral("name"), type);
@@ -66,7 +63,7 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
     // Write properties.
     writer.writeStartElement(QStringLiteral("kactus2:properties"));
 
-    foreach (QSharedPointer<ComProperty> prop, *comDefinition->getProperties())
+    for (QSharedPointer<ComProperty> prop : *comDefinition->getProperties())
 	{
 		prop->write(writer);
     }
